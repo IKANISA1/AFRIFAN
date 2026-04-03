@@ -13,7 +13,7 @@ import {
   saveAdminProduct,
   deleteAdminProduct,
 } from "@/lib/data/admin";
-import type { AdminShopProduct } from "@/lib/data/admin";
+import type { AdminShopProduct } from "@/lib/types";
 
 const emptyForm = {
   id: "",
@@ -140,7 +140,12 @@ export default function AdminShopPage() {
           </div>
           <label className="grid gap-2 text-sm">Sizes (comma separated)<input name="sizes" value={form.sizes} onChange={(e) => setForm((c) => ({ ...c, sizes: e.target.value }))} className="dashboard-input" /></label>
           <label className="grid gap-2 text-sm">Image URL<input name="imageUrl" value={form.imageUrl} onChange={(e) => setForm((c) => ({ ...c, imageUrl: e.target.value }))} className="dashboard-input" /></label>
-          {form.imageUrl.trim() ? <div className="overflow-hidden rounded-[22px] border border-border-soft"><img src={form.imageUrl} alt="Preview" className="h-32 w-full object-cover" /></div> : null}
+          {form.imageUrl.trim() ? (
+            <div className="overflow-hidden rounded-[22px] border border-border-soft">
+              {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews accept arbitrary remote URLs that are not suitable for next/image allowlisting. */}
+              <img src={form.imageUrl} alt="Preview" className="h-32 w-full object-cover" />
+            </div>
+          ) : null}
           <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-white/5 px-4 py-3 text-sm"><input type="checkbox" name="isActive" checked={form.isActive} onChange={(e) => setForm((c) => ({ ...c, isActive: e.target.checked }))} />Active in shop</label>
           <button type="submit" className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary">{form.id ? "Save product" : "Add product"}</button>
         </form>
@@ -156,7 +161,12 @@ export default function AdminShopPage() {
             {!loading && filtered.length === 0 ? <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">No products found.</p> : null}
             {!loading && filtered.map((product) => (
               <article key={product.id} className={cn("card-interactive flex items-start gap-4 rounded-[26px] border border-border-soft p-5 transition", product.isActive ? "bg-white/5" : "bg-white/[0.02] opacity-60")}>
-                {product.imageUrl ? <div className="hidden sm:block h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-border-soft"><img src={product.imageUrl} alt="" className="h-full w-full object-cover" /></div> : null}
+                {product.imageUrl ? (
+                  <div className="hidden sm:block h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-border-soft">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews accept arbitrary remote URLs that are not suitable for next/image allowlisting. */}
+                    <img src={product.imageUrl} alt="" className="h-full w-full object-cover" />
+                  </div>
+                ) : null}
                 <div className="flex-1 min-w-0">
                   <p className="font-display text-2xl font-bold uppercase leading-none">{product.name}</p>
                   <p className="mt-1 truncate text-sm text-slate-300">{product.subtitle}</p>

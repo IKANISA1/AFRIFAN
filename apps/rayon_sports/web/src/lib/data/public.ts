@@ -66,7 +66,7 @@ function mapClubRow(row: Record<string, unknown>): ClubProfile {
     id: safeNumber(row.id, rayonClub.numericId),
     clubName: safeString(row.club_name, fallbackClubProfile.clubName),
     clubSlug: safeString(row.club_slug, fallbackClubProfile.clubSlug),
-    shortName: fallbackClubProfile.shortName,
+    shortName: safeString(row.short_name, fallbackClubProfile.shortName),
     nickname: safeString(
       row.nickname_brand_identity,
       fallbackClubProfile.nickname,

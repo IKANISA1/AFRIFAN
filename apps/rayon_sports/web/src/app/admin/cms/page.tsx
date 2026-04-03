@@ -1,11 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { Trash2 } from "lucide-react";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { Skeleton } from "@/components/skeleton";
 import { SectionHeading } from "@/components/section-heading";
-import { getAdminArticles, saveAdminArticle } from "@/lib/data/admin";
+import {
+  deleteAdminArticle,
+  getAdminArticles,
+  saveAdminArticle,
+} from "@/lib/data/admin";
 import { cn } from "@/lib/utils";
 import type { AdminNewsArticle } from "@/lib/types";
 
@@ -130,6 +135,25 @@ export default function AdminCmsPage() {
         caught instanceof Error
           ? caught.message
           : "Could not update article state.",
+        "error",
+      );
+    }
+  }
+
+  async function removeArticle(article: AdminNewsArticle) {
+    if (client == null) {
+      return;
+    }
+
+    try {
+      await deleteAdminArticle(client, article.id);
+      await loadArticles();
+      showAdminToast(`Removed "${article.title}".`, "success");
+    } catch (caught) {
+      showAdminToast(
+        caught instanceof Error
+          ? caught.message
+          : "Could not remove article.",
         "error",
       );
     }
@@ -380,6 +404,18 @@ export default function AdminCmsPage() {
                       className="rounded-full border border-border-soft px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-100 transition hover:bg-white/8"
                     >
                       {article.isFeatured ? "Unfeature" : "Feature"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        removeArticle(article).catch(() => {});
+                      }}
+                      className="rounded-full border border-border-soft px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-rose-200 transition hover:border-rose-400/30 hover:bg-rose-500/15"
+                    >
+                      <span className="inline-flex items-center gap-1.5">
+                        <Trash2 size={12} />
+                        Delete
+                      </span>
                     </button>
                   </div>
                 </div>

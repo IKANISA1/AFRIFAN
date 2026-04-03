@@ -961,6 +961,9 @@ export async function saveAdminClubProfile(
     accent_color_hex: input.accentColorHex.trim(),
     feature_flags: input.featureFlags,
   };
+  const payloadWithoutShortName = Object.fromEntries(
+    Object.entries(payload).filter(([key]) => key !== "short_name"),
+  ) as Record<string, unknown>;
 
   const existing = await client
     .from(clubTable)
@@ -972,19 +975,29 @@ export async function saveAdminClubProfile(
     throw new Error(existing.error.message);
   }
 
+  const existingId = existing.data?.id
+    ? toIdString(existing.data.id, crypto.randomUUID())
+    : null;
+  const payloadVariants = existingId
+    ? [payload, payloadWithoutShortName]
+    : [
+        {
+          id: rayonClub.numericId,
+          ...payload,
+        },
+        {
+          id: rayonClub.numericId,
+          ...payloadWithoutShortName,
+        },
+        payload,
+        payloadWithoutShortName,
+      ];
+
   return mutateRecordWithVariants(
     client,
     clubTable,
-    existing.data?.id
-      ? toIdString(existing.data.id, crypto.randomUUID())
-      : null,
-    [
-      {
-        id: rayonClub.numericId,
-        ...payload,
-      },
-      payload,
-    ],
+    existingId,
+    payloadVariants,
   );
 }
 

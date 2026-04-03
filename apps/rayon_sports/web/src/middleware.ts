@@ -6,6 +6,10 @@ import {
   shouldBypassAdminRewrite,
 } from "@/lib/admin-auth";
 
+/**
+ * Edge Middleware — rewrites admin.gikundiro.com requests to /admin/* routes.
+ * Uses Edge runtime (compatible with Cloudflare Workers via @opennextjs/cloudflare).
+ */
 export function middleware(request: NextRequest) {
   const host = request.headers.get("host");
   if (!isAdminHostname(host)) {

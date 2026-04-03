@@ -1,14 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { CalendarDays, Radio, Ticket } from "lucide-react";
+import { CalendarDays, Radio, Ticket, Trash2 } from "lucide-react";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { ProgressBar } from "@/components/progress-bar";
 import { Skeleton } from "@/components/skeleton";
 import { SectionHeading } from "@/components/section-heading";
-import { getAdminMatches, saveAdminMatch } from "@/lib/data/admin";
+import {
+  deleteAdminMatch,
+  getAdminMatches,
+  saveAdminMatch,
+} from "@/lib/data/admin";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import type { AdminMatchItem } from "@/lib/types";
@@ -148,6 +152,26 @@ export default function AdminMatchesPage() {
     } catch (caught) {
       showAdminToast(
         caught instanceof Error ? caught.message : "Could not save match.",
+        "error",
+      );
+    }
+  }
+
+  async function removeMatch(match: AdminMatchItem) {
+    if (client == null) {
+      return;
+    }
+
+    try {
+      await deleteAdminMatch(client, match.id);
+      await loadMatches();
+      showAdminToast(
+        `${match.homeTeam} vs ${match.awayTeam} removed.`,
+        "success",
+      );
+    } catch (caught) {
+      showAdminToast(
+        caught instanceof Error ? caught.message : "Could not remove fixture.",
         "error",
       );
     }
@@ -555,13 +579,27 @@ export default function AdminMatchesPage() {
                       {match.competition} • {match.venue} • {formatDate(match.matchDate)}
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => beginEdit(match)}
-                    className="rounded-full border border-border-soft px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-100 transition hover:bg-white/8"
-                  >
-                    Edit
-                  </button>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => beginEdit(match)}
+                      className="rounded-full border border-border-soft px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-100 transition hover:bg-white/8"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        removeMatch(match).catch(() => {});
+                      }}
+                      className="rounded-full border border-border-soft px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-rose-200 transition hover:border-rose-400/30 hover:bg-rose-500/15"
+                    >
+                      <span className="inline-flex items-center gap-1.5">
+                        <Trash2 size={12} />
+                        Delete
+                      </span>
+                    </button>
+                  </div>
                 </div>
                 <div className="mt-4 grid gap-3 sm:grid-cols-3">
                   <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">

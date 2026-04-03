@@ -286,6 +286,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   const navIcons: Record<string, string> = {
     "/admin": "📊",
+    "/admin/settings": "⚙️",
     "/admin/cms": "📝",
     "/admin/matches": "⚽",
     "/admin/squad": "👥",

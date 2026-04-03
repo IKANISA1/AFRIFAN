@@ -629,6 +629,7 @@ export const staticSearchItems: SearchIndexItem[] = [
 
 export const adminNavigation = [
   { href: "/admin", label: "Dashboard" },
+  { href: "/admin/settings", label: "Settings" },
   { href: "/admin/cms", label: "CMS" },
   { href: "/admin/matches", label: "Matches" },
   { href: "/admin/squad", label: "Squad" },

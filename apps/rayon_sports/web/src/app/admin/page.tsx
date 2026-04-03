@@ -11,6 +11,9 @@ import {
   CalendarDays,
   HeartHandshake,
   Bell,
+  Settings,
+  ShoppingBag,
+  Crown,
 } from "lucide-react";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
@@ -32,6 +35,12 @@ const emptySnapshot: AdminDashboardSnapshot = {
 
 const quickActions = [
   {
+    href: "/admin/settings",
+    title: "Tune club settings",
+    body: "Update brand colors, languages, contact channels, and feature flags.",
+    icon: Settings,
+  },
+  {
     href: "/admin/cms",
     title: "Publish club content",
     body: "Create and push news articles, headlines, and homepage stories.",
@@ -44,9 +53,21 @@ const quickActions = [
     icon: CalendarDays,
   },
   {
+    href: "/admin/shop",
+    title: "Manage merchandise",
+    body: "Curate the live shop catalogue, sizes, imagery, and product ordering.",
+    icon: ShoppingBag,
+  },
+  {
+    href: "/admin/membership",
+    title: "Control membership",
+    body: "Set tier pricing, perks, and visibility across activation surfaces.",
+    icon: Crown,
+  },
+  {
     href: "/admin/contributions",
     title: "Monitor circles",
-    body: "Track supporter funds, momentum, and creator performance.",
+    body: "Edit campaign metadata, track supporter funds, and export reports.",
     icon: HeartHandshake,
   },
   {

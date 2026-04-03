@@ -289,6 +289,7 @@ export default function AdminSquadPage() {
           {form.imageUrl.trim() ? (
             <div className="flex justify-center">
               <div className="h-24 w-24 overflow-hidden rounded-full border-2 border-club-accent/30">
+                {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews accept arbitrary remote URLs that are not suitable for next/image allowlisting. */}
                 <img
                   src={form.imageUrl}
                   alt="Player preview"
@@ -396,6 +397,7 @@ export default function AdminSquadPage() {
                 >
                   {player.imageUrl ? (
                     <div className="hidden sm:block h-14 w-14 flex-shrink-0 overflow-hidden rounded-full border-2 border-border-soft">
+                      {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews accept arbitrary remote URLs that are not suitable for next/image allowlisting. */}
                       <img
                         src={player.imageUrl}
                         alt={player.name}
