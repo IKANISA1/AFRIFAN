@@ -1,0 +1,292 @@
+import 'package:flutter/material.dart';
+
+import 'color_tokens.dart';
+
+/// Semantic color token system for the AFRICLUB platform.
+///
+/// Provides a theme-aware, composable color API via [ThemeExtension].
+/// Clubs override only their accent/primary/secondary while inheriting
+/// the full semantic vocabulary. Supports `lerp()` for animated theme
+/// transitions and `copyWith()` for per-club overrides.
+///
+/// Access via `context.afriSemanticColors` extension.
+class AfriSemanticColors extends ThemeExtension<AfriSemanticColors> {
+  const AfriSemanticColors({
+    // ── App-level surfaces ──
+    required this.appBackground,
+    required this.elevatedBackground,
+    required this.shellGradientTop,
+    required this.shellGradientBottom,
+    // ── Card surfaces ──
+    required this.cardSurface,
+    required this.cardSurfaceStrong,
+    required this.overlaySurface,
+    // ── Input surfaces ──
+    required this.inputSurface,
+    // ── Text hierarchy ──
+    required this.primaryText,
+    required this.secondaryText,
+    required this.tertiaryText,
+    // ── Borders ──
+    required this.border,
+    required this.borderStrong,
+    // ── Interactive ──
+    required this.accent,
+    required this.accentSoft,
+    required this.buttonPrimaryBackground,
+    required this.buttonPrimaryForeground,
+    // ── Semantic status ──
+    required this.danger,
+    required this.warning,
+    required this.info,
+    required this.success,
+    // ── Domain surfaces ──
+    required this.operationalSurface,
+    required this.analyticsSurface,
+    required this.commerceSurface,
+    required this.teamSurface,
+    // ── Glass ──
+    required this.highlightColor,
+    required this.shadowColor,
+    // ── Gradients ──
+    required this.surfaceGradient,
+  });
+
+  // ── App-level surfaces ──
+  final Color appBackground;
+  final Color elevatedBackground;
+  final Color shellGradientTop;
+  final Color shellGradientBottom;
+
+  // ── Card surfaces ──
+  final Color cardSurface;
+  final Color cardSurfaceStrong;
+  final Color overlaySurface;
+
+  // ── Input surfaces ──
+  final Color inputSurface;
+
+  // ── Text hierarchy ──
+  final Color primaryText;
+  final Color secondaryText;
+  final Color tertiaryText;
+
+  // ── Borders ──
+  final Color border;
+  final Color borderStrong;
+
+  // ── Interactive ──
+  final Color accent;
+  final Color accentSoft;
+  final Color buttonPrimaryBackground;
+  final Color buttonPrimaryForeground;
+
+  // ── Semantic status ──
+  final Color danger;
+  final Color warning;
+  final Color info;
+  final Color success;
+
+  // ── Domain surfaces ──
+  final Color operationalSurface;
+  final Color analyticsSurface;
+  final Color commerceSurface;
+  final Color teamSurface;
+
+  // ── Glass ──
+  final Color highlightColor;
+  final Color shadowColor;
+
+  // ── Gradients ──
+  final LinearGradient surfaceGradient;
+
+  // ─────────────────────────────────────────────────────────────────
+  // Dark theme — default "Stadium Pulse" palette (ROUGEBLACK)
+  // ─────────────────────────────────────────────────────────────────
+  static AfriSemanticColors get dark => AfriSemanticColors(
+    // ── App-level surfaces ──
+    appBackground: ColorTokens.background,
+    elevatedBackground: ColorTokens.surfaceContainerLow,
+    shellGradientTop: ColorTokens.surfaceContainerLowest,
+    shellGradientBottom: ColorTokens.surfaceContainerLow,
+    // ── Card surfaces ──
+    cardSurface: ColorTokens.surfaceContainer,
+    cardSurfaceStrong: ColorTokens.surfaceContainerHigh,
+    overlaySurface: ColorTokens.surfaceContainerLow,
+    // ── Input surfaces ──
+    inputSurface: ColorTokens.surfaceContainerHigh,
+    // ── Text hierarchy ──
+    primaryText: const Color(0xFFF0F0F5),
+    secondaryText: const Color(0xFF9898B0),
+    tertiaryText: const Color(0xFF6A6A85),
+    // ── Borders ──
+    border: ColorTokens.outlineVariant,
+    borderStrong: ColorTokens.surfaceContainerHighest,
+    // ── Interactive ──
+    accent: const Color(0xFF4ADE80),
+    accentSoft: const Color(0x1A4ADE80),
+    buttonPrimaryBackground: ColorTokens.clubPrimary,
+    buttonPrimaryForeground: const Color(0xFFFFFFFF),
+    // ── Semantic status ──
+    danger: const Color(0xFFFF4D6A),
+    warning: const Color(0xFFFBBF24),
+    info: const Color(0xFF60A5FA),
+    success: const Color(0xFF4ADE80),
+    // ── Domain surfaces ──
+    operationalSurface: ColorTokens.surfaceContainer,
+    analyticsSurface: ColorTokens.surfaceContainerHigh,
+    commerceSurface: ColorTokens.surfaceContainerLowest,
+    teamSurface: ColorTokens.surfaceContainerLow,
+    // ── Glass ──
+    highlightColor: const Color(0xFFFFFFFF),
+    shadowColor: ColorTokens.surfaceContainerLowest,
+    // ── Gradients ──
+    surfaceGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [ColorTokens.surfaceContainer, ColorTokens.surfaceContainerHigh],
+    ),
+  );
+
+  // ─────────────────────────────────────────────────────────────────
+  // copyWith — enables per-club color overrides
+  // ─────────────────────────────────────────────────────────────────
+  @override
+  AfriSemanticColors copyWith({
+    Color? appBackground,
+    Color? elevatedBackground,
+    Color? shellGradientTop,
+    Color? shellGradientBottom,
+    Color? cardSurface,
+    Color? cardSurfaceStrong,
+    Color? overlaySurface,
+    Color? inputSurface,
+    Color? primaryText,
+    Color? secondaryText,
+    Color? tertiaryText,
+    Color? border,
+    Color? borderStrong,
+    Color? accent,
+    Color? accentSoft,
+    Color? buttonPrimaryBackground,
+    Color? buttonPrimaryForeground,
+    Color? danger,
+    Color? warning,
+    Color? info,
+    Color? success,
+    Color? operationalSurface,
+    Color? analyticsSurface,
+    Color? commerceSurface,
+    Color? teamSurface,
+    Color? highlightColor,
+    Color? shadowColor,
+    LinearGradient? surfaceGradient,
+  }) {
+    return AfriSemanticColors(
+      appBackground: appBackground ?? this.appBackground,
+      elevatedBackground: elevatedBackground ?? this.elevatedBackground,
+      shellGradientTop: shellGradientTop ?? this.shellGradientTop,
+      shellGradientBottom: shellGradientBottom ?? this.shellGradientBottom,
+      cardSurface: cardSurface ?? this.cardSurface,
+      cardSurfaceStrong: cardSurfaceStrong ?? this.cardSurfaceStrong,
+      overlaySurface: overlaySurface ?? this.overlaySurface,
+      inputSurface: inputSurface ?? this.inputSurface,
+      primaryText: primaryText ?? this.primaryText,
+      secondaryText: secondaryText ?? this.secondaryText,
+      tertiaryText: tertiaryText ?? this.tertiaryText,
+      border: border ?? this.border,
+      borderStrong: borderStrong ?? this.borderStrong,
+      accent: accent ?? this.accent,
+      accentSoft: accentSoft ?? this.accentSoft,
+      buttonPrimaryBackground:
+          buttonPrimaryBackground ?? this.buttonPrimaryBackground,
+      buttonPrimaryForeground:
+          buttonPrimaryForeground ?? this.buttonPrimaryForeground,
+      danger: danger ?? this.danger,
+      warning: warning ?? this.warning,
+      info: info ?? this.info,
+      success: success ?? this.success,
+      operationalSurface: operationalSurface ?? this.operationalSurface,
+      analyticsSurface: analyticsSurface ?? this.analyticsSurface,
+      commerceSurface: commerceSurface ?? this.commerceSurface,
+      teamSurface: teamSurface ?? this.teamSurface,
+      highlightColor: highlightColor ?? this.highlightColor,
+      shadowColor: shadowColor ?? this.shadowColor,
+      surfaceGradient: surfaceGradient ?? this.surfaceGradient,
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // lerp — enables animated theme transitions
+  // ─────────────────────────────────────────────────────────────────
+  @override
+  AfriSemanticColors lerp(AfriSemanticColors? other, double t) {
+    if (other is! AfriSemanticColors) return this;
+    return AfriSemanticColors(
+      appBackground: Color.lerp(appBackground, other.appBackground, t)!,
+      elevatedBackground: Color.lerp(
+        elevatedBackground,
+        other.elevatedBackground,
+        t,
+      )!,
+      shellGradientTop: Color.lerp(
+        shellGradientTop,
+        other.shellGradientTop,
+        t,
+      )!,
+      shellGradientBottom: Color.lerp(
+        shellGradientBottom,
+        other.shellGradientBottom,
+        t,
+      )!,
+      cardSurface: Color.lerp(cardSurface, other.cardSurface, t)!,
+      cardSurfaceStrong: Color.lerp(
+        cardSurfaceStrong,
+        other.cardSurfaceStrong,
+        t,
+      )!,
+      overlaySurface: Color.lerp(overlaySurface, other.overlaySurface, t)!,
+      inputSurface: Color.lerp(inputSurface, other.inputSurface, t)!,
+      primaryText: Color.lerp(primaryText, other.primaryText, t)!,
+      secondaryText: Color.lerp(secondaryText, other.secondaryText, t)!,
+      tertiaryText: Color.lerp(tertiaryText, other.tertiaryText, t)!,
+      border: Color.lerp(border, other.border, t)!,
+      borderStrong: Color.lerp(borderStrong, other.borderStrong, t)!,
+      accent: Color.lerp(accent, other.accent, t)!,
+      accentSoft: Color.lerp(accentSoft, other.accentSoft, t)!,
+      buttonPrimaryBackground: Color.lerp(
+        buttonPrimaryBackground,
+        other.buttonPrimaryBackground,
+        t,
+      )!,
+      buttonPrimaryForeground: Color.lerp(
+        buttonPrimaryForeground,
+        other.buttonPrimaryForeground,
+        t,
+      )!,
+      danger: Color.lerp(danger, other.danger, t)!,
+      warning: Color.lerp(warning, other.warning, t)!,
+      info: Color.lerp(info, other.info, t)!,
+      success: Color.lerp(success, other.success, t)!,
+      operationalSurface: Color.lerp(
+        operationalSurface,
+        other.operationalSurface,
+        t,
+      )!,
+      analyticsSurface: Color.lerp(
+        analyticsSurface,
+        other.analyticsSurface,
+        t,
+      )!,
+      commerceSurface: Color.lerp(commerceSurface, other.commerceSurface, t)!,
+      teamSurface: Color.lerp(teamSurface, other.teamSurface, t)!,
+      highlightColor: Color.lerp(highlightColor, other.highlightColor, t)!,
+      shadowColor: Color.lerp(shadowColor, other.shadowColor, t)!,
+      surfaceGradient: LinearGradient.lerp(
+        surfaceGradient,
+        other.surfaceGradient,
+        t,
+      )!,
+    );
+  }
+}

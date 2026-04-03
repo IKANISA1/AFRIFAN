@@ -1,0 +1,198 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../tokens/motion_tokens.dart';
+
+class AfriPressState {
+  const AfriPressState({
+    required this.isPressed,
+    required this.isFocused,
+    required this.isHovered,
+  });
+
+  final bool isPressed;
+  final bool isFocused;
+  final bool isHovered;
+}
+
+/// Accessible, focusable press wrapper for custom interactive surfaces.
+///
+/// Provides:
+/// - tap + keyboard activation
+/// - hover/focus tracking
+/// - optional semantics and tooltip labeling
+/// - lightweight tactile scale/opacity feedback
+class AfriPressFeedback extends StatefulWidget {
+  const AfriPressFeedback({
+    required this.onTap,
+    this.child,
+    this.builder,
+    this.scaleEnd = 0.97,
+    this.opacityEnd = 0.92,
+    this.haptic = true,
+    this.enabled = true,
+    this.button = true,
+    this.selected = false,
+    this.autofocus = false,
+    this.tooltip,
+    this.semanticsLabel,
+    this.semanticsHint,
+    this.excludeChildSemantics = false,
+    super.key,
+  }) : assert(
+         (child != null) != (builder != null),
+         'Provide either child or builder.',
+       );
+
+  final Widget? child;
+  final Widget Function(BuildContext context, AfriPressState state)? builder;
+  final VoidCallback? onTap;
+  final double scaleEnd;
+  final double opacityEnd;
+  final bool haptic;
+  final bool enabled;
+  final bool button;
+  final bool selected;
+  final bool autofocus;
+  final String? tooltip;
+  final String? semanticsLabel;
+  final String? semanticsHint;
+  final bool excludeChildSemantics;
+
+  @override
+  State<AfriPressFeedback> createState() => _AfriPressFeedbackState();
+}
+
+class _AfriPressFeedbackState extends State<AfriPressFeedback>
+    with SingleTickerProviderStateMixin {
+  static const Map<ShortcutActivator, Intent> _shortcuts =
+      <ShortcutActivator, Intent>{
+        SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+        SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+      };
+
+  late final AnimationController _controller;
+  late final Animation<double> _scale;
+  late final Animation<double> _opacity;
+  bool _isPressed = false;
+  bool _isFocused = false;
+  bool _isHovered = false;
+
+  bool get _isInteractive => widget.enabled && widget.onTap != null;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: AfriMotion.press);
+    _scale = Tween<double>(begin: 1.0, end: widget.scaleEnd).animate(
+      CurvedAnimation(parent: _controller, curve: AfriMotion.pressCurve),
+    );
+    _opacity = Tween<double>(begin: 1.0, end: widget.opacityEnd).animate(
+      CurvedAnimation(parent: _controller, curve: AfriMotion.pressCurve),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _handleTapDown(TapDownDetails _) {
+    if (!_isInteractive) return;
+    setState(() => _isPressed = true);
+    _controller.forward();
+    if (widget.haptic) {
+      HapticFeedback.lightImpact();
+    }
+  }
+
+  void _handleTapUp(TapUpDetails _) {
+    if (!_isInteractive) return;
+    setState(() => _isPressed = false);
+    _controller.reverse();
+    if (widget.haptic) {
+      HapticFeedback.mediumImpact();
+    }
+  }
+
+  void _handleTapCancel() {
+    if (!_isInteractive) return;
+    setState(() => _isPressed = false);
+    _controller.reverse();
+    if (widget.haptic) {
+      HapticFeedback.mediumImpact();
+    }
+  }
+
+  void _handleTap() {
+    if (!_isInteractive) return;
+    widget.onTap!.call();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = AfriPressState(
+      isPressed: _isPressed,
+      isFocused: _isFocused,
+      isHovered: _isHovered,
+    );
+
+    Widget content = widget.builder?.call(context, state) ?? widget.child!;
+    if (widget.excludeChildSemantics) {
+      content = ExcludeSemantics(child: content);
+    }
+
+    content = FadeTransition(
+      opacity: _opacity,
+      child: ScaleTransition(scale: _scale, child: content),
+    );
+
+    content = FocusableActionDetector(
+      enabled: _isInteractive,
+      autofocus: widget.autofocus,
+      mouseCursor: _isInteractive
+          ? SystemMouseCursors.click
+          : MouseCursor.defer,
+      shortcuts: _shortcuts,
+      actions: <Type, Action<Intent>>{
+        ActivateIntent: CallbackAction<ActivateIntent>(
+          onInvoke: (_) {
+            _handleTap();
+            return null;
+          },
+        ),
+      },
+      onShowFocusHighlight: (value) {
+        if (_isFocused == value) return;
+        setState(() => _isFocused = value);
+      },
+      onShowHoverHighlight: (value) {
+        if (_isHovered == value) return;
+        setState(() => _isHovered = value);
+      },
+      child: GestureDetector(
+        onTapDown: _handleTapDown,
+        onTapUp: _handleTapUp,
+        onTapCancel: _handleTapCancel,
+        onTap: _handleTap,
+        behavior: HitTestBehavior.opaque,
+        child: content,
+      ),
+    );
+
+    if (widget.tooltip != null && widget.tooltip!.trim().isNotEmpty) {
+      content = Tooltip(message: widget.tooltip!, child: content);
+    }
+
+    return Semantics(
+      button: widget.button,
+      enabled: _isInteractive,
+      selected: widget.selected,
+      label: widget.semanticsLabel,
+      hint: widget.semanticsHint,
+      onTap: _isInteractive ? _handleTap : null,
+      child: content,
+    );
+  }
+}

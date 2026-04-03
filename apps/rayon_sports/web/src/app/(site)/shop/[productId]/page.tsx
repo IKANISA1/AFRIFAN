@@ -1,0 +1,137 @@
+import Image from "next/image";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ProductCard } from "@/components/product-card";
+import { getProductById, getProducts } from "@/lib/data/public";
+import { formatCurrency } from "@/lib/utils";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ productId: string }>;
+}): Promise<Metadata> {
+  const { productId } = await params;
+  const product = await getProductById(productId);
+
+  return {
+    title: product?.name ?? "Shop product",
+    description: product?.subtitle ?? "Official Rayon Sports merchandise.",
+  };
+}
+
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ productId: string }>;
+}) {
+  const { productId } = await params;
+  const [product, products] = await Promise.all([
+    getProductById(productId),
+    getProducts(),
+  ]);
+
+  if (product == null) {
+    notFound();
+  }
+
+  const relatedProducts = products.filter((entry) => entry.id !== product.id).slice(0, 3);
+
+  return (
+    <div className="page-shell section-grid py-12">
+      <section className="glass-panel-elevated overflow-hidden rounded-[38px] border border-border-soft">
+        <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="img-zoom relative min-h-[22rem]">
+            <Image
+              src={product.imageUrl ?? "/media/stadium-hero.jpg"}
+              alt={product.name}
+              fill
+              sizes="(min-width: 1024px) 44vw, 100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_30%,rgba(3,10,24,0.74)_100%)]" />
+          </div>
+          <div className="p-6 sm:p-8">
+            <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
+              {product.collection ?? "Official"} • {product.category}
+            </p>
+            <h1 className="mt-4 font-display text-6xl font-bold uppercase leading-none text-balance text-white">
+              {product.name}
+            </h1>
+            <p className="mt-4 text-lg leading-8 text-slate-300">{product.subtitle}</p>
+            <p className="mt-4 font-score text-6xl text-white">
+              {formatCurrency(product.price)}
+            </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {product.sizes.map((size) => (
+                <span
+                  key={size}
+                  className="rounded-full border border-border-soft bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200"
+                >
+                  {size}
+                </span>
+              ))}
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href="/app/shop"
+                className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
+              >
+                Order from portal
+              </Link>
+              <Link
+                href="/membership"
+                className="rounded-full border border-border-soft px-5 py-3 font-semibold text-white transition hover:bg-white/8"
+              >
+                Unlock member perks
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
+        <div className="glass-panel rounded-[32px] p-6">
+          <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
+            Product detail
+          </p>
+          <p className="mt-4 text-base leading-8 text-slate-200">
+            {product.description}
+          </p>
+          <div className="mt-5 grid gap-4">
+            {[
+              "Lead with collection context so products feel like launches, not isolated SKUs.",
+              "Keep size visibility and price clarity prominent before the user leaves the public site.",
+              "Use membership and portal CTAs as trust builders, not hard gates.",
+            ].map((point) => (
+              <div
+                key={point}
+                className="rounded-[24px] border border-border-soft bg-white/5 p-4 text-sm leading-7 text-slate-300"
+              >
+                {point}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {relatedProducts.length > 0 ? (
+          <section className="section-grid">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
+                More merch
+              </p>
+              <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
+                Related products
+              </h2>
+            </div>
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {relatedProducts.map((relatedProduct) => (
+                <ProductCard key={relatedProduct.id} product={relatedProduct} />
+              ))}
+            </div>
+          </section>
+        ) : null}
+      </div>
+    </div>
+  );
+}

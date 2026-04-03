@@ -1,0 +1,23 @@
+name: core_utils
+description: Alias generator, MOMO USSD dialer, currency and date formatters
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  equatable: ^2.0.7
+  url_launcher: ^6.3.1
+  intl: ^0.20.2
+  uuid: ^4.5.1
+
+  core_network: any
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+resolution: workspace

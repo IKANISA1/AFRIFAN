@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#04081A">
+<title>Rayon Sports FC  Gikundiro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=Libre+Baskerville:ital@1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --blue:#0033A0;--blue-l:#1A4DC4;--blue-p:#060E2E;
+  --gold:#C9A84C;--gold-l:#E0BC68;--gold-d:#8B6E2A;
+  --bg:#04081A;--bg2:#070D20;--bg3:#0C1226;
+  --mid:#182040;--muted:#7A85A0;
+  --text:#FFFFFF;--text2:rgba(255,255,255,0.62);
+  --border:rgba(255,255,255,0.07);--borderg:rgba(201,168,76,0.2);
+  --surface:rgba(255,255,255,0.035);
+  --font-d:'Bebas Neue',sans-serif;
+  --font-b:'Manrope',sans-serif;
+  --font-i:'Libre Baskerville',serif}
+[data-theme="light"]{
+  --bg:#F2F1ED;--bg2:#EAEAE4;--bg3:#E2E0DA;
+  --mid:#CFCDC7;--muted:#5A607A;
+  --text:#06091C;--text2:rgba(6,9,28,0.58);
+  --border:rgba(0,0,0,0.08);--borderg:rgba(201,168,76,0.28);
+  --surface:rgba(0,0,0,0.025)}
+body{font-family:var(--font-b);background:var(--bg);color:var(--text);overflow-x:hidden;transition:background .35s,color .35s}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--blue)}
+a{text-decoration:none;color:inherit}
+button{font-family:var(--font-b)}
+
+/* ??? LOADER ??? */
+#loader{position:fixed;inset:0;z-index:9999;background:#04081A;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;transition:transform .8s cubic-bezier(.76,0,.24,1),opacity .5s}
+#loader.done{transform:translateY(-102%);opacity:0}
+.ldr-ring{width:90px;height:90px;position:relative;display:flex;align-items:center;justify-content:center}
+.ldr-ring svg{position:absolute;inset:0;width:100%;height:100%;animation:spin 2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ldr-crest-inner{width:64px;height:64px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.ldr-name{font-family:var(--font-d);font-size:30px;letter-spacing:6px;color:#fff;line-height:1}
+.ldr-sub{font-size:9px;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);font-weight:700}
+.ldr-bar{width:220px;height:2px;background:rgba(255,255,255,.08);border-radius:1px;overflow:hidden}
+.ldr-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold));width:0%;transition:width .18s linear;border-radius:1px}
+
+/* ??? NAV ??? */
+#nav{position:fixed;top:0;left:0;right:0;z-index:500;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 4vw;background:rgba(4,8,26,.95);backdrop-filter:blur(24px);border-bottom:.5px solid var(--border);transition:background .3s}
+[data-theme="light"] #nav{background:rgba(242,241,237,.96)}
+.nav-logo{display:flex;align-items:center;gap:11px}
+.nav-crest{width:38px;height:38px;border-radius:50%;background:var(--blue);border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-brand{font-family:var(--font-d);font-size:19px;letter-spacing:2px;line-height:1;color:var(--text)}
+.nav-tagline{font-size:8px;letter-spacing:3px;color:var(--gold);font-weight:700;text-transform:uppercase}
+.nav-links{display:flex;list-style:none;gap:2px}
+.nav-links a{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:var(--muted);padding:7px 11px;border-radius:3px;transition:color .2s,background .2s;white-space:nowrap}
+.nav-links a:hover{color:var(--text);background:var(--surface)}
+.nav-right{display:flex;align-items:center;gap:7px}
+.nav-btn{width:34px;height:34px;background:var(--surface);border:.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all .2s;position:relative}
+.nav-btn:hover{border-color:var(--gold);color:var(--text)}
+.cart-badge{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;background:var(--gold);border-radius:8px;font-size:9px;font-weight:800;color:#000;display:none;align-items:center;justify-content:center;padding:0 3px}
+.nav-cta{background:var(--blue);color:#fff;border:none;padding:0 16px;height:34px;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;cursor:pointer;transition:background .2s;white-space:nowrap}
+.nav-cta:hover{background:var(--blue-l)}
+
+/* ??? HERO ??? */
+#hero{min-height:100vh;position:relative;display:flex;flex-direction:column;overflow:hidden;padding-top:66px}
+#hero-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 65% at 58% 42%,rgba(0,51,160,.36) 0%,transparent 68%),radial-gradient(ellipse 45% 40% at 92% 85%,rgba(201,168,76,.06) 0%,transparent 60%),var(--bg2)}
+[data-theme="light"] .hero-bg{background:radial-gradient(ellipse 80% 65% at 58% 42%,rgba(0,51,160,.12) 0%,transparent 68%),var(--bg2)}
+.hero-content{position:relative;z-index:2;padding:70px 4vw 50px;flex:1;display:flex;flex-direction:column}
+.pretag{display:flex;align-items:center;gap:10px;margin-bottom:18px;animation:fadeUp .7s .1s both}
+.pretag-line{width:32px;height:1.5px;background:var(--gold)}
+.pretag span{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700}
+.hero-h{font-family:var(--font-d);font-size:clamp(68px,10.5vw,145px);line-height:.9;letter-spacing:3px;animation:fadeUp .8s .2s both}
+.hero-h .ln1{color:#fff;display:block}
+.hero-h .ln2{color:#4D7AE8;display:block}
+.hero-h .ln3{color:var(--gold);display:block}
+.hero-p{font-size:clamp(12px,1.3vw,14px);color:var(--muted);max-width:380px;line-height:1.8;margin:22px 0 38px;font-weight:400;animation:fadeUp .8s .38s both}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:52px;animation:fadeUp .8s .5s both}
+.hero-stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:auto;animation:fadeUp .8s .65s both}
+.hstat{padding:14px 20px;background:rgba(0,0,0,.28);border:.5px solid var(--border);backdrop-filter:blur(8px);display:flex;flex-direction:column;gap:3px}
+.hstat-n{font-family:var(--font-d);font-size:30px;color:#fff;letter-spacing:2px;line-height:1}
+.hstat-n em{color:var(--gold);font-style:normal}
+.hstat-l{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.match-badge{position:absolute;right:4vw;bottom:44px;background:rgba(6,14,36,.94);border:1px solid var(--borderg);padding:20px 24px;min-width:290px;backdrop-filter:blur(14px);clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));animation:fadeUp .9s .7s both}
+.mb-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.live-dot{width:5px;height:5px;background:#FF4444;border-radius:50%;animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.mb-score-row{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.mb-team{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.mb-badge{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800}
+.mb-name{font-size:9.5px;font-weight:700;color:var(--text);text-align:center;line-height:1.2}
+.mb-score{font-family:var(--font-d);font-size:32px;letter-spacing:5px;color:#fff;line-height:1}
+.mb-comp{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:500;text-align:center;margin-bottom:2px}
+.mb-meta{display:flex;justify-content:space-between;padding-top:10px;border-top:.5px solid var(--border)}
+.mb-meta span{font-size:9.5px;color:var(--muted);font-weight:500}
+.mb-meta strong{display:block;font-size:11px;color:var(--text);font-weight:700;margin-bottom:1px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* ??? TICKER ??? */
+.ticker{background:var(--blue);padding:12px 0;overflow:hidden}
+.ticker-track{display:flex;animation:scroll 38s linear infinite;white-space:nowrap}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tick{display:inline-flex;align-items:center;gap:9px;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.88);flex-shrink:0;margin-right:72px}
+.tick-dot{width:3.5px;height:3.5px;background:var(--gold);border-radius:50%;flex-shrink:0}
+
+/* ??? STATS BAR ??? */
+.stats-bar{background:var(--bg3);padding:48px 4vw;border-top:1px solid var(--borderg);border-bottom:1px solid var(--borderg)}
+.stats-row{display:grid;grid-template-columns:repeat(6,1fr)}
+.stat-blk{padding:18px 22px;border-right:.5px solid var(--border);text-align:center}
+.stat-blk:last-child{border-right:none}
+.stat-blk .n{font-family:var(--font-d);font-size:clamp(38px,4.5vw,60px);color:var(--text);line-height:1;letter-spacing:2px}
+.stat-blk .n em{color:var(--gold);font-style:normal}
+.stat-blk .l{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-top:5px}
+
+/* ??? SHARED SECTION STYLES ??? */
+section{padding:86px 4vw;position:relative}
+.sec-pre{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sec-pre-line{width:28px;height:1.5px;background:var(--gold)}
+.sec-pre span{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700}
+.sec-h{font-family:var(--font-d);font-size:clamp(36px,5vw,68px);line-height:.95;letter-spacing:3px;color:var(--text);margin-bottom:12px}
+.sec-p{font-size:13.5px;color:var(--muted);max-width:460px;line-height:1.78;margin-bottom:46px;font-weight:400}
+.sec-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:38px;flex-wrap:wrap;gap:14px}
+
+/* ??? BUTTONS ??? */
+.btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;padding:12px 26px;font-size:10px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;border:none;cursor:pointer;clip-path:polygon(0 0,calc(100%-10px) 0,100% 10px,100% 100%,0 100%);transition:background .2s,transform .15s;font-family:var(--font-b)}
+.btn-p:hover{background:var(--blue-l);transform:translateY(-1px)}
+.btn-s{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text);padding:11px 26px;font-size:10px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;border:1px solid rgba(255,255,255,.18);cursor:pointer;clip-path:polygon(10px 0,100% 0,100% calc(100%-10px),calc(100%-10px) 100%,0 100%,0 10px);transition:border-color .2s,color .2s;font-family:var(--font-b)}
+.btn-s:hover{border-color:var(--gold);color:var(--gold)}
+.btn-g{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#000;padding:12px 26px;font-size:10px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;border:none;cursor:pointer;transition:background .2s;font-family:var(--font-b)}
+.btn-g:hover{background:var(--gold-l)}
+
+/* ??? MATCH CENTRE ??? */
+#match{background:var(--bg2)}
+.mc-score-hero{text-align:center;padding:40px 0 32px}
+.mc-teams{display:flex;align-items:center;justify-content:center;gap:48px;margin-bottom:18px}
+.mc-team{display:flex;flex-direction:column;align-items:center;gap:8px}
+.mc-badge{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
+.mc-badge.home{background:var(--blue);border:2px solid var(--gold)}
+.mc-badge.away{background:var(--mid);border:1px solid var(--border)}
+.mc-name{font-size:12.5px;font-weight:700;color:var(--text)}
+.mc-score{font-family:var(--font-d);font-size:76px;letter-spacing:8px;color:#fff;line-height:1}
+.mc-status{font-size:9.5px;letter-spacing:3px;text-transform:uppercase;color:#FF4444;font-weight:700;display:flex;align-items:center;gap:6px;justify-content:center;margin-top:5px}
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:0}
+.tab{padding:11px 22px;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--muted);cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;transition:color .2s,border-color .2s;font-family:var(--font-b)}
+.tab.on{color:var(--text);border-bottom-color:var(--gold)}
+.panel{display:none;padding:34px 0}
+.panel.on{display:block}
+.lineup-cols{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+.col-hd{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:.5px solid var(--border)}
+.lp-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:.5px solid var(--border)}
+.lp-row:last-child{border-bottom:none}
+.lp-num{font-family:var(--font-d);font-size:15px;color:var(--muted);width:22px;text-align:center;flex-shrink:0}
+.lp-name{font-size:12.5px;font-weight:600;color:var(--text)}
+.lp-pos{font-size:9.5px;color:var(--muted);font-weight:500;margin-left:auto}
+.tl-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:.5px solid var(--border)}
+.tl-min{font-family:var(--font-d);font-size:17px;color:var(--gold);width:42px;text-align:right;flex-shrink:0}
+.tl-ico{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.ico-g{background:rgba(46,204,113,.18);color:#2ECC71}
+.ico-y{background:rgba(255,200,0,.18);color:#FFC800}
+.ico-r{background:rgba(231,76,60,.18);color:#E74C3C}
+.ico-s{background:rgba(100,150,255,.18);color:#6496FF}
+.tl-txt{font-size:12.5px;font-weight:600;color:var(--text)}
+.tl-sub{font-size:10.5px;color:var(--muted);font-weight:400}
+.stat-bars{display:flex;flex-direction:column;gap:18px;max-width:580px;margin:0 auto}
+.sb-row{display:flex;align-items:center;gap:14px}
+.sb-val{font-family:var(--font-d);font-size:17px;color:var(--text);width:42px;text-align:center;flex-shrink:0}
+.sb-label{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:700;width:100px;text-align:center;flex-shrink:0}
+.sb-track{flex:1;height:3.5px;background:var(--mid);border-radius:2px;overflow:hidden}
+.sb-fill{height:100%;background:var(--blue);border-radius:2px}
+
+/* ??? TABLE ??? */
+#table{background:var(--bg)}
+.lg-tbl{width:100%;border-collapse:collapse}
+.lg-tbl th{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--muted);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.lg-tbl td{padding:13px 12px;border-bottom:.5px solid var(--border);font-size:12.5px;color:var(--text);font-weight:500}
+.lg-tbl tr:hover td{background:var(--surface)}
+.lg-tbl tr.my-team td{background:rgba(0,51,160,.1);border-left:3px solid var(--blue)}
+.pos{font-family:var(--font-d);font-size:15px;color:var(--muted);width:30px;text-align:center}
+.pos.gold{color:var(--gold)}
+.tcell{display:flex;align-items:center;gap:9px}
+.tdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.form-row{display:flex;gap:3px}
+.fw,.fl,.fd{width:15px;height:15px;border-radius:50%;font-size:8.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.fw{background:rgba(46,204,113,.18);color:#2ECC71}
+.fl{background:rgba(231,76,60,.18);color:#E74C3C}
+.fd{background:rgba(201,168,76,.18);color:var(--gold)}
+.pts{font-family:var(--font-d);font-size:17px;color:var(--text)}
+
+/* ??? NEWS ??? */
+#news{background:var(--bg2)}
+.news-g{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2px}
+.nc{overflow:hidden;background:var(--bg3);cursor:pointer;transition:transform .3s}
+.nc:hover{transform:scale(1.002)}
+.nc-img{overflow:hidden;position:relative}
+.nc-img-inner{width:100%;transition:transform .4s}
+.nc:hover .nc-img-inner{transform:scale(1.04)}
+.nc.feat .nc-img{aspect-ratio:16/11}
+.nc:not(.feat) .nc-img{aspect-ratio:16/9}
+.nc-body{padding:16px 20px 20px}
+.tag{display:inline-block;font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:3px 9px;margin-bottom:8px}
+.tag-b{background:rgba(0,51,160,.28);color:#6699FF;border:.5px solid rgba(0,51,160,.48)}
+.tag-g{background:rgba(201,168,76,.14);color:var(--gold-l);border:.5px solid var(--borderg)}
+.tag-r{background:rgba(180,30,30,.18);color:#FF7070;border:.5px solid rgba(180,30,30,.38)}
+.tag-gr{background:rgba(46,150,60,.18);color:#5FD672;border:.5px solid rgba(46,150,60,.38)}
+.nc-h{font-size:clamp(12px,1.25vw,16px);font-weight:700;line-height:1.35;color:var(--text);margin-bottom:6px}
+.nc.feat .nc-h{font-size:clamp(16px,1.9vw,24px);font-weight:800}
+.nc-meta{font-size:9.5px;color:var(--muted);font-weight:500}
+
+/* ??? VIDEOS ??? */
+#videos{background:var(--bg)}
+.vid-g{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.vc{background:var(--bg3);cursor:pointer;overflow:hidden}
+.vc:hover .vc-overlay{opacity:1}
+.vc:hover .vc-thumb-img{transform:scale(1.04)}
+.vc-thumb{aspect-ratio:16/9;position:relative;overflow:hidden}
+.vc-thumb-img{width:100%;height:100%;transition:transform .4s;display:flex;align-items:center;justify-content:center}
+.vc-overlay{position:absolute;inset:0;background:rgba(0,51,160,.38);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s}
+.vc-play{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.95);display:flex;align-items:center;justify-content:center}
+.vc-dur{position:absolute;bottom:9px;right:11px;background:rgba(0,0,0,.74);color:#fff;font-size:9.5px;font-weight:700;padding:3px 7px;border-radius:3px}
+.vc-body{padding:13px 15px 17px}
+.vc-cat{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:5px}
+.vc-title{font-size:12.5px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:4px}
+.vc-date{font-size:9.5px;color:var(--muted)}
+
+/* ??? FIXTURES ??? */
+#fixtures{background:var(--bg2)}
+.fix-list{display:flex;flex-direction:column;gap:2px;margin-top:0}
+.fix{display:grid;grid-template-columns:120px 1fr auto 1fr 82px;align-items:center;gap:10px;padding:17px 22px;background:var(--bg3);border-left:3px solid transparent;transition:border-color .2s,background .2s;cursor:pointer}
+.fix:hover{background:var(--surface);border-left-color:var(--gold)}
+.fix.w{border-left-color:#2ECC71}.fix.l{border-left-color:#E74C3C}.fix.d{border-left-color:var(--gold)}
+.fix-date{font-size:9.5px;color:var(--muted);font-weight:600}
+.fix-tm{font-size:12.5px;font-weight:700;color:var(--text)}
+.fix-tm.home-tm{text-align:right}
+.fix-score-box{display:flex;align-items:center;background:var(--mid);padding:6px 13px;justify-content:center}
+.fix-score{font-family:var(--font-d);font-size:19px;letter-spacing:4px;color:var(--text)}
+.res-badge{display:inline-block;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;font-weight:800;padding:3px 8px;text-align:center}
+.rw{background:rgba(46,204,113,.14);color:#2ECC71}
+.rl{background:rgba(231,76,60,.14);color:#E74C3C}
+.rd{background:rgba(201,168,76,.14);color:var(--gold)}
+
+/* ??? SQUAD ??? */
+#squad{background:var(--bg)}
+.squad-filter{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:36px}
+.sf{padding:7px 17px;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;background:transparent;color:var(--muted);border:.5px solid var(--border);cursor:pointer;transition:all .2s;font-family:var(--font-b)}
+.sf.on,.sf:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.squad-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:2px}
+.pc{position:relative;overflow:hidden;cursor:pointer;aspect-ratio:3/4;display:flex;flex-direction:column;justify-content:flex-end;transition:transform .3s}
+.pc:hover{transform:translateY(-4px)}
+.pc-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.pc-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,8,26,.97) 0%,rgba(4,8,26,.52) 50%,transparent 100%)}
+.pc-num{position:absolute;top:12px;left:12px;font-family:var(--font-d);font-size:44px;color:rgba(255,255,255,.065);line-height:1}
+.pc-body{position:relative;z-index:2;padding:16px 16px 18px}
+.pc-pos{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:2px}
+.pc-name{font-family:var(--font-d);font-size:19px;letter-spacing:1px;color:#fff;line-height:1.1;margin-bottom:7px}
+.pc-nat{display:flex;align-items:center;gap:5px;font-size:9.5px;color:var(--muted);font-weight:600}
+
+/* ??? FAN WALL ??? */
+#fanwall{background:var(--bg2)}
+.fan-featured{background:linear-gradient(135deg,rgba(0,51,160,.18),rgba(201,168,76,.07));border:1px solid var(--borderg);padding:28px;margin-bottom:28px;display:flex;gap:20px;align-items:flex-start}
+.fan-av-lg{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;flex-shrink:0;border:2px solid var(--gold)}
+.fan-crown{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;background:rgba(201,168,76,.14);border:.5px solid var(--borderg);padding:3px 10px;display:inline-block;margin-bottom:8px}
+.fan-pname{font-size:14px;font-weight:800;color:var(--text);margin-bottom:2px}
+.fan-pgrp{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.5px;margin-bottom:9px}
+.fan-ptxt{font-size:13.5px;color:var(--text2);line-height:1.65}
+.fan-acts{display:flex;gap:10px;margin-top:12px}
+.fan-act{display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--muted);font-weight:600;cursor:pointer;background:none;border:none;transition:color .2s;font-family:var(--font-b)}
+.fan-act:hover{color:var(--text)}
+.fan-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:2px}
+.fan-card{background:var(--bg3);padding:22px;transition:background .2s}
+.fan-card:hover{background:var(--surface)}
+.fan-card-hd{display:flex;align-items:center;gap:11px;margin-bottom:11px}
+.fan-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+
+/* ??? SHOP ??? */
+#shop{background:var(--bg)}
+.shop-layout{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.jersey-box{background:var(--bg3);border:1px solid var(--border);padding:28px}
+.jb-head{font-family:var(--font-d);font-size:22px;letter-spacing:2px;color:var(--text);margin-bottom:22px}
+.jb-preview{display:flex;justify-content:center;margin-bottom:24px}
+.jb-ctrl{display:flex;flex-direction:column;gap:16px}
+.jb-field{display:flex;flex-direction:column;gap:5px}
+.jb-lbl{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.jb-inp{background:var(--mid);border:.5px solid var(--border);padding:9px 13px;font-size:12.5px;color:var(--text);font-family:var(--font-b);width:100%;outline:none;transition:border-color .2s}
+.jb-inp:focus{border-color:var(--blue)}
+.color-row{display:flex;gap:7px}
+.color-chip{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .2s,transform .2s}
+.color-chip.on{border-color:var(--gold);transform:scale(1.1)}
+.size-row{display:flex;gap:5px}
+.size-btn{width:38px;height:34px;background:var(--mid);border:.5px solid var(--border);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--font-b)}
+.size-btn.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.shop-products{display:flex;flex-direction:column;gap:2px}
+.product-row{display:grid;grid-template-columns:90px 1fr auto;gap:14px;align-items:center;background:var(--bg3);padding:16px 18px;cursor:pointer;transition:background .2s}
+.product-row:hover{background:var(--surface)}
+.prod-img{width:90px;height:72px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.prod-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.prod-type{font-size:9.5px;color:var(--muted);font-weight:600;margin-bottom:7px}
+.prod-price{font-family:var(--font-d);font-size:20px;color:var(--gold);letter-spacing:1px}
+
+/* ??? MEMBERSHIP ??? */
+#membership{background:var(--bg2)}
+.mem-g{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.mem-card{background:var(--bg3);padding:32px 26px;position:relative;border-top:3px solid transparent;transition:border-color .3s,background .3s;overflow:hidden}
+.mem-card:hover{background:var(--surface)}
+.mem-card.featured{border-top-color:var(--gold);background:rgba(201,168,76,.04)}
+.mem-badge{display:inline-block;font-size:8.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:3px 11px;margin-bottom:18px}
+.mb-b{background:rgba(0,51,160,.28);color:#6699FF;border:.5px solid rgba(0,51,160,.48)}
+.mb-g{background:rgba(201,168,76,.14);color:var(--gold-l);border:.5px solid var(--borderg)}
+.mb-p{background:rgba(200,200,255,.07);color:#C8C8FF;border:.5px solid rgba(200,200,255,.22)}
+.mem-tier{font-family:var(--font-d);font-size:30px;letter-spacing:2px;color:var(--text);margin-bottom:2px}
+.mem-price{font-family:var(--font-d);font-size:42px;color:var(--gold);line-height:1;margin-bottom:3px;letter-spacing:2px}
+.mem-per{font-size:10.5px;color:var(--muted);font-weight:600;margin-bottom:22px}
+.mem-feats{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:24px}
+.mem-feats li{font-size:12.5px;color:var(--text2);display:flex;align-items:flex-start;gap:9px;line-height:1.4}
+.mem-feats li::before{content:'?';width:15px;height:15px;border-radius:50%;background:rgba(46,204,113,.18);color:#2ECC71;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;margin-top:2px}
+.mem-popular{position:absolute;top:14px;right:14px;font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--gold);background:rgba(201,168,76,.14);padding:3px 9px}
+
+/* ??? TICKETS ??? */
+#tickets{background:var(--bg)}
+.ticket-steps{display:flex;border-bottom:1px solid var(--border);margin-bottom:40px}
+.tstep{display:flex;align-items:center;gap:9px;padding:12px 18px;cursor:pointer;opacity:.38;transition:opacity .2s;border-bottom:2px solid transparent}
+.tstep.on{opacity:1;border-bottom-color:var(--gold)}
+.tstep-num{width:22px;height:22px;border-radius:50%;background:var(--mid);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--muted)}
+.tstep.on .tstep-num{background:var(--gold);color:#000}
+.tstep-lbl{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.tstep.on .tstep-lbl{color:var(--text)}
+.tpanel{display:none}
+.tpanel.on{display:block}
+.match-picker{display:flex;flex-direction:column;gap:2px}
+.mpick{display:grid;grid-template-columns:110px 1fr auto;align-items:center;gap:18px;padding:17px 22px;background:var(--bg3);cursor:pointer;border-left:3px solid transparent;transition:all .2s}
+.mpick:hover,.mpick.on{background:var(--surface);border-left-color:var(--blue)}
+.mpick.on{border-left-color:var(--gold)}
+.mpick-date{font-size:10.5px;color:var(--muted);font-weight:600}
+.mpick-match{font-size:13.5px;font-weight:700;color:var(--text)}
+.mpick-comp{font-size:9.5px;color:var(--muted);font-weight:500}
+.mpick-price{font-family:var(--font-d);font-size:19px;color:var(--gold);letter-spacing:1px;text-align:right}
+.seat-layout{display:flex;gap:36px;align-items:flex-start;flex-wrap:wrap}
+#seat-svg{width:100%;max-width:460px}
+.seat-info-col{display:flex;flex-direction:column;gap:14px;min-width:200px;flex:1}
+.seat-legend-itm{display:flex;align-items:center;gap:9px;font-size:11.5px;color:var(--text2);font-weight:500}
+.sleg-dot{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+.seat-selection{background:var(--bg3);border:1px solid var(--borderg);padding:18px}
+.form-field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.f-lbl{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.f-inp{background:var(--bg3);border:.5px solid var(--border);padding:10px 13px;font-size:12.5px;color:var(--text);font-family:var(--font-b);outline:none;transition:border-color .2s;width:100%}
+.f-inp:focus{border-color:var(--blue)}
+select.f-inp option{background:var(--bg3)}
+
+/* ??? TROPHIES ??? */
+#honours{background:var(--blue-p);border-top:1px solid rgba(0,51,160,.4);border-bottom:1px solid rgba(0,51,160,.4)}
+.trophy-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:2px;margin-top:46px}
+.tr-card{background:rgba(255,255,255,.035);border:.5px solid rgba(255,255,255,.07);padding:28px 24px;transition:background .3s;overflow:hidden}
+.tr-card:hover{background:rgba(255,255,255,.065)}
+.tr-ico{font-size:34px;margin-bottom:14px;display:block}
+.tr-n{font-family:var(--font-d);font-size:56px;color:var(--gold);line-height:1;letter-spacing:3px;margin-bottom:2px}
+.tr-name{font-size:12.5px;font-weight:700;color:#fff;letter-spacing:.5px;margin-bottom:2px}
+.tr-sub{font-size:9.5px;color:var(--muted);font-weight:500}
+
+/* ??? HISTORY ??? */
+#history{background:var(--bg2)}
+.hist-layout{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.hist-p{font-size:13.5px;color:var(--text2);line-height:1.85;margin-bottom:18px}
+.hist-quote{border-left:3px solid var(--gold);padding:16px 20px;margin:26px 0;background:rgba(201,168,76,.05)}
+.hq-txt{font-family:var(--font-i);font-size:16px;color:rgba(255,255,255,.82);line-height:1.6;font-style:italic;margin-bottom:9px}
+.hq-attr{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700}
+.hist-tl{display:flex;flex-direction:column;gap:0}
+.htl-itm{display:flex;gap:16px;margin-bottom:26px;position:relative}
+.htl-itm::before{content:'';position:absolute;left:22px;top:46px;width:1px;bottom:-26px;background:var(--border)}
+.htl-itm:last-child::before{display:none}
+.htl-yr{flex-shrink:0;width:46px;height:46px;background:var(--mid);border:1px solid var(--borderg);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:10px;color:var(--gold);letter-spacing:1px;text-align:center;line-height:1.2}
+.htl-evt{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:3px}
+.htl-det{font-size:10.5px;color:var(--muted);line-height:1.5}
+
+/* ??? STADIUM ??? */
+#stadium{background:var(--bg)}
+.stad-layout{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.stad-visual{aspect-ratio:4/3;background:var(--bg3);overflow:hidden;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));position:relative}
+.stad-inner{width:100%;height:100%;background:radial-gradient(ellipse 70% 50% at 50% 65%,rgba(0,51,160,.32) 0%,transparent 70%),linear-gradient(180deg,var(--bg2),var(--bg3));display:flex;align-items:center;justify-content:center}
+.pitch-svg{width:76%;height:58%;opacity:.28}
+.stad-specs{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:32px}
+.spec{background:var(--bg3);padding:16px 20px;border-top:2px solid transparent;transition:border-color .2s}
+.spec:hover{border-top-color:var(--blue)}
+.spec-v{font-family:var(--font-d);font-size:24px;color:var(--text);letter-spacing:2px;margin-bottom:2px}
+.spec-k{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+/* ??? PARTNERS ??? */
+.partners-bar{background:var(--bg3);padding:40px 4vw;border-top:.5px solid var(--border)}
+.partners-lbl{font-size:8.5px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:center;margin-bottom:26px}
+.partners-list{display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap}
+.partner{font-family:var(--font-d);font-size:16px;letter-spacing:3px;color:rgba(255,255,255,.18);transition:color .2s;cursor:default}
+.partner:hover{color:rgba(255,255,255,.5)}
+[data-theme="light"] .partner{color:rgba(0,0,0,.18)}
+[data-theme="light"] .partner:hover{color:rgba(0,0,0,.5)}
+
+/* ??? FOOTER ??? */
+footer{background:var(--bg);border-top:1px solid var(--borderg);padding:52px 4vw 28px}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
+.footer-mark{width:46px;height:46px;background:var(--blue);border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:15px;color:#fff;margin-bottom:16px;letter-spacing:1px}
+.footer-bn{font-family:var(--font-d);font-size:20px;letter-spacing:3px;color:var(--text)}
+.footer-bt{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:16px;display:block}
+.footer-desc{font-size:11.5px;color:var(--muted);line-height:1.75;max-width:250px}
+.footer-col-h{font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:16px;padding-bottom:7px;border-bottom:.5px solid var(--borderg)}
+.footer-lnks{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-lnks a{font-size:11.5px;color:var(--muted);font-weight:500;transition:color .2s}
+.footer-lnks a:hover{color:var(--text)}
+.footer-bot{display:flex;justify-content:space-between;align-items:center;padding-top:22px;border-top:.5px solid var(--border);flex-wrap:wrap;gap:12px}
+.footer-copy{font-size:10.5px;color:rgba(255,255,255,.18)}
+[data-theme="light"] .footer-copy{color:rgba(0,0,0,.22)}
+.socials{display:flex;gap:8px}
+.soc-btn{width:32px;height:32px;border:.5px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:9.5px;font-weight:800;transition:all .2s;letter-spacing:.5px}
+.soc-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ??? MOBILE NAV ??? */
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:490;background:rgba(6,13,30,.97);border-top:.5px solid var(--border);backdrop-filter:blur(22px)}
+[data-theme="light"] .mob-nav{background:rgba(238,238,232,.97)}
+.mob-nav-inner{display:flex;height:60px}
+.mnav{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--muted);transition:color .2s;background:none;border:none;font-family:var(--font-b)}
+.mnav.on,.mnav:hover{color:var(--blue)}
+.mnav svg{width:18px;height:18px}
+.mnav-lbl{font-size:8.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.more-drawer{position:fixed;bottom:60px;left:0;right:0;z-index:488;background:rgba(6,13,30,.97);border-top:.5px solid var(--border);backdrop-filter:blur(22px);transform:translateY(100%);transition:transform .32s cubic-bezier(.76,0,.24,1)}
+[data-theme="light"] .more-drawer{background:rgba(238,238,232,.97)}
+.more-drawer.open{transform:translateY(0)}
+.more-g{display:grid;grid-template-columns:repeat(3,1fr);padding:16px}
+.more-itm{display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 10px;cursor:pointer;color:var(--muted);transition:color .2s}
+.more-itm:hover{color:var(--text)}
+.more-ico{width:42px;height:42px;background:var(--surface);border:.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.more-ico svg{width:18px;height:18px}
+.more-itm span{font-size:8.5px;letter-spacing:1px;text-transform:uppercase;font-weight:700}
+
+/* ??? PLAYER MODAL ??? */
+.modal-bg{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.86);backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:18px}
+.modal-bg.open{display:flex}
+.player-modal{background:var(--bg2);border:1px solid var(--border);max-width:700px;width:100%;max-height:90vh;overflow-y:auto;position:relative;animation:modalPop .3s ease}
+@keyframes modalPop{from{opacity:0;transform:scale(.94) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-x{position:absolute;top:14px;right:14px;width:30px;height:30px;background:var(--mid);border:none;color:var(--text);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;z-index:10;font-family:var(--font-b)}
+.modal-x:hover{background:var(--blue)}
+.pm-header{display:grid;grid-template-columns:190px 1fr;gap:0}
+.pm-vis{background:linear-gradient(180deg,var(--blue-p),var(--bg2));display:flex;align-items:center;justify-content:center;padding:36px 18px;min-height:230px;position:relative}
+.pm-emoji{font-size:78px;opacity:.4}
+.pm-bignum{position:absolute;bottom:8px;right:12px;font-family:var(--font-d);font-size:62px;color:rgba(255,255,255,.07);line-height:1}
+.pm-info{padding:28px 24px}
+.pm-pos-lbl{font-size:8.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:5px}
+.pm-name{font-family:var(--font-d);font-size:34px;letter-spacing:2px;color:var(--text);line-height:1;margin-bottom:14px}
+.bio-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
+.bio-f{display:flex;flex-direction:column;gap:1px}
+.bio-k{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.bio-v{font-size:12.5px;font-weight:700;color:var(--text)}
+.pm-body{padding:24px}
+.pm-section{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px;padding-bottom:7px;border-bottom:.5px solid var(--border)}
+.pstats-g{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.pst{text-align:center;background:var(--bg3);padding:14px 10px}
+.pst-n{font-family:var(--font-d);font-size:30px;color:var(--text);letter-spacing:2px}
+.pst-l{font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-top:3px}
+.career-row{display:flex;align-items:center;gap:14px;padding:9px 0;border-bottom:.5px solid var(--border);font-size:11.5px}
+.career-yrs{color:var(--gold);font-weight:700;width:85px;flex-shrink:0;font-family:var(--font-d);font-size:13px}
+.career-club{font-weight:700;color:var(--text);flex:1}
+.career-apps{color:var(--muted);font-weight:600}
+
+/* ??? VIDEO MODAL ??? */
+.vid-modal{background:var(--bg2);border:1px solid var(--border);max-width:780px;width:100%;animation:modalPop .3s ease;position:relative}
+.vp-area{aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer}
+.vp-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;width:100%;height:100%}
+.vp-play{width:68px;height:68px;border-radius:50%;background:rgba(0,51,160,.9);display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.3);transition:transform .2s}
+.vp-area:hover .vp-play{transform:scale(1.07)}
+.vp-prog{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.12)}
+.vp-fill{height:100%;background:var(--gold);width:0%;transition:width .3s}
+.vm-body{padding:20px 22px}
+.vm-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:5px}
+.vm-meta{font-size:10.5px;color:var(--muted)}
+
+/* ??? CART DRAWER ??? */
+.cart-overlay{position:fixed;inset:0;z-index:550;background:rgba(0,0,0,.58);display:none}
+.cart-overlay.open{display:block}
+.cart-drawer{position:fixed;top:0;right:0;bottom:0;width:370px;max-width:100%;background:var(--bg2);z-index:560;transform:translateX(100%);transition:transform .34s cubic-bezier(.76,0,.24,1);display:flex;flex-direction:column;border-left:.5px solid var(--border)}
+.cart-drawer.open{transform:translateX(0)}
+.cart-hd{padding:18px 22px;border-bottom:.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.cart-hd-title{font-family:var(--font-d);font-size:21px;letter-spacing:2px;color:var(--text)}
+.cart-x{width:30px;height:30px;background:var(--mid);border:none;color:var(--text);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;font-family:var(--font-b)}
+.cart-items{flex:1;overflow-y:auto;padding:14px}
+.cart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:var(--muted);font-size:12.5px;font-weight:500;gap:10px}
+.citem{display:flex;gap:11px;padding:12px 0;border-bottom:.5px solid var(--border)}
+.citem-img{width:58px;height:50px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px}
+.citem-info{flex:1;min-width:0}
+.citem-name{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:2px}
+.citem-meta{font-size:10px;color:var(--muted);margin-bottom:7px}
+.citem-ctrls{display:flex;align-items:center;gap:8px}
+.citem-ctrls button{width:22px;height:22px;background:var(--mid);border:.5px solid var(--border);color:var(--text);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font-b)}
+.citem-ctrls span{font-size:12.5px;font-weight:700;color:var(--text)}
+.citem-rm{margin-left:auto;background:none;border:none;color:var(--muted);font-size:15px;cursor:pointer;align-self:flex-start;padding:2px;font-family:var(--font-b)}
+.citem-rm:hover{color:#E74C3C}
+.cart-ft{padding:18px 22px;border-top:.5px solid var(--border);flex-shrink:0}
+.cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.cart-total-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.cart-total-amt{font-family:var(--font-d);font-size:22px;color:var(--gold);letter-spacing:2px}
+
+/* ??? MEMBERSHIP MODAL ??? */
+.mem-modal{background:var(--bg2);border:1px solid var(--border);max-width:460px;width:100%;padding:32px;animation:modalPop .3s ease;position:relative}
+
+/* ??? ANIMATIONS ??? */
+.anim{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.anim.vis{opacity:1;transform:translateY(0)}
+
+/* ??? RESPONSIVE ??? */
+@media(max-width:1024px){
+  .news-g{grid-template-columns:1fr 1fr}
+  .nc.feat{grid-column:span 2}
+  .shop-layout{grid-template-columns:1fr}
+  .hist-layout,.stad-layout{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .stats-row{grid-template-columns:repeat(3,1fr)}
+  .stat-blk:nth-child(3){border-right:none}
+  .mem-g{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .mob-nav{display:flex}
+  body{padding-bottom:60px}
+  .match-badge{position:static;margin-top:28px;min-width:unset}
+  .news-g{grid-template-columns:1fr}
+  .nc.feat{grid-column:span 1}
+  .vid-g{grid-template-columns:1fr 1fr}
+  .lineup-cols{grid-template-columns:1fr}
+  .pm-header{grid-template-columns:1fr}
+  .pstats-g{grid-template-columns:repeat(2,1fr)}
+  .seat-layout{flex-direction:column}
+  .cart-drawer{width:100%}
+  .fix{grid-template-columns:90px 1fr auto 1fr;font-size:11.5px;padding:13px 12px}
+  .res-badge{display:none}
+  .squad-g{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .stat-blk{border-right:none;border-bottom:.5px solid var(--border)}
+  .trophy-g{grid-template-columns:repeat(2,1fr)}
+  .vid-g{grid-template-columns:1fr}
+  .hero-btns{flex-direction:column}
+  .hero-btns .btn-p,.hero-btns .btn-s{width:fit-content}
+}
+</style>
+</head>
+<body>
+
+<!-- ??????????? LOADER ??????????? -->
+<div id="loader">
+  <div class="ldr-ring">
+    <svg viewBox="0 0 90 90" fill="none"><circle cx="45" cy="45" r="40" stroke="rgba(201,168,76,.25)" stroke-width="1.5"/><path d="M45 5 A40 40 0 0 1 85 45" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <div class="ldr-crest-inner">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M18 3L21 13H31L23 18.5L26 28L18 23L10 28L13 18.5L5 13H15Z" fill="#C9A84C"/></svg>
+    </div>
+  </div>
+  <div class="ldr-name">RAYON SPORTS</div>
+  <div class="ldr-sub">Gikundiro  Est. 1968</div>
+  <div class="ldr-bar"><div class="ldr-fill" id="ldr-fill"></div></div>
+</div>
+
+<!-- ??????????? NAV ??????????? -->
+<nav id="nav">
+  <a class="nav-logo" href="#hero">
+    <div class="nav-crest">
+      <svg width="20" height="20" viewBox="0 0 36 36" fill="none"><path d="M18 3L21 13H31L23 18.5L26 28L18 23L10 28L13 18.5L5 13H15Z" fill="#C9A84C"/></svg>
+    </div>
+    <div>
+      <div class="nav-brand">RAYON SPORTS FC</div>
+      <div class="nav-tagline">Kigali  Est. 1968</div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#match">Match</a></li>
+    <li><a href="#table">Table</a></li>
+    <li><a href="#squad">Squad</a></li>
+    <li><a href="#videos">Videos</a></li>
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#membership">Membership</a></li>
+    <li><a href="#tickets">Tickets</a></li>
+    <li><a href="#history">History</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="toggleTheme()" title="Toggle theme">
+      <svg id="theme-ico" width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 1V2M8 14V15M1 8H2M14 8H15M3.05 3.05L3.76 3.76M12.24 12.24L12.95 12.95M3.05 12.95L3.76 12.24M12.24 3.76L12.95 3.05M8 5C6.34 5 5 6.34 5 8C5 9.66 6.34 11 8 11C9.66 11 11 9.66 11 8C11 6.34 9.66 5 8 5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+    <button class="nav-btn" onclick="openCart()">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M1 1H3L4.68 8.39C4.77 8.77 5.08 9.05 5.47 9.05H12.77C13.15 9.05 13.46 8.78 13.56 8.41L14.83 4H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="12.5" r="1" fill="currentColor"/><circle cx="12" cy="12.5" r="1" fill="currentColor"/></svg>
+      <div class="cart-badge" id="cart-badge">0</div>
+    </button>
+    <button class="nav-cta" onclick="openMembership('Gold','15,000')">Join Club</button>
+  </div>
+</nav>
+
+<!-- ??????????? HERO ??????????? -->
+<div id="hero">
+  <div class="hero-bg"></div>
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-content">
+    <div class="pretag"><div class="pretag-line"></div><span>Rwanda Premier League  202425 Season</span></div>
+    <h1 class="hero-h">
+      <span class="ln1">RAYON</span>
+      <span class="ln2">SPORTS</span>
+      <span class="ln3">F.C.</span>
+    </h1>
+    <p class="hero-p">56 years of passion. 8 million fans. One heartbeat.<br>GIKUNDIRO  the favorites, forever.</p>
+    <div class="hero-btns">
+      <button class="btn-p" onclick="location.href='#squad'">Meet the Squad ?</button>
+      <button class="btn-s" onclick="location.href='#match'">Live Match Centre</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-n">9<em>?</em></div><div class="hstat-l">League Titles</div></div>
+      <div class="hstat"><div class="hstat-n">8<em>M</em></div><div class="hstat-l">Fans</div></div>
+      <div class="hstat"><div class="hstat-n">56</div><div class="hstat-l">Years</div></div>
+      <div class="hstat"><div class="hstat-n">1<em>st</em></div><div class="hstat-l">CECAFA Cup</div></div>
+    </div>
+  </div>
+  <div class="match-badge">
+    <div class="mb-lbl"><div class="live-dot"></div> Latest Result  RPL Matchday 22</div>
+    <div class="mb-score-row">
+      <div class="mb-team">
+        <div class="mb-badge" style="background:var(--blue);border:2px solid var(--gold)">RS</div>
+        <div class="mb-name">Rayon Sports</div>
+      </div>
+      <div style="text-align:center">
+        <div class="mb-score">0  0</div>
+        <div class="mb-comp">Full Time</div>
+      </div>
+      <div class="mb-team">
+        <div class="mb-badge" style="background:var(--mid);border:1px solid var(--border)">APR</div>
+        <div class="mb-name">APR FC</div>
+      </div>
+    </div>
+    <div class="mb-meta">
+      <div><strong>Amahoro</strong>Venue</div>
+      <div style="text-align:center"><strong>~25,000</strong>Attendance</div>
+      <div style="text-align:right"><strong style="color:#5580E8">2nd</strong>Position</div>
+    </div>
+  </div>
+</div>
+
+<!-- ??????????? TICKER ??????????? -->
+<div class="ticker">
+  <div class="ticker-track" id="ticker-track">
+    <div class="tick"><span class="tick-dot"></span>Rayon Sports 00 APR FC  Full Time</div>
+    <div class="tick"><span class="tick-dot"></span>Rwanda Premier League  Rayon Sports 2nd Place  50pts</div>
+    <div class="tick"><span class="tick-dot"></span>Rayon Sports WFC  FERWAFA Super Cup Champions 2024</div>
+    <div class="tick"><span class="tick-dot"></span>Ngagne Fall  14 Goals This Season  Top Scorer</div>
+    <div class="tick"><span class="tick-dot"></span>GIKUNDIRO  8 Million Fans  Rwanda's Largest Club</div>
+    <div class="tick"><span class="tick-dot"></span>9? Rwanda Premier League  9? Rwanda Cup  CECAFA Winners</div>
+    <div class="tick"><span class="tick-dot"></span>Rayon Sports 00 APR FC  Full Time</div>
+    <div class="tick"><span class="tick-dot"></span>Rwanda Premier League  Rayon Sports 2nd Place  50pts</div>
+    <div class="tick"><span class="tick-dot"></span>Rayon Sports WFC  FERWAFA Super Cup Champions 2024</div>
+    <div class="tick"><span class="tick-dot"></span>Ngagne Fall  14 Goals This Season  Top Scorer</div>
+    <div class="tick"><span class="tick-dot"></span>GIKUNDIRO  8 Million Fans  Rwanda's Largest Club</div>
+    <div class="tick"><span class="tick-dot"></span>9? Rwanda Premier League  9? Rwanda Cup  CECAFA Winners</div>
+  </div>
+</div>
+
+<!-- ??????????? STATS BAR ??????????? -->
+<div class="stats-bar">
+  <div class="stats-row">
+    <div class="stat-blk anim"><div class="n">9<em>?</em></div><div class="l">Premier League</div></div>
+    <div class="stat-blk anim"><div class="n">9<em>?</em></div><div class="l">Rwanda Cup</div></div>
+    <div class="stat-blk anim"><div class="n">56</div><div class="l">Years History</div></div>
+    <div class="stat-blk anim"><div class="n">8<em>M</em></div><div class="l">Fan Base</div></div>
+    <div class="stat-blk anim"><div class="n">1<em>st</em></div><div class="l">CECAFA Cup</div></div>
+    <div class="stat-blk anim"><div class="n">52</div><div class="l">Fan Groups</div></div>
+  </div>
+</div>
+
+<!-- ??????????? LIVE MATCH CENTRE ??????????? -->
+<section id="match">
+  <div class="sec-pre"><div class="sec-pre-line"></div><span>Live Match Centre</span></div>
+  <div class="sec-h">MATCH<br>CENTRE</div>
+  <div class="mc-score-hero anim">
+    <div class="mc-teams">
+      <div class="mc-team"><div class="mc-badge home">RS</div><div class="mc-name">Rayon Sports</div></div>
+      <div style="text-align:center">
+        <div class="mc-score">0  0</div>
+        <div class="mc-status"><div class="live-dot"></div> Full Time  MD 22</div>
+      </div>
+      <div class="mc-team"><div class="mc-badge away">APR</div><div class="mc-name">APR FC</div></div>
+    </div>
+    <div style="font-size:10.5px;color:var(--muted);letter-spacing:.8px">Rwanda Premier League  Amahoro National Stadium  10 March 2025</div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" data-panel="overview">Overview</button>
+    <button class="tab" data-panel="lineups">Lineups</button>
+    <button class="tab" data-panel="timeline">Timeline</button>
+    <button class="tab" data-panel="stats">Stats</button>
+  </div>
+  <div class="panel on" id="panel-overview">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:520px;margin:0 auto">
+      <div class="pst anim"><div class="pst-n">52%</div><div class="pst-l">Possession</div></div>
+      <div class="pst anim"><div class="pst-n">9</div><div class="pst-l">Shots</div></div>
+      <div class="pst anim"><div class="pst-n">3</div><div class="pst-l">On Target</div></div>
+      <div class="pst anim"><div class="pst-n">4</div><div class="pst-l">Corners</div></div>
+      <div class="pst anim"><div class="pst-n">12</div><div class="pst-l">Fouls</div></div>
+      <div class="pst anim"><div class="pst-n">3</div><div class="pst-l">Yellow Cards</div></div>
+    </div>
+  </div>
+  <div class="panel" id="panel-lineups">
+    <div class="lineup-cols">
+      <div>
+        <div class="col-hd">Rayon Sports  4-3-3</div>
+        <div class="lp-row"><div class="lp-num">29</div><div class="lp-name">K. Ndayisenga</div><div class="lp-pos">GK</div></div>
+        <div class="lp-row"><div class="lp-num">2</div><div class="lp-name">J. Ngarambe</div><div class="lp-pos">RB</div></div>
+        <div class="lp-row"><div class="lp-num">5</div><div class="lp-name">S. Nyandwi</div><div class="lp-pos">CB</div></div>
+        <div class="lp-row"><div class="lp-num">4</div><div class="lp-name">Y. Rwigema</div><div class="lp-pos">CB</div></div>
+        <div class="lp-row"><div class="lp-num">3</div><div class="lp-name">E. Nsabimana</div><div class="lp-pos">LB</div></div>
+        <div class="lp-row"><div class="lp-num">8</div><div class="lp-name">K. Muhire</div><div class="lp-pos">CM</div></div>
+        <div class="lp-row"><div class="lp-num">6</div><div class="lp-name">F. Mugheni</div><div class="lp-pos">DM</div></div>
+        <div class="lp-row"><div class="lp-num">11</div><div class="lp-name">N. Bayama</div><div class="lp-pos">CAM</div></div>
+        <div class="lp-row"><div class="lp-num">7</div><div class="lp-name">S. O. Jimoh</div><div class="lp-pos">RW</div></div>
+        <div class="lp-row"><div class="lp-num">9</div><div class="lp-name">N. Fall</div><div class="lp-pos">ST</div></div>
+        <div class="lp-row"><div class="lp-num">10</div><div class="lp-name">C. Hakuzimana</div><div class="lp-pos">LW</div></div>
+      </div>
+      <div>
+        <div class="col-hd">APR FC  4-4-2</div>
+        <div class="lp-row"><div class="lp-num">1</div><div class="lp-name">A. Mpitabakana</div><div class="lp-pos">GK</div></div>
+        <div class="lp-row"><div class="lp-num">4</div><div class="lp-name">B. Manishimwe</div><div class="lp-pos">RB</div></div>
+        <div class="lp-row"><div class="lp-num">5</div><div class="lp-name">D. Iradukunda</div><div class="lp-pos">CB</div></div>
+        <div class="lp-row"><div class="lp-num">6</div><div class="lp-name">P. Niyomwungeri</div><div class="lp-pos">CB</div></div>
+        <div class="lp-row"><div class="lp-num">3</div><div class="lp-name">A. Rutsindura</div><div class="lp-pos">LB</div></div>
+        <div class="lp-row"><div class="lp-num">8</div><div class="lp-name">F. Niyigena</div><div class="lp-pos">RM</div></div>
+        <div class="lp-row"><div class="lp-num">10</div><div class="lp-name">T. Kanzira</div><div class="lp-pos">CM</div></div>
+        <div class="lp-row"><div class="lp-num">7</div><div class="lp-name">C. Mbarushimana</div><div class="lp-pos">CM</div></div>
+        <div class="lp-row"><div class="lp-num">11</div><div class="lp-name">E. Hakuzimana</div><div class="lp-pos">LM</div></div>
+        <div class="lp-row"><div class="lp-num">9</div><div class="lp-name">A. Djuma</div><div class="lp-pos">ST</div></div>
+        <div class="lp-row"><div class="lp-num">22</div><div class="lp-name">H. Ndahiro</div><div class="lp-pos">ST</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="panel" id="panel-timeline">
+    <div>
+      <div class="tl-row anim"><div class="tl-min">3'</div><div class="tl-ico ico-y">?</div><div><div class="tl-txt">F. Mugheni  Yellow Card</div><div class="tl-sub">Rayon Sports</div></div></div>
+      <div class="tl-row anim"><div class="tl-min">28'</div><div class="tl-ico ico-s">?</div><div><div class="tl-txt">Substitution  Rayon Sports</div><div class="tl-sub">Muhire OFF ? Hakuzimana ON</div></div></div>
+      <div class="tl-row anim"><div class="tl-min">44'</div><div class="tl-ico ico-y">?</div><div><div class="tl-txt">D. Iradukunda  Yellow Card</div><div class="tl-sub">APR FC</div></div></div>
+      <div class="tl-row anim"><div class="tl-min">62'</div><div class="tl-ico ico-s">?</div><div><div class="tl-txt">Substitution  APR FC</div><div class="tl-sub">Ndahiro OFF ? Nkurunziza ON</div></div></div>
+      <div class="tl-row anim"><div class="tl-min">71'</div><div class="tl-ico ico-g">?</div><div><div class="tl-txt">GOAL DISALLOWED  Offside</div><div class="tl-sub">N. Fall  Rayon Sports</div></div></div>
+      <div class="tl-row anim"><div class="tl-min">88'</div><div class="tl-ico ico-s">?</div><div><div class="tl-txt">Substitution  Rayon Sports</div><div class="tl-sub">Jimoh OFF ? Bayama ON</div></div></div>
+      <div class="tl-row anim"><div class="tl-min">90'</div><div class="tl-ico ico-y">?</div><div><div class="tl-txt">N. Fall  Yellow Card</div><div class="tl-sub">Rayon Sports</div></div></div>
+    </div>
+  </div>
+  <div class="panel" id="panel-stats">
+    <div class="stat-bars">
+      <div class="sb-row anim"><div class="sb-val">52%</div><div class="sb-label">Possession</div><div class="sb-track"><div class="sb-fill" style="width:52%"></div></div><div class="sb-val">48%</div></div>
+      <div class="sb-row anim"><div class="sb-val">9</div><div class="sb-label">Total Shots</div><div class="sb-track"><div class="sb-fill" style="width:60%"></div></div><div class="sb-val">6</div></div>
+      <div class="sb-row anim"><div class="sb-val">3</div><div class="sb-label">On Target</div><div class="sb-track"><div class="sb-fill" style="width:50%"></div></div><div class="sb-val">3</div></div>
+      <div class="sb-row anim"><div class="sb-val">4</div><div class="sb-label">Corners</div><div class="sb-track"><div class="sb-fill" style="width:44%"></div></div><div class="sb-val">5</div></div>
+      <div class="sb-row anim"><div class="sb-val">12</div><div class="sb-label">Fouls</div><div class="sb-track"><div class="sb-fill" style="width:48%"></div></div><div class="sb-val">13</div></div>
+      <div class="sb-row anim"><div class="sb-val">82%</div><div class="sb-label">Pass Acc.</div><div class="sb-track"><div class="sb-fill" style="width:82%"></div></div><div class="sb-val">79%</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ??????????? LEAGUE TABLE ??????????? -->
+<section id="table">
+  <div class="sec-row">
+    <div>
+      <div class="sec-pre"><div class="sec-pre-line"></div><span>202425 Season</span></div>
+      <div class="sec-h">LEAGUE<br>TABLE</div>
+    </div>
+  </div>
+  <table class="lg-tbl">
+    <thead><tr><th style="width:38px">Pos</th><th>Club</th><th style="text-align:center">P</th><th style="text-align:center">W</th><th style="text-align:center">D</th><th style="text-align:center">L</th><th style="text-align:center">GD</th><th style="text-align:center">Pts</th><th>Form</th></tr></thead>
+    <tbody>
+      <tr class="anim"><td class="pos gold">1</td><td><div class="tcell"><div class="tdot" style="background:#E74C3C"></div>APR FC</div></td><td style="text-align:center">25</td><td style="text-align:center">18</td><td style="text-align:center">4</td><td style="text-align:center">3</td><td style="text-align:center">+32</td><td class="pts">58</td><td><div class="form-row"><div class="fw">W</div><div class="fw">W</div><div class="fd">D</div><div class="fw">W</div><div class="fw">W</div></div></td></tr>
+      <tr class="my-team anim"><td class="pos gold">2</td><td><div class="tcell"><div class="tdot" style="background:var(--blue)"></div><strong>Rayon Sports</strong></div></td><td style="text-align:center">25</td><td style="text-align:center">15</td><td style="text-align:center">5</td><td style="text-align:center">5</td><td style="text-align:center">+22</td><td class="pts">50</td><td><div class="form-row"><div class="fd">D</div><div class="fw">W</div><div class="fl">L</div><div class="fw">W</div><div class="fd">D</div></div></td></tr>
+      <tr class="anim"><td class="pos gold">3</td><td><div class="tcell"><div class="tdot" style="background:var(--muted)"></div>Mukura VS</div></td><td style="text-align:center">25</td><td style="text-align:center">13</td><td style="text-align:center">5</td><td style="text-align:center">7</td><td style="text-align:center">+11</td><td class="pts">44</td><td><div class="form-row"><div class="fl">L</div><div class="fw">W</div><div class="fw">W</div><div class="fd">D</div><div class="fw">W</div></div></td></tr>
+      <tr class="anim"><td class="pos">4</td><td><div class="tcell"><div class="tdot" style="background:var(--muted)"></div>AS Kigali</div></td><td style="text-align:center">25</td><td style="text-align:center">11</td><td style="text-align:center">7</td><td style="text-align:center">7</td><td style="text-align:center">+6</td><td class="pts">40</td><td><div class="form-row"><div class="fw">W</div><div class="fd">D</div><div class="fd">D</div><div class="fl">L</div><div class="fw">W</div></div></td></tr>
+      <tr class="anim"><td class="pos">5</td><td><div class="tcell"><div class="tdot" style="background:var(--muted)"></div>Bugesera FC</div></td><td style="text-align:center">25</td><td style="text-align:center">10</td><td style="text-align:center">6</td><td style="text-align:center">9</td><td style="text-align:center">+2</td><td class="pts">36</td><td><div class="form-row"><div class="fd">D</div><div class="fl">L</div><div class="fw">W</div><div class="fw">W</div><div class="fl">L</div></div></td></tr>
+      <tr class="anim"><td class="pos">6</td><td><div class="tcell"><div class="tdot" style="background:var(--muted)"></div>Etincelles FC</div></td><td style="text-align:center">25</td><td style="text-align:center">9</td><td style="text-align:center">5</td><td style="text-align:center">11</td><td style="text-align:center">-5</td><td class="pts">32</td><td><div class="form-row"><div class="fl">L</div><div class="fl">L</div><div class="fw">W</div><div class="fd">D</div><div class="fw">W</div></div></td></tr>
+      <tr class="anim"><td class="pos">7</td><td><div class="tcell"><div class="tdot" style="background:var(--muted)"></div>Gasogi United</div></td><td style="text-align:center">25</td><td style="text-align:center">7</td><td style="text-align:center">6</td><td style="text-align:center">12</td><td style="text-align:center">-14</td><td class="pts">27</td><td><div class="form-row"><div class="fl">L</div><div class="fw">W</div><div class="fl">L</div><div class="fl">L</div><div class="fd">D</div></div></td></tr>
+      <tr class="anim"><td class="pos">8</td><td><div class="tcell"><div class="tdot" style="background:#E74C3C"></div>Police FC</div></td><td style="text-align:center">25</td><td style="text-align:center">4</td><td style="text-align:center">5</td><td style="text-align:center">16</td><td style="text-align:center">-28</td><td class="pts">17</td><td><div class="form-row"><div class="fl">L</div><div class="fl">L</div><div class="fd">D</div><div class="fl">L</div><div class="fl">L</div></div></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ??????????? NEWS ??????????? -->
+<section id="news">
+  <div class="sec-row">
+    <div><div class="sec-pre"><div class="sec-pre-line"></div><span>Latest News</span></div><div class="sec-h">GIKUNDIRO<br>NEWS</div></div>
+    <button class="btn-s">All News ?</button>
+  </div>
+  <div class="news-g">
+    <div class="nc feat anim">
+      <div class="nc-img"><div class="nc-img-inner" style="background:linear-gradient(135deg,#0A1F5C,#1A4DC4 45%,#0D1530);height:100%;min-height:220px;position:relative;display:flex;align-items:center;justify-content:center"><svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 560 320" fill="none"><rect x="180" y="60" width="200" height="200" rx="1" stroke="rgba(255,255,255,.06)"/><line x1="180" y1="160" x2="380" y2="160" stroke="rgba(255,255,255,.06)"/><line x1="280" y1="60" x2="280" y2="260" stroke="rgba(255,255,255,.06)"/><circle cx="280" cy="160" r="35" stroke="rgba(255,255,255,.06)"/><ellipse cx="280" cy="160" rx="240" ry="155" stroke="rgba(255,255,255,.04)"/><rect x="130" y="117" width="50" height="86" stroke="rgba(201,168,76,.22)"/><rect x="380" y="117" width="50" height="86" stroke="rgba(201,168,76,.22)"/></svg></div></div>
+      <div class="nc-body"><span class="tag tag-b">Match Report</span><div class="nc-h">Derby stalemate: Rayon Sports and APR FC battle to goalless draw at Amahoro in a bruising capital encounter</div><div class="nc-meta">10 March 2025  Rwanda Premier League  5 min read</div></div>
+    </div>
+    <div class="nc anim"><div class="nc-img"><div class="nc-img-inner" style="background:linear-gradient(135deg,#1E2840,#0D1530);height:100%;min-height:120px;display:flex;align-items:center;justify-content:center;font-size:44px">??</div></div><div class="nc-body"><span class="tag tag-g">Squad Update</span><div class="nc-h">Ngagne Fall tops scorers with 14 goals  Senegalese striker takes RPL by storm</div><div class="nc-meta">5 March 2025</div></div></div>
+    <div class="nc anim"><div class="nc-img"><div class="nc-img-inner" style="background:linear-gradient(135deg,#1A0A0A,#3A1010);height:100%;min-height:120px;display:flex;align-items:center;justify-content:center;font-size:44px">??</div></div><div class="nc-body"><span class="tag tag-r">CAF Update</span><div class="nc-h">Rayon Sports plots CAF Confederation Cup campaign for next season</div><div class="nc-meta">1 March 2025</div></div></div>
+    <div class="nc anim"><div class="nc-img"><div class="nc-img-inner" style="background:linear-gradient(135deg,#0A1F5C,#0D1530);height:100%;min-height:120px;display:flex;align-items:center;justify-content:center;font-size:44px">???</div></div><div class="nc-body"><span class="tag tag-b">Academy</span><div class="nc-h">SKOL partnership funds new training ground &amp; academy facility</div><div class="nc-meta">24 Feb 2025</div></div></div>
+    <div class="nc anim"><div class="nc-img"><div class="nc-img-inner" style="background:linear-gradient(135deg,#0A2010,#0D2A18);height:100%;min-height:120px;display:flex;align-items:center;justify-content:center;font-size:44px">??</div></div><div class="nc-body"><span class="tag tag-gr">Women's FC</span><div class="nc-h">WFC clinch Super Cup in dominant 5-2 victory over AS Kigali</div><div class="nc-meta">27 Sep 2024</div></div></div>
+  </div>
+</section>
+
+<!-- ??????????? VIDEOS ??????????? -->
+<section id="videos">
+  <div class="sec-row">
+    <div><div class="sec-pre"><div class="sec-pre-line"></div><span>Media Hub</span></div><div class="sec-h">VIDEOS &amp;<br>HIGHLIGHTS</div></div>
+    <button class="btn-s">View All ?</button>
+  </div>
+  <div class="vid-g">
+    <div class="vc anim" onclick="openVideo('Match Highlights: Rayon Sports 30 APR FC','Match Report  23 Feb 2025')"><div class="vc-thumb"><div class="vc-thumb-img" style="background:linear-gradient(135deg,#0033A0,#0A1F5C);font-size:42px">?</div><div class="vc-overlay"><div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div></div><div class="vc-dur">3:42</div></div><div class="vc-body"><div class="vc-cat">Match Highlights</div><div class="vc-title">Rayon Sports 30 APR FC  Dominant Derby Victory</div><div class="vc-date">23 February 2025</div></div></div>
+    <div class="vc anim" onclick="openVideo('Ngagne Fall: Season Special','Player Feature  March 2025')"><div class="vc-thumb"><div class="vc-thumb-img" style="background:linear-gradient(135deg,#1F0A0A,#3A1218);font-size:42px">??</div><div class="vc-overlay"><div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div></div><div class="vc-dur">6:15</div></div><div class="vc-body"><div class="vc-cat">Player Feature</div><div class="vc-title">Ngagne Fall: The Senegalese striker taking Rwanda by storm</div><div class="vc-date">5 March 2025</div></div></div>
+    <div class="vc anim" onclick="openVideo('WFC Super Cup Final Highlights','Women\'s Football  Sep 2024')"><div class="vc-thumb"><div class="vc-thumb-img" style="background:linear-gradient(135deg,#0A2010,#0D2A18);font-size:42px">??</div><div class="vc-overlay"><div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div></div><div class="vc-dur">5:02</div></div><div class="vc-body"><div class="vc-cat">Women's Football</div><div class="vc-title">WFC Super Cup Final: 52 Demolition of AS Kigali</div><div class="vc-date">27 September 2024</div></div></div>
+    <div class="vc anim" onclick="openVideo('Inside Rayon Sports Pre-Season 2025','Behind the Scenes  Jan 2025')"><div class="vc-thumb"><div class="vc-thumb-img" style="background:linear-gradient(135deg,#0D1530,#1E2840);font-size:42px">???</div><div class="vc-overlay"><div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div></div><div class="vc-dur">8:30</div></div><div class="vc-body"><div class="vc-cat">Behind the Scenes</div><div class="vc-title">Inside Rayon: Pre-season training camp 2025</div><div class="vc-date">18 January 2025</div></div></div>
+    <div class="vc anim" onclick="openVideo('Post-Match Press Conference  Rayon 00 APR','Coach Media  10 Mar 2025')"><div class="vc-thumb"><div class="vc-thumb-img" style="background:linear-gradient(135deg,#1A1A2E,#0D1530);font-size:42px">???</div><div class="vc-overlay"><div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div></div><div class="vc-dur">12:04</div></div><div class="vc-body"><div class="vc-cat">Press Conference</div><div class="vc-title">Coach post-match: "We deserved more than a draw today"</div><div class="vc-date">10 March 2025</div></div></div>
+    <div class="vc anim" onclick="openVideo('Top 5 Goals: January 2025','Goal of the Month')"><div class="vc-thumb"><div class="vc-thumb-img" style="background:linear-gradient(135deg,#1F1800,#2A2000);font-size:42px">??</div><div class="vc-overlay"><div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div></div><div class="vc-dur">2:18</div></div><div class="vc-body"><div class="vc-cat">Goal of the Month</div><div class="vc-title">January's finest: Top 5 goals from Rayon Sports</div><div class="vc-date">1 February 2025</div></div></div>
+  </div>
+</section>
+
+<!-- ??????????? FIXTURES ??????????? -->
+<section id="fixtures" style="background:var(--bg2)">
+  <div class="sec-row">
+    <div><div class="sec-pre"><div class="sec-pre-line"></div><span>Schedule</span></div><div class="sec-h">FIXTURES &amp;<br>RESULTS</div></div>
+  </div>
+  <div class="tabs" style="margin-bottom:28px">
+    <button class="tab on" data-ftab="results">Recent Results</button>
+    <button class="tab" data-ftab="upcoming">Upcoming</button>
+  </div>
+  <div id="ftab-results">
+    <div class="fix-list">
+      <div class="fix w anim"><div class="fix-date">23 Feb 2025</div><div class="fix-tm home-tm">Rayon Sports</div><div class="fix-score-box"><div class="fix-score">3  0</div></div><div class="fix-tm">APR FC</div><div class="res-badge rw">Win</div></div>
+      <div class="fix d anim"><div class="fix-date">10 Mar 2025</div><div class="fix-tm home-tm">Rayon Sports</div><div class="fix-score-box"><div class="fix-score">0  0</div></div><div class="fix-tm">APR FC</div><div class="res-badge rd">Draw</div></div>
+      <div class="fix l anim"><div class="fix-date">17 May 2025</div><div class="fix-tm home-tm">Bugesera FC</div><div class="fix-score-box"><div class="fix-score">2  0</div></div><div class="fix-tm">Rayon Sports</div><div class="res-badge rl">Loss</div></div>
+      <div class="fix w anim"><div class="fix-date">28 Jan 2025</div><div class="fix-tm home-tm">Rayon Sports</div><div class="fix-score-box"><div class="fix-score">2  1</div></div><div class="fix-tm">AS Kigali</div><div class="res-badge rw">Win</div></div>
+      <div class="fix w anim"><div class="fix-date">14 Dec 2024</div><div class="fix-tm home-tm">Rayon Sports</div><div class="fix-score-box"><div class="fix-score">2  0</div></div><div class="fix-tm">Mukura VS</div><div class="res-badge rw">Win</div></div>
+    </div>
+  </div>
+  <div id="ftab-upcoming" style="display:none">
+    <div class="fix-list">
+      <div class="fix anim"><div class="fix-date">22 Mar 2025<br><span style="color:var(--gold);font-weight:700">15:00</span></div><div class="fix-tm home-tm">Rayon Sports</div><div class="fix-score-box"><div class="fix-score" style="font-size:13px;letter-spacing:2px">vs</div></div><div class="fix-tm">Etincelles FC</div><div style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:1px">RPL</div></div>
+      <div class="fix anim"><div class="fix-date">29 Mar 2025<br><span style="color:var(--gold);font-weight:700">16:00</span></div><div class="fix-tm home-tm">Gasogi United</div><div class="fix-score-box"><div class="fix-score" style="font-size:13px;letter-spacing:2px">vs</div></div><div class="fix-tm">Rayon Sports</div><div style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:1px">RPL  Away</div></div>
+      <div class="fix anim"><div class="fix-date">5 Apr 2025<br><span style="color:var(--gold);font-weight:700">15:00</span></div><div class="fix-tm home-tm">Rayon Sports</div><div class="fix-score-box"><div class="fix-score" style="font-size:13px;letter-spacing:2px">vs</div></div><div class="fix-tm">Police FC</div><div style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:1px">RPL</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ??????????? SQUAD ??????????? -->
+<section id="squad">
+  <div class="sec-pre"><div class="sec-pre-line"></div><span>202425 Season</span></div>
+  <div class="sec-h">THE SQUAD</div>
+  <p class="sec-p">Click any player to view their full profile, season stats and career history.</p>
+  <div class="squad-filter">
+    <button class="sf on" data-pos="all">All</button>
+    <button class="sf" data-pos="gk">Goalkeepers</button>
+    <button class="sf" data-pos="def">Defenders</button>
+    <button class="sf" data-pos="mid">Midfielders</button>
+    <button class="sf" data-pos="fwd">Forwards</button>
+  </div>
+  <div class="squad-g" id="squad-grid"></div>
+</section>
+
+<!-- ??????????? FAN WALL ??????????? -->
+<section id="fanwall">
+  <div class="sec-row">
+    <div><div class="sec-pre"><div class="sec-pre-line"></div><span>Community</span></div><div class="sec-h">FAN<br>WALL</div></div>
+    <button class="btn-s">Submit Your Post ?</button>
+  </div>
+  <div class="fan-featured anim">
+    <div class="fan-av-lg" style="background:linear-gradient(135deg,var(--blue),#1A4DC4)">JM</div>
+    <div>
+      <div class="fan-crown">? Fan of the Match</div>
+      <div class="fan-pname">Jean-Marie Nkurunziza</div>
+      <div class="fan-pgrp">GIKUNDIRO Kigali Ultras  Supporter Group #1</div>
+      <div class="fan-ptxt">"Forty years watching this club and the passion never fades. The derby today was heart-stopping  we deserved a winner. Title number 10 is coming, I can feel it in the Amahoro air. GIKUNDIRO forever! ??"</div>
+      <div class="fan-acts">
+        <button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>847</span> Likes</button>
+        <button class="fan-act">?? 142 Comments</button>
+        <button class="fan-act">? Share</button>
+      </div>
+    </div>
+  </div>
+  <div class="fan-g">
+    <div class="fan-card anim"><div class="fan-card-hd"><div class="fan-av" style="background:linear-gradient(135deg,#0A1F5C,#1A4DC4)">AK</div><div><div style="font-size:12.5px;font-weight:800;color:var(--text)">Alice K.</div><div style="font-size:9.5px;color:var(--muted)">Southern Province Fan Group</div></div></div><div style="font-size:13px;color:var(--text2);line-height:1.6">"Drove 3 hours from Huye to watch the derby. Worth every kilometre. Rayon Sports is not just a club, it is our identity. Gikundiro! ??"</div><div class="fan-acts"><button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>312</span></button><button class="fan-act">?? 28</button></div></div>
+    <div class="fan-card anim"><div class="fan-card-hd"><div class="fan-av" style="background:linear-gradient(135deg,#1F0A0A,#4A1010)">PM</div><div><div style="font-size:12.5px;font-weight:800;color:var(--text)">Patrick M.</div><div style="font-size:9.5px;color:var(--muted)">GIKUNDIRO Diaspora  London</div></div></div><div style="font-size:13px;color:var(--text2);line-height:1.6">"Watching from London at 3am. Didn't sleep, didn't care. Fall was robbed of that goal. Next match we go all in! ??"</div><div class="fan-acts"><button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>489</span></button><button class="fan-act">?? 67</button></div></div>
+    <div class="fan-card anim"><div class="fan-card-hd"><div class="fan-av" style="background:linear-gradient(135deg,#0A2010,#0D3015)">GU</div><div><div style="font-size:12.5px;font-weight:800;color:var(--text)">Grace U.</div><div style="font-size:9.5px;color:var(--muted)">Rayon Sports WFC Fan Club</div></div></div><div style="font-size:13px;color:var(--text2);line-height:1.6">"So proud of the women's team! That 5-2 Super Cup win gave me goosebumps. The future is so bright. ??"</div><div class="fan-acts"><button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>276</span></button><button class="fan-act">?? 34</button></div></div>
+    <div class="fan-card anim"><div class="fan-card-hd"><div class="fan-av" style="background:linear-gradient(135deg,#1A1040,#2A1860)">DI</div><div><div style="font-size:12.5px;font-weight:800;color:var(--text)">David I.</div><div style="font-size:9.5px;color:var(--muted)">Nyanza Original Fan Club</div></div></div><div style="font-size:13px;color:var(--text2);line-height:1.6">"Born in Nyanza, where Rayon Sports was born. This club runs in my blood. Title number 10 is our destiny! ??"</div><div class="fan-acts"><button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>193</span></button><button class="fan-act">?? 19</button></div></div>
+    <div class="fan-card anim"><div class="fan-card-hd"><div class="fan-av" style="background:linear-gradient(135deg,#1F1200,#2A1800)">SW</div><div><div style="font-size:12.5px;font-weight:800;color:var(--text)">Sarah W.</div><div style="font-size:9.5px;color:var(--muted)">East Africa GIKUNDIRO Network</div></div></div><div style="font-size:13px;color:var(--text2);line-height:1.6">"Following Rayon from Nairobi. The only Rwandan club with a proper East Africa following. Keep representing! ??"</div><div class="fan-acts"><button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>154</span></button><button class="fan-act">?? 22</button></div></div>
+    <div class="fan-card anim"><div class="fan-card-hd"><div class="fan-av" style="background:linear-gradient(135deg,#100A1F,#1A1230)">RN</div><div><div style="font-size:12.5px;font-weight:800;color:var(--text)">Robert N.</div><div style="font-size:9.5px;color:var(--muted)">Junior GIKUNDIRO  U-18</div></div></div><div style="font-size:13px;color:var(--text2);line-height:1.6">"My first ever Rayon match today. The atmosphere at Amahoro was incredible. I'm a fan for life now. ???"</div><div class="fan-acts"><button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>88</span></button><button class="fan-act">?? 11</button></div></div>
+  </div>
+</section>
+
+<!-- ??????????? SHOP ??????????? -->
+<section id="shop" style="background:var(--bg2)">
+  <div class="sec-pre"><div class="sec-pre-line"></div><span>Official Club Store</span></div>
+  <div class="sec-h">CLUB SHOP</div>
+  <p class="sec-p">Customise your jersey and wear your GIKUNDIRO pride. Official merchandise available now.</p>
+  <div class="shop-layout">
+    <div class="jersey-box anim">
+      <div class="jb-head">JERSEY BUILDER</div>
+      <div class="jb-preview">
+        <svg id="jb-svg" width="190" height="210" viewBox="0 0 190 210" fill="none">
+          <path id="jb-sl" d="M62 25L30 48L10 42L5 84L46 90L46 66L70 44Z" fill="#FFFFFF"/>
+          <path id="jb-sr" d="M128 25L160 48L180 42L185 84L144 90L144 66L120 44Z" fill="#FFFFFF"/>
+          <path id="jb-body" d="M62 25Q95 12 128 25L144 66L144 195L46 195L46 66Z" fill="#0033A0"/>
+          <path d="M76 25Q95 32 114 25L111 15Q95 6 79 15Z" fill="#C9A84C"/>
+          <circle cx="74" cy="65" r="12" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.25)" stroke-width=".5"/>
+          <text x="74" y="69" text-anchor="middle" font-family="Bebas Neue" font-size="8" fill="white" letter-spacing="1">RS</text>
+          <text id="jb-numtxt" x="95" y="142" text-anchor="middle" font-family="Bebas Neue" font-size="50" fill="white" opacity=".92">9</text>
+          <text id="jb-nametxt" x="95" y="176" text-anchor="middle" font-family="Manrope" font-size="11" fill="white" font-weight="700" letter-spacing="2.5">FALL</text>
+        </svg>
+      </div>
+      <div class="jb-ctrl">
+        <div class="jb-field"><div class="jb-lbl">Body Colour</div><div class="color-row">
+          <div class="color-chip on" style="background:#0033A0" onclick="setJerseyCol(this,'body','#0033A0')"></div>
+          <div class="color-chip" style="background:#1A1A2E" onclick="setJerseyCol(this,'body','#1A1A2E')"></div>
+          <div class="color-chip" style="background:#fff;border:1px solid #ccc" onclick="setJerseyCol(this,'body','#FFFFFF')"></div>
+          <div class="color-chip" style="background:#7B0000" onclick="setJerseyCol(this,'body','#7B0000')"></div>
+          <div class="color-chip" style="background:#0A2A0A" onclick="setJerseyCol(this,'body','#0A2A0A')"></div>
+        </div></div>
+        <div class="jb-field"><div class="jb-lbl">Sleeve Colour</div><div class="color-row">
+          <div class="color-chip on" style="background:#fff;border:1px solid #ccc" onclick="setJerseyCol(this,'sleeve','#FFFFFF')"></div>
+          <div class="color-chip" style="background:#0033A0" onclick="setJerseyCol(this,'sleeve','#0033A0')"></div>
+          <div class="color-chip" style="background:#C9A84C" onclick="setJerseyCol(this,'sleeve','#C9A84C')"></div>
+          <div class="color-chip" style="background:#111" onclick="setJerseyCol(this,'sleeve','#111111')"></div>
+          <div class="color-chip" style="background:#C0392B" onclick="setJerseyCol(this,'sleeve','#C0392B')"></div>
+        </div></div>
+        <div class="jb-field"><div class="jb-lbl">Your Name</div><input class="jb-inp" id="jb-name" maxlength="12" placeholder="YOUR NAME" value="FALL" oninput="updateJersey()"></div>
+        <div class="jb-field"><div class="jb-lbl">Squad Number</div><input class="jb-inp" id="jb-num" type="number" min="1" max="99" value="9" oninput="updateJersey()"></div>
+        <div class="jb-field"><div class="jb-lbl">Size</div><div class="size-row">
+          <button class="size-btn" onclick="setSz(this)">XS</button><button class="size-btn" onclick="setSz(this)">S</button><button class="size-btn on" onclick="setSz(this)">M</button><button class="size-btn" onclick="setSz(this)">L</button><button class="size-btn" onclick="setSz(this)">XL</button><button class="size-btn" onclick="setSz(this)">XXL</button>
+        </div></div>
+        <button class="btn-p" style="width:100%;justify-content:center" onclick="addJersey()">Add Custom Jersey  RWF 45,000</button>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:18px;padding-bottom:7px;border-bottom:.5px solid var(--borderg)">Official Merchandise</div>
+      <div class="shop-products">
+        <div class="product-row anim" onclick="addProd('Home Kit 202425','home-kit','M',45000)"><div class="prod-img" style="background:linear-gradient(135deg,var(--blue-p),var(--mid))">?</div><div><div class="prod-name">Home Kit 202425</div><div class="prod-type">Official Match Jersey  Blue/White</div><div class="prod-price">RWF 45,000</div></div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button></div>
+        <div class="product-row anim" onclick="addProd('Away Kit 202425','away-kit','M',45000)"><div class="prod-img" style="background:linear-gradient(135deg,#1A1A1A,var(--mid))">??</div><div><div class="prod-name">Away Kit 202425</div><div class="prod-type">Official Match Jersey  White/Gold</div><div class="prod-price">RWF 45,000</div></div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button></div>
+        <div class="product-row anim" onclick="addProd('Training Top 2025','training','M',22000)"><div class="prod-img" style="background:linear-gradient(135deg,var(--mid),var(--bg3))">??</div><div><div class="prod-name">Training Top 2025</div><div class="prod-type">Performance Training Wear</div><div class="prod-price">RWF 22,000</div></div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button></div>
+        <div class="product-row anim" onclick="addProd('GIKUNDIRO Scarf','scarf','One Size',8000)"><div class="prod-img" style="background:linear-gradient(135deg,#0033A0,#C9A84C)">??</div><div><div class="prod-name">GIKUNDIRO Scarf</div><div class="prod-type">Supporter Scarf  Blue &amp; Gold</div><div class="prod-price">RWF 8,000</div></div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button></div>
+        <div class="product-row anim" onclick="addProd('Club Cap','cap','One Size',7500)"><div class="prod-img" style="background:linear-gradient(135deg,var(--blue),#1A4DC4)">??</div><div><div class="prod-name">Rayon Sports Cap</div><div class="prod-type">Snapback  Embroidered Crest</div><div class="prod-price">RWF 7,500</div></div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ??????????? MEMBERSHIP ??????????? -->
+<section id="membership">
+  <div class="sec-pre"><div class="sec-pre-line"></div><span>Fan Membership</span></div>
+  <div class="sec-h">JOIN<br>GIKUNDIRO</div>
+  <p class="sec-p">Become an official member. Member-owned, people-powered  your contribution builds this club.</p>
+  <div class="mem-g">
+    <div class="mem-card anim">
+      <div class="mem-badge mb-b">Blue Member</div>
+      <div class="mem-tier">BLUE</div>
+      <div class="mem-price">5,000</div>
+      <div class="mem-per">RWF per month  ~USD 4</div>
+      <ul class="mem-feats">
+        <li>Official digital membership card</li>
+        <li>10% discount in Club Shop</li>
+        <li>Priority match ticket access</li>
+        <li>Monthly club newsletter</li>
+        <li>Access to fan community forum</li>
+      </ul>
+      <button class="btn-s" style="width:100%;justify-content:center" onclick="openMembership('Blue','5,000')">Join Blue ?</button>
+    </div>
+    <div class="mem-card featured anim">
+      <div class="mem-popular">Most Popular</div>
+      <div class="mem-badge mb-g">Gold Member</div>
+      <div class="mem-tier">GOLD</div>
+      <div class="mem-price">15,000</div>
+      <div class="mem-per">RWF per month  ~USD 11</div>
+      <ul class="mem-feats">
+        <li>Physical gold membership card</li>
+        <li>20% discount in Club Shop</li>
+        <li>Guaranteed match day tickets</li>
+        <li>Stadium tour access  2? per year</li>
+        <li>Exclusive Gold member events</li>
+        <li>Player meet &amp; greet  1? per season</li>
+        <li>Vote in club governance decisions</li>
+      </ul>
+      <button class="btn-g" style="width:100%;justify-content:center" onclick="openMembership('Gold','15,000')">Join Gold ?</button>
+    </div>
+    <div class="mem-card anim">
+      <div class="mem-badge mb-p">Platinum Elite</div>
+      <div class="mem-tier">PLATINUM</div>
+      <div class="mem-price">40,000</div>
+      <div class="mem-per">RWF per month  ~USD 29</div>
+      <ul class="mem-feats">
+        <li>Engraved platinum membership card</li>
+        <li>30% discount in Club Shop</li>
+        <li>VIP hospitality on select matches</li>
+        <li>Unlimited stadium tours</li>
+        <li>Signed squad jersey each season</li>
+        <li>Pre-match tunnel access  2? season</li>
+        <li>Board meeting observer rights</li>
+        <li>Dedicated concierge support</li>
+      </ul>
+      <button class="btn-p" style="width:100%;justify-content:center" onclick="openMembership('Platinum','40,000')">Join Platinum ?</button>
+    </div>
+  </div>
+</section>
+
+<!-- ??????????? TICKETS ??????????? -->
+<section id="tickets" style="background:var(--bg2)">
+  <div class="sec-pre"><div class="sec-pre-line"></div><span>Match Day</span></div>
+  <div class="sec-h">BUY<br>TICKETS</div>
+  <div class="ticket-steps">
+    <div class="tstep on" data-s="1"><div class="tstep-num">1</div><div class="tstep-lbl">Select Match</div></div>
+    <div class="tstep" data-s="2"><div class="tstep-num">2</div><div class="tstep-lbl">Choose Seat</div></div>
+    <div class="tstep" data-s="3"><div class="tstep-num">3</div><div class="tstep-lbl">Checkout</div></div>
+  </div>
+  <div class="tpanel on" id="tp1">
+    <div class="match-picker">
+      <div class="mpick" onclick="pickMatch(this,'Rayon Sports vs Etincelles FC','22 Mar 2025',2000)"><div class="mpick-date">22 Mar 2025<br><strong style="color:var(--gold)">15:00</strong></div><div><div class="mpick-match">Rayon Sports vs Etincelles FC</div><div class="mpick-comp">Rwanda Premier League  Matchday 23</div></div><div><div class="mpick-price">From RWF 2,000</div><div style="font-size:9px;color:var(--muted);text-align:right;margin-top:3px">Good availability</div></div></div>
+      <div class="mpick" onclick="pickMatch(this,'Gasogi United vs Rayon Sports','29 Mar 2025',1500)"><div class="mpick-date">29 Mar 2025<br><strong style="color:var(--gold)">16:00</strong></div><div><div class="mpick-match">Gasogi United vs Rayon Sports</div><div class="mpick-comp">Rwanda Premier League  Matchday 24  Away</div></div><div><div class="mpick-price">From RWF 1,500</div><div style="font-size:9px;color:var(--muted);text-align:right;margin-top:3px">Limited availability</div></div></div>
+      <div class="mpick" onclick="pickMatch(this,'Rayon Sports vs Police FC','5 Apr 2025',2000)"><div class="mpick-date">5 Apr 2025<br><strong style="color:var(--gold)">15:00</strong></div><div><div class="mpick-match">Rayon Sports vs Police FC</div><div class="mpick-comp">Rwanda Premier League  Matchday 25</div></div><div><div class="mpick-price">From RWF 2,000</div><div style="font-size:9px;color:var(--muted);text-align:right;margin-top:3px">Good availability</div></div></div>
+    </div>
+  </div>
+  <div class="tpanel" id="tp2">
+    <div style="font-family:var(--font-d);font-size:20px;letter-spacing:2px;color:var(--text);margin-bottom:26px" id="tp2-title"></div>
+    <div class="seat-layout">
+      <svg id="seat-svg" viewBox="0 0 380 280">
+        <ellipse cx="190" cy="140" rx="185" ry="135" fill="var(--bg3)" stroke="var(--border)" stroke-width="1"/>
+        <ellipse cx="190" cy="140" rx="128" ry="85" fill="var(--bg2)" stroke="var(--border)" stroke-width=".5"/>
+        <rect x="132" y="90" width="116" height="100" fill="#1A3A1A" stroke="rgba(255,255,255,0.12)"/>
+        <line x1="132" y1="140" x2="248" y2="140" stroke="rgba(255,255,255,.16)" stroke-width=".5"/>
+        <line x1="190" y1="90" x2="190" y2="190" stroke="rgba(255,255,255,.16)" stroke-width=".5"/>
+        <ellipse cx="190" cy="140" rx="20" ry="15" fill="none" stroke="rgba(255,255,255,.18)" stroke-width=".5"/>
+        <rect x="132" y="96" width="24" height="36" fill="none" stroke="rgba(255,255,255,.26)" stroke-width=".5"/>
+        <rect x="224" y="96" width="24" height="36" fill="none" stroke="rgba(255,255,255,.26)" stroke-width=".5"/>
+        <rect x="132" y="148" width="24" height="36" fill="none" stroke="rgba(255,255,255,.26)" stroke-width=".5"/>
+        <rect x="224" y="148" width="24" height="36" fill="none" stroke="rgba(255,255,255,.26)" stroke-width=".5"/>
+        <path id="z-north" d="M76 14 A168 168 0 0 1 304 14 L278 50 A128 128 0 0 0 102 50 Z" fill="rgba(0,51,160,.28)" stroke="rgba(0,51,160,.55)" stroke-width="1" style="cursor:pointer" onclick="pickZone('north','North Stand',2000,3500)"/>
+        <path id="z-south" d="M76 266 A168 168 0 0 0 304 266 L278 230 A128 128 0 0 1 102 230 Z" fill="rgba(0,51,160,.28)" stroke="rgba(0,51,160,.55)" stroke-width="1" style="cursor:pointer" onclick="pickZone('south','South Stand',2000,3500)"/>
+        <path id="z-west" d="M5 76 A168 168 0 0 0 5 204 L40 186 A128 128 0 0 1 40 94 Z" fill="rgba(201,168,76,.12)" stroke="rgba(201,168,76,.38)" stroke-width="1" style="cursor:pointer" onclick="pickZone('west','West Stand VIP',5000,8000)"/>
+        <path id="z-east" d="M375 76 A168 168 0 0 1 375 204 L340 186 A128 128 0 0 0 340 94 Z" fill="rgba(201,168,76,.12)" stroke="rgba(201,168,76,.38)" stroke-width="1" style="cursor:pointer" onclick="pickZone('east','East Stand VIP',5000,8000)"/>
+        <text x="190" y="13" text-anchor="middle" fill="rgba(255,255,255,.42)" font-size="8" font-family="Manrope" font-weight="700" letter-spacing="2">NORTH</text>
+        <text x="190" y="278" text-anchor="middle" fill="rgba(255,255,255,.42)" font-size="8" font-family="Manrope" font-weight="700" letter-spacing="2">SOUTH</text>
+        <text x="10" y="142" fill="rgba(201,168,76,.6)" font-size="7" font-family="Manrope" font-weight="700" transform="rotate(-90 10 142)" text-anchor="middle">VIP W</text>
+        <text x="370" y="140" fill="rgba(201,168,76,.6)" font-size="7" font-family="Manrope" font-weight="700" transform="rotate(90 370 140)" text-anchor="middle">VIP E</text>
+      </svg>
+      <div class="seat-info-col">
+        <div style="font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:10px">Stadium Legend</div>
+        <div class="seat-legend-itm"><div class="sleg-dot" style="background:rgba(0,51,160,.4);border:1px solid rgba(0,51,160,.65)"></div>General Stand  From RWF 2,000</div>
+        <div class="seat-legend-itm"><div class="sleg-dot" style="background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.48)"></div>VIP Stand  From RWF 5,000</div>
+        <div class="seat-selection" id="seat-selection">
+          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700">Select a Stand</div>
+          <div style="font-size:11.5px;color:var(--text2);margin-top:5px;line-height:1.5">Click a section on the stadium map to view pricing and proceed.</div>
+        </div>
+        <button class="btn-p" id="tp2-proceed" style="width:100%;justify-content:center;opacity:.4" disabled onclick="goToCheckout()">Continue to Checkout ?</button>
+      </div>
+    </div>
+  </div>
+  <div class="tpanel" id="tp3">
+    <div style="max-width:460px">
+      <div id="checkout-order" style="background:var(--bg3);border:1px solid var(--borderg);padding:22px;margin-bottom:22px">
+        <div style="font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px">Order Summary</div>
+        <div id="order-txt" style="font-size:13.5px;color:var(--text2);line-height:1.8"></div>
+      </div>
+      <div class="form-field"><div class="f-lbl">Full Name</div><input class="f-inp" placeholder="Jean-Marie Nkurunziza"></div>
+      <div class="form-field"><div class="f-lbl">Email Address</div><input class="f-inp" type="email" placeholder="email@example.com"></div>
+      <div class="form-field"><div class="f-lbl">Phone (MTN / Airtel)</div><input class="f-inp" type="tel" placeholder="+250 7XX XXX XXX"></div>
+      <div class="form-field"><div class="f-lbl">Number of Tickets</div><input class="f-inp" type="number" min="1" max="10" value="1" id="tkt-qty" oninput="refreshOrder()"></div>
+      <div class="form-field"><div class="f-lbl">Payment Method</div><select class="f-inp"><option>MTN MoMo</option><option>Airtel Money</option><option>Bank Card</option></select></div>
+      <button class="btn-g" style="width:100%;justify-content:center;margin-top:6px" onclick="confirmOrder()">Complete Purchase ?</button>
+    </div>
+  </div>
+</section>
+
+<!-- ??????????? HONOURS ??????????? -->
+<section id="honours">
+  <div class="sec-pre"><div class="sec-pre-line"></div><span>Honours Board</span></div>
+  <div class="sec-h">A LEGACY<br>OF GLORY</div>
+  <div class="trophy-g">
+    <div class="tr-card anim"><span class="tr-ico">??</span><div class="tr-n">9</div><div class="tr-name">Rwanda Premier League</div><div class="tr-sub">Most recently 201819</div></div>
+    <div class="tr-card anim"><span class="tr-ico">??</span><div class="tr-n">9</div><div class="tr-name">Rwanda National Cup</div><div class="tr-sub">Most recently 2023</div></div>
+    <div class="tr-card anim"><span class="tr-ico">??</span><div class="tr-n">1</div><div class="tr-name">CECAFA Clubs' Cup</div><div class="tr-sub">East African glory</div></div>
+    <div class="tr-card anim"><span class="tr-ico">??</span><div class="tr-n">9</div><div class="tr-name">Peace Cup</div><div class="tr-sub">Coupe de la Paix</div></div>
+    <div class="tr-card anim"><span class="tr-ico">???</span><div class="tr-n">3</div><div class="tr-name">Agaciro Cup</div><div class="tr-sub">Cup of Dignity</div></div>
+    <div class="tr-card anim"><span class="tr-ico">?</span><div class="tr-n">2</div><div class="tr-name">Intwali Cup</div><div class="tr-sub">Cup of the Brave</div></div>
+  </div>
+</section>
+
+<!-- ??????????? HISTORY ??????????? -->
+<section id="history" style="background:var(--bg2)">
+  <div class="sec-pre"><div class="sec-pre-line"></div><span>Club Heritage</span></div>
+  <div class="sec-h">56 YEARS<br>OF GIKUNDIRO</div>
+  <div class="hist-layout">
+    <div>
+      <p class="hist-p">Founded in May 1968 in Nyanza, Rwanda's Southern Province, Rayon Sports FC is the oldest and most beloved football institution in the country. Long before Rwanda's modern football landscape took shape, Rayon Sports was laying foundations  the traditions, the rivalries, the culture that define Rwandan football today.</p>
+      <div class="hist-quote"><div class="hq-txt">"We are probably the only club in Rwanda that is not attached to any political institution. We are a club of the people  that is our greatest strength."</div><div class="hq-attr">Patrick Namenye  General Secretary, Rayon Sports FC</div></div>
+      <p class="hist-p">The club's unique political neutrality has been central to its mass appeal. Revenue comes from 52 fan groups making monthly contributions  a community-funded model unique in Rwandan football. With over 8 million supporters representing approximately 80% of all football fans in Rwanda, Rayon Sports is not merely a club but a national institution.</p>
+      <p class="hist-p">The most recent Premier League title came in 201819  the hunt for a 10th championship defines the current era, as the club seeks to convert its overwhelming popular support into sustained on-pitch dominance.</p>
+    </div>
+    <div class="hist-tl">
+      <div class="htl-itm anim"><div class="htl-yr">1968</div><div><div class="htl-evt">Founded in Nyanza</div><div class="htl-det">Club legally formed. First chapter of a 56-year legacy begins in Southern Province.</div></div></div>
+      <div class="htl-itm anim"><div class="htl-yr">1976</div><div><div class="htl-evt">First Peace Cup Title</div><div class="htl-det">Coupe de 5 Juillet  first of many domestic cup triumphs.</div></div></div>
+      <div class="htl-itm anim"><div class="htl-yr">1986</div><div><div class="htl-evt">Relocate to Kigali</div><div class="htl-det">Moved to the capital for greater opportunity and infrastructure.</div></div></div>
+      <div class="htl-itm anim"><div class="htl-yr">1998</div><div><div class="htl-evt">Historic League &amp; Cup Double</div><div class="htl-det">One of only two clubs in Rwandan history to achieve the domestic double.</div></div></div>
+      <div class="htl-itm anim"><div class="htl-yr">2010s</div><div><div class="htl-evt">CECAFA &amp; Continental Football</div><div class="htl-det">First CECAFA Clubs' Cup. East African continental presence established.</div></div></div>
+      <div class="htl-itm anim"><div class="htl-yr">201819</div><div><div class="htl-evt">Most Recent League Title</div><div class="htl-det">9th Premier League championship. The quest for #10 continues.</div></div></div>
+      <div class="htl-itm anim"><div class="htl-yr">2024</div><div><div class="htl-evt">WFC Super Cup Glory</div><div class="htl-det">Women's team claim FERWAFA Super Cup with dominant 5-2 victory.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ??????????? STADIUM ??????????? -->
+<section id="stadium">
+  <div class="stad-layout">
+    <div>
+      <div class="sec-pre"><div class="sec-pre-line"></div><span>Home Ground</span></div>
+      <div class="sec-h">STADE<br>AMAHORO</div>
+      <p class="sec-p">Our fortress in Kigali. Amahoro  meaning "peace"  is where GIKUNDIRO roars. 25,000 voices as one.</p>
+      <div class="stad-specs">
+        <div class="spec anim"><div class="spec-v">25,000</div><div class="spec-k">Capacity</div></div>
+        <div class="spec anim"><div class="spec-v">Kigali</div><div class="spec-k">City</div></div>
+        <div class="spec anim"><div class="spec-v">1987</div><div class="spec-k">Built</div></div>
+        <div class="spec anim"><div class="spec-v">Natural</div><div class="spec-k">Pitch Type</div></div>
+      </div>
+    </div>
+    <div class="stad-visual anim">
+      <div class="stad-inner">
+        <svg class="pitch-svg" viewBox="0 0 400 260" fill="none"><rect x="2" y="2" width="396" height="256" rx="2" stroke="rgba(255,255,255,.38)" stroke-width="1.5"/><line x1="200" y1="2" x2="200" y2="258" stroke="rgba(255,255,255,.28)"/><circle cx="200" cy="130" r="40" stroke="rgba(255,255,255,.28)"/><circle cx="200" cy="130" r="4" fill="rgba(255,255,255,.38)"/><rect x="2" y="80" width="50" height="100" stroke="rgba(255,255,255,.28)"/><rect x="2" y="105" width="18" height="50" stroke="rgba(255,255,255,.28)"/><rect x="348" y="80" width="50" height="100" stroke="rgba(255,255,255,.28)"/><rect x="380" y="105" width="18" height="50" stroke="rgba(255,255,255,.28)"/><rect x="60" y="2" width="280" height="256" stroke="rgba(255,255,255,.1)"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ??????????? PARTNERS ??????????? -->
+<div class="partners-bar">
+  <div class="partners-lbl">Official Partners &amp; Sponsors</div>
+  <div class="partners-list">
+    <div class="partner">SKOL</div>
+    <div class="partner">FERWAFA</div>
+    <div class="partner">CECAFA</div>
+    <div class="partner">CAF</div>
+    <div class="partner">MTN RWANDA</div>
+    <div class="partner">BK ARENA</div>
+    <div class="partner">RWANDA TOURISM</div>
+  </div>
+</div>
+
+<!-- ??????????? FOOTER ??????????? -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-mark">RS</div>
+      <div class="footer-bn">RAYON SPORTS FC</div>
+      <span class="footer-bt">Gikundiro  Est. 1968  Kigali, Rwanda</span>
+      <p class="footer-desc">Member-owned, people-powered. Driven by the passion of over 8 million fans. Rwanda's most beloved club  forever the favorites.</p>
+    </div>
+    <div>
+      <div class="footer-col-h">Club</div>
+      <ul class="footer-lnks"><li><a href="#">About the Club</a></li><li><a href="#">History &amp; Honours</a></li><li><a href="#stadium">Stadium</a></li><li><a href="#">Academy</a></li><li><a href="#">Women's FC</a></li><li><a href="#">Foundation</a></li></ul>
+    </div>
+    <div>
+      <div class="footer-col-h">Match Day</div>
+      <ul class="footer-lnks"><li><a href="#fixtures">Fixtures &amp; Results</a></li><li><a href="#table">League Table</a></li><li><a href="#tickets">Buy Tickets</a></li><li><a href="#match">Match Centre</a></li><li><a href="#videos">Video Hub</a></li></ul>
+    </div>
+    <div>
+      <div class="footer-col-h">Fan Zone</div>
+      <ul class="footer-lnks"><li><a href="#membership">Membership</a></li><li><a href="#fanwall">Fan Wall</a></li><li><a href="#shop">Club Shop</a></li><li><a href="#">Press &amp; Media</a></li><li><a href="#">Contact Us</a></li><li><a href="/privacy">Privacy Policy</a></li><li><a href="/terms">Terms &amp; Conditions</a></li></ul>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <div class="footer-copy">&copy; 2025 Rayon Sports FC. All rights reserved. Kigali, Rwanda. &middot; <a href="/privacy" style="color:inherit;text-decoration:underline;opacity:.6">Privacy Policy</a> &middot; <a href="/terms" style="color:inherit;text-decoration:underline;opacity:.6">Terms &amp; Conditions</a></div>
+    <div class="socials">
+      <a class="soc-btn" href="#">TW</a><a class="soc-btn" href="#">IG</a><a class="soc-btn" href="#">FB</a><a class="soc-btn" href="#">YT</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ??????????? MOBILE NAV ??????????? -->
+<nav class="mob-nav">
+  <div class="mob-nav-inner">
+    <a class="mnav on" href="#hero"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9L10 3L17 9V18H13V13H7V18H3Z"/></svg><span class="mnav-lbl">Home</span></a>
+    <a class="mnav" href="#match"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="7"/><path d="M10 6V10L13 12"/></svg><span class="mnav-lbl">Match</span></a>
+    <a class="mnav" href="#squad"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7.5" cy="6" r="2.5"/><path d="M2 17C2 14.24 4.69 13 7.5 13"/><circle cx="14" cy="8" r="2.5"/><path d="M10 17C10 15.24 11.79 14 14 14C16.21 14 18 15.24 18 17"/></svg><span class="mnav-lbl">Squad</span></a>
+    <a class="mnav" href="#shop"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 3H16L14 11H6L4 3Z"/><circle cx="7" cy="15.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="13" cy="15.5" r="1.2" fill="currentColor" stroke="none"/></svg><span class="mnav-lbl">Shop</span></a>
+    <button class="mnav" onclick="toggleMore()"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="11" y="2" width="7" height="7" rx="1"/><rect x="2" y="11" width="7" height="7" rx="1"/><rect x="11" y="11" width="7" height="7" rx="1"/></svg><span class="mnav-lbl">More</span></button>
+  </div>
+</nav>
+
+<!-- ??????????? MORE DRAWER ??????????? -->
+<div class="more-drawer" id="more-drawer">
+  <div class="more-g">
+    <a class="more-itm" href="#table" onclick="closeMore()"><div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="16" height="2"/><rect x="2" y="9" width="16" height="2"/><rect x="2" y="13" width="16" height="2"/></svg></div><span>Table</span></a>
+    <a class="more-itm" href="#videos" onclick="closeMore()"><div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="4" width="12" height="12" rx="1"/><path d="M14 7L18 5V15L14 13"/></svg></div><span>Videos</span></a>
+    <a class="more-itm" href="#fanwall" onclick="closeMore()"><div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 10C18 14.42 14.42 18 10 18C8.72 18 7.51 17.68 6.45 17.11L2 18L2.89 13.55C2.32 12.49 2 11.28 2 10C2 5.58 5.58 2 10 2C14.42 2 18 5.58 18 10Z"/></svg></div><span>Fan Wall</span></a>
+    <a class="more-itm" href="#membership" onclick="closeMore()"><div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 2L12.5 7.5H18L13.5 11L15.5 17L10 13.5L4.5 17L6.5 11L2 7.5H7.5Z"/></svg></div><span>Membership</span></a>
+    <a class="more-itm" href="#tickets" onclick="closeMore()"><div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="6" width="18" height="8" rx="1"/><path d="M6 6V4M14 6V4M6 14V16M14 14V16"/></svg></div><span>Tickets</span></a>
+    <a class="more-itm" href="#history" onclick="closeMore()"><div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 6V10L7 13"/></svg></div><span>History</span></a>
+  </div>
+</div>
+
+<!-- ??????????? PLAYER MODAL ??????????? -->
+<div class="modal-bg" id="player-modal-bg" onclick="closePM(event)">
+  <div class="player-modal" id="player-modal">
+    <button class="modal-x" onclick="closePMBtn()">?</button>
+    <div class="pm-header">
+      <div class="pm-vis"><div class="pm-emoji" id="pm-emoji">?</div><div class="pm-bignum" id="pm-bignum">9</div></div>
+      <div class="pm-info">
+        <div class="pm-pos-lbl" id="pm-pos">Forward</div>
+        <div class="pm-name" id="pm-name">Ngagne Fall</div>
+        <div class="bio-grid">
+          <div class="bio-f"><div class="bio-k">Nationality</div><div class="bio-v" id="pm-nat">???? Senegal</div></div>
+          <div class="bio-f"><div class="bio-k">Date of Birth</div><div class="bio-v" id="pm-dob">12 Mar 1997</div></div>
+          <div class="bio-f"><div class="bio-k">Height</div><div class="bio-v" id="pm-ht">1.82m</div></div>
+          <div class="bio-f"><div class="bio-k">Preferred Foot</div><div class="bio-v" id="pm-ft">Right</div></div>
+          <div class="bio-f"><div class="bio-k">Squad Number</div><div class="bio-v" id="pm-squad">#9</div></div>
+          <div class="bio-f"><div class="bio-k">At Club Since</div><div class="bio-v" id="pm-since">2023</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="pm-body">
+      <div class="pm-section">202425 Season Stats</div>
+      <div class="pstats-g" id="pm-stats"></div>
+      <div class="pm-section">Career History</div>
+      <div id="pm-career"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ??????????? VIDEO MODAL ??????????? -->
+<div class="modal-bg" id="video-modal-bg" onclick="closeVM(event)">
+  <div class="vid-modal">
+    <button class="modal-x" style="top:8px;right:8px" onclick="closeVMBtn()">?</button>
+    <div class="vp-area" onclick="playVid()">
+      <div class="vp-bg" style="background:linear-gradient(135deg,#0033A0,#04081A)"></div>
+      <div class="vp-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div>
+      <div class="vp-prog"><div class="vp-fill" id="vp-fill"></div></div>
+    </div>
+    <div class="vm-body"><div class="vm-title" id="vm-title">Match Highlights</div><div class="vm-meta" id="vm-meta">Rayon Sports FC  Official</div></div>
+  </div>
+</div>
+
+<!-- ??????????? CART DRAWER ??????????? -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-hd"><div class="cart-hd-title">YOUR BAG</div><button class="cart-x" onclick="closeCart()">?</button></div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-ft">
+    <div class="cart-total-row"><div class="cart-total-lbl">Total</div><div class="cart-total-amt" id="cart-total">RWF 0</div></div>
+    <button class="btn-g" style="width:100%;justify-content:center">Checkout via MoMo ?</button>
+  </div>
+</div>
+
+<!-- ??????????? MEMBERSHIP MODAL ??????????? -->
+<div class="modal-bg" id="mem-modal-bg" onclick="closeMemBg(event)">
+  <div class="mem-modal">
+    <button class="modal-x" onclick="closeMem()">?</button>
+    <div class="sec-pre" style="margin-bottom:8px"><div class="sec-pre-line"></div><span>Membership Signup</span></div>
+    <div style="font-family:var(--font-d);font-size:26px;letter-spacing:2px;color:var(--text);margin-bottom:3px" id="mem-title">Join Gold</div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:22px" id="mem-sub">RWF 15,000 per month</div>
+    <div class="form-field"><div class="f-lbl">Full Name</div><input class="f-inp" placeholder="Full name"></div>
+    <div class="form-field"><div class="f-lbl">Email Address</div><input class="f-inp" type="email" placeholder="email@example.com"></div>
+    <div class="form-field"><div class="f-lbl">Phone Number</div><input class="f-inp" type="tel" placeholder="+250 7XX XXX XXX"></div>
+    <div class="form-field"><div class="f-lbl">Payment</div><select class="f-inp"><option>MTN MoMo</option><option>Airtel Money</option><option>Bank Transfer</option></select></div>
+    <button class="btn-g" style="width:100%;justify-content:center;margin-top:6px" onclick="completeMem()">Confirm Membership ?</button>
+  </div>
+</div>
+
+<script>
+/* ??????????????????????????????????????????
+   DATA
+?????????????????????????????????????????? */
+const PLAYERS = [
+  {name:'Kassim Ndayisenga',pos:'Goalkeeper',num:29,nat:'???? Rwanda',dob:'14 Jun 1998',ht:'1.88m',ft:'Right',since:'2021',emoji:'??',cat:'gk',stats:[{n:'22',l:'Apps'},{n:'0',l:'Goals'},{n:'9',l:'Clean Sheets'},{n:'28',l:'Saves'}],career:[{y:'2021Now',c:'Rayon Sports FC',a:'72 apps'},{y:'201821',c:'AS Kigali',a:'58 apps'},{y:'201618',c:'Bugesera FC',a:'26 apps'}]},
+  {name:'Sadam Nyandwi',pos:'Centre Back',num:5,nat:'???? Rwanda',dob:'3 Feb 1996',ht:'1.85m',ft:'Right',since:'2019',emoji:'???',cat:'def',stats:[{n:'21',l:'Apps'},{n:'1',l:'Goals'},{n:'67',l:'Tackles'},{n:'2',l:'Yellow Cards'}],career:[{y:'2019Now',c:'Rayon Sports FC',a:'104 apps'},{y:'201619',c:'Mukura VS',a:'62 apps'},{y:'201416',c:'AS Kigali',a:'28 apps'}]},
+  {name:'Yves Rwigema',pos:'Centre Back',num:4,nat:'???? Rwanda',dob:'8 Nov 1997',ht:'1.83m',ft:'Left',since:'2020',emoji:'???',cat:'def',stats:[{n:'20',l:'Apps'},{n:'2',l:'Goals'},{n:'72',l:'Tackles'},{n:'1',l:'Yellow Cards'}],career:[{y:'2020Now',c:'Rayon Sports FC',a:'94 apps'},{y:'201720',c:'Police FC',a:'55 apps'},{y:'201517',c:'Etincelles FC',a:'32 apps'}]},
+  {name:'Jean Ngarambe',pos:'Right Back',num:2,nat:'???? Rwanda',dob:'18 May 2000',ht:'1.76m',ft:'Right',since:'2022',emoji:'???',cat:'def',stats:[{n:'19',l:'Apps'},{n:'0',l:'Goals'},{n:'2',l:'Assists'},{n:'62',l:'Tackles'}],career:[{y:'2022Now',c:'Rayon Sports FC',a:'52 apps'},{y:'201922',c:'Gasogi United',a:'38 apps'},{y:'201719',c:'Kigali FC (Youth)',a:'Academy'}]},
+  {name:'Kevin Muhire',pos:'Central Midfielder',num:8,nat:'???? Rwanda',dob:'22 Aug 1999',ht:'1.76m',ft:'Right',since:'2022',emoji:'?',cat:'mid',stats:[{n:'19',l:'Apps'},{n:'3',l:'Goals'},{n:'5',l:'Assists'},{n:'87%',l:'Pass Acc.'}],career:[{y:'2022Now',c:'Rayon Sports FC',a:'58 apps'},{y:'201922',c:'APR FC',a:'48 apps'},{y:'201719',c:'Gasogi United',a:'24 apps'}]},
+  {name:'Fabrice Mugheni',pos:'Defensive Midfielder',num:6,nat:'???? Rwanda',dob:'5 Mar 1995',ht:'1.80m',ft:'Right',since:'2018',emoji:'?',cat:'mid',stats:[{n:'22',l:'Apps'},{n:'1',l:'Goals'},{n:'3',l:'Assists'},{n:'88%',l:'Pass Acc.'}],career:[{y:'2018Now',c:'Rayon Sports FC',a:'148 apps'},{y:'201518',c:'AS Kigali',a:'62 apps'},{y:'201315',c:'Bugesera FC',a:'36 apps'}]},
+  {name:'Nova Bayama',pos:'Attacking Midfielder',num:11,nat:'???? DR Congo',dob:'14 Jan 2001',ht:'1.74m',ft:'Both',since:'2023',emoji:'?',cat:'mid',stats:[{n:'20',l:'Apps'},{n:'4',l:'Goals'},{n:'7',l:'Assists'},{n:'85%',l:'Pass Acc.'}],career:[{y:'2023Now',c:'Rayon Sports FC',a:'44 apps'},{y:'202023',c:'TP Mazembe (Youth)',a:'38 apps'},{y:'201820',c:'Lupopo FC',a:'22 apps'}]},
+  {name:'Ngagne Fall',pos:'Centre Forward',num:9,nat:'???? Senegal',dob:'12 Mar 1997',ht:'1.82m',ft:'Right',since:'2023',emoji:'?',cat:'fwd',stats:[{n:'22',l:'Apps'},{n:'14',l:'Goals'},{n:'5',l:'Assists'},{n:'72%',l:'Shot Acc.'}],career:[{y:'2023Now',c:'Rayon Sports FC',a:'44 apps'},{y:'202023',c:'Diambars FC',a:'78 apps'},{y:'201820',c:'AS Pikine',a:'42 apps'}]},
+  {name:'Sunday Oni Jimoh',pos:'Right Winger',num:7,nat:'???? Nigeria',dob:'3 Jul 2000',ht:'1.72m',ft:'Left',since:'2024',emoji:'?',cat:'fwd',stats:[{n:'18',l:'Apps'},{n:'6',l:'Goals'},{n:'8',l:'Assists'},{n:'68%',l:'Dribble %'}],career:[{y:'2024Now',c:'Rayon Sports FC',a:'24 apps'},{y:'202224',c:'Enugu Rangers FC',a:'52 apps'},{y:'202022',c:'Heartland FC',a:'28 apps'}]},
+];
+
+/* ??????????????????????????????????????????
+   LOADER
+?????????????????????????????????????????? */
+let pct=0;
+const fillEl=document.getElementById('ldr-fill');
+const ldrTimer=setInterval(()=>{
+  pct+=Math.random()*20+8;
+  if(pct>=100){pct=100;clearInterval(ldrTimer);setTimeout(()=>document.getElementById('loader').classList.add('done'),380)}
+  fillEl.style.width=pct+'%';
+},130);
+
+/* ??????????????????????????????????????????
+   HERO CANVAS PARTICLES
+?????????????????????????????????????????? */
+(function(){
+  const c=document.getElementById('hero-canvas');
+  const ctx=c.getContext('2d');
+  let pts=[],mx=null,my=null;
+  function resize(){c.width=c.offsetWidth;c.height=c.offsetHeight}
+  function init(){
+    pts=[];
+    for(let i=0;i<60;i++) pts.push({
+      x:Math.random()*c.width,y:Math.random()*c.height,
+      vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+      r:Math.random()*1.6+.6,
+      col:Math.random()>.4?'rgba(26,77,196,.6)':'rgba(201,168,.76,.48)'
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    for(let i=0;i<pts.length;i++){
+      for(let j=i+1;j<pts.length;j++){
+        const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<105){ctx.beginPath();ctx.strokeStyle=`rgba(255,255,255,${.045*(1-d/105)})`;ctx.lineWidth=.4;ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke()}
+      }
+    }
+    pts.forEach(p=>{
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.col;ctx.fill();
+      p.x+=p.vx;p.y+=p.vy;
+      if(mx!==null){const dx=p.x-mx,dy=p.y-my,d=Math.sqrt(dx*dx+dy*dy);if(d<65){p.x+=dx/d*.9;p.y+=dy/d*.9}}
+      if(p.x<0||p.x>c.width)p.vx*=-1;
+      if(p.y<0||p.y>c.height)p.vy*=-1;
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top});
+  window.addEventListener('resize',()=>{resize();init()});
+  resize();init();draw();
+})();
+
+/* ??????????????????????????????????????????
+   THEME
+?????????????????????????????????????????? */
+function toggleTheme(){
+  const h=document.documentElement;
+  const light=h.getAttribute('data-theme')==='light';
+  h.setAttribute('data-theme',light?'dark':'light');
+  document.getElementById('theme-ico').innerHTML=light
+    ?'<path d="M8 1V2M8 14V15M1 8H2M14 8H15M3.05 3.05L3.76 3.76M12.24 12.24L12.95 12.95M3.05 12.95L3.76 12.24M12.24 3.76L12.95 3.05M8 5C6.34 5 5 6.34 5 8C5 9.66 6.34 11 8 11C9.66 11 11 9.66 11 8C11 6.34 9.66 5 8 5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>'
+    :'<path d="M14 8C14 11.31 11.31 14 8 14C4.69 14 2 11.31 2 8C2 4.69 4.69 2 8 2C5.8 4.07 5.8 11.93 8 14C10.2 11.93 10.2 4.07 8 2C11.31 2 14 4.69 14 8Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>';
+}
+
+/* ??????????????????????????????????????????
+   SCROLL ANIMATIONS
+?????????????????????????????????????????? */
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')}),{threshold:.08});
+document.querySelectorAll('.anim').forEach(el=>obs.observe(el));
+
+/* ??????????????????????????????????????????
+   MATCH TABS
+?????????????????????????????????????????? */
+document.querySelectorAll('.tab[data-panel]').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab[data-panel]').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on');
+  document.getElementById('panel-'+t.dataset.panel).classList.add('on');
+}));
+
+/* ??????????????????????????????????????????
+   FIXTURE TABS
+?????????????????????????????????????????? */
+document.querySelectorAll('.tab[data-ftab]').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab[data-ftab]').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on');
+  document.getElementById('ftab-results').style.display=t.dataset.ftab==='results'?'block':'none';
+  document.getElementById('ftab-upcoming').style.display=t.dataset.ftab==='upcoming'?'block':'none';
+}));
+
+/* ??????????????????????????????????????????
+   SQUAD GRID + FILTER
+?????????????????????????????????????????? */
+function buildSquad(filter='all'){
+  const g=document.getElementById('squad-grid');
+  const grads=['linear-gradient(180deg,#0A1F5C,#04081A)','linear-gradient(180deg,#1A2040,#04081A)','linear-gradient(180deg,#1F0A0A,#04081A)'];
+  g.innerHTML=PLAYERS.filter(p=>filter==='all'||p.cat===filter).map((p,i)=>`
+    <div class="pc anim" onclick="openPlayer(${PLAYERS.indexOf(p)})">
+      <div class="pc-bg" style="background:${grads[i%3]}"><div style="font-size:70px;opacity:.35;margin-top:18px">${p.emoji}</div></div>
+      <div class="pc-overlay"></div>
+      <div class="pc-num">${p.num}</div>
+      <div class="pc-body">
+        <div class="pc-pos">${p.pos}</div>
+        <div class="pc-name">${p.name.split(' ').slice(0,-1).join(' ')}<br>${p.name.split(' ').pop()}</div>
+        <div class="pc-nat">${p.nat}</div>
+      </div>
+    </div>`).join('');
+  g.querySelectorAll('.anim').forEach((el,i)=>{setTimeout(()=>obs.observe(el),i*30)});
+}
+buildSquad();
+document.querySelectorAll('.sf').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.sf').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  buildSquad(b.dataset.pos);
+}));
+
+/* ??????????????????????????????????????????
+   PLAYER MODAL
+?????????????????????????????????????????? */
+function openPlayer(idx){
+  const p=PLAYERS[idx];
+  document.getElementById('pm-emoji').textContent=p.emoji;
+  document.getElementById('pm-bignum').textContent=p.num;
+  document.getElementById('pm-pos').textContent=p.pos;
+  document.getElementById('pm-name').textContent=p.name;
+  document.getElementById('pm-nat').textContent=p.nat;
+  document.getElementById('pm-dob').textContent=p.dob;
+  document.getElementById('pm-ht').textContent=p.ht;
+  document.getElementById('pm-ft').textContent=p.ft;
+  document.getElementById('pm-squad').textContent='#'+p.num;
+  document.getElementById('pm-since').textContent=p.since;
+  document.getElementById('pm-stats').innerHTML=p.stats.map(s=>`<div class="pst"><div class="pst-n">${s.n}</div><div class="pst-l">${s.l}</div></div>`).join('');
+  document.getElementById('pm-career').innerHTML=p.career.map(c=>`<div class="career-row"><div class="career-yrs">${c.y}</div><div class="career-club">${c.c}</div><div class="career-apps">${c.a}</div></div>`).join('');
+  document.getElementById('player-modal-bg').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closePM(e){if(e.target===document.getElementById('player-modal-bg'))closePMBtn()}
+function closePMBtn(){document.getElementById('player-modal-bg').classList.remove('open');document.body.style.overflow=''}
+
+/* ??????????????????????????????????????????
+   VIDEO MODAL
+?????????????????????????????????????????? */
+let vidTimer;
+function openVideo(title,meta){
+  document.getElementById('vm-title').textContent=title;
+  document.getElementById('vm-meta').textContent=meta;
+  document.getElementById('vp-fill').style.width='0%';
+  document.getElementById('video-modal-bg').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function playVid(){
+  const f=document.getElementById('vp-fill');
+  let w=0;clearInterval(vidTimer);
+  vidTimer=setInterval(()=>{w+=.4;f.style.width=w+'%';if(w>=100)clearInterval(vidTimer)},80);
+}
+function closeVM(e){if(e.target===document.getElementById('video-modal-bg'))closeVMBtn()}
+function closeVMBtn(){document.getElementById('video-modal-bg').classList.remove('open');document.body.style.overflow='';clearInterval(vidTimer)}
+
+/* ??????????????????????????????????????????
+   JERSEY BUILDER
+?????????????????????????????????????????? */
+function updateJersey(){
+  document.getElementById('jb-nametxt').textContent=(document.getElementById('jb-name').value||'').toUpperCase().slice(0,12);
+  document.getElementById('jb-numtxt').textContent=document.getElementById('jb-num').value||'9';
+}
+function setJerseyCol(el,part,color){
+  document.querySelectorAll(`.color-chip`).forEach(c=>{if(c.parentElement===el.parentElement)c.classList.remove('on')});
+  el.classList.add('on');
+  if(part==='body')document.getElementById('jb-body').setAttribute('fill',color);
+  else{document.getElementById('jb-sl').setAttribute('fill',color);document.getElementById('jb-sr').setAttribute('fill',color)}
+}
+function setSz(btn){document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on')}
+function addJersey(){
+  const name=document.getElementById('jb-name').value||'FALL';
+  const num=document.getElementById('jb-num').value||'9';
+  const sz=document.querySelector('.size-btn.on')?.textContent||'M';
+  addProd(`Custom Jersey #${num}  ${name}`,'cust-'+Date.now(),sz,45000);
+}
+
+/* ??????????????????????????????????????????
+   CART
+?????????????????????????????????????????? */
+const cart=[];
+function addProd(name,id,size,price){
+  const ex=cart.find(i=>i.id===id&&i.size===size);
+  if(ex)ex.qty++;else cart.push({name,id,size,price,qty:1});
+  updateCartUI();openCart();
+}
+function updateCartUI(){
+  const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const count=cart.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('cart-total').textContent='RWF '+total.toLocaleString();
+  const badge=document.getElementById('cart-badge');
+  badge.textContent=count;badge.style.display=count>0?'flex':'none';
+  const list=document.getElementById('cart-items');
+  if(!cart.length){list.innerHTML='<div class="cart-empty"><div style="font-size:38px;opacity:.2">???</div><div>Your cart is empty</div></div>';return}
+  list.innerHTML=cart.map((item,idx)=>`
+    <div class="citem">
+      <div class="citem-img" style="background:linear-gradient(135deg,var(--blue-p),var(--mid))">??</div>
+      <div class="citem-info">
+        <div class="citem-name">${item.name}</div>
+        <div class="citem-meta">Size: ${item.size}  RWF ${item.price.toLocaleString()}</div>
+        <div class="citem-ctrls">
+          <button onclick="chgQty(${idx},-1)">?</button>
+          <span>${item.qty}</span>
+          <button onclick="chgQty(${idx},1)">+</button>
+        </div>
+      </div>
+      <button class="citem-rm" onclick="rmItem(${idx})">?</button>
+    </div>`).join('');
+}
+function chgQty(i,d){cart[i].qty+=d;if(cart[i].qty<=0)cart.splice(i,1);updateCartUI()}
+function rmItem(i){cart.splice(i,1);updateCartUI()}
+function openCart(){document.getElementById('cart-drawer').classList.add('open');document.getElementById('cart-overlay').classList.add('open');document.body.style.overflow='hidden'}
+function closeCart(){document.getElementById('cart-drawer').classList.remove('open');document.getElementById('cart-overlay').classList.remove('open');document.body.style.overflow=''}
+updateCartUI();
+
+/* ??????????????????????????????????????????
+   MEMBERSHIP MODAL
+?????????????????????????????????????????? */
+function openMembership(tier,price){
+  document.getElementById('mem-title').textContent='Join '+tier;
+  document.getElementById('mem-sub').textContent='RWF '+price+' per month';
+  document.getElementById('mem-modal-bg').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeMemBg(e){if(e.target===document.getElementById('mem-modal-bg'))closeMem()}
+function closeMem(){document.getElementById('mem-modal-bg').classList.remove('open');document.body.style.overflow=''}
+function completeMem(){alert('Welcome to Rayon Sports! Your membership is confirmed.\n\nA confirmation SMS will be sent to your phone shortly.\n\nGIKUNDIRO! ??');closeMem()}
+
+/* ??????????????????????????????????????????
+   TICKETS
+?????????????????????????????????????????? */
+let selMatch='',selZone='',zoneBasePrice=0,selMatchPrice=0;
+function goStep(n){
+  document.querySelectorAll('.tstep').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tpanel').forEach(p=>p.classList.remove('on'));
+  document.querySelector(`.tstep[data-s="${n}"]`).classList.add('on');
+  document.getElementById('tp'+n).classList.add('on');
+}
+function pickMatch(row,match,date,price){
+  document.querySelectorAll('.mpick').forEach(r=>r.classList.remove('on'));
+  row.classList.add('on');
+  selMatch=match+'  '+date;selMatchPrice=price;
+  setTimeout(()=>{goStep(2);document.getElementById('tp2-title').textContent=selMatch},150);
+}
+function pickZone(id,name,min,max){
+  ['north','south','west','east'].forEach(z=>{
+    const el=document.getElementById('z-'+z);
+    el.setAttribute('fill',z==='west'||z==='east'?'rgba(201,168,76,.12)':'rgba(0,51,160,.28)');
+  });
+  const el=document.getElementById('z-'+id);
+  el.setAttribute('fill',id==='west'||id==='east'?'rgba(201,168,76,.45)':'rgba(0,51,160,.58)');
+  selZone=name;zoneBasePrice=min;
+  document.getElementById('seat-selection').innerHTML=`
+    <div style="font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:7px">${name} Selected</div>
+    <div style="font-size:11.5px;color:var(--text2)">RWF ${min.toLocaleString()}  ${max.toLocaleString()} per ticket</div>`;
+  const btn=document.getElementById('tp2-proceed');
+  btn.removeAttribute('disabled');btn.style.opacity='1';
+}
+function goToCheckout(){refreshOrder();goStep(3)}
+function refreshOrder(){
+  const qty=parseInt(document.getElementById('tkt-qty')?.value||1);
+  document.getElementById('order-txt').innerHTML=`<strong style="color:var(--text)">${selMatch}</strong><br>${selZone}  ${qty} ticket${qty>1?'s':''}<br><strong style="color:var(--gold)">Total: RWF ${(zoneBasePrice*qty).toLocaleString()}</strong>`;
+}
+function confirmOrder(){alert('Tickets booked! A confirmation SMS has been sent to your phone.\n\nEnjoy the match!\nGIKUNDIRO! ???');goStep(1);document.querySelectorAll('.mpick').forEach(r=>r.classList.remove('on'))}
+
+/* ??????????????????????????????????????????
+   MOBILE MORE DRAWER
+?????????????????????????????????????????? */
+function toggleMore(){document.getElementById('more-drawer').classList.toggle('open')}
+function closeMore(){document.getElementById('more-drawer').classList.remove('open')}
+window.addEventListener('scroll',closeMore);
+</script>
+</body>
+</html>

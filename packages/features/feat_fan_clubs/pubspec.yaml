@@ -1,0 +1,28 @@
+name: feat_fan_clubs
+description: Fan clubs directory and creation flows for AFRICLUB
+publish_to: none
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core_theme:
+    path: ../../core/core_theme
+  core_network:
+    path: ../../core/core_network
+  core_router:
+    path: ../../core/core_router
+  supabase_flutter: ^2.12.2
+  flutter_riverpod: ^2.6.1
+  go_router: ^14.8.1
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+resolution: workspace

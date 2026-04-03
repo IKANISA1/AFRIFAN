@@ -1,0 +1,2 @@
+json_key_file("/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/android/fastlane/play-store-service-account.json")
+package_name("rw.gikundiro.app")

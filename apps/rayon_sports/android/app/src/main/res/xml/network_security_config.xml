@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Network Security Configuration for Rayon Sports.
+  Blocks all cleartext (HTTP) traffic in production.
+  Only HTTPS connections are allowed.
+
+  Reference: https://developer.android.com/training/articles/security-config
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

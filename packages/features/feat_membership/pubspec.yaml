@@ -1,0 +1,29 @@
+name: feat_membership
+description: Fan membership tiers, digital card, and profile settings
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core_theme:
+    path: ../../core/core_theme
+  core_router:
+    path: ../../core/core_router
+  core_auth:
+    path: ../../core/core_auth
+  core_network:
+    path: ../../core/core_network
+  core_utils:
+    path: ../../core/core_utils
+  go_router: ^14.8.1
+  supabase_flutter: ^2.12.2
+  google_fonts: ^6.2.1
+  flutter_animate: ^4.5.2
+  flutter_riverpod: ^2.6.1
+
+resolution: workspace

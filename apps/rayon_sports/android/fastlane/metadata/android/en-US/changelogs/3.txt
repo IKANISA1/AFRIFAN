@@ -1,0 +1,4 @@
+v1.0.1 – Gikundiro Update
+• Privacy policy and terms of service added
+• Anonymous authentication improvements
+• Bug fixes and stability enhancements

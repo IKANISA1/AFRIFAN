@@ -1,0 +1,238 @@
+{
+  "project_info": {
+    "project_number": "1074154147498",
+    "project_id": "gen-lang-client-0172279957",
+    "storage_bucket": "gen-lang-client-0172279957.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074154147498:android:8469cac3e0217113dc4ad3",
+        "android_client_info": {
+          "package_name": "app.cool.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074154147498:android:6402a2d270edd059dc4ad3",
+        "android_client_info": {
+          "package_name": "app.cool.mobile.staging"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074154147498:android:1dd401b016b8c501dc4ad3",
+        "android_client_info": {
+          "package_name": "com.dineinmalta.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074154147498:android:cbd8a51892a2ee93dc4ad3",
+        "android_client_info": {
+          "package_name": "com.dineinrw.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074154147498:android:ed4e17fe29ec18c8dc4ad3",
+        "android_client_info": {
+          "package_name": "com.ikanisa.gasline"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074154147498:android:15152b45f109c7c4dc4ad3",
+        "android_client_info": {
+          "package_name": "com.ikanisa.smsgateway"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074154147498:android:4e443d076bcb4160dc4ad3",
+        "android_client_info": {
+          "package_name": "com.lika.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074154147498:android:e3675868efced64adc4ad3",
+        "android_client_info": {
+          "package_name": "rw.fina.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074154147498:android:e28b44350c337988dc4ad3",
+        "android_client_info": {
+          "package_name": "rw.gikundiro.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074154147498:android:59c2ace3a1ddd072dc4ad3",
+        "android_client_info": {
+          "package_name": "rw.ibimina.ibimina_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074154147498:android:ba6986f8f1f04787dc4ad3",
+        "android_client_info": {
+          "package_name": "rw.mobi.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074154147498:android:97b9fb919091aba9dc4ad3",
+        "android_client_info": {
+          "package_name": "rw.rayonsport.gikundiro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

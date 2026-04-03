@@ -1,0 +1,90 @@
+name: africlub_workspace
+publish_to: none
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_riverpod: ^2.6.1
+  equatable: ^2.0.7
+  tflite_flutter: ^0.11.0
+  google_mlkit_face_detection: ^0.12.0
+  camera: ^0.11.1
+  image: ^4.5.3
+  local_auth: ^2.3.0
+  hive: ^2.2.3
+  crypto: ^3.0.6
+  url_launcher: ^6.3.1
+  cached_network_image: ^3.4.1
+
+workspace:
+  # ── Apps ──
+  - apps/rayon_sports
+  - apps/vitalo
+  - apps/yanga
+  - apps/tp_mazembe
+  - apps/simba
+  - apps/as_vita
+  - apps/asante_kotoko
+  - apps/asec_mimosas
+  - apps/nyasa_bullets
+  - apps/dynamos
+  - apps/africa_sports
+  - apps/nkana
+  - apps/canon_yaounde
+  - apps/union_douala
+  - apps/zesco_united
+  - apps/asko_kara
+  - apps/ac_leopards
+  - apps/maranatha
+  - apps/as_mangasport
+  - apps/mogas_90
+  # ── Core packages ──
+  - packages/core/core_app
+  - packages/core/core_auth
+  - packages/core/core_network
+  - packages/core/core_theme
+  - packages/core/core_router
+  - packages/core/core_di
+  - packages/core/core_utils
+  # ── Feature packages ──
+  - packages/features/feat_admin
+  - packages/features/feat_biopay
+  - packages/features/feat_club
+  - packages/features/feat_home
+  - packages/features/feat_fan_clubs
+  - packages/features/feat_live
+  - packages/features/feat_membership
+  - packages/features/feat_gamification
+  - packages/features/feat_contributions
+  - packages/features/feat_shop
+  - packages/features/feat_sms_ledger
+  - packages/features/feat_settings
+  - packages/features/feat_onboarding
+  - packages/features/feat_ticketing
+  # ── Club config packages ──
+  - packages/clubs/club_rayon_sports
+  - packages/clubs/club_vitalo
+  - packages/clubs/club_yanga
+  - packages/clubs/club_tp_mazembe
+  - packages/clubs/club_simba
+  - packages/clubs/club_as_vita
+  - packages/clubs/club_asante_kotoko
+  - packages/clubs/club_asec_mimosas
+  - packages/clubs/club_nyasa_bullets
+  - packages/clubs/club_dynamos
+  - packages/clubs/club_africa_sports
+  - packages/clubs/club_nkana
+  - packages/clubs/club_canon_yaounde
+  - packages/clubs/club_union_douala
+  - packages/clubs/club_zesco_united
+  - packages/clubs/club_asko_kara
+  - packages/clubs/club_ac_leopards
+  - packages/clubs/club_maranatha
+  - packages/clubs/club_as_mangasport
+  - packages/clubs/club_mogas_90

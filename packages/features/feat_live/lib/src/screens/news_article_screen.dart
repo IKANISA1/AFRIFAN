@@ -1,0 +1,320 @@
+import 'package:core_network/core_network.dart';
+import 'package:core_theme/core_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class NewsArticleScreen extends ConsumerStatefulWidget {
+  const NewsArticleScreen({required this.articleId, super.key});
+
+  final String articleId;
+
+  @override
+  ConsumerState<NewsArticleScreen> createState() => _NewsArticleScreenState();
+}
+
+class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
+  static const _preferredNewsTable = 'news_articles';
+  static const _fallbackNewsTable = 'news_articles';
+
+  Map<String, dynamic>? _article;
+  List<Map<String, dynamic>> _related = const <Map<String, dynamic>>[];
+  bool _loading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadArticle();
+  }
+
+  Future<void> _loadArticle() async {
+    try {
+      final client = ref.read(supabaseClientProvider);
+      final newsTable = await _resolveNewsTable(client);
+      final article = await client
+          .from(newsTable)
+          .select()
+          .eq('id', widget.articleId)
+          .maybeSingle();
+
+      if (article == null) {
+        if (mounted) {
+          setState(() {
+            _loading = false;
+            _error = 'Article not found';
+          });
+        }
+        return;
+      }
+
+      final related = await client
+          .from(newsTable)
+          .select('id, title, subtitle')
+          .eq('is_published', true)
+          .neq('id', widget.articleId)
+          .order('sort_order', ascending: true)
+          .limit(2);
+
+      if (!mounted) return;
+
+      setState(() {
+        _article = Map<String, dynamic>.from(article);
+        _related = List<Map<String, dynamic>>.from(related);
+        _loading = false;
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _error = 'Could not load article.';
+        });
+      }
+    }
+  }
+
+  Future<String> _resolveNewsTable(SupabaseClient client) async {
+    for (final table in const [_preferredNewsTable, _fallbackNewsTable]) {
+      try {
+        await client.from(table).select('id').limit(1);
+        return table;
+      } on PostgrestException catch (error) {
+        if (!_isMissingTable(error) || table == _fallbackNewsTable) {
+          rethrow;
+        }
+      }
+    }
+
+    return _fallbackNewsTable;
+  }
+
+  bool _isMissingTable(PostgrestException error) {
+    return error.code == 'PGRST205';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final article = _article;
+    final title = article?['title']?.toString() ?? 'Article';
+    final subtitle = article?['subtitle']?.toString() ?? 'Club News';
+    final category = article?['category']?.toString() ?? 'CLUB NEWS';
+    final imageUrl = article?['image_url']?.toString();
+    final content =
+        article?['body']?.toString() ??
+        article?['content']?.toString() ??
+        subtitle;
+    final createdAt = article?['created_at']?.toString() ?? '';
+
+    return Scaffold(
+      backgroundColor: ColorTokens.background,
+      body: _loading
+          ? const SafeArea(
+              child: Padding(
+                padding: EdgeInsets.all(SpacingTokens.spacing6),
+                child: AfriSkeletonList(),
+              ),
+            )
+          : _error != null || article == null
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(SpacingTokens.spacing8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.article_outlined,
+                      size: 56,
+                      color: ColorTokens.onSurfaceVariant,
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    Text(_error ?? 'Article unavailable'),
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    ClaymorphicButton(
+                      label: 'BACK',
+                      onPressed: () => context.pop(),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  expandedHeight: 260,
+                  pinned: true,
+                  backgroundColor: ColorTokens.background,
+                  leading: IconButton(
+                    onPressed: () => context.pop(),
+                    icon: const Icon(Icons.arrow_back_rounded),
+                  ),
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: imageUrl != null && imageUrl.isNotEmpty
+                        ? Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) =>
+                                    _ArticleHeroFallback(category: category),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.transparent,
+                                      ColorTokens.background,
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : _ArticleHeroFallback(category: category),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.16),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Text(
+                            category.toUpperCase(),
+                            style: TypographyTokens.titleMedium().copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing4),
+                        Text(
+                          title.toUpperCase(),
+                          style: TypographyTokens.headlineLarge().copyWith(
+                            color: ColorTokens.onSurface,
+                          ),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing3),
+                        Text(
+                          'Club News  •  ${createdAt.isEmpty ? 'Today' : createdAt.split('T').first}  •  By ${RuntimeBranding.displayAppName} Media Desk',
+                          style: TypographyTokens.bodySmall(),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing6),
+                        GlassCard(
+                          animate: false,
+                          child: Text(
+                            content,
+                            style: TypographyTokens.bodyLarge(),
+                          ),
+                        ),
+                        if (_related.isNotEmpty) ...[
+                          const SizedBox(height: SpacingTokens.spacing6),
+                          Text(
+                            'RELATED INTEL',
+                            style: TypographyTokens.titleMedium().copyWith(
+                              letterSpacing: 1.4,
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          ..._related.map((entry) {
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: SpacingTokens.spacing3,
+                              ),
+                              child: _RelatedArticle(
+                                title: entry['title']?.toString() ?? 'Story',
+                                subtitle: entry['subtitle']?.toString() ?? '',
+                                onTap: () =>
+                                    context.push('/news/${entry['id']}'),
+                              ),
+                            );
+                          }),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+}
+
+class _ArticleHeroFallback extends StatelessWidget {
+  const _ArticleHeroFallback({required this.category});
+
+  final String category;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            ColorTokens.clubPrimary.withValues(alpha: 0.4),
+            ColorTokens.clubSecondary,
+            ColorTokens.surfaceContainerLowest,
+          ],
+        ),
+      ),
+      alignment: Alignment.bottomLeft,
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      child: Text(
+        category.toUpperCase(),
+        style: TypographyTokens.headlineLarge().copyWith(
+          color: ColorTokens.onSurface,
+        ),
+      ),
+    );
+  }
+}
+
+class _RelatedArticle extends StatelessWidget {
+  const _RelatedArticle({
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      animate: false,
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title.toUpperCase(),
+            style: TypographyTokens.titleLarge().copyWith(
+              color: ColorTokens.onSurface,
+            ),
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(subtitle, style: TypographyTokens.bodyMedium()),
+        ],
+      ),
+    );
+  }
+}

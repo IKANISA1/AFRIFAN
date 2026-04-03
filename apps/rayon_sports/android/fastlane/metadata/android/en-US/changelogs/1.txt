@@ -1,0 +1,17 @@
+🎉 Welcome to Gikundiro v1.0.0!
+
+The official Rayon Sports FC fan super-app is here. This is the first release featuring:
+
+• Live Match Center with real-time updates
+• Digital Ticketing for matchday entry
+• Fan Membership program with loyalty rewards
+• Gamification with predictions and leaderboards
+• Transparent contribution tracking
+• Official Rayon Sports FC merchandise shop
+• BioPay NFC contactless supporter identity
+• Fan Clubs community features
+• SMS Ledger for payment tracking
+• Multi-language support (Kinyarwanda, French, English)
+• Stunning dark-mode glassmorphism design
+
+"Gikundiro" — because every supporter is part of the family. 💙❤️

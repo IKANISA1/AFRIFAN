@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Backup rules for Android 11 and below.
+  Controls what data is included in Auto Backup.
+  Reference: https://developer.android.com/guide/topics/data/autobackup
+-->
+<full-backup-content>
+    <exclude domain="sharedpref" path="biopay_nfc_hce.xml" />
+    <exclude domain="sharedpref" path="FlutterSecureStorage" />
+    <exclude domain="database" path="." />
+</full-backup-content>

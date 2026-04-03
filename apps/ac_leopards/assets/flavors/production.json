@@ -1,0 +1,9 @@
+{
+  "CLUB_ID": "49",
+  "CLUB_NAME": "AC Léopards",
+  "APP_NAME": "AC Léopards",
+  "COUNTRY_CODE": "CG",
+  "SUPABASE_URL": "https://mmpbzcdhfvplxplnfucy.supabase.co",
+  "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tcGJ6Y2RoZnZwbHhwbG5mdWN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDM2MTYsImV4cCI6MjA4ODcxOTYxNn0.Ojw-vQ6aEJjyuZU4nReP4ynxJ2XjD5L6n6TxhLlzeeQ",
+  "ENVIRONMENT": "production"
+}

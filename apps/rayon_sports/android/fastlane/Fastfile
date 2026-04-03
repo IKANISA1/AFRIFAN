@@ -1,0 +1,47 @@
+default_platform(:android)
+
+platform :android do
+  desc "Deploy to internal testing track with all metadata, screenshots, and images"
+  lane :internal do
+    upload_to_play_store(
+      track: "internal",
+      aab: "../build/app/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: false,
+      skip_upload_changelogs: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+      release_status: "draft",
+    )
+  end
+
+  desc "Upload metadata and screenshots only (no AAB)"
+  lane :metadata do
+    upload_to_play_store(
+      skip_upload_aab: true,
+      skip_upload_metadata: false,
+      skip_upload_changelogs: false,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+    )
+  end
+
+  desc "Promote internal to closed testing"
+  lane :closed do
+    upload_to_play_store(
+      track: "internal",
+      track_promote_to: "alpha",
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+    )
+  end
+
+  desc "Promote to production"
+  lane :production do
+    upload_to_play_store(
+      track: "alpha",
+      track_promote_to: "production",
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+    )
+  end
+end

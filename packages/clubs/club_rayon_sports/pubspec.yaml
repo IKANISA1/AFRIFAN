@@ -1,0 +1,16 @@
+name: club_rayon_sports
+description: ClubConfig implementation for Rayon Sports FC (Rwanda)
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core_theme:
+    path: ../../core/core_theme
+
+resolution: workspace

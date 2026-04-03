@@ -1,0 +1,22 @@
+name: core_network
+description: Supabase client factory and Realtime service
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core_utils:
+    path: ../core_utils
+  crypto: ^3.0.6
+  firebase_app_check: ^0.4.1+5
+  firebase_core: ^4.5.0
+  firebase_messaging: ^16.0.2
+  flutter_riverpod: ^2.6.1
+  supabase_flutter: ^2.12.2
+
+resolution: workspace

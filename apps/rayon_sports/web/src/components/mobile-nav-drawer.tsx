@@ -1,0 +1,184 @@
+"use client";
+
+import { useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { X, User, Ticket, ShoppingBag } from "lucide-react";
+import { siteNavigation, utilityNavigation } from "@/lib/content";
+import type { ClubProfile } from "@/lib/types";
+import { cn } from "@/lib/utils";
+
+interface MobileNavDrawerProps {
+  isOpen: boolean;
+  onClose: () => void;
+  club: ClubProfile;
+}
+
+export function MobileNavDrawer({
+  isOpen,
+  onClose,
+  club,
+}: MobileNavDrawerProps) {
+  const pathname = usePathname();
+
+  // Close on route change
+  useEffect(() => {
+    onClose();
+  }, [pathname, onClose]);
+
+  // Lock body scroll when open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  return (
+    <>
+      {/* Scrim Overlay */}
+      <div 
+        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      {/* Drawer */}
+      <div 
+        className={cn(
+          "fixed top-0 right-0 bottom-0 z-50 w-[85vw] max-w-[400px] transform bg-surface-strong shadow-2xl transition-transform duration-300 ease-out-expo flex flex-col border-l border-border-soft",
+          isOpen ? "translate-x-0" : "translate-x-full"
+        )}
+      >
+        {/* Header section */}
+        <div className="flex items-center justify-between p-5 border-b border-border-soft">
+          <div className="flex items-center gap-3">
+             <Image
+              src={club.officialLogoUrl ?? "/media/rayon-crest.png"}
+              alt={`${club.clubName} crest`}
+              width={36}
+              height={36}
+              className="rounded-full border border-white/10 bg-white/5 object-cover"
+            />
+            <div>
+              <p className="font-display text-lg font-bold uppercase leading-none mt-1">
+                Gikundiro
+              </p>
+              <p className="text-[10px] uppercase tracking-[0.24em] text-slate-500">
+                {club.shortName}
+              </p>
+            </div>
+          </div>
+          <button 
+            type="button"
+            onClick={onClose}
+            className="p-2 -mr-2 text-slate-400 hover:text-white transition-colors focus-ring"
+            aria-label="Close menu"
+          >
+            <X size={24} />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-5 flex flex-col gap-8">
+          {/* Quick access row */}
+          <div className="flex justify-between gap-3">
+            <Link
+              href="/app"
+              className="flex-1 flex flex-col items-center justify-center gap-2 p-3 rounded-2xl bg-white/5 border border-border-soft hover:bg-white/10 transition focus-ring"
+            >
+              <User size={20} className="text-club-primary-light" />
+              <span className="text-xs uppercase tracking-wider font-semibold">Portal</span>
+            </Link>
+            <Link 
+              href="/tickets" 
+              className="flex-1 flex flex-col items-center justify-center gap-2 p-3 rounded-2xl bg-white/5 border border-border-soft hover:bg-white/10 transition focus-ring"
+            >
+              <Ticket size={20} className="text-club-accent" />
+              <span className="text-xs uppercase tracking-wider font-semibold">Tickets</span>
+            </Link>
+            <Link 
+              href="/shop" 
+              className="flex-1 flex flex-col items-center justify-center gap-2 p-3 rounded-2xl bg-white/5 border border-border-soft hover:bg-white/10 transition focus-ring"
+            >
+              <ShoppingBag size={20} className="text-club-secondary" />
+              <span className="text-xs uppercase tracking-wider font-semibold">Shop</span>
+            </Link>
+          </div>
+
+          {/* Primary Navigation List */}
+          <nav className="flex flex-col gap-1">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-2 pl-2">Menu</p>
+            {siteNavigation.map((item) => {
+              const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+              
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "relative px-4 py-3 text-lg font-semibold rounded-xl transition-all focus-ring",
+                    active 
+                      ? "bg-club-primary/10 text-white" 
+                      : "text-slate-300 hover:bg-white/5 hover:text-white"
+                  )}
+                >
+                  {item.label}
+                  {active && (
+                    <div className="absolute left-0 top-[20%] bottom-[20%] w-1 bg-club-primary-light rounded-r-full" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="space-y-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500 pl-2">
+              Utility
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {utilityNavigation.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-full border border-border-soft bg-white/4 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-300 transition hover:bg-white/8 hover:text-white"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+          
+          {/* Utility row */}
+          <div className="mt-auto">
+             <div className="p-4 rounded-2xl bg-white/5 border border-border-soft flex items-center justify-between text-sm">
+                <span className="text-slate-400">Language</span>
+                <div className="flex items-center gap-3 font-semibold text-slate-300">
+                  {club.supportedLanguages.map((language, index) => (
+                    <span
+                      key={language}
+                      className={cn(
+                        "hover:text-white transition",
+                        index === 0 && "text-white",
+                      )}
+                    >
+                      {language.toUpperCase()}
+                      {index < club.supportedLanguages.length - 1 ? (
+                        <span className="ml-2 text-slate-600">/</span>
+                      ) : null}
+                    </span>
+                  ))}
+                </div>
+             </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

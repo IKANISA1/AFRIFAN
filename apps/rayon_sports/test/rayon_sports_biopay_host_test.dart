@@ -1,0 +1,73 @@
+import 'package:club_rayon_sports/club_rayon_sports.dart';
+import 'package:core_app/core_app.dart';
+import 'package:core_app/src/module_registry.dart';
+import 'package:core_auth/core_auth.dart';
+import 'package:core_router/core_router.dart';
+import 'package:core_theme/core_theme.dart';
+import 'package:feat_biopay/feat_biopay.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  group('Rayon Sports BioPay host wiring', () {
+    late RayonSportsConfig config;
+    late List<FeatureModule> modules;
+
+    setUp(() {
+      config = const RayonSportsConfig();
+      ColorTokens.init(config.colors);
+      modules = AppModuleRegistry.build(config);
+    });
+
+    test('module registry exposes the BioPay tab for Rayon Sports', () {
+      final biopayModule = modules.firstWhere(
+        (module) => module.featureKey == 'biopay',
+      );
+
+      expect(biopayModule.tabRoute, isNotNull);
+      expect(biopayModule.tabRoute!.path, '/biopay');
+      expect(biopayModule.tabRoute!.label, 'BIOPAY');
+    });
+
+    testWidgets('router can render the BioPay hub using the real club config', (
+      tester,
+    ) async {
+      final router = AppRouter(
+        modules: modules,
+        initialLocation: '/biopay',
+        shellBuilder: (context, shell) =>
+            AppShell(shell: shell, config: config, modules: modules),
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            currentUserProvider.overrideWith(
+              (ref) => const UserProfile(
+                id: 'user-1',
+                clubId: 'rayon_sports_rw',
+                publicUserId: '483912',
+                phone: '0788123456',
+                momoNumber: '0788123456',
+                momoProvider: 'MoMo',
+              ),
+            ),
+            biopayEnabledProvider.overrideWith((ref) => true),
+            biopayProfileProvider.overrideWith((ref) => null),
+          ],
+          child: MaterialApp.router(
+            theme: ClubTheme.from(config),
+            routerConfig: router.router,
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('PAY OR RECEIVE'), findsOneWidget);
+      expect(find.text('NFC RECEIVE'), findsOneWidget);
+      expect(find.text('SCAN NFC'), findsOneWidget);
+    });
+  });
+}

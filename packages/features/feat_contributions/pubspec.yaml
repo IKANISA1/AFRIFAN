@@ -1,0 +1,33 @@
+name: feat_contributions
+description: Contribution circles, group management, and MOMO USSD payments
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core_theme:
+    path: ../../core/core_theme
+  core_router:
+    path: ../../core/core_router
+  core_network:
+    path: ../../core/core_network
+  core_utils:
+    path: ../../core/core_utils
+  core_auth:
+    path: ../../core/core_auth
+  feat_club:
+    path: ../feat_club
+  flutter_riverpod: ^2.6.1
+  go_router: ^14.8.1
+  supabase_flutter: ^2.12.2
+  google_fonts: ^6.2.1
+  flutter_animate: ^4.5.2
+  intl: ^0.20.2
+  url_launcher: ^6.3.1
+
+resolution: workspace

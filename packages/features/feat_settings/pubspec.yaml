@@ -1,0 +1,35 @@
+name: feat_settings
+description: Settings and preferences for AfriClub
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core_theme:
+    path: ../../core/core_theme
+  core_network:
+    path: ../../core/core_network
+  core_router:
+    path: ../../core/core_router
+  core_auth:
+    path: ../../core/core_auth
+  core_utils:
+    path: ../../core/core_utils
+  go_router: ^14.8.1
+  supabase_flutter: ^2.12.2
+  flutter_riverpod: ^2.6.1
+  google_fonts: ^6.2.1
+  url_launcher: ^6.3.1
+  in_app_review: ^2.0.11
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+resolution: workspace

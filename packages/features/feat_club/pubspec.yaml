@@ -1,0 +1,28 @@
+name: feat_club
+description: White-label club feature module — membership, shop, tickets, contributions, gamification.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+  flutter: '>=3.24.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core_utils:
+    path: ../../core/core_utils
+  core_network:
+    path: ../../core/core_network
+  core_auth:
+    path: ../../core/core_auth
+  equatable: ^2.0.7
+  flutter_riverpod: ^2.6.1
+  supabase_flutter: ^2.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+resolution: workspace
