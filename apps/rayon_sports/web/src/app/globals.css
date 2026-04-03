@@ -39,11 +39,12 @@
   --duration-enter: 500ms;
   --duration-exit: 300ms;
 
-  /* ── Shadows (club-tinted) ── */
+  /* ── Shadows (club-tinted with secondary glow) ── */
   --shadow-card: 0 4px 24px rgba(0, 30, 80, 0.18);
   --shadow-card-hover: 0 12px 48px rgba(0, 40, 120, 0.28);
   --shadow-nav: 0 2px 20px rgba(0, 0, 0, 0.4);
   --shadow-glow: 0 0 40px rgba(0, 56, 168, 0.2);
+  --shadow-clay: 0 8px 32px rgba(136, 133, 240, 0.08), 0 2px 8px rgba(0, 0, 0, 0.2);
 
   /* ── Navigation ── */
   --nav-height: 72px;
@@ -146,28 +147,57 @@ a {
   background: linear-gradient(
     180deg,
     rgba(10, 28, 58, 0.88),
-    rgba(6, 18, 38, 0.78)
+    rgba(8, 18, 42, 0.78)
   );
   box-shadow:
     var(--shadow-card),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    inset 0 1px 0 rgba(136, 133, 240, 0.06),
+    inset 0 0 0 0.5px rgba(136, 133, 240, 0.04);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
 
 .glass-panel-elevated {
-  border: 1px solid var(--border-soft);
+  border: 1px solid rgba(136, 133, 240, 0.1);
   background: linear-gradient(
     135deg,
     rgba(12, 32, 65, 0.92),
-    rgba(8, 22, 48, 0.85)
+    rgba(10, 22, 50, 0.85),
+    rgba(14, 24, 54, 0.88)
   );
   box-shadow:
     var(--shadow-card),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 0 0 1px rgba(0, 56, 168, 0.08);
+    inset 0 1px 0 rgba(136, 133, 240, 0.08),
+    0 0 0 1px rgba(136, 133, 240, 0.06);
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
+}
+
+/* ── Clay Card (soft claymorphism) ── */
+.clay-card {
+  border: 1px solid rgba(136, 133, 240, 0.08);
+  background: linear-gradient(
+    145deg,
+    rgba(12, 28, 58, 0.9),
+    rgba(8, 20, 44, 0.82)
+  );
+  box-shadow:
+    var(--shadow-clay),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition:
+    box-shadow var(--duration-hover) var(--ease-smooth),
+    border-color var(--duration-hover) ease;
+}
+.clay-card:hover {
+  border-color: rgba(136, 133, 240, 0.14);
+  box-shadow:
+    0 12px 40px rgba(136, 133, 240, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -185,11 +215,11 @@ a {
 .card-interactive:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-card-hover);
-  border-color: var(--border-hover);
+  border-color: rgba(136, 133, 240, 0.16);
   background: linear-gradient(
     180deg,
     rgba(14, 34, 68, 0.92),
-    rgba(8, 24, 48, 0.85)
+    rgba(10, 24, 50, 0.85)
   );
 }
 .card-interactive:active {
@@ -234,6 +264,14 @@ a {
   background: var(--club-accent);
 }
 .cta-glow-accent:hover::after {
+  opacity: 0.3;
+}
+
+/* ── Secondary (purple) glow ── */
+.cta-glow-secondary::after {
+  background: var(--club-secondary);
+}
+.cta-glow-secondary:hover::after {
   opacity: 0.3;
 }
 
@@ -340,9 +378,9 @@ a {
 .skeleton {
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.03) 25%,
-    rgba(255, 255, 255, 0.07) 50%,
-    rgba(255, 255, 255, 0.03) 75%
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.14) 50%,
+    rgba(255, 255, 255, 0.05) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.8s ease-in-out infinite;

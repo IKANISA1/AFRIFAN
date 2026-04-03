@@ -85,12 +85,11 @@ export function HeroSection({
                   The Beloved, live in the browser
                 </p>
                 <h1 className="fluid-hero font-display font-bold uppercase text-white text-balance">
-                  Matchday energy, supporter identity, and club commerce on one surface.
+                  This is Gikundiro.
                 </h1>
                 <p className="max-w-3xl text-base leading-8 text-slate-200 sm:text-lg">
-                  Gikundiro should feel like a living club ecosystem: tickets in reach,
-                  match context up front, support circles elevated, and every major
-                  supporter action reachable in seconds on mobile or desktop.
+                  Get tickets, follow live matches, back supporter circles, and join
+                  the Rayon Sports family — all from your browser. The beloved lives here.
                 </p>
               </div>
 
@@ -224,7 +223,7 @@ export function HeroSection({
               </div>
               <p className="mt-3 text-sm leading-7 text-slate-300">
                 {heroCircle?.description ??
-                  "Supporters pooling money for away travel, tifos, and club projects should feel like a headline feature, not a buried block."}
+                  "Supporters pool money for away travel, stadium tifos, and community projects. Contribute to real causes that grow the club."}
               </p>
               {heroCircle ? (
                 <>

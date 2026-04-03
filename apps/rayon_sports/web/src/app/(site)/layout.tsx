@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { MatchRibbon } from "@/components/match-ribbon";
+import { MobileBottomBar } from "@/components/mobile-bottom-bar";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getClubProfile, getMatches, getSiteSearchIndex } from "@/lib/data/public";
@@ -22,8 +23,10 @@ export default async function SiteLayout({
       <MatchRibbon match={liveMatch} />
       <SiteHeader club={club} searchItems={searchItems} />
       <Breadcrumbs />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pb-16 md:pb-0">{children}</main>
       <SiteFooter />
+      <MobileBottomBar />
     </>
   );
 }
+

@@ -186,6 +186,39 @@ function AdminAuthCard() {
             {status ?? notice ?? error}
           </div>
         ) : null}
+
+        {/* Test credentials hint */}
+        <div className="rounded-[28px] border border-amber-500/20 bg-amber-500/5 p-5 sm:p-6">
+          <div className="flex items-start gap-3">
+            <div className="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-sm">
+              🔑
+            </div>
+            <div className="space-y-2">
+              <p className="font-mono text-xs uppercase tracking-[0.24em] text-amber-400">
+                Admin test credentials
+              </p>
+              <div className="grid gap-1.5 text-sm">
+                <p className="text-slate-200">
+                  <span className="text-slate-400">Number: </span>
+                  <button
+                    type="button"
+                    onClick={() => setPhone("+250788767816")}
+                    className="font-mono font-semibold text-white underline decoration-amber-500/40 underline-offset-2 transition hover:text-amber-300"
+                  >
+                    +250 788 767 816
+                  </button>
+                </p>
+                <p className="text-slate-200">
+                  <span className="text-slate-400">OTP: </span>
+                  <span className="font-mono font-semibold tracking-[0.3em] text-white">123456</span>
+                </p>
+              </div>
+              <p className="text-xs leading-5 text-slate-400">
+                Tap the number above to auto-fill, then click &ldquo;Send code&rdquo; and enter the OTP.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -148,7 +148,7 @@ export function SiteHeader({ club, searchItems }: SiteHeaderProps) {
             </div>
           </Link>
 
-          <nav className="hidden items-center gap-1 xl:flex">
+          <nav className="hidden items-center gap-1 lg:flex">
             {primaryLinks.map((item) => {
               const active =
                 pathname === item.href ||
@@ -188,7 +188,7 @@ export function SiteHeader({ club, searchItems }: SiteHeaderProps) {
             </button>
             <Link
               href="/app"
-              className="hidden min-h-11 items-center gap-2 rounded-full bg-club-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-club-primary-light cta-glow focus-ring lg:inline-flex"
+              className="hidden min-h-11 items-center gap-2 rounded-full bg-club-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-club-primary-light cta-glow focus-ring md:inline-flex"
             >
               <User size={15} />
               Fan portal
@@ -196,7 +196,7 @@ export function SiteHeader({ club, searchItems }: SiteHeaderProps) {
             <button
               type="button"
               onClick={() => setIsDrawerOpen(true)}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-border-soft bg-white/5 text-white transition hover:bg-white/10 focus-ring xl:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-border-soft bg-white/5 text-white transition hover:bg-white/10 focus-ring lg:hidden"
               aria-label="Open menu"
             >
               <Menu size={20} />

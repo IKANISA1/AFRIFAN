@@ -71,8 +71,7 @@ export default async function HomePage() {
           <div className="glass-panel-elevated rounded-[34px] p-6">
             <SectionHeading
               eyebrow="Support circles"
-              title="The one feature global clubs do not have."
-              description="Supporter circles are Gikundiro's strongest product differentiator. They should read like a campaign system with momentum, not a forgotten utility block."
+              title="Back the movement. Fund the next tifo."
             />
             <div className="mt-6 grid gap-4">
               {activeCircles.map((group) => (
@@ -135,8 +134,7 @@ export default async function HomePage() {
             <article className="glass-panel rounded-[34px] p-6">
               <SectionHeading
                 eyebrow="Matchday"
-                title="Tickets, live hooks, and the next reason to return."
-                description="The public web surface should answer the three biggest supporter questions immediately: what is next, how do I get in, and what is happening right now?"
+                title="What's next. How to get in."
               />
               <div className="mt-6 grid gap-4 md:grid-cols-2">
                 <div className="rounded-[26px] border border-border-soft bg-white/5 p-5">
@@ -199,8 +197,7 @@ export default async function HomePage() {
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <SectionHeading
                   eyebrow="Quick stats"
-                  title="Supporters, not placeholders."
-                  description="A football site earns trust through real numbers, clear next steps, and visible club momentum."
+                  title="The club in numbers."
                 />
                 <div className="grid gap-3 sm:grid-cols-3">
                   <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4 text-center">
@@ -239,8 +236,7 @@ export default async function HomePage() {
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <SectionHeading
               eyebrow="Fixtures"
-              title="Live, upcoming, and recent match context."
-              description="Fixture cards should behave like matchday UI, not generic product tiles. Scores, venue, urgency, and action labels need to read instantly."
+              title="Matchday schedule."
             />
             <Link
               href="/fixtures"
@@ -262,8 +258,7 @@ export default async function HomePage() {
           <div className="glass-panel rounded-[34px] p-6">
             <SectionHeading
               eyebrow="Membership"
-              title="Tiered supporter access that feels premium."
-              description="A membership module should explain value fast, compare plans clearly, and move users into activation without hesitation."
+              title="Join the Gikundiro family."
             />
             <div className="mt-6 grid gap-4">
               {membershipPackages.map((membershipPackage) => (
@@ -314,11 +309,10 @@ export default async function HomePage() {
             <div className="glass-panel rounded-[34px] p-6">
               <SectionHeading
                 eyebrow="Standings"
-                title="League context that can be scanned in seconds."
-                description="Rayon's position should be visible immediately, with enough surrounding rows to make the table useful."
+                title="Where we stand."
               />
-              <div className="mt-6 overflow-hidden rounded-[26px] border border-border-soft">
-                <table className="w-full text-left text-sm">
+              <div className="mt-6 overflow-x-auto overflow-hidden rounded-[26px] border border-border-soft">
+                <table className="w-full min-w-[400px] text-left text-sm">
                   <thead className="bg-white/8 text-[11px] uppercase tracking-[0.24em] text-slate-400">
                     <tr>
                       <th className="px-4 py-3 text-center">Pos</th>
@@ -361,8 +355,7 @@ export default async function HomePage() {
             <div className="glass-panel rounded-[34px] p-6">
               <SectionHeading
                 eyebrow="Supporter network"
-                title="The club grows through public chapters."
-                description="Fan clubs and chapter activity should feel visible, active, and easy to join."
+                title="Our chapters across Rwanda."
               />
               <div className="mt-6 grid gap-4 sm:grid-cols-3">
                 {fanClubs.slice(0, 3).map((clubItem) => (
@@ -398,8 +391,7 @@ export default async function HomePage() {
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <SectionHeading
               eyebrow="Editorial"
-              title="A club website should reward repeat visits."
-              description="News, shop, and history should build emotional texture around the club instead of feeling like detached utility pages."
+              title="Inside Rayon Sports."
             />
             <Link
               href="/news"
@@ -422,8 +414,7 @@ export default async function HomePage() {
             <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
               <SectionHeading
                 eyebrow="Shop"
-                title="Supporter commerce with clear visual hierarchy."
-                description="The shop should feel like part of the club, not a detached product list."
+                title="Wear the badge."
               />
               <Link
                 href="/shop"
@@ -443,8 +434,7 @@ export default async function HomePage() {
             <div className="glass-panel rounded-[34px] p-6">
               <SectionHeading
                 eyebrow="Club identity"
-                title="The web layer should feel rooted in the club."
-                description="History, symbolism, and supporter culture should be visible everywhere, not confined to one static page."
+                title="Gikundiro — the beloved."
               />
               <div className="mt-6 grid gap-4">
                 {clubHistoryMoments.map((moment) => (
@@ -464,9 +454,8 @@ export default async function HomePage() {
             </div>
             <div className="glass-panel rounded-[34px] p-6">
               <SectionHeading
-                eyebrow="Conversion"
-                title="Public website outside. Fan workspace inside."
-                description="That split keeps the public web discoverable and keeps the supporter workflows operationally cleaner."
+                eyebrow="Fan portal"
+                title="Your supporter account."
               />
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
