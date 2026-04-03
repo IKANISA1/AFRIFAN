@@ -1,8 +1,8 @@
 export const siteConfig = {
-  title: "Gikundiro | Rayon Sports web app and fan portal",
+  title: "Gikundiro | Official Rayon Sports website",
   shortTitle: "Gikundiro",
   description:
-    "The official web experience for Rayon Sports supporters: fixtures, tickets, membership, shop, fan clubs, support circles, and live matchday updates.",
+    "Official Rayon Sports website for fixtures, tickets, membership, news, shop, supporter circles, and live matchday coverage.",
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://gikundiro.com",
   adminUrl:

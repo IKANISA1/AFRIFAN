@@ -3,7 +3,15 @@ import { ArrowRight, ShieldCheck, Users } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { ProgressBar } from "@/components/progress-bar";
 import { getContributionGroups, getFanClubs } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
 import { formatCompactNumber, formatCurrency } from "@/lib/utils";
+
+export const metadata = buildPageMetadata({
+  title: "Rayon Sports supporter circles",
+  description:
+    "Official Rayon Sports supporter circles for tifos, away travel, club campaigns, and community fundraising.",
+  path: "/circles",
+});
 
 export default async function CirclesPage() {
   const [groups, fanClubs] = await Promise.all([
@@ -18,8 +26,8 @@ export default async function CirclesPage() {
     <div className="page-shell section-grid py-12">
       <PageHero
         eyebrow="Support Circles"
-        title="Fan-led funding should feel like the headline advantage."
-        description="Support circles are the strongest product differentiator in the Gikundiro ecosystem. This route gives them the prominence, trust, and campaign energy they deserve."
+        title="Supporter circles and live campaigns."
+        description="Back tifos, away travel, and club projects through official Rayon Sports supporter circles."
         actions={
           <>
             <Link
@@ -121,13 +129,13 @@ export default async function CirclesPage() {
               Why circles matter
             </p>
             <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              A real product moat
+              Back the campaign together
             </h2>
             <div className="mt-5 grid gap-4">
               {[
                 "Circles turn supporter energy into visible collective action.",
-                "Funding progress is clearer and more motivating when shown as a live campaign.",
-                "Public storytelling plus secure portal contribution is the right split.",
+                "Live funding progress keeps every campaign legible.",
+                "The public page tells the story and the portal handles the contribution.",
               ].map((point) => (
                 <div
                   key={point}

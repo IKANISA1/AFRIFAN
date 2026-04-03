@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import { getProductById, getProducts } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
 import { formatCurrency } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -14,10 +15,12 @@ export async function generateMetadata({
   const { productId } = await params;
   const product = await getProductById(productId);
 
-  return {
+  return buildPageMetadata({
     title: product?.name ?? "Shop product",
     description: product?.subtitle ?? "Official Rayon Sports merchandise.",
-  };
+    path: `/shop/${productId}`,
+    imagePath: product?.imageUrl ?? "/media/stadium-hero.jpg",
+  });
 }
 
 export default async function ProductPage({
@@ -100,9 +103,9 @@ export default async function ProductPage({
           </p>
           <div className="mt-5 grid gap-4">
             {[
-              "Lead with collection context so products feel like launches, not isolated SKUs.",
-              "Keep size visibility and price clarity prominent before the user leaves the public site.",
-              "Use membership and portal CTAs as trust builders, not hard gates.",
+              "Collection context keeps every drop feeling like a launch.",
+              "Size visibility and price clarity stay prominent before checkout.",
+              "Membership and portal actions support trust instead of blocking discovery.",
             ].map((point) => (
               <div
                 key={point}

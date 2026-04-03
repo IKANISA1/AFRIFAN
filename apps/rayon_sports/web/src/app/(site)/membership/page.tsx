@@ -2,7 +2,15 @@ import Link from "next/link";
 import { ShieldCheck, Ticket } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { getMembershipPackages } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
 import { formatCurrency } from "@/lib/utils";
+
+export const metadata = buildPageMetadata({
+  title: "Rayon Sports membership",
+  description:
+    "Official Rayon Sports membership tiers with pricing, benefits, ticket priority, and supporter status across web and portal.",
+  path: "/membership",
+});
 
 export default async function MembershipPage() {
   const packages = await getMembershipPackages();
@@ -17,8 +25,8 @@ export default async function MembershipPage() {
     <div className="page-shell section-grid py-12">
       <PageHero
         eyebrow="Membership"
-        title="Tiered supporter access with real value and clear comparison."
-        description="Membership should feel like a premium supporter system: clearer benefits, honest pricing, and a direct bridge from public discovery into authenticated activation."
+        title="Membership built for matchday."
+        description="Compare every Rayon Sports membership tier, see the benefits clearly, and activate in the fan portal."
         actions={
           <>
             <Link
@@ -88,10 +96,10 @@ export default async function MembershipPage() {
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <div className="glass-panel rounded-[34px] p-6">
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-            Comparison lens
+            Membership benefits
           </p>
           <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-            What membership should unlock
+            What every tier covers
           </h2>
           <div className="mt-6 grid gap-3">
             {featureSet.map((feature) => (
@@ -113,12 +121,12 @@ export default async function MembershipPage() {
             Why it matters
           </p>
           <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-            Supporter identity across every touchpoint
+            One supporter identity
           </h2>
           <div className="mt-5 grid gap-4">
             {[
-              { icon: ShieldCheck, copy: "Membership should make login, identity, and supporter status feel coherent across web and portal." },
-              { icon: Ticket, copy: "Priority windows for ticketing are the fastest, clearest way to explain why a paid tier matters." },
+              { icon: ShieldCheck, copy: "Membership keeps login, supporter status, and club access consistent across web and portal." },
+              { icon: Ticket, copy: "Ticket priority is the clearest reason to move up a tier." },
             ].map(({ icon: Icon, copy }) => (
               <div
                 key={copy}

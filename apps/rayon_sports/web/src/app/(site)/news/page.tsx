@@ -4,7 +4,15 @@ import { ArrowRight } from "lucide-react";
 import { NewsCard } from "@/components/news-card";
 import { PageHero } from "@/components/page-hero";
 import { getNewsArticles } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
 import { formatDate, getReadingTime } from "@/lib/utils";
+
+export const metadata = buildPageMetadata({
+  title: "Rayon Sports news",
+  description:
+    "Official Rayon Sports news, matchday updates, supporter features, and club announcements.",
+  path: "/news",
+});
 
 export default async function NewsPage() {
   const articles = await getNewsArticles();
@@ -14,8 +22,8 @@ export default async function NewsPage() {
     <div className="page-shell section-grid py-12">
       <PageHero
         eyebrow="Newsroom"
-        title="Editorial coverage that feels alive on matchday."
-        description="The public newsroom should be a high-trust editorial surface: better excerpts, stronger visuals, clear metadata, and clean paths into tickets, membership, and supporter activity."
+        title="Club news, matchday, and supporter stories."
+        description="Latest updates from Rayon Sports, with direct paths into fixtures, tickets, membership, and supporter campaigns."
         actions={
           <>
             <Link
@@ -90,16 +98,16 @@ export default async function NewsPage() {
 
           <div className="glass-panel rounded-[34px] p-6">
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              Editorial standards
+              Newsroom standards
             </p>
             <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              No more placeholder newsroom
+              Every story earns the click
             </h2>
             <div className="mt-5 grid gap-4">
               {[
-                "Every card needs a real excerpt that can survive search and social preview.",
-                "Lead with matchday, supporter culture, and commercial moments that move fans to act.",
-                "Keep news tightly linked to fixtures, tickets, membership, and shop drops.",
+                "Every card carries a real excerpt for search and sharing.",
+                "Matchday, supporter culture, and club updates lead the coverage.",
+                "Stories connect cleanly to fixtures, tickets, membership, and shop drops.",
               ].map((point) => (
                 <div
                   key={point}
@@ -120,7 +128,7 @@ export default async function NewsPage() {
               Latest stories
             </p>
             <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              Club coverage across the ecosystem
+              Across the club
             </h2>
           </div>
           <div className="flex flex-wrap gap-2">

@@ -2,6 +2,14 @@ import Link from "next/link";
 import { ExternalLink, MessageCircle, ShieldCheck } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { getClubProfile } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
+
+export const metadata = buildPageMetadata({
+  title: "Rayon Sports contact",
+  description:
+    "Official Rayon Sports contact details, digital support routes, and club social channels.",
+  path: "/contact",
+});
 
 export default async function ContactPage() {
   const club = await getClubProfile();
@@ -17,7 +25,7 @@ export default async function ContactPage() {
       <PageHero
         eyebrow="Contact"
         title="Official club contact and digital support in one place."
-        description="Contact should work as a public trust layer: clear club channels, clear digital support routing, and obvious next steps for fans, buyers, and members."
+        description="Find official club channels, supporter help, and the right path into membership, ticketing, and portal support."
         actions={
           <>
             <Link
@@ -71,8 +79,8 @@ export default async function ContactPage() {
           </p>
           <div className="mt-5 grid gap-3">
             {[
-              { icon: ShieldCheck, copy: "Membership, tickets, and orders belong in the portal so supporters get authenticated follow-up." },
-              { icon: MessageCircle, copy: "Public-site contact should stay focused on club communication, media, and general supporter questions." },
+              { icon: ShieldCheck, copy: "Membership, tickets, and orders stay in the portal for authenticated follow-up." },
+              { icon: MessageCircle, copy: "Public contact stays focused on club communication, media, and general supporter questions." },
             ].map(({ icon: Icon, copy }) => (
               <div
                 key={copy}

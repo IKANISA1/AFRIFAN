@@ -468,17 +468,17 @@ export const clubHistoryMoments = [
   {
     title: "The beloved identity",
     body:
-      "Gikundiro means 'the beloved'. The club's web experience should feel like a living gathering place for that identity, not just a brochure site.",
+      "Gikundiro means 'the beloved'. Every public page carries that identity with the confidence of an official club home.",
   },
   {
     title: "Matchday at scale",
     body:
-      "The website anchors matchday logistics, fan mobilization, and purchase journeys that should work as well on a low-end mobile browser as they do on desktop.",
+      "The website anchors matchday logistics, supporter mobilization, and ticketing for mobile and desktop alike.",
   },
   {
     title: "One supporter account across surfaces",
     body:
-      "The point of the web build is not to duplicate the mobile app. It is to extend the same supporter relationship model into the browser with better discoverability and operational reach.",
+      "The web and mobile products share one supporter account, with the browser handling discovery and the portal handling authenticated action.",
   },
 ];
 
@@ -571,7 +571,7 @@ export const staticSearchItems: SearchIndexItem[] = [
   {
     id: "page-tickets",
     title: "Tickets",
-    description: "Public ticket discovery with portal-first checkout.",
+    description: "Official ticket hub with live pricing, fixture detail, and secure portal checkout.",
     href: "/tickets",
     category: "Match",
     meta: "Buy",

@@ -3,7 +3,15 @@ import { ArrowRight } from "lucide-react";
 import { MatchCard } from "@/components/match-card";
 import { PageHero } from "@/components/page-hero";
 import { getMatches } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
 import { isLiveMatch, isResultMatch } from "@/lib/utils";
+
+export const metadata = buildPageMetadata({
+  title: "Rayon Sports fixtures",
+  description:
+    "Official Rayon Sports fixture list with live matches, upcoming kickoffs, ticket links, and recent results.",
+  path: "/fixtures",
+});
 
 export default async function FixturesPage() {
   const matches = await getMatches();
@@ -17,8 +25,8 @@ export default async function FixturesPage() {
     <div className="page-shell section-grid py-12">
       <PageHero
         eyebrow="Fixtures"
-        title="Live, upcoming, and recent match context in one schedule."
-        description="The public fixture hub should answer matchday questions immediately, keep live hooks visible, and move ticket buyers into the portal without friction."
+        title="Live, next, and recent fixtures."
+        description="Track the current match, see the next kickoff, and move straight into ticketing when a fixture is on sale."
         actions={
           <>
             <Link

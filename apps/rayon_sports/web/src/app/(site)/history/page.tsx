@@ -2,14 +2,22 @@ import Link from "next/link";
 import { ArrowRight, Flag } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { clubHistoryMoments } from "@/lib/content";
+import { buildPageMetadata } from "@/lib/metadata";
+
+export const metadata = buildPageMetadata({
+  title: "Rayon Sports history",
+  description:
+    "The story of Gikundiro, club identity, supporter culture, and the history behind Rayon Sports.",
+  path: "/history",
+});
 
 export default function HistoryPage() {
   return (
     <div className="page-shell section-grid py-12">
       <PageHero
         eyebrow="History"
-        title="The beloved is a story, not just a section label."
-        description="History gives the public site emotional gravity. It should explain what Gikundiro means, why the club identity matters, and how supporter culture carries across every digital surface."
+        title="The story of Gikundiro."
+        description="Club identity, supporter culture, and the history that gives Rayon Sports its voice."
         actions={
           <>
             <Link
@@ -59,16 +67,15 @@ export default function HistoryPage() {
 
       <section className="glass-panel rounded-[34px] p-6">
         <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-          Storytelling principle
+          Club identity
         </p>
         <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-          History should feed the whole experience
+          History across the club
         </h2>
         <p className="mt-4 max-w-3xl text-sm leading-8 text-slate-300 sm:text-base">
-          The strongest club websites do not isolate history on a dead page. They
-          let history influence matchday copy, membership identity, supporter
-          campaigns, and how the club presents itself visually. This route becomes
-          the source material for that wider brand system.
+          History belongs across matchday, membership, supporter campaigns, and
+          club storytelling. This page holds the source material for that wider
+          voice.
         </p>
         <Link
           href="/membership"

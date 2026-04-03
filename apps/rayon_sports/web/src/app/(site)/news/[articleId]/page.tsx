@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { NewsCard } from "@/components/news-card";
 import { getNewsArticleById, getNewsArticles } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
 import { formatDate, getReadingTime } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -15,15 +16,21 @@ export async function generateMetadata({
   const article = await getNewsArticleById(articleId);
 
   if (article == null) {
-    return {
-      title: "Club article",
-    };
+    return buildPageMetadata({
+      title: "Rayon Sports article",
+      description: "Official Rayon Sports news and matchday coverage.",
+      path: `/news/${articleId}`,
+      type: "article",
+    });
   }
 
-  return {
+  return buildPageMetadata({
     title: article.title,
     description: article.excerpt,
-  };
+    path: `/news/${article.id}`,
+    imagePath: article.coverImageUrl ?? "/media/stadium-hero.jpg",
+    type: "article",
+  });
 }
 
 export default async function ArticlePage({
@@ -112,16 +119,16 @@ export default async function ArticlePage({
         <div className="space-y-6">
           <div className="glass-panel rounded-[32px] p-6">
             <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
-              Story framing
+              Editorial links
             </p>
             <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              Editorial should always point somewhere
+              Keep the supporter moving
             </h2>
             <div className="mt-5 grid gap-4">
               {[
-                "Matchday stories should connect back to fixtures and ticketing.",
-                "Membership stories should help supporters understand plan value.",
-                "Retail stories should support product launches instead of duplicating them.",
+                "Matchday coverage links back to fixtures and ticketing.",
+                "Membership coverage makes plan value easy to understand.",
+                "Retail coverage supports launches without replacing the shop.",
               ].map((point) => (
                 <div
                   key={point}

@@ -4,7 +4,15 @@ import { ShieldCheck } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { PageHero } from "@/components/page-hero";
 import { getProducts } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
 import { formatCurrency } from "@/lib/utils";
+
+export const metadata = buildPageMetadata({
+  title: "Rayon Sports shop",
+  description:
+    "Official Rayon Sports merch, jerseys, travel wear, scarves, and supporter essentials.",
+  path: "/shop",
+});
 
 export default async function ShopPage() {
   const products = await getProducts();
@@ -15,8 +23,8 @@ export default async function ShopPage() {
     <div className="page-shell section-grid py-12">
       <PageHero
         eyebrow="Club shop"
-        title="Merch discovery that feels premium before checkout."
-        description="The public shop should function like a high-trust catalogue: clearer categories, stronger product storytelling, and an obvious bridge into the authenticated order flow."
+        title="Official merch and matchday essentials."
+        description="Browse the latest Rayon Sports drop, check sizes and pricing, and move into secure checkout in the fan portal."
         actions={
           <>
             <Link
@@ -95,10 +103,10 @@ export default async function ShopPage() {
 
           <div className="glass-panel rounded-[34px] p-6">
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              Commerce principles
+              Shop standards
             </p>
             <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              Better discovery before checkout
+              Clear before checkout
             </h2>
             <div className="mt-5 flex flex-wrap gap-2">
               {categories.map((category) => (
@@ -112,9 +120,9 @@ export default async function ShopPage() {
             </div>
             <div className="mt-5 grid gap-4">
               {[
-                "Lead with product photography and collection context, not bare item names.",
-                "Expose sizes and pricing early so the store feels trustworthy.",
-                "Keep portal checkout as the secure operational layer instead of hiding the entire shop there.",
+                "Product imagery and collection context lead every launch.",
+                "Sizes and prices are visible before the supporter leaves the public site.",
+                "The portal handles checkout while the public shop handles discovery.",
               ].map((point) => (
                 <div
                   key={point}

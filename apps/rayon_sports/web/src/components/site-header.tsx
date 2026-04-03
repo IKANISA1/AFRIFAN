@@ -1,15 +1,29 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Search, User } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { siteNavigation, utilityNavigation } from "@/lib/content";
 import type { ClubProfile, SearchIndexItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { MobileNavDrawer } from "./mobile-nav-drawer";
-import { SearchDialog } from "./search-dialog";
+
+const MobileNavDrawer = dynamic(
+  () => import("./mobile-nav-drawer").then((mod) => mod.MobileNavDrawer),
+  { loading: () => null },
+);
+
+const SearchDialog = dynamic(
+  () => import("./search-dialog").then((mod) => mod.SearchDialog),
+  { ssr: false, loading: () => null },
+);
+
+const PRIMARY_LINKS = siteNavigation.filter(
+  (item) =>
+    !["/", "/standings", "/fan-clubs", "/history", "/contact"].includes(item.href),
+);
 
 interface SiteHeaderProps {
   club: ClubProfile;
@@ -55,21 +69,6 @@ export function SiteHeader({ club, searchItems }: SiteHeaderProps) {
 
   const closeDrawer = useCallback(() => setIsDrawerOpen(false), []);
   const closeSearch = useCallback(() => setIsSearchOpen(false), []);
-
-  const primaryLinks = useMemo(
-    () =>
-      siteNavigation.filter(
-        (item) =>
-          ![
-            "/",
-            "/standings",
-            "/fan-clubs",
-            "/history",
-            "/contact",
-          ].includes(item.href),
-      ),
-    [],
-  );
 
   return (
     <>
@@ -148,8 +147,8 @@ export function SiteHeader({ club, searchItems }: SiteHeaderProps) {
             </div>
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex">
-            {primaryLinks.map((item) => {
+          <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
+            {PRIMARY_LINKS.map((item) => {
               const active =
                 pathname === item.href ||
                 (item.href !== "/" && pathname.startsWith(item.href));
@@ -205,12 +204,16 @@ export function SiteHeader({ club, searchItems }: SiteHeaderProps) {
         </div>
       </header>
 
-      <MobileNavDrawer
-        isOpen={isDrawerOpen}
-        onClose={closeDrawer}
-        club={club}
-      />
-      <SearchDialog items={searchItems} open={isSearchOpen} onClose={closeSearch} />
+      {isDrawerOpen ? (
+        <MobileNavDrawer
+          isOpen={isDrawerOpen}
+          onClose={closeDrawer}
+          club={club}
+        />
+      ) : null}
+      {isSearchOpen ? (
+        <SearchDialog items={searchItems} open={isSearchOpen} onClose={closeSearch} />
+      ) : null}
     </>
   );
 }

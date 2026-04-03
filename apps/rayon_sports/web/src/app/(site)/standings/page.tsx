@@ -2,6 +2,14 @@ import Link from "next/link";
 import { ArrowRight, Trophy } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { getStandings } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
+
+export const metadata = buildPageMetadata({
+  title: "Rwanda Premier League standings",
+  description:
+    "Official league table with Rayon Sports position, points, goal difference, and recent form.",
+  path: "/standings",
+});
 
 export default async function StandingsPage() {
   const standings = await getStandings();
@@ -11,8 +19,8 @@ export default async function StandingsPage() {
     <div className="page-shell section-grid py-12">
       <PageHero
         eyebrow="League table"
-        title="Standings that show the race, not just a cropped snippet."
-        description="The table should be useful in its own right: enough rows to provide context, clear highlighting for Rayon Sports, and quick form signals that make momentum visible."
+        title="League table and form."
+        description="Track Rayon Sports in the table with full context around the clubs above and below."
         actions={
           <>
             <Link
@@ -90,10 +98,10 @@ export default async function StandingsPage() {
 
         <div className="glass-panel rounded-[34px] p-6">
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-            Table reading
+            Rayon Sports
           </p>
           <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-            Position needs context
+            Position in the race
           </h2>
           {highlighted ? (
             <div className="mt-5 rounded-[26px] border border-border-soft bg-white/5 p-5">
@@ -127,9 +135,9 @@ export default async function StandingsPage() {
           ) : null}
           <div className="mt-5 grid gap-4">
             {[
-              "Show enough surrounding clubs so the position actually means something.",
-              "Highlight Rayon Sports consistently across every table view.",
-              "Use form indicators to make momentum visible without forcing a click into results.",
+              "The full table keeps the race readable.",
+              "Rayon Sports stays highlighted in every standings view.",
+              "Recent form shows momentum without sending the supporter elsewhere.",
             ].map((point) => (
               <div
                 key={point}

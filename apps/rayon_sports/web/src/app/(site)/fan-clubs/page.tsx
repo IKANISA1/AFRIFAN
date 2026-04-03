@@ -3,7 +3,15 @@ import { ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { ProgressBar } from "@/components/progress-bar";
 import { getContributionGroups, getFanClubs } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
 import { formatCompactNumber } from "@/lib/utils";
+
+export const metadata = buildPageMetadata({
+  title: "Rayon Sports fan clubs",
+  description:
+    "Official Rayon Sports fan clubs, supporter chapters, and community activity across Rwanda and the diaspora.",
+  path: "/fan-clubs",
+});
 
 export default async function FanClubsPage() {
   const [fanClubs, groups] = await Promise.all([
@@ -16,8 +24,8 @@ export default async function FanClubsPage() {
     <div className="page-shell section-grid py-12">
       <PageHero
         eyebrow="Community"
-        title="Supporter chapters, circles, and the club's public network."
-        description="Fan clubs and support circles are where the website stops behaving like a brochure and starts acting like real club infrastructure."
+        title="Supporter chapters across Rwanda and beyond."
+        description="Discover official fan clubs, chapter activity, and the supporter network behind every Rayon Sports matchday."
         actions={
           <>
             <Link

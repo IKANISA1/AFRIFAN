@@ -3,7 +3,15 @@ import { ShieldCheck } from "lucide-react";
 import { MatchCard } from "@/components/match-card";
 import { PageHero } from "@/components/page-hero";
 import { getMatches } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
 import { formatCurrency } from "@/lib/utils";
+
+export const metadata = buildPageMetadata({
+  title: "Rayon Sports tickets",
+  description:
+    "Official Rayon Sports ticket hub with fixture detail, live pricing, and secure checkout in the fan portal.",
+  path: "/tickets",
+});
 
 export default async function TicketsPage() {
   const matches = await getMatches();
@@ -17,8 +25,8 @@ export default async function TicketsPage() {
     <div className="page-shell section-grid py-12">
       <PageHero
         eyebrow="Ticketing"
-        title="Web-first discovery, portal-first purchase flow."
-        description="Public ticket pages should win the click from search and social, then move the supporter into a clean authenticated checkout flow."
+        title="Tickets and matchday access."
+        description="See venue, kickoff, pricing, and availability before moving into secure checkout in the fan portal."
         actions={
           <>
             <Link
@@ -58,16 +66,16 @@ export default async function TicketsPage() {
 
         <div className="glass-panel rounded-[34px] p-6">
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-            Why this flow
+            Matchday essentials
           </p>
           <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-            Matchday trust matters
+            Buy with confidence
           </h2>
           <div className="mt-5 grid gap-4">
             {[
-              "See pricing before sign-in so fans trust the offer.",
-              "Keep venue, competition, and kickoff visible on every card.",
-              "Let membership drive priority windows instead of hiding it.",
+              "Pricing stays visible before sign-in.",
+              "Venue, competition, and kickoff stay attached to every fixture.",
+              "Membership priority is visible before checkout opens.",
             ].map((point) => (
               <div
                 key={point}

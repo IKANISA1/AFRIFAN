@@ -238,6 +238,21 @@ a {
   transform: scale(1.06);
 }
 
+/* ── Horizontal scroll snap (mobile) ── */
+.scroll-snap-x {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.scroll-snap-x::-webkit-scrollbar {
+  display: none;
+}
+.scroll-snap-x > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
 /* ── CTA glow pulse ── */
 .cta-glow {
   position: relative;

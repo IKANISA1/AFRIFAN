@@ -3,6 +3,7 @@ import { Barlow_Condensed, Inter, Space_Mono, Bebas_Neue } from "next/font/googl
 import "./globals.css";
 import { PwaShell } from "@/components/pwa/pwa-shell";
 import { absoluteUrl, siteConfig } from "@/lib/config";
+import { buildSiteJsonLd } from "@/lib/metadata";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -92,6 +93,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const siteJsonLd = buildSiteJsonLd();
+
   return (
     <html
       lang="en"
@@ -99,6 +102,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <PwaShell />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
+        />
         {children}
       </body>
     </html>

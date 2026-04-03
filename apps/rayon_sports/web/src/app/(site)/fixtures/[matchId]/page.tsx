@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MatchCard } from "@/components/match-card";
 import { getMatchById, getMatches } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
 import {
   formatCurrency,
   formatDateTime,
@@ -20,12 +21,14 @@ export async function generateMetadata({
   const { matchId } = await params;
   const match = await getMatchById(matchId);
 
-  return {
+  return buildPageMetadata({
     title: match
       ? `${match.homeTeam} vs ${match.awayTeam}`
       : "Fixture detail",
     description: match?.matchSummary ?? "Fixture detail and ticketing context.",
-  };
+    path: `/fixtures/${matchId}`,
+    imagePath: match?.imageUrl ?? "/media/stadium-hero.jpg",
+  });
 }
 
 export default async function FixtureDetailPage({
@@ -222,8 +225,8 @@ export default async function FixtureDetailPage({
                   Keep the supporter moving
                 </h2>
                 <p className="mt-4 text-sm leading-7 text-slate-300">
-                  Match detail should always lead into the next action: another
-                  fixture, a ticketed game, or the next big result.
+                  Match detail leads straight into the next step: another
+                  fixture, a ticketed game, or the latest result.
                 </p>
               </div>
               <div className="grid gap-5">

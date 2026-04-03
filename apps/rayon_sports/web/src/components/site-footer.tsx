@@ -48,9 +48,8 @@ export async function SiteFooter() {
             </div>
 
             <p className="max-w-md text-sm leading-7 text-slate-300">
-              The public face of the Rayon Sports supporter ecosystem: fixtures,
-              tickets, membership, shop, fan clubs, support circles, and a
-              stronger browser matchday experience.
+              Official Rayon Sports coverage for fixtures, tickets, membership,
+              club news, supporter circles, and matchday access.
             </p>
 
             <div className="flex flex-wrap gap-3">

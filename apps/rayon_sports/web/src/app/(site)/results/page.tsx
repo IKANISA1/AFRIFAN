@@ -3,7 +3,15 @@ import { ArrowRight, Trophy } from "lucide-react";
 import { MatchCard } from "@/components/match-card";
 import { PageHero } from "@/components/page-hero";
 import { getMatches } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
 import { isResultMatch } from "@/lib/utils";
+
+export const metadata = buildPageMetadata({
+  title: "Rayon Sports results",
+  description:
+    "Official Rayon Sports results with recent scorelines, match context, and links into the next fixture.",
+  path: "/results",
+});
 
 function getRayonScoreline(match: Awaited<ReturnType<typeof getMatches>>[number]) {
   const rayonIsHome = match.homeTeam.toLowerCase().includes("rayon");
@@ -29,8 +37,8 @@ export default async function ResultsPage() {
     <div className="page-shell section-grid py-12">
       <PageHero
         eyebrow="Results"
-        title="Scorelines, momentum, and the recent pulse of the club."
-        description="Results should do more than list final scores. They should give supporters enough context to understand momentum, replay big moments, and jump back into the next matchday action."
+        title="Recent results and match momentum."
+        description="See final scores, match summaries, and the direct route into the next Rayon Sports fixture."
         actions={
           <>
             <Link
@@ -63,16 +71,16 @@ export default async function ResultsPage() {
 
         <div className="glass-panel rounded-[34px] p-6">
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-            Form snapshot
+            Recent form
           </p>
           <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-            Results need story, not just numbers
+            Results with context
           </h2>
           <div className="mt-5 grid gap-4">
             {[
-              "Keep final score, venue, and competition visible at a glance.",
-              "Surface the decisive moments instead of hiding them behind detail pages.",
-              "Turn every completed match into the bridge to the next ticketed fixture.",
+              "Final score, venue, and competition stay visible at a glance.",
+              "Key moments stay attached to the match instead of disappearing into a feed.",
+              "Every completed fixture points toward the next action.",
             ].map((point) => (
               <div
                 key={point}

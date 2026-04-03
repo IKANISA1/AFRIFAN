@@ -2,6 +2,14 @@ import Link from "next/link";
 import { ArrowRight, ShieldCheck, Zap } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { getSquad } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
+
+export const metadata = buildPageMetadata({
+  title: "Rayon Sports squad",
+  description:
+    "Official Rayon Sports squad list with player numbers, roles, and nationalities.",
+  path: "/squad",
+});
 
 export default async function SquadPage() {
   const squad = await getSquad();
@@ -23,8 +31,8 @@ export default async function SquadPage() {
     <div className="page-shell section-grid py-12">
       <PageHero
         eyebrow="Squad"
-        title="Player identity, roles, and club depth in one roster."
-        description="A football site needs faces, numbers, and tactical roles that make the squad legible to fans. This page extends the supporter relationship beyond scores and tickets."
+        title="Squad, numbers, and roles."
+        description="Meet the Rayon Sports squad with player numbers, positions, and the shape of the group behind every matchday."
         actions={
           <>
             <Link
@@ -112,9 +120,8 @@ export default async function SquadPage() {
             ))}
           </div>
           <p className="mt-5 text-sm leading-7 text-slate-300">
-            As soon as player photography becomes available, this route should
-            evolve from roster cards into a proper squad experience with portraits,
-            stats, and player-story links.
+            This roster becomes even stronger with photography, player stats,
+            and direct links into matchday and editorial coverage.
           </p>
         </div>
       </section>

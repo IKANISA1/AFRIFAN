@@ -57,7 +57,6 @@ export function AnimateOnScroll({
       ref={ref}
       className={`${className} ${animationClass}`}
       style={{
-        opacity: isVisible ? undefined : 0,
         animationDelay: delay > 0 ? `${delay}ms` : undefined,
       }}
     >
@@ -121,8 +120,7 @@ export function StaggerChildren({
               </div>
             ))
           : children
-        : <div style={{ opacity: 0 }}>{children}</div>
-      }
+        : children}
     </div>
   );
 }

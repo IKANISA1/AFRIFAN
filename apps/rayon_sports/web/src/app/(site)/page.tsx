@@ -17,7 +17,14 @@ import {
   fallbackContributionGroups,
 } from "@/lib/content";
 import { getHomePageData } from "@/lib/data/public";
+import { buildPageMetadata } from "@/lib/metadata";
 import { formatCompactNumber, formatCurrency } from "@/lib/utils";
+
+export const metadata = buildPageMetadata({
+  title: "Official Rayon Sports website",
+  description:
+    "Official Rayon Sports website for live fixtures, tickets, membership, supporter circles, club news, and matchday coverage.",
+});
 
 export default async function HomePage() {
   const {
@@ -171,7 +178,7 @@ export default async function HomePage() {
                     {membershipPackages.length} tiers
                   </p>
                   <p className="mt-4 text-sm leading-7 text-slate-300">
-                    Digital membership should bridge the website and the portal, not hide behind app-only language.
+                    One supporter account keeps membership, ticket access, and supporter status in sync across web and portal.
                   </p>
                   <div className="mt-5 flex flex-wrap gap-2">
                     {membershipPackages.slice(0, 4).map((tier) => (
@@ -245,9 +252,11 @@ export default async function HomePage() {
               Full fixtures <ArrowRight size={18} />
             </Link>
           </div>
-          <StaggerChildren className="grid gap-5 lg:grid-cols-3">
+          <StaggerChildren className="flex gap-5 scroll-snap-x lg:grid lg:grid-cols-3 lg:overflow-visible">
             {upcomingMatches.slice(0, 3).map((match) => (
-              <MatchCard key={match.id} match={match} />
+              <div key={match.id} className="min-w-[85vw] sm:min-w-[340px] lg:min-w-0">
+                <MatchCard match={match} />
+              </div>
             ))}
           </StaggerChildren>
         </section>

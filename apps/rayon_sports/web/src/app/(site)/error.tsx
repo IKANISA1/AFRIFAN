@@ -19,9 +19,9 @@ export default function SiteError({
           The page lost matchday shape
         </h1>
         <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300">
-          Something failed while loading this route. The public surface should
-          degrade gracefully, so this fallback keeps navigation, retry, and portal
-          access available instead of leaving a blank page.
+          Something failed while loading this route. Navigation, retry, and
+          portal access stay available here instead of dropping the supporter
+          onto a blank page.
         </p>
         {error.message ? (
           <p className="mt-4 rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm leading-7 text-slate-300">
