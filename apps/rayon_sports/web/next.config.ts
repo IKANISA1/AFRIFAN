@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true,
   },
+  serverExternalPackages: ["xlsx"],
   images: {
     remotePatterns: [
       ...(supabaseHost
