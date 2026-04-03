@@ -143,14 +143,14 @@ async function CirclesAndMatchdayBlock() {
           {activeCircles.map((group) => (
             <article
               key={group.id}
-              className="rounded-[26px] border border-border-soft bg-black/20 p-5"
+              className="py-5 first:pt-0 last:pb-0 border-b border-border-soft last:border-0"
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="font-display text-3xl font-bold uppercase leading-none text-white">
                     {group.name}
                   </p>
-                  <p className="mt-2 text-sm leading-7 text-slate-300">
+                  <p className="mt-2 line-clamp-1 text-sm leading-7 text-slate-300">
                     {group.description}
                   </p>
                 </div>
@@ -159,27 +159,27 @@ async function CirclesAndMatchdayBlock() {
                 </span>
               </div>
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-[22px] bg-white/5 p-4">
+                <div>
                   <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
                     Current
                   </p>
-                  <p className="mt-2 text-sm font-semibold text-white">
+                  <p className="mt-1 text-lg font-semibold text-white">
                     {formatCurrency(group.currentTotal, group.currency)}
                   </p>
                 </div>
-                <div className="rounded-[22px] bg-white/5 p-4">
+                <div>
                   <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
                     Target
                   </p>
-                  <p className="mt-2 text-sm font-semibold text-white">
+                  <p className="mt-1 text-lg font-semibold text-white">
                     {formatCurrency(group.targetAmount, group.currency)}
                   </p>
                 </div>
-                <div className="rounded-[22px] bg-white/5 p-4">
+                <div>
                   <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
                     Members
                   </p>
-                  <p className="mt-2 text-sm font-semibold text-white">
+                  <p className="mt-1 text-lg font-semibold text-white">
                     {formatCompactNumber(group.memberCount)}
                   </p>
                 </div>
@@ -212,7 +212,7 @@ async function CirclesAndMatchdayBlock() {
                 <span className="block text-white/65">vs {featuredMatch?.awayTeam}</span>
               </p>
               <p className="mt-4 text-sm leading-7 text-slate-300">
-                {featuredMatch?.matchSummary ?? "Ticketing and live updates land here first."}
+                {featuredMatch?.matchSummary ?? "Live updates & ticketing."}
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
                 <span className="rounded-full border border-border-soft px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
@@ -237,7 +237,7 @@ async function CirclesAndMatchdayBlock() {
                 {membershipPackages.length} tiers
               </p>
               <p className="mt-4 text-sm leading-7 text-slate-300">
-                One supporter account keeps membership, ticket access, and supporter status in sync across web and portal.
+                One portal for membership, tickets, and status.
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
                 {membershipPackages.slice(0, 4).map((tier) => (
@@ -266,28 +266,28 @@ async function CirclesAndMatchdayBlock() {
                 eyebrow="Quick stats"
                 title="The club in numbers."
               />
-              <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4 text-center">
+              <div className="grid gap-3 sm:grid-cols-3 divide-x divide-border-soft">
+                <div className="px-4 text-center">
                   <p className="font-score text-5xl font-bold text-white">
                     {fanClubs.length}
                   </p>
-                  <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="mt-2 text-xs text-slate-400">
                     Chapters
                   </p>
                 </div>
-                <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4 text-center">
+                <div className="px-4 text-center">
                   <p className="font-score text-5xl font-bold text-white">
                     {matches.filter((m) => m.isOnSale).length}
                   </p>
-                  <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="mt-2 text-xs text-slate-400">
                     On sale
                   </p>
                 </div>
-                <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4 text-center">
+                <div className="px-4 text-center">
                   <p className="font-score text-5xl font-bold text-white">
                     {news.length}
                   </p>
-                  <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="mt-2 text-xs text-slate-400">
                     Stories
                   </p>
                 </div>
@@ -360,23 +360,23 @@ async function MembershipAndStandingsBlock() {
           {membershipPackages.map((membershipPackage) => (
             <article
               key={membershipPackage.id}
-              className="rounded-[26px] border border-border-soft bg-white/5 p-5"
+              className="py-5 border-b border-border-soft last:border-0"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-display text-3xl font-bold uppercase leading-none text-white">
                     {membershipPackage.title}
                   </p>
-                  <p className="mt-2 text-sm leading-7 text-slate-300">
+                  <p className="mt-2 line-clamp-1 text-sm leading-7 text-slate-300">
                     {membershipPackage.description}
                   </p>
                 </div>
-                <div className="rounded-[22px] border border-border-soft bg-black/20 px-4 py-3 text-right">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
-                    Annual
-                  </p>
-                  <p className="mt-2 font-score text-4xl font-bold uppercase text-white">
+                <div className="text-right">
+                  <p className="font-score text-3xl font-bold uppercase text-white">
                     {formatCurrency(membershipPackage.annualPrice, club.currencyCode)}
+                  </p>
+                  <p className="text-[10px] text-slate-400">
+                    / year
                   </p>
                 </div>
               </div>
@@ -457,15 +457,15 @@ async function MembershipAndStandingsBlock() {
             {fanClubs.slice(0, 3).map((clubItem) => (
               <article
                 key={clubItem.id}
-                className="rounded-[24px] border border-border-soft bg-white/5 p-4"
+                className="py-4 border-b sm:border-b-0 sm:border-r border-border-soft last:border-0 sm:px-4 first:pl-0 last:pr-0"
               >
-                <p className="font-display text-2xl font-bold uppercase leading-none text-white">
+                <p className="font-display text-xl font-bold uppercase leading-none text-white">
                   {clubItem.name}
                 </p>
-                <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-club-accent">
+                <p className="mt-1 text-sm text-club-accent">
                   {clubItem.region}
                 </p>
-                <p className="mt-3 text-sm leading-7 text-slate-300">
+                <p className="mt-3 line-clamp-1 text-sm leading-7 text-slate-300">
                   {clubItem.description}
                 </p>
               </article>
@@ -560,7 +560,7 @@ async function ShopAndIdentityBlock() {
                 <p className="font-display text-2xl font-bold uppercase leading-none text-white">
                   {moment.title}
                 </p>
-                <p className="mt-3 text-sm leading-7 text-slate-300">
+                <p className="mt-3 line-clamp-1 text-sm leading-7 text-slate-300">
                   {moment.body}
                 </p>
               </article>

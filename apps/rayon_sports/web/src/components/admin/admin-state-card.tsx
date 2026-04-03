@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 interface AdminStateCardProps {
   label: string;
   value: string;
-  helper: ReactNode;
+  helper?: ReactNode;
   icon?: LucideIcon;
   trend?: "up" | "down" | "neutral";
   trendLabel?: string;
@@ -14,7 +14,6 @@ interface AdminStateCardProps {
 export function AdminStateCard({
   label,
   value,
-  helper,
   icon: Icon,
   trend,
   trendLabel,
@@ -58,7 +57,6 @@ export function AdminStateCard({
               </span>
             ) : null}
           </div>
-          <div className="mt-3 text-sm leading-6 text-slate-300">{helper}</div>
         </>
       )}
     </article>

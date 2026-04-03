@@ -34,12 +34,12 @@ function AdminAuthCard() {
     try {
       await requestWhatsAppCode(phone);
       setCode("");
-      setStatus("Open WhatsApp, copy the code, then verify below.");
+      setStatus("Code sent. Check WhatsApp.");
     } catch (caught) {
       setStatus(
         caught instanceof Error
           ? caught.message
-          : "Could not send the WhatsApp code.",
+          : "Could not send code.",
       );
     }
   }
@@ -50,10 +50,10 @@ function AdminAuthCard() {
 
     try {
       await verifyWhatsAppCode(code);
-      setStatus("Verification complete. Loading the admin workspace...");
+      setStatus("Verified. Loading...");
     } catch (caught) {
       setStatus(
-        caught instanceof Error ? caught.message : "Could not verify the code.",
+        caught instanceof Error ? caught.message : "Verification failed.",
       );
     }
   }
@@ -70,17 +70,13 @@ function AdminAuthCard() {
             width={56}
             height={56}
           />
-          <div className="space-y-2">
+          <div className="space-y-1">
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
               Admin workspace
             </p>
-            <h1 className="font-display text-3xl font-bold uppercase leading-none sm:text-4xl">
+            <h1 className="font-display text-4xl font-bold uppercase leading-none">
               Sign in
             </h1>
-            <p className="text-sm leading-6 text-slate-400">
-              Enter your approved WhatsApp number to receive a verification
-              code.
-            </p>
           </div>
         </div>
 
@@ -91,8 +87,8 @@ function AdminAuthCard() {
             </div>
             <p className="text-sm text-slate-300">
               {activePhone
-                ? "Enter the 6-digit code sent to your WhatsApp."
-                : "We\u2019ll send a one-time code via WhatsApp."}
+                ? "6-digit code:"
+                : "Phone number"}
             </p>
           </div>
 
@@ -203,15 +199,13 @@ function AdminUnauthorizedCard() {
             Access blocked
           </p>
           <h1 className="font-display text-4xl font-bold uppercase leading-none sm:text-5xl">
-            This account is not assigned to the Rayon Sports admin workspace.
+            Access restricted.
           </h1>
           <p className="text-base leading-7 text-slate-300">
-            Signed in as{" "}
             <span className="font-semibold text-white">
               {user?.phone ?? user?.email ?? user?.id}
-            </span>
-            . Add a valid `admin_role_assignments` record in Supabase or sign in
-            with a different approved admin number.
+            </span>{" "}
+            is not an admin.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -254,7 +248,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
               Admin workspace
             </p>
             <p className="text-lg text-slate-200">
-              Preparing the club command center…
+              Loading workspace...
             </p>
             <div className="mt-2 h-1 w-32 overflow-hidden rounded-full bg-white/10">
               <div className="h-full w-1/2 animate-pulse rounded-full bg-club-accent" />
@@ -313,9 +307,6 @@ export function AdminShell({ children }: { children: ReactNode }) {
             <div>
               <p className="font-display text-2xl font-bold uppercase leading-none">
                 Club admin
-              </p>
-              <p className="mt-1 text-xs leading-5 text-slate-400">
-                Command center
               </p>
             </div>
           </div>

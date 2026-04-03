@@ -37,43 +37,36 @@ const quickActions = [
   {
     href: "/admin/settings",
     title: "Tune club settings",
-    body: "Update brand colors, languages, contact channels, and feature flags.",
     icon: Settings,
   },
   {
     href: "/admin/cms",
     title: "Publish club content",
-    body: "Create and push news articles, headlines, and homepage stories.",
     icon: Newspaper,
   },
   {
     href: "/admin/matches",
     title: "Update fixtures",
-    body: "Manage ticketing, live scores, featured matches, and sale status.",
     icon: CalendarDays,
   },
   {
     href: "/admin/shop",
     title: "Manage merchandise",
-    body: "Curate the live shop catalogue, sizes, imagery, and product ordering.",
     icon: ShoppingBag,
   },
   {
     href: "/admin/membership",
     title: "Control membership",
-    body: "Set tier pricing, perks, and visibility across activation surfaces.",
     icon: Crown,
   },
   {
     href: "/admin/contributions",
     title: "Monitor circles",
-    body: "Edit campaign metadata, track supporter funds, and export reports.",
     icon: HeartHandshake,
   },
   {
     href: "/admin/notifications",
     title: "Broadcast updates",
-    body: "Send or schedule supporter notifications by audience segment.",
     icon: Bell,
   },
 ];
@@ -116,32 +109,27 @@ export default function AdminDashboardPage() {
       <SectionHeading
         eyebrow="Admin dashboard"
         title="Operate matchdays, content, and supporter activity from one place."
-        description="This workspace uses the same club-scoped backend contracts as the mobile admin tools, but tuned for touch-first web use on phone and tablet."
       />
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         <AdminStateCard
           label="Total users"
           value={loading ? "..." : snapshot.metrics.totalUsers.toString()}
-          helper="Profiles connected to Rayon Sports club scope."
           icon={Users}
         />
         <AdminStateCard
           label="Active circles"
           value={loading ? "..." : snapshot.metrics.activeGroups.toString()}
-          helper="Open contribution groups visible to the club admin layer."
           icon={CircleDollarSign}
         />
         <AdminStateCard
           label="Transactions today"
           value={loading ? "..." : snapshot.metrics.transactionsToday.toString()}
-          helper="Contribution movements recorded since midnight UTC."
           icon={ArrowRightLeft}
         />
         <AdminStateCard
           label="Tickets sold"
           value={loading ? "..." : snapshot.metrics.ticketsSold.toString()}
-          helper="Club-scoped ticket records available to the admin workspace."
           icon={Ticket}
         />
       </div>
@@ -158,18 +146,13 @@ export default function AdminDashboardPage() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="card-interactive rounded-[26px] border border-border-soft bg-white/5 p-5 transition group"
+                  className="card-interactive rounded-[20px] border border-border-soft bg-white/5 px-4 py-3 transition group flex items-center gap-3"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-border-soft bg-white/5 text-slate-400 transition group-hover:text-club-accent group-hover:border-club-accent/30">
-                      <Icon size={18} />
-                    </div>
-                    <p className="font-display text-2xl font-bold uppercase leading-none">
-                      {item.title}
-                    </p>
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border-soft bg-white/5 text-slate-400 transition group-hover:text-club-accent group-hover:border-club-accent/30">
+                    <Icon size={18} />
                   </div>
-                  <p className="mt-3 text-sm leading-6 text-slate-300">
-                    {item.body}
+                  <p className="font-display text-lg font-bold uppercase leading-none">
+                    {item.title}
                   </p>
                 </Link>
               );
@@ -194,29 +177,32 @@ export default function AdminDashboardPage() {
               </div>
             ) : snapshot.activity.length === 0 ? (
               <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">
-                No admin feed is available yet. As soon as content, match, and
-                notification actions flow through Supabase, they appear here.
+                No activity yet.
               </p>
             ) : null}
             {snapshot.activity.map((item) => (
               <article
                 key={item.id}
-                className="card-interactive rounded-[24px] border border-border-soft bg-white/5 px-4 py-4"
+                className="py-4 border-b border-border-soft last:border-0"
               >
-                <p className="font-display text-2xl font-bold uppercase leading-none">
-                  {item.title}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-slate-300">
-                  {item.detail}
-                </p>
-                <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.24em] text-slate-400">
-                  {new Date(item.createdAt).toLocaleString("en-RW", {
-                    month: "short",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
+                <div className="flex justify-between items-start gap-4">
+                  <div>
+                    <p className="font-display text-lg font-bold uppercase leading-none">
+                      {item.title}
+                    </p>
+                    <p className="mt-1 text-sm text-slate-300">
+                      {item.detail}
+                    </p>
+                  </div>
+                  <p className="shrink-0 font-mono text-[10px] uppercase tracking-[0.1em] text-slate-500">
+                    {new Date(item.createdAt).toLocaleString("en-RW", {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
               </article>
             ))}
           </div>
