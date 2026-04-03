@@ -7,12 +7,13 @@ import type { SearchIndexItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface SearchDialogProps {
-  items: SearchIndexItem[];
   open: boolean;
   onClose: () => void;
 }
 
-export function SearchDialog({ items, open, onClose }: SearchDialogProps) {
+export function SearchDialog({ open, onClose }: SearchDialogProps) {
+  const [items, setItems] = useState<SearchIndexItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const handleClose = useCallback(() => {
@@ -52,6 +53,37 @@ export function SearchDialog({ items, open, onClose }: SearchDialogProps) {
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  useEffect(() => {
+    if (!open || items.length > 0 || isLoading) {
+      return;
+    }
+
+    let cancelled = false;
+    setIsLoading(true);
+
+    fetch("/api/search-index")
+      .then((response) => response.json())
+      .then((payload: { items?: SearchIndexItem[] }) => {
+        if (!cancelled) {
+          setItems(Array.isArray(payload.items) ? payload.items : []);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setItems([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoading, items.length, open]);
 
   const results = useMemo(() => {
     const term = query.trim().toLowerCase();
@@ -109,7 +141,16 @@ export function SearchDialog({ items, open, onClose }: SearchDialogProps) {
           </div>
 
           <div className="max-h-[65vh] overflow-y-auto p-3">
-            {results.length > 0 ? (
+            {isLoading ? (
+              <div className="rounded-[24px] border border-dashed border-border-soft bg-white/3 px-5 py-10 text-center">
+                <p className="font-display text-3xl font-bold uppercase text-white">
+                  Loading
+                </p>
+                <p className="mt-3 text-sm leading-7 text-slate-300">
+                  Pulling the latest search index.
+                </p>
+              </div>
+            ) : results.length > 0 ? (
               <div className="grid gap-2">
                 {results.map((item) => (
                   <Link

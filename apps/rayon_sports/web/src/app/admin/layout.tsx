@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { AdminPortalProvider } from "@/components/admin/admin-portal-provider";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { AdminToastProvider } from "@/components/admin/admin-toast";
+import { DeferredPwaShell } from "@/components/pwa/deferred-pwa-shell";
 import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <AdminPortalProvider>
+      <DeferredPwaShell />
       <AdminShell>{children}</AdminShell>
       <AdminToastProvider />
     </AdminPortalProvider>

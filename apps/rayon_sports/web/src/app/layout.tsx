@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Bebas_Neue, Inter } from "next/font/google";
 import "./globals.css";
-import { PwaShell } from "@/components/pwa/pwa-shell";
 import { absoluteUrl, siteConfig } from "@/lib/config";
 import { buildSiteJsonLd } from "@/lib/metadata";
 
@@ -99,7 +98,6 @@ export default function RootLayout({
       className={`${inter.variable} ${barlow.variable} ${bebasNeue.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <PwaShell />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}

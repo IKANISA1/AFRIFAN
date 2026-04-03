@@ -1,20 +1,18 @@
 import type { ReactNode } from "react";
-import { Breadcrumbs } from "@/components/breadcrumbs";
 import { MatchRibbon } from "@/components/match-ribbon";
 import { MobileBottomBar } from "@/components/mobile-bottom-bar";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { getClubProfile, getMatches, getSiteSearchIndex } from "@/lib/data/public";
+import { getClubProfile, getMatches } from "@/lib/data/public";
 
 export default async function SiteLayout({
   children,
 }: {
   children: ReactNode;
 }) {
-  const [club, matches, searchItems] = await Promise.all([
+  const [club, matches] = await Promise.all([
     getClubProfile(),
     getMatches(),
-    getSiteSearchIndex(),
   ]);
   const liveMatch = matches.find((m) => m.matchStatus === "live");
   const nextMatch =
@@ -31,8 +29,7 @@ export default async function SiteLayout({
         Skip to content
       </a>
       <MatchRibbon match={nextMatch} />
-      <SiteHeader club={club} searchItems={searchItems} />
-      <Breadcrumbs />
+      <SiteHeader club={club} />
       <main id="main-content" className="flex-1 pb-16 md:pb-0">
         {children}
       </main>

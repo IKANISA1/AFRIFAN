@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import type { FormEvent, ReactNode } from "react";
-import { KeyRound, MessageCircle, ShieldCheck } from "lucide-react";
+import { MessageCircle, ShieldCheck } from "lucide-react";
 import { formatAdminPhoneForDisplay } from "@/lib/admin-auth";
 import { adminNavigation } from "@/lib/content";
 import { siteConfig } from "@/lib/config";
@@ -62,87 +62,78 @@ function AdminAuthCard() {
 
   return (
     <div className="page-shell py-8 sm:py-14">
-      <div className="glass-panel mx-auto grid max-w-3xl gap-6 rounded-[32px] p-6 sm:p-8">
-        <div className="space-y-3">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-            Club admin access
-          </p>
-          <h1 className="font-display text-4xl font-bold uppercase leading-none sm:text-5xl">
-            Manage Rayon Sports from phone, tablet, or desktop.
-          </h1>
-          <p className="max-w-2xl text-base leading-7 text-slate-300">
-            The admin workspace is club-scoped by Supabase role assignments. Use
-            your approved WhatsApp number and continue with the verification code.
-          </p>
+      <div className="glass-panel mx-auto grid max-w-xl gap-6 rounded-[32px] p-6 sm:p-8">
+        <div className="flex flex-col items-center text-center space-y-4">
+          <Image
+            src="/media/rayon-crest.png"
+            alt="Rayon Sports"
+            width={56}
+            height={56}
+          />
+          <div className="space-y-2">
+            <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
+              Admin workspace
+            </p>
+            <h1 className="font-display text-3xl font-bold uppercase leading-none sm:text-4xl">
+              Sign in
+            </h1>
+            <p className="text-sm leading-6 text-slate-400">
+              Enter your approved WhatsApp number to receive a verification
+              code.
+            </p>
+          </div>
         </div>
 
-        <div className="grid gap-4 rounded-[28px] border border-border-soft bg-white/5 p-5 sm:p-6">
+        <div className="grid gap-4 rounded-[24px] border border-border-soft bg-white/5 p-5">
           <div className="flex items-center gap-3">
-            <div className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#25d366]/30 bg-[#25d366]/15 text-[#25d366]">
-              <MessageCircle className="h-5 w-5" />
+            <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#25d366]/30 bg-[#25d366]/12 text-[#25d366]">
+              <MessageCircle className="h-4 w-4" />
             </div>
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
-                Step 1
-              </p>
-              <p className="text-sm text-slate-300">
-                Send a one-time code to the admin WhatsApp number.
-              </p>
-            </div>
+            <p className="text-sm text-slate-300">
+              {activePhone
+                ? "Enter the 6-digit code sent to your WhatsApp."
+                : "We\u2019ll send a one-time code via WhatsApp."}
+            </p>
           </div>
 
-          <form
-            className="grid gap-4 sm:grid-cols-[1fr_auto]"
-            onSubmit={handlePhoneSubmit}
-          >
-            <label className="grid gap-2 text-sm">
-              Admin WhatsApp number
-              <input
-                type="tel"
-                name="phone"
-                required
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-                placeholder="+250 7xx xxx xxx"
-                autoComplete="tel"
-                className="dashboard-input"
-              />
-            </label>
-            <button
-              type="submit"
-              disabled={loading}
-              className="mt-6 rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60 sm:mt-7"
-            >
-              Send code
-            </button>
-          </form>
-        </div>
-
-        {activePhone ? (
-          <div className="grid gap-4 rounded-[28px] border border-border-soft bg-white/5 p-5 sm:p-6">
-            <div className="flex items-center gap-3">
-              <div className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border-soft bg-white/8 text-club-accent">
-                <KeyRound className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
-                  Step 2
-                </p>
-                <p className="text-sm text-slate-300">
-                  Enter the 6-digit code sent to{" "}
-                  <span className="font-semibold text-white">
-                    {formatAdminPhoneForDisplay(activePhone)}
-                  </span>
-                  .
-                </p>
-              </div>
-            </div>
-
+          {!activePhone ? (
             <form
-              className="grid gap-4 sm:grid-cols-[1fr_auto_auto]"
+              className="grid gap-4"
+              onSubmit={handlePhoneSubmit}
+            >
+              <label className="grid gap-1.5 text-sm text-slate-300">
+                WhatsApp number
+                <input
+                  type="tel"
+                  name="phone"
+                  required
+                  value={phone}
+                  onChange={(event) => setPhone(event.target.value)}
+                  placeholder="+250 7xx xxx xxx"
+                  autoComplete="tel"
+                  className="dashboard-input"
+                />
+              </label>
+              <button
+                type="submit"
+                disabled={loading}
+                className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
+              >
+                {loading ? "Sending\u2026" : "Send code"}
+              </button>
+            </form>
+          ) : (
+            <form
+              className="grid gap-4"
               onSubmit={handleCodeSubmit}
             >
-              <label className="grid gap-2 text-sm">
+              <p className="text-sm text-slate-400">
+                Code sent to{" "}
+                <span className="font-semibold text-white">
+                  {formatAdminPhoneForDisplay(activePhone)}
+                </span>
+              </p>
+              <label className="grid gap-1.5 text-sm text-slate-300">
                 Verification code
                 <input
                   type="text"
@@ -155,16 +146,16 @@ function AdminAuthCard() {
                   inputMode="numeric"
                   pattern="[0-9]{6}"
                   autoComplete="one-time-code"
-                  placeholder="123456"
-                  className="dashboard-input tracking-[0.5em]"
+                  placeholder="000000"
+                  className="dashboard-input text-center tracking-[0.5em] text-lg"
                 />
               </label>
               <button
                 type="submit"
-                disabled={loading}
-                className="mt-6 rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60 sm:mt-7"
+                disabled={loading || code.length < 6}
+                className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
               >
-                Verify code
+                {loading ? "Verifying\u2026" : "Verify"}
               </button>
               <button
                 type="button"
@@ -173,52 +164,26 @@ function AdminAuthCard() {
                   setStatus(null);
                   resetPendingPhone();
                 }}
-                className="mt-6 rounded-full border border-border-soft px-5 py-3 font-semibold text-slate-100 transition hover:bg-white/6 sm:mt-7"
+                className="rounded-full border border-border-soft px-5 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-white/6"
               >
-                Use another number
+                Use a different number
               </button>
             </form>
-          </div>
-        ) : null}
+          )}
+        </div>
 
         {status || notice || error ? (
-          <div className="rounded-3xl border border-border-soft bg-white/5 px-4 py-4 text-sm leading-6 text-slate-200">
+          <div
+            className={cn(
+              "rounded-2xl border px-4 py-3 text-sm leading-6",
+              error && !status
+                ? "border-rose-400/30 bg-rose-500/10 text-rose-200"
+                : "border-border-soft bg-white/5 text-slate-200",
+            )}
+          >
             {status ?? notice ?? error}
           </div>
         ) : null}
-
-        {/* Test credentials hint */}
-        <div className="rounded-[28px] border border-amber-500/20 bg-amber-500/5 p-5 sm:p-6">
-          <div className="flex items-start gap-3">
-            <div className="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-sm">
-              🔑
-            </div>
-            <div className="space-y-2">
-              <p className="font-mono text-xs uppercase tracking-[0.24em] text-amber-400">
-                Admin test credentials
-              </p>
-              <div className="grid gap-1.5 text-sm">
-                <p className="text-slate-200">
-                  <span className="text-slate-400">Number: </span>
-                  <button
-                    type="button"
-                    onClick={() => setPhone("+250788767816")}
-                    className="font-mono font-semibold text-white underline decoration-amber-500/40 underline-offset-2 transition hover:text-amber-300"
-                  >
-                    +250 788 767 816
-                  </button>
-                </p>
-                <p className="text-slate-200">
-                  <span className="text-slate-400">OTP: </span>
-                  <span className="font-mono font-semibold tracking-[0.3em] text-white">123456</span>
-                </p>
-              </div>
-              <p className="text-xs leading-5 text-slate-400">
-                Tap the number above to auto-fill, then click &ldquo;Send code&rdquo; and enter the OTP.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
