@@ -1,0 +1,3 @@
+module.exports=[62786,a=>{"use strict";var b=a.i(7997),c=a.i(11182);a.s(["default",0,function(){return(0,b.jsx)("div",{className:"page-shell section-grid py-12",children:(0,b.jsxs)("div",{className:"grid gap-5 lg:grid-cols-3",children:[(0,b.jsx)(c.SkeletonCard,{}),(0,b.jsx)(c.SkeletonCard,{}),(0,b.jsx)(c.SkeletonCard,{})]})})}])},50747,a=>{a.n(a.i(62786))}];
+
+//# sourceMappingURL=src_app_%28site%29_news_loading_tsx_0~nfb2p._.js.map

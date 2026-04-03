@@ -4,6 +4,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
 const supabaseHost = supabaseUrl ? new URL(supabaseUrl).hostname : null;
 
 const nextConfig: NextConfig = {
+  distDir: process.env.NEXT_BUILD_DIR || ".next",
   experimental: {
     viewTransition: true,
   },

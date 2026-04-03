@@ -1,0 +1,6 @@
+1:I[39756,["/_next/static/chunks/1433zboye-07t.js","/_next/static/chunks/0d3shmwh5_nmn.js"],"LoadingBoundaryProvider"]
+2:"$Sreact.fragment"
+3:I[39756,["/_next/static/chunks/1433zboye-07t.js","/_next/static/chunks/0d3shmwh5_nmn.js"],"default"]
+4:I[37457,["/_next/static/chunks/1433zboye-07t.js","/_next/static/chunks/0d3shmwh5_nmn.js"],"default"]
+5:[]
+0:{"rsc":["$","$L1",null,{"loading":[["$","div","l",{"className":"page-shell section-grid py-12","children":["$","div",null,{"className":"glass-panel rounded-[30px] p-5","children":["$","div",null,{"className":"space-y-3","children":[["$","div","0",{"className":"skeleton h-11 w-full rounded-2xl","aria-hidden":"true"}],["$","div","1",{"className":"skeleton h-11 w-full rounded-2xl","aria-hidden":"true"}],["$","div","2",{"className":"skeleton h-11 w-full rounded-2xl","aria-hidden":"true"}],["$","div","3",{"className":"skeleton h-11 w-full rounded-2xl","aria-hidden":"true"}],["$","div","4",{"className":"skeleton h-11 w-full rounded-2xl","aria-hidden":"true"}],["$","div","5",{"className":"skeleton h-11 w-full rounded-2xl","aria-hidden":"true"}]]}]}]}],[],[]],"children":["$","$2","c",{"children":[null,["$","$L3",null,{"parallelRouterKey":"children","template":["$","$L4",null,{}]}]]}]}],"isPartial":false,"staleTime":300,"varyParams":"$W5","buildId":"f-F3iYIDHx2TeGVy-vBVT"}

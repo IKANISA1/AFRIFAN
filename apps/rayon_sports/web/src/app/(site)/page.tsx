@@ -6,7 +6,6 @@ import {
   Trophy,
   Users,
 } from "lucide-react";
-import { AnimateOnScroll, StaggerChildren } from "@/components/animate-on-scroll";
 import { HeroSection } from "@/components/hero-section";
 import { MatchCard } from "@/components/match-card";
 import { NewsCard } from "@/components/news-card";
@@ -79,15 +78,13 @@ async function HeroBlock() {
 
   return (
     <>
-      <AnimateOnScroll className="animate-fade-up">
-        <HeroSection
-          club={club}
-          featuredMatch={featuredMatch}
-          contributionGroups={activeCircles}
-          fanClubs={fanClubs}
-          membershipPackages={membershipPackages}
-        />
-      </AnimateOnScroll>
+      <HeroSection
+        club={club}
+        featuredMatch={featuredMatch}
+        contributionGroups={activeCircles}
+        fanClubs={fanClubs}
+        membershipPackages={membershipPackages}
+      />
 
       <div className="page-shell flex flex-wrap gap-3">
         {[
@@ -136,172 +133,170 @@ async function CirclesAndMatchdayBlock() {
     null;
 
   return (
-    <AnimateOnScroll className="page-shell">
-      <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="glass-panel-elevated rounded-[34px] p-6">
-          <SectionHeading
-            eyebrow="Support circles"
-            title="Back the movement. Fund the next tifo."
-          />
-          <div className="mt-6 grid gap-4">
-            {activeCircles.map((group) => (
-              <article
-                key={group.id}
-                className="rounded-[26px] border border-border-soft bg-black/20 p-5"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="font-display text-3xl font-bold uppercase leading-none text-white">
-                      {group.name}
-                    </p>
-                    <p className="mt-2 text-sm leading-7 text-slate-300">
-                      {group.description}
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-club-accent/15 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-club-accent">
-                    {group.groupType}
-                  </span>
+    <section className="page-shell grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+      <div className="glass-panel-elevated rounded-[34px] p-6">
+        <SectionHeading
+          eyebrow="Support circles"
+          title="Back the movement. Fund the next tifo."
+        />
+        <div className="mt-6 grid gap-4">
+          {activeCircles.map((group) => (
+            <article
+              key={group.id}
+              className="rounded-[26px] border border-border-soft bg-black/20 p-5"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-display text-3xl font-bold uppercase leading-none text-white">
+                    {group.name}
+                  </p>
+                  <p className="mt-2 text-sm leading-7 text-slate-300">
+                    {group.description}
+                  </p>
                 </div>
-                <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-[22px] bg-white/5 p-4">
-                    <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
-                      Current
-                    </p>
-                    <p className="mt-2 text-sm font-semibold text-white">
-                      {formatCurrency(group.currentTotal, group.currency)}
-                    </p>
-                  </div>
-                  <div className="rounded-[22px] bg-white/5 p-4">
-                    <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
-                      Target
-                    </p>
-                    <p className="mt-2 text-sm font-semibold text-white">
-                      {formatCurrency(group.targetAmount, group.currency)}
-                    </p>
-                  </div>
-                  <div className="rounded-[22px] bg-white/5 p-4">
-                    <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
-                      Members
-                    </p>
-                    <p className="mt-2 text-sm font-semibold text-white">
-                      {formatCompactNumber(group.memberCount)}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <ProgressBar
-                    value={group.currentTotal}
-                    max={group.targetAmount}
-                    label="Funded"
-                  />
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid gap-6">
-          <article className="glass-panel rounded-[34px] p-6">
-            <SectionHeading
-              eyebrow="Matchday"
-              title="What's next. How to get in."
-            />
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <div className="rounded-[26px] border border-border-soft bg-white/5 p-5">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-club-accent">
-                  Featured fixture
-                </p>
-                <p className="mt-3 font-display text-4xl font-bold uppercase leading-none text-white">
-                  {featuredMatch?.homeTeam}
-                  <span className="block text-white/65">vs {featuredMatch?.awayTeam}</span>
-                </p>
-                <p className="mt-4 text-sm leading-7 text-slate-300">
-                  {featuredMatch?.matchSummary ?? "Ticketing and live updates land here first."}
-                </p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <span className="rounded-full border border-border-soft px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                    {featuredMatch?.competition ?? club.league}
-                  </span>
-                  <span className="rounded-full border border-border-soft px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                    {featuredMatch ? formatCurrency(featuredMatch.generalPrice, club.currencyCode) : "Tickets"}
-                  </span>
-                </div>
-                <Link
-                  href={featuredMatch ? `/fixtures/${featuredMatch.id}` : "/fixtures"}
-                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-club-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-club-primary-light"
-                >
-                  Open match center <ArrowRight size={16} />
-                </Link>
+                <span className="rounded-full bg-club-accent/15 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-club-accent">
+                  {group.groupType}
+                </span>
               </div>
-              <div className="rounded-[26px] border border-border-soft bg-white/5 p-5">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-club-accent">
-                  Supporter identity
-                </p>
-                <p className="mt-3 font-display text-4xl font-bold uppercase leading-none text-white">
-                  {membershipPackages.length} tiers
-                </p>
-                <p className="mt-4 text-sm leading-7 text-slate-300">
-                  One supporter account keeps membership, ticket access, and supporter status in sync across web and portal.
-                </p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {membershipPackages.slice(0, 4).map((tier) => (
-                    <span
-                      key={tier.id}
-                      className="rounded-full border border-border-soft px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200"
-                    >
-                      {tier.title}
-                    </span>
-                  ))}
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-[22px] bg-white/5 p-4">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                    Current
+                  </p>
+                  <p className="mt-2 text-sm font-semibold text-white">
+                    {formatCurrency(group.currentTotal, group.currency)}
+                  </p>
                 </div>
-                <Link
-                  href="/membership"
-                  className="mt-5 inline-flex items-center gap-2 rounded-full border border-border-soft px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/8"
-                >
-                  View membership <ArrowRight size={16} />
-                </Link>
+                <div className="rounded-[22px] bg-white/5 p-4">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                    Target
+                  </p>
+                  <p className="mt-2 text-sm font-semibold text-white">
+                    {formatCurrency(group.targetAmount, group.currency)}
+                  </p>
+                </div>
+                <div className="rounded-[22px] bg-white/5 p-4">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                    Members
+                  </p>
+                  <p className="mt-2 text-sm font-semibold text-white">
+                    {formatCompactNumber(group.memberCount)}
+                  </p>
+                </div>
               </div>
-            </div>
-          </article>
-
-          <div className="glass-panel rounded-[34px] p-6">
-            <div className="grid gap-5 lg:grid-cols-[1fr_auto]">
-              <div>
-                <SectionHeading
-                  eyebrow="Quick stats"
-                  title="The club in numbers."
+              <div className="mt-4">
+                <ProgressBar
+                  value={group.currentTotal}
+                  max={group.targetAmount}
+                  label="Funded"
                 />
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4 text-center">
-                    <p className="font-score text-5xl font-bold text-white">
-                      {fanClubs.length}
-                    </p>
-                    <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-slate-400">
-                      Chapters
-                    </p>
-                  </div>
-                  <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4 text-center">
-                    <p className="font-score text-5xl font-bold text-white">
-                      {matches.filter((m) => m.isOnSale).length}
-                    </p>
-                    <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-slate-400">
-                      On sale
-                    </p>
-                  </div>
-                  <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4 text-center">
-                    <p className="font-score text-5xl font-bold text-white">
-                      {news.length}
-                    </p>
-                    <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-slate-400">
-                      Stories
-                    </p>
-                  </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid gap-6">
+        <article className="glass-panel rounded-[34px] p-6">
+          <SectionHeading
+            eyebrow="Matchday"
+            title="What's next. How to get in."
+          />
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <div className="rounded-[26px] border border-border-soft bg-white/5 p-5">
+              <p className="text-[11px] uppercase tracking-[0.22em] text-club-accent">
+                Featured fixture
+              </p>
+              <p className="mt-3 font-display text-4xl font-bold uppercase leading-none text-white">
+                {featuredMatch?.homeTeam}
+                <span className="block text-white/65">vs {featuredMatch?.awayTeam}</span>
+              </p>
+              <p className="mt-4 text-sm leading-7 text-slate-300">
+                {featuredMatch?.matchSummary ?? "Ticketing and live updates land here first."}
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <span className="rounded-full border border-border-soft px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
+                  {featuredMatch?.competition ?? club.league}
+                </span>
+                <span className="rounded-full border border-border-soft px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
+                  {featuredMatch ? formatCurrency(featuredMatch.generalPrice, club.currencyCode) : "Tickets"}
+                </span>
+              </div>
+              <Link
+                href={featuredMatch ? `/fixtures/${featuredMatch.id}` : "/fixtures"}
+                className="mt-5 inline-flex items-center gap-2 rounded-full bg-club-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-club-primary-light"
+              >
+                Open match center <ArrowRight size={16} />
+              </Link>
+            </div>
+            <div className="rounded-[26px] border border-border-soft bg-white/5 p-5">
+              <p className="text-[11px] uppercase tracking-[0.22em] text-club-accent">
+                Supporter identity
+              </p>
+              <p className="mt-3 font-display text-4xl font-bold uppercase leading-none text-white">
+                {membershipPackages.length} tiers
+              </p>
+              <p className="mt-4 text-sm leading-7 text-slate-300">
+                One supporter account keeps membership, ticket access, and supporter status in sync across web and portal.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {membershipPackages.slice(0, 4).map((tier) => (
+                  <span
+                    key={tier.id}
+                    className="rounded-full border border-border-soft px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200"
+                  >
+                    {tier.title}
+                  </span>
+                ))}
+              </div>
+              <Link
+                href="/membership"
+                className="mt-5 inline-flex items-center gap-2 rounded-full border border-border-soft px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/8"
+              >
+                View membership <ArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
+        </article>
+
+        <div className="glass-panel rounded-[34px] p-6">
+          <div className="grid gap-5 lg:grid-cols-[1fr_auto]">
+            <div>
+              <SectionHeading
+                eyebrow="Quick stats"
+                title="The club in numbers."
+              />
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4 text-center">
+                  <p className="font-score text-5xl font-bold text-white">
+                    {fanClubs.length}
+                  </p>
+                  <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-slate-400">
+                    Chapters
+                  </p>
+                </div>
+                <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4 text-center">
+                  <p className="font-score text-5xl font-bold text-white">
+                    {matches.filter((m) => m.isOnSale).length}
+                  </p>
+                  <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-slate-400">
+                    On sale
+                  </p>
+                </div>
+                <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4 text-center">
+                  <p className="font-score text-5xl font-bold text-white">
+                    {news.length}
+                  </p>
+                  <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-slate-400">
+                    Stories
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
-    </AnimateOnScroll>
+      </div>
+    </section>
   );
 }
 
@@ -318,29 +313,27 @@ async function FixturesBlock() {
   const upcomingMatches = matches.filter((m) => m.id !== featuredMatch?.id);
 
   return (
-    <AnimateOnScroll className="page-shell">
-      <section className="section-grid">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <SectionHeading
-            eyebrow="Fixtures"
-            title="Matchday schedule."
-          />
-          <Link
-            href="/fixtures"
-            className="inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
-          >
-            Full fixtures <ArrowRight size={18} />
-          </Link>
-        </div>
-        <StaggerChildren className="flex gap-5 scroll-snap-x lg:grid lg:grid-cols-3 lg:overflow-visible">
-          {upcomingMatches.slice(0, 3).map((match) => (
-            <div key={match.id} className="min-w-[85vw] sm:min-w-[340px] lg:min-w-0">
-              <MatchCard match={match} />
-            </div>
-          ))}
-        </StaggerChildren>
-      </section>
-    </AnimateOnScroll>
+    <section className="page-shell section-grid">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <SectionHeading
+          eyebrow="Fixtures"
+          title="Matchday schedule."
+        />
+        <Link
+          href="/fixtures"
+          className="inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
+        >
+          Full fixtures <ArrowRight size={18} />
+        </Link>
+      </div>
+      <div className="flex gap-5 scroll-snap-x lg:grid lg:grid-cols-3 lg:overflow-visible">
+        {upcomingMatches.slice(0, 3).map((match) => (
+          <div key={match.id} className="min-w-[85vw] sm:min-w-[340px] lg:min-w-0">
+            <MatchCard match={match} />
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -357,138 +350,136 @@ async function MembershipAndStandingsBlock() {
   ]);
 
   return (
-    <AnimateOnScroll className="page-shell">
-      <section className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+    <section className="page-shell grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+      <div className="glass-panel rounded-[34px] p-6">
+        <SectionHeading
+          eyebrow="Membership"
+          title="Join the Gikundiro family."
+        />
+        <div className="mt-6 grid gap-4">
+          {membershipPackages.map((membershipPackage) => (
+            <article
+              key={membershipPackage.id}
+              className="rounded-[26px] border border-border-soft bg-white/5 p-5"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="font-display text-3xl font-bold uppercase leading-none text-white">
+                    {membershipPackage.title}
+                  </p>
+                  <p className="mt-2 text-sm leading-7 text-slate-300">
+                    {membershipPackage.description}
+                  </p>
+                </div>
+                <div className="rounded-[22px] border border-border-soft bg-black/20 px-4 py-3 text-right">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                    Annual
+                  </p>
+                  <p className="mt-2 font-score text-4xl font-bold uppercase text-white">
+                    {formatCurrency(membershipPackage.annualPrice, club.currencyCode)}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {membershipPackage.perks.map((perk) => (
+                  <span
+                    key={perk}
+                    className="rounded-full border border-border-soft bg-white/4 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-slate-200"
+                  >
+                    {perk}
+                  </span>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+        <Link
+          href="/membership"
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-club-accent px-5 py-3 font-semibold text-club-ink transition hover:brightness-110"
+        >
+          Compare plans <ShieldCheck size={18} />
+        </Link>
+      </div>
+
+      <div className="grid gap-6">
         <div className="glass-panel rounded-[34px] p-6">
           <SectionHeading
-            eyebrow="Membership"
-            title="Join the Gikundiro family."
+            eyebrow="Standings"
+            title="Where we stand."
           />
-          <div className="mt-6 grid gap-4">
-            {membershipPackages.map((membershipPackage) => (
+          <div className="mt-6 overflow-x-auto overflow-hidden rounded-[26px] border border-border-soft">
+            <table className="w-full min-w-[400px] text-left text-sm">
+              <thead className="bg-white/8 text-[11px] uppercase tracking-[0.24em] text-slate-400">
+                <tr>
+                  <th className="px-4 py-3 text-center">Pos</th>
+                  <th className="px-4 py-3">Club</th>
+                  <th className="px-4 py-3 text-center">P</th>
+                  <th className="px-4 py-3 text-center">GD</th>
+                  <th className="px-4 py-3 text-center">Pts</th>
+                </tr>
+              </thead>
+              <tbody>
+                {standings.slice(0, 8).map((row) => (
+                  <tr
+                    key={row.club}
+                    className={row.highlight ? "bg-club-primary/15" : "bg-transparent"}
+                  >
+                    <td className="px-4 py-4 text-center font-mono opacity-60 text-xs">
+                      {row.position}
+                    </td>
+                    <td className="px-4 py-4 font-semibold text-white">
+                      {row.club}
+                    </td>
+                    <td className="px-4 py-4 text-center">{row.played}</td>
+                    <td className="px-4 py-4 text-center">{row.goalDifference}</td>
+                    <td className="px-4 py-4 text-center font-semibold text-white">
+                      {row.points}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Link
+            href="/standings"
+            className="mt-5 inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
+          >
+            Full table <Trophy size={18} />
+          </Link>
+        </div>
+
+        <div className="glass-panel rounded-[34px] p-6">
+          <SectionHeading
+            eyebrow="Supporter network"
+            title="Our chapters across Rwanda."
+          />
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            {fanClubs.slice(0, 3).map((clubItem) => (
               <article
-                key={membershipPackage.id}
-                className="rounded-[26px] border border-border-soft bg-white/5 p-5"
+                key={clubItem.id}
+                className="rounded-[24px] border border-border-soft bg-white/5 p-4"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="font-display text-3xl font-bold uppercase leading-none text-white">
-                      {membershipPackage.title}
-                    </p>
-                    <p className="mt-2 text-sm leading-7 text-slate-300">
-                      {membershipPackage.description}
-                    </p>
-                  </div>
-                  <div className="rounded-[22px] border border-border-soft bg-black/20 px-4 py-3 text-right">
-                    <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
-                      Annual
-                    </p>
-                    <p className="mt-2 font-score text-4xl font-bold uppercase text-white">
-                      {formatCurrency(membershipPackage.annualPrice, club.currencyCode)}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {membershipPackage.perks.map((perk) => (
-                    <span
-                      key={perk}
-                      className="rounded-full border border-border-soft bg-white/4 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-slate-200"
-                    >
-                      {perk}
-                    </span>
-                  ))}
-                </div>
+                <p className="font-display text-2xl font-bold uppercase leading-none text-white">
+                  {clubItem.name}
+                </p>
+                <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-club-accent">
+                  {clubItem.region}
+                </p>
+                <p className="mt-3 text-sm leading-7 text-slate-300">
+                  {clubItem.description}
+                </p>
               </article>
             ))}
           </div>
           <Link
-            href="/membership"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-club-accent px-5 py-3 font-semibold text-club-ink transition hover:brightness-110"
+            href="/fan-clubs"
+            className="mt-5 inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
           >
-            Compare plans <ShieldCheck size={18} />
+            Explore chapters <Users size={18} />
           </Link>
         </div>
-
-        <div className="grid gap-6">
-          <div className="glass-panel rounded-[34px] p-6">
-            <SectionHeading
-              eyebrow="Standings"
-              title="Where we stand."
-            />
-            <div className="mt-6 overflow-x-auto overflow-hidden rounded-[26px] border border-border-soft">
-              <table className="w-full min-w-[400px] text-left text-sm">
-                <thead className="bg-white/8 text-[11px] uppercase tracking-[0.24em] text-slate-400">
-                  <tr>
-                    <th className="px-4 py-3 text-center">Pos</th>
-                    <th className="px-4 py-3">Club</th>
-                    <th className="px-4 py-3 text-center">P</th>
-                    <th className="px-4 py-3 text-center">GD</th>
-                    <th className="px-4 py-3 text-center">Pts</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {standings.slice(0, 8).map((row) => (
-                    <tr
-                      key={row.club}
-                      className={row.highlight ? "bg-club-primary/15" : "bg-transparent"}
-                    >
-                      <td className="px-4 py-4 text-center font-mono opacity-60 text-xs">
-                        {row.position}
-                      </td>
-                      <td className="px-4 py-4 font-semibold text-white">
-                        {row.club}
-                      </td>
-                      <td className="px-4 py-4 text-center">{row.played}</td>
-                      <td className="px-4 py-4 text-center">{row.goalDifference}</td>
-                      <td className="px-4 py-4 text-center font-semibold text-white">
-                        {row.points}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <Link
-              href="/standings"
-              className="mt-5 inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
-            >
-              Full table <Trophy size={18} />
-            </Link>
-          </div>
-
-          <div className="glass-panel rounded-[34px] p-6">
-            <SectionHeading
-              eyebrow="Supporter network"
-              title="Our chapters across Rwanda."
-            />
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              {fanClubs.slice(0, 3).map((clubItem) => (
-                <article
-                  key={clubItem.id}
-                  className="rounded-[24px] border border-border-soft bg-white/5 p-4"
-                >
-                  <p className="font-display text-2xl font-bold uppercase leading-none text-white">
-                    {clubItem.name}
-                  </p>
-                  <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-club-accent">
-                    {clubItem.region}
-                  </p>
-                  <p className="mt-3 text-sm leading-7 text-slate-300">
-                    {clubItem.description}
-                  </p>
-                </article>
-              ))}
-            </div>
-            <Link
-              href="/fan-clubs"
-              className="mt-5 inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
-            >
-              Explore chapters <Users size={18} />
-            </Link>
-          </div>
-        </div>
-      </section>
-    </AnimateOnScroll>
+      </div>
+    </section>
   );
 }
 
@@ -500,27 +491,25 @@ async function NewsBlock() {
   const news = await getNewsArticles();
 
   return (
-    <AnimateOnScroll className="page-shell">
-      <section className="section-grid">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <SectionHeading
-            eyebrow="Editorial"
-            title="Inside Rayon Sports."
-          />
-          <Link
-            href="/news"
-            className="inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
-          >
-            Newsroom <ArrowRight size={18} />
-          </Link>
-        </div>
-        <StaggerChildren className="grid gap-5 xl:grid-cols-3">
-          {news.slice(0, 3).map((article) => (
-            <NewsCard key={article.id} article={article} />
-          ))}
-        </StaggerChildren>
-      </section>
-    </AnimateOnScroll>
+    <section className="page-shell section-grid">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <SectionHeading
+          eyebrow="Editorial"
+          title="Inside Rayon Sports."
+        />
+        <Link
+          href="/news"
+          className="inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
+        >
+          Newsroom <ArrowRight size={18} />
+        </Link>
+      </div>
+      <div className="grid gap-5 xl:grid-cols-3">
+        {news.slice(0, 3).map((article) => (
+          <NewsCard key={article.id} article={article} />
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -535,73 +524,71 @@ async function ShopAndIdentityBlock() {
   ]);
 
   return (
-    <AnimateOnScroll className="page-shell">
-      <section className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+    <section className="page-shell grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+      <div className="glass-panel rounded-[34px] p-6">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <SectionHeading
+            eyebrow="Shop"
+            title="Wear the badge."
+          />
+          <Link
+            href="/shop"
+            className="inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
+          >
+            Shop all <ArrowRight size={18} />
+          </Link>
+        </div>
+        <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {products.slice(0, 3).map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </div>
+
+      <div className="grid gap-6">
         <div className="glass-panel rounded-[34px] p-6">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <SectionHeading
-              eyebrow="Shop"
-              title="Wear the badge."
-            />
-            <Link
-              href="/shop"
-              className="inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
-            >
-              Shop all <ArrowRight size={18} />
-            </Link>
-          </div>
-          <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {products.slice(0, 3).map((product) => (
-              <ProductCard key={product.id} product={product} />
+          <SectionHeading
+            eyebrow="Club identity"
+            title="Gikundiro — the beloved."
+          />
+          <div className="mt-6 grid gap-4">
+            {clubHistoryMoments.map((moment) => (
+              <article
+                key={moment.title}
+                className="rounded-[24px] border border-border-soft bg-white/5 p-5"
+              >
+                <p className="font-display text-2xl font-bold uppercase leading-none text-white">
+                  {moment.title}
+                </p>
+                <p className="mt-3 text-sm leading-7 text-slate-300">
+                  {moment.body}
+                </p>
+              </article>
             ))}
           </div>
         </div>
-
-        <div className="grid gap-6">
-          <div className="glass-panel rounded-[34px] p-6">
-            <SectionHeading
-              eyebrow="Club identity"
-              title="Gikundiro — the beloved."
-            />
-            <div className="mt-6 grid gap-4">
-              {clubHistoryMoments.map((moment) => (
-                <article
-                  key={moment.title}
-                  className="rounded-[24px] border border-border-soft bg-white/5 p-5"
-                >
-                  <p className="font-display text-2xl font-bold uppercase leading-none text-white">
-                    {moment.title}
-                  </p>
-                  <p className="mt-3 text-sm leading-7 text-slate-300">
-                    {moment.body}
-                  </p>
-                </article>
-              ))}
-            </div>
-          </div>
-          <div className="glass-panel rounded-[34px] p-6">
-            <SectionHeading
-              eyebrow="Fan portal"
-              title="Your supporter account."
-            />
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/app"
-                className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-primary-light"
-              >
-                Continue to portal
-              </Link>
-              <Link
-                href="/history"
-                className="rounded-full border border-border-soft px-5 py-3 font-semibold text-white transition hover:bg-white/8"
-              >
-                Explore club history
-              </Link>
-            </div>
+        <div className="glass-panel rounded-[34px] p-6">
+          <SectionHeading
+            eyebrow="Fan portal"
+            title="Your supporter account."
+          />
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link
+              href="/app"
+              className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-primary-light"
+            >
+              Continue to portal
+            </Link>
+            <Link
+              href="/history"
+              className="rounded-full border border-border-soft px-5 py-3 font-semibold text-white transition hover:bg-white/8"
+            >
+              Explore club history
+            </Link>
           </div>
         </div>
-      </section>
-    </AnimateOnScroll>
+      </div>
+    </section>
   );
 }
 

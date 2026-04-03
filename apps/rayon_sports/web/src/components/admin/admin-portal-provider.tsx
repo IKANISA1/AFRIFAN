@@ -167,7 +167,6 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
         phone: normalizedPhone,
         options: {
           shouldCreateUser: false,
-          channel: "whatsapp",
           data: {
             club_id: "24",
           },

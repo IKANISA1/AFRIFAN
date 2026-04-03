@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/app/layout,_N_T_/app/membership/layout,_N_T_/app/membership/page,_N_T_/app/membership"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/app/membership/__PAGE__",
+    "/app/membership",
+    "/app",
+    "/_index",
+    "/_head"
+  ]
+}

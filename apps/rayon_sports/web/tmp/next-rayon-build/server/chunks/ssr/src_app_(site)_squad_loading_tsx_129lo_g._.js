@@ -1,0 +1,3 @@
+module.exports=[17948,a=>{"use strict";var b=a.i(7997),c=a.i(11182);a.s(["default",0,function(){return(0,b.jsx)("div",{className:"page-shell section-grid py-12",children:(0,b.jsx)("div",{className:"grid gap-5 sm:grid-cols-2 lg:grid-cols-4",children:Array.from({length:8}).map((a,d)=>(0,b.jsx)(c.SkeletonCard,{},d))})})}])},11208,a=>{a.n(a.i(17948))}];
+
+//# sourceMappingURL=src_app_%28site%29_squad_loading_tsx_129lo_g._.js.map

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Inter, Space_Mono, Bebas_Neue } from "next/font/google";
+import { Barlow_Condensed, Bebas_Neue, Inter } from "next/font/google";
 import "./globals.css";
 import { PwaShell } from "@/components/pwa/pwa-shell";
 import { absoluteUrl, siteConfig } from "@/lib/config";
@@ -8,24 +8,22 @@ import { buildSiteJsonLd } from "@/lib/metadata";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const barlow = Barlow_Condensed({
   variable: "--font-barlow",
   subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
+  weight: ["700"],
+  display: "swap",
 });
 
 const bebasNeue = Bebas_Neue({
   variable: "--font-bebas",
   subsets: ["latin"],
   weight: "400",
-});
-
-const spaceMono = Space_Mono({
-  variable: "--font-space-mono",
-  subsets: ["latin"],
-  weight: ["400", "700"],
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -98,7 +96,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${barlow.variable} ${spaceMono.variable} ${bebasNeue.variable} h-full antialiased`}
+      className={`${inter.variable} ${barlow.variable} ${bebasNeue.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <PwaShell />

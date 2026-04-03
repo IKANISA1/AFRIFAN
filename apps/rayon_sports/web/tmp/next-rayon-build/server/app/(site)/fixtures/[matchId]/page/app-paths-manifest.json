@@ -1,0 +1,3 @@
+{
+  "/(site)/fixtures/[matchId]/page": "app/(site)/fixtures/[matchId]/page.js"
+}

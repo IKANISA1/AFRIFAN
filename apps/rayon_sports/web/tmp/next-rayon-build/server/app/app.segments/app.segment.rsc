@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[37653,["/_next/static/chunks/1433zboye-07t.js","/_next/static/chunks/0d3shmwh5_nmn.js","/_next/static/chunks/04r2hmwr6qvds.js","/_next/static/chunks/10p0sr7dz-rv1.js","/_next/static/chunks/12qm~75brnytj.js"],"FanPortalProvider"]
+3:I[46716,["/_next/static/chunks/1433zboye-07t.js","/_next/static/chunks/0d3shmwh5_nmn.js","/_next/static/chunks/04r2hmwr6qvds.js","/_next/static/chunks/10p0sr7dz-rv1.js","/_next/static/chunks/12qm~75brnytj.js"],"PortalShell"]
+4:I[39756,["/_next/static/chunks/1433zboye-07t.js","/_next/static/chunks/0d3shmwh5_nmn.js"],"default"]
+5:I[37457,["/_next/static/chunks/1433zboye-07t.js","/_next/static/chunks/0d3shmwh5_nmn.js"],"default"]
+0:{"rsc":["$","$1","c",{"children":[[["$","script","script-0",{"src":"/_next/static/chunks/04r2hmwr6qvds.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/10p0sr7dz-rv1.js","async":true}],["$","script","script-2",{"src":"/_next/static/chunks/12qm~75brnytj.js","async":true}]],["$","$L2",null,{"children":["$","$L3",null,{"children":["$","$L4",null,{"parallelRouterKey":"children","template":["$","$L5",null,{}]}]}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"f-F3iYIDHx2TeGVy-vBVT"}

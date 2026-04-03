@@ -1,0 +1,179 @@
+{
+  "app": {
+    "[project]/src/app/(site)/circles/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/contact/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/fan-clubs/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/fixtures/[matchId]/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/fixtures/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/history/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/membership/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/news/[articleId]/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/news/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/privacy/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/results/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/shop/[productId]/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/shop/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/squad/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/standings/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/terms/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/tickets/[matchId]/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/(site)/tickets/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/_not-found/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/admin/cms/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/admin/community/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/admin/contributions/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/admin/matches/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/admin/membership/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/admin/notifications/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/admin/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/admin/settings/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/admin/shop/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/admin/sms-monitor/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/admin/squad/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/admin/standings/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/app/contributions/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/app/fan-clubs/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/app/live/[matchId]/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/app/membership/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/app/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/app/profile/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/app/shop/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/app/tickets/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/app/xp/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/offline/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ],
+    "[project]/src/app/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/d9b5d46d9a89ffe6-s.p.0agk34fg-1.z0.woff2"
+    ]
+  },
+  "appUsingSizeAdjust": true,
+  "pages": {},
+  "pagesUsingSizeAdjust": false
+}

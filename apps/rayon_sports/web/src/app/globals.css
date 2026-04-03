@@ -71,7 +71,7 @@
   --font-sans: var(--font-inter);
   --font-display: var(--font-barlow);
   --font-score: var(--font-bebas);
-  --font-mono: var(--font-space-mono);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -107,7 +107,7 @@ body {
     radial-gradient(ellipse 40% 30% at 60% 100%, rgba(212, 160, 23, 0.08), transparent 40%),
     linear-gradient(180deg, #051228 0%, #071830 40%, #040a18 100%);
   color: var(--foreground);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 

@@ -1,3 +1,4 @@
+import { cache } from "react";
 import {
   fallbackClubProfile,
   fallbackContributionGroups,
@@ -40,6 +41,7 @@ const standingsTableCandidates = [
   "club_standings",
   "rs_standings",
 ];
+const accessibleTableCache = new Map<string, Promise<string>>();
 
 function sanitizeMediaUrl(value: unknown, fallback: string) {
   const candidate = safeString(value);
@@ -375,17 +377,28 @@ async function resolveAccessibleTable(
   client: NonNullable<ReturnType<typeof getAdminSupabase>>,
   candidates: string[],
 ) {
-  for (const table of candidates) {
-    const { error } = await client.from(table).select("id").limit(1);
-    if (!error) {
-      return table;
-    }
+  const cacheKey = candidates.join("|");
+  const cached = accessibleTableCache.get(cacheKey);
+  if (cached) {
+    return cached;
   }
 
-  return candidates[0];
+  const lookup = (async () => {
+    for (const table of candidates) {
+      const { error } = await client.from(table).select("id").limit(1);
+      if (!error) {
+        return table;
+      }
+    }
+
+    return candidates[0];
+  })();
+
+  accessibleTableCache.set(cacheKey, lookup);
+  return lookup;
 }
 
-export async function getClubProfile() {
+export const getClubProfile = cache(async function getClubProfile() {
   const client = getAdminSupabase();
   if (client == null) return fallbackClubProfile;
 
@@ -400,9 +413,9 @@ export async function getClubProfile() {
   } catch {
     return fallbackClubProfile;
   }
-}
+});
 
-export async function getMatches() {
+export const getMatches = cache(async function getMatches() {
   const client = getAdminSupabase();
   if (client == null) return fallbackMatches;
 
@@ -419,14 +432,14 @@ export async function getMatches() {
   } catch {
     return fallbackMatches;
   }
-}
+});
 
-export async function getMatchById(matchId: string) {
+export const getMatchById = cache(async function getMatchById(matchId: string) {
   const matches = await getMatches();
   return matches.find((match) => match.id === matchId) ?? null;
-}
+});
 
-export async function getNewsArticles() {
+export const getNewsArticles = cache(async function getNewsArticles() {
   const client = getAdminSupabase();
   if (client == null) return fallbackNewsArticles;
 
@@ -445,14 +458,14 @@ export async function getNewsArticles() {
   } catch {
     return fallbackNewsArticles;
   }
-}
+});
 
-export async function getNewsArticleById(articleId: string) {
+export const getNewsArticleById = cache(async function getNewsArticleById(articleId: string) {
   const articles = await getNewsArticles();
   return articles.find((article) => article.id === articleId) ?? null;
-}
+});
 
-export async function getProducts() {
+export const getProducts = cache(async function getProducts() {
   const client = getAdminSupabase();
   if (client == null) return fallbackProducts;
 
@@ -471,14 +484,14 @@ export async function getProducts() {
   } catch {
     return fallbackProducts;
   }
-}
+});
 
-export async function getProductById(productId: string) {
+export const getProductById = cache(async function getProductById(productId: string) {
   const products = await getProducts();
   return products.find((product) => product.id === productId) ?? null;
-}
+});
 
-export async function getMembershipPackages() {
+export const getMembershipPackages = cache(async function getMembershipPackages() {
   const client = getAdminSupabase();
   if (client == null) return fallbackMembershipPackages;
 
@@ -510,9 +523,9 @@ export async function getMembershipPackages() {
   } catch {
     return fallbackMembershipPackages;
   }
-}
+});
 
-export async function getFanClubs() {
+export const getFanClubs = cache(async function getFanClubs() {
   const client = getAdminSupabase();
   if (client == null) return fallbackFanClubs;
 
@@ -542,9 +555,9 @@ export async function getFanClubs() {
   } catch {
     return fallbackFanClubs;
   }
-}
+});
 
-export async function getContributionGroups() {
+export const getContributionGroups = cache(async function getContributionGroups() {
   const client = getAdminSupabase();
   if (client == null) return fallbackContributionGroups;
 
@@ -576,9 +589,9 @@ export async function getContributionGroups() {
   } catch {
     return fallbackContributionGroups;
   }
-}
+});
 
-export async function getStandings(): Promise<StandingRow[]> {
+export const getStandings = cache(async function getStandings(): Promise<StandingRow[]> {
   const client = getAdminSupabase();
   if (client == null) {
     return fallbackStandings;
@@ -609,9 +622,9 @@ export async function getStandings(): Promise<StandingRow[]> {
   } catch {}
 
   return fallbackStandings;
-}
+});
 
-export async function getSquad(): Promise<SquadPlayer[]> {
+export const getSquad = cache(async function getSquad(): Promise<SquadPlayer[]> {
   const client = getAdminSupabase();
   if (client == null) {
     return fallbackSquad;
@@ -642,9 +655,9 @@ export async function getSquad(): Promise<SquadPlayer[]> {
   } catch {}
 
   return fallbackSquad;
-}
+});
 
-export async function getHomePageData() {
+export const getHomePageData = cache(async function getHomePageData() {
   const [club, matches, news, products, membershipPackages, fanClubs, groups, standings] =
     await Promise.all([
       getClubProfile(),
@@ -675,9 +688,9 @@ export async function getHomePageData() {
     contributionGroups: groups,
     standings,
   };
-}
+});
 
-export async function getSiteSearchIndex(): Promise<SearchIndexItem[]> {
+export const getSiteSearchIndex = cache(async function getSiteSearchIndex(): Promise<SearchIndexItem[]> {
   const [matches, news, products, groups] = await Promise.all([
     getMatches(),
     getNewsArticles(),
@@ -722,4 +735,4 @@ export async function getSiteSearchIndex(): Promise<SearchIndexItem[]> {
       meta: group.groupType,
     })),
   ];
-}
+});
