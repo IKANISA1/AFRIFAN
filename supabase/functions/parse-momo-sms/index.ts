@@ -1,16 +1,17 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
-  errorResponse,
-  handleCors,
-  jsonResponse,
-  methodNotAllowed,
-} from "../_shared/http.ts";
+  corsPreflightResponse,
+  corsHeaders,
+  jsonOk,
+  jsonError,
+} from "../_shared/response.ts";
+import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import {
   recordEdgeFunctionFailure,
   recordOperationalHealthEvent,
 } from "../_shared/observability.ts";
-import { createAdminClient, createUserClient } from "../_shared/supabase.ts";
+import { createAdminClient } from "../_shared/supabase.ts";
 import {
   type AiProvider,
   buildPrompt,
@@ -62,35 +63,24 @@ function deriveLedgerScope(
   }
 }
 
-Deno.serve(async (request: Request) => {
-  const corsResponse = handleCors(request);
-  if (corsResponse) {
-    return corsResponse;
+async function handleRequest(request: Request) {
+  if (request.method === "OPTIONS") {
+    return corsPreflightResponse();
   }
 
   if (request.method !== "POST") {
-    return methodNotAllowed("POST");
+    return jsonError("Method not allowed", 405);
   }
 
-  const authorization = request.headers.get("authorization");
-  if (!authorization) {
-    return errorResponse("Authentication required", 401);
-  }
+  const validated = await validateRequest(request);
+  if (isErrorResponse(validated)) return validated;
+  const { userId } = validated;
 
   try {
-    const userClient = createUserClient(authorization);
-    const {
-      data: { user },
-      error: userError,
-    } = await userClient.auth.getUser();
-    if (userError || !user) {
-      return errorResponse("Authentication required", 401);
-    }
-
     const body = await request.json() as ParseRequest;
     const rawSmsId = body.rawSmsId?.trim();
     if (!rawSmsId) {
-      return errorResponse("rawSmsId is required", 400);
+      return jsonError("rawSmsId is required", 400);
     }
 
     const adminClient = createAdminClient();
@@ -98,7 +88,7 @@ Deno.serve(async (request: Request) => {
       .from("momo_sms_raw")
       .select("*")
       .eq("id", rawSmsId)
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .maybeSingle();
 
     if (rawSmsResult.error) {
@@ -107,11 +97,11 @@ Deno.serve(async (request: Request) => {
 
     const rawSms = rawSmsResult.data as RawSmsRecord | null;
     if (!rawSms) {
-      return errorResponse("Raw SMS record not found", 404);
+      return jsonError("Raw SMS record not found", 404);
     }
 
     if (rawSmsResult.data?.parse_status === "parsed" && !body.forceReparse) {
-      return jsonResponse({
+      return jsonOk({
         success: true,
         skipped: true,
         reason: "already_parsed",
@@ -452,7 +442,7 @@ Deno.serve(async (request: Request) => {
         }
       }
 
-      return jsonResponse({
+      return jsonOk({
         success: true,
         rawSmsId,
         parsedSmsId,
@@ -523,9 +513,15 @@ Deno.serve(async (request: Request) => {
     }
   } catch (error) {
     console.error("parse-momo-sms failed", error);
-    return errorResponse(
+    return jsonError(
       error instanceof Error ? error.message : "Failed to parse MoMo SMS",
       500,
     );
   }
-});
+}
+
+if (import.meta.main) {
+  Deno.serve((req: Request) => handleRequest(req).then(
+    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+  ));
+}

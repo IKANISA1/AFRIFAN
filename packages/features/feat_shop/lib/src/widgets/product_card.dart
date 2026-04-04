@@ -398,11 +398,7 @@ class _AddToCartFab extends StatelessWidget {
             ),
           ],
         ),
-        child: Icon(
-          Icons.add_rounded,
-          color: ColorTokens.onSurface,
-          size: 28,
-        ),
+        child: Icon(Icons.add_rounded, color: ColorTokens.onSurface, size: 28),
       ),
     );
   }

@@ -1,18 +1,18 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
-  errorResponse,
-  handleCors,
-  jsonResponse,
-  methodNotAllowed,
-} from "../_shared/http.ts";
+  corsPreflightResponse,
+  corsHeaders,
+  jsonOk,
+  jsonError,
+} from "../_shared/response.ts";
+import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { HttpError } from "../_shared/auth.ts";
 import { requireAppCheckToken } from "../_shared/app_check.ts";
 import {
   resolveBiopayPaymentRouting,
   type BiopayPaymentRouting,
 } from "../_shared/biopay_payment.ts";
-import { resolveClubIdFromMetadata } from "../_shared/club.ts";
 import {
   recordEdgeFunctionFailure,
   recordOperationalHealthEvent,
@@ -24,7 +24,6 @@ import {
 } from "../_shared/biopay_signed_token.ts";
 import {
   createAdminClient,
-  createUserClient,
   getSupabaseUrl,
 } from "../_shared/supabase.ts";
 
@@ -45,20 +44,10 @@ type HandoffProfileRow = {
 };
 
 type AdminClientLike = ReturnType<typeof createAdminClient> | any;
-type UserClientLike = {
-  auth: {
-    getUser(): Promise<{
-      data: {
-        user: { id: string; app_metadata?: Record<string, unknown> } | null;
-      };
-      error: unknown;
-    }>;
-  };
-};
 
 export type BiopayCreateHandoffTokenDependencies = {
   createAdminClient: () => AdminClientLike;
-  createUserClient: (authorization: string) => UserClientLike;
+  validateRequest: typeof validateRequest;
   requireAppCheckToken: (request: Request) => Promise<string>;
   signBiopayToken: (
     payload: SignedBiopayTokenPayload,
@@ -96,8 +85,7 @@ function buildResolverUrl(token: string) {
 
 const defaultDependencies: BiopayCreateHandoffTokenDependencies = {
   createAdminClient,
-  createUserClient: (authorization) =>
-    createUserClient(authorization) as unknown as UserClientLike,
+  validateRequest,
   requireAppCheckToken,
   signBiopayToken,
   resolvePaymentRouting: resolveBiopayPaymentRouting,
@@ -116,62 +104,50 @@ export function createBiopayCreateHandoffTokenHandler(
   };
 
   return async (request: Request) => {
-    const corsResponse = handleCors(request);
-    if (corsResponse) {
-      return corsResponse;
+    if (request.method === "OPTIONS") {
+      return corsPreflightResponse();
     }
 
     if (request.method !== "POST") {
-      return methodNotAllowed("POST");
+      return jsonError("Method not allowed", 405);
     }
 
     const adminClient = deps.createAdminClient();
     let requesterUserId: string | null = null;
 
     try {
-      const authorization = request.headers.get("authorization") ??
-        request.headers.get("Authorization");
-      if (!authorization) {
-        return errorResponse("Missing authorization header.", 401);
-      }
-
-      const userClient = deps.createUserClient(authorization);
-      const { data: authData, error: authError } = await userClient.auth
-        .getUser();
-      if (authError || !authData.user) {
-        return errorResponse("Unauthorized.", 401);
-      }
-      requesterUserId = authData.user.id;
+      const validated = await deps.validateRequest(request, { requireClubId: true });
+      if (isErrorResponse(validated)) return validated;
+      
+      const { userId, clubId } = validated;
+      requesterUserId = userId;
 
       await deps.requireAppCheckToken(request);
-      const clubId = await resolveClubIdFromMetadata(
-        adminClient,
-        authData.user.app_metadata,
-      );
 
       const body = await request.json() as CreateHandoffTokenRequest;
       const channel = (body.channel ?? "qr").trim().toLowerCase();
       if (channel !== "qr" && channel !== "nfc") {
-        return errorResponse("channel must be qr or nfc.", 400);
+        return jsonError("channel must be qr or nfc.", 400);
       }
 
       const amount = typeof body.amount === "number" && body.amount > 0
         ? Math.trunc(body.amount)
         : null;
       const reference = body.reference?.trim().slice(0, 72);
+      const numericClubId = Number(clubId);
 
       const { data: profile, error: profileError } = await adminClient
         .from("biopay_profiles")
         .select(
           "id, club_id, public_id, display_name, route_type, recipient_value, country_code",
         )
-        .eq("user_id", authData.user.id)
-        .eq("club_id", clubId)
+        .eq("user_id", userId)
+        .eq("club_id", numericClubId)
         .eq("active", true)
         .maybeSingle();
 
       if (profileError || !profile) {
-        return errorResponse(
+        return jsonError(
           "Active BioPay enrollment required before sharing a payment request.",
           409,
         );
@@ -218,7 +194,7 @@ export function createBiopayCreateHandoffTokenHandler(
         severity: "info",
         message: "BioPay handoff token created.",
         functionName: "biopay-create-handoff-token",
-        userId: authData.user.id,
+        userId: userId,
         subjectType: "biopay_profile",
         subjectId: profile.id?.toString() ?? null,
         metadata: {
@@ -228,7 +204,7 @@ export function createBiopayCreateHandoffTokenHandler(
         },
       });
 
-      return jsonResponse({
+      return jsonOk({
         success: true,
         data: {
           token,
@@ -248,10 +224,10 @@ export function createBiopayCreateHandoffTokenHandler(
       });
     } catch (error) {
       if (error instanceof SyntaxError) {
-        return errorResponse("Invalid JSON body.", 400);
+        return jsonError("Invalid JSON body.", 400);
       }
       if (error instanceof HttpError) {
-        return errorResponse(error.message, error.status);
+        return jsonError(error.message, error.status);
       }
 
       await deps.recordEdgeFunctionFailure(adminClient, {
@@ -260,7 +236,8 @@ export function createBiopayCreateHandoffTokenHandler(
         issueCode: "biopay_create_handoff_token_failed",
         userId: requesterUserId,
       });
-      return errorResponse(
+      console.error("biopay-create-handoff-token failed:", error);
+      return jsonError(
         error instanceof Error
           ? error.message
           : "BioPay handoff token creation failed.",
@@ -271,5 +248,8 @@ export function createBiopayCreateHandoffTokenHandler(
 }
 
 if (import.meta.main) {
-  Deno.serve(createBiopayCreateHandoffTokenHandler());
+  const handler = createBiopayCreateHandoffTokenHandler();
+  Deno.serve((req: Request) => handler(req).then(
+    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+  ));
 }

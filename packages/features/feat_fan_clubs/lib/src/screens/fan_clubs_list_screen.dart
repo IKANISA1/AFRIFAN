@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class FanClubsListScreen extends ConsumerStatefulWidget {
+import '../widgets/fan_club_cards.dart';class FanClubsListScreen extends ConsumerStatefulWidget {
   const FanClubsListScreen({super.key});
 
   @override
@@ -279,107 +279,10 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                       padding: const EdgeInsets.symmetric(
                         horizontal: SpacingTokens.spacing6,
                       ),
-                      child: GlassCard(
-                        padding: EdgeInsets.zero,
+                      child: FanClubFeaturedCard(
+                        club: featuredClub,
                         onTap: () =>
                             context.push('/fan-clubs/${featuredClub['id']}'),
-                        child: Container(
-                          constraints: const BoxConstraints(minHeight: 200),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                ColorTokens.clubPrimary.withValues(alpha: 0.33),
-                                ColorTokens.background.withValues(alpha: 0.67),
-                                ColorTokens.surfaceContainerLowest,
-                              ],
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(
-                              SpacingTokens.spacing6,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: ColorTokens.clubAccent.withValues(
-                                      alpha: 0.16,
-                                    ),
-                                    borderRadius: BorderRadius.circular(999),
-                                  ),
-                                  child: Text(
-                                    'FEATURED CLUB',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w700,
-                                      color: ColorTokens.clubAccent,
-                                      letterSpacing: 1.3,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: SpacingTokens.spacing3),
-                                Text(
-                                  (featuredClub['name']?.toString() ??
-                                          'FAN CLUB')
-                                      .toUpperCase(),
-                                  style: GoogleFonts.barlowCondensed(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w800,
-                                    color: ColorTokens.onSurface,
-                                    letterSpacing: 0.6,
-                                    height: 1,
-                                  ),
-                                ),
-                                const SizedBox(height: SpacingTokens.spacing2),
-                                Text(
-                                  featuredClub['description']?.toString() ??
-                                      'View chapter details.',
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TypographyTokens.bodyMedium().copyWith(
-                                    color: ColorTokens.onSurface.withValues(
-                                      alpha: 0.88,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: SpacingTokens.spacing4),
-                                Row(
-                                  children: [
-                                    _FeaturedMeta(
-                                      label: 'REGION',
-                                      value:
-                                          featuredClub['region']?.toString() ??
-                                          'Unknown',
-                                    ),
-                                    const SizedBox(
-                                      width: SpacingTokens.spacing3,
-                                    ),
-                                    _FeaturedMeta(
-                                      label: 'MEMBERS',
-                                      value:
-                                          '${(featuredClub['member_count'] as num?)?.toInt() ?? 0}',
-                                    ),
-                                    const SizedBox(
-                                      width: SpacingTokens.spacing3,
-                                    ),
-                                    _FeaturedMeta(
-                                      label: 'EVENTS',
-                                      value:
-                                          '${(featuredClub['event_count'] as num?)?.toInt() ?? 0}',
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                       ),
                     ),
                   ),
@@ -490,121 +393,12 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                               ? SpacingTokens.spacing20
                               : SpacingTokens.spacing3,
                         ),
-                        child: GlassCard(
-                          animate: false,
+                        child: FanClubListItem(
+                          club: club,
+                          isJoined: joined,
+                          isOfficial: _isOfficial(club),
                           onTap: () => context.push('/fan-clubs/$clubId'),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          (club['name']?.toString() ??
-                                                  'Fan Club')
-                                              .toUpperCase(),
-                                          style: GoogleFonts.barlowCondensed(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.w800,
-                                            color: ColorTokens.onSurface,
-                                            height: 1,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: SpacingTokens.spacing2,
-                                        ),
-                                        Text(
-                                          club['description']?.toString() ??
-                                              'Supporter chapter details unavailable.',
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TypographyTokens.bodyMedium(),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: SpacingTokens.spacing3),
-                                  if (_isOfficial(club))
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: ColorTokens.clubAccent
-                                            .withValues(alpha: 0.14),
-                                        borderRadius: BorderRadius.circular(
-                                          999,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'OFFICIAL',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w700,
-                                          color: ColorTokens.clubAccent,
-                                          letterSpacing: 1.1,
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              const SizedBox(height: SpacingTokens.spacing4),
-                              Wrap(
-                                spacing: SpacingTokens.spacing2,
-                                runSpacing: SpacingTokens.spacing2,
-                                children: [
-                                  _MetaPill(
-                                    icon: Icons.place_outlined,
-                                    label:
-                                        club['region']?.toString() ?? 'Unknown',
-                                  ),
-                                  _MetaPill(
-                                    icon: Icons.people_outline_rounded,
-                                    label: '$members members',
-                                  ),
-                                  _MetaPill(
-                                    icon: Icons.star_rounded,
-                                    label: rating == 0
-                                        ? 'New'
-                                        : rating.toStringAsFixed(1),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: SpacingTokens.spacing4),
-                              Column(
-                                children: [
-                                  ClaymorphicButton(
-                                    label: joined ? 'JOINED' : 'JOIN CLUB',
-                                    width: double.infinity,
-                                    onPressed: () => _toggleJoin(club),
-                                  ),
-                                  const SizedBox(height: SpacingTokens.spacing2),
-                                  OutlinedButton(
-                                    onPressed: () =>
-                                        context.push('/fan-clubs/$clubId'),
-                                    style: OutlinedButton.styleFrom(
-                                      minimumSize: const Size(
-                                        double.infinity,
-                                        52,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          18,
-                                        ),
-                                      ),
-                                    ),
-                                    child: const Text('VIEW DETAILS'),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                          onJoinToggled: () => _toggleJoin(club),
                         ),
                       );
                     }, childCount: _visibleClubs.length),
@@ -617,72 +411,4 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
     );
   }
 }
-
-class _FeaturedMeta extends StatelessWidget {
-  const _FeaturedMeta({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: ColorTokens.onSurfaceVariant,
-              letterSpacing: 1.1,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: GoogleFonts.barlowCondensed(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: ColorTokens.onSurface,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MetaPill extends StatelessWidget {
-  const _MetaPill({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: ColorTokens.onSurfaceVariant),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              color: ColorTokens.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

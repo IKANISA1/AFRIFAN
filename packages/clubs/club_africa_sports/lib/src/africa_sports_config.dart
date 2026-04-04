@@ -38,7 +38,7 @@ class AfricaSportsConfig implements ClubConfig {
   ClubColors get colors => const ClubColors(
     primary: Color(0xFF006B3F),
     secondary: Color(0xFFCC0000),
-    accent: Color(0xFFFFFFFF),
+    accent: Color(0xFFD1D5DB),
     gradient: [Color(0xFF004D2C), Color(0xFF002211)],
   );
 

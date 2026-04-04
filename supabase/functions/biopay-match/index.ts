@@ -1,12 +1,14 @@
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+
 import {
-  errorResponse,
-  handleCors,
-  jsonResponse,
-  methodNotAllowed,
-} from "../_shared/http.ts";
+  corsPreflightResponse,
+  corsHeaders,
+  jsonOk,
+  jsonError,
+} from "../_shared/response.ts";
+import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { HttpError } from "../_shared/auth.ts";
 import { requireAppCheckToken } from "../_shared/app_check.ts";
-import { resolveClubIdFromMetadata } from "../_shared/club.ts";
 import { normalizeBiopayEmbedding } from "../_shared/biopay_embedding.ts";
 import { validateBiopayLivenessMetadata } from "../_shared/biopay_liveness.ts";
 import {
@@ -25,23 +27,13 @@ import {
   generateBiopayNonce,
   signBiopayToken,
 } from "../_shared/biopay_signed_token.ts";
-import { createAdminClient, createUserClient } from "../_shared/supabase.ts";
+import { createAdminClient } from "../_shared/supabase.ts";
 import type {
   BiopayMatchProtectionConfig,
   BiopayMatchRateOutcome,
 } from "../_shared/biopay_match_abuse.ts";
 
 type AdminClientLike = unknown;
-type UserClientLike = {
-  auth: {
-    getUser(): Promise<{
-      data: {
-        user: { id: string; app_metadata?: Record<string, unknown> } | null;
-      };
-      error: unknown;
-    }>;
-  };
-};
 
 type MatchRequest = {
   embedding?: unknown;
@@ -76,7 +68,7 @@ type MatchEventInsert = {
 
 export type BiopayMatchHandlerDependencies = {
   createAdminClient: () => AdminClientLike;
-  createUserClient: (authorization: string) => UserClientLike;
+  validateRequest: typeof validateRequest;
   requireAppCheckToken: (request: Request) => Promise<string>;
   validateLiveness: typeof validateBiopayLivenessMetadata;
   now: () => Date;
@@ -200,7 +192,7 @@ async function insertMatchEvent(
 
 const defaultDependencies: BiopayMatchHandlerDependencies = {
   createAdminClient,
-  createUserClient,
+  validateRequest,
   requireAppCheckToken,
   validateLiveness: validateBiopayLivenessMetadata,
   now: () => new Date(),
@@ -246,39 +238,26 @@ export function createBiopayMatchHandler(
   };
 
   return async (request: Request) => {
-    const corsResponse = handleCors(request);
-    if (corsResponse) {
-      return corsResponse;
+    if (request.method === "OPTIONS") {
+      return corsPreflightResponse();
     }
 
     if (request.method !== "POST") {
-      return methodNotAllowed("POST");
+      return jsonError("Method not allowed", 405);
     }
 
     const adminClient = deps.createAdminClient();
     let requesterUserId: string | null = null;
 
     try {
-      const authorization = request.headers.get("authorization") ??
-        request.headers.get("Authorization");
-      if (!authorization) {
-        return errorResponse("Missing authorization header.", 401);
-      }
+      const validated = await deps.validateRequest(request, { requireClubId: true });
+      if (isErrorResponse(validated)) return validated;
+      
+      const { userId, clubId } = validated;
+      requesterUserId = userId;
+      const numericClubId = Number(clubId);
 
-      const userClient = deps.createUserClient(authorization);
-      const { data: authData, error: authError } = await userClient.auth
-        .getUser();
-      if (authError || !authData.user) {
-        return errorResponse("Unauthorized.", 401);
-      }
-
-      requesterUserId = authData.user.id;
       await deps.requireAppCheckToken(request);
-
-      const clubId = await resolveClubIdFromMetadata(
-        adminClient as ReturnType<typeof createAdminClient>,
-        authData.user.app_metadata,
-      );
 
       const now = deps.now();
       const body = await request.json() as MatchRequest;
@@ -293,7 +272,7 @@ export function createBiopayMatchHandler(
       const liveness = await deps.validateLiveness(body.liveness, {
         adminClient: adminClient as ReturnType<typeof createAdminClient>,
         requesterUserId,
-        clubId,
+        clubId: numericClubId,
         mode: "payment",
       });
       const protectionConfig = await deps.getProtectionConfig(adminClient);
@@ -365,9 +344,10 @@ export function createBiopayMatchHandler(
               lockout_until: lockoutUntil,
             },
           });
-          return errorResponse(
+          return jsonError(
             "Too many failed BioPay match attempts. Please wait before trying again.",
             423,
+            undefined,
             { retryAfterSeconds, lockoutUntil },
           );
         }
@@ -408,9 +388,10 @@ export function createBiopayMatchHandler(
             limit: protectionConfig.userMaxAttempts,
           },
         });
-        return errorResponse(
+        return jsonError(
           "Too many BioPay match attempts. Please wait a moment before trying again.",
           429,
+          undefined,
           { retryAfterSeconds: protectionConfig.rateWindowSeconds },
         );
       }
@@ -451,15 +432,16 @@ export function createBiopayMatchHandler(
               limit: protectionConfig.ipMaxAttempts,
             },
           });
-          return errorResponse(
+          return jsonError(
             "Too many BioPay match attempts. Please wait a moment before trying again.",
             429,
+            undefined,
             { retryAfterSeconds: protectionConfig.rateWindowSeconds },
           );
         }
       }
 
-      const row = await deps.runMatchRpc(adminClient, clubId, embedding);
+      const row = await deps.runMatchRpc(adminClient, numericClubId, embedding);
       const score = Number(row?.score ?? 0);
       const normalizedScore = Number.isFinite(score) ? score : 0;
       const hasMatch = !!row &&
@@ -476,7 +458,7 @@ export function createBiopayMatchHandler(
       try {
         await deps.insertMatchEvent(adminClient, {
           requesterUserId,
-          clubId,
+          clubId: numericClubId,
           matchedProfileId: hasMatch && row?.profile_id != null
             ? row.profile_id.toString()
             : null,
@@ -569,9 +551,10 @@ export function createBiopayMatchHandler(
               lockout_until: lockoutUntil,
             },
           });
-          return errorResponse(
+          return jsonError(
             "Too many failed BioPay match attempts. Please wait before trying again.",
             423,
+            undefined,
             {
               retryAfterSeconds: protectionConfig.lockoutSeconds,
               lockoutUntil,
@@ -579,7 +562,7 @@ export function createBiopayMatchHandler(
           );
         }
 
-        return jsonResponse({
+        return jsonOk({
           success: true,
           data: {
             match: false,
@@ -604,7 +587,7 @@ export function createBiopayMatchHandler(
         score: normalizedScore,
       });
 
-      return jsonResponse({
+      return jsonOk({
         success: true,
         data: {
           match: true,
@@ -615,13 +598,13 @@ export function createBiopayMatchHandler(
       });
     } catch (error) {
       if (error instanceof SyntaxError) {
-        return errorResponse("Invalid JSON body", 400);
+        return jsonError("Invalid JSON body", 400);
       }
       if (error instanceof HttpError) {
-        return errorResponse(error.message, error.status);
+        return jsonError(error.message, error.status);
       }
       if (error instanceof BiopayValidationError) {
-        return errorResponse(error.message, 400);
+        return jsonError(error.message, 400);
       }
 
       await deps.recordEdgeFunctionFailure(adminClient, {
@@ -630,7 +613,8 @@ export function createBiopayMatchHandler(
         issueCode: "biopay_match_failed",
         userId: requesterUserId,
       });
-      return errorResponse(
+      console.error("biopay-match failed:", error);
+      return jsonError(
         error instanceof Error ? error.message : "BioPay match failed.",
         500,
       );
@@ -639,5 +623,8 @@ export function createBiopayMatchHandler(
 }
 
 if (import.meta.main) {
-  Deno.serve(createBiopayMatchHandler());
+  const handler = createBiopayMatchHandler();
+  Deno.serve((req: Request) => handler(req).then(
+    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+  ));
 }

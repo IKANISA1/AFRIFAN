@@ -37,7 +37,7 @@ class TpMazembeConfig implements ClubConfig {
   @override
   ClubColors get colors => const ClubColors(
     primary: Color(0xFF000000),
-    secondary: Color(0xFFFFFFFF),
+    secondary: Color(0xFFD1D5DB),
     accent: Color(0xFFC0C0C0),
     gradient: [Color(0xFF1A1A1A), Color(0xFF000000)],
   );

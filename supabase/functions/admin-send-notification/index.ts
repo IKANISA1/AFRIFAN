@@ -1,32 +1,31 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-import { HttpError, requireAdminCaller } from "../_shared/auth.ts";
 import {
   audienceColumns,
   buildDeliveryUpdate,
   dispatchNotification,
   parseNotificationRequest,
-  resolveCallerClubId,
   selectRecipientUserIds,
 } from "../_shared/notifications.ts";
 import {
-  errorResponse,
-  handleCors,
-  jsonResponse,
-  methodNotAllowed,
-} from "../_shared/http.ts";
+  corsPreflightResponse,
+  corsHeaders,
+  jsonOk,
+  jsonError,
+} from "../_shared/response.ts";
+import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
 type AdminClientLike = ReturnType<typeof createAdminClient>;
 
 type Dependencies = {
   createAdminClient: () => AdminClientLike;
-  requireAdminCaller: typeof requireAdminCaller;
+  validateRequest: typeof validateRequest;
 };
 
 const defaultDependencies: Dependencies = {
   createAdminClient,
-  requireAdminCaller,
+  validateRequest,
 };
 
 export function createAdminSendNotificationHandler(
@@ -38,26 +37,29 @@ export function createAdminSendNotificationHandler(
   };
 
   return async (request: Request) => {
-    const corsResponse = handleCors(request);
-    if (corsResponse) {
-      return corsResponse;
+    if (request.method === "OPTIONS") {
+      return corsPreflightResponse();
     }
 
     if (request.method !== "POST") {
-      return methodNotAllowed("POST");
+      return jsonError("Method not allowed", 405);
     }
 
     try {
-      const caller = await deps.requireAdminCaller(request);
+      // Extract userId and clubId from JWT based on new shared architecture
+      const validated = await deps.validateRequest(request, { requireClubId: true, requireAdmin: true });
+      if (isErrorResponse(validated)) return validated;
+      const { userId, clubId } = validated;
+      const numericClubId = Number(clubId);
+      
       const adminClient = deps.createAdminClient();
 
       const body = await request.json() as Record<string, unknown>;
       const payload = parseNotificationRequest(body);
-      const clubId = await resolveCallerClubId(adminClient, caller);
 
       const seedRow = {
-        club_id: clubId,
-        created_by: caller.userId,
+        club_id: numericClubId,
+        created_by: userId,
         title: payload.title,
         body: payload.body,
         image_url: payload.imageUrl,
@@ -76,13 +78,13 @@ export function createAdminSendNotificationHandler(
         .single();
 
       if (insertError || !created) {
-        throw new HttpError(500, "Failed to create notification job.");
+        throw new Error("Failed to create notification job.");
       }
 
       if (payload.deliveryMode === "schedule") {
         const recipients = await selectRecipientUserIds(
           adminClient,
-          clubId,
+          numericClubId,
           payload.audience,
         );
 
@@ -102,13 +104,10 @@ export function createAdminSendNotificationHandler(
           .single();
 
         if (updateError || !scheduled) {
-          throw new HttpError(
-            500,
-            "Failed to finalize scheduled notification.",
-          );
+          throw new Error("Failed to finalize scheduled notification.");
         }
 
-        return jsonResponse({
+        return jsonOk({
           success: true,
           data: {
             notification: scheduled,
@@ -134,13 +133,10 @@ export function createAdminSendNotificationHandler(
           .single();
 
         if (updateError || !delivered) {
-          throw new HttpError(
-            500,
-            "Failed to persist notification delivery result.",
-          );
+          throw new Error("Failed to persist notification delivery result.");
         }
 
-        return jsonResponse({
+        return jsonOk({
           success: true,
           data: {
             notification: delivered,
@@ -174,11 +170,8 @@ export function createAdminSendNotificationHandler(
         throw error;
       }
     } catch (error) {
-      if (error instanceof HttpError) {
-        return errorResponse(error.message, error.status);
-      }
-
-      return errorResponse(
+      console.error("admin-send-notification failed:", error);
+      return jsonError(
         error instanceof Error
           ? error.message
           : "Notification delivery failed.",
@@ -189,5 +182,8 @@ export function createAdminSendNotificationHandler(
 }
 
 if (import.meta.main) {
-  Deno.serve(createAdminSendNotificationHandler());
+  const handler = createAdminSendNotificationHandler();
+  Deno.serve((req: Request) => handler(req).then(
+    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+  ));
 }

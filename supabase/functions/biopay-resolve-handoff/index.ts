@@ -1,11 +1,11 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
+  corsPreflightResponse,
   corsHeaders,
-  errorResponse,
-  handleCors,
-  jsonResponse,
-} from "../_shared/http.ts";
+  jsonOk,
+  jsonError,
+} from "../_shared/response.ts";
 import { buildBiopayPaymentCode } from "../_shared/biopay_payment.ts";
 import {
   type SignedBiopayTokenPayload,
@@ -49,7 +49,7 @@ function redirectResponse(location: string) {
   return new Response(null, {
     status: 302,
     headers: {
-      ...corsHeaders,
+      ...corsHeaders(),
       "Cache-Control": "no-store",
       Location: location,
     },
@@ -70,9 +70,8 @@ export function createBiopayResolveHandoffHandler(
   };
 
   return async (request: Request) => {
-    const corsResponse = handleCors(request);
-    if (corsResponse) {
-      return corsResponse;
+    if (request.method === "OPTIONS") {
+      return corsPreflightResponse();
     }
 
     try {
@@ -85,13 +84,13 @@ export function createBiopayResolveHandoffHandler(
         const body = await request.json() as { token?: string };
         token = body.token ?? null;
       } else {
-        return errorResponse("Method not allowed", 405, {
+        return jsonError("Method not allowed", 405, undefined, {
           allowed: "GET, POST",
         });
       }
 
       if (token == null || token.trim().length == 0) {
-        return errorResponse("token is required.", 400);
+        return jsonError("token is required.", 400);
       }
 
       const payload = await deps.verifyBiopayToken(token, {
@@ -113,7 +112,7 @@ export function createBiopayResolveHandoffHandler(
         return redirectResponse(buildDialUri(paymentCode));
       }
 
-      return jsonResponse({
+      return jsonOk({
         success: true,
         data: {
           channel: payload.channel?.toString() ?? "qr",
@@ -133,7 +132,7 @@ export function createBiopayResolveHandoffHandler(
         },
       });
     } catch (error) {
-      return errorResponse(
+      return jsonError(
         error instanceof Error
           ? error.message
           : "BioPay handoff resolution failed.",
@@ -144,5 +143,8 @@ export function createBiopayResolveHandoffHandler(
 }
 
 if (import.meta.main) {
-  Deno.serve(createBiopayResolveHandoffHandler());
+  const handler = createBiopayResolveHandoffHandler();
+  Deno.serve((req: Request) => handler(req).then(
+    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+  ));
 }

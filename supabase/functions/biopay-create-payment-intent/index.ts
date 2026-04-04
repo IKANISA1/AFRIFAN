@@ -1,11 +1,12 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
-  errorResponse,
-  handleCors,
-  jsonResponse,
-  methodNotAllowed,
-} from "../_shared/http.ts";
+  corsPreflightResponse,
+  corsHeaders,
+  jsonOk,
+  jsonError,
+} from "../_shared/response.ts";
+import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { HttpError } from "../_shared/auth.ts";
 import { requireAppCheckToken } from "../_shared/app_check.ts";
 import {
@@ -21,7 +22,7 @@ import {
   recordEdgeFunctionFailure,
   recordOperationalHealthEvent,
 } from "../_shared/observability.ts";
-import { createAdminClient, createUserClient } from "../_shared/supabase.ts";
+import { createAdminClient } from "../_shared/supabase.ts";
 
 type CreateIntentRequest = {
   match_receipt?: string;
@@ -54,20 +55,10 @@ type IntentRow = {
 };
 
 type AdminClientLike = ReturnType<typeof createAdminClient> | any;
-type UserClientLike = {
-  auth: {
-    getUser(): Promise<{
-      data: {
-        user: { id: string } | null;
-      };
-      error: unknown;
-    }>;
-  };
-};
 
 export type BiopayCreatePaymentIntentDependencies = {
   createAdminClient: () => AdminClientLike;
-  createUserClient: (authorization: string) => UserClientLike;
+  validateRequest: typeof validateRequest;
   requireAppCheckToken: (request: Request) => Promise<string>;
   verifyBiopayToken: (
     token: string,
@@ -111,8 +102,7 @@ const INTENT_TTL_SECONDS = 300;
 
 const defaultDependencies: BiopayCreatePaymentIntentDependencies = {
   createAdminClient,
-  createUserClient: (authorization) =>
-    createUserClient(authorization) as unknown as UserClientLike,
+  validateRequest,
   requireAppCheckToken,
   verifyBiopayToken,
   resolvePaymentRouting: resolveBiopayPaymentRouting,
@@ -132,39 +122,30 @@ export function createBiopayCreatePaymentIntentHandler(
   };
 
   return async (request: Request) => {
-    const corsResponse = handleCors(request);
-    if (corsResponse) {
-      return corsResponse;
+    if (request.method === "OPTIONS") {
+      return corsPreflightResponse();
     }
 
     if (request.method !== "POST") {
-      return methodNotAllowed("POST");
+      return jsonError("Method not allowed", 405);
     }
 
     const adminClient = deps.createAdminClient();
     let requesterUserId: string | null = null;
 
     try {
-      const authorization = request.headers.get("authorization") ??
-        request.headers.get("Authorization");
-      if (!authorization) {
-        return errorResponse("Missing authorization header.", 401);
-      }
+      const validated = await deps.validateRequest(request);
+      if (isErrorResponse(validated)) return validated;
+      
+      const { userId } = validated;
+      requesterUserId = userId;
 
-      const userClient = deps.createUserClient(authorization);
-      const { data: authData, error: authError } = await userClient.auth
-        .getUser();
-      if (authError || !authData.user) {
-        return errorResponse("Unauthorized.", 401);
-      }
-
-      requesterUserId = authData.user.id;
       await deps.requireAppCheckToken(request);
 
       const body = await request.json() as CreateIntentRequest;
       const matchReceipt = body.match_receipt?.trim() ?? "";
       if (matchReceipt.length == 0) {
-        return errorResponse("match_receipt is required.", 400);
+        return jsonError("match_receipt is required.", 400);
       }
       const requestedAmount = typeof body.amount === "number" &&
           Number.isFinite(body.amount) && body.amount > 0
@@ -174,8 +155,8 @@ export function createBiopayCreatePaymentIntentHandler(
       const receipt = await deps.verifyBiopayToken(matchReceipt, {
         expectedKind: "match_receipt",
       }) as MatchReceiptPayload;
-      if (receipt.requester_user_id?.toString() != requesterUserId) {
-        return errorResponse(
+      if (receipt.requester_user_id?.toString() != userId) {
+        return jsonError(
           "This BioPay match receipt does not belong to the current user.",
           403,
         );
@@ -194,13 +175,13 @@ export function createBiopayCreatePaymentIntentHandler(
         .maybeSingle();
 
       if (profileError || !profile) {
-        return errorResponse("BioPay profile not found or inactive.", 404);
+        return jsonError("BioPay profile not found or inactive.", 404);
       }
 
       await adminClient
         .from("biopay_payment_intents")
         .update({ status: "cancelled" })
-        .eq("user_id", requesterUserId)
+        .eq("user_id", userId)
         .eq("status", "pending");
 
       const paymentRouting = await deps.resolvePaymentRouting(adminClient, {
@@ -223,7 +204,7 @@ export function createBiopayCreatePaymentIntentHandler(
       const { data: intent, error: insertError } = await adminClient
         .from("biopay_payment_intents")
         .insert({
-          user_id: requesterUserId,
+          user_id: userId,
           club_id: profile.club_id,
           profile_id: profile.id,
           match_score: matchScore,
@@ -250,7 +231,7 @@ export function createBiopayCreatePaymentIntentHandler(
         severity: "info",
         message: "Payment intent created.",
         functionName: "biopay-create-payment-intent",
-        userId: requesterUserId,
+        userId: userId,
         subjectType: "biopay_payment_intent",
         subjectId: intent.id,
         metadata: {
@@ -262,7 +243,7 @@ export function createBiopayCreatePaymentIntentHandler(
         },
       });
 
-      return jsonResponse({
+      return jsonOk({
         success: true,
         data: {
           intent_id: intent.id,
@@ -284,10 +265,10 @@ export function createBiopayCreatePaymentIntentHandler(
       });
     } catch (error) {
       if (error instanceof SyntaxError) {
-        return errorResponse("Invalid JSON body.", 400);
+        return jsonError("Invalid JSON body.", 400);
       }
       if (error instanceof HttpError) {
-        return errorResponse(error.message, error.status);
+        return jsonError(error.message, error.status);
       }
 
       await deps.recordEdgeFunctionFailure(adminClient, {
@@ -296,7 +277,8 @@ export function createBiopayCreatePaymentIntentHandler(
         issueCode: "biopay_create_intent_failed",
         userId: requesterUserId,
       });
-      return errorResponse(
+      console.error("biopay-create-payment-intent failed:", error);
+      return jsonError(
         error instanceof Error
           ? error.message
           : "Payment intent creation failed.",
@@ -307,5 +289,8 @@ export function createBiopayCreatePaymentIntentHandler(
 }
 
 if (import.meta.main) {
-  Deno.serve(createBiopayCreatePaymentIntentHandler());
+  const handler = createBiopayCreatePaymentIntentHandler();
+  Deno.serve((req: Request) => handler(req).then(
+    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+  ));
 }

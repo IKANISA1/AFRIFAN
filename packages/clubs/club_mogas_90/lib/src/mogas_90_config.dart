@@ -37,7 +37,7 @@ class Mogas90Config implements ClubConfig {
   @override
   ClubColors get colors => const ClubColors(
     primary: Color(0xFF006B3F),
-    secondary: Color(0xFFFFFFFF),
+    secondary: Color(0xFFD1D5DB),
     accent: Color(0xFFCC0000),
     gradient: [Color(0xFF004D2C), Color(0xFF330000)],
   );

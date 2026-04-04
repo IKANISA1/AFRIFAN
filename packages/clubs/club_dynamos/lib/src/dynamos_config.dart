@@ -37,7 +37,7 @@ class DynamosConfig implements ClubConfig {
   @override
   ClubColors get colors => const ClubColors(
     primary: Color(0xFF0000CC),
-    secondary: Color(0xFFFFFFFF),
+    secondary: Color(0xFFD1D5DB),
     accent: Color(0xFFFFD700),
     gradient: [Color(0xFF000099), Color(0xFF000044)],
   );

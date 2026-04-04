@@ -37,7 +37,7 @@ class VitaloConfig implements ClubConfig {
   @override
   ClubColors get colors => const ClubColors(
     primary: Color(0xFF7B2D8E),
-    secondary: Color(0xFFFFFFFF),
+    secondary: Color(0xFFD1D5DB),
     accent: Color(0xFFFFD700),
     gradient: [Color(0xFF5A1E6E), Color(0xFF2D0A3E)],
   );

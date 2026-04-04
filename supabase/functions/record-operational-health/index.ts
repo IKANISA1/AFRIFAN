@@ -1,23 +1,23 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-import { HttpError, requireAuthenticatedCaller } from "../_shared/auth.ts";
 import {
   type OperationalEventSeverity,
   type OperationalEventStatus,
   recordOperationalHealthEvent,
 } from "../_shared/observability.ts";
 import {
-  errorResponse,
-  handleCors,
-  jsonResponse,
-  methodNotAllowed,
-} from "../_shared/http.ts";
+  corsPreflightResponse,
+  corsHeaders,
+  jsonOk,
+  jsonError,
+} from "../_shared/response.ts";
+import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
 type RecordOperationalHealthDependencies = {
   createAdminClient: typeof createAdminClient;
-  requireAuthenticatedCaller: typeof requireAuthenticatedCaller;
   recordOperationalHealthEvent: typeof recordOperationalHealthEvent;
+  validateRequest: typeof validateRequest;
 };
 
 type RecordOperationalHealthRequest = {
@@ -45,8 +45,8 @@ type RecordOperationalHealthRequest = {
 
 const defaultDependencies: RecordOperationalHealthDependencies = {
   createAdminClient,
-  requireAuthenticatedCaller,
   recordOperationalHealthEvent,
+  validateRequest,
 };
 
 function asTrimmedString(value: unknown): string | null {
@@ -105,23 +105,25 @@ export function createRecordOperationalHealthHandler(
   };
 
   return async (request: Request) => {
-    const corsResponse = handleCors(request);
-    if (corsResponse) {
-      return corsResponse;
+    if (request.method === "OPTIONS") {
+      return corsPreflightResponse();
     }
 
     if (request.method !== "POST") {
-      return methodNotAllowed("POST");
+      return jsonError("Method not allowed", 405);
     }
 
     try {
-      const caller = await deps.requireAuthenticatedCaller(request);
+      const validated = await deps.validateRequest(request);
+      if (isErrorResponse(validated)) return validated;
+      const { userId } = validated;
+
       const body = await request.json() as RecordOperationalHealthRequest;
       const service = deriveService(body);
       const message = deriveMessage(body);
 
       if (service == null || message == null) {
-        return errorResponse("service and message are required.", 400);
+        return jsonError("service and message are required.", 400);
       }
 
       await deps.recordOperationalHealthEvent(deps.createAdminClient(), {
@@ -132,7 +134,7 @@ export function createRecordOperationalHealthHandler(
         issueCode: asTrimmedString(body.issueCode ?? body.issue_code),
         message,
         functionName: asTrimmedString(body.functionName ?? body.function_name),
-        userId: caller.userId,
+        userId: userId,
         subjectType: asTrimmedString(body.subjectType ?? body.subject_type),
         subjectId: asTrimmedString(body.subjectId ?? body.subject_id),
         metadata: asMetadata(body.metadata),
@@ -140,12 +142,10 @@ export function createRecordOperationalHealthHandler(
         ingestOrigin: "mobile_app",
       });
 
-      return jsonResponse({ success: true });
+      return jsonOk({ success: true });
     } catch (error) {
-      if (error instanceof HttpError) {
-        return errorResponse(error.message, error.status);
-      }
-      return errorResponse(
+      console.error("record-operational-health error:", error);
+      return jsonError(
         error instanceof Error ? error.message : "Unknown error",
         500,
       );
@@ -154,5 +154,8 @@ export function createRecordOperationalHealthHandler(
 }
 
 if (import.meta.main) {
-  Deno.serve(createRecordOperationalHealthHandler());
+  const handler = createRecordOperationalHealthHandler();
+  Deno.serve((req: Request) => handler(req).then(
+    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+  ));
 }

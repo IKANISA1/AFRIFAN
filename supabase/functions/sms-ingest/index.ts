@@ -1,17 +1,18 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
-  errorResponse,
-  handleCors,
-  jsonResponse,
-  methodNotAllowed,
-} from "../_shared/http.ts";
+  corsPreflightResponse,
+  corsHeaders,
+  jsonOk,
+  jsonError,
+} from "../_shared/response.ts";
+import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import {
   recordEdgeFunctionFailure,
   recordOperationalHealthEvent,
 } from "../_shared/observability.ts";
 import { normalizePhone, PhoneValidationError } from "../_shared/phone.ts";
-import { createAdminClient, createUserClient } from "../_shared/supabase.ts";
+import { createAdminClient } from "../_shared/supabase.ts";
 import {
   asString,
   buildDeviceMessageKey,
@@ -51,7 +52,7 @@ function normalizeOptionalPhone(value: unknown): string | null {
 async function queueParseIfNeeded(options: {
   rawSmsId: string;
   parseStatus?: string | null;
-  userClient: ReturnType<typeof createUserClient>;
+  userClient: any;
 }) {
   const normalizedParseStatus = (options.parseStatus ?? "pending").trim()
     .toLowerCase();
@@ -79,48 +80,39 @@ async function queueParseIfNeeded(options: {
   return true;
 }
 
-Deno.serve(async (request: Request) => {
-  const corsResponse = handleCors(request);
-  if (corsResponse) {
-    return corsResponse;
+async function handleRequest(request: Request) {
+  if (request.method === "OPTIONS") {
+    return corsPreflightResponse();
   }
 
   if (request.method !== "POST") {
-    return methodNotAllowed("POST");
+    return jsonError("Method not allowed", 405);
   }
 
-  const authorization = request.headers.get("authorization");
-  if (!authorization) {
-    return errorResponse("Authentication required", 401);
-  }
+  const validated = await validateRequest(request);
+  if (isErrorResponse(validated)) return validated;
+  const { userId, supabase: userClient } = validated;
 
   const adminClient = createAdminClient();
   const RATE_LIMIT_PER_HOUR = 100;
 
   try {
-    const userClient = createUserClient(authorization);
-    const {
-      data: { user },
-      error: userError,
-    } = await userClient.auth.getUser();
-    if (userError || !user) {
-      return errorResponse("Authentication required", 401);
-    }
+    const { data: { user }, error: userError } = await userClient.auth.getUser();
+    if (userError || !user) return jsonError("Authentication required", 401);
 
     // --- Per-user rate limiting (G3) ---
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
     const { count: recentCount, error: countError } = await adminClient
       .from("momo_sms_raw")
       .select("id", { count: "exact", head: true })
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .gte("created_at", oneHourAgo);
     if (countError) {
       throw countError;
     }
     if ((recentCount ?? 0) >= RATE_LIMIT_PER_HOUR) {
-      return errorResponse(
-        "Rate limit exceeded. Max " + RATE_LIMIT_PER_HOUR +
-          " SMS per hour.",
+      return jsonError(
+        "Rate limit exceeded. Max " + RATE_LIMIT_PER_HOUR + " SMS per hour.",
         429,
       );
     }
@@ -129,10 +121,10 @@ Deno.serve(async (request: Request) => {
     const sender = asString(body.sender);
     const smsBody = normalizeWhitespace(body.smsBody?.trim() ?? "");
     if (!sender || smsBody.length === 0) {
-      return errorResponse("sender and smsBody are required", 400);
+      return jsonError("sender and smsBody are required", 400);
     }
     if (!isApprovedSender(sender)) {
-      return errorResponse("Unsupported SMS sender", 400);
+      return jsonError("Unsupported SMS sender", 400);
     }
 
     const smsReceivedAt = parseReceivedAt(asString(body.smsReceivedAt));
@@ -147,7 +139,7 @@ Deno.serve(async (request: Request) => {
     const appUserResult = await adminClient
       .from("user_private_contacts")
       .select("momo_number, whatsapp_number")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .maybeSingle();
     if (appUserResult.error) {
       throw appUserResult.error;
@@ -163,7 +155,7 @@ Deno.serve(async (request: Request) => {
     const existingResult = await adminClient
       .from("momo_sms_raw")
       .select("id, parse_status, otp_whatsapp_number")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .eq("device_message_key", deviceMessageKey)
       .maybeSingle();
     if (existingResult.error) {
@@ -197,7 +189,7 @@ Deno.serve(async (request: Request) => {
           issueCode: "parse_queue_failed",
           message: "SMS was already stored, but parse queueing failed.",
           functionName: "sms-ingest",
-          userId: user.id,
+          userId,
           subjectType: "momo_sms_raw",
           subjectId: existingResult.data.id as string,
           metadata: {
@@ -208,7 +200,7 @@ Deno.serve(async (request: Request) => {
         });
       }
 
-      return jsonResponse({
+      return jsonOk({
         success: true,
         rawSmsId: existingResult.data.id,
         inserted: false,
@@ -221,7 +213,7 @@ Deno.serve(async (request: Request) => {
     const insertResult = await adminClient
       .from("momo_sms_raw")
       .insert({
-        user_id: user.id,
+        user_id: userId,
         device_message_key: deviceMessageKey,
         sender,
         sms_body: smsBody,
@@ -254,7 +246,7 @@ Deno.serve(async (request: Request) => {
         issueCode: "parse_queue_failed",
         message: "SMS was stored, but parse queueing failed.",
         functionName: "sms-ingest",
-        userId: user.id,
+        userId,
         subjectType: "momo_sms_raw",
         subjectId: rawSmsId,
         metadata: {
@@ -265,7 +257,7 @@ Deno.serve(async (request: Request) => {
       });
     }
 
-    return jsonResponse({
+    return jsonOk({
       success: true,
       rawSmsId,
       inserted: true,
@@ -279,9 +271,15 @@ Deno.serve(async (request: Request) => {
       error,
       issueCode: "sms_ingest_failed",
     });
-    return errorResponse(
+    return jsonError(
       error instanceof Error ? error.message : "Failed to ingest SMS",
       500,
     );
   }
-});
+}
+
+if (import.meta.main) {
+  Deno.serve((req: Request) => handleRequest(req).then(
+    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+  ));
+}

@@ -1,101 +1,54 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-
-import { HttpError, requireAuthenticatedCaller } from "../_shared/auth.ts";
 import {
-  errorResponse,
-  handleCors,
-  jsonResponse,
-  methodNotAllowed,
-} from "../_shared/http.ts";
+  corsPreflightResponse,
+  corsHeaders,
+  jsonOk,
+  jsonError,
+} from "../_shared/response.ts";
+import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
-type DeleteAccountRequest = {
-  user_id?: string;
-};
+export async function handleRequest(request: Request) {
+  if (request.method === "OPTIONS") {
+    return corsPreflightResponse();
+  }
 
-type AdminClientLike = {
-  auth: {
-    admin: {
-      deleteUser(
-        userId: string,
-      ): Promise<{ data: unknown; error: unknown }>;
-    };
-  };
-};
+  if (request.method !== "POST") {
+    return jsonError("Method not allowed", 405);
+  }
 
-type DeleteAccountDependencies = {
-  createAdminClient: () => AdminClientLike;
-  requireAuthenticatedCaller: typeof requireAuthenticatedCaller;
-};
+  try {
+    const validated = await validateRequest(request);
+    if (isErrorResponse(validated)) return validated;
+    const { userId } = validated;
 
-const defaultDependencies: DeleteAccountDependencies = {
-  createAdminClient: () => createAdminClient() as unknown as AdminClientLike,
-  requireAuthenticatedCaller,
-};
+    const adminClient = createAdminClient();
 
-export function createDeleteAccountHandler(
-  dependencies: Partial<DeleteAccountDependencies> = {},
-) {
-  const deps: DeleteAccountDependencies = {
-    ...defaultDependencies,
-    ...dependencies,
-  };
-
-  return async (request: Request) => {
-    const corsResponse = handleCors(request);
-    if (corsResponse) {
-      return corsResponse;
-    }
-
-    if (request.method !== "POST") {
-      return methodNotAllowed("POST");
-    }
-
+    let body: { user_id?: string } = {};
     try {
-      const caller = await deps.requireAuthenticatedCaller(request);
-      const adminClient = deps.createAdminClient();
-
-      let body: DeleteAccountRequest = {};
-      try {
-        body = await request.json() as DeleteAccountRequest;
-      } catch (_) {
-        body = {};
-      }
-
-      const requestedUserId = body.user_id?.trim();
-      if (
-        requestedUserId != null &&
-        requestedUserId.isNotEmpty &&
-        requestedUserId !== caller.userId
-      ) {
-        throw new HttpError(
-          403,
-          "You can only delete the currently authenticated account.",
-        );
-      }
-
-      const { error } = await adminClient.auth.admin.deleteUser(caller.userId);
-      if (error) {
-        throw new HttpError(500, "Failed to delete the authenticated account.");
-      }
-
-      return jsonResponse({
-        success: true,
-        data: { user_id: caller.userId },
-      });
-    } catch (error) {
-      if (error instanceof HttpError) {
-        return errorResponse(error.message, error.status);
-      }
-
-      return errorResponse(
-        error instanceof Error ? error.message : "Account deletion failed.",
-        500,
-      );
+      body = await request.json();
+    } catch (_) {
+      body = {};
     }
-  };
+
+    const requestedUserId = body.user_id?.trim();
+    if (requestedUserId && requestedUserId !== userId) {
+      return jsonError("You can only delete the currently authenticated account.", 403);
+    }
+
+    const { error } = await adminClient.auth.admin.deleteUser(userId);
+    if (error) {
+       return jsonError("Failed to delete the authenticated account.", 500);
+    }
+
+    return jsonOk({ success: true, data: { user_id: userId } });
+  } catch (error) {
+    return jsonError(error instanceof Error ? error.message : "Account deletion failed.", 500);
+  }
 }
 
 if (import.meta.main) {
-  Deno.serve(createDeleteAccountHandler());
+  Deno.serve((req: Request) => handleRequest(req).then(
+    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+  ));
 }

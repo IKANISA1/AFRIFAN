@@ -37,7 +37,7 @@ class MaranathaConfig implements ClubConfig {
   @override
   ClubColors get colors => const ClubColors(
     primary: Color(0xFFCC0000),
-    secondary: Color(0xFFFFFFFF),
+    secondary: Color(0xFFD1D5DB),
     accent: Color(0xFFFFD700),
     gradient: [Color(0xFF990000), Color(0xFF330000)],
   );

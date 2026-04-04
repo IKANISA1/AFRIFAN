@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../widgets/live_match_widgets.dart';
+
 class LiveMatchScreen extends ConsumerStatefulWidget {
   const LiveMatchScreen({super.key});
 
@@ -180,13 +182,13 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     return venue.toUpperCase();
   }
 
-  List<_MatchIntelEvent> _eventsFor(Map<String, dynamic> match) {
+  List<MatchIntelEvent> _eventsFor(Map<String, dynamic> match) {
     final raw = match['live_events'];
     if (raw is List) {
       final parsed = raw
           .whereType<Map>()
           .map(
-            (entry) => _MatchIntelEvent(
+            (entry) => MatchIntelEvent(
               minute: entry['minute']?.toString() ?? '',
               title: entry['title']?.toString() ?? 'Match update',
               body: entry['body']?.toString() ?? '',
@@ -210,8 +212,8 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     final liveMinute = (match['live_minute'] as num?)?.toInt();
 
     if (status == 'live' || status == 'halftime') {
-      return <_MatchIntelEvent>[
-        _MatchIntelEvent(
+      return <MatchIntelEvent>[
+        MatchIntelEvent(
           minute: liveMinute == null ? 'LIVE' : '${liveMinute.toString()}\'',
           title: '${homeTeam.toUpperCase()} VS ${awayTeam.toUpperCase()}',
           body: summary.isEmpty
@@ -222,8 +224,8 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     }
 
     if (status == 'fulltime') {
-      return <_MatchIntelEvent>[
-        _MatchIntelEvent(
+      return <MatchIntelEvent>[
+        MatchIntelEvent(
           minute: 'FT',
           title: 'MATCH REPORT',
           body: summary.isEmpty
@@ -233,8 +235,8 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
       ];
     }
 
-    return <_MatchIntelEvent>[
-      _MatchIntelEvent(
+    return <MatchIntelEvent>[
+      MatchIntelEvent(
         minute: 'PRE',
         title: 'MATCHDAY INTEL',
         body: summary.isEmpty
@@ -420,7 +422,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            _TeamBadge(label: _abbreviate(homeTeam)),
+                            TeamBadge(label: _abbreviate(homeTeam)),
                             const SizedBox(width: SpacingTokens.spacing6),
                             Text(
                               '$homeScore - $awayScore',
@@ -429,7 +431,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                               ),
                             ),
                             const SizedBox(width: SpacingTokens.spacing6),
-                            _TeamBadge(label: _abbreviate(awayTeam)),
+                            TeamBadge(label: _abbreviate(awayTeam)),
                           ],
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
@@ -457,14 +459,14 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                   padding: const EdgeInsets.all(SpacingTokens.spacing6),
                   child: Row(
                     children: [
-                      _StatBox(
+                      LiveStatBox(
                         label: 'POSSESSION',
                         value: stats['POSSESSION']!,
                       ),
                       const SizedBox(width: SpacingTokens.spacing3),
-                      _StatBox(label: 'SHOTS', value: stats['SHOTS']!),
+                      LiveStatBox(label: 'SHOTS', value: stats['SHOTS']!),
                       const SizedBox(width: SpacingTokens.spacing3),
-                      _StatBox(label: 'CORNERS', value: stats['CORNERS']!),
+                      LiveStatBox(label: 'CORNERS', value: stats['CORNERS']!),
                     ],
                   ),
                 ),
@@ -494,7 +496,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                               SpacingTokens.spacing6,
                               SpacingTokens.spacing3,
                             ),
-                            child: _CommentaryCard(
+                            child: CommentaryCard(
                               minute: event.minute,
                               title: event.title,
                               body: event.body,
@@ -551,116 +553,5 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
       return token.substring(0, end);
     }
     return parts.take(3).map((part) => part[0].toUpperCase()).join();
-  }
-}
-
-class _MatchIntelEvent {
-  const _MatchIntelEvent({
-    required this.minute,
-    required this.title,
-    required this.body,
-  });
-
-  final String minute;
-  final String title;
-  final String body;
-}
-
-class _TeamBadge extends StatelessWidget {
-  const _TeamBadge({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 58,
-      height: 58,
-      decoration: BoxDecoration(
-        color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: ColorTokens.ghostBorder),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        label,
-        style: TypographyTokens.titleLarge().copyWith(
-          color: ColorTokens.onSurface,
-        ),
-      ),
-    );
-  }
-}
-
-class _StatBox extends StatelessWidget {
-  const _StatBox({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: ClayCard(
-        padding: const EdgeInsets.symmetric(
-          horizontal: SpacingTokens.spacing3,
-          vertical: SpacingTokens.spacing4,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: TypographyTokens.labelSmall()),
-            const SizedBox(height: SpacingTokens.spacing2),
-            Text(
-              value,
-              style: TypographyTokens.headlineMedium().copyWith(
-                color: ColorTokens.onSurface,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _CommentaryCard extends StatelessWidget {
-  const _CommentaryCard({
-    required this.minute,
-    required this.title,
-    required this.body,
-  });
-
-  final String minute;
-  final String title;
-  final String body;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClayCard(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            minute,
-            style: TypographyTokens.headlineSmall().copyWith(
-              color: ColorTokens.clubAccent,
-            ),
-          ),
-          const SizedBox(width: SpacingTokens.spacing4),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: TypographyTokens.bodyLarge()),
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(body, style: TypographyTokens.bodyMedium()),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

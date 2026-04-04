@@ -6,11 +6,11 @@ import {
   dispatchNotification,
 } from "../_shared/notifications.ts";
 import {
-  errorResponse,
-  handleCors,
-  jsonResponse,
-  methodNotAllowed,
-} from "../_shared/http.ts";
+  corsPreflightResponse,
+  corsHeaders,
+  jsonOk,
+  jsonError,
+} from "../_shared/response.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
 type AdminClientLike = ReturnType<typeof createAdminClient>;
@@ -48,13 +48,12 @@ export function createDispatchScheduledNotificationsHandler(
   };
 
   return async (request: Request) => {
-    const corsResponse = handleCors(request);
-    if (corsResponse) {
-      return corsResponse;
+    if (request.method === "OPTIONS") {
+      return corsPreflightResponse();
     }
 
     if (request.method !== "POST") {
-      return methodNotAllowed("POST");
+      return jsonError("Method not allowed", 405);
     }
 
     try {
@@ -149,7 +148,7 @@ export function createDispatchScheduledNotificationsHandler(
         }
       }
 
-      return jsonResponse({
+      return jsonOk({
         success: true,
         data: {
           processed,
@@ -161,10 +160,11 @@ export function createDispatchScheduledNotificationsHandler(
       });
     } catch (error) {
       if (error instanceof HttpError) {
-        return errorResponse(error.message, error.status);
+        return jsonError(error.message, error.status);
       }
 
-      return errorResponse(
+      console.error("dispatch-scheduled-notifications failed:", error);
+      return jsonError(
         error instanceof Error
           ? error.message
           : "Scheduled notification dispatch failed.",
@@ -175,5 +175,8 @@ export function createDispatchScheduledNotificationsHandler(
 }
 
 if (import.meta.main) {
-  Deno.serve(createDispatchScheduledNotificationsHandler());
+  const handler = createDispatchScheduledNotificationsHandler();
+  Deno.serve((req: Request) => handler(req).then(
+    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+  ));
 }

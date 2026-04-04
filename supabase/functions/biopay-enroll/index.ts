@@ -1,21 +1,21 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
-  errorResponse,
-  handleCors,
-  jsonResponse,
-  methodNotAllowed,
-} from "../_shared/http.ts";
+  corsPreflightResponse,
+  corsHeaders,
+  jsonOk,
+  jsonError,
+} from "../_shared/response.ts";
+import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { HttpError } from "../_shared/auth.ts";
 import { requireAppCheckToken } from "../_shared/app_check.ts";
-import { resolveClubIdFromMetadata } from "../_shared/club.ts";
 import { normalizeBiopayEmbedding } from "../_shared/biopay_embedding.ts";
 import { validateBiopayLivenessMetadata } from "../_shared/biopay_liveness.ts";
 import {
   recordEdgeFunctionFailure,
   recordOperationalHealthEvent,
 } from "../_shared/observability.ts";
-import { createAdminClient, createUserClient } from "../_shared/supabase.ts";
+import { createAdminClient } from "../_shared/supabase.ts";
 
 type EnrollRequest = {
   display_name?: string;
@@ -30,20 +30,10 @@ type EnrollRequest = {
 };
 
 type AdminClientLike = ReturnType<typeof createAdminClient>;
-type UserClientLike = {
-  auth: {
-    getUser(): Promise<{
-      data: {
-        user: { id: string; app_metadata?: Record<string, unknown> } | null;
-      };
-      error: unknown;
-    }>;
-  };
-};
 
 export type BiopayEnrollHandlerDependencies = {
   createAdminClient: () => AdminClientLike;
-  createUserClient: (authorization: string) => UserClientLike;
+  validateRequest: typeof validateRequest;
   requireAppCheckToken: (request: Request) => Promise<string>;
   validateLiveness: typeof validateBiopayLivenessMetadata;
   recordOperationalHealthEvent: (
@@ -58,8 +48,7 @@ export type BiopayEnrollHandlerDependencies = {
 
 const defaultDependencies: BiopayEnrollHandlerDependencies = {
   createAdminClient,
-  createUserClient: (authorization) =>
-    createUserClient(authorization) as unknown as UserClientLike,
+  validateRequest,
   requireAppCheckToken,
   validateLiveness: validateBiopayLivenessMetadata,
   recordOperationalHealthEvent,
@@ -75,52 +64,43 @@ export function createBiopayEnrollHandler(
   };
 
   return async (request: Request) => {
-    const corsResponse = handleCors(request);
-    if (corsResponse) {
-      return corsResponse;
+    if (request.method === "OPTIONS") {
+      return corsPreflightResponse();
     }
 
     if (request.method !== "POST") {
-      return methodNotAllowed("POST");
+      return jsonError("Method not allowed", 405);
     }
 
     const adminClient = deps.createAdminClient();
     let requesterUserId: string | null = null;
 
     try {
-      const authorization = request.headers.get("authorization") ??
-        request.headers.get("Authorization");
-      if (!authorization) {
-        return errorResponse("Missing authorization header.", 401);
-      }
-
-      const userClient = deps.createUserClient(authorization);
-      const { data: authData, error: authError } = await userClient.auth
-        .getUser();
-      if (authError || !authData.user) {
-        return errorResponse("Unauthorized.", 401);
-      }
-      requesterUserId = authData.user.id;
+      const validated = await deps.validateRequest(request, { requireClubId: true });
+      if (isErrorResponse(validated)) return validated;
+      
+      const { userId, clubId } = validated;
+      requesterUserId = userId;
 
       await deps.requireAppCheckToken(request);
 
       const body = await request.json() as EnrollRequest;
       const embedding = normalizeBiopayEmbedding(body.embedding);
-      const clubId = await resolveClubIdFromMetadata(
-        adminClient,
-        authData.user.app_metadata,
-      );
+      
+      const numericClubId = Number(clubId);
+
       const liveness = await deps.validateLiveness(body.liveness, {
         adminClient,
-        requesterUserId: authData.user.id,
-        clubId,
+        requesterUserId: userId,
+        clubId: numericClubId,
         mode: "enrollment",
       });
+      
       const { data, error } = await adminClient.rpc(
         "biopay_upsert_enrollment_server",
         {
-          p_requester_user_id: authData.user.id,
-          p_club_id: clubId,
+          p_requester_user_id: userId,
+          p_club_id: numericClubId,
           p_display_name: body.display_name ?? null,
           p_route_type: body.route_type ?? null,
           p_recipient_value: body.recipient_value ?? null,
@@ -148,7 +128,7 @@ export function createBiopayEnrollHandler(
         severity: "info",
         message: "BioPay enrollment completed.",
         functionName: "biopay-enroll",
-        userId: authData.user.id,
+        userId: userId,
         subjectType: "biopay_profile",
         subjectId: row.id?.toString() ?? null,
         metadata: {
@@ -159,13 +139,13 @@ export function createBiopayEnrollHandler(
         },
       });
 
-      return jsonResponse({
+      return jsonOk({
         success: true,
         data: row,
       });
     } catch (error) {
       if (error instanceof HttpError) {
-        return errorResponse(error.message, error.status);
+        return jsonError(error.message, error.status);
       }
 
       await deps.recordEdgeFunctionFailure(adminClient, {
@@ -174,7 +154,9 @@ export function createBiopayEnrollHandler(
         issueCode: "biopay_enroll_failed",
         userId: requesterUserId,
       });
-      return errorResponse(
+      
+      console.error("biopay-enroll failed:", error);
+      return jsonError(
         error instanceof Error ? error.message : "BioPay enrollment failed.",
         400,
       );
@@ -183,5 +165,8 @@ export function createBiopayEnrollHandler(
 }
 
 if (import.meta.main) {
-  Deno.serve(createBiopayEnrollHandler());
+  const handler = createBiopayEnrollHandler();
+  Deno.serve((req: Request) => handler(req).then(
+    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+  ));
 }

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../widgets/contribution_overlays.dart';
+import '../widgets/group_settings_widgets.dart';
 
 class GroupSettingsScreen extends ConsumerStatefulWidget {
   const GroupSettingsScreen({required this.groupId, super.key});
@@ -311,7 +312,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  _ContributionInput(
+                  ContributionInput(
                     label: 'GROUP NAME',
                     controller: _nameController,
                     hint: 'APR Final Away Convoy',
@@ -332,7 +333,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
                           runSpacing: SpacingTokens.spacing2,
                           children: ['PUBLIC', 'FRIENDS OF MEMBERS', 'PRIVATE']
                               .map(
-                                (label) => _PrivacyPill(
+                                (label) => PrivacyPill(
                                   label: label,
                                   selected: _privacyLabel == label,
                                   onTap: () => setState(
@@ -358,7 +359,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
-                  _ContributionInput(
+                  ContributionInput(
                     label: 'TARGET AMOUNT',
                     controller: _targetController,
                     hint: '500000',
@@ -408,14 +409,14 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
-                  _ContributionInput(
+                  ContributionInput(
                     label: 'MOMO NUMBER',
                     controller: _momoController,
                     hint: '+250 7XX XXX XXX',
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
-                  _ContributionInput(
+                  ContributionInput(
                     label: 'DESCRIPTION',
                     controller: _descriptionController,
                     hint: 'Circle purpose and logistics',
@@ -533,84 +534,3 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
   }
 }
 
-class _PrivacyPill extends StatelessWidget {
-  const _PrivacyPill({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(999),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(
-          horizontal: SpacingTokens.spacing4,
-          vertical: SpacingTokens.spacing3,
-        ),
-        decoration: BoxDecoration(
-          color: selected
-              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.16)
-              : ColorTokens.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(999),
-          border: Border.all(
-            color: selected
-                ? Theme.of(context).colorScheme.primary
-                : ColorTokens.ghostBorder,
-          ),
-        ),
-        child: Text(
-          label,
-          style: TypographyTokens.labelSmall().copyWith(
-            color: selected
-                ? Theme.of(context).colorScheme.primary
-                : ColorTokens.onSurface,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ContributionInput extends StatelessWidget {
-  const _ContributionInput({
-    required this.label,
-    required this.controller,
-    required this.hint,
-    this.keyboardType,
-    this.maxLines = 1,
-  });
-
-  final String label;
-  final TextEditingController controller;
-  final String hint;
-  final TextInputType? keyboardType;
-  final int maxLines;
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      animate: false,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: TypographyTokens.labelSmall()),
-          const SizedBox(height: SpacingTokens.spacing2),
-          TextField(
-            controller: controller,
-            keyboardType: keyboardType,
-            maxLines: maxLines,
-            decoration: InputDecoration(hintText: hint),
-          ),
-        ],
-      ),
-    );
-  }
-}

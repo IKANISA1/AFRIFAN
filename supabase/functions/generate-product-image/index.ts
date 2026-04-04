@@ -1,12 +1,12 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-import { HttpError, requireClubAdminCaller } from "../_shared/auth.ts";
 import {
-  errorResponse,
-  handleCors,
-  jsonResponse,
-  methodNotAllowed,
-} from "../_shared/http.ts";
+  corsPreflightResponse,
+  corsHeaders,
+  jsonOk,
+  jsonError,
+} from "../_shared/response.ts";
+import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
 type AllowedProductType =
@@ -47,14 +47,14 @@ type GeminiImageResponse = {
 
 type GenerateProductImageDependencies = {
   createAdminClient: typeof createAdminClient;
-  requireClubAdminCaller: typeof requireClubAdminCaller;
+  validateRequest: typeof validateRequest;
   fetchFn: typeof fetch;
   randomId: () => string;
 };
 
 const defaultDependencies: GenerateProductImageDependencies = {
   createAdminClient,
-  requireClubAdminCaller,
+  validateRequest,
   fetchFn: fetch,
   randomId: () => crypto.randomUUID().substring(0, 8),
 };
@@ -270,13 +270,12 @@ export function createGenerateProductImageHandler(
   };
 
   return async (request: Request) => {
-    const corsResponse = handleCors(request);
-    if (corsResponse) {
-      return corsResponse;
+    if (request.method === "OPTIONS") {
+      return corsPreflightResponse();
     }
 
     if (request.method !== "POST") {
-      return methodNotAllowed("POST");
+      return jsonError("Method not allowed", 405);
     }
 
     try {
@@ -288,31 +287,29 @@ export function createGenerateProductImageHandler(
       const targetId = asTrimmedString(body.targetId);
 
       if (clubId == null || productType == null) {
-        return errorResponse("clubId and productType are required.", 400);
+        return jsonError("clubId and productType are required.", 400);
       }
 
       if (body.targetTable != null && targetTable == null) {
-        return errorResponse(
+        return jsonError(
           "targetTable must be one of shop_products or news_articles.",
           400,
         );
       }
 
       if ((targetTable == null) !== (targetId == null)) {
-        return errorResponse(
+        return jsonError(
           "targetTable and targetId must be provided together.",
           400,
         );
       }
 
-      await deps.requireClubAdminCaller(request, clubId);
+      const validated = await deps.validateRequest(request, { requireClubAdmin: clubId });
+      if (isErrorResponse(validated)) return validated;
 
       const geminiKey = Deno.env.get("GEMINI_API_KEY")?.trim();
       if (!geminiKey) {
-        throw new HttpError(
-          503,
-          "Image generation is not configured on the server.",
-        );
+        return jsonError("Image generation is not configured on the server.", 503);
       }
 
       const adminClient = deps.createAdminClient();
@@ -325,7 +322,7 @@ export function createGenerateProductImageHandler(
         .single();
 
       if (clubError || !club) {
-        return errorResponse("Club not found.", 404);
+        return jsonError("Club not found.", 404);
       }
 
       const prompt = buildPrompt(club as ClubBrand, productType, productName);
@@ -346,10 +343,9 @@ export function createGenerateProductImageHandler(
 
       if (!geminiResponse.ok) {
         const detail = await geminiResponse.text();
-        return errorResponse(
+        return jsonError(
           `Gemini image generation failed: ${geminiResponse.status}`,
           502,
-          { detail: detail.slice(0, 500) },
         );
       }
 
@@ -360,7 +356,7 @@ export function createGenerateProductImageHandler(
       );
 
       if (!imagePart) {
-        return errorResponse("Gemini did not return an image.", 502);
+        return jsonError("Gemini did not return an image.", 502);
       }
 
       const inlineData = (imagePart.inlineData ?? imagePart.inline_data) as
@@ -372,7 +368,7 @@ export function createGenerateProductImageHandler(
       ) ?? "image/png";
 
       if (!base64Data) {
-        return errorResponse("Gemini returned an invalid image payload.", 502);
+        return jsonError("Gemini returned an invalid image payload.", 502);
       }
 
       const ext = mimeType.includes("jpeg") || mimeType.includes("jpg")
@@ -396,7 +392,7 @@ export function createGenerateProductImageHandler(
         });
 
       if (uploadError) {
-        return errorResponse(
+        return jsonError(
           `Storage upload failed: ${uploadError.message}`,
           500,
         );
@@ -419,14 +415,14 @@ export function createGenerateProductImageHandler(
           .eq("club_id", clubId);
 
         if (updateError) {
-          return errorResponse(
+          return jsonError(
             `Failed to update ${targetTable}: ${updateError.message}`,
             500,
           );
         }
       }
 
-      return jsonResponse({
+      return jsonOk({
         success: true,
         image_url: publicUrl,
         storage_path: storagePath,
@@ -435,10 +431,8 @@ export function createGenerateProductImageHandler(
         product_type: productType,
       });
     } catch (error) {
-      if (error instanceof HttpError) {
-        return errorResponse(error.message, error.status);
-      }
-      return errorResponse(
+      console.error("generate-product-image failed:", error);
+      return jsonError(
         error instanceof Error ? error.message : "Image generation failed.",
         500,
       );
@@ -447,5 +441,8 @@ export function createGenerateProductImageHandler(
 }
 
 if (import.meta.main) {
-  Deno.serve(createGenerateProductImageHandler());
+  const handler = createGenerateProductImageHandler();
+  Deno.serve((req: Request) => handler(req).then(
+    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
+  ));
 }

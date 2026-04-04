@@ -1,6 +1,6 @@
 import { type ParsedSms, type RawSmsRecord } from "./ai_parser.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
-import { confirmRayonReferenceMatch } from "../_shared/rayon_payments.ts";
+import { confirmRayonReferenceMatch } from "../_shared/payments.ts";
 import {
   buildManualReviewResult,
   reconcileParsedSms,

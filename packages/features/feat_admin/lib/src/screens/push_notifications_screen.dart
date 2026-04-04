@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../repositories/admin_repository.dart';
+import '../widgets/notification_widgets.dart';
 
 class PushNotificationsScreen extends ConsumerStatefulWidget {
   const PushNotificationsScreen({super.key});
@@ -505,51 +506,10 @@ class _PushNotificationsScreenState
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  GlassCard(
-                    animate: false,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'PREVIEW',
-                          style: TypographyTokens.titleMedium().copyWith(
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing3),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(SpacingTokens.spacing4),
-                          decoration: BoxDecoration(
-                            color: ColorTokens.surfaceContainerLow,
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                previewAudience.toUpperCase(),
-                                style: TypographyTokens.labelSmall(),
-                              ),
-                              const SizedBox(height: SpacingTokens.spacing2),
-                              Text(
-                                _titleController.text.trim().isEmpty
-                                    ? 'Notification title'
-                                    : _titleController.text.trim(),
-                                style: TypographyTokens.bodyLarge(),
-                              ),
-                              const SizedBox(height: SpacingTokens.spacing2),
-                              Text(
-                                bodyText.isEmpty
-                                    ? 'Your message preview appears here.'
-                                    : bodyText,
-                                style: TypographyTokens.bodyMedium(),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                  NotificationPreviewCard(
+                    audience: previewAudience,
+                    title: _titleController.text.trim(),
+                    body: bodyText,
                   ),
                   const SizedBox(height: SpacingTokens.spacing6),
                   ClaymorphicButton(
@@ -595,36 +555,12 @@ class _PushNotificationsScreenState
                     )
                   else
                     ..._history.map(
-                      (item) => Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: SpacingTokens.spacing3,
-                        ),
-                        child: GlassCard(
-                          animate: false,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _historyTitle(item).toUpperCase(),
-                                style: TypographyTokens.titleLarge().copyWith(
-                                  color: ColorTokens.onSurface,
-                                ),
-                              ),
-                              const SizedBox(height: SpacingTokens.spacing2),
-                              Text(
-                                _historyBody(item),
-                                style: TypographyTokens.bodyMedium(),
-                              ),
-                              const SizedBox(height: SpacingTokens.spacing2),
-                              Text(
-                                '${item['status']?.toString().toUpperCase() ?? 'RECORDED'}'
-                                '${_historyDate(item) == null ? '' : '  •  ${DateFormat('dd MMM HH:mm').format(_historyDate(item)!.toLocal())}'}'
-                                '${_historyMetrics(item)}',
-                                style: TypographyTokens.bodySmall(),
-                              ),
-                            ],
-                          ),
-                        ),
+                      (item) => NotificationHistoryCard(
+                        title: _historyTitle(item),
+                        body: _historyBody(item),
+                        status: item['status']?.toString() ?? 'RECORDED',
+                        date: _historyDate(item),
+                        metrics: _historyMetrics(item),
                       ),
                     ),
                 ],

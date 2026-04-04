@@ -5,7 +5,7 @@
  * and initiative contributions using Rayon reference patterns.
  */
 
-import { looksLikeRayonReference } from "../_shared/rayon_payments.ts";
+import { looksLikeRayonReference } from "../_shared/payments.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 import { type ParsedSms, type RawSmsRecord } from "./ai_parser.ts";
 import {

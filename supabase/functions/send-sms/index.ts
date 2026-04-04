@@ -16,7 +16,9 @@
  *   WHATSAPP_ACCESS_TOKEN     – Meta access token
  */
 
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { sendOtpTemplate } from "../_shared/whatsapp.ts";
+import { jsonOk, jsonError } from "../_shared/response.ts";
 
 // ── Types ───────────────────────────────────────────────────────
 interface SendSmsHookPayload {
@@ -30,13 +32,10 @@ interface SendSmsHookPayload {
 }
 
 // ── Handler ─────────────────────────────────────────────────────
-Deno.serve(async (req: Request) => {
+async function handleRequest(req: Request) {
   // Only accept POST
   if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
-      headers: { "Content-Type": "application/json" },
-    });
+    return jsonError("Method not allowed", 405);
   }
 
   try {
@@ -46,10 +45,7 @@ Deno.serve(async (req: Request) => {
 
     if (!phone || !otp) {
       console.error("send-sms: missing phone or otp in payload", payload);
-      return new Response(
-        JSON.stringify({ error: "Missing phone or otp" }),
-        { status: 400, headers: { "Content-Type": "application/json" } },
-      );
+      return jsonError("Missing phone or otp", 400);
     }
 
     console.log(`send-sms: delivering OTP to ${phone.slice(0, 6)}***`);
@@ -63,18 +59,16 @@ Deno.serve(async (req: Request) => {
 
     console.log(`send-sms: OTP delivered to ${phone.slice(0, 6)}***`);
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return jsonOk({ success: true });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.error("send-sms: failed to deliver OTP:", message);
 
     // Return 500 so Supabase Auth knows delivery failed
-    return new Response(
-      JSON.stringify({ error: message }),
-      { status: 500, headers: { "Content-Type": "application/json" } },
-    );
+    return jsonError(message, 500);
   }
-});
+}
+
+if (import.meta.main) {
+  Deno.serve(handleRequest);
+}

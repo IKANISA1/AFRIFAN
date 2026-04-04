@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../shop_cart_provider.dart';
+import '../widgets/cart_item_card.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
@@ -363,7 +363,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       padding: const EdgeInsets.only(
                         bottom: SpacingTokens.spacing3,
                       ),
-                      child: _CartItem(
+                      child: CartItemCard(
                         item: item,
                         priceLabel: _currency.format(item.lineTotal),
                         onIncrement: () =>
@@ -491,96 +491,6 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 ],
               ),
             ),
-    );
-  }
-}
-
-class _CartItem extends StatelessWidget {
-  const _CartItem({
-    required this.item,
-    required this.priceLabel,
-    required this.onIncrement,
-    required this.onDecrement,
-    required this.onRemove,
-  });
-
-  final CartItem item;
-  final String priceLabel;
-  final VoidCallback onIncrement;
-  final VoidCallback onDecrement;
-  final VoidCallback onRemove;
-
-  @override
-  Widget build(BuildContext context) {
-    final variant = item.selectedVariant?.trim();
-    final meta = [
-      if (variant != null && variant.isNotEmpty) variant,
-      'Qty ${item.quantity}',
-    ].join('  •  ');
-
-    return ClayCard(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
-      child: Row(
-        children: [
-          Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(
-              color: ColorTokens.surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            alignment: Alignment.center,
-            child: const Icon(Icons.shopping_bag_outlined),
-          ),
-          const SizedBox(width: SpacingTokens.spacing4),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.product.name.toUpperCase(),
-                  style: GoogleFonts.barlowCondensed(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurface,
-                  ),
-                ),
-                const SizedBox(height: SpacingTokens.spacing1),
-                Text(meta, style: TypographyTokens.bodySmall()),
-                const SizedBox(height: SpacingTokens.spacing2),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: onDecrement,
-                      icon: const Icon(Icons.remove_rounded),
-                    ),
-                    Text(
-                      '${item.quantity}',
-                      style: TypographyTokens.labelLarge(),
-                    ),
-                    IconButton(
-                      onPressed: onIncrement,
-                      icon: const Icon(Icons.add_rounded),
-                    ),
-                    TextButton(
-                      onPressed: onRemove,
-                      child: const Text('Remove'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Text(
-            priceLabel,
-            style: GoogleFonts.barlowCondensed(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.onSurface,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
