@@ -4,6 +4,35 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
+DEFAULT_FIREBASE_ENV_FILE="$ROOT/supabase/.env.firebase.local"
+FIREBASE_ENV_FILE="${FIREBASE_ENV_FILE:-$DEFAULT_FIREBASE_ENV_FILE}"
+if [ -f "$FIREBASE_ENV_FILE" ]; then
+  set -a
+  # shellcheck disable=SC1090
+  . "$FIREBASE_ENV_FILE"
+  set +a
+fi
+
+if [ -n "${FIREBASE_SERVICE_ACCOUNT_FILE:-}" ] &&
+  [ -z "${FIREBASE_SERVICE_ACCOUNT_JSON:-}" ]; then
+  FIREBASE_SERVICE_ACCOUNT_JSON="$(
+    python3 - "$FIREBASE_SERVICE_ACCOUNT_FILE" <<'PY'
+import json
+import pathlib
+import sys
+
+service_account_path = pathlib.Path(sys.argv[1])
+try:
+    service_account = json.loads(service_account_path.read_text())
+except json.JSONDecodeError as exc:
+    raise SystemExit(f"Invalid JSON in {service_account_path}: {exc}") from exc
+
+print(json.dumps(service_account, separators=(",", ":")))
+PY
+  )"
+  export FIREBASE_SERVICE_ACCOUNT_JSON
+fi
+
 if ! command -v rg >/dev/null 2>&1; then
   echo "ripgrep (rg) is required to validate BioPay Firebase provisioning." >&2
   exit 2
@@ -81,6 +110,9 @@ PY
 echo "BioPay Firebase and App Check provisioning check"
 echo "Root: $ROOT"
 echo "Server project: $SERVER_PROJECT_ID"
+if [ -f "$FIREBASE_ENV_FILE" ]; then
+  echo "Runtime env: $FIREBASE_ENV_FILE"
+fi
 echo ""
 
 missing=0

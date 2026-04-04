@@ -3,6 +3,11 @@ import { Barlow_Condensed, Bebas_Neue, Inter } from "next/font/google";
 import "./globals.css";
 import { absoluteUrl, siteConfig } from "@/lib/config";
 import { buildSiteJsonLd } from "@/lib/metadata";
+import { WebVitalsReporter } from "@/components/pwa/web-vitals-reporter";
+
+const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL.trim()).origin
+  : null;
 
 const inter = Inter({
   variable: "--font-inter",
@@ -97,11 +102,20 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${barlow.variable} ${bebasNeue.variable} h-full antialiased`}
     >
+      <head>
+        {supabaseHost ? (
+          <>
+            <link rel="preconnect" href={supabaseHost} />
+            <link rel="dns-prefetch" href={supabaseHost} />
+          </>
+        ) : null}
+      </head>
       <body className="min-h-full flex flex-col">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
         />
+        <WebVitalsReporter />
         {children}
       </body>
     </html>

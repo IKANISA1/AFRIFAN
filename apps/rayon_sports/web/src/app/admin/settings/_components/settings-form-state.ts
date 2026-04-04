@@ -1,7 +1,8 @@
 import type { ClubProfile, FeatureFlags } from "@/lib/types";
-import { rayonClub } from "@/lib/config";
 
 export type SettingsForm = {
+  id: number;
+  clubSlug: string;
   clubName: string;
   shortName: string;
   nickname: string;
@@ -35,6 +36,8 @@ export const defaultFeatureFlags: FeatureFlags = {
 
 export function profileToForm(profile: ClubProfile): SettingsForm {
   return {
+    id: profile.id,
+    clubSlug: profile.clubSlug,
     clubName: profile.clubName,
     shortName: profile.shortName,
     nickname: profile.nickname,
@@ -63,9 +66,9 @@ export function profileToForm(profile: ClubProfile): SettingsForm {
 
 export function formToProfile(form: SettingsForm): ClubProfile {
   return {
-    id: rayonClub.numericId,
+    id: form.id,
     clubName: form.clubName.trim(),
-    clubSlug: rayonClub.slug,
+    clubSlug: form.clubSlug.trim(),
     shortName: form.shortName.trim(),
     nickname: form.nickname.trim(),
     countryCode: form.countryCode.trim(),

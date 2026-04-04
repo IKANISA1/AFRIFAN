@@ -14,6 +14,7 @@ interface AdminStateCardProps {
 export function AdminStateCard({
   label,
   value,
+  helper,
   icon: Icon,
   trend,
   trendLabel,
@@ -57,6 +58,9 @@ export function AdminStateCard({
               </span>
             ) : null}
           </div>
+          {helper ? (
+            <p className="mt-2 text-sm leading-5 text-slate-400">{helper}</p>
+          ) : null}
         </>
       )}
     </article>

@@ -39,7 +39,7 @@ export default function AdminContributionsPage() {
 
     setLoading(true);
     try {
-      setSnapshot(await getAdminContributionSnapshot(client));
+      setSnapshot(await getAdminContributionSnapshot(client, access));
     } catch (caught) {
       showAdminToast(
         caught instanceof Error ? caught.message : "Could not load contributions monitor.",
@@ -48,7 +48,7 @@ export default function AdminContributionsPage() {
     } finally {
       setLoading(false);
     }
-  }, [client]);
+  }, [access, client]);
 
   useEffect(() => {
     if (client == null || !access.hasAccess) {
@@ -68,7 +68,7 @@ export default function AdminContributionsPage() {
     }
 
     try {
-      await deleteAdminContributionGroup(client, group.id);
+      await deleteAdminContributionGroup(client, access, group.id);
       await loadMonitor();
       showAdminToast(`${group.name} removed.`, "success");
     } catch (caught) {

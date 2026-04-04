@@ -3,10 +3,13 @@ import { absoluteUrl } from "@/lib/config";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-    },
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/admin", "/admin/*", "/api/*"],
+      },
+    ],
     sitemap: absoluteUrl("/sitemap.xml"),
   };
 }

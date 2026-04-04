@@ -23,7 +23,7 @@ export default function AdminSquadPage() {
     if (client == null) return;
     setLoading(true);
     try {
-      setPlayers(await getAdminSquad(client));
+      setPlayers(await getAdminSquad(client, access));
     } catch (caught) {
       showAdminToast(
         caught instanceof Error ? caught.message : "Could not load squad.",
@@ -32,7 +32,7 @@ export default function AdminSquadPage() {
     } finally {
       setLoading(false);
     }
-  }, [client]);
+  }, [access, client]);
 
   useEffect(() => {
     if (client == null || !access.hasAccess) return;
@@ -57,7 +57,7 @@ export default function AdminSquadPage() {
     if (client == null) return;
     showAdminToast(`Removing ${player.name}...`, "info");
     try {
-      await deleteAdminSquadPlayer(client, player.id);
+      await deleteAdminSquadPlayer(client, access, player.id);
       await loadSquad();
       showAdminToast(`${player.name} removed.`, "success");
     } catch (caught) {

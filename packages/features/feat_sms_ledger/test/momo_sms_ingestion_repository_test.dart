@@ -7,15 +7,18 @@ void main() {
       expect(MomoSmsIngestionRepository.isApprovedSender('MTN MoMo'), true);
       expect(MomoSmsIngestionRepository.isApprovedSender('mtn momo'), true);
       expect(MomoSmsIngestionRepository.isApprovedSender(' M-Money '), true);
-      expect(MomoSmsIngestionRepository.isApprovedSender('M-Money Alerts'), true);
+      expect(
+          MomoSmsIngestionRepository.isApprovedSender('M-Money Alerts'), true);
       expect(MomoSmsIngestionRepository.isApprovedSender('Mobile Money'), true);
       expect(MomoSmsIngestionRepository.isApprovedSender('MoMo'), true);
       expect(MomoSmsIngestionRepository.isApprovedSender('MTN MOMO'), true);
-      expect(MomoSmsIngestionRepository.isApprovedSender('MTN MoMo Rwanda'), true);
+      expect(
+          MomoSmsIngestionRepository.isApprovedSender('MTN MoMo Rwanda'), true);
     });
 
     test('isApprovedSender rejects random senders', () {
-      expect(MomoSmsIngestionRepository.isApprovedSender('+250781234567'), false);
+      expect(
+          MomoSmsIngestionRepository.isApprovedSender('+250781234567'), false);
       expect(MomoSmsIngestionRepository.isApprovedSender('Airtel'), false);
       expect(MomoSmsIngestionRepository.isApprovedSender('Bank'), false);
       expect(MomoSmsIngestionRepository.isApprovedSender(''), false);
@@ -23,30 +26,55 @@ void main() {
     });
 
     test('looksLikePotentialMomoTransactionalBody identifies valid texts', () {
-      final text1 = 'You have received 5,000 RWF from John Doe. New balance is 10,000 RWF. TxId: 12345';
-      expect(MomoSmsIngestionRepository.looksLikePotentialMomoTransactionalBody(text1), true);
+      const text1 =
+          'You have received 5,000 RWF from John Doe. New balance is 10,000 RWF. TxId: 12345';
+      expect(
+          MomoSmsIngestionRepository.looksLikePotentialMomoTransactionalBody(
+              text1),
+          true);
 
-      final text2 = 'Transferred 1,000 Frw to Bank. Fee was 100 Frw. Tax: 10 Frw. Balance: 50,000 Frw. Financial Transaction Id: 9876';
-      expect(MomoSmsIngestionRepository.looksLikePotentialMomoTransactionalBody(text2), true);
+      const text2 =
+          'Transferred 1,000 Frw to Bank. Fee was 100 Frw. Tax: 10 Frw. Balance: 50,000 Frw. Financial Transaction Id: 9876';
+      expect(
+          MomoSmsIngestionRepository.looksLikePotentialMomoTransactionalBody(
+              text2),
+          true);
 
-      final text3 = 'Payment of 2500 RWF to Merchant successful. New balance: 400 RWF.'; // No TXID but has brand/balance/outcome. 
-      // Missing brand signal, let's fix
-      final text4 = 'Mobile money payment of 2500 RWF to Merchant successful. New balance: 400 RWF.';
-      expect(MomoSmsIngestionRepository.looksLikePotentialMomoTransactionalBody(text4), true);
+      const text3 =
+          'Payment of 2500 RWF to Merchant successful. New balance: 400 RWF.';
+      // No brand signal and no TxId → should be rejected
+      expect(
+          MomoSmsIngestionRepository.looksLikePotentialMomoTransactionalBody(
+              text3),
+          false);
+
+      const text4 =
+          'Mobile money payment of 2500 RWF to Merchant successful. New balance: 400 RWF.';
+      expect(
+          MomoSmsIngestionRepository.looksLikePotentialMomoTransactionalBody(
+              text4),
+          true);
     });
 
     test('looksLikePotentialMomoTransactionalBody rejects standard texts', () {
-      final text1 = 'Hello, how are you today?';
-      expect(MomoSmsIngestionRepository.looksLikePotentialMomoTransactionalBody(text1), false);
+      const text1 = 'Hello, how are you today?';
+      expect(
+          MomoSmsIngestionRepository.looksLikePotentialMomoTransactionalBody(
+              text1),
+          false);
 
-      final text2 = 'Please send me the RWF 1000 today.';
-      expect(MomoSmsIngestionRepository.looksLikePotentialMomoTransactionalBody(text2), false);
+      const text2 = 'Please send me the RWF 1000 today.';
+      expect(
+          MomoSmsIngestionRepository.looksLikePotentialMomoTransactionalBody(
+              text2),
+          false);
     });
 
     test('senderDriftTelemetry detects anomalous senders with MoMo body', () {
       final telemetry = MomoSmsIngestionRepository.senderDriftTelemetry(
         sender: '+250788111222',
-        body: 'You have received 5,000 RWF from John. New balance: 10,000 RWF. TxId: 123',
+        body:
+            'You have received 5,000 RWF from John. New balance: 10,000 RWF. TxId: 123',
       );
 
       expect(telemetry, isNotNull);
@@ -60,7 +88,8 @@ void main() {
       // Valid sender
       final telemetry1 = MomoSmsIngestionRepository.senderDriftTelemetry(
         sender: 'MoMo',
-        body: 'You have received 5,000 RWF from John. New balance: 10,000 RWF. TxId: 123',
+        body:
+            'You have received 5,000 RWF from John. New balance: 10,000 RWF. TxId: 123',
       );
       expect(telemetry1, isNull);
 

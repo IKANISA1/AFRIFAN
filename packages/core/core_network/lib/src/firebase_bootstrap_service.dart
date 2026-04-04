@@ -12,7 +12,7 @@ class FirebaseBootstrapService {
   ///
   /// This is intentionally best-effort so AFRICLUB can still boot on flavors
   /// that have not received Firebase configuration yet.
-  static Future<void> initialize() async {
+  static Future<void> initialize({FirebaseOptions? options}) async {
     if (Firebase.apps.isNotEmpty || _didAttemptInitialization) {
       return;
     }
@@ -20,7 +20,11 @@ class FirebaseBootstrapService {
     _didAttemptInitialization = true;
 
     try {
-      await Firebase.initializeApp();
+      if (options != null) {
+        await Firebase.initializeApp(options: options);
+      } else {
+        await Firebase.initializeApp();
+      }
       debugPrint('[Firebase] Initialized default app.');
     } catch (error) {
       debugPrint('[Firebase] Initialization skipped: $error');

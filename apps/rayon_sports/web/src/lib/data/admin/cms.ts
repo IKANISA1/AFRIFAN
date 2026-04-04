@@ -6,7 +6,13 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { rayonClub } from "@/lib/config";
 import type { AdminAccess, AdminNewsArticle } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
-import { resolveNewsTable } from "./helpers";
+import { requestAdminApi } from "./http";
+import {
+  deleteRecordWithMatchers,
+  mutateRecordWithVariants,
+  requireAdminClubId,
+  resolveNewsTable,
+} from "./helpers";
 
 function mapNewsArticle(row: Record<string, unknown>): AdminNewsArticle {
   return {
@@ -31,11 +37,19 @@ function mapNewsArticle(row: Record<string, unknown>): AdminNewsArticle {
   };
 }
 
-export async function getAdminArticles(client: SupabaseClient) {
+export async function getAdminArticles(
+  client: SupabaseClient,
+  access: AdminAccess,
+) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<AdminNewsArticle[]>("cms");
+  }
+  const clubId = requireAdminClubId(access, "load articles");
   const table = await resolveNewsTable(client);
   const { data, error } = await client
     .from(table)
     .select("*")
+    .eq("club_id", clubId)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -63,10 +77,17 @@ export async function saveAdminArticle(
     sortOrder?: number;
   },
 ) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<string>("cms", {
+      method: "POST",
+      body: input,
+    });
+  }
+  const clubId = requireAdminClubId(access, "save articles");
   const table = await resolveNewsTable(client);
   const now = new Date().toISOString();
   const payload = {
-    club_id: safeNumber(access.clubId, rayonClub.numericId),
+    club_id: clubId,
     title: input.title.trim(),
     subtitle: safeString(input.subtitle) || null,
     excerpt: safeString(input.excerpt) || safeString(input.body).slice(0, 140),
@@ -80,11 +101,9 @@ export async function saveAdminArticle(
   };
 
   if (input.id) {
-    const { error } = await client.from(table).update(payload).eq("id", input.id);
-    if (error) {
-      throw new Error(error.message);
-    }
-    return input.id;
+    return mutateRecordWithVariants(client, table, input.id, [payload], {
+      club_id: clubId,
+    });
   }
 
   const { data, error } = await client
@@ -102,11 +121,17 @@ export async function saveAdminArticle(
 
 export async function deleteAdminArticle(
   client: SupabaseClient,
+  access: AdminAccess,
   articleId: string,
 ) {
-  const table = await resolveNewsTable(client);
-  const { error } = await client.from(table).delete().eq("id", articleId);
-  if (error) {
-    throw new Error(error.message);
+  if (typeof window !== "undefined") {
+    await requestAdminApi<{ success: true }>("cms", {
+      method: "DELETE",
+      query: { id: articleId },
+    });
+    return;
   }
+  const clubId = requireAdminClubId(access, "delete articles");
+  const table = await resolveNewsTable(client);
+  await deleteRecordWithMatchers(client, table, articleId, { club_id: clubId });
 }

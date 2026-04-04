@@ -27,7 +27,7 @@ export default function AdminCmsPage() {
 
     setLoading(true);
     try {
-      setArticles(await getAdminArticles(client));
+      setArticles(await getAdminArticles(client, access));
     } catch (caught) {
       showAdminToast(
         caught instanceof Error ? caught.message : "Could not load articles.",
@@ -36,7 +36,7 @@ export default function AdminCmsPage() {
     } finally {
       setLoading(false);
     }
-  }, [client]);
+  }, [access, client]);
 
   useEffect(() => {
     if (client == null || !access.hasAccess) {
@@ -130,7 +130,7 @@ export default function AdminCmsPage() {
     }
 
     try {
-      await deleteAdminArticle(client, article.id);
+      await deleteAdminArticle(client, access, article.id);
       await loadArticles();
       showAdminToast(`Removed "${article.title}".`, "success");
     } catch (caught) {

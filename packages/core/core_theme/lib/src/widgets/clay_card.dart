@@ -16,6 +16,7 @@ class ClayCard extends StatelessWidget {
     this.borderRadius,
     this.width,
     this.height,
+    this.semanticsLabel,
     super.key,
   });
 
@@ -41,14 +42,20 @@ class ClayCard extends StatelessWidget {
   final double? width;
   final double? height;
 
+  /// Optional accessibility label. When provided, wraps the card in a
+  /// [Semantics] widget so screen readers announce meaningful context
+  /// instead of reading raw child content.
+  final String? semanticsLabel;
+
   @override
   Widget build(BuildContext context) {
     final effectiveColor =
         backgroundColor ?? Theme.of(context).colorScheme.surface;
     final effectiveRadius = borderRadius ?? ShapeTokens.cardRadius;
 
+    Widget result;
     if (onTap != null) {
-      return Padding(
+      result = Padding(
         padding: margin ?? EdgeInsets.zero,
         child: AfriPressFeedback(
           onTap: onTap,
@@ -59,12 +66,22 @@ class ClayCard extends StatelessWidget {
           ),
         ),
       );
+    } else {
+      result = Padding(
+        padding: margin ?? EdgeInsets.zero,
+        child: _buildCard(effectiveColor, effectiveRadius, isPressed: false),
+      );
     }
 
-    return Padding(
-      padding: margin ?? EdgeInsets.zero,
-      child: _buildCard(effectiveColor, effectiveRadius, isPressed: false),
-    );
+    if (semanticsLabel != null) {
+      return Semantics(
+        label: semanticsLabel,
+        button: onTap != null,
+        child: result,
+      );
+    }
+
+    return result;
   }
 
   Widget _buildCard(

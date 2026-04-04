@@ -14,9 +14,9 @@ export default defineConfig({
     screenshot: "only-on-failure",
   },
   webServer: {
-    command: `npm run dev -- --hostname 127.0.0.1 --port ${port}`,
+    command: `npm run build && npx next start --hostname 127.0.0.1 --port ${port}`,
     reuseExistingServer: true,
-    timeout: 180_000,
+    timeout: 300_000,
     url: baseURL,
   },
   projects: [

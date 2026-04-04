@@ -66,7 +66,7 @@ function userClubId(user: AdminUserClaims) {
 
 function metadataRole(user: AdminUserClaims) {
   return normalizeAdminRole(
-    user?.user_metadata?.role ?? user?.app_metadata?.role ?? null,
+    user?.app_metadata?.role ?? user?.user_metadata?.role ?? null,
   );
 }
 
@@ -108,17 +108,22 @@ export function deriveAdminAccess(
   );
   const assignmentRole = normalizeAdminRole(matchingAssignments[0]?.role);
   const fallbackRole = metadataRole(user);
+  // Effective role for display, but only assignment-backed roles grant access.
   const role = assignmentRole ?? fallbackRole;
+  const hasAssignment = matchingAssignments.length > 0;
+  // Fail-closed: metadata-only role never grants admin access.
   const hasAccess =
-    role === "super_admin" ||
-    role === "admin" ||
-    role === "club_admin" ||
-    role === "club_moderator";
+    hasAssignment &&
+    (role === "super_admin" ||
+      role === "admin" ||
+      role === "club_admin" ||
+      role === "club_moderator");
 
   return {
     hasAccess,
     isAuthenticated: user != null,
-    isSuperAdmin: role === "super_admin" || role === "admin",
+    isSuperAdmin:
+      hasAssignment && (role === "super_admin" || role === "admin"),
     role,
     clubId: currentClubId,
     assignmentCount: matchingAssignments.length,
@@ -149,6 +154,7 @@ export async function resolveAdminAccess(
       Array.isArray(data) ? (data as AdminAssignmentRow[]) : [],
     );
   } catch {
-    return deriveAdminAccess(user, []);
+    // Fail-closed: assignment lookup failure denies access.
+    return emptyAdminAccess;
   }
 }

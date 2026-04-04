@@ -69,6 +69,7 @@ function AdminAuthCard() {
             alt="Rayon Sports"
             width={56}
             height={56}
+            priority
           />
           <div className="space-y-1">
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
@@ -243,6 +244,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
               width={64}
               height={64}
               className="animate-pulse"
+              priority
             />
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
               Admin workspace
@@ -293,6 +295,13 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="page-shell pb-28 pt-6 lg:py-8">
+      {/* Skip to main content link for keyboard nav */}
+      <a
+        href="#admin-main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-club-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+      >
+        Skip to main content
+      </a>
       <div className="grid gap-6 xl:grid-cols-[300px_minmax(0,1fr)]">
         <aside className="glass-panel hidden h-fit rounded-[32px] p-5 xl:block">
           {/* Crest + branding */}
@@ -338,7 +347,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           ) : null}
 
           {/* Navigation */}
-          <nav className="mt-5 flex flex-col gap-1.5">
+          <nav className="mt-5 flex flex-col gap-1.5" aria-label="Admin sidebar">
             {adminNavigation.map((item) => {
               const active =
                 pathname === item.href ||
@@ -349,6 +358,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={active ? "page" : undefined}
                   className={cn(
                     "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition",
                     active
@@ -356,7 +366,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                       : "text-slate-200 hover:bg-white/8",
                   )}
                 >
-                  <span className="text-base">{icon}</span>
+                  <span className="text-base" aria-hidden="true">{icon}</span>
                   {item.label}
                 </Link>
               );
@@ -372,11 +382,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
           </button>
         </aside>
 
-        <div className="space-y-6">{children}</div>
+        <main id="admin-main-content" className="space-y-6">{children}</main>
       </div>
 
       {/* Mobile bottom nav */}
-      <nav className="glass-panel fixed inset-x-4 bottom-4 z-30 flex gap-2 overflow-x-auto rounded-[28px] p-3 xl:hidden">
+      <nav className="glass-panel fixed inset-x-4 bottom-4 z-30 flex gap-2 overflow-x-auto rounded-[28px] p-3 xl:hidden" aria-label="Admin mobile navigation">
         {adminNavigation.map((item) => {
           const active =
             pathname === item.href ||
@@ -387,6 +397,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
             <Link
               key={item.href}
               href={item.href}
+              aria-current={active ? "page" : undefined}
               className={cn(
                 "flex min-w-max items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold transition",
                 active
@@ -394,7 +405,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                   : "border border-border-soft text-slate-200",
               )}
             >
-              <span className="text-xs">{icon}</span>
+              <span className="text-xs" aria-hidden="true">{icon}</span>
               {item.label}
             </Link>
           );
@@ -402,6 +413,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <button
           type="button"
           onClick={() => signOut().catch(() => {})}
+          aria-label="Sign out of admin workspace"
           className="min-w-max rounded-full border border-border-soft px-4 py-2.5 text-sm font-semibold text-slate-100"
         >
           Exit

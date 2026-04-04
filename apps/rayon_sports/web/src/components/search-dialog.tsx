@@ -13,7 +13,7 @@ interface SearchDialogProps {
 
 export function SearchDialog({ open, onClose }: SearchDialogProps) {
   const [items, setItems] = useState<SearchIndexItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const handleClose = useCallback(() => {
@@ -55,35 +55,33 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
   }, [open]);
 
   useEffect(() => {
-    if (!open || items.length > 0 || isLoading) {
+    if (!open || hasLoaded) {
       return;
     }
 
     let cancelled = false;
-    setIsLoading(true);
 
     fetch("/api/search-index")
       .then((response) => response.json())
       .then((payload: { items?: SearchIndexItem[] }) => {
         if (!cancelled) {
           setItems(Array.isArray(payload.items) ? payload.items : []);
+          setHasLoaded(true);
         }
       })
       .catch(() => {
         if (!cancelled) {
           setItems([]);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setIsLoading(false);
+          setHasLoaded(true);
         }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [isLoading, items.length, open]);
+  }, [hasLoaded, open]);
+
+  const isLoading = open && !hasLoaded;
 
   const results = useMemo(() => {
     const term = query.trim().toLowerCase();

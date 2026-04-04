@@ -19,7 +19,13 @@ export function NotificationForm({
   onCopyPayload,
 }: NotificationFormProps) {
   return (
-    <section className="glass-panel grid gap-4 rounded-[32px] p-6">
+    <form
+      className="glass-panel grid gap-4 rounded-[32px] p-6"
+      onSubmit={(event) => {
+        event.preventDefault();
+        onSubmit();
+      }}
+    >
       <p className="font-display text-3xl font-bold uppercase leading-none">
         Compose broadcast
       </p>
@@ -31,6 +37,7 @@ export function NotificationForm({
         <input
           value={form.title}
           maxLength={120}
+          required
           onChange={(event) =>
             setForm((current: NotificationFormType) => ({ ...current, title: event.target.value }))
           }
@@ -45,6 +52,7 @@ export function NotificationForm({
         <textarea
           rows={6}
           maxLength={500}
+          required
           value={form.body}
           onChange={(event) =>
             setForm((current: NotificationFormType) => ({ ...current, body: event.target.value }))
@@ -171,9 +179,8 @@ export function NotificationForm({
       </div>
       <div className="flex flex-wrap gap-3">
         <button
-          type="button"
+          type="submit"
           disabled={submitting}
-          onClick={onSubmit}
           className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
         >
           {form.deliveryMode === "schedule" ? "Schedule notification" : "Send notification"}
@@ -187,6 +194,6 @@ export function NotificationForm({
           Copy payload
         </button>
       </div>
-    </section>
+    </form>
   );
 }

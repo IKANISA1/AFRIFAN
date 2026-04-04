@@ -380,9 +380,6 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                       final club = _visibleClubs[index];
                       final clubId = club['id']?.toString() ?? '';
                       final joined = _joinedClubIds.contains(clubId);
-                      final members =
-                          (club['member_count'] as num?)?.toInt() ?? 0;
-                      final rating = (club['rating'] as num?)?.toDouble() ?? 0;
 
                       return Padding(
                         padding: EdgeInsets.fromLTRB(
@@ -410,5 +407,4 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
       ),
     );
   }
-}
 }

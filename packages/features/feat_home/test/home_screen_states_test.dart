@@ -18,9 +18,9 @@ void main() {
     ) async {
       await tester.pumpWidget(
         _buildApp(
-          homeRepository: _FakeHomeFeedRepository(
-            delay: const Duration(milliseconds: 200),
-            snapshot: const HomeFeedSnapshot(
+          homeRepository: const _FakeHomeFeedRepository(
+            delay: Duration(milliseconds: 200),
+            snapshot: HomeFeedSnapshot(
               status: HomeFeedStatus.empty,
               showFixturePlaceholder: true,
             ),

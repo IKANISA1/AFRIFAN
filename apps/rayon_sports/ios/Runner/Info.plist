@@ -32,6 +32,10 @@
 	<string>Gikundiro uses NFC for phone-to-phone payment handoff experiences.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Gikundiro saves BioPay QR codes to your photo library when you choose to export them.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

@@ -2,11 +2,15 @@
  * Admin settings — club profile management.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { rayonClub } from "@/lib/config";
 import { fallbackClubProfile } from "@/lib/content";
-import type { ClubProfile } from "@/lib/types";
-import { safeNumber, safeString, toIdString } from "@/lib/utils";
-import { clubTable, mutateRecordWithVariants } from "./helpers";
+import type { AdminAccess, ClubProfile } from "@/lib/types";
+import { safeNumber, safeString } from "@/lib/utils";
+import { requestAdminApi } from "./http";
+import {
+  clubTable,
+  mutateRecordWithVariants,
+  requireAdminClubId,
+} from "./helpers";
 
 function mapAdminClubProfile(row: Record<string, unknown>): ClubProfile {
   return {
@@ -40,24 +44,55 @@ function mapAdminClubProfile(row: Record<string, unknown>): ClubProfile {
   };
 }
 
-export async function getAdminClubProfile(client: SupabaseClient): Promise<ClubProfile> {
+export async function getAdminClubProfile(
+  client: SupabaseClient,
+  access: AdminAccess,
+): Promise<ClubProfile> {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<ClubProfile>("settings");
+  }
+  const clubId = requireAdminClubId(access, "load club settings");
   const { data, error } = await client
     .from(clubTable)
     .select("*")
-    .eq("club_slug", rayonClub.slug)
+    .eq("id", clubId)
     .maybeSingle();
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return data ? mapAdminClubProfile(data as Record<string, unknown>) : fallbackClubProfile;
+  return data
+    ? mapAdminClubProfile(data as Record<string, unknown>)
+    : {
+        ...fallbackClubProfile,
+        id: clubId,
+      };
 }
 
-export async function saveAdminClubProfile(client: SupabaseClient, input: ClubProfile) {
+export async function saveAdminClubProfile(
+  client: SupabaseClient,
+  access: AdminAccess,
+  input: ClubProfile,
+) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<string>("settings", {
+      method: "POST",
+      body: input,
+    });
+  }
+  const clubId =
+    safeNumber(input.id, Number.NaN) > 0
+      ? safeNumber(input.id, Number.NaN)
+      : requireAdminClubId(access, "save club settings");
+  const clubSlug = safeString(input.clubSlug);
+  if (!clubSlug) {
+    throw new Error("Club slug is required to save club settings.");
+  }
+
   const payload = {
     club_name: input.clubName.trim(),
-    club_slug: rayonClub.slug,
+    club_slug: clubSlug,
     short_name: input.shortName.trim(),
     nickname_brand_identity: input.nickname.trim(),
     country_iso_code: input.countryCode.trim(),
@@ -85,24 +120,27 @@ export async function saveAdminClubProfile(client: SupabaseClient, input: ClubPr
   const existing = await client
     .from(clubTable)
     .select("id")
-    .eq("club_slug", rayonClub.slug)
+    .eq("id", clubId)
     .maybeSingle();
 
   if (existing.error) {
     throw new Error(existing.error.message);
   }
 
-  const existingId = existing.data?.id
-    ? toIdString(existing.data.id, crypto.randomUUID())
-    : null;
+  const existingId =
+    typeof existing.data?.id === "number"
+      ? existing.data.id.toString()
+      : null;
   const payloadVariants = existingId
     ? [payload, payloadWithoutShortName]
     : [
-        { id: rayonClub.numericId, ...payload },
-        { id: rayonClub.numericId, ...payloadWithoutShortName },
+        { id: clubId, ...payload },
+        { id: clubId, ...payloadWithoutShortName },
         payload,
         payloadWithoutShortName,
       ];
 
-  return mutateRecordWithVariants(client, clubTable, existingId, payloadVariants);
+  return mutateRecordWithVariants(client, clubTable, existingId, payloadVariants, {
+    id: clubId,
+  });
 }

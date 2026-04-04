@@ -2,8 +2,10 @@
  * Admin notifications — push notification context + delivery.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { AdminNotificationContext, AdminNotificationRecord } from "@/lib/types";
+import type { AdminAccess, AdminNotificationContext, AdminNotificationRecord } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
+import { requestAdminApi } from "./http";
+import { requireAdminClubId } from "./helpers";
 
 function mapNotification(row: Record<string, unknown>): AdminNotificationRecord {
   return {
@@ -26,10 +28,14 @@ function mapNotification(row: Record<string, unknown>): AdminNotificationRecord 
   };
 }
 
-export async function getAdminNotificationContext(client: SupabaseClient): Promise<AdminNotificationContext> {
+export async function getAdminNotificationContext(client: SupabaseClient, access: AdminAccess): Promise<AdminNotificationContext> {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<AdminNotificationContext>("notifications");
+  }
+  const clubId = requireAdminClubId(access, "load notification context");
   const [groupsResult, historyResult] = await Promise.all([
-    client.from("contribution_groups").select("id, name").eq("is_closed", false).order("name", { ascending: true }).limit(50),
-    client.from("notifications").select("*").order("created_at", { ascending: false }).limit(10),
+    client.from("contribution_groups").select("id, name").eq("is_closed", false).eq("club_id", clubId).order("name", { ascending: true }).limit(50),
+    client.from("notifications").select("*").eq("club_id", clubId).order("created_at", { ascending: false }).limit(10),
   ]);
   if (groupsResult.error) throw new Error(groupsResult.error.message);
   if (historyResult.error) throw new Error(historyResult.error.message);
@@ -43,17 +49,30 @@ export async function sendAdminNotification(
   client: SupabaseClient,
   payload: { title: string; body: string; audience: "all_fans" | "by_tier" | "by_group"; tier?: string | null; groupId?: string | null; groupName?: string | null; deliveryMode: "send_now" | "schedule"; scheduledAt?: string | null; imageUrl?: string | null },
 ) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<unknown>("notifications", {
+      method: "POST",
+      body: payload,
+    });
+  }
   const response = await client.functions.invoke("admin-send-notification", {
     body: { title: payload.title, body: payload.body, audience: payload.audience, tier: payload.tier, group_id: payload.groupId, group_name: payload.groupName, delivery_mode: payload.deliveryMode, scheduled_at: payload.scheduledAt, image_url: payload.imageUrl },
   });
+
+  if (response.error) {
+    throw new Error(response.error.message || "Notification delivery failed.");
+  }
+
   const raw = response.data;
   if (raw && typeof raw === "object") {
     const result = raw as { success?: boolean; message?: string; data?: unknown };
-    if (result.success === true) return result.data ?? {};
-    if (result.message && !result.message.toLowerCase().includes("function")) throw new Error(result.message);
+    if (result.success === true) {
+      return result.data ?? {};
+    }
+    if (result.message) {
+      throw new Error(result.message);
+    }
   }
-  const user = await client.auth.getUser();
-  const legacyInsert = await client.from("notifications").insert({ title: payload.title, body: payload.body, status: payload.deliveryMode === "schedule" ? "scheduled" : "sent", created_by: user.data.user?.id ?? null, sent_at: payload.deliveryMode === "send_now" ? new Date().toISOString() : null }).select("*").single();
-  if (legacyInsert.error) throw new Error(legacyInsert.error.message || "Notification delivery failed.");
-  return { notification: legacyInsert.data, delivery: { status: legacyInsert.data?.status ?? "sent", sent_count: payload.deliveryMode === "send_now" ? 1 : 0, failed_count: 0 } };
+
+  throw new Error("Notification delivery failed. The edge function returned an unexpected response.");
 }

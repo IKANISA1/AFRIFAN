@@ -1,4 +1,3 @@
-import 'package:core_utils/core_utils.dart';
 import 'package:feat_shop/src/shop_cart_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

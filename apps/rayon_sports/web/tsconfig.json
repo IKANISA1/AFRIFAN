@@ -36,7 +36,9 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts",
     "/tmp/next-rayon-build/types/**/*.ts",
-    "/tmp/next-rayon-build/dev/types/**/*.ts"
+    "/tmp/next-rayon-build/dev/types/**/*.ts",
+    "tmp/deploy-check/types/**/*.ts",
+    "tmp/deploy-check/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

@@ -4,6 +4,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { rayonClub } from "@/lib/config";
+import type { AdminAccess } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 
 export { rayonClub, safeNumber, safeString, toIdString };
@@ -74,6 +75,15 @@ export async function resolveExistingColumn(
   return candidates[0] ?? null;
 }
 
+export async function hasColumn(
+  client: SupabaseClient,
+  table: string,
+  column: string,
+) {
+  const { error } = await client.from(table).select(column).limit(1);
+  return !error;
+}
+
 export function hasMissingColumnError(error: unknown, column: string) {
   if (error == null || typeof error !== "object") {
     return false;
@@ -104,12 +114,17 @@ export async function mutateRecordWithVariants(
   table: string,
   id: string | null | undefined,
   payloadVariants: Array<Record<string, unknown>>,
+  matchers: Record<string, unknown> = {},
 ) {
   let lastError: { message?: string } | null = null;
 
   for (const payload of payloadVariants) {
     if (id) {
-      const response = await client.from(table).update(payload).eq("id", id);
+      let query = client.from(table).update(payload);
+      for (const [column, value] of Object.entries(matchers)) {
+        query = query.eq(column, value);
+      }
+      const response = await query.eq("id", id);
       if (!response.error) {
         return id;
       }
@@ -129,6 +144,41 @@ export async function mutateRecordWithVariants(
   }
 
   throw new Error(lastError?.message ?? "Could not save record.");
+}
+
+export async function deleteRecordWithMatchers(
+  client: SupabaseClient,
+  table: string,
+  id: string,
+  matchers: Record<string, unknown> = {},
+) {
+  let query = client.from(table).delete();
+  for (const [column, value] of Object.entries(matchers)) {
+    query = query.eq(column, value);
+  }
+  const { error } = await query.eq("id", id);
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export function adminClubIdOrNull(access: Pick<AdminAccess, "clubId">) {
+  if (access.clubId == null || safeString(access.clubId).length === 0) {
+    return null;
+  }
+  const clubId = safeNumber(access.clubId, Number.NaN);
+  return Number.isFinite(clubId) ? clubId : null;
+}
+
+export function requireAdminClubId(
+  access: Pick<AdminAccess, "clubId">,
+  action = "complete this admin action",
+) {
+  const clubId = adminClubIdOrNull(access);
+  if (clubId == null) {
+    throw new Error(`Club context is required to ${action}.`);
+  }
+  return clubId;
 }
 
 export function metadataSnippet(value: unknown) {

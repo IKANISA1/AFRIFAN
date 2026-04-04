@@ -1,6 +1,5 @@
 import type { CommunityForm } from "./community-state";
 import { emptyForm } from "./community-state";
-import { showAdminToast } from "@/components/admin/admin-toast";
 
 interface CommunityContentEditorProps {
   form: CommunityForm;

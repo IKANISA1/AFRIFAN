@@ -49,7 +49,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _snapshot = HomeFeedSnapshot(
+        _snapshot = const HomeFeedSnapshot(
           status: HomeFeedStatus.error,
           message:
               'Live club data is temporarily unavailable. Pull to refresh.',
@@ -305,13 +305,13 @@ class _HomeHeroSkeleton extends StatelessWidget {
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
         color: ColorTokens.surfaceContainerHigh,
       ),
-      child: SafeArea(
+      child: const SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(22, 20, 22, 22),
+          padding: EdgeInsets.fromLTRB(22, 20, 22, 22),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Spacer(flex: 4),
               AfriSkeleton(width: 220, height: 28),
               SizedBox(height: 10),

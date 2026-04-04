@@ -27,7 +27,7 @@ export default function AdminCommunityPage() {
 
     setLoading(true);
     try {
-      setClubs(await getAdminFanClubs(client));
+      setClubs(await getAdminFanClubs(client, access));
     } catch (caught) {
       showAdminToast(
         caught instanceof Error ? caught.message : "Could not load fan clubs.",
@@ -36,7 +36,7 @@ export default function AdminCommunityPage() {
     } finally {
       setLoading(false);
     }
-  }, [client]);
+  }, [access, client]);
 
   useEffect(() => {
     if (client == null || !access.hasAccess) return;
@@ -89,7 +89,7 @@ export default function AdminCommunityPage() {
     if (client == null) return;
 
     try {
-      await deleteAdminFanClub(client, club.id);
+      await deleteAdminFanClub(client, access, club.id);
       await load();
       showAdminToast(`${club.name} removed.`, "success");
     } catch (caught) {

@@ -2,10 +2,14 @@
  * Admin squad — player CRUD.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { rayonClub } from "@/lib/config";
 import type { AdminAccess } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
-import { resolveSquadTable } from "./helpers";
+import { requestAdminApi } from "./http";
+import {
+  deleteRecordWithMatchers,
+  requireAdminClubId,
+  resolveSquadTable,
+} from "./helpers";
 
 export interface AdminSquadPlayer {
   id: string;
@@ -35,32 +39,52 @@ function mapAdminSquadPlayer(row: Record<string, unknown>): AdminSquadPlayer {
   };
 }
 
-export async function getAdminSquad(client: SupabaseClient): Promise<AdminSquadPlayer[]> {
+export async function getAdminSquad(
+  client: SupabaseClient,
+  access: AdminAccess,
+): Promise<AdminSquadPlayer[]> {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<AdminSquadPlayer[]>("squad");
+  }
+  const clubId = requireAdminClubId(access, "load squad");
   const table = await resolveSquadTable(client);
-  const scopedQuery = await client.from(table).select("*").eq("club_id", rayonClub.numericId).order("shirt_number", { ascending: true }).limit(50);
-  if (scopedQuery.data && scopedQuery.data.length > 0) {
-    return scopedQuery.data.map((row) => mapAdminSquadPlayer(row as Record<string, unknown>));
-  }
-  const fallbackQuery = await client.from(table).select("*").order("shirt_number", { ascending: true }).limit(50);
-  if (fallbackQuery.data && fallbackQuery.data.length > 0) {
-    return fallbackQuery.data.map((row) => mapAdminSquadPlayer(row as Record<string, unknown>));
-  }
-  return [];
+  const { data, error } = await client
+    .from(table)
+    .select("*")
+    .eq("club_id", clubId)
+    .order("shirt_number", { ascending: true })
+    .limit(50);
+  if (error) throw new Error(error.message);
+  return Array.isArray(data)
+    ? data.map((row) => mapAdminSquadPlayer(row as Record<string, unknown>))
+    : [];
 }
 
 export async function saveAdminSquadPlayer(
   client: SupabaseClient, access: AdminAccess,
   player: { id: string | null; name: string; role: string; number: number; nationality: string; bio: string; imageUrl: string; isActive: boolean },
 ) {
+  if (typeof window !== "undefined") {
+    await requestAdminApi<{ success: true }>("squad", {
+      method: "POST",
+      body: player,
+    });
+    return;
+  }
+  const clubId = requireAdminClubId(access, "save squad players");
   const table = await resolveSquadTable(client);
   const payload = {
-    club_id: access.clubId ? Number(access.clubId) : rayonClub.numericId,
+    club_id: clubId,
     name: player.name, position: player.role, shirt_number: player.number,
     nationality: player.nationality, bio: player.bio,
     image_url: player.imageUrl || null, is_active: player.isActive,
   };
   if (player.id) {
-    const { error } = await client.from(table).update(payload).eq("id", player.id);
+    const { error } = await client
+      .from(table)
+      .update(payload)
+      .eq("club_id", clubId)
+      .eq("id", player.id);
     if (error) throw new Error(error.message);
   } else {
     const { error } = await client.from(table).insert(payload);
@@ -68,8 +92,19 @@ export async function saveAdminSquadPlayer(
   }
 }
 
-export async function deleteAdminSquadPlayer(client: SupabaseClient, playerId: string) {
+export async function deleteAdminSquadPlayer(
+  client: SupabaseClient,
+  access: AdminAccess,
+  playerId: string,
+) {
+  if (typeof window !== "undefined") {
+    await requestAdminApi<{ success: true }>("squad", {
+      method: "DELETE",
+      query: { id: playerId },
+    });
+    return;
+  }
+  const clubId = requireAdminClubId(access, "delete squad players");
   const table = await resolveSquadTable(client);
-  const { error } = await client.from(table).delete().eq("id", playerId);
-  if (error) throw new Error(error.message);
+  await deleteRecordWithMatchers(client, table, playerId, { club_id: clubId });
 }

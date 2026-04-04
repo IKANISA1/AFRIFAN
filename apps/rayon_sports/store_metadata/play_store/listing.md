@@ -9,39 +9,33 @@ Gikundiro, the official Rayon Sports FC app for fans.
 ## Full Description (max 4000 chars)
 Welcome to Gikundiro, the official Rayon Sports FC fan app and your all-in-one digital companion for Rwanda's most decorated football club.
 
-🏟️ LIVE MATCH EXPERIENCE
-Follow every match through the live match center, club-published updates, fixture details, and matchday content from Amahoro Stadium and beyond.
+🏟️ LIVE MATCH CENTER
+Follow every match through the live match center with real-time score updates, match status, commentary, and matchday content from Amahoro Stadium and beyond.
 
 🎫 DIGITAL TICKETING
-Purchase match tickets directly from the app. Skip the queues with digital entry and manage all your tickets in one place.
+Purchase match tickets directly from the app. Skip the queues with digital entry via QR code and manage all your tickets in one place.
 
 👤 FAN MEMBERSHIP
-Join the official Rayon Sports FC digital membership program. Access exclusive benefits, earn points, and showcase your loyalty status.
+Join the official Rayon Sports FC digital membership program. Access exclusive benefits, earn points, and showcase your loyalty status with your unique fan identity.
 
 🎮 FAN GAMIFICATION
-Compete with other fans through predictions, quizzes, and challenges. Climb the leaderboards and earn rewards for your knowledge and dedication.
+Compete with other fans through challenges and leaderboards. Climb the rankings, unlock badges, and earn XP rewards for your dedication.
 
 💰 CONTRIBUTIONS
-Support your club through transparent digital contributions. Track how your support makes a difference with full financial transparency.
+Support your club through transparent digital contributions. Join support circles, track group contributions, and see how your support makes a difference.
 
 🛍️ OFFICIAL SHOP
-Browse and purchase official Rayon Sports FC merchandise including jerseys, scarves, and accessories. Delivered to your door or collect at the stadium.
-
-📱 BIOPAY (NFC)
-Supported Gikundiro releases can enable BioPay for secure contactless payment and supporter identity experiences.
+Browse and purchase official Rayon Sports FC merchandise including jerseys, scarves, and accessories.
 
 🏆 FAN CLUBS
 Connect with fellow supporters in your local fan club chapter. Organize watch parties, coordinate matchday travel, and build your supporter community.
 
-📊 SMS LEDGER
-Track your contribution and payment history in one place. Supported deployments may also enable additional payment-message import features.
-
 FEATURES AT A GLANCE:
 • Dark mode with stunning glassmorphism design
-• Multi-language support (Kinyarwanda, French, English)
 • Secure authentication & data protection
 • Mobile money (MoMo) integration for Rwanda
-• Matchday updates, supporter services, and club content in one app
+• Live match updates and fixtures
+• Digital e-tickets with QR entry
 
 "Gikundiro" — because every supporter is part of the family.
 

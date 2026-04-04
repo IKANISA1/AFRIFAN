@@ -12,18 +12,21 @@ class AppStartupOptions {
     this.initializePersistence = true,
     this.initializeBackend = true,
     this.initializeSmsAutoread = true,
+    this.firebaseOptions,
   });
 
   const AppStartupOptions.integrationTest()
     : configureDeviceChrome = false,
       initializePersistence = false,
       initializeBackend = false,
-      initializeSmsAutoread = false;
+      initializeSmsAutoread = false,
+      firebaseOptions = null;
 
   final bool configureDeviceChrome;
   final bool initializePersistence;
   final bool initializeBackend;
   final bool initializeSmsAutoread;
+  final FirebaseOptions? firebaseOptions;
 }
 
 /// Centralizes startup side effects so app bootstrap stays declarative.
@@ -70,7 +73,7 @@ class AppStartupCoordinator {
   }
 
   Future<void> _initializeBackend(ClubConfig config) async {
-    await FirebaseBootstrapService.initialize();
+    await FirebaseBootstrapService.initialize(options: options.firebaseOptions);
     await AppCheckService.initialize();
 
     await SupabaseClientFactory.initialize(

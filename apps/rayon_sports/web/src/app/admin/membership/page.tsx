@@ -26,7 +26,7 @@ export default function AdminMembershipPage() {
 
     setLoading(true);
     try {
-      setPackages(await getAdminMembershipPackages(client));
+      setPackages(await getAdminMembershipPackages(client, access));
     } catch (caught) {
       showAdminToast(
         caught instanceof Error
@@ -37,7 +37,7 @@ export default function AdminMembershipPage() {
     } finally {
       setLoading(false);
     }
-  }, [client]);
+  }, [access, client]);
 
   useEffect(() => {
     if (client == null || !access.hasAccess) return;
@@ -63,7 +63,7 @@ export default function AdminMembershipPage() {
 
     showAdminToast(`Removing ${pkg.title}...`, "info");
     try {
-      await deleteAdminMembershipPackage(client, pkg.id);
+      await deleteAdminMembershipPackage(client, access, pkg.id);
       await load();
       showAdminToast(`${pkg.title} removed.`, "success");
     } catch (caught) {

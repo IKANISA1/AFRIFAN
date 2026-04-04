@@ -29,7 +29,7 @@ export default function AdminMatchesPage() {
 
     setLoading(true);
     try {
-      setMatches(await getAdminMatches(client));
+      setMatches(await getAdminMatches(client, access));
     } catch (caught) {
       showAdminToast(
         caught instanceof Error ? caught.message : "Could not load matches.",
@@ -38,7 +38,7 @@ export default function AdminMatchesPage() {
     } finally {
       setLoading(false);
     }
-  }, [client]);
+  }, [access, client]);
 
   useEffect(() => {
     if (client == null || !access.hasAccess) {
@@ -58,7 +58,7 @@ export default function AdminMatchesPage() {
     }
 
     try {
-      await deleteAdminMatch(client, match.id);
+      await deleteAdminMatch(client, access, match.id);
       await loadMatches();
       showAdminToast(
         `${match.homeTeam} vs ${match.awayTeam} removed.`,

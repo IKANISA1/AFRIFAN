@@ -21,7 +21,7 @@ export default function AdminSettingsPage() {
 
     setLoading(true);
     try {
-      const profile = await getAdminClubProfile(client);
+      const profile = await getAdminClubProfile(client, access);
       setForm(profileToForm(profile));
     } catch (caught) {
       showAdminToast(
@@ -31,7 +31,7 @@ export default function AdminSettingsPage() {
     } finally {
       setLoading(false);
     }
-  }, [client]);
+  }, [access, client]);
 
   useEffect(() => {
     if (client == null || !access.hasAccess) return;
@@ -48,7 +48,7 @@ export default function AdminSettingsPage() {
 
     showAdminToast("Saving club settings...", "info");
     try {
-      await saveAdminClubProfile(client, formToProfile(form));
+      await saveAdminClubProfile(client, access, formToProfile(form));
       await load();
       showAdminToast("Club settings updated.", "success");
     } catch (caught) {

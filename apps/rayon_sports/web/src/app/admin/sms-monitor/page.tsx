@@ -42,7 +42,7 @@ export default function AdminSmsMonitorPage() {
 
     setLoading(true);
     try {
-      setSnapshot(await getAdminSmsSnapshot(client));
+      setSnapshot(await getAdminSmsSnapshot(client, access));
     } catch (caught) {
       showAdminToast(
         caught instanceof Error
@@ -53,7 +53,7 @@ export default function AdminSmsMonitorPage() {
     } finally {
       setLoading(false);
     }
-  }, [client]);
+  }, [access, client]);
 
   useEffect(() => {
     if (client == null || !access.hasAccess) {

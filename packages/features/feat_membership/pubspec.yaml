@@ -27,3 +27,8 @@ dependencies:
   flutter_riverpod: ^2.6.1
 
 resolution: workspace
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0

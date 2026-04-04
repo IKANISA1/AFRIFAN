@@ -83,7 +83,7 @@ export default function AdminDashboardPage() {
 
     setLoading(true);
     try {
-      setSnapshot(await getAdminDashboardSnapshot(client));
+      setSnapshot(await getAdminDashboardSnapshot(client, access));
     } catch (caught) {
       showAdminToast(
         caught instanceof Error
@@ -94,7 +94,7 @@ export default function AdminDashboardPage() {
     } finally {
       setLoading(false);
     }
-  }, [client]);
+  }, [access, client]);
 
   useEffect(() => {
     if (client == null || !access.hasAccess) {

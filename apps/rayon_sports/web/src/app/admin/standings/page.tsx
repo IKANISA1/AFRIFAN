@@ -26,7 +26,7 @@ export default function AdminStandingsPage() {
 
     setLoading(true);
     try {
-      setRows(await getAdminStandings(client));
+      setRows(await getAdminStandings(client, access));
     } catch (caught) {
       showAdminToast(
         caught instanceof Error ? caught.message : "Could not load standings.",
@@ -35,7 +35,7 @@ export default function AdminStandingsPage() {
     } finally {
       setLoading(false);
     }
-  }, [client]);
+  }, [access, client]);
 
   useEffect(() => {
     if (client == null || !access.hasAccess) return;
@@ -45,16 +45,10 @@ export default function AdminStandingsPage() {
   function beginEdit(row: AdminStandingRow) {
     setForm({
       id: row.id,
-      seasonId: row.seasonId ?? "",
       position: String(row.position),
       club: row.club,
       clubSlug: row.clubSlug ?? "",
       played: String(row.played),
-      won: String(row.won ?? "0"),
-      drawn: String(row.drawn ?? "0"),
-      lost: String(row.lost ?? "0"),
-      goalsFor: String(row.goalsFor ?? "0"),
-      goalsAgainst: String(row.goalsAgainst ?? "0"),
       goalDifference: String(row.goalDifference),
       points: String(row.points),
       form: row.form.join(", "),
@@ -66,7 +60,7 @@ export default function AdminStandingsPage() {
     if (client == null) return;
 
     try {
-      await deleteAdminStandingRow(client, row.id);
+      await deleteAdminStandingRow(client, access, row.id);
       await load();
       showAdminToast(`${row.club} removed.`, "success");
     } catch (caught) {

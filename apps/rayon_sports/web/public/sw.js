@@ -1,7 +1,7 @@
-const STATIC_CACHE = "gikundiro-static-v2";
-const PAGE_CACHE = "gikundiro-pages-v2";
-const ASSET_CACHE = "gikundiro-assets-v2";
-const PRECACHE_URLS = ["/offline", "/media/rayon-crest.png"];
+const STATIC_CACHE = "gikundiro-static-v3";
+const PAGE_CACHE = "gikundiro-pages-v3";
+const ASSET_CACHE = "gikundiro-assets-v3";
+const PRECACHE_URLS = ["/offline", "/admin-offline", "/media/rayon-crest.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -80,6 +80,14 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (url.pathname.startsWith("/api/")) {
+    return;
+  }
+
+  if (request.mode === "navigate" && url.pathname.startsWith("/admin")) {
+    // Network-only for admin navigations — never serve stale admin content from cache
+    event.respondWith(
+      fetch(request).catch(() => caches.match("/admin-offline")),
+    );
     return;
   }
 

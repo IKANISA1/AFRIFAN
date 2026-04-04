@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { IosSafariInstallGuide } from "./ios-safari-install-guide";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -14,10 +15,12 @@ declare global {
   }
 }
 
-const dismissedPromptKey = "gikundiro-install-dismissed";
-
 export function PwaShell() {
   const pathname = usePathname();
+  const isAdminSurface = pathname.startsWith("/admin");
+  const dismissedPromptKey = isAdminSurface
+    ? "gikundiro-admin-install-dismissed"
+    : "gikundiro-install-dismissed";
   const [mounted, setMounted] = useState(false);
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
@@ -52,7 +55,7 @@ export function PwaShell() {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
-  }, []);
+  }, [dismissedPromptKey]);
 
   useEffect(() => {
     if (
@@ -121,7 +124,7 @@ export function PwaShell() {
       );
       window.removeEventListener("appinstalled", handleInstalled);
     };
-  }, []);
+  }, [dismissedPromptKey]);
 
   async function handleInstall() {
     if (deferredPrompt == null) {
@@ -160,7 +163,7 @@ export function PwaShell() {
     }
   }
 
-  const surface = pathname.startsWith("/admin")
+  const surface = isAdminSurface
     ? "Admin workspace"
     : pathname.startsWith("/app")
       ? "Fan portal"
@@ -171,30 +174,40 @@ export function PwaShell() {
   }
 
   if (!isOffline && updateReady == null && (deferredPrompt == null || dismissed)) {
-    return null;
+    // On iOS, beforeinstallprompt never fires. Show the iOS guidance instead.
+    return <IosSafariInstallGuide />;
   }
 
   return (
-    <div className="pointer-events-none fixed inset-x-4 bottom-24 z-50 sm:bottom-6 sm:left-auto sm:max-w-md">
+    <div
+      className={[
+        "pointer-events-none fixed inset-x-4 z-50 sm:left-auto sm:max-w-md",
+        isAdminSurface ? "top-4 sm:top-6" : "bottom-24 sm:bottom-6",
+      ].join(" ")}
+    >
       <div className="pointer-events-auto glass-panel rounded-[28px] px-4 py-4 shadow-2xl">
         <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-club-accent">
           {surface}
         </p>
         {isOffline ? (
           <p className="mt-2 text-sm leading-6 text-slate-100">
-            You’re offline. Cached pages remain available while live admin and
-            fan mutations wait for network recovery.
+            {isAdminSurface
+              ? "You’re offline. The admin shell stays available, but live admin data and writes require the network before they can resume."
+              : "You’re offline. Cached pages remain available while live fan and site mutations wait for network recovery."}
           </p>
         ) : null}
         {!isOffline && updateReady ? (
           <p className="mt-2 text-sm leading-6 text-slate-100">
-            A fresher build is ready with updated routes and cached assets.
+            {isAdminSurface
+              ? "A fresher admin build is ready with updated routes and cached workspace assets."
+              : "A fresher build is ready with updated routes and cached assets."}
           </p>
         ) : null}
         {!isOffline && deferredPrompt && !dismissed ? (
           <p className="mt-2 text-sm leading-6 text-slate-100">
-            Install Gikundiro for a fullscreen, app-like matchday and admin
-            experience on phone and tablet.
+            {isAdminSurface
+              ? "Install the admin workspace for a fullscreen, tablet-ready operations experience."
+              : "Install Gikundiro for a fullscreen, app-like matchday experience on phone and tablet."}
           </p>
         ) : null}
         <div className="mt-4 flex flex-wrap gap-2">

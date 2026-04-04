@@ -2,10 +2,15 @@
  * Admin membership — tier packages CRUD.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { rayonClub } from "@/lib/config";
 import type { AdminAccess, AdminMembershipPackage } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
-import { membershipTable, mutateRecordWithVariants } from "./helpers";
+import { requestAdminApi } from "./http";
+import {
+  deleteRecordWithMatchers,
+  membershipTable,
+  mutateRecordWithVariants,
+  requireAdminClubId,
+} from "./helpers";
 
 function mapAdminMembershipPackage(row: Record<string, unknown>): AdminMembershipPackage {
   const title = safeString(row.title, "Membership tier");
@@ -32,15 +37,22 @@ function mapAdminMembershipPackage(row: Record<string, unknown>): AdminMembershi
   };
 }
 
-export async function getAdminMembershipPackages(client: SupabaseClient): Promise<AdminMembershipPackage[]> {
-  const scoped = await client.from(membershipTable).select("*").eq("club_id", rayonClub.numericId).order("sort_order", { ascending: true });
-  if (!scoped.error && Array.isArray(scoped.data) && scoped.data.length > 0) {
-    return scoped.data.map((row) => mapAdminMembershipPackage(row as Record<string, unknown>));
+export async function getAdminMembershipPackages(
+  client: SupabaseClient,
+  access: AdminAccess,
+): Promise<AdminMembershipPackage[]> {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<AdminMembershipPackage[]>("membership");
   }
-  const fallback = await client.from(membershipTable).select("*").order("sort_order", { ascending: true });
-  if (fallback.error) throw new Error(fallback.error.message);
-  return Array.isArray(fallback.data) && fallback.data.length > 0
-    ? fallback.data.map((row) => mapAdminMembershipPackage(row as Record<string, unknown>))
+  const clubId = requireAdminClubId(access, "load membership packages");
+  const { data, error } = await client
+    .from(membershipTable)
+    .select("*")
+    .eq("club_id", clubId)
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(error.message);
+  return Array.isArray(data)
+    ? data.map((row) => mapAdminMembershipPackage(row as Record<string, unknown>))
     : [];
 }
 
@@ -48,8 +60,15 @@ export async function saveAdminMembershipPackage(
   client: SupabaseClient, access: AdminAccess,
   input: { id?: string | null; tier: AdminMembershipPackage["tier"]; title: string; description: string; annualPrice: number; sortOrder: number; perks: string[]; isActive: boolean },
 ) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<string>("membership", {
+      method: "POST",
+      body: input,
+    });
+  }
+  const clubId = requireAdminClubId(access, "save membership packages");
   const basePayload = {
-    club_id: safeNumber(access.clubId, rayonClub.numericId),
+    club_id: clubId,
     tier: input.tier, title: input.title.trim(), description: input.description.trim(),
     sort_order: safeNumber(input.sortOrder, 0), is_active: input.isActive,
   };
@@ -58,10 +77,23 @@ export async function saveAdminMembershipPackage(
     { ...basePayload, annual_price: safeNumber(input.annualPrice, 0), benefits: input.perks },
     { ...basePayload, price: safeNumber(input.annualPrice, 0), benefits: input.perks },
     { ...basePayload, annual_price: safeNumber(input.annualPrice, 0) },
-  ]);
+  ], { club_id: clubId });
 }
 
-export async function deleteAdminMembershipPackage(client: SupabaseClient, packageId: string) {
-  const { error } = await client.from(membershipTable).delete().eq("id", packageId);
-  if (error) throw new Error(error.message);
+export async function deleteAdminMembershipPackage(
+  client: SupabaseClient,
+  access: AdminAccess,
+  packageId: string,
+) {
+  if (typeof window !== "undefined") {
+    await requestAdminApi<{ success: true }>("membership", {
+      method: "DELETE",
+      query: { id: packageId },
+    });
+    return;
+  }
+  const clubId = requireAdminClubId(access, "delete membership packages");
+  await deleteRecordWithMatchers(client, membershipTable, packageId, {
+    club_id: clubId,
+  });
 }

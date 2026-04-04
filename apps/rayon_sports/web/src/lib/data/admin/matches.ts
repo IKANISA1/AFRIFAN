@@ -5,6 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { rayonClub } from "@/lib/config";
 import type { AdminAccess, AdminMatchItem } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
+import { requestAdminApi } from "./http";
 import { hasMissingColumnError } from "./helpers";
 
 function mapMatch(row: Record<string, unknown>): AdminMatchItem {
@@ -54,11 +55,20 @@ function mapMatch(row: Record<string, unknown>): AdminMatchItem {
   };
 }
 
-export async function getAdminMatches(client: SupabaseClient) {
-  const { data, error } = await client
+export async function getAdminMatches(client: SupabaseClient, access: AdminAccess) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<AdminMatchItem[]>("matches");
+  }
+  let query = client
     .from("matches")
     .select("*")
     .order("match_date", { ascending: true });
+
+  if (access.clubId != null) {
+    query = query.eq("club_id", Number(access.clubId));
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     throw new Error(error.message);
@@ -95,14 +105,26 @@ export async function saveAdminMatch(
     isFeatured?: boolean;
   },
 ) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<string>("matches", {
+      method: "POST",
+      body: input,
+    });
+  }
+  const clubId =
+    access.clubId != null
+      ? safeNumber(access.clubId, 0)
+      : (() => {
+          throw new Error("Club context required to save match.");
+        })();
   const kickoffTime = safeString(input.kickoffTime, "15:00");
   const matchDate = new Date(`${input.matchDate}T${kickoffTime}:00`);
   const saleStartsAt = input.saleStartsAt
     ? new Date(input.saleStartsAt).toISOString()
     : new Date().toISOString();
   const payload = {
-    club_id: safeNumber(access.clubId, rayonClub.numericId),
-    partner_id: safeString(input.partnerId, rayonClub.slug),
+    club_id: clubId,
+    partner_id: safeString(input.partnerId, clubId.toString()),
     home_team: input.homeTeam.trim(),
     away_team: input.awayTeam.trim(),
     competition: input.competition.trim(),
@@ -187,9 +209,21 @@ export async function saveAdminMatch(
 
 export async function deleteAdminMatch(
   client: SupabaseClient,
+  access: AdminAccess,
   matchId: string,
 ) {
-  const { error } = await client.from("matches").delete().eq("id", matchId);
+  if (typeof window !== "undefined") {
+    await requestAdminApi<{ success: true }>("matches", {
+      method: "DELETE",
+      query: { id: matchId },
+    });
+    return;
+  }
+  let query = client.from("matches").delete().eq("id", matchId);
+  if (access.clubId != null) {
+    query = query.eq("club_id", Number(access.clubId));
+  }
+  const { error } = await query;
   if (error) {
     throw new Error(error.message);
   }

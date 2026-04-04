@@ -1,5 +1,7 @@
 // Core Network — Supabase client, config, and services.
 
+export 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+
 export 'src/app_check_service.dart';
 export 'src/app_config_repository.dart';
 export 'src/country_repository.dart';

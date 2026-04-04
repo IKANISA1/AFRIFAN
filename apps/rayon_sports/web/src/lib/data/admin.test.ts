@@ -3,6 +3,7 @@ import {
   deriveAdminAccess,
   formatAdminRoleLabel,
 } from "@/lib/data/admin";
+import { adminClubIdOrNull, requireAdminClubId } from "@/lib/data/admin/helpers";
 
 describe("admin data helpers", () => {
   it("grants club access when assignment matches the active club", () => {
@@ -19,7 +20,7 @@ describe("admin data helpers", () => {
     expect(access.role).toBe("club_admin");
   });
 
-  it("falls back to metadata role when assignments are missing", () => {
+  it("denies access when assignments are missing (metadata alone is insufficient)", () => {
     const access = deriveAdminAccess(
       {
         app_metadata: { role: "super_admin", club_id: "24" },
@@ -28,9 +29,40 @@ describe("admin data helpers", () => {
       [],
     );
 
+    // Fail-closed: metadata-only role is visible but does NOT grant access.
+    expect(access.hasAccess).toBe(false);
+    expect(access.isSuperAdmin).toBe(false);
+    expect(access.role).toBe("super_admin"); // still resolved, just not trusted
+    expect(formatAdminRoleLabel(access.role)).toBe("super admin");
+  });
+
+  it("grants access when assignment exists even with empty metadata", () => {
+    const access = deriveAdminAccess(
+      {
+        app_metadata: {},
+        user_metadata: {},
+      },
+      [{ role: "admin", club_id: null, is_active: true }],
+    );
+
     expect(access.hasAccess).toBe(true);
     expect(access.isSuperAdmin).toBe(true);
-    expect(formatAdminRoleLabel(access.role)).toBe("super admin");
+    expect(access.role).toBe("admin");
+  });
+
+  it("prefers app_metadata.role over user_metadata.role for display", () => {
+    const access = deriveAdminAccess(
+      {
+        app_metadata: { role: "club_admin" },
+        user_metadata: { role: "super_admin" },
+      },
+      [],
+    );
+
+    // app_metadata.role takes priority for the resolved role display
+    expect(access.role).toBe("club_admin");
+    // But still no access without assignment
+    expect(access.hasAccess).toBe(false);
   });
 
   it("maps legacy live admin roles into the web access model", () => {
@@ -54,6 +86,25 @@ describe("admin data helpers", () => {
     expect(clubAccess.role).toBe("club_admin");
     expect(bankAccess.hasAccess).toBe(true);
     expect(bankAccess.role).toBe("club_moderator");
+  });
+
+  it("denies access for null user", () => {
+    const access = deriveAdminAccess(null, []);
+
+    expect(access.hasAccess).toBe(false);
+    expect(access.isAuthenticated).toBe(false);
+    expect(access.role).toBeNull();
+  });
+
+  it("normalizes the active club id for scoped admin modules", () => {
+    expect(adminClubIdOrNull({ clubId: "24" })).toBe(24);
+    expect(adminClubIdOrNull({ clubId: null })).toBeNull();
+  });
+
+  it("fails closed when a scoped admin module has no club context", () => {
+    expect(() =>
+      requireAdminClubId({ clubId: null }, "load scoped admin data"),
+    ).toThrow(/Club context is required/i);
   });
 
   it("builds contribution Excel data structure", () => {
@@ -89,4 +140,3 @@ describe("admin data helpers", () => {
     expect(rows[0][2]).toBe(550000);
   });
 });
-

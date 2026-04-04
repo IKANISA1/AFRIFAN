@@ -260,7 +260,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
                       begin: const Offset(-1.0, 0.0), end: Offset.zero)
                   .animate(CurvedAnimation(
                       parent: animation, curve: Curves.easeOut));
-              if (child.key == ValueKey(_CheckoutWizardStep.checkout)) {
+              if (child.key == const ValueKey(_CheckoutWizardStep.checkout)) {
                 return SlideTransition(position: inAnimation, child: child);
               } else {
                 return SlideTransition(position: outAnimation, child: child);

@@ -26,7 +26,7 @@ export default function AdminNotificationsPage() {
 
     setLoading(true);
     try {
-      setContext(await getAdminNotificationContext(client));
+      setContext(await getAdminNotificationContext(client, access));
     } catch (caught) {
       showAdminToast(
         caught instanceof Error
@@ -37,7 +37,7 @@ export default function AdminNotificationsPage() {
     } finally {
       setLoading(false);
     }
-  }, [client]);
+  }, [access, client]);
 
   useEffect(() => {
     if (client == null || !access.hasAccess) {

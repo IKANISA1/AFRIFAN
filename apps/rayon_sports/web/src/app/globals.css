@@ -290,10 +290,40 @@ a {
   opacity: 0.3;
 }
 
-/* ── Focus ring ── */
+/* ── Focus ring (opt-in class) ── */
 .focus-ring:focus-visible {
   outline: 2px solid var(--club-accent);
   outline-offset: 2px;
+}
+
+/* ── Global focus-visible for all interactive elements ── */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--club-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Override for dashboard inputs that already have a box-shadow focus */
+.dashboard-input:focus-visible {
+  outline: none;
+}
+
+/* ── Screen reader only utility ── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 /* ══════════════════════════════════════════════════════════════

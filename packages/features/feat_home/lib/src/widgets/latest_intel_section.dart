@@ -105,13 +105,13 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
           ),
         );
       case LatestIntelStatus.empty:
-        return Padding(
-          padding: const EdgeInsets.symmetric(
+        return const Padding(
+          padding: EdgeInsets.symmetric(
             horizontal: SpacingTokens.spacing6,
           ),
           child: GlassCard(
             animate: false,
-            child: const AfriEmptyView(
+            child: AfriEmptyView(
               compact: true,
               title: 'NO INTEL YET',
               message:

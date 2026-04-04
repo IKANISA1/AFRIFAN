@@ -2,9 +2,10 @@
  * Admin SMS monitor — sync run snapshots.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { AdminSmsSnapshot, AdminSmsSyncRun } from "@/lib/types";
+import type { AdminAccess, AdminSmsSnapshot, AdminSmsSyncRun } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
-import { safeCount } from "./helpers";
+import { requestAdminApi } from "./http";
+import { adminClubIdOrNull, hasColumn, safeCount } from "./helpers";
 
 function mapSmsSyncRun(row: Record<string, unknown>): AdminSmsSyncRun {
   return {
@@ -17,12 +18,49 @@ function mapSmsSyncRun(row: Record<string, unknown>): AdminSmsSyncRun {
   };
 }
 
-export async function getAdminSmsSnapshot(client: SupabaseClient): Promise<AdminSmsSnapshot> {
+async function buildClubScopedCount(
+  client: SupabaseClient,
+  table: string,
+  clubId: number,
+) {
+  let query = client.from(table).select("id", { count: "exact", head: true });
+  if (await hasColumn(client, table, "club_id")) {
+    query = query.eq("club_id", clubId);
+  }
+  return safeCount(query);
+}
+
+export async function getAdminSmsSnapshot(
+  client: SupabaseClient,
+  access: AdminAccess,
+): Promise<AdminSmsSnapshot> {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<AdminSmsSnapshot>("sms");
+  }
+  const clubId = adminClubIdOrNull(access);
+  if (clubId == null) {
+    return { metrics: {}, syncRuns: [] };
+  }
+
+  const syncRunsHasClubId = await hasColumn(client, "momo_sms_sync_runs", "club_id");
   const [rawCount, parsedCount, ledgerCount, syncRuns] = await Promise.all([
-    safeCount(client.from("momo_sms_raw").select("id", { count: "exact", head: true })),
-    safeCount(client.from("momo_sms_parsed").select("id", { count: "exact", head: true })),
-    safeCount(client.from("momo_ledger_entries").select("id", { count: "exact", head: true })),
-    client.from("momo_sms_sync_runs").select("*").order("scan_started_at", { ascending: false }).limit(10),
+    buildClubScopedCount(client, "momo_sms_raw", clubId),
+    buildClubScopedCount(client, "momo_sms_parsed", clubId),
+    buildClubScopedCount(client, "momo_ledger_entries", clubId),
+    (
+      syncRunsHasClubId
+        ? client
+            .from("momo_sms_sync_runs")
+            .select("*")
+            .eq("club_id", clubId)
+            .order("scan_started_at", { ascending: false })
+            .limit(10)
+        : client
+            .from("momo_sms_sync_runs")
+            .select("*")
+            .order("scan_started_at", { ascending: false })
+            .limit(10)
+    ),
   ]);
   return {
     metrics: { "SMS captured": rawCount, "SMS parsed": parsedCount, "Ledger entries": ledgerCount },

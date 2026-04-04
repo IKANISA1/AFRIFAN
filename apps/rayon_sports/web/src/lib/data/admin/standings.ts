@@ -2,10 +2,16 @@
  * Admin standings — league table CRUD with dynamic column resolution.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { rayonClub } from "@/lib/config";
 import type { AdminAccess, AdminStandingRow } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
-import { mutateRecordWithVariants, resolveExistingColumn, resolveStandingsTable } from "./helpers";
+import { requestAdminApi } from "./http";
+import {
+  deleteRecordWithMatchers,
+  mutateRecordWithVariants,
+  requireAdminClubId,
+  resolveExistingColumn,
+  resolveStandingsTable,
+} from "./helpers";
 
 function mapAdminStandingRow(row: Record<string, unknown>, index: number): AdminStandingRow {
   return {
@@ -21,16 +27,23 @@ function mapAdminStandingRow(row: Record<string, unknown>, index: number): Admin
   };
 }
 
-export async function getAdminStandings(client: SupabaseClient): Promise<AdminStandingRow[]> {
-  const table = await resolveStandingsTable(client);
-  const scoped = await client.from(table).select("*").eq("club_id", rayonClub.numericId).order("position", { ascending: true });
-  if (!scoped.error && Array.isArray(scoped.data) && scoped.data.length > 0) {
-    return scoped.data.map((row, index) => mapAdminStandingRow(row as Record<string, unknown>, index));
+export async function getAdminStandings(
+  client: SupabaseClient,
+  access: AdminAccess,
+): Promise<AdminStandingRow[]> {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<AdminStandingRow[]>("standings");
   }
-  const fallback = await client.from(table).select("*").order("position", { ascending: true });
-  if (fallback.error) throw new Error(fallback.error.message);
-  return Array.isArray(fallback.data) && fallback.data.length > 0
-    ? fallback.data.map((row, index) => mapAdminStandingRow(row as Record<string, unknown>, index))
+  const clubId = requireAdminClubId(access, "load standings");
+  const table = await resolveStandingsTable(client);
+  const { data, error } = await client
+    .from(table)
+    .select("*")
+    .eq("club_id", clubId)
+    .order("position", { ascending: true });
+  if (error) throw new Error(error.message);
+  return Array.isArray(data)
+    ? data.map((row, index) => mapAdminStandingRow(row as Record<string, unknown>, index))
     : [];
 }
 
@@ -38,6 +51,13 @@ export async function saveAdminStandingRow(
   client: SupabaseClient, access: AdminAccess,
   input: { id?: string | null; position: number; club: string; played: number; goalDifference: number; points: number; form: string[]; clubSlug?: string | null },
 ) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<string>("standings", {
+      method: "POST",
+      body: input,
+    });
+  }
+  const clubId = requireAdminClubId(access, "save standings");
   const table = await resolveStandingsTable(client);
   const clubColumn = await resolveExistingColumn(client, table, ["club_name", "club", "team_name"]);
   const playedColumn = await resolveExistingColumn(client, table, ["played", "matches_played"]);
@@ -52,15 +72,28 @@ export async function saveAdminStandingRow(
   if (playedColumn) payload[playedColumn] = safeNumber(input.played, 0);
   if (goalDifferenceColumn) payload[goalDifferenceColumn] = safeNumber(input.goalDifference, 0);
   if (pointsColumn) payload[pointsColumn] = safeNumber(input.points, 0);
-  if (clubIdColumn === "club_id") payload.club_id = safeNumber(access.clubId, rayonClub.numericId);
+  if (clubIdColumn === "club_id") payload.club_id = clubId;
   if (formColumn === "form") payload.form = input.form.slice(0, 5);
   if (slugColumn === "club_slug") payload.club_slug = safeString(input.clubSlug) || null;
 
-  return mutateRecordWithVariants(client, table, input.id, [payload]);
+  return mutateRecordWithVariants(client, table, input.id, [payload], {
+    club_id: clubId,
+  });
 }
 
-export async function deleteAdminStandingRow(client: SupabaseClient, rowId: string) {
+export async function deleteAdminStandingRow(
+  client: SupabaseClient,
+  access: AdminAccess,
+  rowId: string,
+) {
+  if (typeof window !== "undefined") {
+    await requestAdminApi<{ success: true }>("standings", {
+      method: "DELETE",
+      query: { id: rowId },
+    });
+    return;
+  }
+  const clubId = requireAdminClubId(access, "delete standings rows");
   const table = await resolveStandingsTable(client);
-  const { error } = await client.from(table).delete().eq("id", rowId);
-  if (error) throw new Error(error.message);
+  await deleteRecordWithMatchers(client, table, rowId, { club_id: clubId });
 }

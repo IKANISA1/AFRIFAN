@@ -1,5 +1,6 @@
 import 'package:club_rayon_sports/club_rayon_sports.dart';
 import 'package:core_app/core_app.dart';
+import 'firebase_options.dart';
 
 Future<void> startRayonSportsApp({
   AfriClubBootstrapOptions options = const AfriClubBootstrapOptions(),
@@ -8,5 +9,11 @@ Future<void> startRayonSportsApp({
 }
 
 void main() async {
-  await startRayonSportsApp();
+  await startRayonSportsApp(
+    options: AfriClubBootstrapOptions(
+      startupOptions: AppStartupOptions(
+        firebaseOptions: DefaultFirebaseOptions.currentPlatform,
+      ),
+    ),
+  );
 }

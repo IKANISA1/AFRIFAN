@@ -23,6 +23,9 @@ class GlassCard extends StatelessWidget {
   final VoidCallback? onTap;
   final bool animate;
 
+  /// Optional accessibility label forwarded to the underlying [ClayCard].
+  final String? semanticsLabel;
+
   const GlassCard({
     super.key,
     required this.child,
@@ -33,6 +36,7 @@ class GlassCard extends StatelessWidget {
     this.borderColor,
     this.onTap,
     this.animate = true,
+    this.semanticsLabel,
   });
 
   @override
@@ -43,6 +47,7 @@ class GlassCard extends StatelessWidget {
       margin: margin,
       padding: padding ?? const EdgeInsets.all(SpacingTokens.spacing6),
       onTap: onTap,
+      semanticsLabel: semanticsLabel,
       child: child,
     );
 

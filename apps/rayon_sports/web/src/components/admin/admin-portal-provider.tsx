@@ -167,9 +167,6 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
         phone: normalizedPhone,
         options: {
           shouldCreateUser: false,
-          data: {
-            club_id: "24",
-          },
         },
       });
 

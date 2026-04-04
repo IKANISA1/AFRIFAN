@@ -40,13 +40,13 @@ export default function AdminShopPage() {
     if (client == null) return;
     setLoading(true);
     try {
-      setProducts(await getAdminProducts(client));
+      setProducts(await getAdminProducts(client, access));
     } catch (caught) {
       showAdminToast(caught instanceof Error ? caught.message : "Could not load products.", "error");
     } finally {
       setLoading(false);
     }
-  }, [client]);
+  }, [access, client]);
 
   useEffect(() => {
     if (client == null || !access.hasAccess) return;
@@ -98,7 +98,7 @@ export default function AdminShopPage() {
   async function removeProduct(product: AdminShopProduct) {
     if (client == null) return;
     try {
-      await deleteAdminProduct(client, product.id);
+      await deleteAdminProduct(client, access, product.id);
       await load();
       showAdminToast(`${product.name} removed.`, "success");
     } catch (caught) {

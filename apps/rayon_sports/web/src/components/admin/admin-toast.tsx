@@ -67,12 +67,18 @@ export function AdminToastProvider() {
   }, [toasts, dismiss]);
 
   return (
-    <div className="fixed bottom-20 right-4 z-[80] flex flex-col gap-2 xl:bottom-6 xl:right-6 max-w-sm w-full pointer-events-none">
+    <div
+      role="status"
+      aria-live="polite"
+      className="fixed bottom-20 right-4 z-[80] flex flex-col gap-2 xl:bottom-6 xl:right-6 max-w-sm w-full pointer-events-none"
+    >
       {toasts.map((toast) => {
         const Icon = icons[toast.variant];
         return (
           <div
             key={toast.id}
+            role={toast.variant === "error" ? "alert" : undefined}
+            aria-live={toast.variant === "error" ? "assertive" : undefined}
             className={cn(
               "pointer-events-auto flex items-start gap-3 rounded-2xl border px-4 py-3 shadow-lg backdrop-blur-xl animate-fade-up",
               variantStyles[toast.variant],

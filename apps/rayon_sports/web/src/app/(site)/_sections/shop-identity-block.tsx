@@ -3,13 +3,10 @@ import { ArrowRight } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { SectionHeading } from "@/components/section-heading";
 import { clubHistoryMoments } from "@/lib/content";
-import { getClubProfile, getProducts } from "@/lib/data/public";
+import { getProducts } from "@/lib/data/public";
 
 export async function ShopAndIdentityBlock() {
-  const [club, products] = await Promise.all([
-    getClubProfile(),
-    getProducts(),
-  ]);
+  const products = await getProducts();
 
   return (
     <section className="page-shell grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">

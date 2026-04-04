@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:another_telephony/telephony.dart';
@@ -9,15 +8,16 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../repositories/momo_sms_ingestion_repository.dart';
+import 'momo_sms_background_processor.dart';
 import 'momo_sms_deps.dart';
+import 'momo_sms_retry_queue.dart';
 import 'momo_sms_sync_support.dart';
+import 'momo_sms_telemetry.dart';
 
-const _retryQueueBoxName = 'momo_sms_retry_queue';
-const _retryQueueMaxSize = 200;
 const _syncStateBoxName = 'momo_sms_sync_state';
-const _retryQueueTelemetryThresholds = <int>{1, 10, 25, 50, 100, 200};
 
 typedef MomoSmsPermissionStatusReader = Future<PermissionStatus> Function();
+
 typedef MomoSmsPermissionRequester = Future<PermissionStatus> Function();
 typedef MomoSmsAutoreadSupportChecker = bool Function();
 typedef MomoSmsInboxLoader = Future<List<SmsMessage>> Function(DateTime cutoff);
@@ -25,7 +25,7 @@ typedef MomoSmsInboxLoader = Future<List<SmsMessage>> Function(DateTime cutoff);
 @pragma('vm:entry-point')
 Future<void> momoSmsBackgroundMessageHandler(SmsMessage message) async {
   WidgetsFlutterBinding.ensureInitialized();
-  await _MomoSmsBackgroundProcessor.handle(message);
+  await MomoSmsBackgroundProcessor.handle(message);
 }
 
 enum MomoInboxSyncTrigger { initialPermissionGrant, manual }
@@ -203,39 +203,17 @@ class MomoSmsAutoreadService {
   /// background processing (G8). Called on each successful [refresh].
   Future<void> _drainRetryQueue() async {
     try {
-      final box = await _openBox(_retryQueueBoxName);
-      if (box.isEmpty) return;
-
-      final queuedBefore = box.length;
-      final keys = box.keys.toList();
-      for (final key in keys) {
-        final json = box.get(key);
-        if (json == null) continue;
-
-        try {
-          final map = jsonDecode(json) as Map<String, dynamic>;
-          final capture = MomoSmsCapture(
-            sender: map['sender'] as String,
-            body: map['body'] as String,
-            deviceMessageKey: map['deviceMessageKey'] as String,
-            receivedAt: DateTime.parse(map['receivedAt'] as String),
-            ingestionSource: map['ingestionSource'] as String,
-          );
-          await _ingestionRepository.ingestCapture(capture: capture);
-          await box.delete(key);
-        } catch (error) {
-          // Leave in queue for next drain attempt.
-          debugPrint('[MoMo SMS] retry failed for key=$key: $error');
-        }
-      }
-      final queuedAfter = box.length;
-      await _reportRetryQueueDrain(
-        queuedBefore: queuedBefore,
-        queuedAfter: queuedAfter,
+      final queue = MomoSmsRetryQueue(openBox: _openBox);
+      final result = await queue.drain(_ingestionRepository);
+      await reportRetryQueueDrain(
+        operationalHealthService: _operationalHealthService,
+        queuedBefore: result.queuedBefore,
+        queuedAfter: result.queuedAfter,
+        maxQueue: momoSmsRetryQueueMaxSize,
       );
     } catch (error) {
       debugPrint('[MoMo SMS] retry queue drain failed: $error');
-      await _recordSmsIngestOperationalEvent(
+      await recordSmsIngestOperationalEvent(
         _operationalHealthService,
         status: OperationalHealthStatus.error,
         severity: OperationalHealthSeverity.critical,
@@ -645,51 +623,32 @@ class MomoSmsAutoreadService {
     );
   }
 
-  /// Fix 10: Returns the current retry queue size for UI display.
   Future<int> getRetryQueueSize() async {
     if (!_supportsSmsAutoread) {
       return 0;
     }
-    try {
-      final box = await _openBox(_retryQueueBoxName);
-      return box.length;
-    } catch (_) {
-      return 0;
-    }
+    return MomoSmsRetryQueue(openBox: _openBox).size();
   }
 
   Future<void> _queueRetryCapture(MomoSmsCapture capture) async {
-    try {
-      final box = await _openBox(_retryQueueBoxName);
-      final alreadyQueued = box.containsKey(capture.deviceMessageKey);
-      if (!alreadyQueued && box.length >= _retryQueueMaxSize) {
-        await _recordSmsIngestOperationalEvent(
-          _operationalHealthService,
-          status: OperationalHealthStatus.error,
-          severity: OperationalHealthSeverity.critical,
-          issueCode: 'retry_queue_full',
-          message: 'SMS retry queue is full; new capture was dropped.',
-          metadata: <String, dynamic>{
-            'queued_before': box.length,
-            'max_queue': _retryQueueMaxSize,
-          },
+    final queue = MomoSmsRetryQueue(openBox: _openBox);
+    final queued = await queue.enqueue(capture);
+    if (!queued) {
+      final size = await queue.size();
+      if (size >= momoSmsRetryQueueMaxSize) {
+        await reportRetryQueueFull(
+          operationalHealthService: _operationalHealthService,
+          currentSize: size,
+          maxQueue: momoSmsRetryQueueMaxSize,
         );
-        return;
       }
-
-      await box.put(
-        capture.deviceMessageKey,
-        jsonEncode({
-          'sender': capture.sender,
-          'body': capture.body,
-          'deviceMessageKey': capture.deviceMessageKey,
-          'receivedAt': capture.receivedAt.toUtc().toIso8601String(),
-          'ingestionSource': capture.ingestionSource,
-        }),
+    } else {
+      await reportRetryQueueThreshold(
+        operationalHealthService: _operationalHealthService,
+        queueSize: await queue.size(),
+        maxQueue: momoSmsRetryQueueMaxSize,
+        thresholds: momoSmsRetryQueueTelemetryThresholds,
       );
-      await _reportRetryQueueThreshold(queueSize: box.length);
-    } catch (error) {
-      debugPrint('[MoMo SMS] retry queue write failed: $error');
     }
   }
 
@@ -725,73 +684,10 @@ class MomoSmsAutoreadService {
     required String? body,
     required String ingestionSource,
   }) async {
-    final metadata = MomoSmsIngestionRepository.senderDriftTelemetry(
+    await reportBackgroundSenderDriftIfNeeded(
+      client: _client,
       sender: sender,
       body: body,
-    );
-    if (metadata == null) {
-      return;
-    }
-
-    await _recordSmsIngestOperationalEvent(
-      _operationalHealthService,
-      status: OperationalHealthStatus.warn,
-      severity: OperationalHealthSeverity.warning,
-      issueCode: 'approved_sender_drift',
-      message:
-          'M-Money pattern matched from unapproved sender.',
-      metadata: <String, dynamic>{
-        ...metadata,
-        'ingestion_source': ingestionSource,
-      },
-    );
-  }
-
-  Future<void> _reportRetryQueueThreshold({required int queueSize}) async {
-    if (!_retryQueueTelemetryThresholds.contains(queueSize)) {
-      return;
-    }
-
-    await _recordSmsIngestOperationalEvent(
-      _operationalHealthService,
-      status: OperationalHealthStatus.warn,
-      severity: OperationalHealthSeverity.warning,
-      issueCode: 'retry_queue_backlog',
-      message: 'SMS retry queue has pending captures awaiting retry.',
-      metadata: <String, dynamic>{
-        'queued_after': queueSize,
-        'max_queue': _retryQueueMaxSize,
-      },
-    );
-  }
-
-  Future<void> _reportRetryQueueDrain({
-    required int queuedBefore,
-    required int queuedAfter,
-  }) async {
-    if (queuedBefore <= 0) {
-      return;
-    }
-
-    final drainedCount = queuedBefore - queuedAfter;
-    final cleared = queuedAfter == 0;
-    await _recordSmsIngestOperationalEvent(
-      _operationalHealthService,
-      status:
-          cleared ? OperationalHealthStatus.ok : OperationalHealthStatus.warn,
-      severity: cleared
-          ? OperationalHealthSeverity.info
-          : OperationalHealthSeverity.warning,
-      issueCode: cleared ? 'retry_queue_drained' : 'retry_queue_backlog',
-      message: cleared
-          ? 'SMS retry queue drained successfully.'
-          : 'SMS retry queue still has pending captures after drain.',
-      metadata: <String, dynamic>{
-        'queued_before': queuedBefore,
-        'queued_after': queuedAfter,
-        'drained_count': drainedCount,
-        'max_queue': _retryQueueMaxSize,
-      },
     );
   }
 }
@@ -803,202 +699,4 @@ class MomoSmsSyncException implements Exception {
 
   @override
   String toString() => message;
-}
-
-class _MomoSmsBackgroundProcessor {
-  static bool _hiveInitialized = false;
-  static bool _supabaseInitialized = false;
-  static const InitializeHive _initializeHive = initializeHiveRuntime;
-  static const OpenHiveBox<bool> _openAppAccessBox = openHiveBox<bool>;
-  static const OpenHiveBox<String> _openRetryQueueBox = openHiveBox<String>;
-
-  static Future<void> handle(SmsMessage message) async {
-    if (kIsWeb || !Platform.isAndroid) {
-      return;
-    }
-
-    if (!EnvConfig.enableAndroidMomoSmsAutoread) {
-      return;
-    }
-
-    await _ensureHiveInitialized();
-    final appAccessService = AppAccessService(openBox: _openAppAccessBox);
-    final smsEnabledInApp = await appAccessService.isEnabled(
-      AppAccessPermission.sms,
-    );
-    if (!smsEnabledInApp) {
-      return;
-    }
-
-    // Pre-queue the capture to Hive BEFORE Supabase init to guarantee
-    // the message is never lost (Fix 2: queue-before-ingest).
-    final capture = MomoSmsIngestionRepository.captureFromDeviceMessage(
-      sender: message.address,
-      body: message.body,
-      timestampMillis: message.date,
-      ingestionSource: 'android_sms_listener_background',
-      countryCode: EnvConfig.countryCode,
-    );
-    if (capture == null) {
-      // Not an approved sender — check for drift telemetry.
-      SupabaseClient? driftClient;
-      try {
-        driftClient = await _ensureSupabaseClient();
-      } catch (_) {
-        return;
-      }
-      if (driftClient != null) {
-        await _reportBackgroundSenderDriftIfNeeded(
-          client: driftClient,
-          sender: message.address,
-          body: message.body,
-        );
-      }
-      return;
-    }
-
-    // Pre-queue before any network call.
-    try {
-      final box = await _openRetryQueueBox(_retryQueueBoxName);
-      if (box.length < _retryQueueMaxSize) {
-        final payload = jsonEncode({
-          'sender': capture.sender,
-          'body': capture.body,
-          'deviceMessageKey': capture.deviceMessageKey,
-          'receivedAt': capture.receivedAt.toUtc().toIso8601String(),
-          'ingestionSource': capture.ingestionSource,
-        });
-        await box.put(capture.deviceMessageKey, payload);
-      }
-    } catch (_) {
-      // Hive write failed — continue with ingestion attempt anyway.
-    }
-
-    SupabaseClient? client;
-    try {
-      client = await _ensureSupabaseClient();
-    } catch (_) {
-      // Supabase init failed — capture is already queued for retry.
-      return;
-    }
-    if (client == null || client.auth.currentUser?.id == null) {
-      return;
-    }
-
-    try {
-      final repository = MomoSmsIngestionRepository(client: client);
-      await repository.ingestCapture(capture: capture);
-
-      // Ingestion succeeded — remove pre-queued retry entry.
-      try {
-        final box = await _openRetryQueueBox(_retryQueueBoxName);
-        await box.delete(capture.deviceMessageKey);
-      } catch (_) {
-        // Non-critical: entry will be de-duplicated on retry drain.
-      }
-    } catch (error) {
-      debugPrint(
-        '[MoMo SMS] background ingestion failed, capture already queued '
-        'for retry: $error',
-      );
-      // Capture was pre-queued before Supabase init, so no need to
-      // queue again. Only record telemetry thresholds.
-      try {
-        final box = await _openRetryQueueBox(_retryQueueBoxName);
-        final queueSize = box.length;
-        if (_retryQueueTelemetryThresholds.contains(queueSize)) {
-          await _recordSmsIngestOperationalEvent(
-            OperationalHealthService(client: client),
-            status: OperationalHealthStatus.warn,
-            severity: OperationalHealthSeverity.warning,
-            issueCode: 'retry_queue_backlog',
-            message: 'SMS retry queue has pending captures awaiting retry.',
-            metadata: <String, dynamic>{
-              'queued_after': queueSize,
-              'max_queue': _retryQueueMaxSize,
-            },
-          );
-        }
-      } catch (queueError) {
-        debugPrint('[MoMo SMS] retry queue telemetry failed: $queueError');
-      }
-    }
-  }
-
-  static Future<void> _ensureHiveInitialized() async {
-    if (_hiveInitialized) {
-      return;
-    }
-    await _initializeHive();
-    _hiveInitialized = true;
-  }
-
-  static Future<SupabaseClient?> _ensureSupabaseClient() async {
-    if (EnvConfig.criticalConfigurationError != null) {
-      return null;
-    }
-
-    if (!_supabaseInitialized) {
-      try {
-        await Supabase.initialize(
-          url: EnvConfig.supabaseUrl,
-          anonKey: EnvConfig.supabaseAnonKey,
-        );
-      } catch (error) {
-        final message = error.toString().toLowerCase();
-        if (!message.contains('already initialized')) {
-          return null;
-        }
-      }
-      _supabaseInitialized = true;
-    }
-
-    return Supabase.instance.client;
-  }
-}
-
-Future<void> _recordSmsIngestOperationalEvent(
-  OperationalHealthService operationalHealthService, {
-  required OperationalHealthStatus status,
-  OperationalHealthSeverity? severity,
-  String? issueCode,
-  required String message,
-  Map<String, dynamic> metadata = const <String, dynamic>{},
-}) {
-  return operationalHealthService.recordEvent(
-    service: 'sms_ingest',
-    component: 'android_sms_autoread',
-    status: status,
-    severity: severity,
-    issueCode: issueCode,
-    message: message,
-    metadata: metadata,
-  );
-}
-
-Future<void> _reportBackgroundSenderDriftIfNeeded({
-  required SupabaseClient client,
-  required String? sender,
-  required String? body,
-}) async {
-  final metadata = MomoSmsIngestionRepository.senderDriftTelemetry(
-    sender: sender,
-    body: body,
-  );
-  if (metadata == null) {
-    return;
-  }
-
-  await _recordSmsIngestOperationalEvent(
-    OperationalHealthService(client: client),
-    status: OperationalHealthStatus.warn,
-    severity: OperationalHealthSeverity.warning,
-    issueCode: 'approved_sender_drift',
-    message:
-        'M-Money pattern matched from unapproved sender.',
-    metadata: <String, dynamic>{
-      ...metadata,
-      'ingestion_source': 'android_sms_listener_background',
-    },
-  );
 }

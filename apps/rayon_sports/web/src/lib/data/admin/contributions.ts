@@ -5,7 +5,13 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { rayonClub } from "@/lib/config";
 import type { AdminAccess, AdminContributionGroup, AdminContributionItem, AdminContributionSnapshot } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
-import { contributionTable, mutateRecordWithVariants } from "./helpers";
+import { requestAdminApi } from "./http";
+import {
+  contributionTable,
+  deleteRecordWithMatchers,
+  mutateRecordWithVariants,
+  requireAdminClubId,
+} from "./helpers";
 
 function mapContributionGroup(row: Record<string, unknown>): AdminContributionGroup {
   return {
@@ -40,18 +46,32 @@ function mapContributionItem(row: Record<string, unknown>): AdminContributionIte
   };
 }
 
-export async function getAdminContributionSnapshot(client: SupabaseClient): Promise<AdminContributionSnapshot> {
-  const [groupsResult, contributionsResult] = await Promise.all([
-    client.from(contributionTable).select("id, name, description, group_type, privacy, target_amount, current_total, member_count, creator_id, invite_code, is_closed, created_at, currency").eq("club_id", rayonClub.numericId).order("created_at", { ascending: false }),
-    client.from("contributions").select("id, group_id, user_id, amount, status, created_at").order("created_at", { ascending: false }).limit(500),
-  ]);
+export async function getAdminContributionSnapshot(client: SupabaseClient, access: AdminAccess): Promise<AdminContributionSnapshot> {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<AdminContributionSnapshot>("contributions");
+  }
+  const clubId = requireAdminClubId(access, "load contribution groups");
+
+  // Fetch groups scoped to the admin's club
+  const groupsQuery = client
+    .from(contributionTable)
+    .select("id, name, description, group_type, privacy, target_amount, current_total, member_count, creator_id, invite_code, is_closed, created_at, currency")
+    .eq("club_id", clubId)
+    .order("created_at", { ascending: false });
+
+  const groupsResult = await groupsQuery;
   if (groupsResult.error) throw new Error(groupsResult.error.message);
-  if (contributionsResult.error) throw new Error(contributionsResult.error.message);
 
   const groups = Array.isArray(groupsResult.data) ? groupsResult.data.map((row) => mapContributionGroup(row as Record<string, unknown>)) : [];
-  const contributions = Array.isArray(contributionsResult.data) ? contributionsResult.data.map((row) => mapContributionItem(row as Record<string, unknown>)) : [];
-  const allowedGroupIds = new Set(groups.map((group) => group.id));
-  const scopedContributions = contributions.filter((item) => allowedGroupIds.has(item.groupId));
+  const groupIds = groups.map((group) => group.id);
+
+  // Fetch contributions scoped to this club's groups at the DB level
+  let scopedContributions: AdminContributionItem[] = [];
+  if (groupIds.length > 0) {
+    const contributionsResult = await client.from("contributions").select("id, group_id, user_id, amount, status, created_at").in("group_id", groupIds).order("created_at", { ascending: false }).limit(500);
+    if (contributionsResult.error) throw new Error(contributionsResult.error.message);
+    scopedContributions = Array.isArray(contributionsResult.data) ? contributionsResult.data.map((row) => mapContributionItem(row as Record<string, unknown>)) : [];
+  }
 
   const creatorIds = groups.map((group) => group.creatorId).filter((value): value is string => Boolean(value));
   const aliases: Record<string, string> = {};
@@ -102,13 +122,33 @@ export async function saveAdminContributionGroup(
   client: SupabaseClient, access: AdminAccess,
   input: { id?: string | null; name: string; description: string; privacy: AdminContributionGroup["privacy"]; groupType: AdminContributionGroup["groupType"]; targetAmount: number; currentTotal: number; currency: string; memberCount: number; inviteCode?: string | null; isClosed: boolean },
 ) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<string>("contributions", {
+      method: "POST",
+      body: input,
+    });
+  }
+  const clubId = requireAdminClubId(access, "save contribution groups");
   return mutateRecordWithVariants(client, contributionTable, input.id, [
-    { club_id: safeNumber(access.clubId, rayonClub.numericId), name: input.name.trim(), description: input.description.trim(), privacy: input.privacy, group_type: input.groupType, target_amount: safeNumber(input.targetAmount, 0), current_total: safeNumber(input.currentTotal, 0), currency: input.currency.trim() || rayonClub.currencyCode, member_count: safeNumber(input.memberCount, 0), invite_code: safeString(input.inviteCode) || null, is_closed: input.isClosed, is_active: input.isClosed !== true },
-    { club_id: safeNumber(access.clubId, rayonClub.numericId), name: input.name.trim(), description: input.description.trim(), privacy: input.privacy, group_type: input.groupType, target_amount: safeNumber(input.targetAmount, 0), current_total: safeNumber(input.currentTotal, 0), currency: input.currency.trim() || rayonClub.currencyCode, member_count: safeNumber(input.memberCount, 0), invite_code: safeString(input.inviteCode) || null, is_closed: input.isClosed },
-  ]);
+    { club_id: clubId, name: input.name.trim(), description: input.description.trim(), privacy: input.privacy, group_type: input.groupType, target_amount: safeNumber(input.targetAmount, 0), current_total: safeNumber(input.currentTotal, 0), currency: input.currency.trim() || rayonClub.currencyCode, member_count: safeNumber(input.memberCount, 0), invite_code: safeString(input.inviteCode) || null, is_closed: input.isClosed, is_active: input.isClosed !== true },
+    { club_id: clubId, name: input.name.trim(), description: input.description.trim(), privacy: input.privacy, group_type: input.groupType, target_amount: safeNumber(input.targetAmount, 0), current_total: safeNumber(input.currentTotal, 0), currency: input.currency.trim() || rayonClub.currencyCode, member_count: safeNumber(input.memberCount, 0), invite_code: safeString(input.inviteCode) || null, is_closed: input.isClosed },
+  ], { club_id: clubId });
 }
 
-export async function deleteAdminContributionGroup(client: SupabaseClient, groupId: string) {
-  const { error } = await client.from(contributionTable).delete().eq("id", groupId);
-  if (error) throw new Error(error.message);
+export async function deleteAdminContributionGroup(
+  client: SupabaseClient,
+  access: AdminAccess,
+  groupId: string,
+) {
+  if (typeof window !== "undefined") {
+    await requestAdminApi<{ success: true }>("contributions", {
+      method: "DELETE",
+      query: { id: groupId },
+    });
+    return;
+  }
+  const clubId = requireAdminClubId(access, "delete contribution groups");
+  await deleteRecordWithMatchers(client, contributionTable, groupId, {
+    club_id: clubId,
+  });
 }
