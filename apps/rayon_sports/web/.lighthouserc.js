@@ -6,29 +6,29 @@ module.exports = {
       url: ["/", "/app", "/admin"],
       numberOfRuns: 3,
       settings: {
-        // Simulate a mid-range mobile device on 4G
-        preset: "desktop",
+        // Simulate a mid-range mobile device on throttled 4G (world-class standard)
+        preset: "mobile",
         throttling: {
-          cpuSlowdownMultiplier: 2,
+          cpuSlowdownMultiplier: 4,
         },
       },
     },
     assert: {
       assertions: {
-        // Performance — Essential CWV targets
-        "categories:performance": ["warn", { minScore: 0.85 }],
+        // Performance — Essential CWV targets (world-class: ≥ 0.90 on mobile)
+        "categories:performance": ["error", { minScore: 0.9 }],
 
         // PWA audit
         "categories:pwa": ["error", { minScore: 0.9 }],
 
-        // Accessibility
-        "categories:accessibility": ["warn", { minScore: 0.85 }],
+        // Accessibility (WCAG 2.2 AA — world-class: ≥ 0.90)
+        "categories:accessibility": ["error", { minScore: 0.9 }],
 
         // Best Practices
-        "categories:best-practices": ["warn", { minScore: 0.9 }],
+        "categories:best-practices": ["error", { minScore: 0.9 }],
 
         // SEO
-        "categories:seo": ["warn", { minScore: 0.9 }],
+        "categories:seo": ["error", { minScore: 0.9 }],
       },
     },
     upload: {

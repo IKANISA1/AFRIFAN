@@ -1,0 +1,14 @@
+[
+  {
+    "name": "App shell (JS + CSS)",
+    "path": ".next/static/**/*.js",
+    "gzip": true,
+    "limit": "150 kB"
+  },
+  {
+    "name": "First-load CSS",
+    "path": ".next/static/**/*.css",
+    "gzip": true,
+    "limit": "30 kB"
+  }
+]

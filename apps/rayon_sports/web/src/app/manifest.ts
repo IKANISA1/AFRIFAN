@@ -44,6 +44,31 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
         { name: "CMS", short_name: "CMS", url: "/admin/cms" },
       ],
       icons: sharedIcons,
+      screenshots: [
+        {
+          src: "/screenshots/admin-dashboard.png",
+          sizes: "1024x1024",
+          type: "image/png",
+          form_factor: "wide",
+          label: "Admin dashboard with metrics, quick actions, and recent activity",
+        },
+        {
+          src: "/screenshots/admin-matches.png",
+          sizes: "1024x1024",
+          type: "image/png",
+          form_factor: "wide",
+          label: "Match management with status badges and inline editing",
+        },
+      ],
+      share_target: {
+        action: "/admin/cms",
+        method: "GET",
+        params: {
+          title: "title",
+          text: "text",
+          url: "url",
+        },
+      },
     };
   }
 

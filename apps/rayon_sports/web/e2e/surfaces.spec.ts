@@ -126,6 +126,39 @@ test("pwa manifest and offline route are reachable", async ({
 });
 
 /* ────────────────────────────────────────────────────────── */
+/*  Offline synthetic test                                    */
+/* ────────────────────────────────────────────────────────── */
+
+test("admin renders offline fallback when network is disabled", async ({
+  page,
+  context,
+}) => {
+  // First visit admin to register SW and cache the offline page
+  await page.goto("/admin", { waitUntil: "domcontentloaded" });
+
+  // Go offline
+  await context.setOffline(true);
+
+  // Navigate to a different admin route — should get the offline fallback
+  const response = await page.goto("/admin/settings", {
+    waitUntil: "domcontentloaded",
+    timeout: 10_000,
+  }).catch(() => null);
+
+  // Either the offline page is served from SW or we get the admin-offline
+  const content = await page.textContent("body");
+  const hasOfflineIndicator =
+    content?.includes("offline") ||
+    content?.includes("live connection") ||
+    content?.includes("network");
+
+  expect(hasOfflineIndicator).toBeTruthy();
+
+  // Restore network
+  await context.setOffline(false);
+});
+
+/* ────────────────────────────────────────────────────────── */
 /*  Admin: assignment-backed session (conditional)           */
 /* ────────────────────────────────────────────────────────── */
 

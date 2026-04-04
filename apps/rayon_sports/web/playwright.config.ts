@@ -34,5 +34,12 @@ export default defineConfig({
         ...devices["iPad Pro 11"],
       },
     },
+    {
+      name: "mobile-webkit",
+      use: {
+        browserName: "webkit",
+        ...devices["iPhone 14"],
+      },
+    },
   ],
 });
