@@ -126,6 +126,7 @@ export async function CirclesAndMatchdayBlock() {
               </div>
               <Link
                 href={featuredMatch ? `/fixtures/${featuredMatch.id}` : "/fixtures"}
+                prefetch={false}
                 className="mt-5 inline-flex items-center gap-2 rounded-full bg-club-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-club-primary-light"
               >
                 Open match center <ArrowRight size={16} />
@@ -153,6 +154,7 @@ export async function CirclesAndMatchdayBlock() {
               </div>
               <Link
                 href="/membership"
+                prefetch={false}
                 className="mt-5 inline-flex items-center gap-2 rounded-full border border-border-soft px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/8"
               >
                 View membership <ArrowRight size={16} />

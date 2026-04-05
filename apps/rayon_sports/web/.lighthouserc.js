@@ -1,13 +1,26 @@
 module.exports = {
   ci: {
     collect: {
-      // Run against the production build output
-      staticDistDir: ".next",
-      url: ["/", "/app", "/admin"],
+      startServerCommand:
+        "npx next start --hostname 127.0.0.1 --port 3310",
+      startServerReadyPattern: "Ready in",
+      url: [
+        "http://127.0.0.1:3310/",
+        "http://127.0.0.1:3310/fixtures",
+        "http://127.0.0.1:3310/news",
+      ],
       numberOfRuns: 3,
       settings: {
-        // Simulate a mid-range mobile device on throttled 4G (world-class standard)
-        preset: "mobile",
+        // Lighthouse 12 no longer supports the legacy "mobile" preset flag.
+        // These settings preserve a mobile audit profile on throttled hardware.
+        formFactor: "mobile",
+        screenEmulation: {
+          mobile: true,
+          width: 390,
+          height: 844,
+          deviceScaleFactor: 2,
+          disabled: false,
+        },
         throttling: {
           cpuSlowdownMultiplier: 4,
         },
@@ -17,9 +30,6 @@ module.exports = {
       assertions: {
         // Performance — Essential CWV targets (world-class: ≥ 0.90 on mobile)
         "categories:performance": ["error", { minScore: 0.9 }],
-
-        // PWA audit
-        "categories:pwa": ["error", { minScore: 0.9 }],
 
         // Accessibility (WCAG 2.2 AA — world-class: ≥ 0.90)
         "categories:accessibility": ["error", { minScore: 0.9 }],

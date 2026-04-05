@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { NotificationOptInCard } from "@/components/pwa/notification-opt-in-card";
 import { PortalStateCard } from "@/components/portal/portal-state-card";
 import { SectionHeading } from "@/components/section-heading";
 import { useFanPortal } from "@/components/portal/fan-portal-provider";
@@ -71,6 +72,12 @@ export default function FanPortalDashboardPage() {
           helper="Track shop orders and supporter circles from one account."
         />
       </div>
+      <NotificationOptInCard
+        surface="portal"
+        path="/app"
+        title="Keep the supporter reachable."
+        description="Enable notifications only after you have entered the fan portal, so ticket reminders, membership confirmations, and live match moments arrive in context."
+      />
     </div>
   );
 }

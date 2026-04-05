@@ -2,8 +2,8 @@
 
 import { Trash2 } from "lucide-react";
 import { Skeleton } from "@/components/skeleton";
+import type { AdminSquadPlayer } from "@/lib/data/admin/squad";
 import { cn } from "@/lib/utils";
-import type { AdminSquadPlayer } from "@/lib/data/admin";
 import { positionColor } from "./squad-form-state";
 
 interface SquadListProps {

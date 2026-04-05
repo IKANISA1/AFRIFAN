@@ -10,7 +10,7 @@ import {
   deleteAdminContributionGroup,
   downloadContributionExcel,
   getAdminContributionSnapshot,
-} from "@/lib/data/admin";
+} from "@/lib/data/admin/contributions";
 import { formatCurrency } from "@/lib/utils";
 import type { AdminContributionGroup, AdminContributionSnapshot } from "@/lib/types";
 import { emptyGroupForm, groupToFormState } from "./_components/group-form-state";

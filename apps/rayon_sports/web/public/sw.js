@@ -1,7 +1,14 @@
-const STATIC_CACHE = "gikundiro-static-v3";
-const PAGE_CACHE = "gikundiro-pages-v3";
-const ASSET_CACHE = "gikundiro-assets-v3";
-const PRECACHE_URLS = ["/offline", "/admin-offline", "/media/rayon-crest.png"];
+const STATIC_CACHE = "gikundiro-static-v5";
+const PAGE_CACHE = "gikundiro-pages-v5";
+const ASSET_CACHE = "gikundiro-assets-v5";
+const API_CACHE = "gikundiro-api-v5";
+const PRECACHE_URLS = [
+  "/offline",
+  "/admin-offline",
+  "/manifest.webmanifest",
+  "/icons/icon-192x192.png",
+  "/icons/icon-512x512.png",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -21,7 +28,7 @@ self.addEventListener("activate", (event) => {
           keys
             .filter(
               (key) =>
-                ![STATIC_CACHE, PAGE_CACHE, ASSET_CACHE].includes(key),
+                ![STATIC_CACHE, PAGE_CACHE, ASSET_CACHE, API_CACHE].includes(key),
             )
             .map((key) => caches.delete(key)),
         ),
@@ -33,6 +40,12 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
+  }
+
+  if (event.data && event.data.type === "CLEAR_BADGE") {
+    if ("clearAppBadge" in self.navigator) {
+      self.navigator.clearAppBadge();
+    }
   }
 });
 
@@ -68,6 +81,26 @@ async function staleWhileRevalidate(request) {
   return cached || network;
 }
 
+async function apiNetworkFirst(request) {
+  const cache = await caches.open(API_CACHE);
+  try {
+    const response = await fetch(request);
+    if (response && response.ok) {
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch {
+    const cached = await cache.match(request);
+    if (cached) {
+      return cached;
+    }
+    return new Response(JSON.stringify({ items: [] }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
+
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") {
@@ -76,6 +109,11 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  if (url.pathname === "/api/search-index") {
+    event.respondWith(apiNetworkFirst(request));
     return;
   }
 
@@ -143,7 +181,7 @@ self.addEventListener("push", (event) => {
     self.registration.showNotification(title, options).then(() => {
       // Update badge count
       if ("setAppBadge" in self.navigator) {
-        return self.navigator.setAppBadge();
+        return self.navigator.setAppBadge(data.badgeCount ?? 1);
       }
     }),
   );
@@ -229,7 +267,10 @@ async function replayOfflineQueue() {
 }
 
 self.addEventListener("sync", (event) => {
-  if (event.tag === "admin-mutation-sync") {
+  if (
+    event.tag === "admin-mutation-sync" ||
+    event.tag === "gikundiro-mutation-sync"
+  ) {
     event.waitUntil(replayOfflineQueue());
   }
 });
@@ -247,5 +288,16 @@ self.addEventListener("periodicsync", (event) => {
       ),
     );
   }
-});
 
+  if (event.tag === "public-content-refresh") {
+    event.waitUntil(
+      caches.open(PAGE_CACHE).then((cache) =>
+        Promise.all(
+          ["/", "/fixtures", "/news", "/shop", "/membership"].map((url) =>
+            cache.add(url).catch(() => {}),
+          ),
+        ),
+      ),
+    );
+  }
+});

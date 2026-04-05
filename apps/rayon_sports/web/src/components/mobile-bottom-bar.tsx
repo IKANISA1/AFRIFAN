@@ -7,6 +7,7 @@ export function MobileBottomBar() {
       <div className="flex items-center justify-center gap-3 px-4 py-2.5">
         <Link
           href="/tickets"
+          prefetch={false}
           className="flex-1 flex items-center justify-center gap-2 rounded-full border border-border-soft bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
         >
           <Ticket size={16} />
@@ -14,6 +15,7 @@ export function MobileBottomBar() {
         </Link>
         <Link
           href="/app"
+          prefetch={false}
           className="flex-1 flex items-center justify-center gap-2 rounded-full bg-club-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-club-primary-light cta-glow"
         >
           <User size={16} />

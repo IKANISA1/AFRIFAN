@@ -3,11 +3,6 @@ import { Barlow_Condensed, Bebas_Neue, Inter } from "next/font/google";
 import "./globals.css";
 import { absoluteUrl, siteConfig } from "@/lib/config";
 import { buildSiteJsonLd } from "@/lib/metadata";
-import { WebVitalsReporter } from "@/components/pwa/web-vitals-reporter";
-
-const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
-  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL.trim()).origin
-  : null;
 
 const inter = Inter({
   variable: "--font-inter",
@@ -56,7 +51,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: absoluteUrl("/media/rayon-crest.png"),
+        url: absoluteUrl("/icons/icon-512x512.png"),
         width: 512,
         height: 512,
         alt: "Rayon Sports crest",
@@ -67,14 +62,14 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteConfig.title,
     description: siteConfig.description,
-    images: [absoluteUrl("/media/rayon-crest.png")],
+    images: [absoluteUrl("/icons/icon-512x512.png")],
   },
   alternates: {
     canonical: siteConfig.siteUrl,
   },
   icons: {
-    icon: "/media/rayon-crest.png",
-    apple: "/media/rayon-crest.png",
+    icon: "/icons/icon-192x192.png",
+    apple: "/icons/icon-192x192.png",
   },
   appleWebApp: {
     capable: true,
@@ -102,20 +97,12 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${barlow.variable} ${bebasNeue.variable} h-full antialiased`}
     >
-      <head>
-        {supabaseHost ? (
-          <>
-            <link rel="preconnect" href={supabaseHost} />
-            <link rel="dns-prefetch" href={supabaseHost} />
-          </>
-        ) : null}
-      </head>
+      <head />
       <body className="min-h-full flex flex-col">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
         />
-        <WebVitalsReporter />
         {children}
       </body>
     </html>

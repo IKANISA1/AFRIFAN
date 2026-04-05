@@ -54,7 +54,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "rounded-2xl px-4 py-3 text-sm font-semibold transition",
+                  "flex min-h-11 items-center rounded-2xl px-4 py-3 text-sm font-semibold transition",
                   active
                     ? "bg-club-primary text-white"
                     : "text-slate-200 hover:bg-white/8",

@@ -8,7 +8,7 @@ import {
   deleteAdminArticle,
   getAdminArticles,
   saveAdminArticle,
-} from "@/lib/data/admin";
+} from "@/lib/data/admin/cms";
 import type { AdminNewsArticle } from "@/lib/types";
 import { emptyArticleForm } from "./_components/cms-state";
 import { CMSContentEditor } from "./_components/cms-content-editor";

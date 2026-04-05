@@ -87,7 +87,7 @@ export default async function TicketsPage() {
           </div>
           <Link
             href="/membership"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-club-accent px-5 py-3 font-semibold text-club-ink transition hover:brightness-110"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-club-accent px-5 py-3 font-semibold text-slate-950 transition hover:brightness-110"
           >
             Membership benefits <ShieldCheck size={18} />
           </Link>

@@ -16,6 +16,13 @@ import { useEffect, useState } from "react";
 
 const DISMISSED_KEY = "gikundiro-ios-install-dismissed";
 
+interface IosSafariInstallGuideProps {
+  enabled?: boolean;
+  showAfterMs?: number;
+  onShown?: () => void;
+  onDismiss?: () => void;
+}
+
 function isIosSafari(): boolean {
   if (typeof window === "undefined") return false;
 
@@ -35,25 +42,32 @@ function isStandalone(): boolean {
   );
 }
 
-export function IosSafariInstallGuide() {
+export function IosSafariInstallGuide({
+  enabled = true,
+  showAfterMs = 45_000,
+  onShown,
+  onDismiss,
+}: IosSafariInstallGuideProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!isIosSafari() || isStandalone()) return;
+    if (!enabled || !isIosSafari() || isStandalone()) return;
 
     if (sessionStorage.getItem(DISMISSED_KEY) === "true") return;
 
-    // Show after 60 seconds of engagement
+    // Show only after the user has spent real time on the site.
     const timer = setTimeout(() => {
       setVisible(true);
-    }, 60_000);
+      onShown?.();
+    }, showAfterMs);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [enabled, onShown, showAfterMs]);
 
   function dismiss() {
     sessionStorage.setItem(DISMISSED_KEY, "true");
     setVisible(false);
+    onDismiss?.();
   }
 
   if (!visible) return null;
@@ -73,7 +87,6 @@ export function IosSafariInstallGuide() {
           For the best app-like experience, add Gikundiro to your Home Screen:
         </p>
 
-        {/* Step-by-step instructions */}
         <ol className="mt-4 space-y-3 text-sm text-slate-200">
           <li className="flex items-start gap-3">
             <span

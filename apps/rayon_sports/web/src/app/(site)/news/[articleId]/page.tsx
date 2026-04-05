@@ -3,8 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { NewsCard } from "@/components/news-card";
+import { ShareActionButton } from "@/components/pwa/share-action-button";
 import { getNewsArticleById, getNewsArticles } from "@/lib/data/public";
-import { buildPageMetadata } from "@/lib/metadata";
+import { buildNewsArticleJsonLd, buildPageMetadata } from "@/lib/metadata";
 import { formatDate, getReadingTime } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -56,6 +57,12 @@ export default async function ArticlePage({
 
   return (
     <article className="page-shell section-grid py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(buildNewsArticleJsonLd(article)),
+        }}
+      />
       <section className="glass-panel-elevated overflow-hidden rounded-[38px] border border-border-soft">
         <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="img-zoom relative min-h-[20rem]">
@@ -63,7 +70,9 @@ export default async function ArticlePage({
               src={article.coverImageUrl ?? "/media/stadium-hero.jpg"}
               alt={article.title}
               fill
-              sizes="(min-width: 1024px) 42vw, 100vw"
+              priority
+              sizes="(min-width: 1280px) 36rem, (min-width: 1024px) 42vw, calc(100vw - 2rem)"
+              quality={60}
               className="object-cover"
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_25%,rgba(3,10,24,0.74)_100%)]" />
@@ -99,6 +108,12 @@ export default async function ArticlePage({
               >
                 Matchday context
               </Link>
+              <ShareActionButton
+                title={article.title}
+                text={article.excerpt}
+                url={`/news/${article.id}`}
+                className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              />
             </div>
           </div>
         </div>

@@ -8,6 +8,7 @@
 const DB_NAME = "gikundiro-offline-queue";
 const DB_VERSION = 1;
 const STORE_NAME = "requests";
+const DEFAULT_SYNC_TAG = "gikundiro-mutation-sync";
 
 interface QueuedRequest {
   id?: number;
@@ -40,6 +41,7 @@ export async function queueOfflineMutation(
   method: string,
   headers: Record<string, string>,
   body: string | null,
+  syncTag = DEFAULT_SYNC_TAG,
 ): Promise<void> {
   try {
     const db = await openDB();
@@ -65,7 +67,7 @@ export async function queueOfflineMutation(
     if ("serviceWorker" in navigator && "SyncManager" in window) {
       const registration = await navigator.serviceWorker.ready;
       await (registration as ServiceWorkerRegistration & { sync: { register: (tag: string) => Promise<void> } })
-        .sync.register("admin-mutation-sync");
+        .sync.register(syncTag);
     }
   } catch (error) {
     console.error("[offline-queue] Failed to queue mutation:", error);
@@ -126,9 +128,19 @@ export async function fetchWithOfflineQueue(
     if (["POST", "PUT", "PATCH", "DELETE"].includes(method.toUpperCase())) {
       const headers: Record<string, string> = {};
       if (init.headers) {
-        const h = init.headers as Record<string, string>;
-        for (const key of Object.keys(h)) {
-          headers[key] = h[key];
+        if (init.headers instanceof Headers) {
+          init.headers.forEach((value, key) => {
+            headers[key] = value;
+          });
+        } else if (Array.isArray(init.headers)) {
+          for (const [key, value] of init.headers) {
+            headers[key] = value;
+          }
+        } else {
+          const h = init.headers as Record<string, string>;
+          for (const key of Object.keys(h)) {
+            headers[key] = h[key];
+          }
         }
       }
 
@@ -137,11 +149,17 @@ export async function fetchWithOfflineQueue(
         method,
         headers,
         typeof init.body === "string" ? init.body : null,
+        DEFAULT_SYNC_TAG,
       );
 
       // Return a synthetic response indicating queued
       return new Response(
-        JSON.stringify({ queued: true, message: "Saved offline — will sync when connected" }),
+        JSON.stringify({
+          data: {
+            queued: true,
+            message: "Saved offline — will sync when connected",
+          },
+        }),
         { status: 202, headers: { "Content-Type": "application/json" } },
       );
     }

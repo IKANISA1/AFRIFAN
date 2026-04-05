@@ -3,9 +3,9 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { MatchFormState } from "./match-form-state";
 import { showAdminToast } from "@/components/admin/admin-toast";
-import type { AdminAccess } from "@/lib/types";
-import { saveAdminMatch } from "@/lib/data/admin";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { saveAdminMatch } from "@/lib/data/admin/matches";
+import type { AdminAccess } from "@/lib/types";
 
 interface MatchFormProps {
   form: MatchFormState;

@@ -78,14 +78,20 @@ export async function requestPushPermission(): Promise<NotificationPermission> {
 
 export async function sendSubscriptionToServer(
   subscription: PushSubscription,
+  metadata?: { surface?: string; path?: string },
 ): Promise<boolean> {
   try {
-    const response = await fetch("/api/admin/push", {
+    const response = await fetch("/api/pwa/push", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Gikundiro-CSRF": "1",
+      },
       body: JSON.stringify({
         action: "subscribe",
         subscription: subscription.toJSON(),
+        surface: metadata?.surface,
+        path: metadata?.path,
       }),
     });
     return response.ok;
@@ -106,9 +112,12 @@ export async function unsubscribeFromPush(
 
     const success = await subscription.unsubscribe();
     if (success) {
-      await fetch("/api/admin/push", {
+      await fetch("/api/pwa/push", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Gikundiro-CSRF": "1",
+        },
         body: JSON.stringify({
           action: "unsubscribe",
           endpoint: subscription.endpoint,
@@ -116,6 +125,34 @@ export async function unsubscribeFromPush(
       });
     }
     return success;
+  } catch {
+    return false;
+  }
+}
+
+export async function sendTestPush(
+  subscription: PushSubscription,
+  payload?: {
+    title?: string;
+    body?: string;
+    url?: string;
+  },
+): Promise<boolean> {
+  try {
+    const response = await fetch("/api/pwa/push", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Gikundiro-CSRF": "1",
+      },
+      body: JSON.stringify({
+        action: "test",
+        subscription: subscription.toJSON(),
+        ...payload,
+      }),
+    });
+
+    return response.ok;
   } catch {
     return false;
   }

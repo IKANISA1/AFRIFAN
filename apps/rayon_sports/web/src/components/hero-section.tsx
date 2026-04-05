@@ -61,7 +61,8 @@ export function HeroSection({
             alt="Rayon Sports matchday atmosphere"
             fill
             priority
-            sizes="100vw"
+            sizes="(min-width: 1280px) 80rem, calc(100vw - 2rem)"
+            quality={60}
             className="object-cover"
           />
           <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(2,11,24,0.95)_10%,rgba(2,11,24,0.78)_42%,rgba(2,11,24,0.46)_72%,rgba(2,11,24,0.82)_100%)]" />
@@ -96,18 +97,21 @@ export function HeroSection({
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/tickets"
+                  prefetch={false}
                   className="cta-glow inline-flex min-h-11 items-center gap-2 rounded-full bg-club-primary px-6 py-3 font-semibold text-white transition hover:bg-club-primary-light"
                 >
                   Get tickets <Ticket size={18} />
                 </Link>
                 <Link
                   href="/membership"
+                  prefetch={false}
                   className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border-soft bg-black/15 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
                 >
                   Join membership <ShieldCheck size={18} />
                 </Link>
                 <Link
                   href="/app"
+                  prefetch={false}
                   className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/12 bg-white/6 px-6 py-3 font-semibold text-white transition hover:bg-white/12"
                 >
                   Open fan portal <ArrowRight size={18} />
@@ -265,13 +269,15 @@ export function HeroSection({
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link
                   href="/circles"
-                  className="inline-flex items-center gap-2 rounded-full bg-club-accent px-4 py-2.5 font-semibold text-club-ink transition hover:brightness-110"
+                  prefetch={false}
+                  className="inline-flex min-h-11 items-center gap-2 rounded-full bg-club-accent px-4 py-2.5 font-semibold text-slate-950 transition hover:brightness-110"
                 >
                   Explore circles <ArrowRight size={16} />
                 </Link>
                 <Link
                   href="/fan-clubs"
-                  className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/6 px-4 py-2.5 font-semibold text-white transition hover:bg-white/12"
+                  prefetch={false}
+                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/12 bg-white/6 px-4 py-2.5 font-semibold text-white transition hover:bg-white/12"
                 >
                   Meet the chapters
                 </Link>

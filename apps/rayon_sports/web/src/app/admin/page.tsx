@@ -20,7 +20,7 @@ import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { Skeleton } from "@/components/skeleton";
 import { SectionHeading } from "@/components/section-heading";
-import { getAdminDashboardSnapshot } from "@/lib/data/admin";
+import { getAdminDashboardSnapshot } from "@/lib/data/admin/dashboard";
 import type { AdminDashboardSnapshot } from "@/lib/types";
 
 const emptySnapshot: AdminDashboardSnapshot = {

@@ -7,7 +7,7 @@ import { SectionHeading } from "@/components/section-heading";
 import {
   getAdminNotificationContext,
   sendAdminNotification,
-} from "@/lib/data/admin";
+} from "@/lib/data/admin/notifications";
 import { emptyContext, emptyForm, type NotificationForm as NotificationFormType } from "./_components/notification-state";
 import { NotificationForm } from "./_components/notification-form";
 import { NotificationList } from "./_components/notification-list";

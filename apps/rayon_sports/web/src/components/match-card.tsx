@@ -25,6 +25,7 @@ export function MatchCard({
   return (
     <Link
       href={href}
+      prefetch={false}
       className="glass-panel card-interactive flex h-full flex-col gap-5 rounded-[30px] border border-border-soft p-5"
     >
       <div className="flex items-center justify-between gap-3">

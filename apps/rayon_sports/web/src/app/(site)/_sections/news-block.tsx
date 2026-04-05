@@ -16,6 +16,7 @@ export async function NewsBlock() {
         />
         <Link
           href="/news"
+          prefetch={false}
           className="inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
         >
           Newsroom <ArrowRight size={18} />

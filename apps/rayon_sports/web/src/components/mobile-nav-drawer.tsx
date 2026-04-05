@@ -61,10 +61,11 @@ export function MobileNavDrawer({
         <div className="flex items-center justify-between p-5 border-b border-border-soft">
           <div className="flex items-center gap-3">
              <Image
-              src={club.officialLogoUrl ?? "/media/rayon-crest.png"}
+              src={club.officialLogoUrl ?? "/icons/icon-192x192.png"}
               alt={`${club.clubName} crest`}
               width={36}
               height={36}
+              sizes="36px"
               className="rounded-full border border-white/10 bg-white/5 object-cover"
             />
             <div>
@@ -91,6 +92,7 @@ export function MobileNavDrawer({
           <div className="flex justify-between gap-3">
             <Link
               href="/app"
+              prefetch={false}
               className="flex-1 flex flex-col items-center justify-center gap-2 p-3 rounded-2xl bg-white/5 border border-border-soft hover:bg-white/10 transition focus-ring"
             >
               <User size={20} className="text-club-primary-light" />
@@ -98,6 +100,7 @@ export function MobileNavDrawer({
             </Link>
             <Link 
               href="/tickets" 
+              prefetch={false}
               className="flex-1 flex flex-col items-center justify-center gap-2 p-3 rounded-2xl bg-white/5 border border-border-soft hover:bg-white/10 transition focus-ring"
             >
               <Ticket size={20} className="text-club-accent" />
@@ -105,6 +108,7 @@ export function MobileNavDrawer({
             </Link>
             <Link 
               href="/shop" 
+              prefetch={false}
               className="flex-1 flex flex-col items-center justify-center gap-2 p-3 rounded-2xl bg-white/5 border border-border-soft hover:bg-white/10 transition focus-ring"
             >
               <ShoppingBag size={20} className="text-club-secondary" />
@@ -122,6 +126,7 @@ export function MobileNavDrawer({
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={false}
                   className={cn(
                     "relative px-4 py-3 text-lg font-semibold rounded-xl transition-all focus-ring",
                     active 
@@ -147,6 +152,7 @@ export function MobileNavDrawer({
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={false}
                   className="rounded-full border border-border-soft bg-white/4 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-300 transition hover:bg-white/8 hover:text-white"
                 >
                   {item.label}

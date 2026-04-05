@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { AdminPortalProvider } from "@/components/admin/admin-portal-provider";
-import { AdminShell } from "@/components/admin/admin-shell";
-import { AdminToastProvider } from "@/components/admin/admin-toast";
-import { DeferredPwaShell } from "@/components/pwa/deferred-pwa-shell";
+import { AdminClientLoader } from "./admin-client-loader";
 import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -25,7 +22,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: `${siteConfig.siteUrl}/media/rayon-crest.png`,
+        url: `${siteConfig.siteUrl}/icons/icon-512x512.png`,
         width: 512,
         height: 512,
         alt: "Gikundiro admin crest",
@@ -37,7 +34,7 @@ export const metadata: Metadata = {
     title: "Gikundiro Admin",
     description:
       "Touch-first admin workspace for Rayon Sports operations, publishing, and supporter management.",
-    images: [`${siteConfig.siteUrl}/media/rayon-crest.png`],
+    images: [`${siteConfig.siteUrl}/icons/icon-512x512.png`],
   },
   appleWebApp: {
     capable: true,
@@ -51,11 +48,5 @@ export const metadata: Metadata = {
 };
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
-  return (
-    <AdminPortalProvider>
-      <DeferredPwaShell />
-      <AdminShell>{children}</AdminShell>
-      <AdminToastProvider />
-    </AdminPortalProvider>
-  );
+  return <AdminClientLoader>{children}</AdminClientLoader>;
 }

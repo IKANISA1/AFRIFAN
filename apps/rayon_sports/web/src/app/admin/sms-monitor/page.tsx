@@ -6,8 +6,8 @@ import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { Skeleton } from "@/components/skeleton";
 import { SectionHeading } from "@/components/section-heading";
+import { getAdminSmsSnapshot } from "@/lib/data/admin/sms";
 import { cn } from "@/lib/utils";
-import { getAdminSmsSnapshot } from "@/lib/data/admin";
 import type { AdminSmsSnapshot } from "@/lib/types";
 
 const emptySnapshot: AdminSmsSnapshot = {

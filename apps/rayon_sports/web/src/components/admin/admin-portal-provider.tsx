@@ -18,7 +18,7 @@ import {
   normalizeAdminPhone,
   formatAdminPhoneForDisplay,
 } from "@/lib/admin-auth";
-import { emptyAdminAccess, resolveAdminAccess } from "@/lib/data/admin";
+import { emptyAdminAccess, resolveAdminAccess } from "@/lib/data/admin/access";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 import type { AdminAccess } from "@/lib/types";
 

@@ -30,7 +30,7 @@ export const fallbackClubProfile: ClubProfile = {
   xUrl: "https://x.com/rayon_sports",
   instagramUrl: "https://instagram.com/rayonsports_official",
   tiktokUrl: "https://tiktok.com/@rayonsports",
-  officialLogoUrl: "/media/rayon-crest.png",
+  officialLogoUrl: "/icons/icon-192x192.png",
   primaryColorHex: rayonClub.primaryColorHex,
   secondaryColorHex: rayonClub.secondaryColorHex,
   accentColorHex: rayonClub.accentColorHex,

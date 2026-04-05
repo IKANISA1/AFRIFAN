@@ -28,12 +28,14 @@ export default async function NewsPage() {
           <>
             <Link
               href="/fixtures"
+              prefetch={false}
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
               Matchday schedule
             </Link>
             <Link
               href="/membership"
+              prefetch={false}
               className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Membership stories
@@ -57,6 +59,7 @@ export default async function NewsPage() {
         <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <Link
             href={`/news/${featuredArticle.id}`}
+            prefetch={false}
             className="glass-panel card-interactive grid overflow-hidden rounded-[34px] border border-border-soft lg:grid-cols-[1.05fr_0.95fr]"
           >
             <div className="p-6 sm:p-8">
@@ -89,7 +92,9 @@ export default async function NewsPage() {
                 src={featuredArticle.coverImageUrl ?? "/media/stadium-hero.jpg"}
                 alt={featuredArticle.title}
                 fill
-                sizes="(min-width: 1280px) 40vw, 100vw"
+                priority
+                sizes="(min-width: 1280px) 38rem, (min-width: 1024px) 46vw, calc(100vw - 2rem)"
+                quality={60}
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_25%,rgba(3,10,24,0.58)_100%)]" />

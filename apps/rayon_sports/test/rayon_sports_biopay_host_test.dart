@@ -65,9 +65,10 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('PAY OR RECEIVE'), findsOneWidget);
-      expect(find.text('NFC RECEIVE'), findsOneWidget);
-      expect(find.text('SCAN NFC'), findsOneWidget);
+      expect(find.textContaining('How you want'), findsOneWidget);
+      expect(find.text('Face Scan'), findsOneWidget);
+      expect(find.text('NFC Tap'), findsOneWidget);
+      expect(find.text('Scan QR'), findsOneWidget);
     });
   });
 }

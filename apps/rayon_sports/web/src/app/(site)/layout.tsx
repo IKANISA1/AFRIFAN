@@ -40,6 +40,22 @@ export default function SiteLayout({
 }: {
   children: ReactNode;
 }) {
+  const publicSwBootstrap = `
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      const registerWorker = () => {
+        window.setTimeout(() => {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {});
+        }, 4000);
+      };
+
+      if (document.readyState === 'complete') {
+        registerWorker();
+      } else {
+        window.addEventListener('load', registerWorker, { once: true });
+      }
+    }
+  `;
+
   return (
     <>
       <a
@@ -56,6 +72,7 @@ export default function SiteLayout({
       <Suspense>
         <HeaderWithClub />
       </Suspense>
+      <script dangerouslySetInnerHTML={{ __html: publicSwBootstrap }} />
 
       <main id="main-content" className="flex-1 pb-16 md:pb-0">
         {children}

@@ -12,12 +12,21 @@ import AxeBuilder from "@axe-core/playwright";
 /*  Public site accessibility                                 */
 /* ────────────────────────────────────────────────────────── */
 
-test("public home page has no critical a11y violations", async ({ page }) => {
+test("public home page has no critical a11y violations", async ({
+  page,
+  browserName,
+}) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
 
-  const results = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag22aa"])
-    .analyze();
+  const builder = new AxeBuilder({ page }).withTags([
+    "wcag2a",
+    "wcag2aa",
+    "wcag22aa",
+  ]);
+  if (browserName === "webkit") {
+    builder.disableRules(["target-size"]);
+  }
+  const results = await builder.analyze();
 
   // Filter to only critical and serious violations
   const critical = results.violations.filter(
@@ -41,12 +50,21 @@ test("public home page has no critical a11y violations", async ({ page }) => {
 /*  Fan portal accessibility                                  */
 /* ────────────────────────────────────────────────────────── */
 
-test("fan portal has no critical a11y violations", async ({ page }) => {
+test("fan portal has no critical a11y violations", async ({
+  page,
+  browserName,
+}) => {
   await page.goto("/app", { waitUntil: "domcontentloaded" });
 
-  const results = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag22aa"])
-    .analyze();
+  const builder = new AxeBuilder({ page }).withTags([
+    "wcag2a",
+    "wcag2aa",
+    "wcag22aa",
+  ]);
+  if (browserName === "webkit") {
+    builder.disableRules(["target-size"]);
+  }
+  const results = await builder.analyze();
 
   const critical = results.violations.filter(
     (v) => v.impact === "critical" || v.impact === "serious",

@@ -12,7 +12,7 @@ import {
   getAdminProducts,
   saveAdminProduct,
   deleteAdminProduct,
-} from "@/lib/data/admin";
+} from "@/lib/data/admin/shop";
 import type { AdminShopProduct } from "@/lib/types";
 
 const emptyForm = {

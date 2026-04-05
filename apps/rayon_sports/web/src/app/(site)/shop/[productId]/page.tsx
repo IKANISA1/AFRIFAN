@@ -3,8 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
+import { ShareActionButton } from "@/components/pwa/share-action-button";
 import { getProductById, getProducts } from "@/lib/data/public";
-import { buildPageMetadata } from "@/lib/metadata";
+import { buildPageMetadata, buildProductJsonLd } from "@/lib/metadata";
 import { formatCurrency } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -42,6 +43,12 @@ export default async function ProductPage({
 
   return (
     <div className="page-shell section-grid py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(buildProductJsonLd(product)),
+        }}
+      />
       <section className="glass-panel-elevated overflow-hidden rounded-[38px] border border-border-soft">
         <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="img-zoom relative min-h-[22rem]">
@@ -88,6 +95,12 @@ export default async function ProductPage({
               >
                 Unlock member perks
               </Link>
+              <ShareActionButton
+                title={product.name}
+                text={product.subtitle}
+                url={`/shop/${product.id}`}
+                className="rounded-full border border-border-soft px-5 py-3 font-semibold text-white transition hover:bg-white/8"
+              />
             </div>
           </div>
         </div>

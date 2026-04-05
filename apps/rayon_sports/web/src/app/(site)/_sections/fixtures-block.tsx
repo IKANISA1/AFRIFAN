@@ -21,6 +21,7 @@ export async function FixturesBlock() {
         />
         <Link
           href="/fixtures"
+          prefetch={false}
           className="inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
         >
           Full fixtures <ArrowRight size={18} />

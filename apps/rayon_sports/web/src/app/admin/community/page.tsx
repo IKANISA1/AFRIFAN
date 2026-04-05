@@ -10,7 +10,7 @@ import {
   deleteAdminFanClub,
   getAdminFanClubs,
   saveAdminFanClub,
-} from "@/lib/data/admin";
+} from "@/lib/data/admin/fan-clubs";
 import type { AdminFanClub } from "@/lib/types";
 import { emptyForm, type CommunityForm } from "./_components/community-state";
 import { CommunityContentEditor } from "./_components/community-content-editor";

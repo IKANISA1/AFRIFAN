@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { IosSafariInstallGuide } from "./ios-safari-install-guide";
+import { currentDisplayMode, trackPwaEvent } from "@/lib/pwa-analytics";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -15,19 +16,40 @@ declare global {
   }
 }
 
+const INSTALL_VISIT_THRESHOLD = 3;
+
+function isStandaloneDisplayMode() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  return window.matchMedia("(display-mode: standalone)").matches;
+}
+
 export function PwaShell() {
   const pathname = usePathname();
   const isAdminSurface = pathname.startsWith("/admin");
+  const isLiveSurface = pathname.startsWith("/app/live");
+  const isPortalSurface = pathname.startsWith("/app");
+  const analyticsSurface = isAdminSurface
+    ? "admin"
+    : isLiveSurface
+      ? "live"
+      : isPortalSurface
+        ? "portal"
+        : "site";
   const dismissedPromptKey = isAdminSurface
     ? "gikundiro-admin-install-dismissed"
     : "gikundiro-install-dismissed";
   const [mounted, setMounted] = useState(false);
+  const [visitCount, setVisitCount] = useState(0);
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [isOffline, setIsOffline] = useState(false);
   const [updateReady, setUpdateReady] =
     useState<ServiceWorkerRegistration | null>(null);
   const [dismissed, setDismissed] = useState(true);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -36,8 +58,13 @@ export function PwaShell() {
 
     queueMicrotask(() => {
       setMounted(true);
+      const nextVisitCount =
+        Number(window.localStorage.getItem("gikundiro-pwa-visits") || "0") + 1;
+      window.localStorage.setItem("gikundiro-pwa-visits", String(nextVisitCount));
+      setVisitCount(nextVisitCount);
       setDismissed(window.localStorage.getItem(dismissedPromptKey) === "true");
       setIsOffline(!window.navigator.onLine);
+      setIsStandalone(isStandaloneDisplayMode());
     });
 
     function handleOnline() {
@@ -75,6 +102,10 @@ export function PwaShell() {
 
       if (registration.waiting) {
         setUpdateReady(registration);
+        trackPwaEvent({
+          eventType: "sw-update-ready",
+          surface: analyticsSurface,
+        });
       }
 
       registration.addEventListener("updatefound", () => {
@@ -89,15 +120,41 @@ export function PwaShell() {
             navigator.serviceWorker.controller != null
           ) {
             setUpdateReady(registration);
+            trackPwaEvent({
+              eventType: "sw-update-ready",
+              surface: analyticsSurface,
+            });
           }
         });
       });
+
+      const periodicSync = (
+        registration as ServiceWorkerRegistration & {
+          periodicSync?: { register: (tag: string, options: { minInterval: number }) => Promise<void> };
+        }
+      ).periodicSync;
+      if (periodicSync) {
+        periodicSync
+          .register(
+            isAdminSurface ? "admin-dashboard-refresh" : "public-content-refresh",
+            {
+              minInterval: isAdminSurface
+                ? 60 * 60 * 1000
+                : 12 * 60 * 60 * 1000,
+            },
+          )
+          .catch(() => {});
+      }
+
+      if (isPortalSurface || isAdminSurface) {
+        registration.active?.postMessage({ type: "CLEAR_BADGE" });
+      }
     }).catch(() => {});
 
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [analyticsSurface, isAdminSurface, isPortalSurface]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -108,10 +165,20 @@ export function PwaShell() {
       event.preventDefault();
       setDeferredPrompt(event);
       setDismissed(window.localStorage.getItem(dismissedPromptKey) === "true");
+      trackPwaEvent({
+        eventType: "install-prompt-captured",
+        surface: analyticsSurface,
+      });
     }
 
     function handleInstalled() {
       setDeferredPrompt(null);
+      setIsStandalone(true);
+      trackPwaEvent({
+        eventType: "install-completed",
+        surface: analyticsSurface,
+        displayMode: currentDisplayMode(),
+      });
     }
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -124,7 +191,7 @@ export function PwaShell() {
       );
       window.removeEventListener("appinstalled", handleInstalled);
     };
-  }, [dismissedPromptKey]);
+  }, [analyticsSurface, dismissedPromptKey]);
 
   async function handleInstall() {
     if (deferredPrompt == null) {
@@ -137,6 +204,10 @@ export function PwaShell() {
       setDeferredPrompt(null);
       setDismissed(true);
       window.localStorage.removeItem(dismissedPromptKey);
+      trackPwaEvent({
+        eventType: "install-prompt-accepted",
+        surface: analyticsSurface,
+      });
       return;
     }
     dismissPrompt();
@@ -147,6 +218,10 @@ export function PwaShell() {
       window.localStorage.setItem(dismissedPromptKey, "true");
     }
     setDismissed(true);
+    trackPwaEvent({
+      eventType: "install-prompt-dismissed",
+      surface: analyticsSurface,
+    });
   }
 
   function showPromptAgain() {
@@ -159,23 +234,52 @@ export function PwaShell() {
   function applyUpdate() {
     if (updateReady?.waiting) {
       updateReady.waiting.postMessage({ type: "SKIP_WAITING" });
+      trackPwaEvent({
+        eventType: "sw-update-applied",
+        surface: analyticsSurface,
+      });
       window.location.reload();
     }
   }
 
   const surface = isAdminSurface
     ? "Admin workspace"
-    : pathname.startsWith("/app")
+    : isLiveSurface
+      ? "Live center"
+    : isPortalSurface
       ? "Fan portal"
       : "Website";
+  const installEligible = visitCount >= INSTALL_VISIT_THRESHOLD || isPortalSurface;
+  const showInstallPrompt =
+    deferredPrompt != null &&
+    !dismissed &&
+    installEligible &&
+    !isStandalone;
 
   if (!mounted) {
     return null;
   }
 
-  if (!isOffline && updateReady == null && (deferredPrompt == null || dismissed)) {
-    // On iOS, beforeinstallprompt never fires. Show the iOS guidance instead.
-    return <IosSafariInstallGuide />;
+  if (!isOffline && updateReady == null && !showInstallPrompt) {
+    return (
+      <IosSafariInstallGuide
+        enabled={installEligible && !isStandalone}
+        onShown={() => {
+          trackPwaEvent({
+            eventType: "ios-install-guide-shown",
+            surface: "ios-guide",
+            path: pathname,
+          });
+        }}
+        onDismiss={() => {
+          trackPwaEvent({
+            eventType: "ios-install-guide-dismissed",
+            surface: "ios-guide",
+            path: pathname,
+          });
+        }}
+      />
+    );
   }
 
   return (
@@ -203,15 +307,15 @@ export function PwaShell() {
               : "A fresher build is ready with updated routes and cached assets."}
           </p>
         ) : null}
-        {!isOffline && deferredPrompt && !dismissed ? (
+        {!isOffline && showInstallPrompt ? (
           <p className="mt-2 text-sm leading-6 text-slate-100">
             {isAdminSurface
               ? "Install the admin workspace for a fullscreen, tablet-ready operations experience."
-              : "Install Gikundiro for a fullscreen, app-like matchday experience on phone and tablet."}
+              : "Install Gikundiro for a fullscreen, app-like matchday experience on phone and tablet after you have seen enough value to keep it."}
           </p>
         ) : null}
         <div className="mt-4 flex flex-wrap gap-2">
-          {deferredPrompt && !dismissed ? (
+          {showInstallPrompt ? (
             <>
               <button
                 type="button"
@@ -240,7 +344,7 @@ export function PwaShell() {
               Refresh app
             </button>
           ) : null}
-          {deferredPrompt && dismissed && !updateReady ? (
+          {deferredPrompt && dismissed && installEligible && !updateReady && !isStandalone ? (
             <button
               type="button"
               onClick={showPromptAgain}

@@ -32,6 +32,7 @@ import {
   saveAdminStandingRow,
   sendAdminNotification,
 } from "@/lib/data/admin";
+import { rejectInsecureMutation, rejectRateLimitedRequest } from "@/lib/security";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { getServerSupabase } from "@/lib/supabase/server";
 
@@ -176,6 +177,21 @@ export async function POST(
   request: NextRequest,
   context: { params: Promise<{ resource: string }> },
 ) {
+  const rejectedOrigin = rejectInsecureMutation(request);
+  if (rejectedOrigin) {
+    return rejectedOrigin;
+  }
+
+  const rejectedLimit = rejectRateLimitedRequest(
+    request,
+    "admin-mutation",
+    45,
+    60_000,
+  );
+  if (rejectedLimit) {
+    return rejectedLimit;
+  }
+
   try {
     const requestContext = await getAdminRequestContext();
     if ("response" in requestContext) {
@@ -246,6 +262,21 @@ export async function DELETE(
   request: NextRequest,
   context: { params: Promise<{ resource: string }> },
 ) {
+  const rejectedOrigin = rejectInsecureMutation(request);
+  if (rejectedOrigin) {
+    return rejectedOrigin;
+  }
+
+  const rejectedLimit = rejectRateLimitedRequest(
+    request,
+    "admin-delete",
+    30,
+    60_000,
+  );
+  if (rejectedLimit) {
+    return rejectedLimit;
+  }
+
   try {
     const requestContext = await getAdminRequestContext();
     if ("response" in requestContext) {

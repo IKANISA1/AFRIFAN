@@ -7,13 +7,9 @@ import {
 } from "@/lib/admin-auth";
 
 /**
- * Edge Middleware — rewrites admin.gikundiro.com requests to /admin/* routes.
- *
- * Uses Edge runtime (required for Cloudflare Workers via @opennextjs/cloudflare).
- * Note: @opennextjs/cloudflare v1.x does not support Next 16's proxy.ts yet,
- * so we use the standard middleware.ts convention.
+ * Edge Proxy — rewrites admin.gikundiro.com requests to /admin/* routes.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const host = request.headers.get("host");
   if (!isAdminHostname(host)) {
     return NextResponse.next();

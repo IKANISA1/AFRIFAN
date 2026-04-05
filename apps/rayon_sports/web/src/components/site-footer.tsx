@@ -31,10 +31,11 @@ export async function SiteFooter() {
           <div className="space-y-6">
             <div className="flex items-center gap-4">
               <Image
-                src={club.officialLogoUrl ?? "/media/rayon-crest.png"}
+                src={club.officialLogoUrl ?? "/icons/icon-192x192.png"}
                 alt={`${club.clubName} crest`}
-                width={72}
-                height={72}
+                width={64}
+                height={64}
+                sizes="64px"
                 className="rounded-full border border-white/10 bg-white/5 object-cover"
               />
               <div>
@@ -55,18 +56,21 @@ export async function SiteFooter() {
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/app"
+                prefetch={false}
                 className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
               >
                 Open fan portal
               </Link>
               <Link
                 href="/tickets"
+                prefetch={false}
                 className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
               >
                 Buy tickets
               </Link>
               <Link
                 href="/circles"
+                prefetch={false}
                 className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
               >
                 Support circles
@@ -103,6 +107,7 @@ export async function SiteFooter() {
                     <Link
                       key={link.href}
                       href={link.href}
+                      prefetch={false}
                       className="text-sm font-medium text-slate-300 transition hover:text-white"
                     >
                       {link.label}

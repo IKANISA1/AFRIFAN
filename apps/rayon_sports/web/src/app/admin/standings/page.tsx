@@ -9,7 +9,7 @@ import { SectionHeading } from "@/components/section-heading";
 import {
   deleteAdminStandingRow,
   getAdminStandings,
-} from "@/lib/data/admin";
+} from "@/lib/data/admin/standings";
 import type { AdminStandingRow } from "@/lib/types";
 import { emptyForm, type StandingForm } from "./_components/standing-state";
 import { StandingEditorForm } from "./_components/standing-editor-form";

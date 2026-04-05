@@ -3,8 +3,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MatchCard } from "@/components/match-card";
+import { NotificationOptInCard } from "@/components/pwa/notification-opt-in-card";
+import { ShareActionButton } from "@/components/pwa/share-action-button";
 import { getMatchById, getMatches } from "@/lib/data/public";
-import { buildPageMetadata } from "@/lib/metadata";
+import { buildMatchJsonLd, buildPageMetadata } from "@/lib/metadata";
 import {
   formatCurrency,
   formatDateTime,
@@ -51,6 +53,12 @@ export default async function FixtureDetailPage({
 
   return (
     <div className="page-shell section-grid py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(buildMatchJsonLd(match)),
+        }}
+      />
       <section className="glass-panel-elevated overflow-hidden rounded-[38px] border border-border-soft">
         <div className="grid gap-8 lg:grid-cols-[1.02fr_0.98fr]">
           <div className="p-6 sm:p-8">
@@ -88,6 +96,12 @@ export default async function FixtureDetailPage({
               >
                 Back to fixtures
               </Link>
+              <ShareActionButton
+                title={`${match.homeTeam} vs ${match.awayTeam}`}
+                text={match.matchSummary ?? `${match.competition} at ${match.venue}.`}
+                url={`/fixtures/${match.id}`}
+                className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              />
             </div>
           </div>
 
@@ -188,6 +202,13 @@ export default async function FixtureDetailPage({
               </Link>
             </div>
           </div>
+
+          <NotificationOptInCard
+            surface="site"
+            path={`/fixtures/${match.id}`}
+            title="Turn on live match alerts."
+            description="Enable browser notifications after you have opened a real match context, so goals, kickoff updates, and ticketing reminders can reach you without forcing first-load permission prompts."
+          />
 
           <div className="glass-panel rounded-[32px] p-6">
             <p className="font-display text-4xl font-bold uppercase leading-none">

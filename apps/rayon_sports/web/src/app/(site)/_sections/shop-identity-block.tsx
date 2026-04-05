@@ -18,6 +18,7 @@ export async function ShopAndIdentityBlock() {
           />
           <Link
             href="/shop"
+            prefetch={false}
             className="inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
           >
             Shop all <ArrowRight size={18} />
@@ -60,12 +61,14 @@ export async function ShopAndIdentityBlock() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href="/app"
+              prefetch={false}
               className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-primary-light"
             >
               Continue to portal
             </Link>
             <Link
               href="/history"
+              prefetch={false}
               className="rounded-full border border-border-soft px-5 py-3 font-semibold text-white transition hover:bg-white/8"
             >
               Explore club history

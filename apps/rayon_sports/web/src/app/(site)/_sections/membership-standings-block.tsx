@@ -63,7 +63,8 @@ export async function MembershipAndStandingsBlock() {
         </div>
         <Link
           href="/membership"
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-club-accent px-5 py-3 font-semibold text-club-ink transition hover:brightness-110"
+          prefetch={false}
+          className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-club-accent px-5 py-3 font-semibold text-slate-950 transition hover:brightness-110"
         >
           Compare plans <ShieldCheck size={18} />
         </Link>
@@ -110,6 +111,7 @@ export async function MembershipAndStandingsBlock() {
           </div>
           <Link
             href="/standings"
+            prefetch={false}
             className="mt-5 inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
           >
             Full table <Trophy size={18} />
@@ -141,6 +143,7 @@ export async function MembershipAndStandingsBlock() {
           </div>
           <Link
             href="/fan-clubs"
+            prefetch={false}
             className="mt-5 inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
           >
             Explore chapters <Users size={18} />

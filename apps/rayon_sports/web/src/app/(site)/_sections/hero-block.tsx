@@ -50,7 +50,8 @@ export async function HeroBlock() {
           <Link
             key={item.href}
             href={item.href}
-            className="rounded-full border border-border-soft bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-white/10 hover:text-white"
+            prefetch={false}
+            className="inline-flex min-h-11 items-center rounded-full border border-border-soft bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-white/10 hover:text-white"
           >
             {item.label}
           </Link>

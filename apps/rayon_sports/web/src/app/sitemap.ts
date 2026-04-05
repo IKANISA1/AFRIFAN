@@ -19,14 +19,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/contact",
     "/privacy",
     "/terms",
-    "/app",
-    "/app/profile",
-    "/app/membership",
-    "/app/tickets",
-    "/app/shop",
-    "/app/contributions",
-    "/app/fan-clubs",
-    "/app/xp",
   ];
 
   return [

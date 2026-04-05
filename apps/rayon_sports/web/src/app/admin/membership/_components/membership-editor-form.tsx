@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { showAdminToast } from "@/components/admin/admin-toast";
-import { saveAdminMembershipPackage } from "@/lib/data/admin";
+import { saveAdminMembershipPackage } from "@/lib/data/admin/membership";
 import type { AdminAccess, AdminMembershipPackage } from "@/lib/types";
 import { emptyForm, type MembershipForm } from "./membership-state";
 

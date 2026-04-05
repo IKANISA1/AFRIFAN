@@ -41,6 +41,7 @@ export function MatchRibbon({ match }: MatchRibbonProps) {
           </div>
           <Link
             href={`/fixtures/${match.id}`}
+            prefetch={false}
             className="rounded-full border border-white/14 bg-black/15 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] transition hover:bg-black/25"
           >
             Follow live
@@ -71,6 +72,7 @@ export function MatchRibbon({ match }: MatchRibbonProps) {
         </div>
         <Link
           href={`/fixtures/${match.id}`}
+          prefetch={false}
           className="rounded-full border border-border-soft bg-white/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-200 transition hover:bg-white/10"
         >
           Details

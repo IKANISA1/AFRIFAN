@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { NotificationOptInCard } from "@/components/pwa/notification-opt-in-card";
 import { SectionHeading } from "@/components/section-heading";
 import { useFanPortal } from "@/components/portal/fan-portal-provider";
 import { fallbackMatches } from "@/lib/content";
@@ -140,6 +141,12 @@ export default function LiveMatchPage() {
             )}
           </div>
         </div>
+        <NotificationOptInCard
+          surface="live"
+          path={`/app/live/${match.id}`}
+          title="Stay on the whistle."
+          description="This live center is the right place to ask for alerts: you already opened a live match, so goals and final score updates have obvious value."
+        />
       </div>
     </div>
   );

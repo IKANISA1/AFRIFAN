@@ -13,6 +13,8 @@ interface SiteHeaderProps {
 }
 
 export function SiteHeader({ club }: SiteHeaderProps) {
+  const logoUrl = club.officialLogoUrl ?? "/icons/icon-192x192.png";
+
   return (
     <header className="sticky top-0 z-[60] border-b border-transparent bg-surface-strong/80 backdrop-blur-xl">
       <div className="overflow-hidden border-b border-transparent">
@@ -29,6 +31,7 @@ export function SiteHeader({ club }: SiteHeaderProps) {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={false}
                 className="transition hover:text-white"
               >
                 {item.label}
@@ -52,11 +55,12 @@ export function SiteHeader({ club }: SiteHeaderProps) {
       <div className="page-shell flex items-center justify-between gap-4 py-3.5">
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src={club.officialLogoUrl ?? "/media/rayon-crest.png"}
+            src={logoUrl}
             alt={`${club.clubName} crest`}
-            width={96}
-            height={96}
+            width={64}
+            height={64}
             priority
+            sizes="48px"
             className="h-12 w-12 rounded-full border border-white/10 bg-white/5 object-cover"
           />
           <div className="hidden sm:block">
@@ -74,6 +78,7 @@ export function SiteHeader({ club }: SiteHeaderProps) {
             <Link
               key={item.href}
               href={item.href}
+              prefetch={false}
               className="rounded-full px-3.5 py-2 text-sm font-semibold text-slate-300 transition-all duration-200 hover:bg-white/6 hover:text-white focus-ring"
             >
               {item.label}
@@ -84,6 +89,7 @@ export function SiteHeader({ club }: SiteHeaderProps) {
         <div className="flex items-center gap-2">
           <Link
             href="/search"
+            prefetch={false}
             className="flex h-11 min-w-11 items-center justify-center rounded-full border border-border-soft bg-white/4 px-3 text-slate-200 transition hover:bg-white/10 hover:text-white focus-ring"
             aria-label="Search"
           >
@@ -96,6 +102,7 @@ export function SiteHeader({ club }: SiteHeaderProps) {
           </Link>
           <Link
             href="/app"
+            prefetch={false}
             className="hidden min-h-11 items-center gap-2 rounded-full bg-club-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-club-primary-light cta-glow focus-ring md:inline-flex"
           >
             Fan portal
@@ -111,18 +118,21 @@ export function SiteHeader({ club }: SiteHeaderProps) {
                 <div className="grid grid-cols-3 gap-3">
                   <Link
                     href="/app"
+                    prefetch={false}
                     className="rounded-2xl border border-border-soft bg-white/5 px-3 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-white/10"
                   >
                     Portal
                   </Link>
                   <Link
                     href="/tickets"
+                    prefetch={false}
                     className="rounded-2xl border border-border-soft bg-white/5 px-3 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-white/10"
                   >
                     Tickets
                   </Link>
                   <Link
                     href="/shop"
+                    prefetch={false}
                     className="rounded-2xl border border-border-soft bg-white/5 px-3 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-white/10"
                   >
                     Shop
@@ -134,6 +144,7 @@ export function SiteHeader({ club }: SiteHeaderProps) {
                     <Link
                       key={item.href}
                       href={item.href}
+                      prefetch={false}
                       className="rounded-xl px-3 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/6 hover:text-white"
                     >
                       {item.label}
@@ -147,6 +158,7 @@ export function SiteHeader({ club }: SiteHeaderProps) {
                       <Link
                         key={item.href}
                         href={item.href}
+                        prefetch={false}
                         className="rounded-full border border-border-soft bg-white/4 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-300 transition hover:bg-white/8 hover:text-white"
                       >
                         {item.label}

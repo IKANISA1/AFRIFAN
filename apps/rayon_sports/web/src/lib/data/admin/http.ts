@@ -1,3 +1,5 @@
+import { fetchWithOfflineQueue } from "@/lib/offline-queue";
+
 type AdminApiMethod = "GET" | "POST" | "DELETE";
 
 type AdminApiOptions = {
@@ -25,11 +27,31 @@ export async function requestAdminApi<T>(
         ? undefined
         : {
             "Content-Type": "application/json",
+            "X-Gikundiro-CSRF": "1",
           },
     body:
       options.body === undefined ? undefined : JSON.stringify(options.body),
     credentials: "same-origin",
     cache: "no-store",
+  }).catch(async (error) => {
+    if ((options.method ?? "GET") === "GET") {
+      throw error;
+    }
+
+    return fetchWithOfflineQueue(url.toString(), {
+      method: options.method ?? "GET",
+      headers:
+        options.body === undefined
+          ? undefined
+          : {
+              "Content-Type": "application/json",
+              "X-Gikundiro-CSRF": "1",
+            },
+      body:
+        options.body === undefined ? undefined : JSON.stringify(options.body),
+      credentials: "same-origin",
+      cache: "no-store",
+    });
   });
 
   const payload = (await response.json().catch(() => ({}))) as {

@@ -6,7 +6,7 @@ import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { SectionHeading } from "@/components/section-heading";
-import { getAdminClubProfile, saveAdminClubProfile } from "@/lib/data/admin";
+import { getAdminClubProfile, saveAdminClubProfile } from "@/lib/data/admin/settings";
 import { formToProfile, profileToForm, type SettingsForm } from "./_components/settings-form-state";
 import { IdentityForm } from "./_components/identity-form";
 import { BrandPreview } from "./_components/brand-preview";

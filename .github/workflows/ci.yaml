@@ -85,11 +85,48 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test
+
       - name: TypeScript check
-        run: npx tsc --noEmit
+        run: npm run typecheck
 
       - name: Build
         run: npm run build
+
+      - name: Bundle budget
+        run: npm run size
+
+      - name: Lighthouse CI
+        run: npm run test:lighthouse
+
+  web-e2e:
+    name: Web E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: apps/rayon_sports/web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: apps/rayon_sports/web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Build and run E2E
+        run: npm run test:e2e
 
   # ──────────────────────────────────────────────
   # Android: Release Build (on main only)

@@ -128,8 +128,11 @@ button {
   cursor: pointer;
 }
 
-a {
+a:not([class]) {
   color: inherit;
+}
+
+a {
   text-decoration: none;
 }
 
@@ -682,4 +685,3 @@ textarea:focus-visible,
     animation: none;
   }
 }
-

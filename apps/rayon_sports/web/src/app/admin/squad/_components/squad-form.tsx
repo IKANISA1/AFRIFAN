@@ -3,7 +3,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { saveAdminSquadPlayer } from "@/lib/data/admin";
+import { saveAdminSquadPlayer } from "@/lib/data/admin/squad";
 import { emptySquadForm, type SquadForm } from "./squad-form-state";
 
 interface SquadFormProps {

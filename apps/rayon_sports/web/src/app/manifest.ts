@@ -9,10 +9,17 @@ const sharedIcons: MetadataRoute.Manifest["icons"] = [
   { src: "/icons/icon-128x128.png", sizes: "128x128", type: "image/png" },
   { src: "/icons/icon-144x144.png", sizes: "144x144", type: "image/png" },
   { src: "/icons/icon-152x152.png", sizes: "152x152", type: "image/png" },
+  { src: "/icons/icon-256x256.png", sizes: "256x256", type: "image/png" },
   { src: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png", purpose: "any" },
   { src: "/icons/icon-384x384.png", sizes: "384x384", type: "image/png" },
   { src: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png", purpose: "any" },
-  { src: "/media/rayon-crest.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+  {
+    src: "/icons/icon-512x512.png",
+    sizes: "512x512",
+    type: "image/png",
+    purpose: "maskable",
+  },
+  { src: "/icons/icon-1024x1024.png", sizes: "1024x1024", type: "image/png" },
 ];
 
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
@@ -77,7 +84,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     name: siteConfig.title,
     short_name: siteConfig.shortTitle,
     description: siteConfig.description,
-    start_url: "/",
+    start_url: "/app?source=pwa",
     scope: "/",
     display: "standalone",
     display_override: ["window-controls-overlay", "standalone"],
@@ -88,7 +95,31 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
       { name: "Fan Portal", short_name: "Portal", url: "/app" },
       { name: "Tickets", short_name: "Tickets", url: "/tickets" },
       { name: "Support Circles", short_name: "Circles", url: "/circles" },
+      { name: "Latest News", short_name: "News", url: "/news" },
     ],
     icons: sharedIcons,
+    screenshots: [
+      {
+        src: "/screenshots/site-home.png",
+        sizes: "1080x2340",
+        type: "image/png",
+        label: "Public Rayon Sports home surface with hero, matchday, and news content",
+      },
+      {
+        src: "/screenshots/site-shop.png",
+        sizes: "1080x2340",
+        type: "image/png",
+        label: "Rayon Sports fan portal and commerce-ready supporter experience",
+      },
+    ],
+    share_target: {
+      action: "/share-target",
+      method: "GET",
+      params: {
+        title: "title",
+        text: "text",
+        url: "url",
+      },
+    },
   };
 }

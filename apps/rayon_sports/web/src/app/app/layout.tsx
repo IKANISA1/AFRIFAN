@@ -1,17 +1,23 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { DeferredPwaShell } from "@/components/pwa/deferred-pwa-shell";
-import { FanPortalProvider } from "@/components/portal/fan-portal-provider";
-import { PortalShell } from "@/components/portal/portal-shell";
+import { FanPortalLoader } from "./fan-portal-loader";
+import { buildPageMetadata } from "@/lib/metadata";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Fan portal",
+  description:
+    "Authenticated supporter workspace for tickets, membership, shop, fan clubs, and live matchday access.",
+  path: "/app",
+  robots: {
+    index: false,
+    follow: false,
+  },
+});
 
 export default function FanPortalLayout({
   children,
 }: {
   children: ReactNode;
 }) {
-  return (
-    <FanPortalProvider>
-      <DeferredPwaShell />
-      <PortalShell>{children}</PortalShell>
-    </FanPortalProvider>
-  );
+  return <FanPortalLoader>{children}</FanPortalLoader>;
 }

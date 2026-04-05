@@ -9,7 +9,7 @@ import { SectionHeading } from "@/components/section-heading";
 import {
   deleteAdminMatch,
   getAdminMatches,
-} from "@/lib/data/admin";
+} from "@/lib/data/admin/matches";
 import type { AdminMatchItem } from "@/lib/types";
 import { emptyMatchForm, matchToFormState } from "./_components/match-form-state";
 import { MatchForm } from "./_components/match-form";

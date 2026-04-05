@@ -9,9 +9,9 @@ import { MessageCircle, ShieldCheck } from "lucide-react";
 import { formatAdminPhoneForDisplay } from "@/lib/admin-auth";
 import { adminNavigation } from "@/lib/content";
 import { siteConfig } from "@/lib/config";
-import { cn } from "@/lib/utils";
-import { formatAdminRoleLabel } from "@/lib/data/admin";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
+import { formatAdminRoleLabel } from "@/lib/data/admin/access";
+import { cn } from "@/lib/utils";
 
 function AdminAuthCard() {
   const {
@@ -65,7 +65,7 @@ function AdminAuthCard() {
       <div className="glass-panel mx-auto grid max-w-xl gap-6 rounded-[32px] p-6 sm:p-8">
         <div className="flex flex-col items-center text-center space-y-4">
           <Image
-            src="/media/rayon-crest.png"
+            src="/icons/icon-192x192.png"
             alt="Rayon Sports"
             width={56}
             height={56}
@@ -239,7 +239,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <div className="glass-panel mx-auto max-w-md rounded-[32px] p-8">
           <div className="flex flex-col items-center gap-4 text-center">
             <Image
-              src="/media/rayon-crest.png"
+              src="/icons/icon-192x192.png"
               alt="Rayon Sports"
               width={64}
               height={64}
@@ -307,7 +307,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           {/* Crest + branding */}
           <div className="flex items-center gap-4 border-b border-border-soft pb-5">
             <Image
-              src="/media/rayon-crest.png"
+              src="/icons/icon-192x192.png"
               alt="Rayon Sports"
               width={48}
               height={48}

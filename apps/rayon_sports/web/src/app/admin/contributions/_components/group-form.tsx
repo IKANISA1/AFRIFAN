@@ -3,7 +3,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { GroupForm } from "./group-form-state";
 import { showAdminToast } from "@/components/admin/admin-toast";
-import { saveAdminContributionGroup } from "@/lib/data/admin";
+import { saveAdminContributionGroup } from "@/lib/data/admin/contributions";
 import type { AdminAccess, AdminContributionGroup } from "@/lib/types";
 import type { SupabaseClient } from "@supabase/supabase-js";
 

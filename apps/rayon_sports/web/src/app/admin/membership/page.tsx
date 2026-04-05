@@ -9,7 +9,7 @@ import { SectionHeading } from "@/components/section-heading";
 import {
   deleteAdminMembershipPackage,
   getAdminMembershipPackages,
-} from "@/lib/data/admin";
+} from "@/lib/data/admin/membership";
 import type { AdminMembershipPackage } from "@/lib/types";
 import { emptyForm, type MembershipForm } from "./_components/membership-state";
 import { MembershipEditorForm } from "./_components/membership-editor-form";

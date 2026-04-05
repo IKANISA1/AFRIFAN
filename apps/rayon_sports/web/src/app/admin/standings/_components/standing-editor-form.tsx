@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { showAdminToast } from "@/components/admin/admin-toast";
-import { saveAdminStandingRow } from "@/lib/data/admin";
+import { saveAdminStandingRow } from "@/lib/data/admin/standings";
 import type { AdminAccess } from "@/lib/types";
 import { emptyForm, type StandingForm } from "./standing-state";
 

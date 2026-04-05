@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { absoluteUrl, siteConfig } from "@/lib/config";
+import type { MatchItem, NewsArticle, ShopProduct } from "@/lib/types";
 
 interface PageMetadataOptions {
   title: string;
@@ -7,14 +8,16 @@ interface PageMetadataOptions {
   path?: string;
   imagePath?: string;
   type?: "website" | "article";
+  robots?: Metadata["robots"];
 }
 
 export function buildPageMetadata({
   title,
   description,
   path = "/",
-  imagePath = "/media/rayon-crest.png",
+  imagePath = "/icons/icon-512x512.png",
   type = "website",
+  robots,
 }: PageMetadataOptions): Metadata {
   const canonical = absoluteUrl(path);
   const image = absoluteUrl(imagePath);
@@ -25,6 +28,7 @@ export function buildPageMetadata({
     alternates: {
       canonical,
     },
+    robots,
     openGraph: {
       title,
       description,
@@ -50,6 +54,93 @@ export function buildPageMetadata({
   };
 }
 
+export function buildNewsArticleJsonLd(article: NewsArticle) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: article.title,
+    description: article.excerpt,
+    image: absoluteUrl(article.coverImageUrl ?? "/media/stadium-hero.jpg"),
+    datePublished: article.publishedAt,
+    dateModified: article.publishedAt,
+    author: {
+      "@type": "Person",
+      name: article.author,
+    },
+    publisher: {
+      "@type": "SportsOrganization",
+      name: "Rayon Sports FC",
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl("/icons/icon-192x192.png"),
+      },
+    },
+    mainEntityOfPage: absoluteUrl(`/news/${article.id}`),
+  };
+}
+
+export function buildMatchJsonLd(match: MatchItem) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SportsEvent",
+    name: `${match.homeTeam} vs ${match.awayTeam}`,
+    description: match.matchSummary ?? `${match.competition} at ${match.venue}.`,
+    startDate: match.matchDate,
+    eventStatus:
+      match.matchStatus === "live"
+        ? "https://schema.org/EventScheduled"
+        : match.matchStatus === "fulltime"
+          ? "https://schema.org/EventCompleted"
+          : "https://schema.org/EventScheduled",
+    location: {
+      "@type": "Place",
+      name: match.venue,
+    },
+    image: absoluteUrl(match.imageUrl ?? "/media/stadium-hero.jpg"),
+    competitor: [
+      { "@type": "SportsTeam", name: match.homeTeam },
+      { "@type": "SportsTeam", name: match.awayTeam },
+    ],
+    offers: match.isOnSale
+      ? [
+          {
+            "@type": "Offer",
+            priceCurrency: "RWF",
+            price: match.generalPrice,
+            availability: "https://schema.org/InStock",
+            url: absoluteUrl(`/tickets/${match.id}`),
+          },
+        ]
+      : undefined,
+    url: absoluteUrl(`/fixtures/${match.id}`),
+  };
+}
+
+export function buildProductJsonLd(product: ShopProduct) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: absoluteUrl(product.imageUrl ?? "/media/stadium-hero.jpg"),
+    brand: {
+      "@type": "Brand",
+      name: "Rayon Sports FC",
+    },
+    category: product.category,
+    sku: product.id,
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "RWF",
+      price: product.price,
+      availability: product.isActive
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      url: absoluteUrl(`/shop/${product.id}`),
+    },
+  };
+}
+
 export function buildSiteJsonLd() {
   return {
     "@context": "https://schema.org",
@@ -67,7 +158,7 @@ export function buildSiteJsonLd() {
         name: "Rayon Sports FC",
         alternateName: siteConfig.shortTitle,
         url: siteConfig.siteUrl,
-        logo: absoluteUrl("/media/rayon-crest.png"),
+        logo: absoluteUrl("/icons/icon-192x192.png"),
         sport: "Association football",
         description: siteConfig.description,
         sameAs: [
