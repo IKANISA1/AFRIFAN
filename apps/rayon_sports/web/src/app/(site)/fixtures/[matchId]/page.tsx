@@ -6,6 +6,7 @@ import { MatchCard } from "@/components/match-card";
 import { MatchPoll } from "@/components/engagement/match-poll";
 import { MotmVoting } from "@/components/engagement/motm-voting";
 import { ScorePrediction } from "@/components/engagement/score-prediction";
+import { MatchLineups } from "@/components/engagement/match-lineups";
 import { NotificationOptInCard } from "@/components/pwa/notification-opt-in-card";
 import { ShareActionButton } from "@/components/pwa/share-action-button";
 import { getMatchById, getMatches } from "@/lib/data/public";
@@ -238,6 +239,55 @@ export default async function FixtureDetailPage({
               )}
             </div>
           </div>
+
+          <MatchLineups 
+            home={{
+              teamName: match.homeTeam,
+              formation: "4-3-3",
+              manager: "Julien Mette",
+              startingXI: [
+                { id: "h1", name: "Hategekimana", number: 1, position: "GK" },
+                { id: "h2", name: "Nshutinamagara", number: 22, position: "DEF" },
+                { id: "h3", name: "Ndayishimiye", number: 4, position: "DEF" },
+                { id: "h4", name: "Rwatubyaye", number: 15, position: "DEF", isCaptain: true },
+                { id: "h5", name: "Iradukunda", number: 3, position: "DEF" },
+                { id: "h6", name: "Muhire", number: 8, position: "MID" },
+                { id: "h7", name: "Kwizera", number: 10, position: "MID" },
+                { id: "h8", name: "Niyonzima", number: 21, position: "MID" },
+                { id: "h9", name: "Luvumbu", number: 11, position: "FWD" },
+                { id: "h10", name: "Mussaa", number: 27, position: "FWD" },
+                { id: "h11", name: "Willy", number: 9, position: "FWD" },
+              ],
+              subs: [
+                { id: "s1", name: "Khaled", number: 31, position: "GK" },
+                { id: "s2", name: "Bimenyimana", number: 14, position: "MID" },
+                { id: "s3", name: "Hakizimana", number: 7, position: "FWD" }
+              ]
+            }}
+            away={{
+              teamName: match.awayTeam,
+              formation: "4-2-3-1",
+              manager: "Away Coach",
+              startingXI: [
+                { id: "a1", name: "Ntwali", number: 1, position: "GK" },
+                { id: "a2", name: "Omborenga", number: 25, position: "DEF" },
+                { id: "a3", name: "Buregeya", number: 5, position: "DEF", isCaptain: true },
+                { id: "a4", name: "Manzi", number: 4, position: "DEF" },
+                { id: "a5", name: "Ishimwe", number: 2, position: "DEF" },
+                { id: "a6", name: "Ruboneka", number: 8, position: "MID" },
+                { id: "a7", name: "Mugisha", number: 20, position: "MID" },
+                { id: "a8", name: "Bizimana", number: 10, position: "MID" },
+                { id: "a9", name: "Niyibizi", number: 11, position: "FWD" },
+                { id: "a10", name: "Byiringiro", number: 14, position: "FWD" },
+                { id: "a11", name: "Mugunga", number: 19, position: "FWD" },
+              ],
+              subs: [
+                { id: "as1", name: "Mutabaruka", number: 30, position: "GK" },
+                { id: "as2", name: "Nshuti", number: 9, position: "FWD" },
+                { id: "as3", name: "Tuyisenge", number: 3, position: "DEF" }
+              ]
+            }}
+          />
 
           {/* ── Fan engagement hub ── */}
           <div className="glass-panel rounded-[32px] p-6">

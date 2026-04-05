@@ -24,9 +24,13 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
 
   static const _filters = <String>[
     'ALL',
-    'KIGALI',
-    'INTERNATIONAL',
     'OFFICIAL',
+    'KIGALI',
+    'NORTHERN',
+    'SOUTHERN',
+    'EASTERN',
+    'WESTERN',
+    'INTERNATIONAL',
   ];
 
   @override
@@ -173,12 +177,17 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
           final name = club['name']?.toString().toLowerCase() ?? '';
           final matchesFilter = switch (_activeFilter) {
             'KIGALI' => region.contains('kigali'),
-            'INTERNATIONAL' =>
-              !(region.contains('kigali') ||
-                  region.contains('northern') ||
-                  region.contains('southern') ||
-                  region.contains('western') ||
-                  region.contains('eastern')),
+            'NORTHERN' => region.contains('northern'),
+            'SOUTHERN' => region.contains('southern'),
+            'WESTERN' => region.contains('western'),
+            'EASTERN' => region.contains('eastern'),
+            'INTERNATIONAL' => region.contains('international') || 
+              (!region.contains('kigali') &&
+               !region.contains('northern') &&
+               !region.contains('southern') &&
+               !region.contains('western') &&
+               !region.contains('eastern') &&
+               region != 'official'),
             'OFFICIAL' => _isOfficial(club),
             _ => true,
           };

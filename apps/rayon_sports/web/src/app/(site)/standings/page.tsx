@@ -49,12 +49,12 @@ export default async function StandingsPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-white/8 text-xs uppercase tracking-[0.24em] text-slate-300">
               <tr>
-                <th className="px-4 py-4 text-center">Pos</th>
-                <th className="px-4 py-4">Club</th>
-                <th className="px-4 py-4 text-center">Played</th>
-                <th className="px-4 py-4 text-center">GD</th>
-                <th className="px-4 py-4 text-center">Points</th>
-                <th className="px-4 py-4">Form</th>
+                <th className="px-3 py-4 text-center sm:px-4">Pos</th>
+                <th className="px-3 py-4 sm:px-4">Club</th>
+                <th className="hidden px-4 py-4 text-center sm:table-cell">Played</th>
+                <th className="hidden px-4 py-4 text-center sm:table-cell">GD</th>
+                <th className="px-3 py-4 text-center sm:px-4">Pts</th>
+                <th className="hidden px-4 py-4 sm:table-cell">Form</th>
               </tr>
             </thead>
             <tbody>
@@ -63,16 +63,18 @@ export default async function StandingsPage() {
                   key={`${row.position}-${row.club}`}
                   className={row.highlight ? "bg-club-primary/15" : "border-t border-white/6"}
                 >
-                  <td className="px-4 py-4 text-center font-mono text-xs text-slate-300">
+                  <td className="px-3 py-3 text-center font-mono text-xs text-slate-300 sm:px-4 sm:py-4">
                     {row.position}
                   </td>
-                  <td className="px-4 py-4 font-semibold text-white">{row.club}</td>
-                  <td className="px-4 py-4 text-center">{row.played}</td>
-                  <td className="px-4 py-4 text-center">{row.goalDifference}</td>
-                  <td className="px-4 py-4 text-center font-semibold text-white">
+                  <td className="px-3 py-3 text-sm font-semibold text-white sm:px-4 sm:py-4">
+                    {row.club}
+                  </td>
+                  <td className="hidden px-4 py-4 text-center sm:table-cell">{row.played}</td>
+                  <td className="hidden px-4 py-4 text-center sm:table-cell">{row.goalDifference}</td>
+                  <td className="px-3 py-3 text-center font-semibold text-white sm:px-4 sm:py-4">
                     {row.points}
                   </td>
-                  <td className="px-4 py-4">
+                  <td className="hidden px-4 py-4 sm:table-cell">
                     <div className="flex flex-wrap gap-1.5">
                       {(row.form ?? []).map((entry, index) => (
                         <span

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { BackButton } from "@/components/back-button";
+import { AnimatedWatermark } from "@/components/animated-watermark";
 
 interface PageHeroStat {
   label: string;
@@ -37,6 +38,7 @@ export function PageHero({
       )}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,56,168,0.18),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(212,160,23,0.12),transparent_35%)]" />
+      <AnimatedWatermark className="left-1/2 top-1/2 h-[150%] w-[150%] -translate-x-1/2 -translate-y-1/2" />
       <div className="relative grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
         <div className="space-y-5">
           {showBack ? <BackButton className="mb-3" /> : null}

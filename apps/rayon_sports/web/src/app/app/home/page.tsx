@@ -10,6 +10,7 @@ import { PullToRefresh } from "@/components/pull-to-refresh";
 import { NotificationOptInCard } from "@/components/pwa/notification-opt-in-card";
 import { PortalStateCard } from "@/components/portal/portal-state-card";
 import { useFanPortal } from "@/components/portal/fan-portal-provider";
+import { PersonalizedFeed } from "@/components/engagement/personalized-feed";
 import { fallbackMatches } from "@/lib/content";
 import { resolvePortalHref } from "@/lib/host-routing";
 import { rayonClub } from "@/lib/config";
@@ -329,6 +330,9 @@ export default function FanPortalDashboardPage() {
         </section>
         </AnimateOnScroll>
       </div>
+
+      {/* Personalized For You Feed */}
+      <PersonalizedFeed supporterName={supporterName} tier={tierLabel.toLowerCase()} />
 
       {/* Notification opt-in */}
       <NotificationOptInCard

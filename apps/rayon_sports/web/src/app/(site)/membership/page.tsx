@@ -64,7 +64,7 @@ export default async function MembershipPage() {
         ]}
       />
 
-      <section className="grid gap-5 xl:grid-cols-4">
+      <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
         {packages.map((membershipPackage) => (
           <article
             key={membershipPackage.id}

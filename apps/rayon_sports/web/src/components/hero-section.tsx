@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, ShieldCheck, Ticket } from "lucide-react";
 import { DynamicHeroImage } from "@/components/dynamic-hero-image";
 import { ProgressBar } from "@/components/progress-bar";
+import { ScrollParallax } from "@/components/scroll-parallax";
 import type {
   ClubProfile,
   ContributionGroup,
@@ -40,10 +41,18 @@ export function HeroSection({
   heroHeadline,
   heroDescription,
 }: HeroSectionProps) {
-  // Build image rotation list: match-specific → stadium variants
+  // Build image rotation list: match-specific → time-of-day variants
   const heroImages: string[] = [];
   if (featuredMatch?.imageUrl) heroImages.push(featuredMatch.imageUrl);
-  heroImages.push("/media/stadium-hero.jpg", "/media/stadium-hero-2.jpg");
+  
+  const hour = new Date().getHours();
+  if (hour < 12) {
+    heroImages.push("/media/stadium-morning.jpg", "/media/stadium-hero.jpg");
+  } else if (hour >= 18) {
+    heroImages.push("/media/stadium-night.jpg", "/media/stadium-hero-2.jpg");
+  } else {
+    heroImages.push("/media/stadium-hero.jpg", "/media/stadium-hero-2.jpg");
+  }
   const heroCircle = contributionGroups[0] ?? null;
   const premiumTier =
     membershipPackages.find((entry) => entry.tier === "platinum") ??
@@ -66,7 +75,9 @@ export function HeroSection({
     <section className="page-shell">
       <div className="glass-panel-elevated relative overflow-hidden rounded-[34px] border border-border-soft shadow-[0_24px_80px_rgba(1,8,24,0.45)] sm:rounded-[40px]">
         <div className="absolute inset-0">
-          <DynamicHeroImage images={heroImages} intervalMs={7000} />
+          <ScrollParallax speed={0.4} className="h-full w-full">
+            <DynamicHeroImage images={heroImages} intervalMs={7000} />
+          </ScrollParallax>
           <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(2,11,24,0.95)_10%,rgba(2,11,24,0.78)_42%,rgba(2,11,24,0.46)_72%,rgba(2,11,24,0.82)_100%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,56,168,0.28),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(212,160,23,0.18),transparent_28%)]" />
         </div>
