@@ -66,3 +66,31 @@ export function mapAdminSubdomainPath(pathname: string) {
 export function mapFansSubdomainPath(pathname: string) {
   return mapSubdomainPath(pathname, "/app");
 }
+
+export function normalizePortalPathname(pathname: string) {
+  if (!pathname || pathname === "/") {
+    return "/app";
+  }
+
+  if (pathname.startsWith("/app")) {
+    return pathname;
+  }
+
+  if (pathname === "/home") {
+    return "/app/home";
+  }
+
+  return `/app${pathname}`;
+}
+
+export function resolvePortalHref(currentPathname: string, routeHref: string) {
+  if (currentPathname.startsWith("/app")) {
+    return routeHref;
+  }
+
+  if (routeHref === "/app" || routeHref === "/app/home") {
+    return "/home";
+  }
+
+  return routeHref.replace(/^\/app/, "") || "/";
+}

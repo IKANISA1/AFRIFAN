@@ -4,6 +4,8 @@ import {
   isFansHostname,
   mapAdminSubdomainPath,
   mapFansSubdomainPath,
+  normalizePortalPathname,
+  resolvePortalHref,
   resolveRoutingHostname,
   shouldBypassSubdomainRewrite,
 } from "@/lib/host-routing";
@@ -38,6 +40,18 @@ describe("host routing", () => {
     expect(mapFansSubdomainPath("/tickets")).toBe("/app/tickets");
     expect(mapFansSubdomainPath("/app")).toBe("/app");
     expect(mapFansSubdomainPath("/app/fan-clubs")).toBe("/app/fan-clubs");
+  });
+
+  it("normalizes clean fans-host paths for portal route matching", () => {
+    expect(normalizePortalPathname("/home")).toBe("/app/home");
+    expect(normalizePortalPathname("/tickets")).toBe("/app/tickets");
+    expect(normalizePortalPathname("/app/shop")).toBe("/app/shop");
+  });
+
+  it("resolves host-aware portal hrefs", () => {
+    expect(resolvePortalHref("/home", "/app/home")).toBe("/home");
+    expect(resolvePortalHref("/home", "/app/tickets")).toBe("/tickets");
+    expect(resolvePortalHref("/app/home", "/app/tickets")).toBe("/app/tickets");
   });
 
   it("bypasses static assets and shared PWA endpoints", () => {

@@ -541,7 +541,7 @@ export const footerNavigationGroups = [
 ];
 
 export const portalNavigation = [
-  { href: "/app/home", label: "Dashboard" },
+  { href: "/app/home", label: "Home" },
   { href: "/app/profile", label: "Profile" },
   { href: "/app/membership", label: "Membership" },
   { href: "/app/tickets", label: "Tickets" },
