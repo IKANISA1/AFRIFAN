@@ -74,11 +74,9 @@ ALTER TABLE public.shop_products
   ADD COLUMN IF NOT EXISTS collection text;
 
 UPDATE public.shop_products
-   SET partner_id = COALESCE(partner_id, club_id::text),
-       description = COALESCE(description, subtitle, name),
+   SET description = COALESCE(description, subtitle, name),
        collection = COALESCE(collection, category)
- WHERE partner_id IS NULL
-    OR description IS NULL
+ WHERE description IS NULL
     OR collection IS NULL;
 
 DROP TRIGGER IF EXISTS trg_shop_products_partner_sync ON public.shop_products;

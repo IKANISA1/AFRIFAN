@@ -35,6 +35,32 @@ CREATE TABLE IF NOT EXISTS public.notifications (
   updated_at                timestamptz NOT NULL DEFAULT now()
 );
 
+-- Ensure all required columns exist on a pre-existing table
+ALTER TABLE public.notifications
+  ADD COLUMN IF NOT EXISTS club_id bigint REFERENCES public.african_football_clubs(id) ON DELETE CASCADE,
+  ADD COLUMN IF NOT EXISTS image_url text,
+  ADD COLUMN IF NOT EXISTS audience_type text DEFAULT 'all_fans',
+  ADD COLUMN IF NOT EXISTS audience_tier text,
+  ADD COLUMN IF NOT EXISTS audience_group_name text,
+  ADD COLUMN IF NOT EXISTS delivery_mode text DEFAULT 'send_now',
+  ADD COLUMN IF NOT EXISTS scheduled_at timestamptz,
+  ADD COLUMN IF NOT EXISTS requested_recipient_count integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS successful_user_count integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS failed_user_count integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS sent_count integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS failed_count integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS cleaned_tokens integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS last_error text,
+  ADD COLUMN IF NOT EXISTS delivery_summary jsonb DEFAULT '{}'::jsonb,
+  ADD COLUMN IF NOT EXISTS updated_at timestamptz DEFAULT now();
+
+-- Backfill club_id from match for legacy rows
+UPDATE public.notifications n
+   SET club_id = m.club_id
+  FROM public.matches m
+ WHERE n.match_id = m.id
+   AND n.club_id IS NULL;
+
 CREATE INDEX IF NOT EXISTS idx_notifications_club_created
   ON public.notifications (club_id, created_at DESC);
 
