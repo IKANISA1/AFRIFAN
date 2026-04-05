@@ -57,13 +57,18 @@ export default async function FanClubsPage() {
               className="glass-panel card-interactive rounded-[30px] border border-border-soft p-6"
             >
               <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="font-display text-4xl font-bold uppercase leading-none text-white">
-                    {club.name}
-                  </p>
-                  <p className="mt-2 text-sm uppercase tracking-[0.24em] text-club-accent">
-                    {club.region}
-                  </p>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-club-primary to-club-primary-light text-base font-bold text-white" aria-hidden="true">
+                    {club.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-display text-3xl font-bold uppercase leading-none text-white sm:text-4xl">
+                      {club.name}
+                    </p>
+                    <p className="mt-2 text-sm uppercase tracking-[0.24em] text-club-accent">
+                      {club.region}
+                    </p>
+                  </div>
                 </div>
                 <div className="rounded-[22px] border border-border-soft bg-white/6 px-4 py-3 text-right">
                   <p className="font-display text-3xl font-bold uppercase">
@@ -98,7 +103,12 @@ export default async function FanClubsPage() {
                 key={group.id}
                 className="rounded-[22px] border border-border-soft bg-white/6 p-4"
               >
-                <p className="font-semibold text-white">{group.name}</p>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-club-accent/15 text-sm font-bold text-club-accent" aria-hidden="true">
+                    {group.name.charAt(0)}
+                  </div>
+                  <p className="font-semibold text-white">{group.name}</p>
+                </div>
                 <p className="mt-2 text-sm leading-6 text-slate-300">
                   {group.description}
                 </p>

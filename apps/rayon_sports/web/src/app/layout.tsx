@@ -49,6 +49,9 @@ export const metadata: Metadata = {
     "tickets",
     "membership",
   ],
+  verification: {
+    google: process.env.NEXT_PUBLIC_GSC_TOKEN ?? undefined,
+  },
   openGraph: {
     title: siteConfig.title,
     description: siteConfig.description,

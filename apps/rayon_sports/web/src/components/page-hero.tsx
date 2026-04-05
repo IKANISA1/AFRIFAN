@@ -43,7 +43,7 @@ export function PageHero({
           <p className="font-mono text-xs uppercase tracking-[0.32em] text-club-accent">
             {eyebrow}
           </p>
-          <h1 className="fluid-display font-display font-bold uppercase text-balance">
+          <h1 className="fluid-display font-display font-bold text-balance">
             {title}
           </h1>
           <p className="max-w-3xl text-base leading-8 text-slate-200 sm:text-lg">

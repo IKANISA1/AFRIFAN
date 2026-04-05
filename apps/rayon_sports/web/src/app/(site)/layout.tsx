@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import type { ReactNode } from "react";
 import { MatchRibbon } from "@/components/match-ribbon";
 import { AppBottomNav } from "@/components/app-bottom-nav";
+import { FloatingSearchButton } from "@/components/floating-search-button";
+import { FocusOnRouteChange } from "@/components/focus-on-route-change";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getClubProfile, getMatches } from "@/lib/data/public";
@@ -74,11 +76,13 @@ export default function SiteLayout({
       </Suspense>
       <script dangerouslySetInnerHTML={{ __html: publicSwBootstrap }} />
 
-      <main id="main-content" className="flex-1 pb-16 md:pb-0">
+      <main id="main-content" tabIndex={-1} className="flex-1 pb-16 outline-none md:pb-0">
         {children}
       </main>
 
       <SiteFooter />
+      <FocusOnRouteChange targetId="main-content" />
+      <FloatingSearchButton />
       <AppBottomNav surface="site" />
     </>
   );

@@ -99,7 +99,7 @@ function FatProgressRing({
         </defs>
       </svg>
       <div className="text-center">
-        <p className="font-score text-3xl font-bold text-white sm:text-4xl">
+        <p className="font-score text-3xl font-bold text-white sm:text-4xl" aria-live="polite">
           {totalFat.toLocaleString()}
         </p>
         <p className="text-[9px] uppercase tracking-[0.22em] text-slate-400">FAT</p>

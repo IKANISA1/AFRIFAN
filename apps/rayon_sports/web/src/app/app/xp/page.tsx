@@ -6,6 +6,8 @@ import {
   FatDashboard,
   getLevelForFat,
 } from "@/components/engagement/fat-dashboard";
+import { FatLeaderboard } from "@/components/engagement/fat-leaderboard";
+import { MatchQuiz } from "@/components/engagement/match-quiz";
 import { SectionHeading } from "@/components/section-heading";
 import { useFanPortal } from "@/components/portal/fan-portal-provider";
 import { rayonClub } from "@/lib/config";
@@ -24,6 +26,45 @@ const DEFAULT_BADGES = [
   { id: "share-3", name: "Ambassador", description: "Share 3 match links", icon: "🔗", fatReward: 20, earned: false },
   { id: "checkin-10", name: "Regular", description: "10 web check-ins", icon: "📍", fatReward: 40, earned: false },
   { id: "fan-club", name: "Chapter Member", description: "Join a supporter chapter", icon: "🤝", fatReward: 30, earned: false },
+];
+
+/* ── Demo leaderboard (to be replaced by Supabase RPC) ── */
+const DEMO_LEADERBOARD = [
+  { rank: 1, name: "Muhire J.", fat: 4200, level: "Legend" },
+  { rank: 2, name: "Habimana K.", fat: 3850, level: "Legend" },
+  { rank: 3, name: "Uwera N.", fat: 2900, level: "Legend" },
+  { rank: 4, name: "Kamanzi E.", fat: 2100, level: "Legend" },
+  { rank: 5, name: "Niyonzima D.", fat: 1850, level: "Ultras" },
+  { rank: 6, name: "Tuyisenge P.", fat: 1620, level: "Ultras" },
+  { rank: 7, name: "Ishimwe L.", fat: 1300, level: "Ultras" },
+  { rank: 8, name: "Mugisha A.", fat: 980, level: "Devoted" },
+  { rank: 9, name: "Nsanzimana C.", fat: 720, level: "Devoted" },
+  { rank: 10, name: "Uwimana F.", fat: 610, level: "Devoted" },
+];
+
+/* ── Demo quiz questions ── */
+const DEMO_QUIZ = [
+  {
+    id: "q1",
+    question: "How many league titles has Rayon Sports won?",
+    options: ["6 titles", "8 titles", "10 titles", "12 titles"],
+    correctIndex: 1,
+    explanation: "Rayon Sports has won 8 Rwanda Premier League titles.",
+  },
+  {
+    id: "q2",
+    question: "What is Rayon Sports' home stadium?",
+    options: ["Kigali Stadium", "Huye Stadium", "Amahoro Stadium", "Nyamirambo Stadium"],
+    correctIndex: 2,
+    explanation: "Rayon Sports primarily plays at Amahoro National Stadium in Kigali.",
+  },
+  {
+    id: "q3",
+    question: "What year was Rayon Sports founded?",
+    options: ["1958", "1968", "1972", "1980"],
+    correctIndex: 2,
+    explanation: "Rayon Sports was founded in 1972 in Kigali, Rwanda.",
+  },
 ];
 
 interface FatEvent {
@@ -148,6 +189,26 @@ export default function FanFatPage() {
           nextLevel={next}
           badges={badges}
           recentActivity={recentActivity}
+        />
+      </AnimateOnScroll>
+
+      {/* FAT Leaderboard */}
+      <AnimateOnScroll animation="fade-up" threshold={0.05}>
+        <FatLeaderboard
+          entries={DEMO_LEADERBOARD}
+          currentUserRank={totalFat > 0 ? 42 : undefined}
+          currentUserName={user?.email?.split("@")[0] ?? undefined}
+          currentUserFat={totalFat > 0 ? totalFat : undefined}
+          currentUserLevel={current.title}
+        />
+      </AnimateOnScroll>
+
+      {/* Match-day Quiz */}
+      <AnimateOnScroll animation="fade-up" threshold={0.05}>
+        <MatchQuiz
+          matchTitle="Rayon Sports vs APR FC — Matchday 22"
+          questions={DEMO_QUIZ}
+          fatReward={25}
         />
       </AnimateOnScroll>
     </div>

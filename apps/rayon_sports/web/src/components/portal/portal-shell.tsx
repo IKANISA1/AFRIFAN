@@ -25,6 +25,7 @@ import {
 } from "@/lib/host-routing";
 import { cn } from "@/lib/utils";
 import { AppBottomNav } from "@/components/app-bottom-nav";
+import { FocusOnRouteChange } from "@/components/focus-on-route-change";
 
 const navIcons = {
   "/app/home": House,
@@ -188,11 +189,12 @@ export function PortalShell({ children }: { children: ReactNode }) {
           </nav>
         </aside>
 
-        <main id="fan-main-content" className="min-w-0 space-y-6">
+        <main id="fan-main-content" tabIndex={-1} className="min-w-0 space-y-6 outline-none">
           {children}
         </main>
       </div>
 
+      <FocusOnRouteChange targetId="fan-main-content" />
       <AppBottomNav surface="portal" />
     </div>
   );

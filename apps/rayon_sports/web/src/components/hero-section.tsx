@@ -161,7 +161,7 @@ export function HeroSection({
           {/* ── Right column: Featured match + Support circle — HIDDEN on small mobile, visible from sm: up ── */}
           <div className="hidden gap-4 self-end sm:grid">
             {/* Featured match card */}
-            <article className="rounded-[28px] border border-white/10 bg-[#051228]/78 p-5 backdrop-blur-xl sm:rounded-[30px]">
+            <article className="rounded-[28px] border border-white/10 bg-[#0a1628]/78 p-5 backdrop-blur-xl sm:rounded-[30px]">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-[11px] uppercase tracking-[0.24em] text-club-accent">
@@ -194,7 +194,7 @@ export function HeroSection({
                     <p className="text-[10px] uppercase tracking-[0.24em] text-slate-300">
                       Status
                     </p>
-                    <p className="mt-2 font-score text-3xl font-bold uppercase text-white lg:text-4xl">
+                    <p className="mt-2 font-score text-3xl font-bold uppercase text-white lg:text-4xl" aria-live="polite">
                       {isLiveMatch(featuredMatch.matchStatus) ||
                       isResultMatch(featuredMatch.matchStatus)
                         ? `${featuredMatch.homeScore}-${featuredMatch.awayScore}`
@@ -216,7 +216,7 @@ export function HeroSection({
             </article>
 
             {/* Support circles card */}
-            <article className="rounded-[28px] border border-white/10 bg-[#051228]/78 p-5 backdrop-blur-xl sm:rounded-[30px]">
+            <article className="rounded-[28px] border border-white/10 bg-[#0a1628]/78 p-5 backdrop-blur-xl sm:rounded-[30px]">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-[11px] uppercase tracking-[0.24em] text-club-accent">
@@ -297,7 +297,7 @@ export function HeroSection({
             {featuredMatch ? (
               <Link
                 href="/tickets"
-                className="block rounded-2xl border border-white/10 bg-[#051228]/78 p-4 backdrop-blur-xl"
+                className="block rounded-2xl border border-white/10 bg-[#0a1628]/78 p-4 backdrop-blur-xl"
               >
                 <p className="text-[10px] uppercase tracking-[0.24em] text-club-accent">
                   {isLiveMatch(featuredMatch.matchStatus)
@@ -311,7 +311,7 @@ export function HeroSection({
                     {featuredMatch.homeTeam} <span className="text-white/60">vs</span> {featuredMatch.awayTeam}
                   </h2>
                   <div className="shrink-0 rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-center">
-                    <p className="font-score text-xl font-bold text-white">
+                    <p className="font-score text-xl font-bold text-white" aria-live="polite">
                       {isLiveMatch(featuredMatch.matchStatus) || isResultMatch(featuredMatch.matchStatus)
                         ? `${featuredMatch.homeScore}-${featuredMatch.awayScore}`
                         : formatCurrency(featuredMatch.generalPrice, club.currencyCode)}

@@ -29,7 +29,14 @@ export function ProgressBar({
           {formatPercent(percent, compact ? 0 : 1)}
         </span>
       </div>
-      <div className={`progress-track ${compact ? "h-2" : "h-3"}`}>
+      <div
+        className={`progress-track ${compact ? "h-2" : "h-3"}`}
+        role="progressbar"
+        aria-valuenow={Math.round(percent)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={label ? `${label}: ${formatPercent(percent, compact ? 0 : 1)}` : `${formatPercent(percent, compact ? 0 : 1)} complete`}
+      >
         <div className="progress-fill" style={{ width: `${percent}%` }} />
       </div>
     </div>

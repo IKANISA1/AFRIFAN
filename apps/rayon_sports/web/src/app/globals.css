@@ -7,7 +7,7 @@
 
 :root {
   /* ── Core Club Identity ── */
-  --background: #051228;
+  --background: #0a1628;
   --foreground: #f5f7fb;
   --surface: rgba(10, 26, 52, 0.82);
   --surface-strong: rgba(5, 14, 32, 0.96);
@@ -136,7 +136,7 @@ body {
     radial-gradient(ellipse 70% 50% at 20% 0%, rgba(0, 56, 168, 0.18), transparent 50%),
     radial-gradient(ellipse 50% 40% at 80% 10%, rgba(136, 133, 240, 0.12), transparent 40%),
     radial-gradient(ellipse 40% 30% at 60% 100%, rgba(212, 160, 23, 0.08), transparent 40%),
-    linear-gradient(180deg, #051228 0%, #071830 40%, #040a18 100%);
+    linear-gradient(180deg, #0a1628 0%, #0c1e36 40%, #070e1c 100%);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -443,6 +443,29 @@ textarea:focus-visible,
   border-width: 0;
 }
 
+/* ── Kit stripe texture — Rayon Sports blue diagonal lines ── */
+.kit-stripe {
+  position: relative;
+}
+
+.kit-stripe::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 10px,
+    rgba(0, 56, 168, 0.04) 10px,
+    rgba(0, 56, 168, 0.04) 12px
+  );
+  z-index: 0;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 70%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 70%);
+}
+
 /* ══════════════════════════════════════════════════════════════
    ANIMATIONS
    ══════════════════════════════════════════════════════════════ */
@@ -507,6 +530,16 @@ textarea:focus-visible,
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes score-flash {
+  0% { color: var(--club-accent); transform: scale(1.25); text-shadow: 0 0 20px var(--club-accent); }
+  50% { color: #fff; transform: scale(1.08); text-shadow: 0 0 10px rgba(212, 160, 23, 0.4); }
+  100% { color: #fff; transform: scale(1); text-shadow: none; }
+}
+
+.animate-score-flash {
+  animation: score-flash 800ms var(--ease-out-expo) both;
 }
 
 .animate-fade-up {
@@ -763,32 +796,32 @@ textarea:focus-visible,
 }
 
 ::view-transition-old(root) {
-  animation: fade-out 150ms ease-out;
+  animation: vt-fade-out 250ms var(--ease-smooth);
 }
 
 ::view-transition-new(root) {
-  animation: fade-in 200ms ease-in;
+  animation: vt-fade-in 300ms var(--ease-out-expo);
 }
 
-@keyframes fade-out {
+@keyframes vt-fade-out {
   from {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
   to {
     opacity: 0;
-    transform: translateY(-4px);
+    transform: translateY(-8px) scale(0.995);
   }
 }
 
-@keyframes fade-in {
+@keyframes vt-fade-in {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(10px) scale(0.995);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 

@@ -100,7 +100,7 @@ export default async function StandingsPage() {
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
             Rayon Sports
           </p>
-          <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
+          <h2 className="mt-3 font-display text-4xl font-bold text-white">
             Position in the race
           </h2>
           {highlighted ? (

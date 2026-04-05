@@ -74,12 +74,14 @@ export function MatchCard({
   const upcoming = isUpcomingMatch(match.matchStatus);
   const ctaLabel = live ? "Follow live" : result ? "Match report" : "View tickets";
 
-  // Status-specific border glow
+  // Status-specific card treatment
   const borderClass = live
-    ? "border-red-500/25 shadow-[0_0_24px_rgba(239,68,68,0.08)]"
+    ? "border-red-500/30 shadow-[0_0_32px_rgba(239,68,68,0.12)] ring-1 ring-red-500/10"
     : upcoming
-      ? "border-club-primary/30"
-      : "border-border-soft";
+      ? "border-club-accent/25 shadow-[0_0_24px_rgba(212,160,23,0.08)]"
+      : result
+        ? "border-white/6 opacity-85"
+        : "border-border-soft";
 
   return (
     <Link
@@ -88,6 +90,7 @@ export function MatchCard({
       className={cn(
         "glass-panel card-interactive flex h-full flex-col gap-4 rounded-[30px] border p-5",
         borderClass,
+        upcoming && "kit-stripe",
       )}
     >
       {/* Status + competition */}

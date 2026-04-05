@@ -117,11 +117,11 @@ export default async function FixtureDetailPage({
               className="object-cover"
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_30%,rgba(3,10,24,0.72)_100%)]" />
-            <div className="absolute bottom-5 right-5 rounded-[26px] border border-white/10 bg-[#051228]/82 px-5 py-4 text-center backdrop-blur-xl">
+            <div className="absolute bottom-5 right-5 rounded-[26px] border border-white/10 bg-[#0a1628]/82 px-5 py-4 text-center backdrop-blur-xl">
               <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                 Score
               </p>
-              <p className="mt-2 font-score text-6xl text-white">
+              <p className="mt-2 font-score text-6xl text-white" aria-live="polite">
                 {live || result
                   ? `${match.homeScore}-${match.awayScore}`
                   : formatCurrency(match.generalPrice)}

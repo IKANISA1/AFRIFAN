@@ -98,7 +98,7 @@ export default async function MembershipPage() {
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
             Membership benefits
           </p>
-          <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
+          <h2 className="mt-3 font-display text-4xl font-bold text-white">
             What every tier covers
           </h2>
           <div className="mt-6 grid gap-3">
@@ -120,7 +120,7 @@ export default async function MembershipPage() {
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
             Why it matters
           </p>
-          <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
+          <h2 className="mt-3 font-display text-4xl font-bold text-white">
             One supporter identity
           </h2>
           <div className="mt-5 grid gap-4">

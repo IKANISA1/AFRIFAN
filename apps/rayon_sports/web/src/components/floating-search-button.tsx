@@ -1,0 +1,32 @@
+"use client";
+
+import { Search, X } from "lucide-react";
+import dynamic from "next/dynamic";
+import { useState } from "react";
+
+const SearchDialog = dynamic(
+  () => import("./search-dialog").then((mod) => mod.SearchDialog),
+  { ssr: false },
+);
+
+/**
+ * Floating search button — visible on mobile (where the search
+ * in the header is hard to discover). Positioned above the bottom nav.
+ */
+export function FloatingSearchButton() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="Search"
+        className="fixed bottom-[calc(env(safe-area-inset-bottom)+68px)] right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-club-primary shadow-lg shadow-club-primary/30 text-white transition hover:bg-club-primary-light active:scale-90 lg:hidden"
+      >
+        <Search size={20} strokeWidth={2} />
+      </button>
+      {open && <SearchDialog open={open} onClose={() => setOpen(false)} />}
+    </>
+  );
+}
