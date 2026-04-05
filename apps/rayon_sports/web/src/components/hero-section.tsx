@@ -25,6 +25,9 @@ interface HeroSectionProps {
   contributionGroups: ContributionGroup[];
   fanClubs: FanClubItem[];
   membershipPackages: MembershipPackage[];
+  heroTagline?: string;
+  heroHeadline?: string;
+  heroDescription?: string;
 }
 
 export function HeroSection({
@@ -33,6 +36,9 @@ export function HeroSection({
   contributionGroups,
   fanClubs,
   membershipPackages,
+  heroTagline,
+  heroHeadline,
+  heroDescription,
 }: HeroSectionProps) {
   // Build image rotation list: match-specific → stadium variants
   const heroImages: string[] = [];
@@ -80,14 +86,13 @@ export function HeroSection({
 
               <div className="space-y-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.34em] text-slate-300 sm:text-xs">
-                  The Beloved, live in the browser
+                  {heroTagline || "The Beloved, live in the browser"}
                 </p>
                 <h1 className="fluid-hero font-display font-bold uppercase text-white text-balance">
-                  This is Gikundiro.
+                  {heroHeadline || "This is Gikundiro."}
                 </h1>
                 <p className="max-w-2xl text-sm leading-7 text-slate-200 sm:text-base sm:leading-8">
-                  Get tickets, follow live matches, back supporter circles, and join
-                  the Rayon Sports family — all from your browser.
+                  {heroDescription || "Get tickets, follow live matches, back supporter circles, and join the Rayon Sports family — all from your browser."}
                 </p>
               </div>
 

@@ -133,7 +133,7 @@ export async function saveAdminContentBlock(
     cta_label: safeString(input.ctaLabel) || null,
     sort_order: safeNumber(input.sortOrder, 0),
     is_active: input.isActive !== false,
-    status: "active",
+    status: "approved",
   };
 
   if (input.id) {

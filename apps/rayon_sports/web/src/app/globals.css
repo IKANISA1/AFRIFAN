@@ -99,6 +99,7 @@
   --color-club-ink: var(--club-ink);
   --font-sans: var(--font-inter);
   --font-display: var(--font-barlow);
+  --font-heading: var(--font-outfit);
   --font-score: var(--font-bebas);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
@@ -359,6 +360,14 @@ a {
 .scroll-snap-x > * {
   scroll-snap-align: start;
   flex-shrink: 0;
+}
+
+/* ── Hide scrollbar ── */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 /* ── CTA glow pulse ── */

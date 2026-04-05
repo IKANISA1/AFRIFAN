@@ -1,19 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow_Condensed, Bebas_Neue, Inter } from "next/font/google";
+import { Bebas_Neue, Oswald, Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { absoluteUrl, siteConfig } from "@/lib/config";
 import { buildSiteJsonLd } from "@/lib/metadata";
 
-const inter = Inter({
+const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
-const barlow = Barlow_Condensed({
+const oswald = Oswald({
   variable: "--font-barlow",
   subsets: ["latin"],
-  weight: ["700"],
+  weight: ["500", "600", "700"],
+  display: "swap",
+});
+
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -95,7 +102,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${barlow.variable} ${bebasNeue.variable} h-full antialiased`}
+      className={`${plusJakarta.variable} ${oswald.variable} ${outfit.variable} ${bebasNeue.variable} h-full antialiased`}
     >
       <head />
       <body className="min-h-full flex flex-col">

@@ -3,6 +3,7 @@ import { SkeletonCard } from "@/components/skeleton";
 import { buildPageMetadata } from "@/lib/metadata";
 import { AnimateOnScroll } from "@/components/animate-on-scroll";
 import { HeroBlock } from "./_sections/hero-block";
+import { StoriesBlock } from "./_sections/stories-block";
 import { CirclesAndMatchdayBlock } from "./_sections/circles-matchday-block";
 import { FixturesBlock } from "./_sections/fixtures-block";
 import { MembershipAndStandingsBlock } from "./_sections/membership-standings-block";
@@ -34,6 +35,8 @@ export default function HomePage() {
       <Suspense fallback={<SectionSkeleton cols={2} />}>
         <HeroBlock />
       </Suspense>
+      {/* Stories — inline ring carousel (Instagram-style) */}
+      <StoriesBlock />
 
       {/* Circles + Matchday — fade up on scroll */}
       <AnimateOnScroll animation="fade-up" threshold={0.08}>

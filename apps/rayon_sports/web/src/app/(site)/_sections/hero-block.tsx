@@ -5,18 +5,30 @@ import {
   getClubProfile,
   getContributionGroups,
   getFanClubs,
+  getCmsContentBlock,
+  getHomeBanners,
   getMatches,
   getMembershipPackages,
 } from "@/lib/data/public";
 
+const fallbackQuickLinks = [
+  { href: "/tickets", label: "Buy tickets" },
+  { href: "/circles", label: "Support circles" },
+  { href: "/membership", label: "Membership tiers" },
+  { href: "/news", label: "Latest club news" },
+  { href: "/shop", label: "Shop new drop" },
+];
+
 export async function HeroBlock() {
-  const [club, matches, fanClubs, contributionGroups, membershipPackages] =
+  const [club, matches, fanClubs, contributionGroups, membershipPackages, banners, heroCms] =
     await Promise.all([
       getClubProfile(),
       getMatches(),
       getFanClubs(),
       getContributionGroups(),
       getMembershipPackages(),
+      getHomeBanners(),
+      getCmsContentBlock("hero_headline"),
     ]);
 
   const featuredMatch =
@@ -29,6 +41,12 @@ export async function HeroBlock() {
   const activeCircles =
     contributionGroups.length > 0 ? contributionGroups : fallbackContributionGroups;
 
+  // Use banners as quick links when available, else fall back
+  const quickLinks =
+    banners.length > 0
+      ? banners.map((b) => ({ href: b.route, label: b.ctaLabel || b.title }))
+      : fallbackQuickLinks;
+
   return (
     <>
       <HeroSection
@@ -37,16 +55,13 @@ export async function HeroBlock() {
         contributionGroups={activeCircles}
         fanClubs={fanClubs}
         membershipPackages={membershipPackages}
+        heroTagline={heroCms?.subtitle || undefined}
+        heroHeadline={heroCms?.title || undefined}
+        heroDescription={heroCms?.body || undefined}
       />
 
       <div className="page-shell flex flex-wrap gap-3">
-        {[
-          { href: "/tickets", label: "Buy tickets" },
-          { href: "/circles", label: "Support circles" },
-          { href: "/membership", label: "Membership tiers" },
-          { href: "/news", label: "Latest club news" },
-          { href: "/shop", label: "Shop new drop" },
-        ].map((item) => (
+        {quickLinks.map((item) => (
           <Link
             key={item.href}
             href={item.href}
