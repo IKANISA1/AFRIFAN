@@ -16,6 +16,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const handleClose = useCallback(() => {
     setQuery("");
     onClose();
@@ -52,6 +53,35 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
       window.cancelAnimationFrame(frame);
       document.body.style.overflow = "";
     };
+  }, [open]);
+
+  // Focus trap — cycle Tab within dialog
+  useEffect(() => {
+    if (!open) return;
+    function handleFocusTrap(e: KeyboardEvent) {
+      if (e.key !== "Tab") return;
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+      const focusable = dialog.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+    document.addEventListener("keydown", handleFocusTrap);
+    return () => document.removeEventListener("keydown", handleFocusTrap);
   }, [open]);
 
   useEffect(() => {
@@ -109,7 +139,13 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
         aria-label="Close search"
         onClick={handleClose}
       />
-      <div className="relative z-10 w-full max-w-3xl animate-scale-up">
+      <div
+        ref={dialogRef}
+        className="relative z-10 w-full max-w-3xl animate-scale-up"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Search"
+      >
         <div className="glass-panel-elevated overflow-hidden rounded-[32px] border border-border-soft">
           <div className="flex items-center gap-3 border-b border-border-soft px-5 py-4">
             <Search size={18} className="text-club-accent" />

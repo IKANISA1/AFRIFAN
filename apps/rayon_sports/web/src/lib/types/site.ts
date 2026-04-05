@@ -143,3 +143,38 @@ export interface StandingRow {
   form?: string[];
   highlight?: boolean;
 }
+
+// ─── CMS types ──────────────────────────────────────────
+
+export interface HomeBanner {
+  id: string;
+  title: string;
+  subtitle: string;
+  badgeLabel: string;
+  ctaLabel: string;
+  route: string;
+  imageUrl: string | null;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+export interface CmsContent {
+  id: string;
+  contentType: string;
+  title: string;
+  subtitle: string;
+  body: string;
+  rationale: string;
+  iconEmoji: string;
+  ctaAction: string;
+  ctaLabel: string;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+export interface AppConfigEntry {
+  key: string;
+  value: string;
+  description: string;
+  country: string;
+}

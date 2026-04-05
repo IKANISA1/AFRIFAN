@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -16,12 +16,30 @@ interface MobileNavDrawerProps {
   club: ClubProfile;
 }
 
+/**
+ * Always-mounted mobile nav drawer with smooth enter/exit animations.
+ * Uses `inert` + `aria-hidden` when closed for accessibility.
+ * Focus is trapped inside when open.
+ */
 export function MobileNavDrawer({
   isOpen,
   onClose,
   club,
 }: MobileNavDrawerProps) {
   const pathname = usePathname();
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  // Drive the transition: visible controls CSS classes
+  useEffect(() => {
+    if (isOpen) {
+      // Mount visible on next frame so the transition triggers
+      requestAnimationFrame(() => setVisible(true));
+    } else {
+      setVisible(false);
+    }
+  }, [isOpen]);
 
   // Close on route change
   useEffect(() => {
@@ -52,22 +70,68 @@ export function MobileNavDrawer({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  // Focus trap — cycle Tab within drawer
+  const handleFocusTrap = useCallback(
+    (e: KeyboardEvent) => {
+      if (!isOpen || e.key !== "Tab") return;
+      const drawer = drawerRef.current;
+      if (!drawer) return;
+
+      const focusable = drawer.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    },
+    [isOpen],
+  );
+
+  useEffect(() => {
+    if (!isOpen) return;
+    document.addEventListener("keydown", handleFocusTrap);
+    // Focus the close button on open
+    requestAnimationFrame(() => closeButtonRef.current?.focus());
+    return () => document.removeEventListener("keydown", handleFocusTrap);
+  }, [isOpen, handleFocusTrap]);
 
   return (
     <>
-      {/* Scrim Overlay */}
-      <div 
-        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity"
+      {/* Scrim Overlay — always in DOM, opacity-controlled */}
+      <div
+        className={cn(
+          "fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity duration-300",
+          visible ? "opacity-100" : "pointer-events-none opacity-0",
+        )}
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Drawer */}
-      <div 
+      {/* Drawer — always in DOM, transform-controlled */}
+      <div
+        ref={drawerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+        aria-hidden={!isOpen}
+        inert={!isOpen ? true : undefined}
         className={cn(
-          "fixed top-0 right-0 bottom-0 z-50 w-[85vw] max-w-[400px] transform bg-surface-strong shadow-2xl transition-transform duration-300 ease-out-expo flex flex-col border-l border-border-soft",
-          isOpen ? "translate-x-0" : "translate-x-full"
+          "fixed top-0 right-0 bottom-0 z-50 w-[85vw] max-w-[400px] bg-surface-strong shadow-2xl flex flex-col border-l border-border-soft",
+          "transition-transform duration-300 ease-out",
+          visible ? "translate-x-0" : "translate-x-full",
         )}
       >
         {/* Header section */}
@@ -90,7 +154,8 @@ export function MobileNavDrawer({
               </p>
             </div>
           </div>
-          <button 
+          <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             className="p-2 -mr-2 text-slate-300 hover:text-white transition-colors focus-ring"
@@ -111,16 +176,16 @@ export function MobileNavDrawer({
               <User size={20} className="text-club-primary-light" />
               <span className="text-xs uppercase tracking-wider font-semibold">Portal</span>
             </Link>
-            <Link 
-              href="/tickets" 
+            <Link
+              href="/tickets"
               prefetch={false}
               className="flex-1 flex flex-col items-center justify-center gap-2 p-3 rounded-2xl bg-white/5 border border-border-soft hover:bg-white/10 transition focus-ring"
             >
               <Ticket size={20} className="text-club-accent" />
               <span className="text-xs uppercase tracking-wider font-semibold">Tickets</span>
             </Link>
-            <Link 
-              href="/shop" 
+            <Link
+              href="/shop"
               prefetch={false}
               className="flex-1 flex flex-col items-center justify-center gap-2 p-3 rounded-2xl bg-white/5 border border-border-soft hover:bg-white/10 transition focus-ring"
             >
@@ -134,7 +199,7 @@ export function MobileNavDrawer({
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-2 pl-2">Menu</p>
             {siteNavigation.map((item) => {
               const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
-              
+
               return (
                 <Link
                   key={item.href}
@@ -142,8 +207,8 @@ export function MobileNavDrawer({
                   prefetch={false}
                   className={cn(
                     "relative px-4 py-3 text-lg font-semibold rounded-xl transition-all focus-ring",
-                    active 
-                      ? "bg-club-primary/10 text-white" 
+                    active
+                      ? "bg-club-primary/10 text-white"
                       : "text-slate-300 hover:bg-white/5 hover:text-white"
                   )}
                 >
@@ -173,7 +238,7 @@ export function MobileNavDrawer({
               ))}
             </div>
           </div>
-          
+
           {/* Utility row */}
           <div className="mt-auto">
              <div className="p-4 rounded-2xl bg-white/5 border border-border-soft flex items-center justify-between text-sm">

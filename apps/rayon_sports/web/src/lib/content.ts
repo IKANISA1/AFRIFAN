@@ -561,7 +561,7 @@ export const portalSidebarSecondary = [
   { href: "/app/shop", label: "Shop" },
   { href: "/app/contributions", label: "Support" },
   { href: "/app/fan-clubs", label: "Fan Clubs" },
-  { href: "/app/xp", label: "XP" },
+  { href: "/app/xp", label: "FAT" },
 ];
 
 export const staticSearchItems: SearchIndexItem[] = [
@@ -644,6 +644,9 @@ export const adminNavigation = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/settings", label: "Settings" },
   { href: "/admin/cms", label: "CMS" },
+  { href: "/admin/cms/banners", label: "Banners" },
+  { href: "/admin/cms/content", label: "Content" },
+  { href: "/admin/cms/config", label: "Config" },
   { href: "/admin/matches", label: "Matches" },
   { href: "/admin/squad", label: "Squad" },
   { href: "/admin/shop", label: "Shop" },

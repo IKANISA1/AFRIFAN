@@ -21,6 +21,13 @@ export { getMatches, getMatchById } from "./matches";
 export { getNewsArticles, getNewsArticleById } from "./news";
 export { getProducts, getProductById } from "./shop";
 export {
+  getHomeBanners,
+  getCmsContent,
+  getCmsContentBlock,
+  getAppConfig,
+  getConfigValue,
+} from "./cms";
+export {
   getMembershipPackages,
   getFanClubs,
   getContributionGroups,

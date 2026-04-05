@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ExternalLink, MessageCircle, ShieldCheck } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { siteConfig } from "@/lib/config";
-import { getClubProfile } from "@/lib/data/public";
+import { getClubProfile, getCmsContent } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata = buildPageMetadata({
@@ -12,14 +12,49 @@ export const metadata = buildPageMetadata({
   path: "/contact",
 });
 
+const fallbackSupportBlocks = [
+  {
+    icon: ShieldCheck,
+    copy: "Membership, tickets, and orders stay in the portal for authenticated follow-up.",
+  },
+  {
+    icon: MessageCircle,
+    copy: "Public contact stays focused on club communication, media, and general supporter questions.",
+  },
+];
+
 export default async function ContactPage() {
-  const club = await getClubProfile();
+  const [club, cmsBlocks] = await Promise.all([
+    getClubProfile(),
+    getCmsContent("contact_support"),
+  ]);
+
   const socialLinks = [
     { label: "Facebook", href: club.facebookUrl },
     { label: "Instagram", href: club.instagramUrl },
     { label: "X", href: club.xUrl },
     { label: "TikTok", href: club.tiktokUrl },
   ].filter((entry) => entry.href);
+
+  // Use CMS content for support blocks if available
+  const supportBlocks =
+    cmsBlocks.length > 0
+      ? cmsBlocks.map((block, i) => ({
+          icon: i === 0 ? ShieldCheck : MessageCircle,
+          copy: block.body || block.title,
+        }))
+      : fallbackSupportBlocks;
+
+  const digitalSupportTitle =
+    cmsBlocks.length > 0
+      ? cmsBlocks[0]?.subtitle || "Digital support"
+      : "Digital support";
+
+  const digitalSupportDescription =
+    cmsBlocks.length > 0
+      ? cmsBlocks[0]?.rationale ||
+        "Use the fan portal for profile, membership, shop, and ticketing requests. Public club updates and campaign announcements remain on the public site."
+      : "Use the fan portal for profile, membership, shop, and ticketing requests. Public club updates and campaign announcements remain on the public site.";
 
   return (
     <div className="page-shell section-grid py-12">
@@ -71,18 +106,13 @@ export default async function ContactPage() {
         </article>
         <article className="glass-panel rounded-[30px] p-6">
           <p className="font-display text-4xl font-bold uppercase leading-none text-white">
-            Digital support
+            {digitalSupportTitle}
           </p>
           <p className="mt-4 text-sm leading-7 text-slate-300">
-            Use the fan portal for profile, membership, shop, and ticketing
-            requests. Public club updates and campaign announcements remain on
-            the public site.
+            {digitalSupportDescription}
           </p>
           <div className="mt-5 grid gap-3">
-            {[
-              { icon: ShieldCheck, copy: "Membership, tickets, and orders stay in the portal for authenticated follow-up." },
-              { icon: MessageCircle, copy: "Public contact stays focused on club communication, media, and general supporter questions." },
-            ].map(({ icon: Icon, copy }) => (
+            {supportBlocks.map(({ icon: Icon, copy }) => (
               <div
                 key={copy}
                 className="rounded-[24px] border border-border-soft bg-white/5 p-4"

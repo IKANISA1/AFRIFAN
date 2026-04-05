@@ -1,17 +1,68 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Radio, Ticket, Trophy } from "lucide-react";
+import { MatchCountdown } from "@/components/match-countdown";
+import { MatchProgressBar } from "@/components/match-progress-bar";
 import type { MatchItem } from "@/lib/types";
 import {
+  cn,
   formatCurrency,
   formatDateTime,
   formatMatchStatusLabel,
   isLiveMatch,
   isResultMatch,
+  isUpcomingMatch,
 } from "@/lib/utils";
 
 interface MatchCardProps {
   match: MatchItem;
   href?: string;
+}
+
+/**
+ * Team badge — shows the actual Rayon Sports crest for the home club,
+ * letter-initial circle for opponents.
+ */
+const RAYON_CREST_URL = "/media/rayon-crest.png";
+
+function isRayonTeam(name: string): boolean {
+  return name.toLowerCase().includes("rayon");
+}
+
+function TeamBadge({
+  name,
+  variant = "neutral",
+}: {
+  name: string;
+  variant?: "home" | "neutral";
+}) {
+  if (isRayonTeam(name)) {
+    return (
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-club-primary/20 p-1" aria-hidden="true">
+        <Image
+          src={RAYON_CREST_URL}
+          alt="Rayon Sports crest"
+          width={28}
+          height={28}
+          className="object-contain"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        "flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold",
+        variant === "home"
+          ? "bg-club-primary/30 text-white"
+          : "bg-white/10 text-slate-300",
+      )}
+      aria-hidden="true"
+    >
+      {name.charAt(0)}
+    </div>
+  );
 }
 
 export function MatchCard({
@@ -20,14 +71,26 @@ export function MatchCard({
 }: MatchCardProps) {
   const live = isLiveMatch(match.matchStatus);
   const result = isResultMatch(match.matchStatus);
+  const upcoming = isUpcomingMatch(match.matchStatus);
   const ctaLabel = live ? "Follow live" : result ? "Match report" : "View tickets";
+
+  // Status-specific border glow
+  const borderClass = live
+    ? "border-red-500/25 shadow-[0_0_24px_rgba(239,68,68,0.08)]"
+    : upcoming
+      ? "border-club-primary/30"
+      : "border-border-soft";
 
   return (
     <Link
       href={href}
       prefetch={false}
-      className="glass-panel card-interactive flex h-full flex-col gap-5 rounded-[30px] border border-border-soft p-5"
+      className={cn(
+        "glass-panel card-interactive flex h-full flex-col gap-4 rounded-[30px] border p-5",
+        borderClass,
+      )}
     >
+      {/* Status + competition */}
       <div className="flex items-center justify-between gap-3">
         {live ? (
           <span className="badge-live">Live</span>
@@ -41,35 +104,27 @@ export function MatchCard({
         </span>
       </div>
 
-      <div className="grid gap-4 rounded-[26px] border border-white/8 bg-black/20 p-4">
-        <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <p className="font-display text-3xl font-bold uppercase leading-none text-white">
-              {match.homeTeam}
-            </p>
-            <p className="mt-3 font-display text-3xl font-bold uppercase leading-none text-white">
-              {match.awayTeam}
-            </p>
+      {/* Teams + score panel */}
+      <div className="grid gap-3 rounded-[26px] border border-white/8 bg-black/20 p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <TeamBadge name={match.homeTeam} variant="home" />
+            <div className="min-w-0">
+              <p className="font-display text-2xl font-bold uppercase leading-none text-white sm:text-3xl">
+                {match.homeTeam}
+              </p>
+            </div>
           </div>
-          <div className="rounded-[22px] border border-white/8 bg-white/6 px-4 py-3 text-center">
+          {/* Score or price */}
+          <div className="rounded-[18px] border border-white/8 bg-white/6 px-3 py-2 text-center shrink-0">
             {(live || result) ? (
-              <>
-                <p className="font-score text-5xl font-bold uppercase text-white">
-                  {match.homeScore}
-                </p>
-                <p className="my-1 text-[11px] uppercase tracking-[0.24em] text-slate-500">
-                  -
-                </p>
-                <p className="font-score text-5xl font-bold uppercase text-white">
-                  {match.awayScore}
-                </p>
-              </>
+              <p className="font-score text-3xl font-bold uppercase text-white sm:text-4xl">
+                {match.homeScore}
+              </p>
             ) : (
               <>
-                <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                  From
-                </p>
-                <p className="mt-2 font-score text-4xl font-bold uppercase text-white">
+                <p className="text-[9px] uppercase tracking-[0.22em] text-slate-400">From</p>
+                <p className="font-score text-2xl font-bold uppercase text-white sm:text-3xl">
                   {formatCurrency(match.generalPrice)}
                 </p>
               </>
@@ -77,6 +132,35 @@ export function MatchCard({
           </div>
         </div>
 
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <TeamBadge name={match.awayTeam} variant="neutral" />
+            <div className="min-w-0">
+              <p className="font-display text-2xl font-bold uppercase leading-none text-white/70 sm:text-3xl">
+                {match.awayTeam}
+              </p>
+            </div>
+          </div>
+          {(live || result) ? (
+            <div className="rounded-[18px] border border-white/8 bg-white/6 px-3 py-2 text-center shrink-0">
+              <p className="font-score text-3xl font-bold uppercase text-white sm:text-4xl">
+                {match.awayScore}
+              </p>
+            </div>
+          ) : null}
+        </div>
+
+        {/* Countdown for upcoming / Progress for live */}
+        {live && match.liveMinute != null ? (
+          <MatchProgressBar minute={match.liveMinute} />
+        ) : upcoming ? (
+          <div className="flex items-center gap-2 pt-1">
+            <span className="text-[10px] uppercase tracking-[0.22em] text-slate-400">Kickoff in</span>
+            <MatchCountdown matchDate={match.matchDate} />
+          </div>
+        ) : null}
+
+        {/* Meta pills */}
         <div className="flex flex-wrap gap-2">
           <span className="rounded-full border border-white/8 bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-300">
             {formatDateTime(match.matchDate)}
@@ -92,10 +176,12 @@ export function MatchCard({
         </div>
       </div>
 
+      {/* Summary */}
       <p className="text-sm leading-7 text-slate-300">
         {match.matchSummary ?? "Match details will appear here closer to kickoff."}
       </p>
 
+      {/* Live events */}
       {(live || result) && match.liveEvents.length > 0 ? (
         <div className="grid gap-2">
           {match.liveEvents.slice(0, 2).map((event) => (
@@ -108,7 +194,7 @@ export function MatchCard({
             </div>
           ))}
         </div>
-      ) : (
+      ) : !live && !result ? (
         <div className="flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.22em] text-slate-300">
           <span className="rounded-full border border-border-soft px-3 py-1.5">
             General {formatCurrency(match.generalPrice)}
@@ -117,8 +203,9 @@ export function MatchCard({
             VIP {formatCurrency(match.vipPrice)}
           </span>
         </div>
-      )}
+      ) : null}
 
+      {/* CTA footer */}
       <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/8 pt-4">
         <div className="flex items-center gap-2 text-sm font-semibold text-white">
           {live ? <Radio size={16} className="text-red-300" /> : result ? <Trophy size={16} className="text-club-accent" /> : <Ticket size={16} className="text-club-accent" />}

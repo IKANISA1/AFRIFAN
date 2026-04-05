@@ -68,7 +68,7 @@ export default function FanProfilePage() {
               </div>
               <div className="rounded-[20px] border border-border-soft bg-white/5 px-4 py-3">
                 <p className="text-[10px] uppercase tracking-[0.18em] text-slate-300">
-                  XP
+                  FAT
                 </p>
                 <p className="mt-2 font-semibold text-white">
                   {membership?.points ?? 0}

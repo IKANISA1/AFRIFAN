@@ -4,10 +4,18 @@ import { ProductCard } from "@/components/product-card";
 import { SectionHeading } from "@/components/section-heading";
 import { clubHistoryMoments } from "@/lib/content";
 import { siteConfig } from "@/lib/config";
-import { getProducts } from "@/lib/data/public";
+import { getProducts, getCmsContent } from "@/lib/data/public";
 
 export async function ShopAndIdentityBlock() {
-  const products = await getProducts();
+  const [products, cmsHistory] = await Promise.all([
+    getProducts(),
+    getCmsContent("club_history"),
+  ]);
+
+  const moments =
+    cmsHistory.length > 0
+      ? cmsHistory.map((item) => ({ title: item.title, body: item.body }))
+      : clubHistoryMoments;
 
   return (
     <section className="page-shell grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
@@ -25,9 +33,11 @@ export async function ShopAndIdentityBlock() {
             Shop all <ArrowRight size={18} />
           </Link>
         </div>
-        <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-6 flex gap-5 scroll-snap-x xl:grid xl:grid-cols-3 xl:overflow-visible">
           {products.slice(0, 3).map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <div key={product.id} className="min-w-[80vw] sm:min-w-[300px] xl:min-w-0">
+              <ProductCard product={product} />
+            </div>
           ))}
         </div>
       </div>
@@ -39,7 +49,7 @@ export async function ShopAndIdentityBlock() {
             title="Gikundiro — the beloved."
           />
           <div className="mt-6 grid gap-4">
-            {clubHistoryMoments.map((moment) => (
+            {moments.map((moment) => (
               <article
                 key={moment.title}
                 className="rounded-[24px] border border-border-soft bg-white/5 p-5"

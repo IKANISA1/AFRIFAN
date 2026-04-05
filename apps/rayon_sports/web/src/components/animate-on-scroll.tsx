@@ -57,6 +57,8 @@ export function AnimateOnScroll({
       ref={ref}
       className={`${className} ${animationClass}`}
       style={{
+        opacity: isVisible ? undefined : 0,
+        transform: isVisible ? undefined : "translateY(20px)",
         animationDelay: delay > 0 ? `${delay}ms` : undefined,
       }}
     >

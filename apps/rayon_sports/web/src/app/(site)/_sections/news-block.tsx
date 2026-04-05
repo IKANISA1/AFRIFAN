@@ -22,9 +22,11 @@ export async function NewsBlock() {
           Newsroom <ArrowRight size={18} />
         </Link>
       </div>
-      <div className="grid gap-5 xl:grid-cols-3">
+      <div className="flex gap-5 scroll-snap-x lg:grid lg:grid-cols-3 lg:overflow-visible">
         {news.slice(0, 3).map((article) => (
-          <NewsCard key={article.id} article={article} />
+          <div key={article.id} className="min-w-[85vw] sm:min-w-[340px] lg:min-w-0">
+            <NewsCard article={article} />
+          </div>
         ))}
       </div>
     </section>

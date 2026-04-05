@@ -105,7 +105,7 @@ export default function FanMembershipPage() {
         description="Upgrade anytime and unlock ticket priority, shop discounts, and exclusive supporter access across every fixture."
         stats={[
           { label: "Current tier", value: tierLabel },
-          { label: "XP earned", value: xpPoints.toString() },
+          { label: "FAT earned", value: xpPoints.toString() },
           { label: "Tiers available", value: packages.length.toString() },
         ]}
         actions={

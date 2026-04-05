@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MatchCard } from "@/components/match-card";
+import { MatchPoll } from "@/components/engagement/match-poll";
+import { MotmVoting } from "@/components/engagement/motm-voting";
+import { ScorePrediction } from "@/components/engagement/score-prediction";
 import { NotificationOptInCard } from "@/components/pwa/notification-opt-in-card";
 import { ShareActionButton } from "@/components/pwa/share-action-button";
 import { getMatchById, getMatches } from "@/lib/data/public";
@@ -233,6 +236,58 @@ export default async function FixtureDetailPage({
                   match feed.
                 </p>
               )}
+            </div>
+          </div>
+
+          {/* ── Fan engagement hub ── */}
+          <div className="glass-panel rounded-[32px] p-6">
+            <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
+              Fan engagement
+            </p>
+            <h2 className="mt-3 font-display text-3xl font-bold uppercase leading-none text-white sm:text-4xl">
+              Get involved
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-slate-300">
+              Predict scores, vote for your man of the match, and share your opinion. Earn FAT for every interaction.
+            </p>
+
+            <div className="mt-6 grid gap-5">
+              {/* Score prediction — shown for upcoming/live matches */}
+              {!result && (
+                <ScorePrediction
+                  matchId={match.id}
+                  homeTeam={match.homeTeam}
+                  awayTeam={match.awayTeam}
+                  locked={live}
+                />
+              )}
+
+              {/* MotM voting — shown for live/completed matches */}
+              {(live || result) && (
+                <MotmVoting
+                  matchId={match.id}
+                  open={live || result}
+                  candidates={[
+                    { id: "p1", name: "Mugiraneza", position: "Forward", number: 9 },
+                    { id: "p2", name: "Ndayisaba", position: "Midfielder", number: 8 },
+                    { id: "p3", name: "Nshimiyimana", position: "Defender", number: 4 },
+                    { id: "p4", name: "Manzi", position: "Goalkeeper", number: 1 },
+                    { id: "p5", name: "Habimana", position: "Midfielder", number: 10 },
+                    { id: "p6", name: "Uwimana", position: "Forward", number: 11 },
+                  ]}
+                />
+              )}
+
+              {/* Quick poll — always available */}
+              <MatchPoll
+                pollId={`poll-${match.id}`}
+                question="Who controls the midfield today?"
+                options={[
+                  { id: "home", label: match.homeTeam, votes: 156 },
+                  { id: "away", label: match.awayTeam, votes: 89 },
+                  { id: "even", label: "Evenly matched", votes: 42 },
+                ]}
+              />
             </div>
           </div>
 

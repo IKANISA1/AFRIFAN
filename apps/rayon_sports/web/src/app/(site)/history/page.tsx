@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Flag } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { clubHistoryMoments } from "@/lib/content";
+import { getCmsContent } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata = buildPageMetadata({
@@ -11,7 +12,15 @@ export const metadata = buildPageMetadata({
   path: "/history",
 });
 
-export default function HistoryPage() {
+export default async function HistoryPage() {
+  const cmsItems = await getCmsContent("club_history");
+
+  // Use DB content if available, otherwise fall back to hardcoded
+  const moments =
+    cmsItems.length > 0
+      ? cmsItems.map((item) => ({ title: item.title, body: item.body }))
+      : clubHistoryMoments;
+
   return (
     <div className="page-shell section-grid py-12">
       <PageHero
@@ -35,14 +44,14 @@ export default function HistoryPage() {
           </>
         }
         stats={[
-          { label: "Moments", value: clubHistoryMoments.length.toString() },
+          { label: "Moments", value: moments.length.toString() },
           { label: "Identity", value: "Beloved" },
           { label: "Surface", value: "Club-first" },
         ]}
       />
 
       <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {clubHistoryMoments.map((moment, index) => (
+        {moments.map((moment, index) => (
           <article
             key={moment.title}
             className="glass-panel card-interactive rounded-[30px] border border-border-soft p-6"
