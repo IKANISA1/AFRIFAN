@@ -10,7 +10,7 @@ import type {
   SquadPlayer,
   StandingRow,
 } from "@/lib/types";
-import { rayonClub } from "@/lib/config";
+import { rayonClub, siteConfig } from "@/lib/config";
 
 export const fallbackClubProfile: ClubProfile = {
   id: rayonClub.numericId,
@@ -519,7 +519,7 @@ export const footerNavigationGroups = [
       { href: "/membership", label: "Membership" },
       { href: "/circles", label: "Support Circles" },
       { href: "/fan-clubs", label: "Fan Clubs" },
-      { href: "/app", label: "Fan Portal" },
+      { href: siteConfig.fansUrl, label: "Fan Portal" },
     ],
   },
   {
@@ -541,7 +541,7 @@ export const footerNavigationGroups = [
 ];
 
 export const portalNavigation = [
-  { href: "/app", label: "Dashboard" },
+  { href: "/app/home", label: "Dashboard" },
   { href: "/app/profile", label: "Profile" },
   { href: "/app/membership", label: "Membership" },
   { href: "/app/tickets", label: "Tickets" },

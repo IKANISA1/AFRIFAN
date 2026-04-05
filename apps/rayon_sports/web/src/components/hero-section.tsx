@@ -17,6 +17,7 @@ import {
   isLiveMatch,
   isResultMatch,
 } from "@/lib/utils";
+import { siteConfig } from "@/lib/config";
 
 interface HeroSectionProps {
   club: ClubProfile;
@@ -110,7 +111,7 @@ export function HeroSection({
                   Join membership <ShieldCheck size={18} />
                 </Link>
                 <Link
-                  href="/app"
+                  href={siteConfig.fansUrl}
                   prefetch={false}
                   className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/12 bg-white/6 px-6 py-3 font-semibold text-white transition hover:bg-white/12"
                 >

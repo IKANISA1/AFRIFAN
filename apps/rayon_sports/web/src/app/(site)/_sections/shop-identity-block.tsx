@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { SectionHeading } from "@/components/section-heading";
 import { clubHistoryMoments } from "@/lib/content";
+import { siteConfig } from "@/lib/config";
 import { getProducts } from "@/lib/data/public";
 
 export async function ShopAndIdentityBlock() {
@@ -60,7 +61,7 @@ export async function ShopAndIdentityBlock() {
           />
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href="/app"
+              href={siteConfig.fansUrl}
               prefetch={false}
               className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-primary-light"
             >

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { siteNavigation, utilityNavigation } from "@/lib/content";
+import { siteConfig } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
 
 const PRIMARY_LINKS = siteNavigation.filter(
@@ -101,7 +102,7 @@ export function SiteHeader({ club }: SiteHeaderProps) {
             </span>
           </Link>
           <Link
-            href="/app"
+            href={siteConfig.fansUrl}
             prefetch={false}
             className="hidden min-h-11 items-center gap-2 rounded-full bg-club-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-club-primary-light cta-glow focus-ring md:inline-flex"
           >
@@ -117,7 +118,7 @@ export function SiteHeader({ club }: SiteHeaderProps) {
               <div className="grid gap-3">
                 <div className="grid grid-cols-3 gap-3">
                   <Link
-                    href="/app"
+                    href={siteConfig.fansUrl}
                     prefetch={false}
                     className="rounded-2xl border border-border-soft bg-white/5 px-3 py-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-white/10"
                   >

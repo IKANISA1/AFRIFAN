@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ExternalLink, MessageCircle, ShieldCheck } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
+import { siteConfig } from "@/lib/config";
 import { getClubProfile } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 
@@ -29,7 +30,7 @@ export default async function ContactPage() {
         actions={
           <>
             <Link
-              href="/app"
+              href={siteConfig.fansUrl}
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
               Open fan portal

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { X, User, Ticket, ShoppingBag } from "lucide-react";
 import { siteNavigation, utilityNavigation } from "@/lib/content";
+import { siteConfig } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -91,7 +92,7 @@ export function MobileNavDrawer({
           {/* Quick access row */}
           <div className="flex justify-between gap-3">
             <Link
-              href="/app"
+              href={siteConfig.fansUrl}
               prefetch={false}
               className="flex-1 flex flex-col items-center justify-center gap-2 p-3 rounded-2xl bg-white/5 border border-border-soft hover:bg-white/10 transition focus-ring"
             >

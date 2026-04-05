@@ -5,6 +5,8 @@ export const siteConfig = {
     "Official Rayon Sports website for fixtures, tickets, membership, news, shop, supporter circles, and live matchday coverage.",
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://gikundiro.com",
+  fansUrl:
+    process.env.NEXT_PUBLIC_FANS_URL?.trim() || "https://fans.gikundiro.com",
   adminUrl:
     process.env.NEXT_PUBLIC_ADMIN_URL?.trim() || "https://admin.gikundiro.com",
 };

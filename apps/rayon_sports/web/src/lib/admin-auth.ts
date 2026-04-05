@@ -1,6 +1,3 @@
-const ADMIN_HOSTNAME = "admin.gikundiro.com";
-const STATIC_FILE_PATTERN = /\.[a-z0-9]+$/i;
-
 export function normalizeAdminPhone(input: string) {
   const trimmed = input.trim();
   if (!trimmed) {
@@ -40,40 +37,4 @@ export function formatAdminPhoneForDisplay(phone: string) {
   }
 
   return phone;
-}
-
-export function isAdminHostname(hostname: string | null | undefined) {
-  if (!hostname) {
-    return false;
-  }
-
-  return hostname.split(":")[0].toLowerCase() === ADMIN_HOSTNAME;
-}
-
-export function shouldBypassAdminRewrite(pathname: string) {
-  return (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/auth/") ||
-    pathname === "/favicon.ico" ||
-    pathname === "/robots.txt" ||
-    pathname === "/sitemap.xml" ||
-    pathname === "/manifest.webmanifest" ||
-    pathname === "/sw.js" ||
-    pathname.startsWith("/media/") ||
-    pathname.startsWith("/icons/") ||
-    STATIC_FILE_PATTERN.test(pathname)
-  );
-}
-
-export function mapAdminSubdomainPath(pathname: string) {
-  if (pathname === "/") {
-    return "/admin";
-  }
-
-  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
-    return pathname;
-  }
-
-  return `/admin${pathname}`;
 }

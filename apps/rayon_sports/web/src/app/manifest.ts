@@ -1,7 +1,11 @@
 import type { MetadataRoute } from "next";
 import { headers } from "next/headers";
 import { siteConfig } from "@/lib/config";
-import { isAdminHostname } from "@/lib/admin-auth";
+import {
+  isAdminHostname,
+  isFansHostname,
+  resolveRoutingHostname,
+} from "@/lib/host-routing";
 
 const sharedIcons: MetadataRoute.Manifest["icons"] = [
   { src: "/icons/icon-72x72.png", sizes: "72x72", type: "image/png" },
@@ -24,7 +28,10 @@ const sharedIcons: MetadataRoute.Manifest["icons"] = [
 
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
   const headersList = await headers();
-  const host = headersList.get("host");
+  const host = resolveRoutingHostname(
+    headersList.get("x-forwarded-host"),
+    headersList.get("host"),
+  );
 
   if (isAdminHostname(host)) {
     return {
@@ -79,12 +86,59 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     };
   }
 
+  if (isFansHostname(host)) {
+    return {
+      id: "/",
+      name: "Gikundiro Fans",
+      short_name: "Fans",
+      description:
+        "Fan portal PWA for Rayon Sports supporters with tickets, membership, shop, fan clubs, and live matchday access.",
+      start_url: "/home?source=pwa",
+      scope: "/",
+      display: "standalone",
+      display_override: ["window-controls-overlay", "standalone"],
+      orientation: "portrait",
+      background_color: "#07162f",
+      theme_color: "#0038a8",
+      shortcuts: [
+        { name: "Home", short_name: "Home", url: "/home" },
+        { name: "Tickets", short_name: "Tickets", url: "/tickets" },
+        { name: "Membership", short_name: "Membership", url: "/membership" },
+        { name: "Fan Clubs", short_name: "Clubs", url: "/fan-clubs" },
+      ],
+      icons: sharedIcons,
+      screenshots: [
+        {
+          src: "/screenshots/site-shop.png",
+          sizes: "1080x2340",
+          type: "image/png",
+          label: "Rayon Sports fan portal home for tickets, commerce, and supporter access",
+        },
+        {
+          src: "/screenshots/site-home.png",
+          sizes: "1080x2340",
+          type: "image/png",
+          label: "Rayon Sports mobile-first supporter experience installed as a PWA",
+        },
+      ],
+      share_target: {
+        action: "/share-target",
+        method: "GET",
+        params: {
+          title: "title",
+          text: "text",
+          url: "url",
+        },
+      },
+    };
+  }
+
   return {
     id: "/",
     name: siteConfig.title,
     short_name: siteConfig.shortTitle,
     description: siteConfig.description,
-    start_url: "/app?source=pwa",
+    start_url: "/app/home?source=pwa",
     scope: "/",
     display: "standalone",
     display_override: ["window-controls-overlay", "standalone"],
@@ -92,7 +146,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     background_color: "#07162f",
     theme_color: "#0038a8",
     shortcuts: [
-      { name: "Fan Portal", short_name: "Portal", url: "/app" },
+      { name: "Fan Portal", short_name: "Portal", url: "/app/home" },
       { name: "Tickets", short_name: "Tickets", url: "/tickets" },
       { name: "Support Circles", short_name: "Circles", url: "/circles" },
       { name: "Latest News", short_name: "News", url: "/news" },

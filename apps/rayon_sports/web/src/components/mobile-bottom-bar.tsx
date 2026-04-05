@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Ticket, User } from "lucide-react";
+import { siteConfig } from "@/lib/config";
 
 export function MobileBottomBar() {
   return (
@@ -14,7 +15,7 @@ export function MobileBottomBar() {
           Tickets
         </Link>
         <Link
-          href="/app"
+          href={siteConfig.fansUrl}
           prefetch={false}
           className="flex-1 flex items-center justify-center gap-2 rounded-full bg-club-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-club-primary-light cta-glow"
         >

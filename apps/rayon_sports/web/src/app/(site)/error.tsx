@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { siteConfig } from "@/lib/config";
 
 export default function SiteError({
   error,
@@ -43,7 +44,7 @@ export default function SiteError({
             Return home
           </Link>
           <Link
-            href="/app"
+            href={siteConfig.fansUrl}
             className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
           >
             Open portal

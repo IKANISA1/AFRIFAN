@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Camera, Globe, LucideIcon, Music2, Send } from "lucide-react";
 import { footerNavigationGroups } from "@/lib/content";
 import { getClubProfile } from "@/lib/data/public";
+import { siteConfig } from "@/lib/config";
 
 const socialIconMap: Record<string, LucideIcon> = {
   facebook: Globe,
@@ -55,7 +56,7 @@ export async function SiteFooter() {
 
             <div className="flex flex-wrap gap-3">
               <Link
-                href="/app"
+                href={siteConfig.fansUrl}
                 prefetch={false}
                 className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
               >

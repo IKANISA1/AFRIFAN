@@ -24,6 +24,11 @@
 			"pattern": "admin.gikundiro.com",
 			"zone_id": "6ea1b5005cb4305055062be88a5d65a8",
 			"custom_domain": true
+		},
+		{
+			"pattern": "fans.gikundiro.com",
+			"zone_id": "6ea1b5005cb4305055062be88a5d65a8",
+			"custom_domain": true
 		}
 	],
 	"assets": {
