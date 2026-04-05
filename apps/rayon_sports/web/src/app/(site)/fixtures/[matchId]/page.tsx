@@ -115,7 +115,7 @@ export default async function FixtureDetailPage({
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_30%,rgba(3,10,24,0.72)_100%)]" />
             <div className="absolute bottom-5 right-5 rounded-[26px] border border-white/10 bg-[#051228]/82 px-5 py-4 text-center backdrop-blur-xl">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                 Score
               </p>
               <p className="mt-2 font-score text-6xl text-white">
@@ -136,7 +136,7 @@ export default async function FixtureDetailPage({
             </p>
             <div className="mt-5 grid gap-4 sm:grid-cols-3">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
                   Kickoff
                 </p>
                 <p className="mt-2 text-sm text-slate-200">
@@ -144,13 +144,13 @@ export default async function FixtureDetailPage({
                 </p>
               </div>
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
                   Venue
                 </p>
                 <p className="mt-2 text-sm text-slate-200">{match.venue}</p>
               </div>
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
                   Match status
                 </p>
                 <p className="mt-2 text-sm text-slate-200">
@@ -171,7 +171,7 @@ export default async function FixtureDetailPage({
             </p>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <div className="rounded-[24px] border border-border-soft bg-white/6 p-5">
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
                   General
                 </p>
                 <p className="mt-3 font-display text-3xl font-bold uppercase">
@@ -179,7 +179,7 @@ export default async function FixtureDetailPage({
                 </p>
               </div>
               <div className="rounded-[24px] border border-border-soft bg-white/6 p-5">
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
                   VIP
                 </p>
                 <p className="mt-3 font-display text-3xl font-bold uppercase">

@@ -5,7 +5,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import type { FormEvent, ReactNode } from "react";
-import { MessageCircle, ShieldCheck } from "lucide-react";
+import {
+  Award,
+  Bell,
+  FileText,
+  HandHeart,
+  Handshake,
+  LayoutDashboard,
+  ListOrdered,
+  MessageCircle,
+  MoreHorizontal,
+  Settings,
+  ShieldCheck,
+  ShoppingBag,
+  Smartphone,
+  Trophy,
+  Users,
+  X,
+} from "lucide-react";
 import { formatAdminPhoneForDisplay } from "@/lib/admin-auth";
 import { adminNavigation } from "@/lib/content";
 import { siteConfig } from "@/lib/config";
@@ -278,19 +295,19 @@ export function AdminShell({ children }: { children: ReactNode }) {
   };
   const roleColor = roleColors[access.role ?? "fan"] ?? roleColors.fan;
 
-  const navIcons: Record<string, string> = {
-    "/admin": "📊",
-    "/admin/settings": "⚙️",
-    "/admin/cms": "📝",
-    "/admin/matches": "⚽",
-    "/admin/squad": "👥",
-    "/admin/shop": "🛍️",
-    "/admin/membership": "🏅",
-    "/admin/community": "🤝",
-    "/admin/standings": "🏆",
-    "/admin/contributions": "💰",
-    "/admin/notifications": "🔔",
-    "/admin/sms-monitor": "📱",
+  const navIcons: Record<string, typeof LayoutDashboard> = {
+    "/admin": LayoutDashboard,
+    "/admin/settings": Settings,
+    "/admin/cms": FileText,
+    "/admin/matches": Trophy,
+    "/admin/squad": Users,
+    "/admin/shop": ShoppingBag,
+    "/admin/membership": Award,
+    "/admin/community": Handshake,
+    "/admin/standings": ListOrdered,
+    "/admin/contributions": HandHeart,
+    "/admin/notifications": Bell,
+    "/admin/sms-monitor": Smartphone,
   };
 
   return (
@@ -352,7 +369,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
               const active =
                 pathname === item.href ||
                 (item.href !== "/admin" && pathname.startsWith(item.href));
-              const icon = navIcons[item.href] ?? "•";
+              const IconComponent = navIcons[item.href] ?? LayoutDashboard;
 
               return (
                 <Link
@@ -366,7 +383,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                       : "text-slate-200 hover:bg-white/8",
                   )}
                 >
-                  <span className="text-base" aria-hidden="true">{icon}</span>
+                  <IconComponent size={18} className="text-club-accent" />
                   {item.label}
                 </Link>
               );
@@ -385,40 +402,155 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <main id="admin-main-content" className="space-y-6">{children}</main>
       </div>
 
-      {/* Mobile bottom nav */}
-      <nav className="glass-panel fixed inset-x-4 bottom-4 z-30 flex gap-2 overflow-x-auto rounded-[28px] p-3 xl:hidden" aria-label="Admin mobile navigation">
-        {adminNavigation.map((item) => {
-          const active =
-            pathname === item.href ||
-            (item.href !== "/admin" && pathname.startsWith(item.href));
-          const icon = navIcons[item.href] ?? "•";
-
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "flex min-w-max items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold transition",
-                active
-                  ? "bg-club-primary text-white shadow-lg shadow-club-primary/20"
-                  : "border border-border-soft text-slate-200",
-              )}
-            >
-              <span className="text-xs" aria-hidden="true">{icon}</span>
-              {item.label}
-            </Link>
-          );
-        })}
-        <button
-          type="button"
-          onClick={() => signOut().catch(() => {})}
-          aria-label="Sign out of admin workspace"
-          className="min-w-max rounded-full border border-border-soft px-4 py-2.5 text-sm font-semibold text-slate-100"
-        >
-          Exit
-        </button>
-      </nav>
+      {/* Mobile bottom nav — 5 primary + More overflow */}
+      <AdminMobileNav
+        adminNavigation={adminNavigation}
+        navIcons={navIcons}
+        pathname={pathname}
+        onSignOut={() => signOut().catch(() => {})}
+      />
     </div>
+  );
+}
+
+/* ── Admin mobile bottom nav ─────────────────────────────── */
+
+/** Primary mobile tabs — 4 key destinations + More overflow */
+const PRIMARY_ADMIN_TABS = ["/admin", "/admin/matches", "/admin/cms", "/admin/notifications"];
+
+interface AdminMobileNavProps {
+  adminNavigation: { href: string; label: string }[];
+  navIcons: Record<string, typeof LayoutDashboard>;
+  pathname: string;
+  onSignOut: () => void;
+}
+
+function AdminMobileNav({ adminNavigation, navIcons, pathname, onSignOut }: AdminMobileNavProps) {
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const primaryItems = adminNavigation.filter((item) => PRIMARY_ADMIN_TABS.includes(item.href));
+  const overflowItems = adminNavigation.filter((item) => !PRIMARY_ADMIN_TABS.includes(item.href));
+
+  return (
+    <>
+      <nav
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-border-soft bg-surface-strong/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl xl:hidden"
+        aria-label="Admin mobile navigation"
+      >
+        <div className="mx-auto flex max-w-md items-stretch justify-around">
+          {primaryItems.map((item) => {
+            const active =
+              pathname === item.href ||
+              (item.href !== "/admin" && pathname.startsWith(item.href));
+            const IconComponent = navIcons[item.href] ?? LayoutDashboard;
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "relative flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
+                  active
+                    ? "text-club-accent"
+                    : "text-slate-400 active:text-slate-200",
+                )}
+              >
+                <IconComponent
+                  size={22}
+                  strokeWidth={active ? 2.2 : 1.6}
+                  className="transition-transform active:scale-90"
+                />
+                <span className="leading-none">{item.label}</span>
+                {active ? (
+                  <span className="absolute top-0 left-1/2 h-[2.5px] w-5 -translate-x-1/2 rounded-full bg-club-accent" />
+                ) : null}
+              </Link>
+            );
+          })}
+
+          {/* More button */}
+          <button
+            type="button"
+            onClick={() => setSheetOpen(true)}
+            className={cn(
+              "relative flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
+              sheetOpen ? "text-club-accent" : "text-slate-400 active:text-slate-200",
+            )}
+            aria-label="Show more admin options"
+          >
+            <MoreHorizontal size={22} strokeWidth={1.6} />
+            <span className="leading-none">More</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* More bottom sheet */}
+      {sheetOpen ? (
+        <div
+          className="fixed inset-0 z-40 xl:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="More admin options"
+        >
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setSheetOpen(false)}
+            onKeyDown={(event) => event.key === "Escape" && setSheetOpen(false)}
+          />
+          {/* Sheet */}
+          <div className="absolute inset-x-0 bottom-0 rounded-t-[28px] border-t border-border-soft bg-surface-strong p-5 pb-[calc(env(safe-area-inset-bottom)+1rem)]">
+            <div className="flex items-center justify-between pb-4">
+              <p className="font-display text-lg font-bold uppercase text-white">More</p>
+              <button
+                type="button"
+                onClick={() => setSheetOpen(false)}
+                className="rounded-full p-2 text-slate-300 hover:bg-white/8"
+                aria-label="Close"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <nav className="grid gap-1.5" aria-label="Additional admin navigation">
+              {overflowItems.map((item) => {
+                const active =
+                  pathname === item.href ||
+                  (item.href !== "/admin" && pathname.startsWith(item.href));
+                const IconComponent = navIcons[item.href] ?? LayoutDashboard;
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setSheetOpen(false)}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition",
+                      active
+                        ? "bg-club-primary text-white"
+                        : "text-slate-200 hover:bg-white/8",
+                    )}
+                  >
+                    <IconComponent size={18} className="text-club-accent" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+            <button
+              type="button"
+              onClick={() => {
+                setSheetOpen(false);
+                onSignOut();
+              }}
+              className="mt-4 w-full rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-rose-400/30 hover:text-rose-200"
+            >
+              Sign out
+            </button>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }

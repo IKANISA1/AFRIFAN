@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { SectionHeading } from "@/components/section-heading";
+import { ArrowRight, ShoppingBag } from "lucide-react";
+import { PageHero } from "@/components/page-hero";
 import { useFanPortal } from "@/components/portal/fan-portal-provider";
 import { fallbackProducts } from "@/lib/content";
 import { rayonClub } from "@/lib/config";
@@ -135,26 +136,84 @@ export default function FanShopPage() {
         );
       }
 
-      setStatus("Order created and awaiting payment confirmation.");
+      setStatus("Order placed — we'll confirm when it's ready for pickup.");
     } catch (caught) {
       setStatus(caught instanceof Error ? caught.message : "Order failed.");
     }
   }
 
+  const featuredProduct = products[0];
+
   return (
     <div className="section-grid">
-      <SectionHeading
-        eyebrow="Shop portal"
-        title="Create club merchandise orders from the browser."
-        description="The order record is written into the same shared commerce layer used by the mobile app."
+      <PageHero
+        eyebrow="Club shop"
+        title="Official Rayon Sports gear."
+        description="Replica kits, matchday scarves, and supporter essentials — pick your drop, place the order, collect before kickoff."
+        stats={[
+          { label: "Products", value: products.length.toString() },
+          { label: "My orders", value: orders.length.toString() },
+          { label: "Collections", value: [...new Set(products.map((p) => p.collection).filter(Boolean))].length.toString() },
+        ]}
+        actions={
+          <>
+            <a
+              href="#shop-order"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full bg-club-accent px-5 py-3 font-semibold text-slate-950 transition hover:brightness-110"
+            >
+              Place order <ShoppingBag size={18} />
+            </a>
+            <a
+              href="#order-history"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border-soft bg-white/5 px-5 py-3 font-semibold text-white transition hover:bg-white/10"
+            >
+              My orders <ArrowRight size={18} />
+            </a>
+          </>
+        }
+        media={
+          featuredProduct ? (
+            <article className="rounded-[28px] border border-border-soft bg-black/20 p-5">
+              <Image
+                src={featuredProduct.imageUrl ?? "/media/stadium-hero.jpg"}
+                alt={featuredProduct.name}
+                width={1200}
+                height={720}
+                sizes="(min-width: 1024px) 30vw, 100vw"
+                className="h-40 w-full rounded-[22px] object-cover"
+              />
+              <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.24em] text-club-accent">
+                {featuredProduct.collection ?? featuredProduct.category}
+              </p>
+              <p className="mt-3 font-display text-3xl font-bold uppercase leading-none text-white">
+                {featuredProduct.name}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-slate-300">
+                {featuredProduct.subtitle}
+              </p>
+              <p className="mt-4 font-display text-2xl font-bold uppercase text-white">
+                {formatCurrency(featuredProduct.price)}
+              </p>
+            </article>
+          ) : null
+        }
       />
+
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-        <form action={placeOrder} className="glass-panel grid gap-5 rounded-[32px] p-6">
+        <form id="shop-order" action={placeOrder} className="glass-panel-elevated grid gap-5 rounded-[32px] p-6">
+          <div>
+            <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
+              Order
+            </p>
+            <h2 className="mt-4 font-display text-4xl font-bold uppercase leading-none text-white">
+              Pick your gear.
+            </h2>
+          </div>
           <label className="grid gap-2 text-sm">
             Product
             <select
               name="productId"
-              className="rounded-2xl border border-border-soft bg-white/6 px-4 py-3"
+              className="dashboard-input"
               defaultValue={products[0]?.id}
             >
               {products.map((product) => (
@@ -172,21 +231,21 @@ export default function FanShopPage() {
               min="1"
               max="10"
               defaultValue="1"
-              className="rounded-2xl border border-border-soft bg-white/6 px-4 py-3"
+              className="dashboard-input"
             />
           </label>
           <label className="grid gap-2 text-sm">
             Delivery address
             <textarea
               name="deliveryAddress"
-              rows={4}
-              className="rounded-2xl border border-border-soft bg-white/6 px-4 py-3 outline-none"
+              rows={3}
+              className="dashboard-input"
               defaultValue=""
             />
           </label>
           <button
             type="submit"
-            className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
+            className="rounded-full bg-club-accent px-5 py-3 font-semibold text-slate-950 transition hover:brightness-110"
           >
             Place order
           </button>
@@ -196,7 +255,7 @@ export default function FanShopPage() {
         <div className="grid gap-5">
           <div className="grid gap-5 md:grid-cols-2">
             {products.slice(0, 4).map((product) => (
-              <article key={product.id} className="glass-panel rounded-[28px] p-4">
+              <article key={product.id} className="glass-panel card-interactive rounded-[28px] p-4">
                 <Image
                   src={product.imageUrl ?? "/media/stadium-hero.jpg"}
                   alt={product.name}
@@ -217,10 +276,18 @@ export default function FanShopPage() {
               </article>
             ))}
           </div>
-          <div className="glass-panel rounded-[30px] p-5">
-            <p className="font-display text-3xl font-bold uppercase leading-none">
-              My orders
-            </p>
+
+          <div id="order-history" className="glass-panel rounded-[30px] p-5">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
+                  Order history
+                </p>
+                <p className="mt-3 font-display text-3xl font-bold uppercase leading-none">
+                  My orders
+                </p>
+              </div>
+            </div>
             <div className="mt-5 grid gap-3">
               {orders.length > 0 ? (
                 orders.map((order) => (
@@ -232,14 +299,14 @@ export default function FanShopPage() {
                       {order.status}
                     </p>
                     <p className="mt-2">{formatCurrency(order.total)}</p>
-                    <p className="mt-1 text-slate-400">
+                    <p className="mt-1 text-slate-300">
                       {order.deliveryAddress ?? "Delivery address pending"}
                     </p>
                   </div>
                 ))
               ) : (
-                <p className="text-sm leading-7 text-slate-300">
-                  Orders will appear here after your first portal checkout.
+                <p className="rounded-[22px] border border-dashed border-border-soft bg-white/4 px-5 py-6 text-sm leading-7 text-slate-300">
+                  Your order history will appear here after your first purchase.
                 </p>
               )}
             </div>

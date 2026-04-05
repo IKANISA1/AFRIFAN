@@ -76,7 +76,7 @@ export default async function CirclesPage() {
                   </p>
                 </div>
                 <div className="rounded-[24px] border border-border-soft bg-black/20 px-5 py-4">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                     Members
                   </p>
                   <p className="mt-2 font-score text-5xl text-white">
@@ -87,7 +87,7 @@ export default async function CirclesPage() {
 
               <div className="mt-5 grid gap-3 sm:grid-cols-3">
                 <div className="rounded-[22px] bg-white/5 p-4">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                     Current
                   </p>
                   <p className="mt-2 text-sm font-semibold text-white">
@@ -95,7 +95,7 @@ export default async function CirclesPage() {
                   </p>
                 </div>
                 <div className="rounded-[22px] bg-white/5 p-4">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                     Target
                   </p>
                   <p className="mt-2 text-sm font-semibold text-white">
@@ -103,7 +103,7 @@ export default async function CirclesPage() {
                   </p>
                 </div>
                 <div className="rounded-[22px] bg-white/5 p-4">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                     Invite
                   </p>
                   <p className="mt-2 text-sm font-semibold text-white">
@@ -169,7 +169,7 @@ export default async function CirclesPage() {
                   <div className="flex items-center justify-between gap-4">
                     <div>
                       <p className="text-sm font-semibold text-white">{club.name}</p>
-                      <p className="mt-1 text-xs uppercase tracking-[0.22em] text-slate-400">
+                      <p className="mt-1 text-xs uppercase tracking-[0.22em] text-slate-300">
                         {club.region}
                       </p>
                     </div>

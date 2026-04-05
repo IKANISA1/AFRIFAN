@@ -61,7 +61,7 @@ export function ProductCard({ product }: { product: ShopProduct }) {
         </div>
         <div className="flex items-center gap-2 text-sm font-semibold text-white">
           View product
-          <ArrowRight size={18} className="text-slate-400" />
+          <ArrowRight size={18} className="text-slate-300" />
         </div>
       </div>
     </Link>

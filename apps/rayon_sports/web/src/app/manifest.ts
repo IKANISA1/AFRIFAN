@@ -67,11 +67,11 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
           label: "Admin dashboard with metrics, quick actions, and recent activity",
         },
         {
-          src: "/screenshots/admin-matches.png",
-          sizes: "1024x1024",
+          src: "/screenshots/admin-matches-rayon.png",
+          sizes: "2688x2363",
           type: "image/png",
           form_factor: "wide",
-          label: "Match management with status badges and inline editing",
+          label: "Rayon Sports match management with status badges and inline editing",
         },
       ],
       share_target: {
@@ -109,16 +109,18 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
       icons: sharedIcons,
       screenshots: [
         {
-          src: "/screenshots/site-shop.png",
-          sizes: "1080x2340",
+          src: "/screenshots/fans-home.png",
+          sizes: "1082x2402",
           type: "image/png",
-          label: "Rayon Sports fan portal home for tickets, commerce, and supporter access",
+          form_factor: "narrow",
+          label: "Gikundiro fans matchday home with tickets, tiers, and live fixtures",
         },
         {
-          src: "/screenshots/site-home.png",
-          sizes: "1080x2340",
+          src: "/screenshots/fans-tickets.png",
+          sizes: "1082x2402",
           type: "image/png",
-          label: "Rayon Sports mobile-first supporter experience installed as a PWA",
+          form_factor: "narrow",
+          label: "Matchday ticket checkout with seat selection and pricing",
         },
       ],
       share_target: {
@@ -154,16 +156,18 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     icons: sharedIcons,
     screenshots: [
       {
-        src: "/screenshots/site-home.png",
-        sizes: "1080x2340",
+        src: "/screenshots/fans-home.png",
+        sizes: "1082x2402",
         type: "image/png",
-        label: "Public Rayon Sports home surface with hero, matchday, and news content",
+        form_factor: "narrow",
+        label: "Gikundiro fans matchday home with tickets, tiers, and live fixtures",
       },
       {
-        src: "/screenshots/site-shop.png",
-        sizes: "1080x2340",
+        src: "/screenshots/fans-tickets.png",
+        sizes: "1082x2402",
         type: "image/png",
-        label: "Rayon Sports fan portal and commerce-ready supporter experience",
+        form_factor: "narrow",
+        label: "Matchday ticket checkout with seat selection and pricing",
       },
     ],
     share_target: {

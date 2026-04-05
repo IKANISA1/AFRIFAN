@@ -80,27 +80,26 @@ export default function AdminStandingsPage() {
   return (
     <div className="section-grid">
       <SectionHeading
-        eyebrow="Standings manager"
-        title="Maintain the league table displayed on the public site."
-        description="Add or update club positioning, points, and form indicators. Data feeds the standings page and the homepage table preview."
+        eyebrow="Standings"
+        title="Maintain the league table."
       />
 
       <div className="grid gap-5 md:grid-cols-3">
         <AdminStateCard
           label="Clubs"
           value={loading ? "..." : rows.length.toString()}
-          helper="Total rows in the current standings table."
+          helper="Table rows."
           icon={Trophy}
         />
         <AdminStateCard
           label="Rayon position"
           value={loading ? "..." : rayon ? `#${rayon.position}` : "-"}
-          helper="Current league position for Rayon Sports."
+          helper="League position."
         />
         <AdminStateCard
           label="Rayon points"
           value={loading ? "..." : rayon ? rayon.points.toString() : "-"}
-          helper="Current points tally for the club."
+          helper="Points tally."
         />
       </div>
 

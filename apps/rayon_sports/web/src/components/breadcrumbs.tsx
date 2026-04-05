@@ -49,7 +49,7 @@ export function Breadcrumbs() {
     >
       <Link
         href="/"
-        className="flex items-center gap-1 text-slate-400 transition hover:text-white"
+        className="flex items-center gap-1 text-slate-300 transition hover:text-white"
       >
         <Home size={12} />
         <span className="sr-only">Home</span>
@@ -64,7 +64,7 @@ export function Breadcrumbs() {
           ) : (
             <Link
               href={crumb.href}
-              className="uppercase tracking-[0.18em] text-slate-400 transition hover:text-white"
+              className="uppercase tracking-[0.18em] text-slate-300 transition hover:text-white"
             >
               {crumb.label}
             </Link>

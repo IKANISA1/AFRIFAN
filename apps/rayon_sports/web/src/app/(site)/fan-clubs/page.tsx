@@ -69,7 +69,7 @@ export default async function FanClubsPage() {
                   <p className="font-display text-3xl font-bold uppercase">
                     {club.memberCount}
                   </p>
-                  <p className="text-xs uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-xs uppercase tracking-[0.22em] text-slate-300">
                     members
                   </p>
                 </div>

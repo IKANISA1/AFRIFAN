@@ -122,7 +122,7 @@ export function HeroSection({
 
             <div className="grid gap-3 sm:grid-cols-3">
               <article className="rounded-[26px] border border-white/10 bg-black/20 px-4 py-4 backdrop-blur-md">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-slate-300">
                   Languages
                 </p>
                 <p className="mt-3 font-score text-3xl font-bold uppercase text-white">
@@ -133,7 +133,7 @@ export function HeroSection({
                 </p>
               </article>
               <article className="rounded-[26px] border border-white/10 bg-black/20 px-4 py-4 backdrop-blur-md">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-slate-300">
                   Fan clubs
                 </p>
                 <p className="mt-3 font-score text-3xl font-bold uppercase text-white">
@@ -144,7 +144,7 @@ export function HeroSection({
                 </p>
               </article>
               <article className="rounded-[26px] border border-white/10 bg-black/20 px-4 py-4 backdrop-blur-md">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-slate-300">
                   Match state
                 </p>
                 <p className="mt-3 font-score text-3xl font-bold uppercase text-white">
@@ -186,7 +186,7 @@ export function HeroSection({
                 </div>
                 {featuredMatch ? (
                   <div className="rounded-[24px] border border-white/10 bg-black/20 px-4 py-3 text-right">
-                    <p className="text-[10px] uppercase tracking-[0.24em] text-slate-400">
+                    <p className="text-[10px] uppercase tracking-[0.24em] text-slate-300">
                       Status
                     </p>
                     <p className="mt-2 font-score text-4xl font-bold uppercase text-white">
@@ -234,7 +234,7 @@ export function HeroSection({
                 <>
                   <div className="mt-4 grid gap-3 sm:grid-cols-3">
                     <div className="rounded-[22px] bg-black/20 p-4">
-                      <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                      <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                         Current
                       </p>
                       <p className="mt-2 text-sm font-semibold text-white">
@@ -242,7 +242,7 @@ export function HeroSection({
                       </p>
                     </div>
                     <div className="rounded-[22px] bg-black/20 p-4">
-                      <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                      <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                         Target
                       </p>
                       <p className="mt-2 text-sm font-semibold text-white">
@@ -250,7 +250,7 @@ export function HeroSection({
                       </p>
                     </div>
                     <div className="rounded-[22px] bg-black/20 p-4">
-                      <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                      <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                         Members
                       </p>
                       <p className="mt-2 text-sm font-semibold text-white">

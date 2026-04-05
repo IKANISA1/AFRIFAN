@@ -43,7 +43,7 @@ export async function MembershipAndStandingsBlock() {
                   <p className="font-score text-3xl font-bold uppercase text-white">
                     {formatCurrency(membershipPackage.annualPrice, club.currencyCode)}
                   </p>
-                  <p className="text-[10px] text-slate-400">
+                  <p className="text-[10px] text-slate-300">
                     / year
                   </p>
                 </div>
@@ -78,7 +78,7 @@ export async function MembershipAndStandingsBlock() {
           />
           <div className="mt-6 overflow-x-auto overflow-hidden rounded-[26px] border border-border-soft">
             <table className="w-full min-w-[400px] text-left text-sm">
-              <thead className="bg-white/8 text-[11px] uppercase tracking-[0.24em] text-slate-400">
+              <thead className="bg-white/8 text-[11px] uppercase tracking-[0.24em] text-slate-300">
                 <tr>
                   <th className="px-4 py-3 text-center">Pos</th>
                   <th className="px-4 py-3">Club</th>

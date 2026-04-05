@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SectionHeading } from "@/components/section-heading";
+import { ArrowRight, Star, Users } from "lucide-react";
+import { PageHero } from "@/components/page-hero";
 import { useFanPortal } from "@/components/portal/fan-portal-provider";
 import { fallbackFanClubs } from "@/lib/content";
 import { rayonClub } from "@/lib/config";
@@ -61,7 +62,7 @@ export default function FanClubsPortalPage() {
     const activeClient = client;
     const activeUser = user;
 
-    setStatus(joined ? "Leaving fan club..." : "Joining fan club...");
+    setStatus(joined ? "Leaving chapter..." : "Joining chapter...");
 
     try {
       if (joined) {
@@ -71,7 +72,7 @@ export default function FanClubsPortalPage() {
           .eq("club_id", fanClubId)
           .eq("user_id", activeUser.id);
         setJoinedClubIds((current) => current.filter((id) => id !== fanClubId));
-        setStatus("Fan club membership removed.");
+        setStatus("Left the chapter.");
       } else {
         await activeClient.from("fan_club_members").insert({
           club_id: fanClubId,
@@ -79,26 +80,94 @@ export default function FanClubsPortalPage() {
           tenant_club_id: rayonClub.numericId,
         });
         setJoinedClubIds((current) => [...current, fanClubId]);
-        setStatus("Fan club joined.");
+        setStatus("Chapter joined.");
       }
     } catch (caught) {
       setStatus(caught instanceof Error ? caught.message : "Action failed.");
     }
   }
 
+  const totalMembers = fanClubs.reduce((sum, club) => sum + club.memberCount, 0);
+  const featuredClub = fanClubs[0];
+
   return (
     <div className="section-grid">
-      <SectionHeading
+      <PageHero
         eyebrow="Fan clubs"
-        title="Join supporter chapters from the same web session."
-        description="This page focuses on chapter discovery and membership. Administrative chapter creation remains a separate club-admin concern."
+        title="Find your chapter."
+        description="Supporter chapters across Kigali, Rwanda, and the diaspora — connect with fellow fans, organise travel, and build the blue wave together."
+        stats={[
+          { label: "Chapters", value: fanClubs.length.toString() },
+          { label: "Joined", value: joinedClubIds.length.toString() },
+          { label: "Total supporters", value: totalMembers.toString() },
+        ]}
+        actions={
+          <a
+            href="#chapters"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-club-accent px-5 py-3 font-semibold text-slate-950 transition hover:brightness-110"
+          >
+            Explore chapters <Users size={18} />
+          </a>
+        }
+        media={
+          featuredClub ? (
+            <article className="rounded-[28px] border border-border-soft bg-black/20 p-5">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-club-accent">
+                    Largest chapter
+                  </p>
+                  <p className="mt-4 font-display text-4xl font-bold uppercase leading-none text-white">
+                    {featuredClub.name}
+                  </p>
+                  <p className="mt-2 text-sm uppercase tracking-[0.2em] text-slate-300">
+                    {featuredClub.region}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="font-display text-3xl font-bold uppercase text-white">
+                    {featuredClub.memberCount}
+                  </p>
+                  <p className="text-xs uppercase tracking-[0.18em] text-slate-300">
+                    members
+                  </p>
+                </div>
+              </div>
+              <p className="mt-4 text-sm leading-6 text-slate-300">
+                {featuredClub.description}
+              </p>
+              <div className="mt-4 flex items-center gap-3">
+                {featuredClub.rating > 0 ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-club-accent/30 bg-club-accent/12 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-club-accent">
+                    <Star size={12} />
+                    {featuredClub.rating.toFixed(1)}
+                  </span>
+                ) : null}
+                <span className="rounded-full border border-border-soft px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-300">
+                  {featuredClub.eventCount} events
+                </span>
+              </div>
+            </article>
+          ) : null
+        }
       />
-      <div className="grid gap-5 lg:grid-cols-2">
+
+      <div id="chapters" className="grid gap-5 lg:grid-cols-2">
         {fanClubs.map((fanClub) => {
           const joined = joinedClubIds.includes(fanClub.id);
 
           return (
-            <article key={fanClub.id} className="glass-panel rounded-[30px] p-6">
+            <article
+              key={fanClub.id}
+              className={`glass-panel card-interactive relative overflow-hidden rounded-[30px] p-6 ${
+                joined ? "ring-2 ring-club-accent/30" : ""
+              }`}
+            >
+              {joined ? (
+                <span className="absolute top-5 right-5 rounded-full border border-emerald-400/30 bg-emerald-500/12 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-200">
+                  Joined
+                </span>
+              ) : null}
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-display text-4xl font-bold uppercase leading-none">
@@ -112,7 +181,7 @@ export default function FanClubsPortalPage() {
                   <p className="font-display text-3xl font-bold uppercase">
                     {fanClub.memberCount}
                   </p>
-                  <p className="text-xs uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-xs uppercase tracking-[0.22em] text-slate-300">
                     members
                   </p>
                 </div>
@@ -120,18 +189,37 @@ export default function FanClubsPortalPage() {
               <p className="mt-4 text-sm leading-7 text-slate-300">
                 {fanClub.description}
               </p>
-              <button
-                type="button"
-                onClick={() => toggleMembership(fanClub.id, joined)}
-                className="mt-6 rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
-              >
-                {joined ? "Leave chapter" : "Join chapter"}
-              </button>
+              <div className="mt-5 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => toggleMembership(fanClub.id, joined)}
+                  className={`rounded-full px-5 py-3 font-semibold transition ${
+                    joined
+                      ? "border border-border-soft bg-white/5 text-white hover:bg-white/10"
+                      : "bg-club-primary text-white hover:bg-club-secondary"
+                  }`}
+                >
+                  {joined ? "Leave chapter" : "Join chapter"}
+                </button>
+                {fanClub.rating > 0 ? (
+                  <span className="inline-flex items-center gap-1.5 text-sm text-slate-300">
+                    <Star size={14} className="text-club-accent" />
+                    {fanClub.rating.toFixed(1)}
+                  </span>
+                ) : null}
+                <span className="text-sm text-slate-300">
+                  {fanClub.eventCount} events
+                </span>
+              </div>
             </article>
           );
         })}
       </div>
-      {status ? <p className="text-sm text-slate-300">{status}</p> : null}
+      {status ? (
+        <p className="rounded-[20px] border border-border-soft bg-white/5 px-4 py-3 text-sm text-slate-200">
+          {status}
+        </p>
+      ) : null}
     </div>
   );
 }

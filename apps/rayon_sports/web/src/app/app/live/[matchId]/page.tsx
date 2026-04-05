@@ -106,7 +106,7 @@ export default function LiveMatchPage() {
           <div className="mt-4 grid gap-4 sm:grid-cols-3">
             {Object.entries(match.liveStats).map(([key, value]) => (
               <div key={key} className="rounded-[22px] bg-white/6 p-4">
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
                   {key}
                 </p>
                 <p className="mt-2 font-display text-3xl font-bold uppercase">

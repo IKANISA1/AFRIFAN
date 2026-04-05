@@ -35,7 +35,7 @@ export function NewsCard({ article }: { article: NewsArticle }) {
       </div>
 
       <div className="space-y-3">
-        <div className="flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-slate-400">
+        <div className="flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-slate-300">
           <span>Club media</span>
           <span>{formatDate(article.publishedAt)}</span>
         </div>
@@ -47,7 +47,7 @@ export function NewsCard({ article }: { article: NewsArticle }) {
 
       <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/8 pt-4">
         <span className="text-sm font-semibold text-white">Read story</span>
-        <ArrowRight size={18} className="text-slate-400" />
+        <ArrowRight size={18} className="text-slate-300" />
       </div>
     </Link>
   );

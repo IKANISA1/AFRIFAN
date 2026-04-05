@@ -51,7 +51,7 @@ export default function HistoryPage() {
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-club-accent/15 text-club-accent">
                 <Flag size={18} />
               </span>
-              <span className="font-mono text-xs uppercase tracking-[0.24em] text-slate-400">
+              <span className="font-mono text-xs uppercase tracking-[0.24em] text-slate-300">
                 Chapter {index + 1}
               </span>
             </div>

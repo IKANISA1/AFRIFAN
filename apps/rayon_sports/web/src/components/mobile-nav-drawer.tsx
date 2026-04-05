@@ -40,6 +40,18 @@ export function MobileNavDrawer({
     };
   }, [isOpen]);
 
+  // Close on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
@@ -81,7 +93,7 @@ export function MobileNavDrawer({
           <button 
             type="button"
             onClick={onClose}
-            className="p-2 -mr-2 text-slate-400 hover:text-white transition-colors focus-ring"
+            className="p-2 -mr-2 text-slate-300 hover:text-white transition-colors focus-ring"
             aria-label="Close menu"
           >
             <X size={24} />
@@ -165,7 +177,7 @@ export function MobileNavDrawer({
           {/* Utility row */}
           <div className="mt-auto">
              <div className="p-4 rounded-2xl bg-white/5 border border-border-soft flex items-center justify-between text-sm">
-                <span className="text-slate-400">Language</span>
+                <span className="text-slate-300">Language</span>
                 <div className="flex items-center gap-3 font-semibold text-slate-300">
                   {club.supportedLanguages.map((language, index) => (
                     <span

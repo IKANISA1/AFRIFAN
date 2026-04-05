@@ -62,9 +62,8 @@ export default function AdminSettingsPage() {
   return (
     <div className="section-grid">
       <SectionHeading
-        eyebrow="Club settings"
-        title="Control the brand, contact, language, and public feature switches."
-        description="These values drive the public web experience and give the admin team one place to maintain core club identity in Supabase."
+        eyebrow="Settings"
+        title="Club brand, contact, and feature flags."
       />
 
       <div className="grid gap-5 md:grid-cols-4">
@@ -75,12 +74,12 @@ export default function AdminSettingsPage() {
               ? "..."
               : form.supportedLanguagesText.split(",").map((i) => i.trim()).filter(Boolean).length.toString()
           }
-          helper="Languages exposed across the public shell."
+          helper="Supported languages."
           icon={Languages}
         />
-        <AdminStateCard label="Features" value={loading ? "..." : enabledFlags.toString()} helper="Enabled public feature flags." icon={ShieldCheck} />
-        <AdminStateCard label="Contact" value={loading || form == null ? "..." : "Live"} helper="Official support and matchday contact channel." icon={Phone} />
-        <AdminStateCard label="Brand" value={loading || form == null ? "..." : "Synced"} helper="Primary, secondary, and accent club colors." icon={Palette} />
+        <AdminStateCard label="Features" value={loading ? "..." : enabledFlags.toString()} helper="Enabled flags." icon={ShieldCheck} />
+        <AdminStateCard label="Contact" value={loading || form == null ? "..." : "Live"} helper="Support channel." icon={Phone} />
+        <AdminStateCard label="Brand" value={loading || form == null ? "..." : "Synced"} helper="Club colors." icon={Palette} />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">

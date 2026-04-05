@@ -137,8 +137,7 @@ export default function AdminNotificationsPage() {
     <div className="section-grid">
       <SectionHeading
         eyebrow="Notifications"
-        title="Compose supporter broadcasts without leaving the web admin."
-        description="Notifications are delivered through the `admin-send-notification` edge function and keep audience targeting aligned with the club-scoped mobile product."
+        title="Compose and send supporter broadcasts."
       />
 
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">

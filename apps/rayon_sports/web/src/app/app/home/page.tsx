@@ -108,7 +108,7 @@ export default function FanPortalDashboardPage() {
       <PageHero
         eyebrow="Matchday home"
         title={`Welcome, ${supporterName}.`}
-        description="Your supporter identity, ticketing lane, and club perks are lined up for the next whistle. Use this space like a matchday control room, not a back-office dashboard."
+        description="Tickets, membership, and live moments — everything lined up for the next whistle."
         actions={
           <>
             <Link
@@ -158,7 +158,7 @@ export default function FanPortalDashboardPage() {
               </p>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-300">
                     General
                   </p>
                   <p className="mt-2 font-display text-3xl font-bold uppercase text-white">
@@ -166,7 +166,7 @@ export default function FanPortalDashboardPage() {
                   </p>
                 </div>
                 <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-300">
                     VIP
                   </p>
                   <p className="mt-2 font-display text-3xl font-bold uppercase text-white">
@@ -183,7 +183,7 @@ export default function FanPortalDashboardPage() {
         <div className="space-y-6">
           <div className="grid gap-5 md:grid-cols-3">
             <PortalStateCard
-              label="Membership lane"
+              label="Membership"
               value={tierLabel}
               className="glass-panel-elevated"
               badge={
@@ -191,33 +191,27 @@ export default function FanPortalDashboardPage() {
                   Active
                 </span>
               }
-              helper={
-                <>
-                  Alias: {profile?.publicUserId ?? "Pending"}.
-                  <br />
-                  Chapter: {membership?.chapter ?? "Main stand"}.
-                </>
-              }
+              helper={`${profile?.publicUserId ?? "Pending"} · ${membership?.chapter ?? "Main stand"}`}
             />
             <PortalStateCard
-              label="Tickets ready"
+              label="Tickets"
               value={counts.tickets.toString()}
               className="border border-club-primary/30 bg-[linear-gradient(180deg,rgba(0,56,168,0.18),rgba(8,18,42,0.82))]"
-              helper="Keep your matchday seat history close, then jump straight into the next sale."
+              helper="Owned across all fixtures."
             />
             <PortalStateCard
-              label="Orders + crews"
-              value={`${counts.orders}/${counts.groups}`}
+              label="Orders · Circles"
+              value={`${counts.orders} · ${counts.groups}`}
               className="border border-border-soft bg-[linear-gradient(180deg,rgba(212,160,23,0.08),rgba(8,18,42,0.82))]"
-              helper="Merch orders and supporter circles stay in the same lane so nothing gets lost before kickoff."
+              helper="Shop orders and supporter groups."
             />
           </div>
 
           <NotificationOptInCard
             surface="portal"
             path="/app/home"
-            title="Turn your phone into matchday control."
-            description="Switch on alerts for kickoff reminders, ticket confirmations, and live moments that actually matter when the blue wave is moving."
+            title="Matchday alerts"
+            description="Kickoff reminders, ticket confirmations, and live score updates."
           />
         </div>
 
@@ -229,12 +223,8 @@ export default function FanPortalDashboardPage() {
                 This week in blue
               </p>
               <h2 className="mt-4 font-display text-4xl font-bold uppercase leading-none text-white">
-                What to handle before kickoff.
+                Before kickoff
               </h2>
-              <p className="mt-4 text-sm leading-7 text-slate-300">
-                The best fan products make the next action obvious. These are
-                the three moves that matter most right now.
-              </p>
             </div>
 
             <div className="grid gap-4">
@@ -244,7 +234,7 @@ export default function FanPortalDashboardPage() {
                     <Ticket size={18} />
                   </div>
                   <div>
-                    <p className="text-[11px] uppercase tracking-[0.24em] text-slate-400">
+                    <p className="text-[11px] uppercase tracking-[0.24em] text-slate-300">
                       Ticket window
                     </p>
                     <p className="mt-2 text-lg font-semibold text-white">
@@ -254,8 +244,8 @@ export default function FanPortalDashboardPage() {
                     </p>
                     <p className="mt-2 text-sm leading-6 text-slate-300">
                       {featuredMatch?.isOnSale
-                        ? "Seats are open now. Lock in your section before the crowd surges."
-                        : "Keep an eye on sales and pricing so you are ready when gates open."}
+                        ? "Seats open — lock your section."
+                        : "Sales not yet open."}
                     </p>
                   </div>
                 </div>
@@ -267,7 +257,7 @@ export default function FanPortalDashboardPage() {
                     <Bell size={18} />
                   </div>
                   <div>
-                    <p className="text-[11px] uppercase tracking-[0.24em] text-slate-400">
+                    <p className="text-[11px] uppercase tracking-[0.24em] text-slate-300">
                       Match alerts
                     </p>
                     <p className="mt-2 text-lg font-semibold text-white">
@@ -277,8 +267,8 @@ export default function FanPortalDashboardPage() {
                     </p>
                     <p className="mt-2 text-sm leading-6 text-slate-300">
                       {liveMatch
-                        ? "Notifications are the fastest route back into the live center while the game is moving."
-                        : "Enable alerts once and your phone becomes the fastest route back into the action."}
+                        ? "Live now — tap to follow."
+                        : "Enable alerts for live updates."}
                     </p>
                   </div>
                 </div>
@@ -290,15 +280,14 @@ export default function FanPortalDashboardPage() {
                     <ArrowRight size={18} />
                   </div>
                   <div>
-                    <p className="text-[11px] uppercase tracking-[0.24em] text-slate-400">
+                    <p className="text-[11px] uppercase tracking-[0.24em] text-slate-300">
                       Supporter moves
                     </p>
                     <p className="mt-2 text-lg font-semibold text-white">
-                      Perks, chapters, and away-day links
+                      Membership and chapters
                     </p>
                     <p className="mt-2 text-sm leading-6 text-slate-300">
-                      Keep membership current, jump into a chapter, and stay
-                      close to the next organized move.
+                      Tier perks, fan clubs, and away-day coordination.
                     </p>
                   </div>
                 </div>

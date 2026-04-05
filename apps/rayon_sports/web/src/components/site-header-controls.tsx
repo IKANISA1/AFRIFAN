@@ -50,7 +50,7 @@ export function SiteHeaderControls({ club }: SiteHeaderControlsProps) {
           aria-label="Search"
         >
           <Search size={18} />
-          <span className="ml-2 hidden text-xs uppercase tracking-[0.18em] text-slate-400 xl:inline">
+          <span className="ml-2 hidden text-xs uppercase tracking-[0.18em] text-slate-300 xl:inline">
             Search
           </span>
         </button>

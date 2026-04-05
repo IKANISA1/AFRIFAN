@@ -112,14 +112,13 @@ export default function AdminShopPage() {
   return (
     <div className="section-grid">
       <SectionHeading
-        eyebrow="Shop manager"
-        title="Manage products displayed on the public shop page."
-        description="Add, edit, and remove products. Changes flow directly to the public shop catalogue."
+        eyebrow="Shop"
+        title="Manage products and catalogue."
       />
       <div className="grid gap-5 md:grid-cols-3">
-        <AdminStateCard label="Products" value={loading ? "..." : products.length.toString()} helper="Total products in catalogue." icon={ShoppingBag} />
-        <AdminStateCard label="Active" value={loading ? "..." : products.filter((p) => p.isActive).length.toString()} helper="Published to the public shop." />
-        <AdminStateCard label="Categories" value={loading ? "..." : categories.length.toString()} helper="Distinct product categories." />
+        <AdminStateCard label="Products" value={loading ? "..." : products.length.toString()} helper="In catalogue." icon={ShoppingBag} />
+        <AdminStateCard label="Active" value={loading ? "..." : products.filter((p) => p.isActive).length.toString()} helper="Visible in shop." />
+        <AdminStateCard label="Categories" value={loading ? "..." : categories.length.toString()} helper="Product groups." />
       </div>
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
         <form action={submitForm} className="glass-panel grid gap-4 rounded-[32px] p-6">

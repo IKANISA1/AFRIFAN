@@ -66,7 +66,7 @@ export function MatchRibbon({ match }: MatchRibbonProps) {
           <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
             {match.homeTeam} vs {match.awayTeam}
           </span>
-          <span className="text-[11px] uppercase tracking-[0.18em] text-slate-400">
+          <span className="text-[11px] uppercase tracking-[0.18em] text-slate-300">
             {formatDateTime(match.matchDate)}
           </span>
         </div>

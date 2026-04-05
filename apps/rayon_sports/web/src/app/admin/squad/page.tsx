@@ -78,16 +78,15 @@ export default function AdminSquadPage() {
   return (
     <div className="section-grid">
       <SectionHeading
-        eyebrow="Squad manager"
-        title="Manage first-team player profiles published on the public site."
-        description="Player profiles flow directly to the squad section. Update positions, shirt numbers, and bios here."
+        eyebrow="Squad"
+        title="Manage player profiles."
       />
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-        <AdminStateCard label="Total players" value={loading ? "..." : players.length.toString()} helper="All registered first-team players." icon={Users} />
-        <AdminStateCard label="Defenders" value={loading ? "..." : positionCounts.defenders.toString()} helper="Players registered in defensive positions." icon={Shield} />
-        <AdminStateCard label="Midfielders" value={loading ? "..." : positionCounts.midfielders.toString()} helper="Players registered in midfield positions." />
-        <AdminStateCard label="Forwards" value={loading ? "..." : positionCounts.forwards.toString()} helper="Players registered in attacking positions." />
+        <AdminStateCard label="Total players" value={loading ? "..." : players.length.toString()} helper="First-team squad." icon={Users} />
+        <AdminStateCard label="Defenders" value={loading ? "..." : positionCounts.defenders.toString()} helper="Defensive positions." icon={Shield} />
+        <AdminStateCard label="Midfielders" value={loading ? "..." : positionCounts.midfielders.toString()} helper="Midfield positions." />
+        <AdminStateCard label="Forwards" value={loading ? "..." : positionCounts.forwards.toString()} helper="Attacking positions." />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">

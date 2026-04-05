@@ -75,28 +75,27 @@ export default function AdminMatchesPage() {
   return (
     <div className="section-grid">
       <SectionHeading
-        eyebrow="Match manager"
-        title="Control fixtures, ticket sales, and live-state from one mobile-first surface."
-        description="This editor keeps the club website, fan portal, and live center aligned on the same match contract."
+        eyebrow="Fixtures"
+        title="Manage matches, ticket sales, and live state."
       />
 
       <div className="grid gap-5 md:grid-cols-3">
         <AdminStateCard
           label="Matches"
           value={loading ? "..." : matches.length.toString()}
-          helper="All club-scoped fixtures currently visible to admin."
+          helper="Club-scoped fixtures."
           icon={CalendarDays}
         />
         <AdminStateCard
           label="On sale"
           value={loading ? "..." : matches.filter((match) => match.isOnSale).length.toString()}
-          helper="Fixtures with active ticket sales in the supporter surfaces."
+          helper="Active ticket sales."
           icon={Ticket}
         />
         <AdminStateCard
           label="Live now"
           value={loading ? "..." : matches.filter((match) => match.matchStatus === "live").length.toString()}
-          helper="Live-score driven fixtures currently pushing updates."
+          helper="Pushing live updates."
           icon={Radio}
         />
       </div>

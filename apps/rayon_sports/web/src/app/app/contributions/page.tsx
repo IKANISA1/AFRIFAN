@@ -106,8 +106,7 @@ export default function FanContributionsPage() {
     <div className="section-grid">
       <SectionHeading
         eyebrow="Support circles"
-        title="Create and support club contribution groups."
-        description="This brings one of the most community-heavy mobile features into a browser workflow that is easier to understand and promote."
+        title="Create and fund supporter initiatives."
       />
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <div className="grid gap-6">
@@ -211,7 +210,7 @@ export default function FanContributionsPage() {
               </div>
               <div className="mt-5 grid gap-3 sm:grid-cols-3">
                 <div className="rounded-[20px] bg-black/20 p-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
                     Raised
                   </p>
                   <p className="mt-2 font-display text-2xl font-bold uppercase">
@@ -219,7 +218,7 @@ export default function FanContributionsPage() {
                   </p>
                 </div>
                 <div className="rounded-[20px] bg-black/20 p-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
                     Target
                   </p>
                   <p className="mt-2 font-display text-2xl font-bold uppercase">
@@ -227,7 +226,7 @@ export default function FanContributionsPage() {
                   </p>
                 </div>
                 <div className="rounded-[20px] bg-black/20 p-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
                     Invite code
                   </p>
                   <p className="mt-2 font-display text-2xl font-bold uppercase">

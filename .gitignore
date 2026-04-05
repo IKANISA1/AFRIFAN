@@ -86,3 +86,6 @@ node_modules/
 *.aab
 *.apk
 **/release_artifacts/
+apps/rayon_sports/web/.wrangler/
+apps/rayon_sports/web/.lighthouseci/
+apps/rayon_sports/web/tmp/

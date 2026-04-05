@@ -146,9 +146,8 @@ export default function AdminCmsPage() {
   return (
     <div className="section-grid">
       <SectionHeading
-        eyebrow="CMS manager"
-        title="Write once, publish to the mobile app and the web."
-        description="The admin CMS is tuned for fast matchweek publishing on tablet and phone, with enough structure for featured stories and live homepage content."
+        eyebrow="CMS"
+        title="Publish club content."
       />
 
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">

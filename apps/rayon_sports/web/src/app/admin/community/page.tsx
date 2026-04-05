@@ -106,34 +106,33 @@ export default function AdminCommunityPage() {
   return (
     <div className="section-grid">
       <SectionHeading
-        eyebrow="Community manager"
-        title="Manage supporter chapters published on the fan clubs page."
-        description="Add, edit, and retire supporter chapters. These records power the public community view and the wider supporter network."
+        eyebrow="Community"
+        title="Manage supporter chapters."
       />
 
       <div className="grid gap-5 md:grid-cols-4">
         <AdminStateCard
           label="Chapters"
           value={loading ? "..." : clubs.length.toString()}
-          helper="Registered supporter chapters."
+          helper="All chapters."
           icon={Users}
         />
         <AdminStateCard
           label="Members"
           value={loading ? "..." : totalMembers.toString()}
-          helper="Aggregate member count across all chapters."
+          helper="Total across chapters."
         />
         <AdminStateCard
           label="Regions"
           value={loading ? "..." : regions.length.toString()}
-          helper="Geographic coverage of the supporter network."
+          helper="Geographic spread."
         />
         <AdminStateCard
           label="Active"
           value={
             loading ? "..." : clubs.filter((club) => club.isActive).length.toString()
           }
-          helper="Chapters currently visible on the public site."
+          helper="Currently visible."
         />
       </div>
 

@@ -1,3 +1,0 @@
-{
-  "/(site)/tickets/[matchId]/page": "app/(site)/tickets/[matchId]/page.js"
-}

@@ -69,25 +69,24 @@ export default function FanXpPage() {
   return (
     <div className="section-grid">
       <SectionHeading
-        eyebrow="XP and badges"
-        title="Gamification works in the browser too."
-        description="The web app should let active fans keep momentum without forcing every interaction back to mobile."
+        eyebrow="XP"
+        title="Track your supporter progress."
       />
       <div className="grid gap-5 md:grid-cols-3">
         <PortalStateCard
           label="Current tier"
           value={(membership?.tier ?? "fan").toUpperCase()}
-          helper="Tier is driven from the shared membership record."
+          helper="Shared across native and web."
         />
         <PortalStateCard
           label="Total XP"
           value={String(membership?.points ?? 0)}
-          helper="XP is updated from shared supporter events."
+          helper="Updated from supporter actions."
         />
         <PortalStateCard
           label="Recent events"
           value={String(events.length)}
-          helper="A compact event stream keeps fans aware of recent gains."
+          helper="Latest XP gains."
         />
       </div>
       <div className="glass-panel rounded-[32px] p-6">
@@ -115,7 +114,7 @@ export default function FanXpPage() {
                   {event.eventType}
                 </p>
                 <p className="mt-2">+{event.xpAwarded} XP</p>
-                <p className="mt-1 text-slate-400">{event.createdAt}</p>
+                <p className="mt-1 text-slate-300">{event.createdAt}</p>
               </div>
             ))
           ) : (

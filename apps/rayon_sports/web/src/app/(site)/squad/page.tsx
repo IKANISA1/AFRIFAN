@@ -79,7 +79,7 @@ export default async function SquadPage() {
                   {player.number}
                 </span>
               </div>
-              <p className="mt-4 text-sm uppercase tracking-[0.2em] text-slate-400">
+              <p className="mt-4 text-sm uppercase tracking-[0.2em] text-slate-300">
                 {player.nationality}
               </p>
               <p className="mt-4 text-sm leading-7 text-slate-300">{player.bio}</p>

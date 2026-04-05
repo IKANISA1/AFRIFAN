@@ -170,7 +170,7 @@ export default function FanTicketsPage() {
       <PageHero
         eyebrow="Matchday tickets"
         title="Lock in your place before the blue wave hits the gates."
-        description="This purchase flow should feel urgent, clear, and supporter-first. Pick the fixture, choose your section, and keep every ticket tied to the same fan identity."
+        description="Pick the fixture, choose your section, and get your seat locked before the gates open."
         stats={[
           { label: "Sales open", value: onSaleMatches.toString() },
           { label: "Live matches", value: liveMatches.toString() },
@@ -214,13 +214,10 @@ export default function FanTicketsPage() {
               <p className="mt-3 text-sm leading-6 text-slate-300">
                 {formatDateTime(selectedMatch.matchDate)} at {selectedMatch.venue}
               </p>
-              <p className="mt-4 text-sm leading-7 text-slate-200">
-                {selectedMatch.matchSummary ??
-                  "Choose your section early and keep the route to the turnstiles frictionless."}
-              </p>
+                {selectedMatch.matchSummary ?? null}
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-300">
                     General
                   </p>
                   <p className="mt-2 font-display text-3xl font-bold uppercase text-white">
@@ -228,7 +225,7 @@ export default function FanTicketsPage() {
                   </p>
                 </div>
                 <div className="rounded-[22px] border border-border-soft bg-white/5 px-4 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-300">
                     VIP
                   </p>
                   <p className="mt-2 font-display text-3xl font-bold uppercase text-white">
@@ -249,15 +246,11 @@ export default function FanTicketsPage() {
         >
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              Checkout builder
+              Checkout
             </p>
             <h2 className="mt-4 font-display text-4xl font-bold uppercase leading-none text-white">
-              Pick the match. Hold your spot.
+              Select your match.
             </h2>
-            <p className="mt-4 text-sm leading-7 text-slate-300">
-              Use the form once, then move quickly when the next big fixture
-              goes live.
-            </p>
           </div>
 
           <label className="grid gap-2 text-sm">
@@ -302,7 +295,7 @@ export default function FanTicketsPage() {
                     onChange={() => setSelectedSeatType(seatType)}
                     className="sr-only"
                   />
-                  <p className="text-[11px] uppercase tracking-[0.24em] text-slate-400">
+                  <p className="text-[11px] uppercase tracking-[0.24em] text-slate-300">
                     {seatTypeLabel}
                   </p>
                   <p className="mt-3 font-display text-3xl font-bold uppercase text-white">
@@ -331,7 +324,7 @@ export default function FanTicketsPage() {
           <div className="rounded-[28px] border border-border-soft bg-black/20 p-5">
             <div className="flex items-center justify-between gap-4 border-b border-border-soft pb-4">
               <div>
-                <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-slate-300">
                   Selected match
                 </p>
                 <p className="mt-2 text-lg font-semibold text-white">
@@ -402,19 +395,16 @@ export default function FanTicketsPage() {
                   <p className="mt-2 text-sm text-slate-300">
                     {formatDateTime(match.matchDate)} • {match.venue}
                   </p>
-                  <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300">
-                    {match.matchSummary ??
-                      "A high-stakes fixture built for a loud away end and a fast route through the gates."}
-                  </p>
+                  {match.matchSummary ?? null}
                 </div>
                 <div className="min-w-[140px] rounded-[22px] border border-border-soft bg-white/5 p-4 text-right">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-300">
                     General
                   </p>
                   <p className="mt-2 font-display text-3xl font-bold uppercase text-white">
                     {formatCurrency(match.generalPrice)}
                   </p>
-                  <p className="mt-3 text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                  <p className="mt-3 text-[11px] uppercase tracking-[0.2em] text-slate-300">
                     VIP {formatCurrency(match.vipPrice)}
                   </p>
                 </div>
@@ -429,7 +419,7 @@ export default function FanTicketsPage() {
                   Ticket history
                 </p>
                 <p className="mt-3 font-display text-3xl font-bold uppercase leading-none">
-                  Your active ticket lane
+                  My tickets
                 </p>
               </div>
               <a
@@ -441,8 +431,7 @@ export default function FanTicketsPage() {
             </div>
 
             <p className="mt-4 text-sm leading-7 text-slate-300">
-              Every ticket stays tied to the same supporter identity, so you
-              can move from checkout to gate scan without rebuilding your details.
+              Tickets stay tied to your supporter identity.
             </p>
 
             <div className="mt-5 grid gap-3">
@@ -468,20 +457,18 @@ export default function FanTicketsPage() {
                           ? `${relatedMatch.homeTeam} vs ${relatedMatch.awayTeam}`
                           : "Matchday ticket"}
                       </p>
-                      <p className="mt-1 text-slate-400">
+                      <p className="mt-1 text-slate-300">
                         {relatedMatch
                           ? `${formatDateTime(relatedMatch.matchDate)} • ${relatedMatch.venue}`
                           : formatDateTime(ticket.purchasedAt)}
                       </p>
-                      <p className="mt-3 text-slate-400">{ticket.qrCode}</p>
+                      <p className="mt-3 text-slate-300">{ticket.qrCode}</p>
                     </div>
                   );
                 })
               ) : (
                 <p className="rounded-[22px] border border-dashed border-border-soft bg-white/4 px-5 py-6 text-sm leading-7 text-slate-300">
-                  Ticket history will appear here after your first portal
-                  purchase. Start with the match builder on the left and keep
-                  your ticket trail visible in one place.
+                  No tickets yet. Start with the match selector above.
                 </p>
               )}
             </div>

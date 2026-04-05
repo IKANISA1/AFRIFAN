@@ -6,7 +6,7 @@ import { siteConfig } from "@/lib/config";
 export const metadata: Metadata = {
   title: "Admin workspace",
   description:
-    "Touch-first admin workspace for Rayon Sports operations, publishing, and supporter management.",
+    "Desktop-first admin workspace for Rayon Sports operations, publishing, and supporter management.",
   applicationName: "Gikundiro Admin",
   metadataBase: new URL(siteConfig.adminUrl),
   alternates: {
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Gikundiro Admin",
     description:
-      "Touch-first admin workspace for Rayon Sports operations, publishing, and supporter management.",
+      "Desktop-first admin workspace for Rayon Sports operations, publishing, and supporter management.",
     url: siteConfig.adminUrl,
     siteName: "Gikundiro Admin",
     locale: "en_US",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Gikundiro Admin",
     description:
-      "Touch-first admin workspace for Rayon Sports operations, publishing, and supporter management.",
+      "Desktop-first admin workspace for Rayon Sports operations, publishing, and supporter management.",
     images: [`${siteConfig.siteUrl}/icons/icon-512x512.png`],
   },
   appleWebApp: {

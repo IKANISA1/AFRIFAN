@@ -77,16 +77,15 @@ export default function AdminMembershipPage() {
   return (
     <div className="section-grid">
       <SectionHeading
-        eyebrow="Membership manager"
-        title="Configure supporter tiers, pricing, and benefit ladders."
-        description="Changes update the public membership comparison page and the authenticated activation journey."
+        eyebrow="Membership"
+        title="Configure supporter tiers and pricing."
       />
 
       <div className="grid gap-5 md:grid-cols-4">
         <AdminStateCard
           label="Tiers"
           value={loading ? "..." : packages.length.toString()}
-          helper="Total membership tiers configured."
+          helper="Configured tiers."
           icon={Crown}
         />
         <AdminStateCard
@@ -96,7 +95,7 @@ export default function AdminMembershipPage() {
               ? "..."
               : packages.filter((pkg) => pkg.isActive).length.toString()
           }
-          helper="Published and visible to supporters."
+          helper="Visible to supporters."
         />
         <AdminStateCard
           label="Paid"
@@ -105,7 +104,7 @@ export default function AdminMembershipPage() {
               ? "..."
               : packages.filter((pkg) => pkg.annualPrice > 0).length.toString()
           }
-          helper="Tiers with annual pricing set."
+          helper="With annual pricing."
         />
         <AdminStateCard
           label="Free"
@@ -114,7 +113,7 @@ export default function AdminMembershipPage() {
               ? "..."
               : packages.filter((pkg) => pkg.annualPrice === 0).length.toString()
           }
-          helper="Identity or onboarding tiers without annual cost."
+          helper="Free entry tiers."
         />
       </div>
 

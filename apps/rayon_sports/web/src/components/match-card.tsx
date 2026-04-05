@@ -36,7 +36,7 @@ export function MatchCard({
             {formatMatchStatusLabel(match.matchStatus)}
           </span>
         )}
-        <span className="text-[11px] uppercase tracking-[0.24em] text-slate-400">
+        <span className="text-[11px] uppercase tracking-[0.24em] text-slate-300">
           {match.competition}
         </span>
       </div>
@@ -66,7 +66,7 @@ export function MatchCard({
               </>
             ) : (
               <>
-                <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                   From
                 </p>
                 <p className="mt-2 font-score text-4xl font-bold uppercase text-white">
@@ -124,7 +124,7 @@ export function MatchCard({
           {live ? <Radio size={16} className="text-red-300" /> : result ? <Trophy size={16} className="text-club-accent" /> : <Ticket size={16} className="text-club-accent" />}
           {ctaLabel}
         </div>
-        <ArrowRight size={18} className="text-slate-400" />
+        <ArrowRight size={18} className="text-slate-300" />
       </div>
     </Link>
   );

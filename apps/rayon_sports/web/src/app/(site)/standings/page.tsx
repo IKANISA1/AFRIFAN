@@ -47,7 +47,7 @@ export default async function StandingsPage() {
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <div className="glass-panel overflow-hidden rounded-[32px] border border-border-soft">
           <table className="w-full text-left text-sm">
-            <thead className="bg-white/8 text-xs uppercase tracking-[0.24em] text-slate-400">
+            <thead className="bg-white/8 text-xs uppercase tracking-[0.24em] text-slate-300">
               <tr>
                 <th className="px-4 py-4 text-center">Pos</th>
                 <th className="px-4 py-4">Club</th>
@@ -63,7 +63,7 @@ export default async function StandingsPage() {
                   key={`${row.position}-${row.club}`}
                   className={row.highlight ? "bg-club-primary/15" : "border-t border-white/6"}
                 >
-                  <td className="px-4 py-4 text-center font-mono text-xs text-slate-400">
+                  <td className="px-4 py-4 text-center font-mono text-xs text-slate-300">
                     {row.position}
                   </td>
                   <td className="px-4 py-4 font-semibold text-white">{row.club}</td>
@@ -105,7 +105,7 @@ export default async function StandingsPage() {
           </h2>
           {highlighted ? (
             <div className="mt-5 rounded-[26px] border border-border-soft bg-white/5 p-5">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">
+              <p className="text-[11px] uppercase tracking-[0.22em] text-slate-300">
                 Highlighted club
               </p>
               <p className="mt-3 font-display text-4xl font-bold uppercase text-white">
@@ -113,19 +113,19 @@ export default async function StandingsPage() {
               </p>
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
                 <div className="rounded-[20px] bg-black/20 p-4">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                     Position
                   </p>
                   <p className="mt-2 font-score text-4xl text-white">#{highlighted.position}</p>
                 </div>
                 <div className="rounded-[20px] bg-black/20 p-4">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                     Points
                   </p>
                   <p className="mt-2 font-score text-4xl text-white">{highlighted.points}</p>
                 </div>
                 <div className="rounded-[20px] bg-black/20 p-4">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                     GD
                   </p>
                   <p className="mt-2 font-score text-4xl text-white">{highlighted.goalDifference}</p>

@@ -542,9 +542,22 @@ export const footerNavigationGroups = [
 
 export const portalNavigation = [
   { href: "/app/home", label: "Home" },
-  { href: "/app/profile", label: "Profile" },
-  { href: "/app/membership", label: "Membership" },
+  { href: "/app/biopay", label: "BioPay" },
+  { href: "/app/profile", label: "Settings" },
+];
+
+/** Primary portal navigation shown in the desktop sidebar */
+export const portalSidebarNavigation = [
+  { href: "/app/home", label: "Home" },
+  { href: "/app/live", label: "Matches" },
   { href: "/app/tickets", label: "Tickets" },
+  { href: "/app/biopay", label: "BioPay" },
+  { href: "/app/membership", label: "Membership" },
+  { href: "/app/profile", label: "Settings" },
+];
+
+/** Secondary portal navigation — discovery items below a separator */
+export const portalSidebarSecondary = [
   { href: "/app/shop", label: "Shop" },
   { href: "/app/contributions", label: "Support" },
   { href: "/app/fan-clubs", label: "Fan Clubs" },

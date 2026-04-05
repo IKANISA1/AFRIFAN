@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import type { ReactNode } from "react";
 import { MatchRibbon } from "@/components/match-ribbon";
-import { MobileBottomBar } from "@/components/mobile-bottom-bar";
+import { AppBottomNav } from "@/components/app-bottom-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getClubProfile, getMatches } from "@/lib/data/public";
@@ -79,7 +79,7 @@ export default function SiteLayout({
       </main>
 
       <SiteFooter />
-      <MobileBottomBar />
+      <AppBottomNav surface="site" />
     </>
   );
 }

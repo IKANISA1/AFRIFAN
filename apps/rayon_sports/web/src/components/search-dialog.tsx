@@ -130,7 +130,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
             </button>
           </div>
 
-          <div className="flex items-center justify-between border-b border-border-soft px-5 py-3 text-[11px] uppercase tracking-[0.24em] text-slate-400">
+          <div className="flex items-center justify-between border-b border-border-soft px-5 py-3 text-[11px] uppercase tracking-[0.24em] text-slate-300">
             <div className="flex items-center gap-2">
               <Sparkles size={14} className="text-club-accent" />
               Fast search

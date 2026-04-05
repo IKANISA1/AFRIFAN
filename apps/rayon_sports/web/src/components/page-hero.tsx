@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { BackButton } from "@/components/back-button";
 
 interface PageHeroStat {
   label: string;
@@ -13,6 +14,8 @@ interface PageHeroProps {
   actions?: ReactNode;
   media?: ReactNode;
   stats?: PageHeroStat[];
+  /** Show a back button (for inner pages in standalone PWA mode) */
+  showBack?: boolean;
   className?: string;
 }
 
@@ -23,6 +26,7 @@ export function PageHero({
   actions,
   media,
   stats = [],
+  showBack = false,
   className,
 }: PageHeroProps) {
   return (
@@ -35,6 +39,7 @@ export function PageHero({
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,56,168,0.18),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(212,160,23,0.12),transparent_35%)]" />
       <div className="relative grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
         <div className="space-y-5">
+          {showBack ? <BackButton className="mb-3" /> : null}
           <p className="font-mono text-xs uppercase tracking-[0.32em] text-club-accent">
             {eyebrow}
           </p>
@@ -52,7 +57,7 @@ export function PageHero({
                   key={stat.label}
                   className="rounded-[24px] border border-border-soft bg-black/20 px-4 py-4"
                 >
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-[11px] uppercase tracking-[0.22em] text-slate-300">
                     {stat.label}
                   </p>
                   <p className="mt-3 font-score text-3xl font-bold uppercase text-white">

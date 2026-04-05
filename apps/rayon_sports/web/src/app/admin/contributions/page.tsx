@@ -91,16 +91,15 @@ export default function AdminContributionsPage() {
   return (
     <div className="section-grid">
       <SectionHeading
-        eyebrow="Contributions manager"
-        title="Operate supporter circles and watch funding momentum in one place."
-        description="This surface now manages public circle metadata directly, while still giving the finance and operations team quick reporting and export controls."
+        eyebrow="Contributions"
+        title="Monitor supporter circles and funding."
       />
 
       <div className="grid gap-5 md:grid-cols-4">
         <AdminStateCard
           label="Raised this month"
           value={loading ? "..." : formatCurrency(snapshot.monthlyTotal)}
-          helper="Successful contribution volume in the current UTC month."
+          helper="This month (UTC)."
           icon={Coins}
         />
         <AdminStateCard
@@ -108,7 +107,7 @@ export default function AdminContributionsPage() {
           value={
             loading ? "..." : snapshot.groups.filter((g) => !g.isClosed).length.toString()
           }
-          helper="Open groups currently visible to supporters."
+          helper="Currently visible."
           icon={CircleDollarSign}
         />
         <AdminStateCard
@@ -118,13 +117,13 @@ export default function AdminContributionsPage() {
               ? "..."
               : snapshot.groups.reduce((sum, g) => sum + g.memberCount, 0).toString()
           }
-          helper="Total supporter participation across visible circles."
+          helper="Total participation."
           icon={Users}
         />
         <AdminStateCard
           label="Recent contributions"
           value={loading ? "..." : snapshot.contributions.length.toString()}
-          helper="Latest contribution rows tied to this club's circles."
+          helper="Latest entries."
         />
       </div>
 

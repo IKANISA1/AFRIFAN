@@ -16,10 +16,10 @@ const emptySnapshot: AdminSmsSnapshot = {
 };
 
 const pipelineSteps = [
-  { step: "1", title: "Capture", body: "Android SMS listener receives an approved sender event.", color: "border-emerald-500/30 bg-emerald-500/5" },
-  { step: "2", title: "Ingest", body: "The Edge Function deduplicates and writes to `momo_sms_raw`.", color: "border-club-accent/30 bg-club-accent/5" },
-  { step: "3", title: "Parse", body: "Structured values land in `momo_sms_parsed` for finance logic.", color: "border-amber-500/30 bg-amber-500/5" },
-  { step: "4", title: "Ledger", body: "Wallet and contribution records reconcile against supporter activity.", color: "border-violet-500/30 bg-violet-500/5" },
+  { step: "1", title: "Capture", body: "SMS listener receives an approved sender event.", color: "border-emerald-500/30 bg-emerald-500/5" },
+  { step: "2", title: "Ingest", body: "Edge Function deduplicates and writes to raw table.", color: "border-club-accent/30 bg-club-accent/5" },
+  { step: "3", title: "Parse", body: "Structured values land in parsed table.", color: "border-amber-500/30 bg-amber-500/5" },
+  { step: "4", title: "Ledger", body: "Wallet and contribution records reconcile.", color: "border-violet-500/30 bg-violet-500/5" },
 ];
 
 const runStatusColors: Record<string, string> = {
@@ -68,8 +68,7 @@ export default function AdminSmsMonitorPage() {
     <div className="section-grid">
       <SectionHeading
         eyebrow="SMS pipeline"
-        title="Watch the MoMo SMS ingestion chain from capture to ledger."
-        description="This view mirrors the mobile admin monitor but is optimized for web operations on phones and tablets during support and finance reconciliation."
+        title="MoMo SMS ingestion health."
       />
 
       <div className="grid gap-5 md:grid-cols-3">
@@ -80,7 +79,7 @@ export default function AdminSmsMonitorPage() {
                 key={i}
                 label="Pipeline"
                 value="..."
-                helper="Loading SMS ingestion metrics."
+                helper="Loading metrics."
               />
             ))}
           </>
@@ -90,7 +89,7 @@ export default function AdminSmsMonitorPage() {
             key={label}
             label={label}
             value={value.toString()}
-            helper="Club-scoped operational metric from the SMS ingestion pipeline."
+            helper="Pipeline metric."
           />
         ))}
       </div>

@@ -139,20 +139,59 @@ export function FanPortalProvider({ children }: { children: ReactNode }) {
       let activeSession = sessionResult.data.session ?? null;
 
       if (activeSession == null) {
-        const anonymous = await client.auth.signInAnonymously({
-          options: {
-            data: {
-              club_id: rayonClub.slug,
-              country_code: rayonClub.countryCode,
-              language_code: "rw",
-            },
-          },
-        });
+        /* Check sessionStorage to avoid re-auth within the same browser session.
+           This prevents 429 rate-limit errors from Supabase when users rapidly
+           refresh or multiple tabs trigger signInAnonymously simultaneously. */
+        const cachedAt = typeof window !== "undefined"
+          ? sessionStorage.getItem("gikundiro_anon_auth_ts")
+          : null;
+        const recentlyAuthed = cachedAt != null && Date.now() - Number(cachedAt) < 15 * 60 * 1000;
 
-        if (anonymous.error) {
-          throw anonymous.error;
+        if (!recentlyAuthed) {
+          /* Exponential backoff — retry up to 3 times on rate-limit or network errors */
+          let lastError: Error | null = null;
+          for (let attempt = 0; attempt < 3; attempt++) {
+            if (attempt > 0) {
+              await new Promise((resolve) => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
+            }
+
+            const anonymous = await client.auth.signInAnonymously({
+              options: {
+                data: {
+                  club_id: rayonClub.slug,
+                  country_code: rayonClub.countryCode,
+                  language_code: "rw",
+                },
+              },
+            });
+
+            if (anonymous.error) {
+              lastError = anonymous.error;
+              /* Only retry on rate-limit (429) or network errors */
+              const is429 = anonymous.error.message?.includes("429") ||
+                anonymous.error.message?.toLowerCase().includes("rate");
+              if (!is429) throw anonymous.error;
+              continue;
+            }
+
+            activeSession = anonymous.data.session ?? null;
+            lastError = null;
+
+            /* Cache the successful auth timestamp */
+            if (typeof window !== "undefined") {
+              sessionStorage.setItem("gikundiro_anon_auth_ts", String(Date.now()));
+            }
+            break;
+          }
+
+          if (lastError != null) {
+            throw lastError;
+          }
+        } else {
+          /* Recent anonymous auth exists — re-fetch the session which should now be available */
+          const retrySession = await client.auth.getSession();
+          activeSession = retrySession.data.session ?? null;
         }
-        activeSession = anonymous.data.session ?? null;
       }
 
       setSession(activeSession);
@@ -168,8 +207,13 @@ export function FanPortalProvider({ children }: { children: ReactNode }) {
         setMembership(null);
       }
     } catch (caught) {
+      /* Suppress raw rate-limit errors — show a friendly fallback instead */
+      const rawMessage = caught instanceof Error ? caught.message : "";
+      const isRateLimit = rawMessage.includes("429") || rawMessage.toLowerCase().includes("rate");
       setError(
-        caught instanceof Error ? caught.message : "Could not start fan portal.",
+        isRateLimit
+          ? "Connecting to your supporter account\u2026 please wait a moment."
+          : rawMessage || "Could not start fan portal.",
       );
     } finally {
       setLoading(false);

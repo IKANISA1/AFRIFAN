@@ -62,7 +62,7 @@ export async function CirclesAndMatchdayBlock() {
               </div>
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                     Current
                   </p>
                   <p className="mt-1 text-lg font-semibold text-white">
@@ -70,7 +70,7 @@ export async function CirclesAndMatchdayBlock() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                     Target
                   </p>
                   <p className="mt-1 text-lg font-semibold text-white">
@@ -78,7 +78,7 @@ export async function CirclesAndMatchdayBlock() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
                     Members
                   </p>
                   <p className="mt-1 text-lg font-semibold text-white">
@@ -175,7 +175,7 @@ export async function CirclesAndMatchdayBlock() {
                   <p className="font-score text-5xl font-bold text-white">
                     {fanClubs.length}
                   </p>
-                  <p className="mt-2 text-xs text-slate-400">
+                  <p className="mt-2 text-xs text-slate-300">
                     Chapters
                   </p>
                 </div>
@@ -183,7 +183,7 @@ export async function CirclesAndMatchdayBlock() {
                   <p className="font-score text-5xl font-bold text-white">
                     {matches.filter((m) => m.isOnSale).length}
                   </p>
-                  <p className="mt-2 text-xs text-slate-400">
+                  <p className="mt-2 text-xs text-slate-300">
                     On sale
                   </p>
                 </div>
@@ -191,7 +191,7 @@ export async function CirclesAndMatchdayBlock() {
                   <p className="font-score text-5xl font-bold text-white">
                     {news.length}
                   </p>
-                  <p className="mt-2 text-xs text-slate-400">
+                  <p className="mt-2 text-xs text-slate-300">
                     Stories
                   </p>
                 </div>

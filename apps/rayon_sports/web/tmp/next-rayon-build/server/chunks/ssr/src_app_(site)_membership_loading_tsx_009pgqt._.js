@@ -1,3 +1,0 @@
-module.exports=[80593,a=>{"use strict";var b=a.i(7997),c=a.i(11182);a.s(["default",0,function(){return(0,b.jsx)("div",{className:"page-shell section-grid py-12",children:(0,b.jsxs)("div",{className:"grid gap-5 lg:grid-cols-2",children:[(0,b.jsx)(c.SkeletonCard,{}),(0,b.jsx)(c.SkeletonCard,{})]})})}])},53782,a=>{a.n(a.i(80593))}];
-
-//# sourceMappingURL=src_app_%28site%29_membership_loading_tsx_009pgqt._.js.map
