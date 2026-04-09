@@ -1,0 +1,74 @@
+name: Gikundiro Signed Android Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-signed-aab:
+    name: Build Signed AAB
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/rayon_sports
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.32.0"
+          channel: stable
+          cache: true
+
+      - name: Install Melos and bootstrap workspace
+        working-directory: .
+        run: |
+          dart pub global activate melos
+          cd ../..
+          melos bootstrap
+
+      - name: Validate signing secrets
+        run: |
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          test -n "$ANDROID_KEYSTORE_PASSWORD"
+          test -n "$ANDROID_KEY_ALIAS"
+          test -n "$ANDROID_KEY_PASSWORD"
+
+      - name: Decode signing keystore
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/upload-keystore.jks
+          {
+            echo "storeFile=upload-keystore.jks"
+            echo "storePassword=$ANDROID_KEYSTORE_PASSWORD"
+            echo "keyAlias=$ANDROID_KEY_ALIAS"
+            echo "keyPassword=$ANDROID_KEY_PASSWORD"
+          } > android/keystore.properties
+
+      - name: Validate release contract
+        working-directory: .
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_SERVER_VALIDATION_MODE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON != '' && 'strict' || 'auto' }}
+        run: bash tools/scripts/validate_club_release.sh rayon_sports
+
+      - name: Build signed release AAB
+        run: flutter build appbundle --release --dart-define-from-file=assets/flavors/production.json
+
+      - name: Upload signed AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: gikundiro-signed-release-aab
+          path: apps/rayon_sports/build/app/outputs/bundle/release/app-release.aab
+          retention-days: 14
