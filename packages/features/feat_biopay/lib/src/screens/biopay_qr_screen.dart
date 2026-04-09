@@ -12,6 +12,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../models/biopay_handoff_token.dart';
 import '../providers/biopay_providers.dart';
+import '../widgets/biopay_branding.dart';
 
 /// BioPay QR — two-state screen: form → QR display.
 class BiopayQrScreen extends ConsumerStatefulWidget {
@@ -123,6 +124,10 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
     final profile = ref.watch(biopayProfileProvider);
     final currencyCode = profile.valueOrNull?.country.currencyCode;
     final hasQr = _handoffToken != null && !_isLoading;
+    final appName = biopayAppName(context);
+    final routeLabel = profile.valueOrNull?.routeLabel ?? 'Payment route';
+    final maskedRecipient =
+        profile.valueOrNull?.maskedRecipientValue ?? 'Link BioPay first';
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -135,114 +140,175 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
         ),
         title: Text('Get QR Code', style: TypographyTokens.titleLarge()),
       ),
-      body: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: SpacingTokens.spacing6,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Spacer(flex: 1),
-
-              // FORM STATE or QR DISPLAY STATE
-              if (hasQr)
-                _QrDisplayState(
-                  token: _handoffToken!,
-                  secondsRemaining: _secondsRemaining,
-                  onShare: () => _shareQr(_handoffToken!),
-                  onSave: () => _saveQrToPhotos(_handoffToken!),
-                )
-              else ...[
-                // Amount
-                Text(
-                  'Amount (Optional)',
-                  style: TypographyTokens.labelSmall().copyWith(
-                    letterSpacing: 0.7,
+      body: BiopayMoodBackground(
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: SpacingTokens.spacing6,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: SpacingTokens.spacing4),
+                BiopayHeroCard(
+                  eyebrow: hasQr
+                      ? '$appName REQUEST LIVE'
+                      : 'RECEIVE WITH $appName',
+                  title: hasQr
+                      ? 'Scan to pay'
+                      : 'Create a live club payment QR',
+                  subtitle: hasQr
+                      ? 'This code refreshes every minute so supporter handoffs stay safe.'
+                      : 'Supporters can scan and launch a BioPay payment straight into your linked route.',
+                  bottom: Wrap(
+                    spacing: SpacingTokens.spacing2,
+                    runSpacing: SpacingTokens.spacing2,
+                    children: [
+                      BiopayBadge(
+                        icon: Icons.route_rounded,
+                        label: routeLabel,
+                        tint: primaryColor.withValues(alpha: 0.14),
+                      ),
+                      BiopayBadge(
+                        icon: hasQr
+                            ? Icons.lock_clock_rounded
+                            : Icons.account_balance_wallet_outlined,
+                        label: hasQr
+                            ? 'Refreshes in ${_secondsRemaining}s'
+                            : maskedRecipient,
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: SpacingTokens.spacing2),
-                ClayCard(
-                  backgroundColor: ColorTokens.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(32),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing5,
-                    vertical: SpacingTokens.spacing4,
+
+                const SizedBox(height: SpacingTokens.spacing6),
+
+                // FORM STATE or QR DISPLAY STATE
+                if (hasQr)
+                  _QrDisplayState(
+                    token: _handoffToken!,
+                    secondsRemaining: _secondsRemaining,
+                    onShare: () => _shareQr(_handoffToken!),
+                    onSave: () => _saveQrToPhotos(_handoffToken!),
+                  )
+                else ...[
+                  // Amount
+                  Text(
+                    'Amount (Optional)',
+                    style: TypographyTokens.labelSmall().copyWith(
+                      letterSpacing: 0.7,
+                    ),
                   ),
-                  child: Row(
+                  const SizedBox(height: SpacingTokens.spacing2),
+                  ClayCard(
+                    backgroundColor: ColorTokens.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(32),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.spacing5,
+                      vertical: SpacingTokens.spacing4,
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          currencyCode ?? 'RWF',
+                          style: TypographyTokens.headlineSmall().copyWith(
+                            color: primaryColor,
+                          ),
+                        ),
+                        const SizedBox(width: SpacingTokens.spacing3),
+                        Expanded(
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            onChanged: (v) =>
+                                setState(() => _presetAmount = int.tryParse(v)),
+                            style: TypographyTokens.displaySmall().copyWith(
+                              fontSize: 28,
+                            ),
+                            decoration: InputDecoration.collapsed(
+                              hintText: '0',
+                              hintStyle: TypographyTokens.displaySmall()
+                                  .copyWith(
+                                    fontSize: 28,
+                                    color: ColorTokens.onSurfaceVariant
+                                        .withValues(alpha: 0.3),
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  if (_error != null) ...[
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    Text(
+                      _error!,
+                      style: TypographyTokens.bodySmall().copyWith(
+                        color: ColorTokens.error,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ],
+
+                const Spacer(),
+
+                // CTA
+                if (!hasQr)
+                  ClaymorphicButton(
+                    label: _isLoading ? 'Generating...' : 'Generate QR Code',
+                    onPressed: _isLoading ? null : _generateQr,
+                    isLoading: _isLoading,
+                    icon: Icons.qr_code_2_rounded,
+                    width: double.infinity,
+                    preserveCase: true,
+                    letterSpacing: 0.6,
+                  ),
+
+                if (hasQr)
+                  Row(
                     children: [
-                      Text(
-                        currencyCode ?? 'RWF',
-                        style: TypographyTokens.headlineSmall().copyWith(
-                          color: primaryColor,
+                      Expanded(
+                        child: ClaymorphicButton(
+                          label: 'Share QR Code',
+                          onPressed: () => _shareQr(_handoffToken!),
+                          icon: Icons.bolt_rounded,
+                          width: double.infinity,
+                          preserveCase: true,
+                          letterSpacing: 0.6,
                         ),
                       ),
                       const SizedBox(width: SpacingTokens.spacing3),
                       Expanded(
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          onChanged: (v) =>
-                              setState(() => _presetAmount = int.tryParse(v)),
-                          style: TypographyTokens.displaySmall().copyWith(
-                            fontSize: 28,
-                          ),
-                          decoration: InputDecoration.collapsed(
-                            hintText: '0',
-                            hintStyle: TypographyTokens.displaySmall().copyWith(
-                              fontSize: 28,
-                              color: ColorTokens.onSurfaceVariant.withValues(
-                                alpha: 0.3,
-                              ),
+                        child: OutlinedButton.icon(
+                          onPressed: () => _saveQrToPhotos(_handoffToken!),
+                          icon: const Icon(Icons.download_rounded),
+                          label: const Text('Save'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: ColorTokens.onSurface,
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.12),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: SpacingTokens.spacing4,
+                              vertical: SpacingTokens.spacing4,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(28),
                             ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                ),
 
-                if (_error != null) ...[
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  Text(
-                    _error!,
-                    style: TypographyTokens.bodySmall().copyWith(
-                      color: ColorTokens.error,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+                const SizedBox(height: SpacingTokens.spacing8),
               ],
-
-              const Spacer(flex: 2),
-
-              // CTA
-              if (!hasQr)
-                ClaymorphicButton(
-                  label: _isLoading ? 'Generating...' : 'Generate QR Code',
-                  onPressed: _isLoading ? null : _generateQr,
-                  isLoading: _isLoading,
-                  icon: Icons.qr_code_2_rounded,
-                  width: double.infinity,
-                  preserveCase: true,
-                  letterSpacing: 0.6,
-                ),
-
-              if (hasQr)
-                ClaymorphicButton(
-                  label: 'Share QR Code',
-                  onPressed: () => _shareQr(_handoffToken!),
-                  icon: Icons.bolt_rounded,
-                  width: double.infinity,
-                  preserveCase: true,
-                  letterSpacing: 0.6,
-                ),
-
-              const SizedBox(height: SpacingTokens.spacing8),
-            ],
+            ),
           ),
         ),
       ),
@@ -268,35 +334,46 @@ class _QrDisplayState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: ClayCard(
-        backgroundColor: ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(40),
-        padding: const EdgeInsets.all(SpacingTokens.spacing6),
-        child: Container(
-          width: 252,
-          height: 252,
-          padding: const EdgeInsets.all(SpacingTokens.spacing5),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(
-              color: ColorTokens.surfaceContainerHighest,
-              width: 2,
+      child: Column(
+        children: [
+          ClayCard(
+            backgroundColor: ColorTokens.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(40),
+            padding: const EdgeInsets.all(SpacingTokens.spacing6),
+            child: Container(
+              width: 252,
+              height: 252,
+              padding: const EdgeInsets.all(SpacingTokens.spacing5),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(28),
+                border: Border.all(
+                  color: ColorTokens.surfaceContainerHighest,
+                  width: 2,
+                ),
+              ),
+              child: QrImageView(
+                data: token.resolverUrl.toString(),
+                version: QrVersions.auto,
+                eyeStyle: const QrEyeStyle(
+                  eyeShape: QrEyeShape.square,
+                  color: Colors.black,
+                ),
+                dataModuleStyle: const QrDataModuleStyle(
+                  dataModuleShape: QrDataModuleShape.square,
+                  color: Colors.black,
+                ),
+              ),
             ),
           ),
-          child: QrImageView(
-            data: token.resolverUrl.toString(),
-            version: QrVersions.auto,
-            eyeStyle: const QrEyeStyle(
-              eyeShape: QrEyeShape.square,
-              color: Colors.black,
-            ),
-            dataModuleStyle: const QrDataModuleStyle(
-              dataModuleShape: QrDataModuleShape.square,
-              color: Colors.black,
+          const SizedBox(height: SpacingTokens.spacing4),
+          Text(
+            'Refreshes in ${secondsRemaining}s',
+            style: TypographyTokens.labelLarge().copyWith(
+              color: ColorTokens.onSurfaceVariant,
             ),
           ),
-        ),
+        ],
       ),
     );
   }

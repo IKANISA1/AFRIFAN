@@ -10,6 +10,7 @@ import '../models/biopay_task_result.dart';
 import '../providers/biopay_providers.dart';
 import '../services/biopay_auth_gate_service.dart';
 import '../services/biopay_payment_handoff_service.dart';
+import '../widgets/biopay_branding.dart';
 
 /// BioPay Payment Review — summary card + amount + CTA.
 class BiopayPaymentReviewScreen extends ConsumerStatefulWidget {
@@ -177,6 +178,7 @@ class _BiopayPaymentReviewScreenState
   Widget build(BuildContext context) {
     final args = widget.args;
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final appName = biopayAppName(context);
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -189,29 +191,45 @@ class _BiopayPaymentReviewScreenState
         ),
         title: Text('Confirm Payment', style: TypographyTokens.titleLarge()),
       ),
-      body: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: SpacingTokens.spacing6,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      body: BiopayMoodBackground(
+        child: SafeArea(
+          top: false,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(
+              SpacingTokens.spacing6,
+              SpacingTokens.spacing4,
+              SpacingTokens.spacing6,
+              SpacingTokens.spacing6,
+            ),
             children: [
-              const Spacer(flex: 1),
-
-              // Alias
-              Text(
-                args.formattedAlias,
-                style: TypographyTokens.numericAlias(fontSize: 32),
+              BiopayHeroCard(
+                eyebrow: '${args.sourceTitle.toUpperCase()} • $appName',
+                title: args.formattedAlias,
+                subtitle: args.sourceDescription,
+                bottom: Wrap(
+                  spacing: SpacingTokens.spacing2,
+                  runSpacing: SpacingTokens.spacing2,
+                  children: [
+                    BiopayBadge(
+                      icon: Icons.route_rounded,
+                      label: args.routeLabel,
+                      tint: primaryColor.withValues(alpha: 0.14),
+                    ),
+                    if (args.matchScore != null)
+                      BiopayBadge(
+                        icon: Icons.verified_rounded,
+                        label:
+                            'Match ${(args.matchScore! * 100).toStringAsFixed(0)}%',
+                        tint: ColorTokens.success.withValues(alpha: 0.14),
+                      ),
+                  ],
+                ),
               ),
-
               const SizedBox(height: SpacingTokens.spacing6),
-
-              // Details card
               ClayCard(
                 backgroundColor: ColorTokens.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(32),
+                padding: const EdgeInsets.all(SpacingTokens.spacing5),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -229,7 +247,6 @@ class _BiopayPaymentReviewScreenState
                   ],
                 ),
               ),
-
               if (args.canEditAmount) ...[
                 const SizedBox(height: SpacingTokens.spacing6),
                 Text(
@@ -269,7 +286,6 @@ class _BiopayPaymentReviewScreenState
                   ),
                 ),
               ],
-
               if (_error != null) ...[
                 const SizedBox(height: SpacingTokens.spacing4),
                 Text(
@@ -280,10 +296,7 @@ class _BiopayPaymentReviewScreenState
                   ),
                 ),
               ],
-
-              const Spacer(flex: 2),
-
-              // CTA
+              const SizedBox(height: SpacingTokens.spacing8),
               ClaymorphicButton(
                 label: _isSubmitting ? 'Opening...' : 'Confirm & Pay',
                 onPressed: _isSubmitting ? null : _submit,
@@ -292,10 +305,7 @@ class _BiopayPaymentReviewScreenState
                 preserveCase: true,
                 letterSpacing: 0.6,
               ),
-
               const SizedBox(height: SpacingTokens.spacing3),
-
-              // Cancel
               Center(
                 child: TextButton(
                   onPressed: _isSubmitting ? null : () => context.go('/biopay'),
@@ -307,8 +317,6 @@ class _BiopayPaymentReviewScreenState
                   ),
                 ),
               ),
-
-              const SizedBox(height: SpacingTokens.spacing6),
             ],
           ),
         ),
