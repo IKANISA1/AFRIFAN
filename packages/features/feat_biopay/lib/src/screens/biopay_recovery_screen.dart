@@ -66,6 +66,8 @@ class BiopayRecoveryScreen extends StatelessWidget {
                     context.go(args.primaryRoute);
                   },
                   width: double.infinity,
+                  preserveCase: true,
+                  letterSpacing: 0.6,
                 ),
 
                 // Secondary

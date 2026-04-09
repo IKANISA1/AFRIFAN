@@ -19,7 +19,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   // §2.4 LOCKED — no hardcoded club names. Use compile-time constant.
   static const _appName = String.fromEnvironment(
     'APP_NAME',
-    defaultValue: 'Rayon Sports',
+    defaultValue: 'Gikundiro',
   );
 
   final List<Map<String, String>> _slides = [
@@ -35,8 +35,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     },
     {
       'title': 'READY TO PLAY?',
-      'body':
-          'Tickets, merch, and fan communities — all anonymous.',
+      'body': 'Tickets, merch, and fan communities — all anonymous.',
     },
   ];
 
@@ -160,24 +159,24 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   ),
                   _currentPage == _slides.length - 1
                       ? _isSubmitting
-                          ? SizedBox(
-                              width: 150,
-                              height: 48,
-                              child: Center(
-                                child: SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: ColorTokens.clubPrimary,
+                            ? SizedBox(
+                                width: 150,
+                                height: 48,
+                                child: Center(
+                                  child: SizedBox(
+                                    height: 24,
+                                    width: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: ColorTokens.clubPrimary,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )
-                          : ClaymorphicButton(
-                              label: 'GET STARTED',
-                              onPressed: _handleGetStarted,
-                            )
+                              )
+                            : ClaymorphicButton(
+                                label: 'GET STARTED',
+                                onPressed: _handleGetStarted,
+                              )
                       : TextButton(
                           onPressed: () {
                             _pageController.nextPage(

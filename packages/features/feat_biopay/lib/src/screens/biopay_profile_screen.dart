@@ -14,7 +14,8 @@ class BiopayProfileScreen extends ConsumerStatefulWidget {
   const BiopayProfileScreen({super.key});
 
   @override
-  ConsumerState<BiopayProfileScreen> createState() => _BiopayProfileScreenState();
+  ConsumerState<BiopayProfileScreen> createState() =>
+      _BiopayProfileScreenState();
 }
 
 class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
@@ -26,10 +27,7 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            'Remove Face ID?',
-            style: TypographyTokens.titleLarge(),
-          ),
+          Text('Remove Face ID?', style: TypographyTokens.titleLarge()),
           const SizedBox(height: SpacingTokens.spacing4),
           Row(
             children: [
@@ -71,11 +69,11 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
             '/biopay/recovery',
             extra: const BiopayRecoveryArgs(
               issue: BiopayRecoveryIssue.deviceAuth,
-              title: 'DEVICE AUTH REQUIRED',
+              title: 'Device Auth Required',
               message: 'Set up device security first.',
-              primaryLabel: 'BACK',
+              primaryLabel: 'Back',
               primaryRoute: '/biopay',
-              secondaryLabel: 'RETRY',
+              secondaryLabel: 'Retry',
               secondaryRoute: '/biopay/profile',
             ),
           );
@@ -91,11 +89,11 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
         '/biopay/result',
         extra: const BiopayTaskResultArgs(
           tone: BiopayTaskResultTone.success,
-          title: 'FACE ID REMOVED',
+          title: 'Face ID Removed',
           message: 'You can re-enroll any time.',
-          primaryLabel: 'BACK TO BIOPAY',
+          primaryLabel: 'Back to BioPay',
           primaryRoute: '/biopay',
-          secondaryLabel: 'RE-ENROLL',
+          secondaryLabel: 'Re-enroll',
           secondaryRoute: '/biopay/register',
         ),
       );
@@ -105,11 +103,11 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
         '/biopay/result',
         extra: BiopayTaskResultArgs(
           tone: BiopayTaskResultTone.error,
-          title: 'FAILED',
+          title: 'Failed',
           message: error.toString(),
-          primaryLabel: 'TRY AGAIN',
+          primaryLabel: 'Try Again',
           primaryRoute: '/biopay/profile',
-          secondaryLabel: 'BACK',
+          secondaryLabel: 'Back',
           secondaryRoute: '/biopay',
         ),
       );
@@ -134,21 +132,18 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
           icon: Icon(Icons.arrow_back, color: ColorTokens.onSurface),
           onPressed: () => context.go('/biopay'),
         ),
-        title: Text(
-          'PROFILE',
-          style: TypographyTokens.headlineLarge(),
-        ),
+        title: Text('Profile', style: TypographyTokens.titleLarge()),
       ),
       body: SafeArea(
         top: false,
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
             horizontal: SpacingTokens.spacing6,
+            vertical: SpacingTokens.spacing2,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Standard User Profile Header
               Center(
                 child: Column(
                   children: [
@@ -171,16 +166,17 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
                     const SizedBox(height: SpacingTokens.spacing4),
                     // If biometric profile is not active, fallback to showing full name or blank
                     Text(
-                      profileAsync.valueOrNull?.formattedAlias ?? 
-                          userProfile?.fullName ?? 'BIOPAY USER',
+                      profileAsync.valueOrNull?.formattedAlias ??
+                          userProfile?.fullName ??
+                          'BioPay User',
                       style: TypographyTokens.displaySmall(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing1),
                     Text(
-                      'BIOPAY ID',
+                      'BioPay ID',
                       style: TypographyTokens.labelSmall().copyWith(
                         color: ColorTokens.onSurfaceVariant,
-                        letterSpacing: 1.5,
+                        letterSpacing: 1.1,
                       ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing8),
@@ -188,16 +184,16 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
                 ),
               ),
 
-              // MoMo Configuration Block
               Text(
-                'FINANCIAL CONFIGURATION',
+                'Financial Configuration',
                 style: TypographyTokens.labelSmall().copyWith(
-                  letterSpacing: 1.0,
                   color: ColorTokens.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
-              GlassCard(
+              ClayCard(
+                backgroundColor: ColorTokens.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(32),
                 onTap: () => context.push('/profile_setup'),
                 padding: const EdgeInsets.symmetric(
                   horizontal: SpacingTokens.spacing4,
@@ -206,12 +202,13 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(SpacingTokens.spacing2),
+                      width: 48,
+                      height: 48,
                       decoration: BoxDecoration(
                         color: hasMomo
                             ? colorScheme.primary.withValues(alpha: 0.1)
                             : colorScheme.surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Icon(
                         Icons.bolt_rounded,
@@ -224,26 +221,30 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
                     Expanded(
                       child: Text(
                         hasMomo ? 'MoMo Configured' : 'No MoMo Linked',
-                        style: TypographyTokens.bodyLarge().copyWith(
+                        style: TypographyTokens.titleMedium().copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                     if (hasMomo)
-                      const Icon(Icons.check_circle_rounded, color: ColorTokens.success)
+                      const Icon(
+                        Icons.check_circle_rounded,
+                        color: ColorTokens.success,
+                      )
                     else
-                      Icon(Icons.chevron_right_rounded, color: colorScheme.onSurfaceVariant),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                   ],
                 ),
               ),
 
               const SizedBox(height: SpacingTokens.spacing6),
 
-              // Biometric Enrollment Block
               Text(
-                'BIOMETRIC STATUS',
+                'Biometric Status',
                 style: TypographyTokens.labelSmall().copyWith(
-                  letterSpacing: 1.0,
                   color: ColorTokens.onSurfaceVariant,
                 ),
               ),
@@ -251,7 +252,9 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
               profileAsync.when(
                 data: (profile) {
                   final isEnrolled = profile != null;
-                  return GlassCard(
+                  return ClayCard(
+                    backgroundColor: ColorTokens.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(32),
                     onTap: () {
                       if (_isRevoking) return;
                       if (isEnrolled) {
@@ -267,12 +270,13 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
                     child: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(SpacingTokens.spacing2),
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
                             color: isEnrolled
                                 ? ColorTokens.success.withValues(alpha: 0.1)
                                 : ColorTokens.warning.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                           child: Icon(
                             isEnrolled
@@ -287,7 +291,7 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
                         Expanded(
                           child: Text(
                             isEnrolled ? 'Face Enrolled' : 'Pending Enrollment',
-                            style: TypographyTokens.bodyLarge().copyWith(
+                            style: TypographyTokens.titleMedium().copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -307,11 +311,15 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
                   );
                 },
                 loading: () => const AfriSkeletonList(itemCount: 1),
-                error: (_, __) => GlassCard(
-                   child: Text(
-                      'Failed to load biometric data.',
-                      style: TypographyTokens.bodySmall().copyWith(color: ColorTokens.error),
-                   ),
+                error: (_, __) => ClayCard(
+                  backgroundColor: ColorTokens.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(32),
+                  child: Text(
+                    'Failed to load biometric data.',
+                    style: TypographyTokens.bodySmall().copyWith(
+                      color: ColorTokens.error,
+                    ),
+                  ),
                 ),
               ),
             ],

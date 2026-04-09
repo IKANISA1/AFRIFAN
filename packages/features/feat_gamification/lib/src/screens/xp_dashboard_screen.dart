@@ -204,36 +204,37 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      body: SafeArea(
-        child: _isLoading
-            ? const Padding(
-                padding: EdgeInsets.all(SpacingTokens.spacing6),
-                child: AfriSkeletonList(),
-              )
-            : CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        SpacingTokens.spacing6,
-                        SpacingTokens.spacing4,
-                        SpacingTokens.spacing6,
-                        0,
-                      ),
-                      child: Text(
-                        'GAMIFICATION',
-                        style: GoogleFonts.barlowCondensed(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: ColorTokens.onSurface,
-                          letterSpacing: 2.0,
-                        ),
-                      ),
-                    ),
-                  ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_rounded,
+            color: ColorTokens.onSurface,
+          ),
+          onPressed: () => context.pop(),
+          tooltip: 'Back',
+        ),
+        title: Text(
+          'GAMIFICATION',
+          style: GoogleFonts.barlowCondensed(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: ColorTokens.onSurface,
+            letterSpacing: 2.0,
+          ),
+        ),
+      ),
+      body: _isLoading
+          ? const Padding(
+              padding: EdgeInsets.all(SpacingTokens.spacing6),
+              child: AfriSkeletonList(),
+            )
+          : CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
                   const SliverToBoxAdapter(
-                    child: SizedBox(height: SpacingTokens.spacing6),
+                    child: SizedBox(height: SpacingTokens.spacing4),
                   ),
                   SliverToBoxAdapter(
                     child: Padding(
@@ -442,7 +443,6 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
                     ),
                 ],
               ),
-      ),
     );
   }
 }

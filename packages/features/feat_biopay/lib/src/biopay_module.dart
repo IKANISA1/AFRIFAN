@@ -32,7 +32,7 @@ class BioPayModule extends FeatureModule {
   @override
   TabRoute get tabRoute => TabRoute(
     path: '/biopay',
-    label: 'BIOPAY',
+    label: 'BioPay',
     icon: Icons.face_outlined,
     activeIcon: Icons.face,
     builder: (context, state) => const BioPayScreen(),
@@ -60,10 +60,10 @@ class BioPayModule extends FeatureModule {
           return const BiopayRecoveryScreen(
             args: BiopayRecoveryArgs(
               issue: BiopayRecoveryIssue.feature,
-              title: 'REVIEW DATA MISSING',
+              title: 'Review Data Missing',
               message:
                   'Could not restore payment context. Start again from BioPay.',
-              primaryLabel: 'BACK TO BIOPAY',
+              primaryLabel: 'Back to BioPay',
               primaryRoute: '/biopay',
             ),
           );
@@ -80,10 +80,10 @@ class BioPayModule extends FeatureModule {
           return const BiopayRecoveryScreen(
             args: BiopayRecoveryArgs(
               issue: BiopayRecoveryIssue.feature,
-              title: 'BIOPAY STATUS LOST',
+              title: 'BioPay Status Lost',
               message:
                   'Could not restore result. Return to BioPay.',
-              primaryLabel: 'BACK TO BIOPAY',
+              primaryLabel: 'Back to BioPay',
               primaryRoute: '/biopay',
             ),
           );
@@ -100,10 +100,10 @@ class BioPayModule extends FeatureModule {
           return const BiopayRecoveryScreen(
             args: BiopayRecoveryArgs(
               issue: BiopayRecoveryIssue.feature,
-              title: 'RECOVERY CONTEXT MISSING',
+              title: 'Recovery Context Missing',
               message:
                   'Could not load recovery guidance. Return to BioPay.',
-              primaryLabel: 'BACK TO BIOPAY',
+              primaryLabel: 'Back to BioPay',
               primaryRoute: '/biopay',
             ),
           );

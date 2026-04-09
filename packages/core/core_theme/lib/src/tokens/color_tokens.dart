@@ -29,12 +29,12 @@ class ColorTokens {
 
   // Backing stores — Rayon Sports blue defaults (overwritten by init).
   static Color _primary = const Color(0xFF0038A8); // Rayon Blue
-  static Color _secondary = const Color(0xFF8885F0); // Lightened Secondary
+  static Color _secondary = const Color(0xFF001742); // Deep Navy
   static Color _accent = const Color(0xFFD4A017); // Trophy Gold
   static List<Color> _gradient = const [Color(0xFF8885F0), Color(0xFF0038A8)];
   // ── Design system defaults (used when a club color is white) ──
   static const Color _defaultPrimary = Color(0xFF0038A8);
-  static const Color _defaultSecondary = Color(0xFF8885F0);
+  static const Color _defaultSecondary = Color(0xFF001742);
   static const Color _defaultAccent = Color(0xFFD4A017);
 
   /// Returns true if a color is white or near-white (luminance > 0.9).
@@ -74,14 +74,14 @@ class ColorTokens {
     final coreLight = hsl.withLightness(0.97).withSaturation(0.15).toColor();
 
     // Dark Palette - strictly using club colors, no synthetic blacks
-    _darkSurfaceContainerLowest = _primary;
-    _darkSurfaceContainerLow = Color.lerp(_primary, _secondary, 0.10)!;
-    _darkBackground = _primary;
-    _darkSurfaceContainer = _darkBackground;
-    _darkSurface = Color.lerp(_primary, _secondary, 0.25)!;
-    _darkSurfaceContainerHigh = _darkSurface;
-    _darkSurfaceContainerHighest = Color.lerp(_primary, _secondary, 0.35)!;
-    _darkOutlineVariant = Color.lerp(_primary, _secondary, 0.50)!;
+    _darkSurfaceContainerLowest = _secondary;
+    _darkBackground = Color.lerp(_secondary, _primary, 0.05)!;
+    _darkSurfaceContainerLow = Color.lerp(_secondary, _primary, 0.11)!;
+    _darkSurfaceContainer = Color.lerp(_secondary, _primary, 0.19)!;
+    _darkSurface = Color.lerp(_secondary, _primary, 0.27)!;
+    _darkSurfaceContainerHigh = Color.lerp(_secondary, _primary, 0.37)!;
+    _darkSurfaceContainerHighest = Color.lerp(_secondary, _primary, 0.48)!;
+    _darkOutlineVariant = Color.lerp(_secondary, Colors.white, 0.28)!;
 
     // Light Palette
     _lightBackground = coreLight;
@@ -159,15 +159,15 @@ class ColorTokens {
   static Color get onSurface =>
       isDark ? const Color(0xFFFFFFFF) : const Color(0xFF1E293B);
   static Color get onSurfaceVariant =>
-      isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
+      isDark ? const Color(0xFFC9D4EA) : const Color(0xFF475569);
 
   // ── Glass Mandate Parameters ──
   static Color get glassFill => isDark
-      ? Colors.white.withValues(alpha: 0.04)
+      ? Colors.white.withValues(alpha: 0.05)
       : _primary.withValues(alpha: 0.05);
 
   static Color get ghostBorder => isDark
-      ? Colors.white.withValues(alpha: 0.08)
+      ? Colors.white.withValues(alpha: 0.10)
       : _primary.withValues(alpha: 0.10);
 
   static const double glassBlurSigma = 12.0;

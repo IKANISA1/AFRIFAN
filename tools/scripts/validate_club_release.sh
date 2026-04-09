@@ -13,6 +13,10 @@ ANDROID_KEYSTORE="$APP_DIR/android/upload-keystore.jks"
 ANDROID_APP_KEYSTORE="$APP_DIR/android/app/upload-keystore.jks"
 PLAY_STORE_SERVICE_ACCOUNT_JSON="$APP_DIR/android/fastlane/play-store-service-account.json"
 ANDROID_MAIN_ACTIVITY="$(find "$APP_DIR/android/app/src/main/kotlin" -name MainActivity.kt | head -n 1)"
+ANDROID_V31_STYLES="$APP_DIR/android/app/src/main/res/values-v31/styles.xml"
+ANDROID_V31_STYLES_NIGHT="$APP_DIR/android/app/src/main/res/values-night-v31/styles.xml"
+ANDROID_LAUNCH_BACKGROUND="$APP_DIR/android/app/src/main/res/drawable/launch_background.xml"
+ANDROID_TRANSPARENT_SPLASH_ICON="$APP_DIR/android/app/src/main/res/drawable/transparent_splash_icon.xml"
 
 if [ ! -d "$APP_DIR" ]; then
   echo "Unknown app slug: $APP_SLUG" >&2
@@ -99,6 +103,37 @@ verify_public_url(config["APP_PRIVACY_URL"], "APP_PRIVACY_URL")
 verify_public_url(config["APP_TERMS_URL"], "APP_TERMS_URL")
 PY
 
+for required_file in \
+  "$ANDROID_V31_STYLES" \
+  "$ANDROID_V31_STYLES_NIGHT" \
+  "$ANDROID_LAUNCH_BACKGROUND" \
+  "$ANDROID_TRANSPARENT_SPLASH_ICON"; do
+  if [ ! -f "$required_file" ]; then
+    echo "Missing Android splash contract file: $required_file" >&2
+    exit 1
+  fi
+done
+
+for styles_file in "$ANDROID_V31_STYLES" "$ANDROID_V31_STYLES_NIGHT"; do
+  if ! rg -q 'windowSplashScreenAnimatedIcon">@drawable/transparent_splash_icon<' "$styles_file"; then
+    echo "Android 12 splash must use transparent_splash_icon in $styles_file." >&2
+    exit 1
+  fi
+  if ! rg -q 'windowSplashScreenAnimationDuration">0<' "$styles_file"; then
+    echo "Android 12 splash animation duration must be 0 in $styles_file." >&2
+    exit 1
+  fi
+  if ! rg -q 'windowBackground">@drawable/launch_background<' "$styles_file"; then
+    echo "LaunchTheme must point at launch_background in $styles_file." >&2
+    exit 1
+  fi
+done
+
+if rg -q '<bitmap|android:src=|@mipmap|@drawable/.+crest|@drawable/.+logo' "$ANDROID_LAUNCH_BACKGROUND"; then
+  echo "launch_background.xml must stay a plain background without a branded icon." >&2
+  exit 1
+fi
+
 python3 - "$PRODUCTION_JSON" \
   "$APP_DIR/store_metadata/play_store/listing.md" \
   "$APP_DIR/store_metadata/privacy_policy.html" \
@@ -143,6 +178,7 @@ STALE_RELEASE_HITS="$(
     -e '| Email address | Yes | No | Account authentication | Yes |' \
     -e '**Account management**: Email/phone for authentication' \
     -e 'Transaction records are retained for 12 months' \
+    -e 'AFRICLUB official' \
     "$APP_DIR" \
     "$ROOT/packages/features/feat_settings/lib/src/settings_actions.dart" \
     || true
@@ -153,6 +189,30 @@ if [ -n "$STALE_RELEASE_HITS" ]; then
   echo "$STALE_RELEASE_HITS" >&2
   exit 1
 fi
+
+python3 - "$ROOT/packages/features" "$APP_DIR/lib" <<'PY'
+import pathlib
+import re
+import sys
+
+targets = [pathlib.Path(arg) for arg in sys.argv[1:] if pathlib.Path(arg).exists()]
+pattern = re.compile(r"""(['"])(?:(?=(\\?))\2.)*?AFRICLUB(?:(?=(\\?))\3.)*?\1""")
+hits = []
+
+for target in targets:
+    for path in target.rglob("*.dart"):
+        if "/test/" in path.as_posix():
+            continue
+        text = path.read_text()
+        if pattern.search(text):
+            hits.append(str(path))
+
+if hits:
+    raise SystemExit(
+        "User-facing placeholder branding detected in production Dart sources:\n"
+        + "\n".join(sorted(hits))
+    )
+PY
 
 CLUB_CONFIG_PATH="$(find "$ROOT/packages/clubs" -path "*club_${APP_SLUG}/lib/src/*config.dart" | head -n 1)"
 if [ -n "$CLUB_CONFIG_PATH" ] && rg -q "bool get hasBiopay => true;" "$CLUB_CONFIG_PATH"; then

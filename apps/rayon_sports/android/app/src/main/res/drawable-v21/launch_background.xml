@@ -5,9 +5,4 @@
             <solid android:color="#0038A8" />
         </shape>
     </item>
-    <item android:gravity="center">
-        <bitmap
-            android:gravity="center"
-            android:src="@drawable/splash_logo" />
-    </item>
 </layer-list>

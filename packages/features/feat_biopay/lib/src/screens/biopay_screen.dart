@@ -1,4 +1,3 @@
-import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,10 +12,9 @@ class BioPayScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isEnabled = ref.watch(biopayEnabledProvider).valueOrNull ?? false;
-    final authProfile = ref.watch(currentUserProvider);
-    final hasMomo = authProfile?.hasMomo == true;
-    final enrolled = ref.watch(biopayProfileProvider).valueOrNull != null;
+    final isEnabled = ref
+        .watch(biopayEnabledProvider)
+        .maybeWhen(data: (value) => value, orElse: () => true);
 
     return KillSwitchGate(
       enabled: isEnabled,
@@ -26,12 +24,21 @@ class BioPayScreen extends ConsumerWidget {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: Text('BIOPAY', style: TypographyTokens.headlineLarge()),
+          title: Text('BioPay', style: TypographyTokens.titleLarge()),
           actions: [
             IconButton(
-              icon: Icon(
-                Icons.person_outline_rounded,
-                color: ColorTokens.onSurface,
+              icon: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: ColorTokens.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(ShapeTokens.radiusXl),
+                ),
+                child: Icon(
+                  Icons.person_outline_rounded,
+                  color: ColorTokens.onSurface,
+                  size: 20,
+                ),
               ),
               onPressed: () => context.push('/biopay/profile'),
             ),
@@ -48,15 +55,13 @@ class BioPayScreen extends ConsumerWidget {
                 SpacingTokens.spacing8,
               ),
               children: [
-                // Headline
                 Text(
                   'How you want\nto pay today',
                   style: TypographyTokens.displaySmall(),
                 ),
 
-                const SizedBox(height: SpacingTokens.spacing10),
+                const SizedBox(height: SpacingTokens.spacing8),
 
-                // 2×2 payment method grid
                 GridView.count(
                   crossAxisCount: 2,
                   shrinkWrap: true,
@@ -71,10 +76,6 @@ class BioPayScreen extends ConsumerWidget {
                       label: 'Face Scan',
                       onTap: () {
                         HapticFeedback.lightImpact();
-                        if (!hasMomo || !enrolled) {
-                          context.push('/biopay/profile');
-                          return;
-                        }
                         context.push('/biopay/scan?mode=pay');
                       },
                     ),
@@ -133,14 +134,32 @@ class _MethodTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
+    return ClayCard(
+      backgroundColor: ColorTokens.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(32),
       onTap: onTap,
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 40, color: iconColor),
-          const SizedBox(height: SpacingTokens.spacing3),
-          Text(label, style: TypographyTokens.labelLarge()),
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: ColorTokens.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Icon(icon, size: 34, color: iconColor),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          Text(
+            label,
+            style: TypographyTokens.titleMedium().copyWith(
+              fontSize: 20,
+              letterSpacing: 0,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );

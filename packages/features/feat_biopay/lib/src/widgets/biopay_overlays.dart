@@ -43,14 +43,7 @@ Future<void> showNfcPairingSheet(BuildContext context) {
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          Text(
-            'WAITING FOR TAP…',
-            style: GoogleFonts.barlowCondensed(
-              fontSize: 28,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.onSurface,
-            ),
-          ),
+          Text('Waiting for Tap…', style: TypographyTokens.titleLarge()),
           const SizedBox(height: SpacingTokens.spacing3),
           Text(
             'Hold phones back-to-back. Timeout in 30 seconds.',
@@ -66,7 +59,7 @@ Future<void> showNfcPairingSheet(BuildContext context) {
                 borderRadius: BorderRadius.circular(18),
               ),
             ),
-            child: const Text('CANCEL'),
+            child: const Text('Cancel'),
           ),
         ],
       );
@@ -123,7 +116,7 @@ class BiopayLivenessPromptOverlay extends StatelessWidget {
                     const SizedBox(width: SpacingTokens.spacing3),
                     Expanded(
                       child: Text(
-                        title.toUpperCase(),
+                        title,
                         style: GoogleFonts.barlowCondensed(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,

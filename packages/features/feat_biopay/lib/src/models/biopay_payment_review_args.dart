@@ -53,24 +53,22 @@ class BiopayPaymentReviewArgs {
   String? get matchReceipt => matchResult?.matchReceipt;
 
   String get sourceTitle => switch (source) {
-    BiopayReviewSource.faceScan => 'FACE MATCH CONFIRMED',
-    BiopayReviewSource.qrScan => 'QR REQUEST VERIFIED',
-    BiopayReviewSource.nfcScan => 'NFC REQUEST VERIFIED',
+    BiopayReviewSource.faceScan => 'Face Match Confirmed',
+    BiopayReviewSource.qrScan => 'QR Request Verified',
+    BiopayReviewSource.nfcScan => 'NFC Request Verified',
   };
 
   String get sourceDescription => switch (source) {
-    BiopayReviewSource.faceScan =>
-      'Review alias and enter amount.',
-    BiopayReviewSource.qrScan =>
-      'QR verified. Review alias to continue.',
-    BiopayReviewSource.nfcScan =>
-      'NFC verified. Review alias to continue.',
+    BiopayReviewSource.faceScan => 'Review alias and enter amount.',
+    BiopayReviewSource.qrScan => 'QR verified. Review alias to continue.',
+    BiopayReviewSource.nfcScan => 'NFC verified. Review alias to continue.',
   };
 
   String get confirmLabel =>
-      canEditAmount ? 'OPEN PAYMENT DIALER' : 'CONFIRM AND OPEN';
+      canEditAmount ? 'Open Payment Dialer' : 'Confirm and Open';
 
-  String get amountInputLabel => biopayAmountInputLabel(currencyCode: currencyCode);
+  String get amountInputLabel =>
+      biopayAmountInputLabel(currencyCode: currencyCode);
 
   String get lockedAmountLabel => lockedAmount == null
       ? 'Open amount'
@@ -82,7 +80,7 @@ class BiopayPaymentReviewArgs {
 
   String get successPrimaryRoute => '/biopay';
 
-  String get successPrimaryLabel => 'BACK TO BIOPAY';
+  String get successPrimaryLabel => 'Back to BioPay';
 
   String? get secondaryRoute => switch (source) {
     BiopayReviewSource.faceScan => '/biopay/scan?mode=pay',
@@ -91,8 +89,8 @@ class BiopayPaymentReviewArgs {
   };
 
   String get secondaryLabel => switch (source) {
-    BiopayReviewSource.faceScan => 'PAY ANOTHER MEMBER',
-    BiopayReviewSource.qrScan => 'SCAN ANOTHER QR',
-    BiopayReviewSource.nfcScan => 'SCAN ANOTHER NFC REQUEST',
+    BiopayReviewSource.faceScan => 'Pay Another Member',
+    BiopayReviewSource.qrScan => 'Scan Another QR',
+    BiopayReviewSource.nfcScan => 'Scan Another NFC Request',
   };
 }

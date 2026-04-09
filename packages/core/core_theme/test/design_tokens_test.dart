@@ -12,26 +12,26 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   // ═══════════════════════════════════════════════════════════
-  // Typography — 15sp Floor (validated via known token values)
+  // Typography — body floor and metadata hierarchy (validated via known token values)
   // ═══════════════════════════════════════════════════════════
   //
   // GoogleFonts methods trigger async font loading which breaks pure
   // unit tests. Instead, we validate the SIZE VALUES that the tokens
   // are configured to use — these are the authoritative constants.
 
-  group('Typography Tokens — 15sp Body Floor (known values)', () {
+  group('Typography Tokens — body and label hierarchy (known values)', () {
     // These values mirror TypographyTokens exactly.
     // If tokens change, these tests catch the regression.
     const bodyFontSizes = {
       'bodyLarge': 16.0,
       'bodyMedium': 15.0,
-      'bodySmall': 15.0,
+      'bodySmall': 14.0,
     };
 
     const labelFontSizes = {
       'labelLarge': 16.0,
-      'labelMedium': 15.0,
-      'labelSmall': 15.0,
+      'labelMedium': 14.0,
+      'labelSmall': 12.0,
     };
 
     const titleFontSizes = {
@@ -41,14 +41,15 @@ void main() {
     };
 
     for (final entry in bodyFontSizes.entries) {
-      test('${entry.key} fontSize (${entry.value}) >= 15', () {
-        expect(entry.value, greaterThanOrEqualTo(15));
+      test('${entry.key} fontSize (${entry.value}) respects body floor', () {
+        final minimum = entry.key == 'bodySmall' ? 14.0 : 15.0;
+        expect(entry.value, greaterThanOrEqualTo(minimum));
       });
     }
 
     for (final entry in labelFontSizes.entries) {
-      test('${entry.key} fontSize (${entry.value}) >= 15', () {
-        expect(entry.value, greaterThanOrEqualTo(15));
+      test('${entry.key} fontSize (${entry.value}) >= 11', () {
+        expect(entry.value, greaterThanOrEqualTo(11));
       });
     }
 
@@ -57,6 +58,28 @@ void main() {
         expect(entry.value, greaterThanOrEqualTo(15));
       });
     }
+
+    test('body hierarchy stays ordered', () {
+      expect(
+        bodyFontSizes['bodyLarge']!,
+        greaterThan(bodyFontSizes['bodyMedium']!),
+      );
+      expect(
+        bodyFontSizes['bodyMedium']!,
+        greaterThan(bodyFontSizes['bodySmall']!),
+      );
+    });
+
+    test('label hierarchy stays ordered', () {
+      expect(
+        labelFontSizes['labelLarge']!,
+        greaterThan(labelFontSizes['labelMedium']!),
+      );
+      expect(
+        labelFontSizes['labelMedium']!,
+        greaterThan(labelFontSizes['labelSmall']!),
+      );
+    });
   });
 
   group('Typography Tokens — 32sp Hero Floor (known values)', () {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../tokens/blur_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/spacing_tokens.dart';
+import '../tokens/typography_tokens.dart';
 import 'afri_press_feedback.dart';
 
 /// AFRICLUB floating bottom navigation bar.
@@ -266,11 +267,12 @@ class _FloatingNavItemState extends State<_FloatingNavItem>
                           widget.label,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                          style: TypographyTokens.labelSmall().copyWith(
                             color: ColorTokens.navActive,
-                            fontSize: 10,
+                            fontSize: 11,
                             fontWeight: FontWeight.w700,
-                            letterSpacing: 0.6,
+                            letterSpacing: 0.7,
+                            height: 1.0,
                           ),
                         ),
                       )

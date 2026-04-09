@@ -11,6 +11,9 @@ class HelpSupportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appName =
+        ClubConfigScope.maybeOf(context)?.appName ??
+        RuntimeBranding.displayAppName;
     return SettingsBackGuard(
       child: Scaffold(
         backgroundColor: ColorTokens.background,
@@ -69,8 +72,7 @@ class HelpSupportScreen extends StatelessWidget {
               onTap: () async {
                 await launchWhatsApp(
                   context,
-                  message:
-                      'Hi, I need help with ${RuntimeBranding.displayAppName}.',
+                  message: 'Hi, I need help with $appName.',
                   failureMessage: 'Could not open WhatsApp.',
                 );
               },
@@ -78,14 +80,13 @@ class HelpSupportScreen extends StatelessWidget {
             const SizedBox(height: SpacingTokens.spacing3),
             _SupportCard(
               title: 'Request Data Export',
-              subtitle:
-                  'Request a copy of your data from support.',
+              subtitle: 'Request a copy of your data from support.',
               trailing: 'REQUEST',
               onTap: () async {
                 await launchWhatsApp(
                   context,
                   message:
-                      'Data export request for ${RuntimeBranding.displayAppName}. Please send me a copy of the data stored for my account.',
+                      'Data export request for $appName. Please send me a copy of the data stored for my account.',
                   failureMessage: 'Could not open WhatsApp.',
                 );
               },

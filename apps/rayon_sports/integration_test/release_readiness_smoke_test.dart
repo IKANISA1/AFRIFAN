@@ -1,6 +1,5 @@
 import 'package:core_app/core_app.dart';
 import 'package:core_auth/core_auth.dart';
-import 'package:feat_biopay/feat_biopay.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:feat_home/src/widgets/match_card.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -158,7 +157,7 @@ void main() {
     },
   );
 
-  testWidgets('renders the BioPay hub from the real app entrypoint', (
+  testWidgets('current production release keeps BioPay entry points visible', (
     tester,
   ) async {
     tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
@@ -172,7 +171,7 @@ void main() {
       options: AfriClubBootstrapOptions(
         startupOptions: const AppStartupOptions.integrationTest(),
         authRepository: _FakeAuthRepository(),
-        initialLocation: '/biopay',
+        initialLocation: '/settings',
         providerOverrides: [
           currentUserProvider.overrideWith(
             (ref) => const UserProfile(
@@ -184,19 +183,17 @@ void main() {
               languageCode: 'en',
             ),
           ),
-          biopayEnabledProvider.overrideWith((ref) => true),
-          biopayProfileProvider.overrideWith((ref) => null),
         ],
       ),
     );
 
     await tester.pumpAndSettle();
-    await _pumpUntilVisible(tester, find.text('Face Scan'));
+    await _pumpUntilVisible(tester, find.text('BIOPAY & PRIVACY'));
 
-    expect(find.textContaining('How you want'), findsOneWidget);
-    expect(find.text('Face Scan'), findsOneWidget);
-    expect(find.text('NFC Tap'), findsOneWidget);
-    expect(find.text('Scan QR'), findsOneWidget);
+    expect(find.text('BIOPAY & PRIVACY'), findsOneWidget);
+    expect(find.text('Privacy Controls'), findsOneWidget);
+    expect(find.text('BioPay Home'), findsOneWidget);
+    expect(find.bySemanticsLabel('BIOPAY'), findsOneWidget);
   });
 }
 

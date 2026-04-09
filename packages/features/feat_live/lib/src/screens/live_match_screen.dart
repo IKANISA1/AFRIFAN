@@ -228,9 +228,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
         MatchIntelEvent(
           minute: 'FT',
           title: 'MATCH REPORT',
-          body: summary.isEmpty
-              ? 'Match finished. Summary pending.'
-              : summary,
+          body: summary.isEmpty ? 'Match finished. Summary pending.' : summary,
         ),
       ];
     }
@@ -323,7 +321,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                       const SizedBox(height: SpacingTokens.spacing3),
                       Text(
                         _error ??
-                            'No live or upcoming fixture is available for Rayon Sports right now.',
+                            'No live or upcoming fixture is available for ${RuntimeBranding.displayClubName} right now.',
                         style: TypographyTokens.bodyMedium(),
                         textAlign: TextAlign.center,
                       ),

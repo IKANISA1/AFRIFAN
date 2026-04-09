@@ -104,9 +104,9 @@ class TypographyTokens {
   );
 
   static TextStyle titleSmall() => GoogleFonts.barlowCondensed(
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: FontWeight.w600,
-    color: ColorTokens.onSurfaceVariant,
+    color: ColorTokens.onSurface,
     height: 1.3,
     letterSpacing: 0.2,
   );
@@ -126,15 +126,15 @@ class TypographyTokens {
   static TextStyle bodyMedium() => GoogleFonts.inter(
     fontSize: 15,
     fontWeight: FontWeight.w400,
-    color: ColorTokens.onSurfaceVariant,
-    height: 1.5,
+    color: ColorTokens.onSurface,
+    height: 1.55,
   );
 
   static TextStyle bodySmall() => GoogleFonts.inter(
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: FontWeight.w400,
     color: ColorTokens.onSurfaceVariant,
-    height: 1.5,
+    height: 1.45,
   );
 
   // ══════════════════════════════════════
@@ -151,19 +151,19 @@ class TypographyTokens {
   );
 
   static TextStyle labelMedium() => GoogleFonts.inter(
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: FontWeight.w600,
     color: ColorTokens.onSurfaceVariant,
     height: 1.4,
-    letterSpacing: 0.5,
+    letterSpacing: 0.6,
   );
 
   static TextStyle labelSmall() => GoogleFonts.inter(
-    fontSize: 15,
-    fontWeight: FontWeight.w500,
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
     color: ColorTokens.onSurfaceVariant,
-    height: 1.4,
-    letterSpacing: 0.5,
+    height: 1.35,
+    letterSpacing: 0.7,
   );
 
   // ══════════════════════════════════════

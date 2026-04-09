@@ -19,6 +19,8 @@ class ClaymorphicButton extends StatelessWidget {
   final IconData? icon;
   final bool isLoading;
   final double? width;
+  final bool preserveCase;
+  final double? letterSpacing;
 
   const ClaymorphicButton({
     super.key,
@@ -28,6 +30,8 @@ class ClaymorphicButton extends StatelessWidget {
     this.icon,
     this.isLoading = false,
     this.width,
+    this.preserveCase = false,
+    this.letterSpacing,
   });
 
   @override
@@ -107,12 +111,12 @@ class ClaymorphicButton extends StatelessWidget {
               const SizedBox(width: 12),
             ],
             Text(
-              label.toUpperCase(),
+              preserveCase ? label : label.toUpperCase(),
               style: GoogleFonts.barlowCondensed(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
                 color: ColorTokens.onSurface,
-                letterSpacing: 4.0,
+                letterSpacing: letterSpacing ?? (preserveCase ? 0.6 : 4.0),
               ),
             ),
           ],

@@ -13,7 +13,12 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(currentUserProvider);
-    final hasBiopayRoutes = _hasRoute(context, 'biopay_profile');
+    final config = ClubConfigScope.maybeOf(context);
+    final appName = config?.appName ?? RuntimeBranding.displayAppName;
+    final showBiopayEntries =
+        (config?.hasBiopay ?? false) &&
+        _hasRoute(context, 'biopay') &&
+        _hasRoute(context, 'biopay_profile');
     final alias = profile?.publicUserId == null
         ? '#------'
         : '#${AliasGenerator.format(profile!.publicUserId!)}';
@@ -37,7 +42,7 @@ class SettingsScreen extends ConsumerWidget {
               Text(
                 'SETTINGS',
                 style: TypographyTokens.displaySmall(
-                  Theme.of(context).colorScheme.primary,
+                  ColorTokens.onSurface,
                 ).copyWith(letterSpacing: 1.0),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
@@ -57,7 +62,9 @@ class SettingsScreen extends ConsumerWidget {
                           Text(
                             statusLine,
                             style: TypographyTokens.labelSmall().copyWith(
-                              color: ColorTokens.onSurfaceVariant,
+                              color: ColorTokens.onSurface.withValues(
+                                alpha: 0.74,
+                              ),
                               letterSpacing: 1.1,
                             ),
                           ),
@@ -110,30 +117,30 @@ class SettingsScreen extends ConsumerWidget {
               ),
               const SizedBox(height: SpacingTokens.spacing6),
               _buildSettingsSection(
-                title: 'BIOPAY & PRIVACY',
+                title: showBiopayEntries ? 'BioPay & Privacy' : 'PRIVACY',
                 children: [
-                  if (hasBiopayRoutes)
+                  if (showBiopayEntries)
                     _buildSettingsTile(
                       context: context,
                       icon: Icons.payments_outlined,
                       title: 'BioPay Home',
                       onTap: () => context.push('/biopay'),
                     ),
-                  if (hasBiopayRoutes)
+                  if (showBiopayEntries)
                     _buildSettingsTile(
                       context: context,
                       icon: Icons.face_retouching_natural_rounded,
                       title: 'Face ID & Enrollment',
                       onTap: () => context.push('/biopay/profile'),
                     ),
-                  if (hasBiopayRoutes)
+                  if (showBiopayEntries)
                     _buildSettingsTile(
                       context: context,
                       icon: Icons.qr_code_rounded,
                       title: 'QR Receive & Pay',
                       onTap: () => context.push('/biopay/qr'),
                     ),
-                  if (hasBiopayRoutes)
+                  if (showBiopayEntries)
                     _buildSettingsTile(
                       context: context,
                       icon: Icons.nfc_rounded,
@@ -173,7 +180,7 @@ class SettingsScreen extends ConsumerWidget {
                   _buildSettingsTile(
                     context: context,
                     icon: Icons.info_outline,
-                    title: 'About ${RuntimeBranding.displayAppName}',
+                    title: 'About $appName',
                     onTap: () => context.push('/settings/about'),
                   ),
                   _buildSettingsTile(
@@ -221,7 +228,7 @@ class SettingsScreen extends ConsumerWidget {
           child: Text(
             title,
             style: TypographyTokens.labelMedium().copyWith(
-              color: ColorTokens.onSurfaceVariant,
+              color: ColorTokens.onSurface.withValues(alpha: 0.72),
               letterSpacing: 1.2,
             ),
           ),

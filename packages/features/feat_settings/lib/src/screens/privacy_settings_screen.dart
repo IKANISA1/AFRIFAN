@@ -83,6 +83,9 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appName =
+        ClubConfigScope.maybeOf(context)?.appName ??
+        RuntimeBranding.displayAppName;
     final asyncSettings = ref.watch(privacySettingsProvider);
     final loadedSettings = asyncSettings.valueOrNull;
     if (loadedSettings != null) {
@@ -202,7 +205,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                             await launchWhatsApp(
                               context,
                               message:
-                                  'Data export request for ${RuntimeBranding.displayAppName}. Please send me a copy of my account data.',
+                                  'Data export request for $appName. Please send me a copy of my account data.',
                               failureMessage: 'Could not open WhatsApp.',
                             );
                           },

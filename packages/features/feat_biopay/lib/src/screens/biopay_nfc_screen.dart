@@ -124,7 +124,7 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
           icon: Icon(Icons.arrow_back, color: ColorTokens.onSurface),
           onPressed: () => context.pop(),
         ),
-        title: Text('NFC PAYMENT', style: TypographyTokens.headlineLarge()),
+        title: Text('NFC Payment', style: TypographyTokens.titleLarge()),
       ),
       body: SafeArea(
         top: false,
@@ -149,13 +149,15 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
               if (_isReceiveMode) ...[
                 // Amount field
                 Text(
-                  'AMOUNT (OPTIONAL)',
+                  'Amount (Optional)',
                   style: TypographyTokens.labelSmall().copyWith(
-                    letterSpacing: 1.2,
+                    letterSpacing: 0.7,
                   ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
-                GlassCard(
+                ClayCard(
+                  backgroundColor: ColorTokens.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(32),
                   padding: const EdgeInsets.symmetric(
                     horizontal: SpacingTokens.spacing5,
                     vertical: SpacingTokens.spacing4,
@@ -185,8 +187,9 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
                             hintText: '0',
                             hintStyle: TypographyTokens.displaySmall().copyWith(
                               fontSize: 28,
-                              color: ColorTokens.onSurfaceVariant
-                                  .withValues(alpha: 0.3),
+                              color: ColorTokens.onSurfaceVariant.withValues(
+                                alpha: 0.3,
+                              ),
                             ),
                           ),
                         ),
@@ -214,12 +217,18 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
                 label: _isBusy
                     ? 'Working...'
                     : _isReceiveMode
-                        ? 'Activate NFC'
-                        : 'Scan NFC',
-                onPressed: _isBusy ? null : (_isReceiveMode ? _activateReceiveMode : _scanRequest),
+                    ? 'Activate NFC'
+                    : 'Scan NFC',
+                onPressed: _isBusy
+                    ? null
+                    : (_isReceiveMode ? _activateReceiveMode : _scanRequest),
                 isLoading: _isBusy,
-                icon: _isReceiveMode ? Icons.nfc_rounded : Icons.contactless_rounded,
+                icon: _isReceiveMode
+                    ? Icons.nfc_rounded
+                    : Icons.contactless_rounded,
                 width: double.infinity,
+                preserveCase: true,
+                letterSpacing: 0.6,
               ),
 
               const SizedBox(height: SpacingTokens.spacing8),
@@ -247,21 +256,21 @@ class _ModeSegment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 44,
+      height: 48,
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
         children: [
           _Tab(
-            label: 'RECEIVE',
+            label: 'Receive',
             isSelected: isReceive,
             primaryColor: primaryColor,
             onTap: () => onChanged(true),
           ),
           _Tab(
-            label: 'SCAN',
+            label: 'Scan',
             isSelected: !isReceive,
             primaryColor: primaryColor,
             onTap: () => onChanged(false),
@@ -298,15 +307,15 @@ class _Tab extends StatelessWidget {
           margin: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: isSelected ? Colors.white : Colors.transparent,
-            borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+            borderRadius: BorderRadius.circular(20),
           ),
           alignment: Alignment.center,
           child: Text(
             label,
-            style: TypographyTokens.labelMedium().copyWith(
+            style: TypographyTokens.labelLarge().copyWith(
               fontWeight: FontWeight.w700,
               color: isSelected ? primaryColor : ColorTokens.onSurfaceVariant,
-              letterSpacing: 1.0,
+              letterSpacing: 0.2,
             ),
           ),
         ),

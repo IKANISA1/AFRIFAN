@@ -171,18 +171,7 @@ class _BiopayScannerShellState extends State<BiopayScannerShell>
           ),
         ),
 
-        // ── Floating status chip (top) ───────────────────────
-        Positioned(
-          top: space.x4,
-          left: space.x5,
-          right: space.x5,
-          child: _FloatingStatusChip(
-            label: widget.statusLabel,
-            color: statusColor,
-          ),
-        ),
-
-        // ── Bottom area: dots + privacy + footer ─────────────
+        // ── Bottom area: status + dots + privacy + footer ────
         Positioned(
           left: space.x5,
           right: space.x5,
@@ -190,6 +179,12 @@ class _BiopayScannerShellState extends State<BiopayScannerShell>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              _FloatingStatusChip(
+                label: widget.statusLabel,
+                color: statusColor,
+              ),
+              SizedBox(height: space.x3),
+
               if (widget.isEnrollMode) ...[
                 _SampleCaptureDots(
                   sampleCount: widget.sampleCount,
@@ -240,7 +235,7 @@ class _BiopayScannerShellState extends State<BiopayScannerShell>
 }
 
 // ─────────────────────────────────────────────────────────────
-// Floating Status Chip — glassmorphic pill with Ghost Border
+// Floating Status Chip — bottom status panel
 // ─────────────────────────────────────────────────────────────
 
 class _FloatingStatusChip extends StatelessWidget {
@@ -257,13 +252,14 @@ class _FloatingStatusChip extends StatelessWidget {
       switchOutCurve: Curves.easeIn,
       child: Container(
         key: ValueKey<String>(label),
+        width: double.infinity,
         padding: const EdgeInsets.symmetric(
           horizontal: SpacingTokens.spacing5,
           vertical: SpacingTokens.spacing3,
         ),
         decoration: BoxDecoration(
           color: ColorTokens.background.withValues(alpha: 0.72),
-          borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
+          borderRadius: BorderRadius.circular(24),
           border: Border.all(color: color.withValues(alpha: 0.35), width: 1.5),
           boxShadow: [
             BoxShadow(
@@ -273,35 +269,16 @@ class _FloatingStatusChip extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(color: color.withValues(alpha: 0.5), blurRadius: 6),
-                ],
-              ),
-            ),
-            const SizedBox(width: SpacingTokens.spacing3),
-            Flexible(
-              child: Text(
-                label,
-                style: TypographyTokens.labelLarge().copyWith(
-                  color: ColorTokens.onSurface,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.2,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
+        child: Text(
+          label,
+          style: TypographyTokens.titleMedium().copyWith(
+            color: ColorTokens.onSurface,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0,
+          ),
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     );

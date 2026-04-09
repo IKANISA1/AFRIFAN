@@ -6,6 +6,7 @@ library;
 
 // ── Configuration ──
 export 'src/club_config.dart';
+export 'src/club_config_scope.dart';
 export 'src/club_theme.dart';
 export 'src/extensions.dart';
 export 'src/runtime_branding.dart';

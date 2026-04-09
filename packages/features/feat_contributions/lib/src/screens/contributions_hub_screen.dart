@@ -69,11 +69,30 @@ class _ContributionsHubScreenState
           child: ListView(
             padding: const EdgeInsets.all(SpacingTokens.spacing6),
             children: [
-              Text(
-                'CONTRIBUTE',
-                style: TypographyTokens.displaySmall(
-                  Theme.of(context).colorScheme.primary,
-                ),
+              // ── Header: back + title ──
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () => context.pop(),
+                    icon: Icon(
+                      Icons.arrow_back_rounded,
+                      color: ColorTokens.onSurface,
+                    ),
+                    tooltip: 'Back',
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: Text(
+                      'CONTRIBUTE',
+                      style: TypographyTokens.displaySmall(
+                        Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: SpacingTokens.spacing6),
               _HubCard(

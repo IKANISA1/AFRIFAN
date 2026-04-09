@@ -38,7 +38,8 @@ class BiopayCameraPipeline extends ConsumerStatefulWidget {
   final VoidCallback? onCancel;
 
   @override
-  ConsumerState<BiopayCameraPipeline> createState() => _BiopayCameraPipelineState();
+  ConsumerState<BiopayCameraPipeline> createState() =>
+      _BiopayCameraPipelineState();
 }
 
 class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
@@ -495,7 +496,9 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
       if (!mounted) return;
 
       if (widget.onMatchSuccess != null) {
-        widget.onMatchSuccess!(BiopayPaymentReviewArgs.faceMatch(matchResult: result));
+        widget.onMatchSuccess!(
+          BiopayPaymentReviewArgs.faceMatch(matchResult: result),
+        );
       } else {
         context.pushReplacement(
           '/biopay/review',
@@ -613,7 +616,8 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
                 footer: BiopayScanFooter(
                   isCameraReady: isCameraReady,
                   errorMessage: _cameraError ?? _pipelineError,
-                  onEnableCamera: () => _prepareSecureScan(forceChallengeRefresh: true),
+                  onEnableCamera: () =>
+                      _prepareSecureScan(forceChallengeRefresh: true),
                 ),
               ),
             ),
@@ -627,8 +631,8 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
                   ),
                   totalSteps: _isEnroll ? 3 : 2,
                   stepLabels: _isEnroll
-                      ? const ['POSITION', 'ANGLES', 'CONFIRM']
-                      : const ['LOCK', 'CONFIRM'],
+                      ? const ['Position', 'Angles', 'Confirm']
+                      : const ['Lock', 'Confirm'],
                 ),
               ),
 

@@ -74,11 +74,11 @@ class _BiopayPaymentReviewScreenState
             '/biopay/recovery',
             extra: const BiopayRecoveryArgs(
               issue: BiopayRecoveryIssue.deviceAuth,
-              title: 'DEVICE AUTH REQUIRED',
+              title: 'Device Auth Required',
               message: 'Set up device security first.',
-              primaryLabel: 'BACK',
+              primaryLabel: 'Back',
               primaryRoute: '/biopay',
-              secondaryLabel: 'RETRY',
+              secondaryLabel: 'Retry',
               secondaryRoute: '/biopay/profile',
             ),
           );
@@ -136,7 +136,7 @@ class _BiopayPaymentReviewScreenState
         '/biopay/result',
         extra: BiopayTaskResultArgs(
           tone: BiopayTaskResultTone.success,
-          title: 'PAYMENT OPENED',
+          title: 'Payment Opened',
           message: 'Complete the transfer in your payment app.',
           primaryLabel: args.successPrimaryLabel,
           primaryRoute: args.successPrimaryRoute,
@@ -155,11 +155,11 @@ class _BiopayPaymentReviewScreenState
         '/biopay/result',
         extra: BiopayTaskResultArgs(
           tone: BiopayTaskResultTone.error,
-          title: 'PAYMENT FAILED',
+          title: 'Payment Failed',
           message: error.toString(),
-          primaryLabel: 'TRY AGAIN',
+          primaryLabel: 'Try Again',
           primaryRoute: widget.args.secondaryRoute ?? '/biopay',
-          secondaryLabel: 'BACK',
+          secondaryLabel: 'Back',
           secondaryRoute: '/biopay',
           alias: widget.args.formattedAlias,
           maskedRecipientValue: widget.args.maskedRecipientValue,
@@ -187,10 +187,7 @@ class _BiopayPaymentReviewScreenState
           icon: Icon(Icons.arrow_back, color: ColorTokens.onSurface),
           onPressed: () => context.go('/biopay'),
         ),
-        title: Text(
-          'CONFIRM PAYMENT',
-          style: TypographyTokens.headlineLarge(),
-        ),
+        title: Text('Confirm Payment', style: TypographyTokens.titleLarge()),
       ),
       body: SafeArea(
         top: false,
@@ -212,7 +209,9 @@ class _BiopayPaymentReviewScreenState
               const SizedBox(height: SpacingTokens.spacing6),
 
               // Details card
-              GlassCard(
+              ClayCard(
+                backgroundColor: ColorTokens.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(32),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -223,7 +222,7 @@ class _BiopayPaymentReviewScreenState
                     if (!args.canEditAmount) ...[
                       const SizedBox(height: SpacingTokens.spacing4),
                       _DetailLine(
-                        label: 'AMOUNT',
+                        label: 'Amount',
                         value: args.lockedAmountLabel,
                       ),
                     ],
@@ -234,14 +233,16 @@ class _BiopayPaymentReviewScreenState
               if (args.canEditAmount) ...[
                 const SizedBox(height: SpacingTokens.spacing6),
                 Text(
-                  'AMOUNT',
+                  'Amount',
                   style: TypographyTokens.labelSmall().copyWith(
                     color: primaryColor,
-                    letterSpacing: 1.2,
+                    letterSpacing: 0.7,
                   ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
-                GlassCard(
+                ClayCard(
+                  backgroundColor: ColorTokens.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(32),
                   padding: const EdgeInsets.symmetric(
                     horizontal: SpacingTokens.spacing5,
                     vertical: SpacingTokens.spacing4,
@@ -260,8 +261,9 @@ class _BiopayPaymentReviewScreenState
                       hintText: '5000',
                       hintStyle: TypographyTokens.displaySmall().copyWith(
                         fontSize: 28,
-                        color: ColorTokens.onSurfaceVariant
-                            .withValues(alpha: 0.3),
+                        color: ColorTokens.onSurfaceVariant.withValues(
+                          alpha: 0.3,
+                        ),
                       ),
                     ),
                   ),
@@ -287,6 +289,8 @@ class _BiopayPaymentReviewScreenState
                 onPressed: _isSubmitting ? null : _submit,
                 isLoading: _isSubmitting,
                 width: double.infinity,
+                preserveCase: true,
+                letterSpacing: 0.6,
               ),
 
               const SizedBox(height: SpacingTokens.spacing3),
@@ -294,8 +298,7 @@ class _BiopayPaymentReviewScreenState
               // Cancel
               Center(
                 child: TextButton(
-                  onPressed:
-                      _isSubmitting ? null : () => context.go('/biopay'),
+                  onPressed: _isSubmitting ? null : () => context.go('/biopay'),
                   child: Text(
                     'Cancel',
                     style: TypographyTokens.labelLarge().copyWith(
@@ -330,10 +333,8 @@ class _DetailLine extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label.toUpperCase(),
-            style: TypographyTokens.labelSmall().copyWith(
-              letterSpacing: 1.0,
-            ),
+            label,
+            style: TypographyTokens.labelSmall().copyWith(letterSpacing: 0.6),
           ),
           const SizedBox(height: 2),
           Text(

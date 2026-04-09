@@ -9,11 +9,11 @@ import '../widgets/settings_navigation_scope.dart';
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
-  // §2.4 LOCKED — no hardcoded club names.
-  static String get _appName => RuntimeBranding.displayAppName;
-
   @override
   Widget build(BuildContext context) {
+    final appName =
+        ClubConfigScope.maybeOf(context)?.appName ??
+        RuntimeBranding.displayAppName;
     return SettingsBackGuard(
       child: Scaffold(
         backgroundColor: ColorTokens.background,
@@ -50,9 +50,9 @@ class AboutScreen extends StatelessWidget {
                       ),
                       alignment: Alignment.center,
                       child: Text(
-                        _appName.length >= 2
-                            ? _appName.substring(0, 2).toUpperCase()
-                            : _appName.toUpperCase(),
+                        appName.length >= 2
+                            ? appName.substring(0, 2).toUpperCase()
+                            : appName.toUpperCase(),
                         style: GoogleFonts.barlowCondensed(
                           fontSize: 28,
                           fontWeight: FontWeight.w800,
@@ -62,7 +62,7 @@ class AboutScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
                     Text(
-                      _appName.toUpperCase(),
+                      appName.toUpperCase(),
                       style: GoogleFonts.barlowCondensed(
                         fontSize: 32,
                         fontWeight: FontWeight.w800,
@@ -71,7 +71,7 @@ class AboutScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     Text(
-                      'Powered by $_appName',
+                      'Powered by $appName',
                       style: TypographyTokens.bodyMedium(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
@@ -109,10 +109,8 @@ class AboutScreen extends StatelessWidget {
               const SizedBox(height: SpacingTokens.spacing3),
               _LinkCard(
                 title: 'Open Source Licenses',
-                onTap: () => showLicensePage(
-                  context: context,
-                  applicationName: _appName,
-                ),
+                onTap: () =>
+                    showLicensePage(context: context, applicationName: appName),
               ),
               const SizedBox(height: SpacingTokens.spacing6),
               ClaymorphicButton(
@@ -125,7 +123,7 @@ class AboutScreen extends StatelessWidget {
                 onPressed: () async {
                   await launchWhatsApp(
                     context,
-                    message: 'Hi, I need help with $_appName.',
+                    message: 'Hi, I need help with $appName.',
                     failureMessage: 'Could not open WhatsApp.',
                   );
                 },

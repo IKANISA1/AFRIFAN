@@ -135,11 +135,19 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     return Scaffold(
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_rounded, color: ColorTokens.onSurface),
+          onPressed: () => context.pop(),
+          tooltip: 'Back',
+        ),
         title: Text(
           'MEMBERSHIP',
           style: GoogleFonts.barlowCondensed(
-            fontSize: 22,
+            fontSize: 18,
             fontWeight: FontWeight.w700,
+            color: ColorTokens.onSurface,
             letterSpacing: 2.0,
           ),
         ),

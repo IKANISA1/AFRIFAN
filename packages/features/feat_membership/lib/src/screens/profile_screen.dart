@@ -19,33 +19,32 @@ class ProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_rounded, color: ColorTokens.onSurface),
+          onPressed: () => context.pop(),
+          tooltip: 'Back',
+        ),
+        title: Text(
+          'PROFILE',
+          style: GoogleFonts.barlowCondensed(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: ColorTokens.onSurface,
+            letterSpacing: 2.0,
+          ),
+        ),
+      ),
       body: SafeArea(
+        top: false,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            // Header
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.spacing6,
-                  SpacingTokens.spacing4,
-                  SpacingTokens.spacing6,
-                  0,
-                ),
-                child: Text(
-                  'SETTINGS',
-                  style: GoogleFonts.barlowCondensed(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurface,
-                    letterSpacing: 2.0,
-                  ),
-                ),
-              ),
-            ),
 
             const SliverToBoxAdapter(
-              child: SizedBox(height: SpacingTokens.spacing6),
+              child: SizedBox(height: SpacingTokens.spacing4),
             ),
 
             // Identity card

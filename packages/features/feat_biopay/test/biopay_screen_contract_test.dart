@@ -34,7 +34,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text('BIOPAY'), findsOneWidget);
+    expect(find.text('BioPay'), findsOneWidget);
     expect(find.text('How you want\nto pay today'), findsOneWidget);
     expect(find.text('Face Scan'), findsOneWidget);
     expect(find.text('NFC Tap'), findsOneWidget);

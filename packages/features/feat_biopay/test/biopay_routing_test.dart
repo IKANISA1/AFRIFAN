@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 void main() {
   group('BioPay hub routing', () {
     testWidgets(
-      'unenrolled user is redirected to profile when tapping face scan',
+      'unenrolled user goes straight to face scan when tapping face scan',
       (tester) async {
         final router = GoRouter(
           initialLocation: '/biopay',
@@ -19,9 +19,9 @@ void main() {
               builder: (context, state) => const BioPayScreen(),
             ),
             GoRoute(
-              path: '/biopay/profile',
+              path: '/biopay/scan',
               builder: (context, state) =>
-                  const Scaffold(body: Text('Profile Route')),
+                  const Scaffold(body: Text('Scan Route')),
             ),
           ],
         );
@@ -56,7 +56,7 @@ void main() {
         await tester.tap(find.text('Face Scan'));
         await tester.pumpAndSettle();
 
-        expect(find.text('Profile Route'), findsOneWidget);
+        expect(find.text('Scan Route'), findsOneWidget);
       },
     );
 
@@ -123,7 +123,7 @@ void main() {
       expect(find.text('Profile Route'), findsOneWidget);
     });
 
-    testWidgets('users without a linked MOMO route are sent to profile on face scan tap', (
+    testWidgets('users without a linked MOMO route still go to face scan on face scan tap', (
       tester,
     ) async {
       final router = GoRouter(
@@ -134,9 +134,9 @@ void main() {
             builder: (context, state) => const BioPayScreen(),
           ),
           GoRoute(
-            path: '/biopay/profile',
+            path: '/biopay/scan',
             builder: (context, state) =>
-                const Scaffold(body: Text('Profile Route')),
+                const Scaffold(body: Text('Scan Route')),
           ),
         ],
       );
@@ -180,8 +180,7 @@ void main() {
       await tester.tap(find.text('Face Scan'));
       await tester.pumpAndSettle();
 
-      // Because momo is missing, it interrupts to the profile hub
-      expect(find.text('Profile Route'), findsOneWidget);
+      expect(find.text('Scan Route'), findsOneWidget);
     });
   });
 }

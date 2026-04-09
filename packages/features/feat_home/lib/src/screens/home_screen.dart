@@ -98,10 +98,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ),
 
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: SpacingTokens.spacing8),
-                  ),
-
                   // ── Quick actions rail ──
                   const SliverToBoxAdapter(
                     child: Padding(
@@ -246,8 +242,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: AfriEmptyView(
           compact: true,
           title: 'NO FIXTURE YET',
-          message:
-              'Next fixture will be published when confirmed.',
+          message: 'Next fixture will be published when confirmed.',
           icon: Icons.calendar_month_rounded,
         ),
       );

@@ -36,6 +36,7 @@ class StatsRow extends StatelessWidget {
         // Global XP card
         Expanded(
           child: ClayCard(
+            backgroundColor: ColorTokens.surfaceContainerLow,
             padding: const EdgeInsets.symmetric(
               horizontal: SpacingTokens.spacing4,
               vertical: SpacingTokens.spacing4,
@@ -48,7 +49,7 @@ class StatsRow extends StatelessWidget {
                   style: GoogleFonts.barlowCondensed(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: ColorTokens.onSurfaceVariant,
+                    color: ColorTokens.onSurface.withValues(alpha: 0.76),
                     letterSpacing: 1.5,
                   ),
                 ),
@@ -71,6 +72,7 @@ class StatsRow extends StatelessWidget {
         // Fan Rank card
         Expanded(
           child: ClayCard(
+            backgroundColor: ColorTokens.surfaceContainerLow,
             padding: const EdgeInsets.symmetric(
               horizontal: SpacingTokens.spacing4,
               vertical: SpacingTokens.spacing4,
@@ -83,7 +85,7 @@ class StatsRow extends StatelessWidget {
                   style: GoogleFonts.barlowCondensed(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: ColorTokens.onSurfaceVariant,
+                    color: ColorTokens.onSurface.withValues(alpha: 0.76),
                     letterSpacing: 1.5,
                   ),
                 ),
@@ -93,7 +95,10 @@ class StatsRow extends StatelessWidget {
                   style: GoogleFonts.barlowCondensed(
                     fontSize: 36,
                     fontWeight: FontWeight.w800,
-                    color: primaryColor,
+                    color: Color.alphaBlend(
+                      primaryColor.withValues(alpha: 0.6),
+                      ColorTokens.onSurface,
+                    ),
                     height: 1.0,
                     letterSpacing: -0.5,
                   ),

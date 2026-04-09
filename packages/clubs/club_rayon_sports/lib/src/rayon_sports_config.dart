@@ -4,9 +4,11 @@ import 'package:core_theme/core_theme.dart';
 
 /// Configuration for Rayon Sports FC (Rwanda).
 ///
-/// "The Blue and Red" — Rwanda's most decorated club.
-/// Colors: Primary #C8102E (Rayon Red), Secondary #0A0F2C (Deep Navy),
-/// Accent #D4A017 (Trophy Gold).
+/// "Gikundiro" — the official Rayon Sports FC supporter app.
+/// Colors:
+/// - Primary #0038A8 (Gikundiro Blue)
+/// - Secondary #001742 (Deep Navy)
+/// - Accent #D9B24C (Trophy Gold)
 class RayonSportsConfig implements ClubConfig {
   const RayonSportsConfig();
 
@@ -41,9 +43,9 @@ class RayonSportsConfig implements ClubConfig {
   @override
   ClubColors get colors => const ClubColors(
     primary: Color(0xFF0038A8), // Rayon Blue
-    secondary: Color(0xFF001F5C), // Deep Navy
-    accent: Color(0xFF8885F0), // Third Color (Periwinkle/Violet)
-    gradient: [Color(0xFF001F5C), Color(0xFF0038A8)],
+    secondary: Color(0xFF001742), // Deep Navy
+    accent: Color(0xFFD9B24C), // Trophy Gold
+    gradient: [Color(0xFF001742), Color(0xFF0038A8)],
   );
 
   @override

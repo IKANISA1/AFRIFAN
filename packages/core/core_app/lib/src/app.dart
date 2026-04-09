@@ -78,6 +78,10 @@ class _AfriClubAppState extends State<AfriClubApp> {
             debugShowCheckedModeBanner: false,
             theme: _theme,
             routerConfig: _appRouter.router,
+            builder: (context, child) => ClubConfigScope(
+              config: widget.config,
+              child: child ?? const SizedBox.shrink(),
+            ),
             locale: _frameworkLocaleForLanguageCode(languageCode),
             supportedLocales: _supportedLocales,
             localizationsDelegates: const [

@@ -4,13 +4,12 @@ import 'package:core_app/src/module_registry.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
-import 'package:feat_biopay/feat_biopay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('Rayon Sports BioPay host wiring', () {
+  group('Rayon Sports BioPay wiring', () {
     late RayonSportsConfig config;
     late List<FeatureModule> modules;
 
@@ -20,22 +19,26 @@ void main() {
       modules = AppModuleRegistry.build(config);
     });
 
-    test('module registry exposes the BioPay tab for Rayon Sports', () {
-      final biopayModule = modules.firstWhere(
-        (module) => module.featureKey == 'biopay',
+    test('module registry keeps BioPay enabled for the Gikundiro release', () {
+      expect(config.hasBiopay, isTrue);
+      expect(
+        modules.where((module) => module.featureKey == 'biopay'),
+        isNotEmpty,
       );
-
-      expect(biopayModule.tabRoute, isNotNull);
-      expect(biopayModule.tabRoute!.path, '/biopay');
-      expect(biopayModule.tabRoute!.label, 'BIOPAY');
+      expect(
+        modules
+            .where((module) => module.tabRoute != null)
+            .map((module) => module.tabRoute!.label),
+        contains('BIOPAY'),
+      );
     });
 
-    testWidgets('router can render the BioPay hub using the real club config', (
+    testWidgets('settings expose BioPay entries when the feature is enabled', (
       tester,
     ) async {
       final router = AppRouter(
         modules: modules,
-        initialLocation: '/biopay',
+        initialLocation: '/settings',
         shellBuilder: (context, shell) =>
             AppShell(shell: shell, config: config, modules: modules),
       );
@@ -53,8 +56,6 @@ void main() {
                 momoProvider: 'MoMo',
               ),
             ),
-            biopayEnabledProvider.overrideWith((ref) => true),
-            biopayProfileProvider.overrideWith((ref) => null),
           ],
           child: MaterialApp.router(
             theme: ClubTheme.from(config),
@@ -65,10 +66,10 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('How you want'), findsOneWidget);
-      expect(find.text('Face Scan'), findsOneWidget);
-      expect(find.text('NFC Tap'), findsOneWidget);
-      expect(find.text('Scan QR'), findsOneWidget);
+      expect(find.text('BIOPAY & PRIVACY'), findsOneWidget);
+      expect(find.text('Privacy Controls'), findsOneWidget);
+      expect(find.text('BioPay Home'), findsOneWidget);
+      expect(find.text('Face ID & Enrollment'), findsOneWidget);
     });
   });
 }

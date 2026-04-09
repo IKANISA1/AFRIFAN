@@ -99,16 +99,16 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
       child: switch (_step) {
         _RegisterStep.form => _buildForm(context),
         _RegisterStep.scan => BiopayScanScreen(
-            key: const ValueKey('scan'),
-            mode: BiopayScanMode.enroll,
-            enrollmentDraft: _draft,
-            onEnrollmentSuccess: () {
-              setState(() => _step = _RegisterStep.success);
-            },
-            onCancel: () {
-              setState(() => _step = _RegisterStep.form);
-            },
-          ),
+          key: const ValueKey('scan'),
+          mode: BiopayScanMode.enroll,
+          enrollmentDraft: _draft,
+          onEnrollmentSuccess: () {
+            setState(() => _step = _RegisterStep.success);
+          },
+          onCancel: () {
+            setState(() => _step = _RegisterStep.form);
+          },
+        ),
         _RegisterStep.success => _buildSuccess(context),
       },
     );
@@ -137,7 +137,7 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
             }
           },
         ),
-        title: Text('FACE ID SETUP', style: TypographyTokens.headlineLarge()),
+        title: Text('Face ID Setup', style: TypographyTokens.titleLarge()),
       ),
       body: SafeArea(
         child: Padding(
@@ -152,9 +152,7 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
               // Bold headline
               Text(
                 'Link your face\nto your MoMo.',
-                style: TypographyTokens.headlineLarge().copyWith(
-                  height: 1.15,
-                ),
+                style: TypographyTokens.displaySmall().copyWith(height: 1.15),
               ),
 
               const SizedBox(height: SpacingTokens.spacing8),
@@ -174,16 +172,17 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
               // Input field
               Text(
                 _routeType == PaymentRecipientType.phoneNumber
-                    ? 'MOMO NUMBER'
-                    : 'MERCHANT CODE',
+                    ? 'MoMo Number'
+                    : 'Merchant Code',
                 style: TypographyTokens.labelSmall().copyWith(
                   color: primaryColor,
-                  letterSpacing: 1.2,
+                  letterSpacing: 0.7,
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               ClayCard(
                 backgroundColor: ColorTokens.background,
+                borderRadius: BorderRadius.circular(32),
                 padding: const EdgeInsets.symmetric(
                   horizontal: SpacingTokens.spacing5,
                   vertical: SpacingTokens.spacing4,
@@ -194,16 +193,16 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
                       ? TextInputType.phone
                       : TextInputType.text,
                   onChanged: (_) => setState(() => _error = null),
-                  style: TypographyTokens.displaySmall().copyWith(
-                    fontSize: 28,
-                  ),
+                  style: TypographyTokens.displaySmall().copyWith(fontSize: 28),
                   decoration: InputDecoration.collapsed(
                     hintText: _routeType == PaymentRecipientType.phoneNumber
                         ? _country.phoneExampleHint()
                         : 'Merchant code',
                     hintStyle: TypographyTokens.displaySmall().copyWith(
                       fontSize: 28,
-                      color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
+                      color: ColorTokens.onSurfaceVariant.withValues(
+                        alpha: 0.3,
+                      ),
                     ),
                   ),
                 ),
@@ -224,13 +223,18 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
                         color: _consent ? primaryColor : Colors.transparent,
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(
-                          color: _consent ? primaryColor : ColorTokens.ghostBorder,
+                          color: _consent
+                              ? primaryColor
+                              : ColorTokens.ghostBorder,
                           width: 1.5,
                         ),
                       ),
                       child: _consent
-                          ? const Icon(Icons.check_rounded,
-                              size: 14, color: Colors.white)
+                          ? const Icon(
+                              Icons.check_rounded,
+                              size: 14,
+                              color: Colors.white,
+                            )
                           : null,
                     ),
                     const SizedBox(width: SpacingTokens.spacing3),
@@ -262,6 +266,8 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
                 label: 'Start Enrollment',
                 onPressed: _isValid ? () => _proceed(alias) : null,
                 width: double.infinity,
+                preserveCase: true,
+                letterSpacing: 0.6,
               ),
 
               const SizedBox(height: SpacingTokens.spacing8),
@@ -286,8 +292,11 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
                 shape: BoxShape.circle,
                 color: ColorTokens.success.withValues(alpha: 0.2),
               ),
-              child: const Icon(Icons.check_rounded,
-                  color: ColorTokens.success, size: 48),
+              child: const Icon(
+                Icons.check_rounded,
+                color: ColorTokens.success,
+                size: 48,
+              ),
             ),
             const SizedBox(height: SpacingTokens.spacing5),
             Text('Face ID Active', style: TypographyTokens.displaySmall()),
@@ -297,6 +306,8 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
               child: ClaymorphicButton(
                 label: 'Done',
                 onPressed: () => context.go('/biopay/profile'),
+                preserveCase: true,
+                letterSpacing: 0.6,
               ),
             ),
           ],
@@ -322,21 +333,21 @@ class _SegmentedControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 44,
+      height: 48,
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
         children: [
           _SegmentTab(
-            label: 'NUMBER',
+            label: 'Number',
             isSelected: selected == PaymentRecipientType.phoneNumber,
             primaryColor: primaryColor,
             onTap: () => onChanged(PaymentRecipientType.phoneNumber),
           ),
           _SegmentTab(
-            label: 'CODE',
+            label: 'Code',
             isSelected: selected == PaymentRecipientType.code,
             primaryColor: primaryColor,
             onTap: () => onChanged(PaymentRecipientType.code),
@@ -371,15 +382,15 @@ class _SegmentTab extends StatelessWidget {
           margin: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: isSelected ? Colors.white : Colors.transparent,
-            borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+            borderRadius: BorderRadius.circular(20),
           ),
           alignment: Alignment.center,
           child: Text(
             label,
-            style: TypographyTokens.labelMedium().copyWith(
+            style: TypographyTokens.labelLarge().copyWith(
               fontWeight: FontWeight.w700,
               color: isSelected ? primaryColor : ColorTokens.onSurfaceVariant,
-              letterSpacing: 1.0,
+              letterSpacing: 0.2,
             ),
           ),
         ),

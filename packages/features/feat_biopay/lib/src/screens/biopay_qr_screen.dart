@@ -111,9 +111,9 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
         quality: 100,
       );
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('QR saved to photos.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('QR saved to photos.')));
     } catch (_) {}
   }
 
@@ -133,7 +133,7 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
           icon: Icon(Icons.arrow_back, color: ColorTokens.onSurface),
           onPressed: () => context.pop(),
         ),
-        title: Text('GET QR CODE', style: TypographyTokens.headlineLarge()),
+        title: Text('Get QR Code', style: TypographyTokens.titleLarge()),
       ),
       body: SafeArea(
         top: false,
@@ -157,13 +157,15 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
               else ...[
                 // Amount
                 Text(
-                  'AMOUNT (OPTIONAL)',
+                  'Amount (Optional)',
                   style: TypographyTokens.labelSmall().copyWith(
-                    letterSpacing: 1.2,
+                    letterSpacing: 0.7,
                   ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
-                GlassCard(
+                ClayCard(
+                  backgroundColor: ColorTokens.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(32),
                   padding: const EdgeInsets.symmetric(
                     horizontal: SpacingTokens.spacing5,
                     vertical: SpacingTokens.spacing4,
@@ -192,8 +194,9 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
                             hintText: '0',
                             hintStyle: TypographyTokens.displaySmall().copyWith(
                               fontSize: 28,
-                              color: ColorTokens.onSurfaceVariant
-                                  .withValues(alpha: 0.3),
+                              color: ColorTokens.onSurfaceVariant.withValues(
+                                alpha: 0.3,
+                              ),
                             ),
                           ),
                         ),
@@ -224,6 +227,8 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
                   isLoading: _isLoading,
                   icon: Icons.qr_code_2_rounded,
                   width: double.infinity,
+                  preserveCase: true,
+                  letterSpacing: 0.6,
                 ),
 
               if (hasQr)
@@ -232,6 +237,8 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
                   onPressed: () => _shareQr(_handoffToken!),
                   icon: Icons.bolt_rounded,
                   width: double.infinity,
+                  preserveCase: true,
+                  letterSpacing: 0.6,
                 ),
 
               const SizedBox(height: SpacingTokens.spacing8),
@@ -261,31 +268,34 @@ class _QrDisplayState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: GlassCard(
-        child: Column(
-          children: [
-            Container(
-              width: 240,
-              height: 240,
-              padding: const EdgeInsets.all(SpacingTokens.spacing4),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: QrImageView(
-                data: token.resolverUrl.toString(),
-                version: QrVersions.auto,
-                eyeStyle: const QrEyeStyle(
-                  eyeShape: QrEyeShape.square,
-                  color: Colors.black,
-                ),
-                dataModuleStyle: const QrDataModuleStyle(
-                  dataModuleShape: QrDataModuleShape.square,
-                  color: Colors.black,
-                ),
-              ),
+      child: ClayCard(
+        backgroundColor: ColorTokens.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(40),
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        child: Container(
+          width: 252,
+          height: 252,
+          padding: const EdgeInsets.all(SpacingTokens.spacing5),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(
+              color: ColorTokens.surfaceContainerHighest,
+              width: 2,
             ),
-          ],
+          ),
+          child: QrImageView(
+            data: token.resolverUrl.toString(),
+            version: QrVersions.auto,
+            eyeStyle: const QrEyeStyle(
+              eyeShape: QrEyeShape.square,
+              color: Colors.black,
+            ),
+            dataModuleStyle: const QrDataModuleStyle(
+              dataModuleShape: QrDataModuleShape.square,
+              color: Colors.black,
+            ),
+          ),
         ),
       ),
     );

@@ -33,6 +33,23 @@ Future<void> bootstrap(
   AfriClubBootstrapOptions options = const AfriClubBootstrapOptions(),
 }) async {
   WidgetsFlutterBinding.ensureInitialized();
+  assert(
+    config.appName.trim().isNotEmpty,
+    'ClubConfig.appName must not be empty.',
+  );
+  assert(
+    config.clubName.trim().isNotEmpty,
+    'ClubConfig.clubName must not be empty.',
+  );
+  assert(
+    config.crestAsset.trim().isNotEmpty,
+    'ClubConfig.crestAsset must not be empty.',
+  );
+  RuntimeBranding.configure(
+    appName: config.appName,
+    clubName: config.clubName,
+    crestAsset: config.crestAsset,
+  );
 
   await AppStartupCoordinator(
     options: options.startupOptions,

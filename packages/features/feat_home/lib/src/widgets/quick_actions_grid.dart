@@ -53,14 +53,40 @@ class QuickActionsGrid extends StatelessWidget {
         const SizedBox(height: SpacingTokens.spacing8),
 
         // ── Section header ──
-        Text(
-          'QUICK ACTIONS',
-          style: GoogleFonts.barlowCondensed(
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-            color: ColorTokens.onSurface,
-            letterSpacing: 1.8,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'QUICK ACTIONS',
+                style: TypographyTokens.titleLarge().copyWith(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: ColorTokens.onSurface,
+                  letterSpacing: 1.2,
+                ),
+              ),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'SWIPE',
+                  style: TypographyTokens.labelSmall().copyWith(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: ColorTokens.onSurface.withValues(alpha: 0.82),
+                    letterSpacing: 0.9,
+                  ),
+                ),
+                const SizedBox(width: SpacingTokens.spacing1),
+                Icon(
+                  Icons.swipe_left_rounded,
+                  size: 16,
+                  color: ColorTokens.navActive.withValues(alpha: 0.9),
+                ),
+              ],
+            ),
+          ],
         ),
         const SizedBox(height: SpacingTokens.spacing5),
 
@@ -108,7 +134,7 @@ class _CircleActionButton extends StatelessWidget {
   const _CircleActionButton({required this.action});
 
   /// Fixed tile width — gives enough room for icon + short label + ellipsis.
-  static const double tileWidth = 70.0;
+  static const double tileWidth = 82.0;
 
   /// Circle diameter.
   static const double circleSize = 52.0;
@@ -213,9 +239,9 @@ class _CircleActionButton extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.barlowCondensed(
-                fontSize: 15,
+                fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: ColorTokens.onSurface.withValues(alpha: 0.80),
+                color: ColorTokens.onSurface.withValues(alpha: 0.92),
                 letterSpacing: 0.8,
                 height: 1.2,
               ),

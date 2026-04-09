@@ -132,6 +132,9 @@ class _NotificationPreferencesScreenState
 
   @override
   Widget build(BuildContext context) {
+    final appName =
+        ClubConfigScope.maybeOf(context)?.appName ??
+        RuntimeBranding.displayAppName;
     final authState = ref.watch(authStateProvider);
     final asyncSettings = ref.watch(notificationSettingsProvider);
     final loadedSettings = asyncSettings.valueOrNull;
@@ -199,8 +202,8 @@ class _NotificationPreferencesScreenState
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
                           settings.pushEnabled
-                               ? 'Alerts enabled.'
-                               : 'Enable alerts for matches, receipts & updates.',
+                              ? 'Alerts enabled.'
+                              : 'Enable alerts for matches, receipts & updates.',
                           style: TypographyTokens.bodyMedium(),
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
@@ -243,7 +246,7 @@ class _NotificationPreferencesScreenState
                             style: TypographyTokens.bodyLarge(),
                           ),
                           subtitle: Text(
-                            'All ${RuntimeBranding.displayAppName} categories',
+                            'All $appName categories',
                             style: TypographyTokens.bodySmall(),
                           ),
                           onChanged: (value) {

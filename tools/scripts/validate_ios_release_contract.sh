@@ -9,13 +9,14 @@ IOS_DIR="$APP_DIR/ios"
 INFO_PLIST="$IOS_DIR/Runner/Info.plist"
 ENTITLEMENTS_PLIST="$IOS_DIR/Runner/Runner.entitlements"
 GOOGLE_SERVICE_INFO_PLIST="$IOS_DIR/Runner/GoogleService-Info.plist"
+LAUNCH_SCREEN_STORYBOARD="$IOS_DIR/Runner/Base.lproj/LaunchScreen.storyboard"
 
 if [ ! -d "$APP_DIR" ]; then
   echo "Unknown app slug: $APP_SLUG" >&2
   exit 1
 fi
 
-python3 - "$INFO_PLIST" "$ENTITLEMENTS_PLIST" "$GOOGLE_SERVICE_INFO_PLIST" <<'PY'
+python3 - "$INFO_PLIST" "$ENTITLEMENTS_PLIST" "$GOOGLE_SERVICE_INFO_PLIST" "$LAUNCH_SCREEN_STORYBOARD" <<'PY'
 import pathlib
 import plistlib
 import sys
@@ -23,11 +24,13 @@ import sys
 info_path = pathlib.Path(sys.argv[1])
 entitlements_path = pathlib.Path(sys.argv[2])
 google_service_path = pathlib.Path(sys.argv[3])
+launch_screen_path = pathlib.Path(sys.argv[4])
 
 for path, label in (
     (info_path, "Info.plist"),
     (entitlements_path, "Runner.entitlements"),
     (google_service_path, "GoogleService-Info.plist"),
+    (launch_screen_path, "LaunchScreen.storyboard"),
 ):
     if not path.exists():
         raise SystemExit(f"Missing {label}: {path}")
@@ -77,6 +80,14 @@ if not project_id:
     raise SystemExit("GoogleService-Info.plist must contain PROJECT_ID.")
 if not app_id:
     raise SystemExit("GoogleService-Info.plist must contain GOOGLE_APP_ID.")
+
+launch_storyboard = launch_screen_path.read_text()
+if "<imageView" in launch_storyboard:
+    raise SystemExit(
+        "LaunchScreen.storyboard must not render a second branded native splash image."
+    )
+if "backgroundColor" not in launch_storyboard:
+    raise SystemExit("LaunchScreen.storyboard must declare a solid background color.")
 
 print(f"iOS release contract ok ({bundle_id}, project {project_id})")
 PY
