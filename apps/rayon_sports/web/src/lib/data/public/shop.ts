@@ -2,7 +2,7 @@
  * Public shop products data.
  */
 import { cache } from "react";
-import { rayonClub } from "@/lib/config";
+import { getActiveClubReference } from "@/lib/club-context";
 import { fallbackProducts } from "@/lib/content";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import type { ShopProduct } from "@/lib/types";
@@ -31,6 +31,7 @@ function mapProductRow(row: Record<string, unknown>): ShopProduct {
 
 export const getProducts = cache(async function getProducts() {
   const client = getAdminSupabase();
+  const activeClub = await getActiveClubReference();
   if (client == null) return fallbackProducts;
 
   try {
@@ -38,7 +39,7 @@ export const getProducts = cache(async function getProducts() {
     const { data } = await client
       .from(table)
       .select("*")
-      .eq("club_id", rayonClub.numericId)
+      .eq("club_id", activeClub.numericId)
       .eq("is_active", true)
       .order("sort_order", { ascending: true })
       .limit(12);

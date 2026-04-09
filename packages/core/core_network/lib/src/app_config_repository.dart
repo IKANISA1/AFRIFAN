@@ -30,27 +30,98 @@ class AppConfigRepository {
   final SupabaseClient _client;
   final Map<String, String> _cache = {};
 
+  int? _currentClubId() {
+    final user = _client.auth.currentUser;
+    final rawValue =
+        user?.appMetadata['club_id'] ??
+        user?.userMetadata?['club_id'] ??
+        user?.appMetadata['clubId'] ??
+        user?.userMetadata?['clubId'];
+    if (rawValue is int) return rawValue;
+    if (rawValue is num) return rawValue.toInt();
+    if (rawValue == null) return null;
+    return int.tryParse(rawValue.toString().trim());
+  }
+
+  bool _isMissingRelation(Object error, String relation) {
+    if (error is! PostgrestException) {
+      return false;
+    }
+    final message = error.message.toLowerCase();
+    return message.contains(relation.toLowerCase()) &&
+        message.contains('does not exist');
+  }
+
+  String _cacheKey(String key, int? clubId) {
+    return clubId == null ? key : '$clubId::$key';
+  }
+
+  Future<String?> _getConfigValueFromTable(
+    String table,
+    String key, {
+    int? clubId,
+  }) async {
+    try {
+      var query = _client.from(table).select('value').eq('key', key);
+      if (clubId != null) {
+        query = query.eq('club_id', clubId);
+      }
+      final rows = await query.limit(1);
+      if (rows.isEmpty) {
+        return null;
+      }
+      return rows.first['value']?.toString();
+    } on PostgrestException catch (error) {
+      if (_isMissingRelation(error, table)) {
+        return null;
+      }
+      rethrow;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _getRowsFromTable(
+    String table, {
+    int? clubId,
+  }) async {
+    try {
+      var query = _client.from(table).select();
+      if (clubId != null) {
+        query = query.eq('club_id', clubId);
+      }
+      final rows = await query;
+      return List<Map<String, dynamic>>.from(rows);
+    } on PostgrestException catch (error) {
+      if (_isMissingRelation(error, table)) {
+        return const <Map<String, dynamic>>[];
+      }
+      rethrow;
+    }
+  }
+
   /// Fetch a single config value by key.
   Future<String?> getValue(String key, {bool forceRefresh = false}) async {
-    if (!forceRefresh && _cache.containsKey(key)) {
-      return _cache[key];
+    final clubId = _currentClubId();
+    final scopedCacheKey = _cacheKey(key, clubId);
+
+    if (!forceRefresh && _cache.containsKey(scopedCacheKey)) {
+      return _cache[scopedCacheKey];
     }
     if (forceRefresh) {
-      _cache.remove(key);
+      _cache.remove(scopedCacheKey);
     }
 
-    final rows = await _client
-        .from('app_config')
-        .select('value')
-        .eq('key', key)
-        .limit(1);
+    final clubValue = clubId == null
+        ? null
+        : await _getConfigValueFromTable('club_app_config', key, clubId: clubId);
+    if (clubValue != null) {
+      _cache[scopedCacheKey] = clubValue;
+      return clubValue;
+    }
 
-    if (rows.isNotEmpty) {
-      final value = rows.first['value']?.toString();
-      if (value != null) {
-        _cache[key] = value;
-        return value;
-      }
+    final globalValue = await _getConfigValueFromTable('app_config', key);
+    if (globalValue != null) {
+      _cache[scopedCacheKey] = globalValue;
+      return globalValue;
     }
 
     return null;
@@ -58,10 +129,11 @@ class AppConfigRepository {
 
   /// Fetch all config entries.
   Future<Map<String, String>> getAll() async {
-    final rows = await _client.from('app_config').select();
     final result = <String, String>{};
+    final clubId = _currentClubId();
 
-    for (final row in rows) {
+    final globalRows = await _getRowsFromTable('app_config');
+    for (final row in globalRows) {
       final key = row['key']?.toString();
       final value = row['value']?.toString();
       if (key != null && value != null) {
@@ -69,7 +141,24 @@ class AppConfigRepository {
       }
     }
 
-    _cache.addAll(result);
+    final clubRows =
+        clubId == null
+            ? const <Map<String, dynamic>>[]
+            : await _getRowsFromTable('club_app_config', clubId: clubId);
+
+    for (final row in clubRows) {
+      final key = row['key']?.toString();
+      final value = row['value']?.toString();
+      if (key != null && value != null) {
+        result[key] = value;
+      }
+    }
+
+    _cache
+      ..clear()
+      ..addAll({
+        for (final entry in result.entries) _cacheKey(entry.key, clubId): entry.value,
+      });
     return result;
   }
 

@@ -3,7 +3,7 @@
  * Extracted from admin-legacy.ts for focused domain ownership.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { rayonClub } from "@/lib/config";
+import { fallbackClubProfile } from "@/lib/content";
 import type { AdminAccess, AdminNewsArticle } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
@@ -18,7 +18,7 @@ function mapNewsArticle(row: Record<string, unknown>): AdminNewsArticle {
   return {
     id: toIdString(row.id, crypto.randomUUID()),
     clubId:
-      row.club_id == null ? null : safeNumber(row.club_id, rayonClub.numericId),
+      row.club_id == null ? null : safeNumber(row.club_id, fallbackClubProfile.id),
     title: safeString(row.title, "Untitled article"),
     subtitle: safeString(row.subtitle) || null,
     excerpt:

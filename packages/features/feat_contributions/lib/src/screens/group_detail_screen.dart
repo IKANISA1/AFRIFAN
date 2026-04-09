@@ -5,8 +5,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../widgets/contribution_overlays.dart';
+
+int? _currentClubId(SupabaseClient client) {
+  final user = client.auth.currentUser;
+  final candidates = <Object?>[
+    user?.appMetadata['club_id'],
+    user?.userMetadata?['club_id'],
+    user?.appMetadata['clubId'],
+    user?.userMetadata?['clubId'],
+  ];
+
+  for (final candidate in candidates) {
+    final parsed = int.tryParse(candidate?.toString().trim() ?? '');
+    if (parsed != null) {
+      return parsed;
+    }
+  }
+
+  return null;
+}
 
 class GroupDetailScreen extends ConsumerStatefulWidget {
   const GroupDetailScreen({required this.groupId, super.key});
@@ -36,10 +56,21 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   Future<void> _loadGroup() async {
     try {
       final client = ref.read(supabaseClientProvider);
+      final clubId = _currentClubId(client);
+      if (clubId == null) {
+        if (mounted) {
+          setState(() {
+            _loading = false;
+            _error = 'Could not resolve the active club.';
+          });
+        }
+        return;
+      }
       final groupRow = await client
           .from('contribution_groups')
           .select()
           .eq('id', widget.groupId)
+          .eq('club_id', clubId)
           .maybeSingle();
 
       if (groupRow == null) {

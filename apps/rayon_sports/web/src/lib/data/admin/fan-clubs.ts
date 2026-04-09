@@ -18,7 +18,7 @@ function mapAdminFanClub(row: Record<string, unknown>): AdminFanClub {
     clubId: typeof row.club_id === "number" ? row.club_id : null,
     name: safeString(row.name, "Supporter chapter"),
     region: safeString(row.region, "Official"),
-    description: safeString(row.description, "A Rayon Sports supporter chapter."),
+    description: safeString(row.description, "An official supporter chapter."),
     memberCount: safeNumber(row.member_count, 0),
     eventCount: safeNumber(row.event_count, 0),
     rating: safeNumber(row.rating, 0),

@@ -6,6 +6,25 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+int? _currentClubId(SupabaseClient client) {
+  final user = client.auth.currentUser;
+  final candidates = <Object?>[
+    user?.appMetadata['club_id'],
+    user?.userMetadata?['club_id'],
+    user?.appMetadata['clubId'],
+    user?.userMetadata?['clubId'],
+  ];
+
+  for (final candidate in candidates) {
+    final parsed = int.tryParse(candidate?.toString().trim() ?? '');
+    if (parsed != null) {
+      return parsed;
+    }
+  }
+
+  return null;
+}
+
 class GroupChatScreen extends ConsumerStatefulWidget {
   const GroupChatScreen({required this.groupId, super.key});
 
@@ -44,10 +63,17 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
   Future<void> _loadMessages() async {
     try {
       final client = ref.read(supabaseClientProvider);
+      final clubId = _currentClubId(client);
+      if (clubId == null) {
+        if (!mounted) return;
+        setState(() => _isLoading = false);
+        return;
+      }
       final group = await client
           .from('contribution_groups')
           .select('name, member_count')
           .eq('id', widget.groupId)
+          .eq('club_id', clubId)
           .maybeSingle();
 
       final messages = await client
@@ -111,7 +137,8 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
   }
 
   void _subscribe() {
-    _channel = ref.read(supabaseClientProvider)
+    _channel = ref
+        .read(supabaseClientProvider)
         .channel('group-chat-${widget.groupId}')
         .onPostgresChanges(
           event: PostgresChangeEvent.all,

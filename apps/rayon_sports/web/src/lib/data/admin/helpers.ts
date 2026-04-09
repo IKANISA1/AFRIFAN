@@ -3,11 +3,10 @@
  * Extracted from the monolithic admin.ts for reuse.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { rayonClub } from "@/lib/config";
 import type { AdminAccess } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 
-export { rayonClub, safeNumber, safeString, toIdString };
+export { safeNumber, safeString, toIdString };
 
 /* ────────────────────────────────────────────────────────── */
 /*  Table resolution helpers                                  */

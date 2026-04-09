@@ -15,14 +15,12 @@ final ticketMatchProvider =
   if (user == null || matchId.isEmpty) return null;
 
   final client = ref.watch(supabaseClientProvider);
-  var row = await client
-      .from('matches')
-      .select()
-      .eq('partner_id', user.clubId)
-      .eq('id', matchId)
-      .maybeSingle();
-
-  row ??= await client.from('matches').select().eq('id', matchId).maybeSingle();
+  final numericClubId = int.tryParse(user.clubId);
+  var query = client.from('matches').select().eq('id', matchId);
+  query = numericClubId != null
+      ? query.eq('club_id', numericClubId)
+      : query.eq('partner_id', user.clubId);
+  final row = await query.maybeSingle();
 
   if (row == null) return null;
   return ClubMatch.fromJson(Map<String, dynamic>.from(row));

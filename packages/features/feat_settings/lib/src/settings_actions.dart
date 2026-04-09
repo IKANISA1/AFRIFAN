@@ -12,17 +12,17 @@ abstract final class AppLinks {
 
   static const websiteUrl = String.fromEnvironment(
     'APP_WEBSITE_URL',
-    defaultValue: 'https://gikundiro.ikanisa.com',
+    defaultValue: 'https://gikundiro.com',
   );
 
   static const privacyPolicyUrl = String.fromEnvironment(
     'APP_PRIVACY_URL',
-    defaultValue: 'https://gikundiro.ikanisa.com/privacy',
+    defaultValue: 'https://gikundiro.com/privacy',
   );
 
   static const termsUrl = String.fromEnvironment(
     'APP_TERMS_URL',
-    defaultValue: 'https://gikundiro.ikanisa.com/terms',
+    defaultValue: 'https://gikundiro.com/terms',
   );
 }
 

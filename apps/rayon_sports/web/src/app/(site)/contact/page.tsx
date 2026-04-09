@@ -1,21 +1,23 @@
 import Link from "next/link";
 import { ExternalLink, MessageCircle, ShieldCheck } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
-import { siteConfig } from "@/lib/config";
+import { resolveFanAppHref } from "@/lib/config";
 import { getClubProfile, getCmsContent } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 
-export const metadata = buildPageMetadata({
-  title: "Rayon Sports contact",
-  description:
-    "Official Rayon Sports contact details, digital support routes, and club social channels.",
-  path: "/contact",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: `${club.shortName} contact`,
+    description: `Official ${club.shortName} contact details, digital support routes, and club social channels.`,
+    path: "/contact",
+  });
+}
 
 const fallbackSupportBlocks = [
   {
     icon: ShieldCheck,
-    copy: "Membership, tickets, and orders stay in the portal for authenticated follow-up.",
+    copy: "Membership, tickets, and orders stay in the fan app for authenticated follow-up.",
   },
   {
     icon: MessageCircle,
@@ -53,22 +55,22 @@ export default async function ContactPage() {
   const digitalSupportDescription =
     cmsBlocks.length > 0
       ? cmsBlocks[0]?.rationale ||
-        "Use the fan portal for profile, membership, shop, and ticketing requests. Public club updates and campaign announcements remain on the public site."
-      : "Use the fan portal for profile, membership, shop, and ticketing requests. Public club updates and campaign announcements remain on the public site.";
+        "Use the fan app for profile, membership, shop, and ticketing requests. Public club updates and campaign announcements remain on the public site."
+      : "Use the fan app for profile, membership, shop, and ticketing requests. Public club updates and campaign announcements remain on the public site.";
 
   return (
     <div className="page-shell section-grid py-12">
       <PageHero
         eyebrow="Contact"
         title="Official club contact and digital support in one place."
-        description="Find official club channels, supporter help, and the right path into membership, ticketing, and portal support."
+        description="Find official club channels, supporter help, and the right path into membership, ticketing, and fan app support."
         actions={
           <>
             <Link
-              href={siteConfig.fansUrl}
+              href={resolveFanAppHref()}
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Open fan portal
+              Open fan app
             </Link>
             <Link
               href="/membership"

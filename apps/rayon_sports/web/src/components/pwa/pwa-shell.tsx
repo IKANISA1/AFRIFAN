@@ -29,18 +29,12 @@ function isStandaloneDisplayMode() {
 export function PwaShell() {
   const pathname = usePathname();
   const isAdminSurface = pathname.startsWith("/admin");
-  const isLiveSurface = pathname.startsWith("/app/live");
-  const isPortalSurface = pathname.startsWith("/app");
   const analyticsSurface = isAdminSurface
     ? "admin"
-    : isLiveSurface
-      ? "live"
-      : isPortalSurface
-        ? "portal"
-        : "site";
+    : "site";
   const dismissedPromptKey = isAdminSurface
-    ? "gikundiro-admin-install-dismissed"
-    : "gikundiro-install-dismissed";
+    ? "africlub-admin-install-dismissed"
+    : "africlub-install-dismissed";
   const [mounted, setMounted] = useState(false);
   const [visitCount, setVisitCount] = useState(0);
   const [deferredPrompt, setDeferredPrompt] =
@@ -58,9 +52,9 @@ export function PwaShell() {
 
     queueMicrotask(() => {
       setMounted(true);
-      const nextVisitCount =
-        Number(window.localStorage.getItem("gikundiro-pwa-visits") || "0") + 1;
-      window.localStorage.setItem("gikundiro-pwa-visits", String(nextVisitCount));
+        const nextVisitCount =
+        Number(window.localStorage.getItem("africlub-pwa-visits") || "0") + 1;
+      window.localStorage.setItem("africlub-pwa-visits", String(nextVisitCount));
       setVisitCount(nextVisitCount);
       setDismissed(window.localStorage.getItem(dismissedPromptKey) === "true");
       setIsOffline(!window.navigator.onLine);
@@ -146,7 +140,7 @@ export function PwaShell() {
           .catch(() => {});
       }
 
-      if (isPortalSurface || isAdminSurface) {
+      if (isAdminSurface) {
         registration.active?.postMessage({ type: "CLEAR_BADGE" });
       }
     }).catch(() => {});
@@ -154,7 +148,7 @@ export function PwaShell() {
     return () => {
       mounted = false;
     };
-  }, [analyticsSurface, isAdminSurface, isPortalSurface]);
+  }, [analyticsSurface, isAdminSurface]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -244,12 +238,8 @@ export function PwaShell() {
 
   const surface = isAdminSurface
     ? "Admin workspace"
-    : isLiveSurface
-      ? "Live center"
-    : isPortalSurface
-      ? "Fan portal"
-      : "Website";
-  const installEligible = visitCount >= INSTALL_VISIT_THRESHOLD || isPortalSurface;
+    : "Website";
+  const installEligible = visitCount >= INSTALL_VISIT_THRESHOLD;
   const showInstallPrompt =
     deferredPrompt != null &&
     !dismissed &&
@@ -311,7 +301,7 @@ export function PwaShell() {
           <p className="mt-2 text-sm leading-6 text-slate-100">
             {isAdminSurface
               ? "Install the admin workspace for a fullscreen, tablet-ready operations experience."
-              : "Install Gikundiro for a fullscreen, app-like matchday experience on phone and tablet after you have seen enough value to keep it."}
+              : "Install the official club site for a fullscreen, app-like matchday experience on phone and tablet after you have seen enough value to keep it."}
           </p>
         ) : null}
         <div className="mt-4 flex flex-wrap gap-2">

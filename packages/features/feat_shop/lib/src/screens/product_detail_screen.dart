@@ -48,11 +48,25 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   Future<void> _loadProduct() async {
     try {
       final client = ref.read(supabaseClientProvider);
-      final response = await client
+      final user = ref.read(currentUserProvider);
+      if (user == null || user.clubId.isEmpty) {
+        if (mounted) {
+          setState(() {
+            _error = 'Could not resolve the active club.';
+            _isLoading = false;
+          });
+        }
+        return;
+      }
+      var query = client
           .from(_productsTable)
           .select()
-          .eq('id', widget.productId)
-          .maybeSingle();
+          .eq('id', widget.productId);
+      final numericClubId = int.tryParse(user.clubId);
+      query = numericClubId != null
+          ? query.eq('club_id', numericClubId)
+          : query.eq('partner_id', user.clubId);
+      final response = await query.maybeSingle();
 
       if (!mounted) return;
 

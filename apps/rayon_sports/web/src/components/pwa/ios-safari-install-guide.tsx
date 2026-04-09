@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
  * 5. User has been browsing for at least 60 seconds
  */
 
-const DISMISSED_KEY = "gikundiro-ios-install-dismissed";
+const DISMISSED_KEY = "africlub-ios-install-dismissed";
 
 interface IosSafariInstallGuideProps {
   enabled?: boolean;
@@ -75,16 +75,16 @@ export function IosSafariInstallGuide({
   return (
     <div
       role="dialog"
-      aria-label="Install Gikundiro on your device"
+      aria-label="Install the club site on your device"
       className="pointer-events-none fixed inset-x-4 bottom-24 z-50 sm:bottom-6 sm:left-auto sm:max-w-md"
     >
       <div className="pointer-events-auto glass-panel rounded-[28px] px-5 py-5 shadow-2xl">
         <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-club-accent">
-          Install Gikundiro
+          Install the club site
         </p>
 
         <p className="mt-3 text-sm leading-6 text-slate-100">
-          For the best app-like experience, add Gikundiro to your Home Screen:
+          For the best app-like experience, add this club site to your Home Screen:
         </p>
 
         <ol className="mt-4 space-y-3 text-sm text-slate-200">

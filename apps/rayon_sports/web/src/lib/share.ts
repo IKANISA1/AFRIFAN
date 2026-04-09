@@ -4,6 +4,7 @@
  * Allows admin users to share match results, CMS articles,
  * and other content natively via the OS share sheet.
  */
+import { siteConfig } from "@/lib/config";
 
 export interface ShareData {
   title: string;
@@ -64,7 +65,7 @@ export function shareMatchResult(
 ): Promise<boolean> {
   return shareContent({
     title: `${homeTeam} vs ${awayTeam}`,
-    text: `${homeTeam} ${score} ${awayTeam} — Rayon Sports`,
+    text: `${homeTeam} ${score} ${awayTeam} — ${siteConfig.shortTitle}`,
     url: matchUrl,
   });
 }

@@ -213,25 +213,6 @@
           "other_platform_oauth_client": []
         }
       }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1074154147498:android:97b9fb919091aba9dc4ad3",
-        "android_client_info": {
-          "package_name": "rw.rayonsport.gikundiro"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
     }
   ],
   "configuration_version": "1"

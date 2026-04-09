@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, X } from "lucide-react";
+import { Search } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 

@@ -5,9 +5,19 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/club_models.dart';
 
+class _ClubScope {
+  const _ClubScope({
+    required this.partnerId,
+    required this.clubId,
+  });
+
+  final String partnerId;
+  final int? clubId;
+}
+
 /// Universal club repository — white-label, multi-tenant.
 ///
-/// All operations are scoped to a partnerId (club tenant).
+/// All operations are scoped to the active club tenant.
 class ClubRepository {
   ClubRepository({
     required SupabaseClient client,
@@ -20,53 +30,76 @@ class ClubRepository {
 
   String? get _userId => _client.auth.currentUser?.id;
 
-  /// Tables used for partner ID resolution.
-  static const _partnerTables = [
-    'matches',
-    'fan_clubs',
-    'shop_products',
-    'fan_memberships',
-  ];
+  int? get _requestingClubId {
+    final user = _client.auth.currentUser;
+    final candidates = <Object?>[
+      user?.appMetadata['club_id'],
+      user?.userMetadata?['club_id'],
+      user?.appMetadata['clubId'],
+      user?.userMetadata?['clubId'],
+    ];
 
-  /// Resolve a partner/club ID — checks known tables for the identifier.
-  Future<String?> _resolvePartnerId(String? partnerId) async {
-    final normalized = partnerId?.trim();
-    if (normalized == null || normalized.isEmpty) {
-      return null;
+    for (final candidate in candidates) {
+      final parsed = int.tryParse(candidate?.toString().trim() ?? '');
+      if (parsed != null) return parsed;
     }
 
-    // Try exact match first
-    for (final table in _partnerTables) {
+    return null;
+  }
+
+  Future<_ClubScope> _resolveClubScope(String? partnerId) async {
+    final normalized = partnerId?.trim() ?? '';
+    final requestingClubId = _requestingClubId;
+    final numericPartnerId = int.tryParse(normalized);
+    if (numericPartnerId != null) {
+      return _ClubScope(
+        partnerId: normalized,
+        clubId: numericPartnerId,
+      );
+    }
+
+    if (normalized.isNotEmpty) {
       try {
         final row = await _client
-            .from(table)
-            .select('partner_id')
-            .eq('partner_id', normalized)
-            .limit(1)
+            .from('african_football_clubs')
+            .select('id')
+            .eq('club_slug', normalized)
             .maybeSingle();
-        final found = row?['partner_id']?.toString();
-        if (found != null && found.isNotEmpty) return found;
+        final resolvedClubId = int.tryParse(row?['id']?.toString() ?? '');
+        if (resolvedClubId != null) {
+          return _ClubScope(
+            partnerId: normalized,
+            clubId: resolvedClubId,
+          );
+        }
       } catch (_) {
-        // Table may not exist yet — continue.
+        // Clubs table may not be available in some test environments.
       }
     }
 
-    // Fallback: any row with a partner_id
-    for (final table in _partnerTables) {
-      try {
-        final row = await _client
-            .from(table)
-            .select('partner_id')
-            .limit(1)
-            .maybeSingle();
-        final found = row?['partner_id']?.toString();
-        if (found != null && found.isNotEmpty) return found;
-      } catch (_) {
-        // Table may not exist yet — continue.
-      }
-    }
+    return _ClubScope(
+      partnerId: normalized.isNotEmpty
+          ? normalized
+          : (requestingClubId?.toString() ?? ''),
+      clubId: requestingClubId,
+    );
+  }
 
-    return normalized;
+  dynamic _applyClubScope(dynamic query, _ClubScope scope) {
+    if (scope.clubId != null) {
+      return query.eq('club_id', scope.clubId!);
+    }
+    if (scope.partnerId.isNotEmpty) {
+      return query.eq('partner_id', scope.partnerId);
+    }
+    return query;
+  }
+
+  Map<String, Object?> _clubScopePayload(_ClubScope scope) {
+    return <String, Object?>{
+      if (scope.clubId != null) 'club_id': scope.clubId,
+      if (scope.partnerId.isNotEmpty) 'partner_id': scope.partnerId,
+    };
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -79,23 +112,13 @@ class ClubRepository {
     String partnerId,
   ) async {
     try {
-      var rows = await _client
-          .from('fan_memberships')
-          .select()
-          .eq('user_id', userId)
-          .eq('partner_id', partnerId)
-          .limit(1);
-
-      if (rows.isEmpty) {
-        rows = await _client
-            .from('fan_memberships')
-            .select()
-            .eq('user_id', userId)
-            .limit(1);
-      }
-
-      if (rows.isEmpty) return null;
-      return FanMembership.fromJson(rows.first);
+      final scope = await _resolveClubScope(partnerId);
+      var query =
+          _client.from('fan_memberships').select().eq('user_id', userId);
+      query = _applyClubScope(query, scope);
+      final row = await query.maybeSingle();
+      if (row == null) return null;
+      return FanMembership.fromJson(row);
     } catch (e) {
       debugPrint('[ClubRepository] getFanMembership error: $e');
       return null;
@@ -108,14 +131,14 @@ class ClubRepository {
     required String partnerId,
     String chapter = 'Main',
   }) async {
-    final resolvedPartnerId = await _resolvePartnerId(partnerId) ?? partnerId;
+    final scope = await _resolveClubScope(partnerId);
     final membershipNumber = 'FAN-${DateTime.now().millisecondsSinceEpoch}';
 
     final row = await _client
         .from('fan_memberships')
         .insert({
           'user_id': userId,
-          'partner_id': resolvedPartnerId,
+          ..._clubScopePayload(scope),
           'tier': FanTier.fan.value,
           'points': 0,
           'chapter': chapter,
@@ -163,12 +186,9 @@ class ClubRepository {
     int limit = 20,
     int offset = 0,
   }) async {
-    final resolvedPartnerId = await _resolvePartnerId(partnerId) ?? partnerId;
+    final scope = await _resolveClubScope(partnerId);
     var query = _client.from('fan_memberships').select();
-
-    if (resolvedPartnerId.isNotEmpty) {
-      query = query.eq('partner_id', resolvedPartnerId);
-    }
+    query = _applyClubScope(query, scope);
 
     if (filterTier != null) {
       query = query.eq('tier', filterTier.value);
@@ -188,20 +208,11 @@ class ClubRepository {
   // ═══════════════════════════════════════════════════════════
 
   Future<List<FanClub>> getFanClubs(String partnerId, String? region) async {
-    final resolvedPartnerId = await _resolvePartnerId(partnerId) ?? partnerId;
+    final scope = await _resolveClubScope(partnerId);
     var query = _client.from('fan_clubs').select();
-    if (resolvedPartnerId.isNotEmpty) {
-      query = query.eq('partner_id', resolvedPartnerId);
-    }
+    query = _applyClubScope(query, scope);
     if (region != null) query = query.eq('region', region);
-    var rows = await query.order('member_count', ascending: false);
-    if (rows.isEmpty && resolvedPartnerId.isNotEmpty) {
-      var fallbackQuery = _client.from('fan_clubs').select();
-      if (region != null) {
-        fallbackQuery = fallbackQuery.eq('region', region);
-      }
-      rows = await fallbackQuery.order('member_count', ascending: false);
-    }
+    final rows = await query.order('member_count', ascending: false);
     return rows.map((r) => FanClub.fromJson(r)).toList();
   }
 
@@ -234,22 +245,13 @@ class ClubRepository {
     String partnerId, {
     bool onSaleOnly = false,
   }) async {
-    final resolvedPartnerId = await _resolvePartnerId(partnerId) ?? partnerId;
+    final scope = await _resolveClubScope(partnerId);
     var query = _client.from('matches').select();
-    if (resolvedPartnerId.isNotEmpty) {
-      query = query.eq('partner_id', resolvedPartnerId);
-    }
+    query = _applyClubScope(query, scope);
 
     if (onSaleOnly) query = query.eq('is_on_sale', true);
 
-    var rows = await query.order('match_date', ascending: true);
-    if (rows.isEmpty && resolvedPartnerId.isNotEmpty) {
-      var fallbackQuery = _client.from('matches').select();
-      if (onSaleOnly) {
-        fallbackQuery = fallbackQuery.eq('is_on_sale', true);
-      }
-      rows = await fallbackQuery.order('match_date', ascending: true);
-    }
+    final rows = await query.order('match_date', ascending: true);
     return rows.map((r) => ClubMatch.fromJson(r)).toList();
   }
 
@@ -275,8 +277,12 @@ class ClubRepository {
           .map((r) => ClubTicket.fromJson(r))
           .toList();
     } catch (_) {
-      final matchRow =
-          await _client.from('matches').select().eq('id', matchId).single();
+      var matchQuery = _client.from('matches').select().eq('id', matchId);
+      final requestingClubId = _requestingClubId;
+      if (requestingClubId != null) {
+        matchQuery = matchQuery.eq('club_id', requestingClubId);
+      }
+      final matchRow = await matchQuery.single();
       final match = ClubMatch.fromJson(Map<String, dynamic>.from(matchRow));
       final seat = SeatTypeX.fromValue(seatType);
       final amount = seat == SeatType.vip
@@ -333,23 +339,12 @@ class ClubRepository {
     String partnerId,
     String? category,
   ) async {
-    final resolvedPartnerId = await _resolvePartnerId(partnerId) ?? partnerId;
+    final scope = await _resolveClubScope(partnerId);
     var query = _client.from('shop_products').select().eq('is_active', true);
-
-    if (resolvedPartnerId.isNotEmpty) {
-      query = query.eq('partner_id', resolvedPartnerId);
-    }
+    query = _applyClubScope(query, scope);
 
     if (category != null) query = query.eq('category', category);
-    var rows = await query.order('sort_order', ascending: true);
-    if (rows.isEmpty && resolvedPartnerId.isNotEmpty) {
-      var fallbackQuery =
-          _client.from('shop_products').select().eq('is_active', true);
-      if (category != null) {
-        fallbackQuery = fallbackQuery.eq('category', category);
-      }
-      rows = await fallbackQuery.order('sort_order', ascending: true);
-    }
+    final rows = await query.order('sort_order', ascending: true);
     return rows.map((r) => ClubProduct.fromJson(r)).toList();
   }
 
@@ -361,7 +356,7 @@ class ClubRepository {
     required String paymentReference,
     int discountAmount = 0,
   }) async {
-    final resolvedPartnerId = await _resolvePartnerId(partnerId);
+    final scope = await _resolveClubScope(partnerId);
     final subtotal = items.fold(0, (sum, item) => sum + item.lineTotal);
     final total = subtotal - discountAmount;
 
@@ -369,7 +364,7 @@ class ClubRepository {
         .from('shop_orders')
         .insert({
           'user_id': userId,
-          'partner_id': resolvedPartnerId,
+          ..._clubScopePayload(scope),
           'items': items
               .map((i) => {
                     'product': i.product.toJson(),
@@ -617,21 +612,11 @@ class ClubRepository {
   Future<PartnerPaymentRoute?> findActivePaymentRoute(
     String partnerId,
   ) async {
-    final resolvedPartnerId = await _resolvePartnerId(partnerId) ?? partnerId;
-    var rows = await _client
-        .from('partner_payment_routes')
-        .select()
-        .eq('partner_id', resolvedPartnerId)
-        .eq('status', 'active')
-        .limit(1);
-
-    if (rows.isEmpty) {
-      rows = await _client
-          .from('partner_payment_routes')
-          .select()
-          .eq('status', 'active')
-          .limit(1);
-    }
+    final scope = await _resolveClubScope(partnerId);
+    var query =
+        _client.from('partner_payment_routes').select().eq('status', 'active');
+    query = _applyClubScope(query, scope);
+    final rows = await query.limit(1);
 
     if (rows.isEmpty) {
       return null;
@@ -647,10 +632,9 @@ class ClubRepository {
       return route;
     }
 
-    final resolvedPartnerId = await _resolvePartnerId(partnerId) ?? partnerId;
     throw StateError(
       'No active payment route for partner '
-      '${resolvedPartnerId.isEmpty ? partnerId : resolvedPartnerId}',
+      '${partnerId.trim().isEmpty ? 'current club' : partnerId}',
     );
   }
 

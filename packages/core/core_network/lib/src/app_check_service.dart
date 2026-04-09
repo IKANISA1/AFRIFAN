@@ -9,13 +9,16 @@ class AppCheckService {
   AppCheckService._();
 
   static bool _initialized = false;
+  static bool get isInitialized => _initialized;
 
-  static Future<void> initialize() async {
-    if (_initialized) return;
+  static Future<bool> initialize() async {
+    if (_initialized) {
+      return true;
+    }
 
     if (Firebase.apps.isEmpty) {
       debugPrint('[AppCheck] Firebase not initialized — skipping activation.');
-      return;
+      return false;
     }
 
     try {
@@ -32,6 +35,8 @@ class AppCheckService {
     } catch (error) {
       debugPrint('[AppCheck] Activation failed: $error');
     }
+
+    return _initialized;
   }
 
   static Future<String?> getLimitedUseToken() async {

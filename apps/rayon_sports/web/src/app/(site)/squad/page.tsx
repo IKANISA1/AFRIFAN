@@ -1,18 +1,20 @@
 import Link from "next/link";
 import { ArrowRight, ShieldCheck, Zap } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
-import { getSquad } from "@/lib/data/public";
+import { getClubProfile, getSquad } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 
-export const metadata = buildPageMetadata({
-  title: "Rayon Sports squad",
-  description:
-    "Official Rayon Sports squad list with player numbers, roles, and nationalities.",
-  path: "/squad",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: `${club.shortName} squad`,
+    description: `Official ${club.shortName} squad list with player numbers, roles, and nationalities.`,
+    path: "/squad",
+  });
+}
 
 export default async function SquadPage() {
-  const squad = await getSquad();
+  const [club, squad] = await Promise.all([getClubProfile(), getSquad()]);
   const grouped = {
     goalkeepers: squad.filter((player) => player.role.toLowerCase().includes("keeper")),
     defenders: squad.filter((player) =>
@@ -32,7 +34,7 @@ export default async function SquadPage() {
       <PageHero
         eyebrow="Squad"
         title="Squad, numbers, and roles."
-        description="Meet the Rayon Sports squad with player numbers, positions, and the shape of the group behind every matchday."
+        description={`Meet the ${club.shortName} squad with player numbers, positions, and the shape of the group behind every matchday.`}
         actions={
           <>
             <Link

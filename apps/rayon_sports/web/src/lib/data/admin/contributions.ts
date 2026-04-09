@@ -2,7 +2,7 @@
  * Admin contributions — circles snapshot, Excel export, group CRUD.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { rayonClub } from "@/lib/config";
+import { fallbackClubProfile } from "@/lib/content";
 import type { AdminAccess, AdminContributionGroup, AdminContributionItem, AdminContributionSnapshot } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
@@ -25,7 +25,7 @@ function mapContributionGroup(row: Record<string, unknown>): AdminContributionGr
         : "general",
     targetAmount: safeNumber(row.target_amount, 0),
     currentTotal: safeNumber(row.current_total, 0),
-    currency: safeString(row.currency, rayonClub.currencyCode),
+    currency: safeString(row.currency, fallbackClubProfile.currencyCode),
     memberCount: safeNumber(row.member_count, 0),
     inviteCode: safeString(row.invite_code) || null,
     isActive: row.is_closed !== true,
@@ -115,7 +115,10 @@ export async function downloadContributionExcel(snapshot: AdminContributionSnaps
   const worksheet = XLSX.utils.aoa_to_sheet(data);
   worksheet["!cols"] = headers.map((header, i) => ({ wch: Math.max(header.length, ...rows.map((row) => String(row[i] ?? "").length), 12) }));
   XLSX.utils.book_append_sheet(workbook, worksheet, "Contributions");
-  XLSX.writeFile(workbook, `rayon-contributions-${new Date().toISOString().slice(0, 10)}.xlsx`);
+  XLSX.writeFile(
+    workbook,
+    `club-contributions-${new Date().toISOString().slice(0, 10)}.xlsx`,
+  );
 }
 
 export async function saveAdminContributionGroup(
@@ -130,8 +133,8 @@ export async function saveAdminContributionGroup(
   }
   const clubId = requireAdminClubId(access, "save contribution groups");
   return mutateRecordWithVariants(client, contributionTable, input.id, [
-    { club_id: clubId, name: input.name.trim(), description: input.description.trim(), privacy: input.privacy, group_type: input.groupType, target_amount: safeNumber(input.targetAmount, 0), current_total: safeNumber(input.currentTotal, 0), currency: input.currency.trim() || rayonClub.currencyCode, member_count: safeNumber(input.memberCount, 0), invite_code: safeString(input.inviteCode) || null, is_closed: input.isClosed, is_active: input.isClosed !== true },
-    { club_id: clubId, name: input.name.trim(), description: input.description.trim(), privacy: input.privacy, group_type: input.groupType, target_amount: safeNumber(input.targetAmount, 0), current_total: safeNumber(input.currentTotal, 0), currency: input.currency.trim() || rayonClub.currencyCode, member_count: safeNumber(input.memberCount, 0), invite_code: safeString(input.inviteCode) || null, is_closed: input.isClosed },
+    { club_id: clubId, name: input.name.trim(), description: input.description.trim(), privacy: input.privacy, group_type: input.groupType, target_amount: safeNumber(input.targetAmount, 0), current_total: safeNumber(input.currentTotal, 0), currency: input.currency.trim() || fallbackClubProfile.currencyCode, member_count: safeNumber(input.memberCount, 0), invite_code: safeString(input.inviteCode) || null, is_closed: input.isClosed, is_active: input.isClosed !== true },
+    { club_id: clubId, name: input.name.trim(), description: input.description.trim(), privacy: input.privacy, group_type: input.groupType, target_amount: safeNumber(input.targetAmount, 0), current_total: safeNumber(input.currentTotal, 0), currency: input.currency.trim() || fallbackClubProfile.currencyCode, member_count: safeNumber(input.memberCount, 0), invite_code: safeString(input.inviteCode) || null, is_closed: input.isClosed },
   ], { club_id: clubId });
 }
 

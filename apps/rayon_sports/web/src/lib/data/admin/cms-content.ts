@@ -1,6 +1,6 @@
 /**
  * Admin CMS — home banners, ai_content, and app_config CRUD.
- * These tables drive all dynamic content across public site and fan portal.
+ * These tables drive dynamic content across the public site and admin workflows.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess } from "@/lib/types";
@@ -25,9 +25,11 @@ function mapBanner(row: Record<string, unknown>): HomeBanner {
 }
 
 export async function getAdminBanners(client: SupabaseClient, _access: AdminAccess) {
+  const clubId = requireAdminClubId(_access, "load home banners");
   const { data, error } = await client
     .from("home_banners")
     .select("*")
+    .eq("club_id", clubId)
     .order("sort_order", { ascending: true });
 
   if (error) throw new Error(error.message);
@@ -49,7 +51,9 @@ export async function saveAdminBanner(
     isActive?: boolean;
   },
 ) {
+  const clubId = requireAdminClubId(_access, "save home banners");
   const payload: Record<string, unknown> = {
+    club_id: clubId,
     title: input.title.trim(),
     subtitle: safeString(input.subtitle) || null,
     badge_label: safeString(input.badgeLabel) || null,
@@ -61,7 +65,11 @@ export async function saveAdminBanner(
   };
 
   if (input.id) {
-    const { error } = await client.from("home_banners").update(payload).eq("id", input.id);
+    const { error } = await client
+      .from("home_banners")
+      .update(payload)
+      .eq("id", input.id)
+      .eq("club_id", clubId);
     if (error) throw new Error(error.message);
     return input.id;
   }
@@ -72,7 +80,12 @@ export async function saveAdminBanner(
 }
 
 export async function deleteAdminBanner(client: SupabaseClient, _access: AdminAccess, bannerId: string) {
-  const { error } = await client.from("home_banners").delete().eq("id", bannerId);
+  const clubId = requireAdminClubId(_access, "delete home banners");
+  const { error } = await client
+    .from("home_banners")
+    .delete()
+    .eq("id", bannerId)
+    .eq("club_id", clubId);
   if (error) throw new Error(error.message);
 }
 
@@ -95,9 +108,11 @@ function mapContent(row: Record<string, unknown>): CmsContent {
 }
 
 export async function getAdminContentBlocks(client: SupabaseClient, _access: AdminAccess) {
+  const clubId = requireAdminClubId(_access, "load CMS content blocks");
   const { data, error } = await client
     .from("ai_content")
     .select("*")
+    .eq("club_id", clubId)
     .order("content_type", { ascending: true })
     .order("sort_order", { ascending: true });
 
@@ -122,7 +137,9 @@ export async function saveAdminContentBlock(
     isActive?: boolean;
   },
 ) {
+  const clubId = requireAdminClubId(_access, "save CMS content blocks");
   const payload: Record<string, unknown> = {
+    club_id: clubId,
     content_type: input.contentType.trim(),
     title: input.title.trim(),
     subtitle: safeString(input.subtitle) || null,
@@ -137,7 +154,11 @@ export async function saveAdminContentBlock(
   };
 
   if (input.id) {
-    const { error } = await client.from("ai_content").update(payload).eq("id", input.id);
+    const { error } = await client
+      .from("ai_content")
+      .update(payload)
+      .eq("id", input.id)
+      .eq("club_id", clubId);
     if (error) throw new Error(error.message);
     return input.id;
   }
@@ -148,7 +169,12 @@ export async function saveAdminContentBlock(
 }
 
 export async function deleteAdminContentBlock(client: SupabaseClient, _access: AdminAccess, blockId: string) {
-  const { error } = await client.from("ai_content").delete().eq("id", blockId);
+  const clubId = requireAdminClubId(_access, "delete CMS content blocks");
+  const { error } = await client
+    .from("ai_content")
+    .delete()
+    .eq("id", blockId)
+    .eq("club_id", clubId);
   if (error) throw new Error(error.message);
 }
 
@@ -164,9 +190,11 @@ function mapConfig(row: Record<string, unknown>): AppConfigEntry {
 }
 
 export async function getAdminAppConfig(client: SupabaseClient, _access: AdminAccess) {
+  const clubId = requireAdminClubId(_access, "load app configuration");
   const { data, error } = await client
-    .from("app_config")
+    .from("club_app_config")
     .select("*")
+    .eq("club_id", clubId)
     .order("key", { ascending: true });
 
   if (error) throw new Error(error.message);
@@ -178,7 +206,9 @@ export async function saveAdminConfigEntry(
   _access: AdminAccess,
   input: { key: string; value: string; description?: string; country?: string },
 ) {
+  const clubId = requireAdminClubId(_access, "save app configuration");
   const payload = {
+    club_id: clubId,
     key: input.key.trim(),
     value: input.value,
     description: safeString(input.description) || null,
@@ -186,13 +216,18 @@ export async function saveAdminConfigEntry(
   };
 
   const { error } = await client
-    .from("app_config")
-    .upsert(payload, { onConflict: "key" });
+    .from("club_app_config")
+    .upsert(payload, { onConflict: "club_id,key" });
 
   if (error) throw new Error(error.message);
 }
 
 export async function deleteAdminConfigEntry(client: SupabaseClient, _access: AdminAccess, key: string) {
-  const { error } = await client.from("app_config").delete().eq("key", key);
+  const clubId = requireAdminClubId(_access, "delete app configuration");
+  const { error } = await client
+    .from("club_app_config")
+    .delete()
+    .eq("club_id", clubId)
+    .eq("key", key);
   if (error) throw new Error(error.message);
 }

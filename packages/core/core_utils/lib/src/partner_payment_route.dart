@@ -35,7 +35,8 @@ class PartnerPaymentRoute {
   factory PartnerPaymentRoute.fromJson(Map<String, dynamic> json) {
     return PartnerPaymentRoute(
       id: json['id']?.toString() ?? '',
-      partnerId: json['partner_id']?.toString() ?? '',
+      partnerId:
+          json['partner_id']?.toString() ?? json['club_id']?.toString() ?? '',
       partnerName: json['partner_name']?.toString() ?? 'Partner',
       partnerSlug: json['partner_slug']?.toString() ?? '',
       countryCode: AfriCountryCatalog.normalizeCountryCode(

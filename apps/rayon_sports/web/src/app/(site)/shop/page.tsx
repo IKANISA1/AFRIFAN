@@ -3,19 +3,21 @@ import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { PageHero } from "@/components/page-hero";
-import { getProducts } from "@/lib/data/public";
+import { getClubProfile, getProducts } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 import { formatCurrency } from "@/lib/utils";
 
-export const metadata = buildPageMetadata({
-  title: "Rayon Sports shop",
-  description:
-    "Official Rayon Sports merch, jerseys, travel wear, scarves, and supporter essentials.",
-  path: "/shop",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: `${club.shortName} shop`,
+    description: `Official ${club.shortName} merch, jerseys, travel wear, scarves, and supporter essentials.`,
+    path: "/shop",
+  });
+}
 
 export default async function ShopPage() {
-  const products = await getProducts();
+  const [club, products] = await Promise.all([getClubProfile(), getProducts()]);
   const [featuredProduct, ...catalogue] = products;
   const categories = Array.from(new Set(products.map((product) => product.category)));
 
@@ -24,14 +26,14 @@ export default async function ShopPage() {
       <PageHero
         eyebrow="Club shop"
         title="Official merch and matchday essentials."
-        description="Browse the latest Rayon Sports drop, check sizes and pricing, and move into secure checkout in the fan portal."
+        description={`Browse the latest ${club.shortName} drop, check sizes and pricing, and continue secure checkout in the fan app.`}
         actions={
           <>
             <Link
-              href="/app/shop"
+              href="/supporters"
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Shop in portal
+              Shop in fan app
             </Link>
             <Link
               href="/membership"
@@ -122,7 +124,7 @@ export default async function ShopPage() {
               {[
                 "Product imagery and collection context lead every launch.",
                 "Sizes and prices are visible before the supporter leaves the public site.",
-                "The portal handles checkout while the public shop handles discovery.",
+                "The fan app handles checkout while the public shop handles discovery.",
               ].map((point) => (
                 <div
                   key={point}

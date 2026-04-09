@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { NewsCard } from "@/components/news-card";
 import { ShareActionButton } from "@/components/pwa/share-action-button";
-import { getNewsArticleById, getNewsArticles } from "@/lib/data/public";
+import { getClubProfile, getNewsArticleById, getNewsArticles } from "@/lib/data/public";
 import { buildNewsArticleJsonLd, buildPageMetadata } from "@/lib/metadata";
 import { formatDate, getReadingTime } from "@/lib/utils";
 
@@ -14,12 +14,15 @@ export async function generateMetadata({
   params: Promise<{ articleId: string }>;
 }): Promise<Metadata> {
   const { articleId } = await params;
-  const article = await getNewsArticleById(articleId);
+  const [club, article] = await Promise.all([
+    getClubProfile(),
+    getNewsArticleById(articleId),
+  ]);
 
   if (article == null) {
     return buildPageMetadata({
-      title: "Rayon Sports article",
-      description: "Official Rayon Sports news and matchday coverage.",
+      title: `${club.shortName} article`,
+      description: `Official ${club.shortName} news and matchday coverage.`,
       path: `/news/${articleId}`,
       type: "article",
     });

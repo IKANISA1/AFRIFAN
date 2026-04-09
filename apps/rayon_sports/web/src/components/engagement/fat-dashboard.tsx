@@ -34,7 +34,7 @@ const FAT_LEVELS: FatLevel[] = [
   { level: 4, title: "Devoted", minFat: 600, maxFat: 999 },
   { level: 5, title: "Ultras", minFat: 1000, maxFat: 1999 },
   { level: 6, title: "Legend", minFat: 2000, maxFat: 4999 },
-  { level: 7, title: "Gikundiro Icon", minFat: 5000, maxFat: Infinity },
+  { level: 7, title: "Club Icon", minFat: 5000, maxFat: Infinity },
 ];
 
 export function getLevelForFat(totalFat: number): { current: FatLevel; next: FatLevel | null } {

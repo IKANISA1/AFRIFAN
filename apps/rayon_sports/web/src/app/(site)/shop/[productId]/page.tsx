@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import { ShareActionButton } from "@/components/pwa/share-action-button";
-import { getProductById, getProducts } from "@/lib/data/public";
+import { getClubProfile, getProductById, getProducts } from "@/lib/data/public";
 import { buildPageMetadata, buildProductJsonLd } from "@/lib/metadata";
 import { formatCurrency } from "@/lib/utils";
 
@@ -14,11 +14,14 @@ export async function generateMetadata({
   params: Promise<{ productId: string }>;
 }): Promise<Metadata> {
   const { productId } = await params;
-  const product = await getProductById(productId);
+  const [club, product] = await Promise.all([
+    getClubProfile(),
+    getProductById(productId),
+  ]);
 
   return buildPageMetadata({
     title: product?.name ?? "Shop product",
-    description: product?.subtitle ?? "Official Rayon Sports merchandise.",
+    description: product?.subtitle ?? `Official ${club.shortName} merchandise.`,
     path: `/shop/${productId}`,
     imagePath: product?.imageUrl ?? "/media/stadium-hero.jpg",
   });
@@ -84,10 +87,10 @@ export default async function ProductPage({
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href="/app/shop"
+                href="/supporters"
                 className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
               >
-                Order from portal
+                Order in fan app
               </Link>
               <Link
                 href="/membership"
@@ -118,7 +121,7 @@ export default async function ProductPage({
             {[
               "Collection context keeps every drop feeling like a launch.",
               "Size visibility and price clarity stay prominent before checkout.",
-              "Membership and portal actions support trust instead of blocking discovery.",
+              "Membership and fan app actions support trust instead of blocking discovery.",
             ].map((point) => (
               <div
                 key={point}

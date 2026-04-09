@@ -2,19 +2,21 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { MatchCard } from "@/components/match-card";
 import { PageHero } from "@/components/page-hero";
-import { getMatches } from "@/lib/data/public";
+import { getClubProfile, getMatches } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 import { isLiveMatch, isResultMatch } from "@/lib/utils";
 
-export const metadata = buildPageMetadata({
-  title: "Rayon Sports fixtures",
-  description:
-    "Official Rayon Sports fixture list with live matches, upcoming kickoffs, ticket links, and recent results.",
-  path: "/fixtures",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: `${club.shortName} fixtures`,
+    description: `Official ${club.shortName} fixture list with live matches, upcoming kickoffs, ticket links, and recent results.`,
+    path: "/fixtures",
+  });
+}
 
 export default async function FixturesPage() {
-  const matches = await getMatches();
+  const [club, matches] = await Promise.all([getClubProfile(), getMatches()]);
   const liveMatches = matches.filter((match) => isLiveMatch(match.matchStatus));
   const upcomingMatches = matches.filter(
     (match) => !isLiveMatch(match.matchStatus) && !isResultMatch(match.matchStatus),
@@ -26,7 +28,7 @@ export default async function FixturesPage() {
       <PageHero
         eyebrow="Fixtures"
         title="Live, next, and recent fixtures."
-        description="Track the current match, see the next kickoff, and move straight into ticketing when a fixture is on sale."
+        description={`Track the current ${club.shortName} match, see the next kickoff, and move straight into ticketing when a fixture is on sale.`}
         actions={
           <>
             <Link
@@ -67,7 +69,12 @@ export default async function FixturesPage() {
           </div>
           <div className="grid gap-5 lg:grid-cols-2">
             {liveMatches.map((match) => (
-              <MatchCard key={match.id} match={match} />
+              <MatchCard
+                key={match.id}
+                match={match}
+                clubName={club.shortName}
+                clubLogoUrl={club.officialLogoUrl}
+              />
             ))}
           </div>
         </section>
@@ -92,7 +99,12 @@ export default async function FixturesPage() {
         </div>
         <div className="grid gap-5 lg:grid-cols-3">
           {upcomingMatches.map((match) => (
-            <MatchCard key={match.id} match={match} />
+            <MatchCard
+              key={match.id}
+              match={match}
+              clubName={club.shortName}
+              clubLogoUrl={club.officialLogoUrl}
+            />
           ))}
         </div>
       </section>
@@ -109,7 +121,12 @@ export default async function FixturesPage() {
           </div>
           <div className="grid gap-5 lg:grid-cols-3">
             {results.map((match) => (
-              <MatchCard key={match.id} match={match} />
+              <MatchCard
+                key={match.id}
+                match={match}
+                clubName={club.shortName}
+                clubLogoUrl={club.officialLogoUrl}
+              />
             ))}
           </div>
         </section>

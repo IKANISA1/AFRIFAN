@@ -2,17 +2,17 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { NewsCard } from "@/components/news-card";
 import { SectionHeading } from "@/components/section-heading";
-import { getNewsArticles } from "@/lib/data/public";
+import { getClubProfile, getNewsArticles } from "@/lib/data/public";
 
 export async function NewsBlock() {
-  const news = await getNewsArticles();
+  const [club, news] = await Promise.all([getClubProfile(), getNewsArticles()]);
 
   return (
     <section className="page-shell section-grid">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <SectionHeading
           eyebrow="Editorial"
-          title="Inside Rayon Sports."
+          title={`Inside ${club.shortName}.`}
         />
         <Link
           href="/news"

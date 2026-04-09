@@ -10,7 +10,7 @@ import type {
   SquadPlayer,
   StandingRow,
 } from "@/lib/types";
-import { rayonClub, siteConfig } from "@/lib/config";
+import { rayonClub, resolveFanAppHref } from "@/lib/config";
 
 export const fallbackClubProfile: ClubProfile = {
   id: rayonClub.numericId,
@@ -46,11 +46,11 @@ export const fallbackClubProfile: ClubProfile = {
 
 export const fallbackMatches: MatchItem[] = [
   {
-    id: "rayon-apr-featured",
-    homeTeam: "Rayon Sports",
+    id: "featured-home-fixture",
+    homeTeam: fallbackClubProfile.shortName,
     awayTeam: "APR FC",
-    competition: "Rwanda Premier League",
-    venue: "Kigali Pele Stadium",
+    competition: fallbackClubProfile.league,
+    venue: "Club Stadium",
     matchDate: "2026-04-20T15:00:00.000Z",
     kickoffTime: "18:00",
     isOnSale: true,
@@ -62,15 +62,15 @@ export const fallbackMatches: MatchItem[] = [
     awayScore: 0,
     liveMinute: null,
     matchSummary:
-      "A title-race matchday built for a full house in Kigali.",
+      `A high-demand matchday built for a full house around ${fallbackClubProfile.shortName}.`,
     liveEvents: [],
     liveStats: {},
     isFeatured: true,
   },
   {
-    id: "rayon-kwizera-live",
+    id: "cup-live-fixture",
     homeTeam: "Police FC",
-    awayTeam: "Rayon Sports",
+    awayTeam: fallbackClubProfile.shortName,
     competition: "Peace Cup",
     venue: "Mumena Stadium",
     matchDate: "2026-04-12T12:30:00.000Z",
@@ -84,7 +84,7 @@ export const fallbackMatches: MatchItem[] = [
     awayScore: 2,
     liveMinute: 67,
     matchSummary:
-      "Rayon are pressing down the left and dominating set-piece territory.",
+      `${fallbackClubProfile.shortName} are pressing hard and controlling the decisive moments.`,
     liveEvents: [
       { minute: "14'", event: "APR-style pressing goal from open play", side: "home" },
       { minute: "39'", event: "Mukundane levels from the spot", side: "away" },
@@ -98,11 +98,11 @@ export const fallbackMatches: MatchItem[] = [
     isFeatured: false,
   },
   {
-    id: "rayon-kayonza-result",
-    homeTeam: "Rayon Sports",
+    id: "recent-result-fixture",
+    homeTeam: fallbackClubProfile.shortName,
     awayTeam: "Etincelles FC",
-    competition: "Rwanda Premier League",
-    venue: "Kigali Pele Stadium",
+    competition: fallbackClubProfile.league,
+    venue: "Club Stadium",
     matchDate: "2026-04-02T15:00:00.000Z",
     kickoffTime: "18:00",
     isOnSale: false,
@@ -114,7 +114,7 @@ export const fallbackMatches: MatchItem[] = [
     awayScore: 1,
     liveMinute: null,
     matchSummary:
-      "A composed second-half surge kept Rayon top of the chasing pack.",
+      `A composed second-half surge kept ${fallbackClubProfile.shortName} in the title conversation.`,
     liveEvents: [
       { minute: "8'", event: "Mugisha heads in the opener", side: "away" },
       { minute: "24'", event: "Equalizer from a deep free-kick routine", side: "home" },
@@ -132,12 +132,12 @@ export const fallbackMatches: MatchItem[] = [
 
 export const fallbackNewsArticles: NewsArticle[] = [
   {
-    id: "matchday-kigali-blue-wave",
-    title: "Matchday pulse: Kigali gets ready for the blue wave",
+    id: "matchday-club-pulse",
+    title: `Matchday pulse: ${fallbackClubProfile.shortName} prepares for the next big crowd`,
     excerpt:
       "Supporters' buses, early gates, and a full-day activation plan are locked in for the APR clash.",
     content:
-      "Rayon Sports are building a full matchday program around the APR fixture, from supporter hub activations to ticket scanning lanes and post-match player access. The web app gives fans one place to find kickoff details, gate timings, and their purchase history before heading to the stadium.",
+      `${fallbackClubProfile.clubName} are building a full matchday program around the next headline fixture, from supporter hub activations to ticket scanning lanes and post-match access. The website gives fans one place to find kickoff details, gate timings, and the path into the supporter app before heading to the stadium.`,
     category: "Matchday",
     coverImageUrl: "/media/stadium-hero.jpg",
     publishedAt: "2026-04-03T07:00:00.000Z",
@@ -147,9 +147,9 @@ export const fallbackNewsArticles: NewsArticle[] = [
     id: "membership-gikundiro-circle",
     title: "Membership is now digital-first across phone and web",
     excerpt:
-      "Fans can now manage tiers, supporter details, and ticket priority from the web portal.",
+      "Fans can now manage tiers, supporter details, and ticket priority from the mobile supporter app.",
     content:
-      "The Gikundiro membership program now runs across mobile and web. Supporters can activate a plan, review their tier, update their profile, and keep their fan identity in sync across devices.",
+      `The ${fallbackClubProfile.shortName} membership program now runs across the public website and the mobile supporter app. Supporters can activate a plan, review their tier, update their profile, and keep their fan identity in sync across devices.`,
     category: "Membership",
     coverImageUrl: "/media/stadium-hero-2.jpg",
     publishedAt: "2026-04-01T10:15:00.000Z",
@@ -161,7 +161,7 @@ export const fallbackNewsArticles: NewsArticle[] = [
     excerpt:
       "Replica shirts, travel hoodies, and matchday scarves are now available in the club store.",
     content:
-      "The latest Rayon Sports drop is live with home replicas, travel layers, and premium scarves. The shop experience in the new web build mirrors the app's merchandise flow while improving product discovery and checkout clarity.",
+      `The latest ${fallbackClubProfile.shortName} drop is live with home replicas, travel layers, and premium scarves. The shop experience in the web build mirrors the supporter app merchandise flow while improving product discovery and checkout clarity.`,
     category: "Shop",
     coverImageUrl: "/media/stadium-hero.jpg",
     publishedAt: "2026-03-30T12:30:00.000Z",
@@ -175,7 +175,7 @@ export const fallbackProducts: ShopProduct[] = [
     name: "2026 Home Replica Jersey",
     subtitle: "Matchday fit, club crest embroidery, breathable knit.",
     description:
-      "Official Rayon Sports replica built for matchdays and supporter travel. Includes woven crest, sponsor print, and a deep royal-blue finish.",
+      `Official ${fallbackClubProfile.shortName} replica built for matchdays and supporter travel. Includes woven crest, sponsor print, and a premium finish.`,
     category: "Replica",
     price: 35000,
     imageUrl: "/media/stadium-hero.jpg",
@@ -188,7 +188,7 @@ export const fallbackProducts: ShopProduct[] = [
     name: "Blue Travel Hoodie",
     subtitle: "Heavyweight fleece with a tonal crest hit.",
     description:
-      "Supporter travel layer with a clean front mark and a wide cut for cool Kigali evenings.",
+      "Supporter travel layer with a clean front mark and a wide cut for cooler evening kickoffs.",
     category: "Outerwear",
     price: 42000,
     imageUrl: "/media/stadium-hero-2.jpg",
@@ -198,7 +198,7 @@ export const fallbackProducts: ShopProduct[] = [
   },
   {
     id: "matchday-scarf",
-    name: "Gikundiro Matchday Scarf",
+    name: `${fallbackClubProfile.shortName} Matchday Scarf`,
     subtitle: "Stadium knit in blue, white, and gold.",
     description:
       "A supporter staple for derby days, cup nights, and away sections.",
@@ -221,7 +221,7 @@ export const fallbackMembershipPackages: MembershipPackage[] = [
     annualPrice: 0,
     perks: [
       "Digital fan card",
-      "Portal access",
+      "Fan app access",
       "News and match reminders",
       "Support circles access",
     ],
@@ -272,9 +272,9 @@ export const fallbackMembershipPackages: MembershipPackage[] = [
 
 export const fallbackFanClubs: FanClubItem[] = [
   {
-    id: "kigali-blue-army",
-    name: "Kigali Blue Army",
-    region: "Kigali",
+    id: "capital-supporters",
+    name: `${fallbackClubProfile.shortName} City Chapter`,
+    region: "Capital Region",
     description:
       "Central city supporter chapter focused on home-match choreography and away-travel logistics.",
     memberCount: 183,
@@ -283,8 +283,8 @@ export const fallbackFanClubs: FanClubItem[] = [
     bannerImageUrl: "/media/stadium-hero.jpg",
   },
   {
-    id: "musanze-red-line",
-    name: "Musanze Red Line",
+    id: "northern-supporters",
+    name: `${fallbackClubProfile.shortName} Northern Chapter`,
     region: "Northern Province",
     description:
       "Supporters coordinating travel, local screenings, and youth outreach around matchweeks.",
@@ -294,8 +294,8 @@ export const fallbackFanClubs: FanClubItem[] = [
     bannerImageUrl: "/media/stadium-hero-2.jpg",
   },
   {
-    id: "diaspora-gikundiro",
-    name: "Diaspora Gikundiro",
+    id: "diaspora-supporters",
+    name: `${fallbackClubProfile.shortName} Diaspora Network`,
     region: "Global",
     description:
       "A digital-first fan club for international supporters following every matchday online.",
@@ -391,7 +391,7 @@ export const fallbackStandings: StandingRow[] = [
   },
   {
     position: 2,
-    club: "Rayon Sports",
+    club: fallbackClubProfile.shortName,
     played: 24,
     goalDifference: 18,
     points: 50,
@@ -466,9 +466,9 @@ export const fallbackStandings: StandingRow[] = [
 
 export const clubHistoryMoments = [
   {
-    title: "The beloved identity",
+    title: "Official club identity",
     body:
-      "Gikundiro means 'the beloved'. Every public page carries that identity with the confidence of an official club home.",
+      `${fallbackClubProfile.shortName} carries a distinct supporter identity. Every public page should feel like an official club home rather than a generic sports template.`,
   },
   {
     title: "Matchday at scale",
@@ -478,7 +478,7 @@ export const clubHistoryMoments = [
   {
     title: "One supporter account across surfaces",
     body:
-      "The web and mobile products share one supporter account, with the browser handling discovery and the portal handling authenticated action.",
+      "The website handles discovery while the mobile supporter app handles authenticated fan action.",
   },
 ];
 
@@ -519,7 +519,7 @@ export const footerNavigationGroups = [
       { href: "/membership", label: "Membership" },
       { href: "/circles", label: "Support Circles" },
       { href: "/fan-clubs", label: "Fan Clubs" },
-      { href: siteConfig.fansUrl, label: "Fan Portal" },
+      { href: resolveFanAppHref(), label: "Fan App" },
     ],
   },
   {
@@ -538,30 +538,6 @@ export const footerNavigationGroups = [
       { href: "/terms", label: "Terms" },
     ],
   },
-];
-
-export const portalNavigation = [
-  { href: "/app/home", label: "Home" },
-  { href: "/app/biopay", label: "BioPay" },
-  { href: "/app/profile", label: "Settings" },
-];
-
-/** Primary portal navigation shown in the desktop sidebar */
-export const portalSidebarNavigation = [
-  { href: "/app/home", label: "Home" },
-  { href: "/app/live", label: "Matches" },
-  { href: "/app/tickets", label: "Tickets" },
-  { href: "/app/biopay", label: "BioPay" },
-  { href: "/app/membership", label: "Membership" },
-  { href: "/app/profile", label: "Settings" },
-];
-
-/** Secondary portal navigation — discovery items below a separator */
-export const portalSidebarSecondary = [
-  { href: "/app/shop", label: "Shop" },
-  { href: "/app/contributions", label: "Support" },
-  { href: "/app/fan-clubs", label: "Fan Clubs" },
-  { href: "/app/xp", label: "FAT" },
 ];
 
 export const staticSearchItems: SearchIndexItem[] = [
@@ -584,7 +560,7 @@ export const staticSearchItems: SearchIndexItem[] = [
   {
     id: "page-tickets",
     title: "Tickets",
-    description: "Official ticket hub with live pricing, fixture detail, and secure portal checkout.",
+    description: "Official ticket hub with live pricing, fixture detail, and supporter app follow-through.",
     href: "/tickets",
     category: "Match",
     meta: "Buy",
@@ -609,7 +585,7 @@ export const staticSearchItems: SearchIndexItem[] = [
   {
     id: "page-fan-clubs",
     title: "Fan Clubs",
-    description: "Supporter chapters across Kigali, Rwanda, and the diaspora.",
+    description: "Supporter chapters across the club footprint and diaspora.",
     href: "/fan-clubs",
     category: "Community",
     meta: "Community",

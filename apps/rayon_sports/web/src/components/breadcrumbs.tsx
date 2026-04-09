@@ -19,7 +19,6 @@ const labelMap: Record<string, string> = {
   privacy: "Privacy",
   terms: "Terms",
   results: "Results",
-  app: "Portal",
   admin: "Admin",
 };
 

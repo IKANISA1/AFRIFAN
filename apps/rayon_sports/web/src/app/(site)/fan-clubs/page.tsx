@@ -2,19 +2,22 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { ProgressBar } from "@/components/progress-bar";
-import { getContributionGroups, getFanClubs } from "@/lib/data/public";
+import { getClubProfile, getContributionGroups, getFanClubs } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 import { formatCompactNumber } from "@/lib/utils";
 
-export const metadata = buildPageMetadata({
-  title: "Rayon Sports fan clubs",
-  description:
-    "Official Rayon Sports fan clubs, supporter chapters, and community activity across Rwanda and the diaspora.",
-  path: "/fan-clubs",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: `${club.shortName} fan clubs`,
+    description: `Official ${club.shortName} fan clubs, supporter chapters, and community activity across the local community and diaspora.`,
+    path: "/fan-clubs",
+  });
+}
 
 export default async function FanClubsPage() {
-  const [fanClubs, groups] = await Promise.all([
+  const [club, fanClubs, groups] = await Promise.all([
+    getClubProfile(),
     getFanClubs(),
     getContributionGroups(),
   ]);
@@ -25,7 +28,7 @@ export default async function FanClubsPage() {
       <PageHero
         eyebrow="Community"
         title="Supporter chapters across Rwanda and beyond."
-        description="Discover official fan clubs, chapter activity, and the supporter network behind every Rayon Sports matchday."
+        description={`Discover official fan clubs, chapter activity, and the supporter network behind every ${club.shortName} matchday.`}
         actions={
           <>
             <Link
@@ -35,10 +38,10 @@ export default async function FanClubsPage() {
               Explore circles
             </Link>
             <Link
-              href="/app/fan-clubs"
+              href="/supporters"
               className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
-              Join in portal
+              Join in fan app
             </Link>
           </>
         }
@@ -130,10 +133,10 @@ export default async function FanClubsPage() {
             Support a circle
           </Link>
           <Link
-            href="/app/fan-clubs"
+            href="/supporters"
             className="mt-3 inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
           >
-            Join from fan portal <ArrowRight size={18} />
+            Join from fan app <ArrowRight size={18} />
           </Link>
         </div>
       </div>

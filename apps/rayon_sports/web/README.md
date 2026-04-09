@@ -1,10 +1,13 @@
-# Rayon Sports Web App
+# White-Label Club Web
 
-This is the production web surface for Rayon Sports. It complements the Flutter mobile app with:
+This app is the shared white-label web surface for AfriClub. Rayon Sports remains the reference club profile and seeded default.
+
+The repo now contains two web surfaces only:
 
 - a public, SEO-friendly website for club discovery
-- a mobile-optimized fan portal at `/app`
-- Supabase-backed supporter flows for profile, membership, tickets, shop, fan clubs, contributions, and XP
+- a centralized admin PWA at `/admin`
+
+Fan journeys now live in the Flutter mobile app. The website can hand users off to the native supporter app without hosting a browser fan portal.
 
 ## Stack
 
@@ -38,9 +41,9 @@ The site will run on `http://localhost:3000`.
 
 Behavior:
 
-- if browser Supabase env vars are present, the fan portal bootstraps an anonymous supporter session in the browser
-- if server Supabase env vars are present, public pages can read live club data server-side
-- if env vars are absent, the site falls back to embedded Rayon Sports content so the app still builds and renders
+- if server Supabase env vars are present, public pages and admin APIs can read live club data server-side
+- club resolution can be driven by `CLUB_HOST_MAP_JSON` / `NEXT_PUBLIC_CLUB_HOST_MAP_JSON`
+- if env vars are absent, the site falls back to embedded reference content so the app still builds and renders
 
 ## Commands
 
@@ -76,18 +79,14 @@ Public site:
 - `/contact`
 - `/privacy`
 - `/terms`
+- `/supporters`
 
-Fan portal:
+Admin PWA:
 
-- `/app`
-- `/app/profile`
-- `/app/membership`
-- `/app/tickets`
-- `/app/shop`
-- `/app/contributions`
-- `/app/fan-clubs`
-- `/app/xp`
-- `/app/live/[matchId]`
+- `/admin`
+- `/admin/settings`
+- `/admin/matches`
+- `/admin/cms`
 
 ## Deployment notes
 
@@ -143,4 +142,4 @@ The remaining step is registrar-side only: update the authoritative nameservers 
 
 ## Current implementation boundary
 
-Web v1 covers supporter-friendly browser features. Device-native mobile features such as NFC, face capture, and SMS auto-read remain mobile-only.
+The public site and admin PWA share one codebase and are club-scoped by hostname and club configuration. Device-native supporter workflows such as NFC, face capture, SMS auto-read, and authenticated fan journeys remain Flutter-only.

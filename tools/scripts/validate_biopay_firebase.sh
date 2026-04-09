@@ -6,6 +6,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 DEFAULT_FIREBASE_ENV_FILE="$ROOT/supabase/.env.firebase.local"
 FIREBASE_ENV_FILE="${FIREBASE_ENV_FILE:-$DEFAULT_FIREBASE_ENV_FILE}"
+FIREBASE_SERVER_VALIDATION_MODE="${FIREBASE_SERVER_VALIDATION_MODE:-auto}"
 if [ -f "$FIREBASE_ENV_FILE" ]; then
   set -a
   # shellcheck disable=SC1090
@@ -61,7 +62,35 @@ if [ "${#TARGET_APPS[@]}" -eq 0 ]; then
   exit 0
 fi
 
-SERVER_PROJECT_ID="$(python3 - <<'PY'
+SERVICE_ACCOUNT_JSON_RAW="${FIREBASE_SERVICE_ACCOUNT_JSON:-}"
+if [ -z "$SERVICE_ACCOUNT_JSON_RAW" ] && [ -n "${FIREBASE_SERVICE_ACCOUNT_FILE:-}" ]; then
+  SERVICE_ACCOUNT_JSON_RAW="${FIREBASE_SERVICE_ACCOUNT_JSON:-}"
+fi
+
+SERVER_PROJECT_ID=""
+SERVER_VALIDATION_ACTIVE=0
+
+case "$FIREBASE_SERVER_VALIDATION_MODE" in
+  auto)
+    if [ -n "${SERVICE_ACCOUNT_JSON_RAW:-}" ]; then
+      SERVER_VALIDATION_ACTIVE=1
+    fi
+    ;;
+  strict | required | true | 1)
+    SERVER_VALIDATION_ACTIVE=1
+    ;;
+  off | skip | false | 0)
+    SERVER_VALIDATION_ACTIVE=0
+    ;;
+  *)
+    echo "Invalid FIREBASE_SERVER_VALIDATION_MODE: $FIREBASE_SERVER_VALIDATION_MODE" >&2
+    echo "Use one of: auto, strict, off" >&2
+    exit 2
+    ;;
+esac
+
+if [ "$SERVER_VALIDATION_ACTIVE" -eq 1 ]; then
+  SERVER_PROJECT_ID="$(python3 - <<'PY'
 import json
 import os
 import sys
@@ -106,10 +135,15 @@ if env_project_id and service_project_id and env_project_id != service_project_i
 print(project_id)
 PY
 )"
+fi
 
 echo "BioPay Firebase and App Check provisioning check"
 echo "Root: $ROOT"
-echo "Server project: $SERVER_PROJECT_ID"
+if [ "$SERVER_VALIDATION_ACTIVE" -eq 1 ]; then
+  echo "Server project: $SERVER_PROJECT_ID"
+else
+  echo "Server project: skipped (client Firebase config only)"
+fi
 if [ -f "$FIREBASE_ENV_FILE" ]; then
   echo "Runtime env: $FIREBASE_ENV_FILE"
 fi
@@ -130,7 +164,7 @@ for slug in "${TARGET_APPS[@]}"; do
 
   echo "Checking $slug"
 
-  if python3 - "$android_config" "$ios_config" <<'PY'
+  if python3 - "$android_config" "$ios_config" "$SERVER_PROJECT_ID" <<'PY'
 import json
 import pathlib
 import plistlib
@@ -138,6 +172,7 @@ import sys
 
 android_path = pathlib.Path(sys.argv[1])
 ios_path = pathlib.Path(sys.argv[2])
+server_project_id = sys.argv[3].strip()
 
 errors = []
 
@@ -190,8 +225,16 @@ if android_project_id != ios_project_id:
         f"{android_project_id} vs {ios_project_id}"
     )
 
+if server_project_id and android_project_id != server_project_id:
+    raise SystemExit(
+        "client Firebase configs do not match the server project ID: "
+        f"{android_project_id} vs {server_project_id}"
+    )
+
 print(f"  android: ok ({android_project_id})")
 print(f"  ios: ok ({ios_project_id})")
+if server_project_id:
+    print(f"  server: ok ({server_project_id})")
 PY
   then
     :
@@ -208,4 +251,9 @@ if [ "$missing" -ne 0 ]; then
   exit 1
 fi
 
-echo "BioPay Firebase and App Check provisioning is complete for the requested flavors."
+if [ "$SERVER_VALIDATION_ACTIVE" -eq 1 ]; then
+  echo "BioPay Firebase and App Check provisioning is complete for the requested flavors."
+else
+  echo "BioPay client Firebase configs are valid for the requested flavors."
+  echo "Server-side App Check validation was skipped because no Firebase service account credentials were provided."
+fi

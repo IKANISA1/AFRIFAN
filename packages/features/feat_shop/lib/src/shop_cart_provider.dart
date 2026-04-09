@@ -109,7 +109,10 @@ class ShopCartNotifier extends StateNotifier<List<CartItem>> {
 
     return ClubProduct(
       id: rawProduct['id']?.toString() ?? '',
-      partnerId: rawProduct['partner_id']?.toString() ?? partnerId,
+      partnerId:
+          rawProduct['partner_id']?.toString() ??
+          rawProduct['club_id']?.toString() ??
+          partnerId,
       name: rawProduct['name']?.toString() ?? 'Product',
       description: rawProduct['description']?.toString() ?? '',
       category: ProductCategoryX.fromValue(rawProduct['category']?.toString()),

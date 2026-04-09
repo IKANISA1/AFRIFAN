@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next";
 import { headers } from "next/headers";
-import { siteConfig } from "@/lib/config";
+import { resolveFanAppHref } from "@/lib/config";
+import { getClubProfile } from "@/lib/data/public";
 import {
   isAdminHostname,
-  isFansHostname,
   resolveRoutingHostname,
 } from "@/lib/host-routing";
 
@@ -32,14 +32,15 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     headersList.get("x-forwarded-host"),
     headersList.get("host"),
   );
+  const club = await getClubProfile();
 
   if (isAdminHostname(host)) {
     return {
       id: "/admin",
-      name: "Gikundiro Admin",
-      short_name: "Admin",
+      name: "AfriClub Admin",
+      short_name: "AfriAdmin",
       description:
-        "Club admin workspace for Rayon Sports operations, publishing, and supporter management.",
+        "Centralized club admin workspace for operations, publishing, supporter management, and white-label configuration.",
       start_url: "/admin",
       scope: "/admin",
       display: "standalone",
@@ -71,7 +72,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
           sizes: "2688x2363",
           type: "image/png",
           form_factor: "wide",
-          label: "Rayon Sports match management with status badges and inline editing",
+          label: "Club match management with status badges and inline editing",
         },
       ],
       share_target: {
@@ -86,72 +87,23 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     };
   }
 
-  if (isFansHostname(host)) {
-    return {
-      id: "/",
-      name: "Gikundiro Fans",
-      short_name: "Fans",
-      description:
-        "Fan portal PWA for Rayon Sports supporters with tickets, membership, shop, fan clubs, and live matchday access.",
-      start_url: "/home?source=pwa",
-      scope: "/",
-      display: "standalone",
-      display_override: ["window-controls-overlay", "standalone"],
-      orientation: "portrait",
-      background_color: "#07162f",
-      theme_color: "#0038a8",
-      shortcuts: [
-        { name: "Home", short_name: "Home", url: "/home" },
-        { name: "Tickets", short_name: "Tickets", url: "/tickets" },
-        { name: "Membership", short_name: "Membership", url: "/membership" },
-        { name: "Fan Clubs", short_name: "Clubs", url: "/fan-clubs" },
-      ],
-      icons: sharedIcons,
-      screenshots: [
-        {
-          src: "/screenshots/fans-home.png",
-          sizes: "1082x2402",
-          type: "image/png",
-          form_factor: "narrow",
-          label: "Gikundiro fans matchday home with tickets, tiers, and live fixtures",
-        },
-        {
-          src: "/screenshots/fans-tickets.png",
-          sizes: "1082x2402",
-          type: "image/png",
-          form_factor: "narrow",
-          label: "Matchday ticket checkout with seat selection and pricing",
-        },
-      ],
-      share_target: {
-        action: "/share-target",
-        method: "GET",
-        params: {
-          title: "title",
-          text: "text",
-          url: "url",
-        },
-      },
-    };
-  }
-
   return {
     id: "/",
-    name: siteConfig.title,
-    short_name: siteConfig.shortTitle,
-    description: siteConfig.description,
-    start_url: "/app/home?source=pwa",
+    name: `${club.shortName} Website`,
+    short_name: club.shortName,
+    description: `${club.clubName} public website for fixtures, tickets, membership, community, and supporter app entry points.`,
+    start_url: "/",
     scope: "/",
     display: "standalone",
     display_override: ["window-controls-overlay", "standalone"],
     orientation: "portrait",
     background_color: "#07162f",
-    theme_color: "#0038a8",
+    theme_color: club.primaryColorHex,
     shortcuts: [
-      { name: "Fan Portal", short_name: "Portal", url: "/app/home" },
+      { name: "Home", short_name: "Home", url: "/" },
       { name: "Tickets", short_name: "Tickets", url: "/tickets" },
       { name: "Support Circles", short_name: "Circles", url: "/circles" },
-      { name: "Latest News", short_name: "News", url: "/news" },
+      { name: "Fan App", short_name: "Fan App", url: resolveFanAppHref() },
     ],
     icons: sharedIcons,
     screenshots: [
@@ -160,7 +112,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
         sizes: "1082x2402",
         type: "image/png",
         form_factor: "narrow",
-        label: "Gikundiro fans matchday home with tickets, tiers, and live fixtures",
+        label: "Official club matchday home with tickets, tiers, and live fixtures",
       },
       {
         src: "/screenshots/fans-tickets.png",

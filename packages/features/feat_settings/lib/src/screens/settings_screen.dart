@@ -13,6 +13,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(currentUserProvider);
+    final hasBiopayRoutes = _hasRoute(context, 'biopay_profile');
     final alias = profile?.publicUserId == null
         ? '#------'
         : '#${AliasGenerator.format(profile!.publicUserId!)}';
@@ -111,30 +112,34 @@ class SettingsScreen extends ConsumerWidget {
               _buildSettingsSection(
                 title: 'BIOPAY & PRIVACY',
                 children: [
-                  _buildSettingsTile(
-                    context: context,
-                    icon: Icons.payments_outlined,
-                    title: 'BioPay Home',
-                    onTap: () => context.push('/biopay'),
-                  ),
-                  _buildSettingsTile(
-                    context: context,
-                    icon: Icons.face_retouching_natural_rounded,
-                    title: 'Face ID & Enrollment',
-                    onTap: () => context.push('/biopay/manage'),
-                  ),
-                  _buildSettingsTile(
-                    context: context,
-                    icon: Icons.qr_code_rounded,
-                    title: 'QR Receive & Pay',
-                    onTap: () => context.push('/biopay/qr'),
-                  ),
-                  _buildSettingsTile(
-                    context: context,
-                    icon: Icons.nfc_rounded,
-                    title: 'NFC Receive & Pay',
-                    onTap: () => context.push('/biopay/nfc'),
-                  ),
+                  if (hasBiopayRoutes)
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.payments_outlined,
+                      title: 'BioPay Home',
+                      onTap: () => context.push('/biopay'),
+                    ),
+                  if (hasBiopayRoutes)
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.face_retouching_natural_rounded,
+                      title: 'Face ID & Enrollment',
+                      onTap: () => context.push('/biopay/profile'),
+                    ),
+                  if (hasBiopayRoutes)
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.qr_code_rounded,
+                      title: 'QR Receive & Pay',
+                      onTap: () => context.push('/biopay/qr'),
+                    ),
+                  if (hasBiopayRoutes)
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.nfc_rounded,
+                      title: 'NFC Receive & Pay',
+                      onTap: () => context.push('/biopay/nfc'),
+                    ),
                   _buildSettingsTile(
                     context: context,
                     icon: Icons.lock_outline,
@@ -250,5 +255,14 @@ class SettingsScreen extends ConsumerWidget {
       trailing: Icon(Icons.chevron_right, color: ColorTokens.onSurfaceVariant),
       onTap: onTap,
     );
+  }
+
+  bool _hasRoute(BuildContext context, String routeName) {
+    try {
+      GoRouter.of(context).namedLocation(routeName);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 }

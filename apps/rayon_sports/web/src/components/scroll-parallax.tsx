@@ -29,7 +29,6 @@ export function ScrollParallax({
     }
 
     let animationFrameId: number;
-    let initialTop = 0;
 
     const onScroll = () => {
       if (!containerRef.current) return;
@@ -54,7 +53,6 @@ export function ScrollParallax({
     
     // Initial calculation setup
     if (containerRef.current) {
-      initialTop = window.scrollY + containerRef.current.getBoundingClientRect().top;
       onScroll();
     }
 

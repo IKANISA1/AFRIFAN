@@ -63,7 +63,9 @@ class FanMembership extends Equatable {
     return FanMembership(
       id: jh.asStringOrNull(json['id']) ?? '',
       userId: jh.asStringOrNull(json['user_id']) ?? '',
-      partnerId: jh.asStringOrNull(json['partner_id']) ?? '',
+      partnerId: jh.asStringOrNull(json['partner_id']) ??
+          jh.asStringOrNull(json['club_id']) ??
+          '',
       displayName: jh.asStringOrNull(json['display_name']) ?? 'Fan',
       tier: tier,
       points: points,
@@ -163,7 +165,9 @@ class FanClub extends Equatable {
   factory FanClub.fromJson(Map<String, dynamic> json) {
     return FanClub(
       id: jh.asStringOrNull(json['id']) ?? '',
-      partnerId: jh.asStringOrNull(json['partner_id']) ?? '',
+      partnerId: jh.asStringOrNull(json['partner_id']) ??
+          jh.asStringOrNull(json['club_id']) ??
+          '',
       name: jh.asStringOrNull(json['name']) ?? '',
       region: jh.asStringOrNull(json['region']) ?? '',
       description: jh.asStringOrNull(json['description']) ?? '',

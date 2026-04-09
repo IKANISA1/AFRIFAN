@@ -37,7 +37,7 @@ export function PersonalizedFeed({ supporterName, tier }: PersonalizedFeedProps)
       description: isVip 
         ? "Your Gold tier unlocks priority lounge access for the next match."
         : "Matches like this sell out fast. Grab your general admission ticket now.",
-      href: "/app/tickets",
+      href: "/tickets",
       accent: "text-emerald-400",
       bg: "bg-emerald-400/10",
     },

@@ -7,14 +7,19 @@ class FirebaseBootstrapService {
   FirebaseBootstrapService._();
 
   static bool _didAttemptInitialization = false;
+  static bool get isInitialized => Firebase.apps.isNotEmpty;
 
   /// Initializes the default Firebase app if native configuration is present.
   ///
   /// This is intentionally best-effort so AFRICLUB can still boot on flavors
   /// that have not received Firebase configuration yet.
-  static Future<void> initialize({FirebaseOptions? options}) async {
-    if (Firebase.apps.isNotEmpty || _didAttemptInitialization) {
-      return;
+  static Future<bool> initialize({FirebaseOptions? options}) async {
+    if (Firebase.apps.isNotEmpty) {
+      return true;
+    }
+
+    if (_didAttemptInitialization) {
+      return Firebase.apps.isNotEmpty;
     }
 
     _didAttemptInitialization = true;
@@ -29,5 +34,7 @@ class FirebaseBootstrapService {
     } catch (error) {
       debugPrint('[Firebase] Initialization skipped: $error');
     }
+
+    return Firebase.apps.isNotEmpty;
   }
 }

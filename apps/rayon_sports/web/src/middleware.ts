@@ -1,10 +1,12 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import {
+  adminClubScopeCookieName,
+  getRequestedAdminClubId,
+} from "@/lib/admin-club-scope";
+import {
   isAdminHostname,
-  isFansHostname,
   mapAdminSubdomainPath,
-  mapFansSubdomainPath,
   resolveRoutingHostname,
   shouldBypassSubdomainRewrite,
 } from "@/lib/host-routing";
@@ -20,42 +22,47 @@ export function middleware(request: NextRequest) {
     request.nextUrl.host,
     request.nextUrl.hostname,
   );
-
-  if (!isAdminHostname(hostname) && !isFansHostname(hostname)) {
-    return NextResponse.next();
-  }
-
   const { pathname } = request.nextUrl;
+  const isAdminRequest =
+    isAdminHostname(hostname) ||
+    pathname === "/admin" ||
+    pathname.startsWith("/admin/") ||
+    pathname.startsWith("/api/admin/");
+  const requestedAdminClubId = isAdminRequest
+    ? getRequestedAdminClubId(request.nextUrl.searchParams)
+    : null;
+
+  const applyAdminScopeCookie = (response: NextResponse) => {
+    if (requestedAdminClubId == null) {
+      return response;
+    }
+
+    response.cookies.set({
+      name: adminClubScopeCookieName,
+      value: requestedAdminClubId,
+      path: "/",
+      sameSite: "lax",
+      secure: request.nextUrl.protocol === "https:",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+    return response;
+  };
+
+  if (!isAdminHostname(hostname)) {
+    return applyAdminScopeCookie(NextResponse.next());
+  }
+
   if (shouldBypassSubdomainRewrite(pathname)) {
-    return NextResponse.next();
+    return applyAdminScopeCookie(NextResponse.next());
   }
 
-  if (isFansHostname(hostname) && pathname === "/") {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/home";
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  if (isFansHostname(hostname) && pathname === "/app") {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/home";
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  if (
-    (isAdminHostname(hostname) &&
-      (pathname === "/admin" || pathname.startsWith("/admin/"))) ||
-    (isFansHostname(hostname) &&
-      (pathname === "/app" || pathname.startsWith("/app/")))
-  ) {
-    return NextResponse.next();
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    return applyAdminScopeCookie(NextResponse.next());
   }
 
   const rewriteUrl = request.nextUrl.clone();
-  rewriteUrl.pathname = isAdminHostname(hostname)
-    ? mapAdminSubdomainPath(pathname)
-    : mapFansSubdomainPath(pathname);
-  return NextResponse.rewrite(rewriteUrl);
+  rewriteUrl.pathname = mapAdminSubdomainPath(pathname);
+  return applyAdminScopeCookie(NextResponse.rewrite(rewriteUrl));
 }
 
 export const config = {

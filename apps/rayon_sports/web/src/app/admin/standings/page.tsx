@@ -6,6 +6,7 @@ import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { SectionHeading } from "@/components/section-heading";
+import { siteConfig } from "@/lib/config";
 import {
   deleteAdminStandingRow,
   getAdminStandings,
@@ -71,10 +72,8 @@ export default function AdminStandingsPage() {
     }
   }
 
-  const rayon = rows.find(
-    (row) =>
-      row.club.toLowerCase().includes("rayon") ||
-      row.clubSlug === "rayon_sports_rw",
+  const focusRow = rows.find(
+    (row) => row.clubSlug === siteConfig.defaultClubSlug,
   );
 
   return (
@@ -92,13 +91,13 @@ export default function AdminStandingsPage() {
           icon={Trophy}
         />
         <AdminStateCard
-          label="Rayon position"
-          value={loading ? "..." : rayon ? `#${rayon.position}` : "-"}
+          label="Club position"
+          value={loading ? "..." : focusRow ? `#${focusRow.position}` : "-"}
           helper="League position."
         />
         <AdminStateCard
-          label="Rayon points"
-          value={loading ? "..." : rayon ? rayon.points.toString() : "-"}
+          label="Club points"
+          value={loading ? "..." : focusRow ? focusRow.points.toString() : "-"}
           helper="Points tally."
         />
       </div>

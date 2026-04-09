@@ -9,7 +9,7 @@ import { ScorePrediction } from "@/components/engagement/score-prediction";
 import { MatchLineups } from "@/components/engagement/match-lineups";
 import { NotificationOptInCard } from "@/components/pwa/notification-opt-in-card";
 import { ShareActionButton } from "@/components/pwa/share-action-button";
-import { getMatchById, getMatches } from "@/lib/data/public";
+import { getClubProfile, getMatchById, getMatches } from "@/lib/data/public";
 import { buildMatchJsonLd, buildPageMetadata } from "@/lib/metadata";
 import {
   formatCurrency,
@@ -43,7 +43,11 @@ export default async function FixtureDetailPage({
   params: Promise<{ matchId: string }>;
 }) {
   const { matchId } = await params;
-  const [match, matches] = await Promise.all([getMatchById(matchId), getMatches()]);
+  const [club, match, matches] = await Promise.all([
+    getClubProfile(),
+    getMatchById(matchId),
+    getMatches(),
+  ]);
 
   if (match == null) {
     notFound();
@@ -89,10 +93,10 @@ export default async function FixtureDetailPage({
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href="/app/tickets"
+                href="/supporters"
                 className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
               >
-                Purchase in fan portal
+                Continue in fan app
               </Link>
               <Link
                 href="/fixtures"
@@ -193,16 +197,16 @@ export default async function FixtureDetailPage({
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href="/app/tickets"
+                href="/supporters"
                 className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
               >
-                Purchase in fan portal
+                Continue in fan app
               </Link>
               <Link
-                href={`/app/live/${match.id}`}
+                href={`/fixtures/${match.id}`}
                 className="rounded-full border border-border-soft px-5 py-3 font-semibold text-white transition hover:bg-white/8"
               >
-                Open live center
+                Refresh match page
               </Link>
             </div>
           </div>
@@ -357,7 +361,12 @@ export default async function FixtureDetailPage({
               </div>
               <div className="grid gap-5">
                 {relatedMatches.map((relatedMatch) => (
-                  <MatchCard key={relatedMatch.id} match={relatedMatch} />
+                  <MatchCard
+                    key={relatedMatch.id}
+                    match={relatedMatch}
+                    clubName={club.shortName}
+                    clubLogoUrl={club.officialLogoUrl}
+                  />
                 ))}
               </div>
             </div>

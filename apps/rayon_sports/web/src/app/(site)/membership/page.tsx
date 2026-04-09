@@ -1,19 +1,24 @@
 import Link from "next/link";
 import { ShieldCheck, Ticket } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
-import { getMembershipPackages } from "@/lib/data/public";
+import { getClubProfile, getMembershipPackages } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 import { formatCurrency } from "@/lib/utils";
 
-export const metadata = buildPageMetadata({
-  title: "Rayon Sports membership",
-  description:
-    "Official Rayon Sports membership tiers with pricing, benefits, ticket priority, and supporter status across web and portal.",
-  path: "/membership",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: `${club.shortName} membership`,
+    description: `Official ${club.shortName} membership tiers with pricing, benefits, ticket priority, and supporter status across website and fan app.`,
+    path: "/membership",
+  });
+}
 
 export default async function MembershipPage() {
-  const packages = await getMembershipPackages();
+  const [club, packages] = await Promise.all([
+    getClubProfile(),
+    getMembershipPackages(),
+  ]);
   const paidPackages = packages.filter((membershipPackage) => membershipPackage.annualPrice > 0);
   const featureSet = Array.from(
     new Set(
@@ -26,14 +31,14 @@ export default async function MembershipPage() {
       <PageHero
         eyebrow="Membership"
         title="Membership built for matchday."
-        description="Compare every Rayon Sports membership tier, see the benefits clearly, and activate in the fan portal."
+        description={`Compare every ${club.shortName} membership tier, see the benefits clearly, and activate in the supporter app.`}
         actions={
           <>
             <Link
-              href="/app/membership"
+              href="/supporters"
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Activate in portal
+              Activate in fan app
             </Link>
             <Link
               href="/tickets"
@@ -125,7 +130,7 @@ export default async function MembershipPage() {
           </h2>
           <div className="mt-5 grid gap-4">
             {[
-              { icon: ShieldCheck, copy: "Membership keeps login, supporter status, and club access consistent across web and portal." },
+              { icon: ShieldCheck, copy: "Membership keeps login, supporter status, and club access consistent across the website and the fan app." },
               { icon: Ticket, copy: "Ticket priority is the clearest reason to move up a tier." },
             ].map(({ icon: Icon, copy }) => (
               <div
@@ -142,10 +147,10 @@ export default async function MembershipPage() {
             ))}
           </div>
           <Link
-            href="/app/membership"
+            href="/supporters"
             className="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-club-primary px-6 py-3 font-semibold text-white transition hover:bg-club-secondary"
           >
-            Activate membership in fan portal
+            Activate membership in fan app
           </Link>
         </div>
       </section>

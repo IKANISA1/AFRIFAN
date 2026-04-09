@@ -1,21 +1,25 @@
 import { buildPageMetadata } from "@/lib/metadata";
 import { SectionHeading } from "@/components/section-heading";
-import { getCmsContentBlock } from "@/lib/data/public";
+import { getClubProfile, getCmsContentBlock } from "@/lib/data/public";
 
-export const metadata = buildPageMetadata({
-  title: "Terms and conditions",
-  description:
-    "Terms for tickets, memberships, shop orders, and supporter activity across the Rayon Sports website and portal.",
-  path: "/terms",
-});
-
-const fallbackTerms =
-  "Ticketing, shop orders, memberships, and contribution records created through the website are part of the same Rayon Sports supporter platform used by the mobile app. Availability, pricing, and supporter eligibility remain subject to club policy and live operational status.";
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: "Terms and conditions",
+    description: `Terms for tickets, memberships, shop orders, and supporter activity across the ${club.shortName} website and fan app.`,
+    path: "/terms",
+  });
+}
 
 export default async function TermsPage() {
-  const cmsBlock = await getCmsContentBlock("terms");
+  const [club, cmsBlock] = await Promise.all([
+    getClubProfile(),
+    getCmsContentBlock("terms"),
+  ]);
+  const fallbackTerms =
+    `Ticketing, shop orders, memberships, and contribution records created through the website are part of the same ${club.shortName} supporter platform used by the mobile app. Availability, pricing, and supporter eligibility remain subject to club policy and live operational status.`;
   const content = cmsBlock?.body || fallbackTerms;
-  const title = cmsBlock?.title || "One supporter platform across web and portal.";
+  const title = cmsBlock?.title || "One supporter platform across web and mobile.";
 
   return (
     <div className="page-shell section-grid py-12">

@@ -1,6 +1,7 @@
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_sms_ledger/feat_sms_ledger.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -73,8 +74,23 @@ class AppStartupCoordinator {
   }
 
   Future<void> _initializeBackend(ClubConfig config) async {
-    await FirebaseBootstrapService.initialize(options: options.firebaseOptions);
-    await AppCheckService.initialize();
+    final firebaseReady = await FirebaseBootstrapService.initialize(
+      options: options.firebaseOptions,
+    );
+    final appCheckReady = await AppCheckService.initialize();
+
+    if (kReleaseMode && config.hasBiopay) {
+      if (!firebaseReady) {
+        throw StateError(
+          'BioPay-enabled release builds require Firebase initialization.',
+        );
+      }
+      if (!appCheckReady) {
+        throw StateError(
+          'BioPay-enabled release builds require Firebase App Check.',
+        );
+      }
+    }
 
     await SupabaseClientFactory.initialize(
       supabaseUrl: config.supabaseUrl,

@@ -32,7 +32,11 @@ function mapAdminSquadPlayer(row: Record<string, unknown>): AdminSquadPlayer {
     role: safeString(row.role) || safeString(row.position) || safeString(row.primary_position, "Player"),
     number: safeNumber(row.number, safeNumber(row.shirt_number, 0)),
     nationality: safeString(row.nationality, "Rwanda"),
-    bio: safeString(row.bio) || safeString(row.description) || safeString(row.player_summary) || "Rayon Sports first-team squad member.",
+    bio:
+      safeString(row.bio) ||
+      safeString(row.description) ||
+      safeString(row.player_summary) ||
+      "First-team squad member.",
     imageUrl: safeString(row.image_url) || safeString(row.photo_url) || null,
     isActive: row.is_active !== false,
     createdAt: safeString(row.created_at, new Date().toISOString()),

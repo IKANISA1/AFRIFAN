@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Menu, Search, User } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { siteConfig } from "@/lib/config";
+import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
 
 const MobileNavDrawer = dynamic(
@@ -55,11 +55,11 @@ export function SiteHeaderControls({ club }: SiteHeaderControlsProps) {
           </span>
         </button>
         <Link
-          href={siteConfig.fansUrl}
+          href={resolveFanAppHref()}
           className="hidden min-h-11 items-center gap-2 rounded-full bg-club-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-club-primary-light cta-glow focus-ring md:inline-flex"
         >
           <User size={15} />
-          Fan portal
+          Fan app
         </Link>
         <button
           type="button"

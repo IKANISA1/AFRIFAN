@@ -18,11 +18,28 @@ import {
   normalizeAdminPhone,
   formatAdminPhoneForDisplay,
 } from "@/lib/admin-auth";
+import {
+  adminClubScopeCookieName,
+  getRequestedAdminClubId,
+  readCookieValue,
+} from "@/lib/admin-club-scope";
 import { emptyAdminAccess, resolveAdminAccess } from "@/lib/data/admin/access";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 import type { AdminAccess } from "@/lib/types";
 
 const pendingPhoneStorageKey = "gikundiro.admin.pending-whatsapp";
+
+function getRequestedClubIdFromLocation() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const url = new URL(window.location.href);
+  return getRequestedAdminClubId(
+    url.searchParams,
+    readCookieValue(document.cookie, adminClubScopeCookieName),
+  );
+}
 
 interface AdminPortalContextValue {
   client: SupabaseClient | null;
@@ -136,7 +153,11 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
       const nextUser = nextSession?.user ?? null;
       setSession(nextSession);
       setUser(nextUser);
-      setAccess(await resolveAdminAccess(client, nextUser));
+      setAccess(
+        await resolveAdminAccess(client, nextUser, {
+          requestedClubId: getRequestedClubIdFromLocation(),
+        }),
+      );
       if (nextUser != null) {
         syncPendingPhone(null);
       }

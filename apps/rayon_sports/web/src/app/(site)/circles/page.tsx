@@ -2,19 +2,22 @@ import Link from "next/link";
 import { ArrowRight, ShieldCheck, Users } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { ProgressBar } from "@/components/progress-bar";
-import { getContributionGroups, getFanClubs } from "@/lib/data/public";
+import { getClubProfile, getContributionGroups, getFanClubs } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 import { formatCompactNumber, formatCurrency } from "@/lib/utils";
 
-export const metadata = buildPageMetadata({
-  title: "Rayon Sports supporter circles",
-  description:
-    "Official Rayon Sports supporter circles for tifos, away travel, club campaigns, and community fundraising.",
-  path: "/circles",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: `${club.shortName} supporter circles`,
+    description: `Official ${club.shortName} supporter circles for tifos, away travel, club campaigns, and community fundraising.`,
+    path: "/circles",
+  });
+}
 
 export default async function CirclesPage() {
-  const [groups, fanClubs] = await Promise.all([
+  const [club, groups, fanClubs] = await Promise.all([
+    getClubProfile(),
     getContributionGroups(),
     getFanClubs(),
   ]);
@@ -27,14 +30,14 @@ export default async function CirclesPage() {
       <PageHero
         eyebrow="Support Circles"
         title="Supporter circles and live campaigns."
-        description="Back tifos, away travel, and club projects through official Rayon Sports supporter circles."
+        description={`Back tifos, away travel, and club projects through official ${club.shortName} supporter circles.`}
         actions={
           <>
             <Link
-              href="/app/contributions"
+              href="/supporters"
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Join in portal
+              Join in fan app
             </Link>
             <Link
               href="/fan-clubs"
@@ -107,7 +110,7 @@ export default async function CirclesPage() {
                     Invite
                   </p>
                   <p className="mt-2 text-sm font-semibold text-white">
-                    {group.inviteCode ?? "Portal"}
+                    {group.inviteCode ?? "Fan app"}
                   </p>
                 </div>
               </div>
@@ -135,7 +138,7 @@ export default async function CirclesPage() {
               {[
                 "Circles turn supporter energy into visible collective action.",
                 "Live funding progress keeps every campaign legible.",
-                "The public page tells the story and the portal handles the contribution.",
+                "The public page tells the story and the fan app handles the contribution.",
               ].map((point) => (
                 <div
                   key={point}
@@ -146,7 +149,7 @@ export default async function CirclesPage() {
               ))}
             </div>
             <Link
-              href="/app/contributions"
+              href="/supporters"
               className="mt-6 inline-flex items-center gap-2 rounded-full bg-club-accent px-5 py-3 font-semibold text-slate-950 transition hover:brightness-110"
             >
               Contribute now <ArrowRight size={18} />

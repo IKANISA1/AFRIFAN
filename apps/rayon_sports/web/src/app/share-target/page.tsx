@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { siteConfig } from "@/lib/config";
+import { resolveFanAppHref, siteConfig } from "@/lib/config";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata = buildPageMetadata({
-  title: "Shared into Gikundiro",
-  description: "Review shared content and continue inside the Rayon Sports PWA.",
+  title: `Shared into ${siteConfig.shortTitle}`,
+  description: "Review shared content and continue inside the supporter app flow.",
   path: "/share-target",
   robots: {
     index: false,
@@ -37,14 +37,14 @@ export default async function ShareTargetPage({
     <section className="page-shell section-grid py-12">
       <div className="glass-panel-elevated rounded-[34px] p-6 sm:p-8">
         <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-          Shared into Gikundiro
+          Shared into {siteConfig.shortTitle}
         </p>
         <h1 className="mt-4 font-display text-5xl font-bold uppercase leading-none text-white">
           Bring shared content into the club flow.
         </h1>
         <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300 sm:text-base">
-          Gikundiro can receive shared text and links from the system share sheet,
-          then route you into search, the fan portal, or matchday actions.
+          {siteConfig.shortTitle} can receive shared text and links from the system share sheet,
+          then route you into search, the fan app, or matchday actions.
         </p>
 
         <div className="mt-6 grid gap-4">
@@ -79,13 +79,13 @@ export default async function ShareTargetPage({
             href={query ? `/search?q=${encodeURIComponent(query)}` : "/search"}
             className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
           >
-            Search inside Gikundiro
+            Search the official site
           </Link>
           <Link
-            href={siteConfig.fansUrl}
+            href={resolveFanAppHref()}
             className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
           >
-            Open fan portal
+            Open fan app
           </Link>
           {url ? (
             <a

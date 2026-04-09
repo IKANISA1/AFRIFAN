@@ -2,8 +2,8 @@
  * Playwright screenshot capture for PWA manifest install images.
  *
  * Captures:
- *   1. fans-home.png    — /app/home on mobile (1080×2340)
- *   2. fans-tickets.png — /app/tickets on mobile (1080×2340)
+ *   1. fans-home.png    — /supporters on mobile (1080×2340)
+ *   2. fans-tickets.png — /tickets on mobile (1080×2340)
  *   3. admin-matches-rayon.png — /admin/matches on desktop (1024×1024)
  *
  * Usage:
@@ -13,29 +13,25 @@
  *       The script overrides viewport per-test where needed.
  */
 import path from "node:path";
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
 
 const SCREENSHOTS_DIR = path.join(process.cwd(), "public", "screenshots");
 
-/* ── Fan portal: Home ─────────────────────────────────────── */
+/* ── Supporters: Landing ───────────────────────────────────── */
 
-test("capture fans home screenshot", async ({ page }) => {
+test("capture supporters home screenshot", async ({ page }) => {
   // Mobile viewport (Android flagship)
   await page.setViewportSize({ width: 412, height: 915 });
 
-  await page.goto("/app/home", {
+  await page.goto("/supporters", {
     waitUntil: "domcontentloaded",
     timeout: 30_000,
   });
 
-  // Wait for the portal to bootstrap (fan portal provider is async)
-  await page.waitForTimeout(3_000);
-
-  // Wait for meaningful content — the home heading or matchday content
-  await page.waitForSelector("text=/matchday|welcome|gikundiro/i", {
+  await page.waitForSelector("text=/supporters|fan app|mobile/i", {
     timeout: 15_000,
   }).catch(() => {
-    // If no specific text loads, the skeleton is fine — capture it anyway
+    // Capture a deterministic fallback even if content streams in slowly
   });
 
   // Additional settle time for animations
@@ -48,18 +44,15 @@ test("capture fans home screenshot", async ({ page }) => {
   });
 });
 
-/* ── Fan portal: Tickets ──────────────────────────────────── */
+/* ── Tickets: Public site ─────────────────────────────────── */
 
 test("capture fans tickets screenshot", async ({ page }) => {
   await page.setViewportSize({ width: 412, height: 915 });
 
-  await page.goto("/app/tickets", {
+  await page.goto("/tickets", {
     waitUntil: "domcontentloaded",
     timeout: 30_000,
   });
-
-  // Wait for the portal to bootstrap
-  await page.waitForTimeout(3_000);
 
   // Wait for ticket content
   await page.waitForSelector("text=/matchday tickets|checkout|reserve/i", {

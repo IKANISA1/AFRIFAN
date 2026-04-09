@@ -1,19 +1,23 @@
 import { buildPageMetadata } from "@/lib/metadata";
 import { SectionHeading } from "@/components/section-heading";
-import { getCmsContentBlock } from "@/lib/data/public";
+import { getClubProfile, getCmsContentBlock } from "@/lib/data/public";
 
-export const metadata = buildPageMetadata({
-  title: "Privacy policy",
-  description:
-    "How Rayon Sports handles supporter data across the public website and fan portal.",
-  path: "/privacy",
-});
-
-const fallbackPrivacy =
-  "The Gikundiro web experience stores only the minimum supporter data required to run portal services such as membership, tickets, shop orders, and support circles. Sensitive payment and private contact details remain segmented from public profile data.";
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: "Privacy policy",
+    description: `How ${club.shortName} handles supporter data across the public website and fan app.`,
+    path: "/privacy",
+  });
+}
 
 export default async function PrivacyPage() {
-  const cmsBlock = await getCmsContentBlock("privacy_policy");
+  const [club, cmsBlock] = await Promise.all([
+    getClubProfile(),
+    getCmsContentBlock("privacy_policy"),
+  ]);
+  const fallbackPrivacy =
+    `The ${club.shortName} web experience stores only the minimum supporter data required to run website and fan app services such as membership, tickets, shop orders, and support circles. Sensitive payment and private contact details remain segmented from public profile data.`;
   const content = cmsBlock?.body || fallbackPrivacy;
   const title = cmsBlock?.title || "Supporter data with clear boundaries.";
 

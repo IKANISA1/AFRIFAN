@@ -149,7 +149,7 @@ export function StandingEditorForm({
           onChange={(event) =>
             setForm((current) => ({ ...current, clubSlug: event.target.value }))
           }
-          placeholder="rayon_sports_rw"
+          placeholder="club_slug"
           className="dashboard-input"
         />
       </label>

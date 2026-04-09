@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Camera, Globe, LucideIcon, Music2, Send } from "lucide-react";
 import { footerNavigationGroups } from "@/lib/content";
 import { getClubProfile } from "@/lib/data/public";
-import { siteConfig } from "@/lib/config";
+import { resolveFanAppHref } from "@/lib/config";
 
 const socialIconMap: Record<string, LucideIcon> = {
   facebook: Globe,
@@ -44,23 +44,23 @@ export async function SiteFooter() {
                   {club.shortName}
                 </p>
                 <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-club-accent">
-                  Gikundiro — the beloved
+                  {club.nickname || club.clubName}
                 </p>
               </div>
             </div>
 
             <p className="max-w-md text-sm leading-7 text-slate-300">
-              Official Rayon Sports coverage for fixtures, tickets, membership,
-              club news, supporter circles, and matchday access.
+              Official {club.clubName} coverage for fixtures, tickets,
+              membership, club news, supporter circles, and matchday access.
             </p>
 
             <div className="flex flex-wrap gap-3">
               <Link
-                href={siteConfig.fansUrl}
+                href={resolveFanAppHref()}
                 prefetch={false}
                 className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
               >
-                Open fan portal
+                Open fan app
               </Link>
               <Link
                 href="/tickets"

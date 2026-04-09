@@ -1,11 +1,12 @@
+import { fallbackClubProfile } from "@/lib/content";
 import type { AdminMatchItem } from "@/lib/types";
 
 export const emptyMatchForm = {
   id: "",
-  homeTeam: "Rayon Sports",
+  homeTeam: fallbackClubProfile.shortName,
   awayTeam: "",
-  competition: "Rwanda Premier League",
-  venue: "Kigali Pele Stadium",
+  competition: fallbackClubProfile.league,
+  venue: "Club Stadium",
   matchDate: new Date().toISOString().slice(0, 10),
   kickoffTime: "18:00",
   isOnSale: false,

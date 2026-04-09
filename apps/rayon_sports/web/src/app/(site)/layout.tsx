@@ -83,7 +83,7 @@ export default function SiteLayout({
       <SiteFooter />
       <FocusOnRouteChange targetId="main-content" />
       <FloatingSearchButton />
-      <AppBottomNav surface="site" />
+      <AppBottomNav />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { Trash2 } from "lucide-react";
 import { Skeleton } from "@/components/skeleton";
+import { siteConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import type { AdminStandingRow } from "@/lib/types";
 
@@ -57,16 +58,15 @@ export function StandingList({
           </thead>
           <tbody>
             {rows.map((row) => {
-              const isRayon =
-                row.club.toLowerCase().includes("rayon") ||
-                row.clubSlug === "rayon_sports_rw";
+              const isHighlightedClub =
+                row.clubSlug === siteConfig.defaultClubSlug;
 
               return (
                 <tr
                   key={row.id}
                   className={cn(
                     "border-t border-white/6",
-                    isRayon && "bg-club-primary/15",
+                    isHighlightedClub && "bg-club-primary/15",
                   )}
                 >
                   <td className="px-4 py-3 text-center font-mono text-xs text-slate-400">

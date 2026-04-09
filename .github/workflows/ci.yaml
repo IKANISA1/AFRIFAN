@@ -33,11 +33,17 @@ jobs:
       - name: Bootstrap workspace
         run: melos bootstrap
 
+      - name: Validate Rayon release contract
+        run: bash tools/scripts/validate_club_release.sh rayon_sports
+
       - name: Analyze (fatal infos + warnings)
         run: melos exec -- dart analyze --fatal-infos --fatal-warnings
 
       - name: Run unit & widget tests
         run: melos run test_all
+
+      - name: Run Rayon integration smoke tests
+        run: flutter test apps/rayon_sports/integration_test
 
       - name: Validate brand assets exist
         run: |
@@ -61,6 +67,31 @@ jobs:
             echo "❌ Service role key reference found in source"
             exit 1
           fi
+
+          TRACKED_SIGNING_FILES=$(git ls-files \
+            'apps/*/android/*.jks' \
+            'apps/*/android/*.keystore' \
+            'apps/*/android/keystore.properties' \
+            'apps/*/android/key.properties' \
+            'apps/*/android/app/*.jks' \
+            'apps/*/android/app/*.keystore')
+          if [ -n "$TRACKED_SIGNING_FILES" ]; then
+            echo "❌ Android signing material must not be committed:"
+            echo "$TRACKED_SIGNING_FILES"
+            exit 1
+          fi
+
+          TRACKED_RELEASE_SECRETS=$(git ls-files \
+            'apps/*/android/fastlane/*service-account*.json' \
+            'apps/*/android/fastlane/*.p8' \
+            'apps/*/ios/**/*.p8' \
+            'apps/*/ios/**/*.mobileprovision')
+          if [ -n "$TRACKED_RELEASE_SECRETS" ]; then
+            echo "❌ Mobile release credentials must not be committed:"
+            echo "$TRACKED_RELEASE_SECRETS"
+            exit 1
+          fi
+
           echo "✅ No service role keys found"
 
   # ──────────────────────────────────────────────

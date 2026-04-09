@@ -3,11 +3,12 @@ import { ArrowRight } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { SectionHeading } from "@/components/section-heading";
 import { clubHistoryMoments } from "@/lib/content";
-import { siteConfig } from "@/lib/config";
-import { getProducts, getCmsContent } from "@/lib/data/public";
+import { resolveFanAppHref } from "@/lib/config";
+import { getClubProfile, getProducts, getCmsContent } from "@/lib/data/public";
 
 export async function ShopAndIdentityBlock() {
-  const [products, cmsHistory] = await Promise.all([
+  const [club, products, cmsHistory] = await Promise.all([
+    getClubProfile(),
     getProducts(),
     getCmsContent("club_history"),
   ]);
@@ -46,7 +47,7 @@ export async function ShopAndIdentityBlock() {
         <div className="glass-panel rounded-[34px] p-6">
           <SectionHeading
             eyebrow="Club identity"
-            title="Gikundiro — the beloved."
+            title={`${club.nickname || club.shortName} — club identity.`}
           />
           <div className="mt-6 grid gap-4">
             {moments.map((moment) => (
@@ -66,16 +67,16 @@ export async function ShopAndIdentityBlock() {
         </div>
         <div className="glass-panel rounded-[34px] p-6">
           <SectionHeading
-            eyebrow="Fan portal"
+            eyebrow="Fan app"
             title="Your supporter account."
           />
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href={siteConfig.fansUrl}
+              href={resolveFanAppHref()}
               prefetch={false}
               className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Continue to portal
+              Continue to fan app
             </Link>
             <Link
               href="/history"

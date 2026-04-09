@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { siteConfig } from "@/lib/config";
+import { resolveFanAppHref } from "@/lib/config";
 
 export default function SiteError({
   error,
@@ -21,7 +21,7 @@ export default function SiteError({
         </h1>
         <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300">
           Something failed while loading this route. Navigation, retry, and
-          portal access stay available here instead of dropping the supporter
+          fan app access stay available here instead of dropping the supporter
           onto a blank page.
         </p>
         {error.message ? (
@@ -44,10 +44,10 @@ export default function SiteError({
             Return home
           </Link>
           <Link
-            href={siteConfig.fansUrl}
+            href={resolveFanAppHref()}
             className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
           >
-            Open portal
+            Open fan app
           </Link>
         </div>
       </div>

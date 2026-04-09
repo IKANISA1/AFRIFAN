@@ -12,8 +12,8 @@ The app collects and processes user data through Supabase (backend) and local st
 | Data Type | Collected | Shared | Purpose | Optional |
 |-----------|-----------|--------|---------|----------|
 | Name | Yes | No | Account / Membership | Yes |
-| Email address | Yes | No | Account authentication | Yes |
-| Phone number | Yes | No | MoMo payments, SMS ledger | Yes |
+| Email address | No | No | Not collected in the shipped mobile auth flow | N/A |
+| Phone number | Yes | No | Optional MoMo payments, SMS ledger | Yes |
 
 ### 2. Financial Info
 | Data Type | Collected | Shared | Purpose | Optional |
@@ -40,8 +40,8 @@ The app collects and processes user data through Supabase (backend) and local st
 
 ## Data Usage Purposes
 
-- **App functionality**: Core features require personal info and purchase history
-- **Account management**: Email/phone for authentication
+- **App functionality**: Core features rely on anonymous authentication, optional profile data, and purchase history
+- **Account management**: Anonymous account/session continuity and optional MoMo profile linkage
 - **Notifications**: Optional alert delivery for configured releases
 - **Fraud prevention / security**: Device/app attestation for Firebase App Check, face data for BioPay
 

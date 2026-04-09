@@ -47,14 +47,14 @@ test("public home page has no critical a11y violations", async ({
 });
 
 /* ────────────────────────────────────────────────────────── */
-/*  Fan portal accessibility                                  */
+/*  Supporter app handoff accessibility                       */
 /* ────────────────────────────────────────────────────────── */
 
-test("fan portal has no critical a11y violations", async ({
+test("supporters handoff page has no critical a11y violations", async ({
   page,
   browserName,
 }) => {
-  await page.goto("/app", { waitUntil: "domcontentloaded" });
+  await page.goto("/supporters", { waitUntil: "domcontentloaded" });
 
   const builder = new AxeBuilder({ page }).withTags([
     "wcag2a",

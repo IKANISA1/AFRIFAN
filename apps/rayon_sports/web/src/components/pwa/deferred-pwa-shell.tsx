@@ -34,7 +34,7 @@ function scheduleDeferred(callback: () => void) {
 export function DeferredPwaShell() {
   const pathname = usePathname();
   const isPrioritySurface =
-    pathname.startsWith("/app") || pathname.startsWith("/admin");
+    pathname.startsWith("/supporters") || pathname.startsWith("/admin");
   const [readyPathname, setReadyPathname] = useState<string | null>(
     isPrioritySurface ? pathname : null,
   );

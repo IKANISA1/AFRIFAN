@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { siteConfig } from "@/lib/config";
+import { resolveFanAppHref } from "@/lib/config";
 
 export default function NotFound() {
   return (
@@ -13,7 +13,7 @@ export default function NotFound() {
         </h1>
         <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300">
           The supporter journey should remain clear even when a route is missing.
-          Use the links below to get back to a live public page or the fan portal.
+          Use the links below to get back to a live public page or the fan app.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
@@ -29,10 +29,10 @@ export default function NotFound() {
             Fixtures
           </Link>
           <Link
-            href={siteConfig.fansUrl}
+            href={resolveFanAppHref()}
             className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
           >
-            Fan portal
+            Fan app
           </Link>
         </div>
       </div>

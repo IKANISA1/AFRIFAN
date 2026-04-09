@@ -1,18 +1,23 @@
 import Link from "next/link";
 import { ArrowRight, Trophy } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
-import { getStandings } from "@/lib/data/public";
+import { getClubProfile, getStandings } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 
-export const metadata = buildPageMetadata({
-  title: "Rwanda Premier League standings",
-  description:
-    "Official league table with Rayon Sports position, points, goal difference, and recent form.",
-  path: "/standings",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: `${club.league} standings`,
+    description: `Official league table with ${club.shortName} position, points, goal difference, and recent form.`,
+    path: "/standings",
+  });
+}
 
 export default async function StandingsPage() {
-  const standings = await getStandings();
+  const [club, standings] = await Promise.all([
+    getClubProfile(),
+    getStandings(),
+  ]);
   const highlighted = standings.find((row) => row.highlight) ?? standings[0] ?? null;
 
   return (
@@ -20,7 +25,7 @@ export default async function StandingsPage() {
       <PageHero
         eyebrow="League table"
         title="League table and form."
-        description="Track Rayon Sports in the table with full context around the clubs above and below."
+        description={`Track ${club.shortName} in the table with full context around the clubs above and below.`}
         actions={
           <>
             <Link
@@ -39,7 +44,7 @@ export default async function StandingsPage() {
         }
         stats={[
           { label: "Clubs shown", value: standings.length.toString() },
-          { label: "Rayon position", value: highlighted ? `#${highlighted.position}` : "-" },
+          { label: `${club.shortName} position`, value: highlighted ? `#${highlighted.position}` : "-" },
           { label: "Points", value: highlighted ? highlighted.points.toString() : "-" },
         ]}
       />
@@ -100,7 +105,7 @@ export default async function StandingsPage() {
 
         <div className="glass-panel rounded-[34px] p-6">
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-            Rayon Sports
+            {club.shortName}
           </p>
           <h2 className="mt-3 font-display text-4xl font-bold text-white">
             Position in the race
@@ -138,7 +143,7 @@ export default async function StandingsPage() {
           <div className="mt-5 grid gap-4">
             {[
               "The full table keeps the race readable.",
-              "Rayon Sports stays highlighted in every standings view.",
+              `${club.shortName} stays highlighted in every standings view.`,
               "Recent form shows momentum without sending the supporter elsewhere.",
             ].map((point) => (
               <div

@@ -1,13 +1,14 @@
 import type { MetadataRoute } from "next";
 import { absoluteUrl } from "@/lib/config";
+import { getActiveClubReference } from "@/lib/club-context";
 import { fallbackNewsArticles, fallbackProducts, fallbackMatches } from "@/lib/content";
 import { getAdminSupabase } from "@/lib/supabase/admin";
-import { rayonClub } from "@/lib/config";
 
 /**
  * Dynamic sitemap — pulls live routes from DB, falls back to content.ts constants.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const activeClub = await getActiveClubReference();
   const staticRoutes = [
     "",
     "/news",
@@ -18,6 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/tickets",
     "/shop",
     "/membership",
+    "/supporters",
     "/circles",
     "/fan-clubs",
     "/history",
@@ -42,20 +44,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         client
           .from("news_articles")
           .select("id, published_at")
-          .eq("club_id", rayonClub.numericId)
+          .eq("club_id", activeClub.numericId)
           .eq("status", "published")
           .order("published_at", { ascending: false })
           .limit(50),
         client
           .from("shop_products")
           .select("id, updated_at")
-          .eq("club_id", rayonClub.numericId)
+          .eq("club_id", activeClub.numericId)
           .eq("is_active", true)
           .limit(50),
         client
           .from("matches")
           .select("id, match_date")
-          .eq("club_id", rayonClub.numericId)
+          .eq("club_id", activeClub.numericId)
           .order("match_date", { ascending: false })
           .limit(30),
       ]);

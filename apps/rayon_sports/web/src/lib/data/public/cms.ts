@@ -5,6 +5,7 @@
  * with graceful fallbacks when tables are empty.
  */
 import { cache } from "react";
+import { getActiveClubReference } from "@/lib/club-context";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import type { AppConfigEntry, CmsContent, HomeBanner } from "@/lib/types";
 import { safeString, toIdString } from "@/lib/utils";
@@ -50,16 +51,57 @@ function mapAppConfig(row: Record<string, unknown>): AppConfigEntry {
   };
 }
 
+async function getGlobalAppConfigRows() {
+  const client = getAdminSupabase();
+  if (client == null) {
+    return [] as AppConfigEntry[];
+  }
+
+  try {
+    const { data } = await client.from("app_config").select("*").limit(100);
+    if (!Array.isArray(data) || data.length === 0) {
+      return [];
+    }
+    return data.map((row) => mapAppConfig(row));
+  } catch {
+    return [];
+  }
+}
+
+async function getClubAppConfigRows(clubId: number) {
+  const client = getAdminSupabase();
+  if (client == null) {
+    return [] as AppConfigEntry[];
+  }
+
+  try {
+    const { data } = await client
+      .from("club_app_config")
+      .select("*")
+      .eq("club_id", clubId)
+      .limit(100);
+
+    if (!Array.isArray(data) || data.length === 0) {
+      return [];
+    }
+    return data.map((row) => mapAppConfig(row));
+  } catch {
+    return [];
+  }
+}
+
 // ─── Fetchers ────────────────────────────────────────────
 
 export const getHomeBanners = cache(async function getHomeBanners(): Promise<HomeBanner[]> {
   const client = getAdminSupabase();
+  const activeClub = await getActiveClubReference();
   if (client == null) return [];
 
   try {
     const { data } = await client
       .from("home_banners")
       .select("*")
+      .eq("club_id", activeClub.numericId)
       .eq("is_active", true)
       .order("sort_order", { ascending: true })
       .limit(10);
@@ -75,12 +117,14 @@ export const getCmsContent = cache(async function getCmsContent(
   contentType?: string,
 ): Promise<CmsContent[]> {
   const client = getAdminSupabase();
+  const activeClub = await getActiveClubReference();
   if (client == null) return [];
 
   try {
     let query = client
       .from("ai_content")
       .select("*")
+      .eq("club_id", activeClub.numericId)
       .eq("is_active", true)
       .order("sort_order", { ascending: true })
       .limit(50);
@@ -100,21 +144,20 @@ export const getCmsContent = cache(async function getCmsContent(
 export const getAppConfig = cache(async function getAppConfig(): Promise<
   Map<string, string>
 > {
-  const client = getAdminSupabase();
-  if (client == null) return new Map();
+  const activeClub = await getActiveClubReference();
+  const [globalEntries, clubEntries] = await Promise.all([
+    getGlobalAppConfigRows(),
+    getClubAppConfigRows(activeClub.numericId),
+  ]);
 
-  try {
-    const { data } = await client
-      .from("app_config")
-      .select("*")
-      .limit(100);
-
-    if (!data || data.length === 0) return new Map();
-    const mapped = data.map((row) => mapAppConfig(row));
-    return new Map(mapped.map((entry) => [entry.key, entry.value]));
-  } catch {
-    return new Map();
+  const merged = new Map<string, string>();
+  for (const entry of globalEntries) {
+    merged.set(entry.key, entry.value);
   }
+  for (const entry of clubEntries) {
+    merged.set(entry.key, entry.value);
+  }
+  return merged;
 });
 
 /**

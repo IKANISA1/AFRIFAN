@@ -20,7 +20,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// Restore the current session on app start.
   ///
   /// If a session exists, loads the profile from the server.
-  /// Falls back to creating a fresh anonymous session if restoration fails.
+  /// Preserves the current authenticated identity with a local fallback profile
+  /// if remote hydration fails.
   Future<void> restore() async {
     state = const AuthLoading();
 
@@ -33,7 +34,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
         state = const AuthUnauthenticated();
       }
     } catch (e) {
-      // Session exists but profile load failed — try anon sign-in
+      final fallback = await _repository.restoreSessionFallbackProfile();
+      if (fallback != null) {
+        final adminAccess = await _repository.resolveAdminAccess(fallback.id);
+        state = AuthAuthenticated(profile: fallback, workspace: adminAccess);
+        return;
+      }
       state = AuthError('Session restore failed', e);
     }
   }

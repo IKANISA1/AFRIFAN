@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { SkeletonCard } from "@/components/skeleton";
 import { buildPageMetadata } from "@/lib/metadata";
 import { AnimateOnScroll } from "@/components/animate-on-scroll";
+import { getClubProfile } from "@/lib/data/public";
 import { HeroBlock } from "./_sections/hero-block";
 import { StoriesBlock } from "./_sections/stories-block";
 import { CirclesAndMatchdayBlock } from "./_sections/circles-matchday-block";
@@ -10,11 +11,13 @@ import { MembershipAndStandingsBlock } from "./_sections/membership-standings-bl
 import { NewsBlock } from "./_sections/news-block";
 import { ShopAndIdentityBlock } from "./_sections/shop-identity-block";
 
-export const metadata = buildPageMetadata({
-  title: "Official Rayon Sports website",
-  description:
-    "Official Rayon Sports website for live fixtures, tickets, membership, supporter circles, club news, and matchday coverage.",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: `Official ${club.clubName} website`,
+    description: `Official ${club.clubName} website for live fixtures, tickets, membership, supporter circles, club news, and matchday coverage.`,
+  });
+}
 
 function SectionSkeleton({ cols = 3 }: { cols?: number }) {
   return (

@@ -2,49 +2,52 @@
  * Public club profile data.
  */
 import { cache } from "react";
-import { rayonClub } from "@/lib/config";
+import { getActiveClubReference } from "@/lib/club-context";
 import { fallbackClubProfile } from "@/lib/content";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import type { ClubProfile } from "@/lib/types";
 import { safeNumber, safeString } from "@/lib/utils";
 import { sanitizeMediaUrl } from "./helpers";
 
-function mapClubRow(row: Record<string, unknown>): ClubProfile {
+function mapClubRow(
+  row: Record<string, unknown>,
+  fallback: ClubProfile,
+): ClubProfile {
   return {
-    id: safeNumber(row.id, rayonClub.numericId),
-    clubName: safeString(row.club_name, fallbackClubProfile.clubName),
-    clubSlug: safeString(row.club_slug, fallbackClubProfile.clubSlug),
-    shortName: safeString(row.short_name, fallbackClubProfile.shortName),
+    id: safeNumber(row.id, fallback.id),
+    clubName: safeString(row.club_name, fallback.clubName),
+    clubSlug: safeString(row.club_slug, fallback.clubSlug),
+    shortName: safeString(row.short_name, fallback.shortName),
     nickname: safeString(
       row.nickname_brand_identity,
-      fallbackClubProfile.nickname,
+      fallback.nickname,
     ),
     countryCode: safeString(
       row.country_iso_code,
-      fallbackClubProfile.countryCode,
+      fallback.countryCode,
     ),
-    league: safeString(row.league, fallbackClubProfile.league),
-    region: safeString(row.region, fallbackClubProfile.region),
+    league: safeString(row.league, fallback.league),
+    region: safeString(row.region, fallback.region),
     currencyCode: safeString(
       row.currency_code,
-      fallbackClubProfile.currencyCode,
+      fallback.currencyCode,
     ),
     currencySymbol: safeString(
       row.currency_symbol,
-      fallbackClubProfile.currencySymbol,
+      fallback.currencySymbol,
     ),
     defaultLanguage: safeString(
       row.default_language,
-      fallbackClubProfile.defaultLanguage,
+      fallback.defaultLanguage,
     ),
     supportedLanguages: Array.isArray(row.supported_languages)
       ? row.supported_languages
           .map((entry) => safeString(entry))
           .filter(Boolean)
-      : fallbackClubProfile.supportedLanguages,
+      : fallback.supportedLanguages,
     officialContact: safeString(
       row.official_contact,
-      fallbackClubProfile.officialContact,
+      fallback.officialContact,
     ),
     facebookUrl: safeString(row.facebook_url) || null,
     xUrl: safeString(row.x_twitter_url) || null,
@@ -52,40 +55,48 @@ function mapClubRow(row: Record<string, unknown>): ClubProfile {
     tiktokUrl: safeString(row.tiktok_url) || null,
     officialLogoUrl: sanitizeMediaUrl(
       row.official_logo_url,
-      fallbackClubProfile.officialLogoUrl ?? "/media/rayon-crest.png",
+      fallback.officialLogoUrl ?? "/icons/icon-192x192.png",
     ),
     primaryColorHex: safeString(
       row.primary_color_hex,
-      fallbackClubProfile.primaryColorHex,
+      fallback.primaryColorHex,
     ),
     secondaryColorHex: safeString(
       row.secondary_color_hex,
-      fallbackClubProfile.secondaryColorHex,
+      fallback.secondaryColorHex,
     ),
     accentColorHex: safeString(
       row.accent_color_hex,
-      fallbackClubProfile.accentColorHex,
+      fallback.accentColorHex,
     ),
     featureFlags:
       typeof row.feature_flags == "object" && row.feature_flags != null
         ? (row.feature_flags as Record<string, boolean>)
-        : fallbackClubProfile.featureFlags,
+        : fallback.featureFlags,
   };
 }
 
 export const getClubProfile = cache(async function getClubProfile() {
   const client = getAdminSupabase();
-  if (client == null) return fallbackClubProfile;
+  const activeClub = await getActiveClubReference();
+  const fallback = {
+    ...fallbackClubProfile,
+    id: activeClub.numericId,
+    clubName: activeClub.name || fallbackClubProfile.clubName,
+    clubSlug: activeClub.slug || fallbackClubProfile.clubSlug,
+    shortName: activeClub.shortName || fallbackClubProfile.shortName,
+  };
+  if (client == null) return fallback;
 
   try {
     const { data } = await client
       .from("african_football_clubs")
       .select("*")
-      .eq("club_slug", rayonClub.slug)
+      .eq("club_slug", activeClub.slug)
       .maybeSingle();
 
-    return data ? mapClubRow(data) : fallbackClubProfile;
+    return data ? mapClubRow(data, fallback) : fallback;
   } catch {
-    return fallbackClubProfile;
+    return fallback;
   }
 });

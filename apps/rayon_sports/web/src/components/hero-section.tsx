@@ -18,7 +18,7 @@ import {
   isLiveMatch,
   isResultMatch,
 } from "@/lib/utils";
-import { siteConfig } from "@/lib/config";
+import { resolveFanAppHref } from "@/lib/config";
 
 interface HeroSectionProps {
   club: ClubProfile;
@@ -97,13 +97,14 @@ export function HeroSection({
 
               <div className="space-y-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.34em] text-slate-300 sm:text-xs">
-                  {heroTagline || "The Beloved, live in the browser"}
+                  {heroTagline || `${club.nickname || club.shortName}, live in the browser`}
                 </p>
                 <h1 className="fluid-hero font-display font-bold uppercase text-white text-balance">
-                  {heroHeadline || "This is Gikundiro."}
+                  {heroHeadline || `This is ${club.nickname || club.shortName}.`}
                 </h1>
                 <p className="max-w-2xl text-sm leading-7 text-slate-200 sm:text-base sm:leading-8">
-                  {heroDescription || "Get tickets, follow live matches, back supporter circles, and join the Rayon Sports family — all from your browser."}
+                  {heroDescription ||
+                    `Get tickets, follow live matches, back supporter circles, and join the ${club.shortName} family — all from your browser.`}
                 </p>
               </div>
 
@@ -124,11 +125,11 @@ export function HeroSection({
                   Membership <ShieldCheck size={16} />
                 </Link>
                 <Link
-                  href={siteConfig.fansUrl}
+                  href={resolveFanAppHref()}
                   prefetch={false}
                   className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/12 bg-white/6 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/12 sm:px-6 sm:py-3"
                 >
-                  Fan portal <ArrowRight size={16} />
+                  Fan app <ArrowRight size={16} />
                 </Link>
               </div>
             </div>
@@ -196,7 +197,7 @@ export function HeroSection({
                     </>
                   ) : (
                     <h2 className="mt-3 font-display text-4xl font-bold uppercase leading-none text-white">
-                      Rayon Sports
+                      {club.shortName}
                     </h2>
                   )}
                 </div>

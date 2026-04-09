@@ -2,18 +2,23 @@ import Link from "next/link";
 import { ArrowRight, Flag } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { clubHistoryMoments } from "@/lib/content";
-import { getCmsContent } from "@/lib/data/public";
+import { getClubProfile, getCmsContent } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 
-export const metadata = buildPageMetadata({
-  title: "Rayon Sports history",
-  description:
-    "The story of Gikundiro, club identity, supporter culture, and the history behind Rayon Sports.",
-  path: "/history",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: `${club.shortName} history`,
+    description: `The story of ${club.shortName}, club identity, supporter culture, and the history behind ${club.clubName}.`,
+    path: "/history",
+  });
+}
 
 export default async function HistoryPage() {
-  const cmsItems = await getCmsContent("club_history");
+  const [club, cmsItems] = await Promise.all([
+    getClubProfile(),
+    getCmsContent("club_history"),
+  ]);
 
   // Use DB content if available, otherwise fall back to hardcoded
   const moments =
@@ -25,8 +30,8 @@ export default async function HistoryPage() {
     <div className="page-shell section-grid py-12">
       <PageHero
         eyebrow="History"
-        title="The story of Gikundiro."
-        description="Club identity, supporter culture, and the history that gives Rayon Sports its voice."
+        title={`The story of ${club.nickname || club.shortName}.`}
+        description={`Club identity, supporter culture, and the history that gives ${club.shortName} its voice.`}
         actions={
           <>
             <Link
@@ -45,7 +50,7 @@ export default async function HistoryPage() {
         }
         stats={[
           { label: "Moments", value: moments.length.toString() },
-          { label: "Identity", value: "Beloved" },
+          { label: "Identity", value: club.nickname || club.shortName },
           { label: "Surface", value: "Club-first" },
         ]}
       />

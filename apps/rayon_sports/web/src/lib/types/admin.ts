@@ -16,6 +16,8 @@ export interface AdminAccess {
   isSuperAdmin: boolean;
   role: AdminRole | null;
   clubId: string | null;
+  availableClubIds: string[];
+  canSelectClub: boolean;
   assignmentCount: number;
 }
 

@@ -1,0 +1,4 @@
+v1.0.3 – Production Hardening Update
+• Improved upgrade safety for returning supporters by preserving existing sessions during transient restore failures
+• Updated privacy, support, and legal links to the live Gikundiro public domain
+• Production release hardening for package identity, Firebase validation, and rollout readiness

@@ -2,10 +2,10 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { MatchCard } from "@/components/match-card";
 import { SectionHeading } from "@/components/section-heading";
-import { getMatches } from "@/lib/data/public";
+import { getClubProfile, getMatches } from "@/lib/data/public";
 
 export async function FixturesBlock() {
-  const matches = await getMatches();
+  const [club, matches] = await Promise.all([getClubProfile(), getMatches()]);
   const featuredMatch =
     matches.find((m) => m.matchStatus === "live") ??
     matches.find((m) => m.isFeatured) ??
@@ -30,7 +30,11 @@ export async function FixturesBlock() {
       <div className="flex gap-5 scroll-snap-x lg:grid lg:grid-cols-3 lg:overflow-visible">
         {upcomingMatches.slice(0, 3).map((match) => (
           <div key={match.id} className="min-w-[85vw] sm:min-w-[340px] lg:min-w-0">
-            <MatchCard match={match} />
+            <MatchCard
+              match={match}
+              clubName={club.shortName}
+              clubLogoUrl={club.officialLogoUrl}
+            />
           </div>
         ))}
       </div>

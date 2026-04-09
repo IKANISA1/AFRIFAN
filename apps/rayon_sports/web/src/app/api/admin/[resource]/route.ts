@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { adminClubScopeCookieName, getRequestedAdminClubId } from "@/lib/admin-club-scope";
 import {
   deleteAdminArticle,
   deleteAdminContributionGroup,
@@ -38,7 +39,14 @@ import { getServerSupabase } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-async function getAdminRequestContext() {
+function getRequestedClubId(request: NextRequest) {
+  return getRequestedAdminClubId(
+    request.nextUrl.searchParams,
+    request.cookies.get(adminClubScopeCookieName)?.value ?? null,
+  );
+}
+
+async function getAdminRequestContext(request: NextRequest) {
   const serverClient = await getServerSupabase();
   if (serverClient == null) {
     return {
@@ -62,7 +70,9 @@ async function getAdminRequestContext() {
     };
   }
 
-  const access = await resolveAdminAccess(serverClient, user);
+  const access = await resolveAdminAccess(serverClient, user, {
+    requestedClubId: getRequestedClubId(request),
+  });
   if (!access.hasAccess) {
     return {
       response: NextResponse.json(
@@ -96,11 +106,11 @@ function missingIdResponse() {
 }
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   context: { params: Promise<{ resource: string }> },
 ) {
   try {
-    const requestContext = await getAdminRequestContext();
+    const requestContext = await getAdminRequestContext(request);
     if ("response" in requestContext) {
       return requestContext.response;
     }
@@ -193,7 +203,7 @@ export async function POST(
   }
 
   try {
-    const requestContext = await getAdminRequestContext();
+    const requestContext = await getAdminRequestContext(request);
     if ("response" in requestContext) {
       return requestContext.response;
     }
@@ -237,7 +247,7 @@ export async function POST(
         });
       case "notifications":
         return NextResponse.json({
-          data: await sendAdminNotification(serverClient, body as never),
+          data: await sendAdminNotification(serverClient, body as never, access),
         });
       case "squad":
         await saveAdminSquadPlayer(adminClient, access, body as never);
@@ -278,7 +288,7 @@ export async function DELETE(
   }
 
   try {
-    const requestContext = await getAdminRequestContext();
+    const requestContext = await getAdminRequestContext(request);
     if ("response" in requestContext) {
       return requestContext.response;
     }

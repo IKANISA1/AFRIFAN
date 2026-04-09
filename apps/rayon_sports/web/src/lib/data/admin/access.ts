@@ -3,7 +3,7 @@
  * Extracted from admin-legacy.ts for focused domain ownership.
  */
 import type { SupabaseClient, User } from "@supabase/supabase-js";
-import { rayonClub } from "@/lib/config";
+import { siteConfig } from "@/lib/config";
 import type { AdminAccess, AdminRole } from "@/lib/types";
 import { safeString } from "@/lib/utils";
 
@@ -13,6 +13,8 @@ export const emptyAdminAccess: AdminAccess = {
   isSuperAdmin: false,
   role: null,
   clubId: null,
+  availableClubIds: [],
+  canSelectClub: false,
   assignmentCount: 0,
 };
 
@@ -30,8 +32,8 @@ function normalizeClubId(value: unknown) {
   if (!text) {
     return null;
   }
-  if (text === rayonClub.slug) {
-    return rayonClub.numericId.toString();
+  if (text === siteConfig.defaultClubSlug) {
+    return siteConfig.defaultClubId.toString();
   }
   const parsed = Number(text);
   if (Number.isFinite(parsed)) {
@@ -42,7 +44,7 @@ function normalizeClubId(value: unknown) {
 
 function matchClubScope(
   assignment: AdminAssignmentRow,
-  currentClubId: string | null,
+  scopeClubId: string | null,
 ) {
   const role = normalizeAdminRole(assignment.role);
   if (role === "super_admin" || role === "admin") {
@@ -52,7 +54,7 @@ function matchClubScope(
     return false;
   }
   const assignmentClubId = normalizeClubId(assignment.club_id);
-  return currentClubId == null || assignmentClubId === currentClubId;
+  return scopeClubId == null || assignmentClubId === scopeClubId;
 }
 
 function userClubId(user: AdminUserClaims) {
@@ -68,6 +70,65 @@ function metadataRole(user: AdminUserClaims) {
   return normalizeAdminRole(
     user?.app_metadata?.role ?? user?.user_metadata?.role ?? null,
   );
+}
+
+function assignmentClubIds(assignments: AdminAssignmentRow[]) {
+  return [...new Set(
+    assignments
+      .map((assignment) => normalizeClubId(assignment.club_id))
+      .filter((value): value is string => value != null),
+  )];
+}
+
+function isPrivilegedRole(role: AdminRole | null) {
+  return role === "super_admin" || role === "admin";
+}
+
+function resolveEffectiveClubId({
+  role,
+  requestedClubId,
+  currentClubId,
+  availableClubIds,
+}: {
+  role: AdminRole | null;
+  requestedClubId: string | null;
+  currentClubId: string | null;
+  availableClubIds: string[];
+}) {
+  const clubIdsAreRestricted = availableClubIds.length > 0;
+  const hasInvalidRequestedClub =
+    requestedClubId != null &&
+    clubIdsAreRestricted &&
+    !availableClubIds.includes(requestedClubId) &&
+    !isPrivilegedRole(role);
+
+  const canUse = (candidate: string | null) => {
+    if (candidate == null) {
+      return false;
+    }
+    if (!clubIdsAreRestricted) {
+      return isPrivilegedRole(role);
+    }
+    return availableClubIds.includes(candidate);
+  };
+
+  if (hasInvalidRequestedClub) {
+    return null;
+  }
+
+  if (canUse(requestedClubId)) {
+    return requestedClubId;
+  }
+
+  if (canUse(currentClubId)) {
+    return currentClubId;
+  }
+
+  if (availableClubIds.length > 0) {
+    return availableClubIds[0] ?? null;
+  }
+
+  return isPrivilegedRole(role) ? currentClubId : null;
 }
 
 export function normalizeAdminRole(value: unknown): AdminRole | null {
@@ -97,23 +158,32 @@ export function formatAdminRoleLabel(role: AdminRole | null) {
 export function deriveAdminAccess(
   user: AdminUserClaims,
   assignments: AdminAssignmentRow[],
+  options?: {
+    requestedClubId?: string | null;
+  },
 ): AdminAccess {
   if (user == null) {
     return emptyAdminAccess;
   }
 
   const currentClubId = userClubId(user);
+  const requestedClubId = normalizeClubId(options?.requestedClubId ?? null);
+  const scopedClubId = requestedClubId ?? currentClubId;
+  const availableClubIds = assignmentClubIds(assignments);
   const matchingAssignments = assignments.filter((assignment) =>
-    matchClubScope(assignment, currentClubId),
+    matchClubScope(assignment, scopedClubId),
   );
-  const assignmentRole = normalizeAdminRole(matchingAssignments[0]?.role);
+  const matchingAssignmentRole = normalizeAdminRole(matchingAssignments[0]?.role);
+  const assignmentRole =
+    matchingAssignmentRole ?? normalizeAdminRole(assignments[0]?.role);
   const fallbackRole = metadataRole(user);
   // Effective role for display, but only assignment-backed roles grant access.
   const role = assignmentRole ?? fallbackRole;
-  const hasAssignment = matchingAssignments.length > 0;
+  const hasMatchingAssignment = matchingAssignments.length > 0;
+  const hasAssignment = assignments.length > 0;
   // Fail-closed: metadata-only role never grants admin access.
   const hasAccess =
-    hasAssignment &&
+    hasMatchingAssignment &&
     (role === "super_admin" ||
       role === "admin" ||
       role === "club_admin" ||
@@ -123,16 +193,28 @@ export function deriveAdminAccess(
     hasAccess,
     isAuthenticated: user != null,
     isSuperAdmin:
-      hasAssignment && (role === "super_admin" || role === "admin"),
+      hasMatchingAssignment && (role === "super_admin" || role === "admin"),
     role,
-    clubId: currentClubId,
-    assignmentCount: matchingAssignments.length,
+    clubId: resolveEffectiveClubId({
+      role,
+      requestedClubId,
+      currentClubId,
+      availableClubIds,
+    }),
+    availableClubIds,
+    canSelectClub:
+      hasAssignment &&
+      (isPrivilegedRole(role) || availableClubIds.length > 1),
+    assignmentCount: assignments.length,
   };
 }
 
 export async function resolveAdminAccess(
   client: SupabaseClient,
   user: User | null,
+  options?: {
+    requestedClubId?: string | null;
+  },
 ) {
   if (user == null) {
     return emptyAdminAccess;
@@ -152,6 +234,7 @@ export async function resolveAdminAccess(
     return deriveAdminAccess(
       user,
       Array.isArray(data) ? (data as AdminAssignmentRow[]) : [],
+      options,
     );
   } catch {
     // Fail-closed: assignment lookup failure denies access.

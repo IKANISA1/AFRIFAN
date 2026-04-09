@@ -17,31 +17,35 @@ import {
 interface MatchCardProps {
   match: MatchItem;
   href?: string;
-}
-
-/**
- * Team badge — shows the actual Rayon Sports crest for the home club,
- * letter-initial circle for opponents.
- */
-const RAYON_CREST_URL = "/media/rayon-crest.png";
-
-function isRayonTeam(name: string): boolean {
-  return name.toLowerCase().includes("rayon");
+  clubName?: string;
+  clubLogoUrl?: string | null;
 }
 
 function TeamBadge({
   name,
+  clubName,
+  clubLogoUrl,
   variant = "neutral",
 }: {
   name: string;
+  clubName?: string;
+  clubLogoUrl?: string | null;
   variant?: "home" | "neutral";
 }) {
-  if (isRayonTeam(name)) {
+  const normalizedName = name.trim().toLowerCase();
+  const normalizedClubName = clubName?.trim().toLowerCase() ?? "";
+  const isClubTeam =
+    normalizedClubName.length > 0 &&
+    (normalizedName === normalizedClubName ||
+      normalizedName.includes(normalizedClubName) ||
+      normalizedClubName.includes(normalizedName));
+
+  if (isClubTeam && clubLogoUrl) {
     return (
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-club-primary/20 p-1" aria-hidden="true">
         <Image
-          src={RAYON_CREST_URL}
-          alt="Rayon Sports crest"
+          src={clubLogoUrl}
+          alt={`${clubName ?? name} crest`}
           width={28}
           height={28}
           className="object-contain"
@@ -68,6 +72,8 @@ function TeamBadge({
 export function MatchCard({
   match,
   href = `/fixtures/${match.id}`,
+  clubName,
+  clubLogoUrl,
 }: MatchCardProps) {
   const live = isLiveMatch(match.matchStatus);
   const result = isResultMatch(match.matchStatus);
@@ -111,7 +117,12 @@ export function MatchCard({
       <div className="grid gap-3 rounded-[26px] border border-white/8 bg-black/20 p-4">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <TeamBadge name={match.homeTeam} variant="home" />
+            <TeamBadge
+              name={match.homeTeam}
+              clubName={clubName}
+              clubLogoUrl={clubLogoUrl}
+              variant="home"
+            />
             <div className="min-w-0">
               <p className="font-display text-2xl font-bold uppercase leading-none text-white sm:text-3xl">
                 {match.homeTeam}
@@ -137,7 +148,12 @@ export function MatchCard({
 
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <TeamBadge name={match.awayTeam} variant="neutral" />
+            <TeamBadge
+              name={match.awayTeam}
+              clubName={clubName}
+              clubLogoUrl={clubLogoUrl}
+              variant="neutral"
+            />
             <div className="min-w-0">
               <p className="font-display text-2xl font-bold uppercase leading-none text-white/70 sm:text-3xl">
                 {match.awayTeam}

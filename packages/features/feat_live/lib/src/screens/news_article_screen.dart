@@ -29,14 +29,44 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
     _loadArticle();
   }
 
+  int? _currentClubId(SupabaseClient client) {
+    final user = client.auth.currentUser;
+    final candidates = <Object?>[
+      user?.appMetadata['club_id'],
+      user?.userMetadata?['club_id'],
+      user?.appMetadata['clubId'],
+      user?.userMetadata?['clubId'],
+    ];
+
+    for (final candidate in candidates) {
+      final parsed = int.tryParse(candidate?.toString().trim() ?? '');
+      if (parsed != null) {
+        return parsed;
+      }
+    }
+
+    return null;
+  }
+
   Future<void> _loadArticle() async {
     try {
       final client = ref.read(supabaseClientProvider);
       final newsTable = await _resolveNewsTable(client);
+      final clubId = _currentClubId(client);
+      if (clubId == null) {
+        if (mounted) {
+          setState(() {
+            _loading = false;
+            _error = 'Could not resolve the active club.';
+          });
+        }
+        return;
+      }
       final article = await client
           .from(newsTable)
           .select()
           .eq('id', widget.articleId)
+          .eq('club_id', clubId)
           .maybeSingle();
 
       if (article == null) {
@@ -52,6 +82,7 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
       final related = await client
           .from(newsTable)
           .select('id, title, subtitle')
+          .eq('club_id', clubId)
           .eq('is_published', true)
           .neq('id', widget.articleId)
           .order('sort_order', ascending: true)

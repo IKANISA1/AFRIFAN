@@ -2,7 +2,7 @@
  * Admin matches — CRUD with legacy column fallback.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { rayonClub } from "@/lib/config";
+import { fallbackClubProfile } from "@/lib/content";
 import type { AdminAccess, AdminMatchItem } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
@@ -26,9 +26,9 @@ function mapMatch(row: Record<string, unknown>): AdminMatchItem {
   return {
     id: toIdString(row.id, crypto.randomUUID()),
     clubId:
-      row.club_id == null ? null : safeNumber(row.club_id, rayonClub.numericId),
+      row.club_id == null ? null : safeNumber(row.club_id, fallbackClubProfile.id),
     partnerId: safeString(row.partner_id) || null,
-    homeTeam: safeString(row.home_team, rayonClub.shortName),
+    homeTeam: safeString(row.home_team, fallbackClubProfile.shortName),
     awayTeam: safeString(row.away_team, "Opponent"),
     competition: safeString(row.competition, "League"),
     venue: safeString(row.venue, "Stadium"),

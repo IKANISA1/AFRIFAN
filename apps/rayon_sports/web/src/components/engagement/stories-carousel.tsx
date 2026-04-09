@@ -179,7 +179,6 @@ function StoryViewer({
 
   /* Reset progress on slide change */
   useEffect(() => {
-    setProgress(0);
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
       if (!paused) videoRef.current.play().catch(() => {});

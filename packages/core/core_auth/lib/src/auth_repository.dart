@@ -47,13 +47,30 @@ class AuthRepository {
     final user = _client.auth.currentUser;
     if (user == null) return null;
 
-    final profile = await _loadProfile(user.id);
-    if (profile == null) {
-      // If the profile row is legitimately missing but session exists, try to recover it
-      await _ensureProfileRow(user);
-      return _loadProfile(user.id);
+    try {
+      final profile = await _loadProfile(user.id);
+      if (profile == null) {
+        // If the profile row is legitimately missing but session exists, try to recover it
+        await _ensureProfileRow(user);
+        return _loadProfile(user.id);
+      }
+      return profile;
+    } catch (error) {
+      debugPrint(
+        '[AuthRepository] Session restore failed, using local session fallback: $error',
+      );
+      return _buildSeededProfile(user);
     }
-    return profile;
+  }
+
+  /// Build the safest local fallback profile for an existing session.
+  ///
+  /// This preserves the existing authenticated identity when network/profile
+  /// hydration fails during an app upgrade or transient backend outage.
+  Future<UserProfile?> restoreSessionFallbackProfile() async {
+    final sessionUser = _client.auth.currentUser;
+    if (sessionUser == null) return null;
+    return _buildSeededProfile(sessionUser);
   }
 
   // ─── Profile CRUD ───────────────────────────────────────────
@@ -171,33 +188,12 @@ class AuthRepository {
   // ─── Helpers ────────────────────────────────────────────────
 
   Future<void> _ensureProfileRow(User user) async {
-    final metadata = user.userMetadata ?? <String, dynamic>{};
-
-    // Base seeded profile. No 'public_user_id' generated here, leaving it up to DB triggers!
-    final seededProfile = UserProfile(
-      id: user.id,
-      clubId: metadata['club_id']?.toString() ?? clubId,
-      momoNumber:
-          _asOptionalString(metadata['momo_number']) ??
-          _asOptionalString(user.phone),
-      displayName:
-          _asOptionalString(metadata['display_name']) ??
-          _asOptionalString(metadata['full_name']),
-      countryCode:
-          _asOptionalString(metadata['country_code']) ??
-          _asOptionalString(metadata['country']),
-      languageCode: _asOptionalString(metadata['language_code']) ?? 'en',
-      avatarUrl: _asOptionalString(metadata['avatar_url']),
-      isActive: true,
-    );
+    final seededProfile = _buildSeededProfile(user);
 
     // Profile row is critical — must succeed for sign-in.
     await _client
         .from('profiles')
-        .upsert(
-          seededProfile.toProfileRow(includeId: true),
-          onConflict: 'id',
-        );
+        .upsert(seededProfile.toProfileRow(includeId: true), onConflict: 'id');
 
     // Private contact is best-effort — table may not exist yet.
     try {
@@ -243,6 +239,28 @@ class AuthRepository {
           profile.toPrivateContactRow(includeId: true),
           onConflict: 'user_id',
         );
+  }
+
+  UserProfile _buildSeededProfile(User user) {
+    final metadata = user.userMetadata ?? <String, dynamic>{};
+    return UserProfile(
+      id: user.id,
+      clubId: metadata['club_id']?.toString() ?? clubId,
+      momoNumber:
+          _asOptionalString(metadata['momo_number']) ??
+          _asOptionalString(user.phone),
+      displayName:
+          _asOptionalString(metadata['display_name']) ??
+          _asOptionalString(metadata['full_name']),
+      publicUserId: _asOptionalString(metadata['public_user_id']),
+      countryCode:
+          _asOptionalString(metadata['country_code']) ??
+          _asOptionalString(metadata['country']),
+      languageCode: _asOptionalString(metadata['language_code']) ?? 'en',
+      avatarUrl: _asOptionalString(metadata['avatar_url']),
+      momoProvider: _asOptionalString(metadata['momo_provider']),
+      isActive: true,
+    );
   }
 
   String? _asOptionalString(dynamic value) {

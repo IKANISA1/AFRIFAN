@@ -6,18 +6,18 @@ import { siteConfig } from "@/lib/config";
 export const metadata: Metadata = {
   title: "Admin workspace",
   description:
-    "Desktop-first admin workspace for Rayon Sports operations, publishing, and supporter management.",
-  applicationName: "Gikundiro Admin",
+    "Desktop-first admin workspace for club operations, publishing, supporter management, and white-label configuration.",
+  applicationName: "AfriClub Admin",
   metadataBase: new URL(siteConfig.adminUrl),
   alternates: {
     canonical: siteConfig.adminUrl,
   },
   openGraph: {
-    title: "Gikundiro Admin",
+    title: "AfriClub Admin",
     description:
-      "Desktop-first admin workspace for Rayon Sports operations, publishing, and supporter management.",
+      "Desktop-first admin workspace for club operations, publishing, supporter management, and white-label configuration.",
     url: siteConfig.adminUrl,
-    siteName: "Gikundiro Admin",
+    siteName: "AfriClub Admin",
     locale: "en_US",
     type: "website",
     images: [
@@ -25,20 +25,20 @@ export const metadata: Metadata = {
         url: `${siteConfig.siteUrl}/icons/icon-512x512.png`,
         width: 512,
         height: 512,
-        alt: "Gikundiro admin crest",
+        alt: "AfriClub admin crest",
       },
     ],
   },
   twitter: {
     card: "summary",
-    title: "Gikundiro Admin",
+    title: "AfriClub Admin",
     description:
-      "Desktop-first admin workspace for Rayon Sports operations, publishing, and supporter management.",
+      "Desktop-first admin workspace for club operations, publishing, supporter management, and white-label configuration.",
     images: [`${siteConfig.siteUrl}/icons/icon-512x512.png`],
   },
   appleWebApp: {
     capable: true,
-    title: "Gikundiro Admin",
+    title: "AfriClub Admin",
     statusBarStyle: "black-translucent",
   },
   robots: {

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { X, User, Ticket, ShoppingBag } from "lucide-react";
 import { siteNavigation, utilityNavigation } from "@/lib/content";
-import { siteConfig } from "@/lib/config";
+import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -33,12 +33,14 @@ export function MobileNavDrawer({
 
   // Drive the transition: visible controls CSS classes
   useEffect(() => {
+    let frameId = 0;
     if (isOpen) {
       // Mount visible on next frame so the transition triggers
-      requestAnimationFrame(() => setVisible(true));
+      frameId = requestAnimationFrame(() => setVisible(true));
     } else {
-      setVisible(false);
+      frameId = requestAnimationFrame(() => setVisible(false));
     }
+    return () => cancelAnimationFrame(frameId);
   }, [isOpen]);
 
   // Close on route change
@@ -147,10 +149,10 @@ export function MobileNavDrawer({
             />
             <div>
               <p className="font-display text-lg font-bold uppercase leading-none mt-1">
-                Gikundiro
+                {club.nickname || club.shortName}
               </p>
               <p className="text-[10px] uppercase tracking-[0.24em] text-slate-500">
-                {club.shortName}
+                {club.clubName}
               </p>
             </div>
           </div>
@@ -169,12 +171,12 @@ export function MobileNavDrawer({
           {/* Quick access row */}
           <div className="flex justify-between gap-3">
             <Link
-              href={siteConfig.fansUrl}
+              href={resolveFanAppHref()}
               prefetch={false}
               className="flex-1 flex flex-col items-center justify-center gap-2 p-3 rounded-2xl bg-white/5 border border-border-soft hover:bg-white/10 transition focus-ring"
             >
               <User size={20} className="text-club-primary-light" />
-              <span className="text-xs uppercase tracking-wider font-semibold">Portal</span>
+              <span className="text-xs uppercase tracking-wider font-semibold">Fan App</span>
             </Link>
             <Link
               href="/tickets"

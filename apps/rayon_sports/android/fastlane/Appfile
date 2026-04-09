@@ -1,2 +1,2 @@
-json_key_file("/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/android/fastlane/play-store-service-account.json")
+json_key_file(ENV.fetch("PLAY_STORE_SERVICE_ACCOUNT_JSON_PATH"))
 package_name("rw.gikundiro.app")

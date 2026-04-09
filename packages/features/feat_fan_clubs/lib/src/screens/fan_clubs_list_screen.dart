@@ -5,8 +5,30 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../widgets/fan_club_cards.dart';class FanClubsListScreen extends ConsumerStatefulWidget {
+import '../widgets/fan_club_cards.dart';
+
+int? _currentClubId(SupabaseClient client) {
+  final user = client.auth.currentUser;
+  final candidates = <Object?>[
+    user?.appMetadata['club_id'],
+    user?.userMetadata?['club_id'],
+    user?.appMetadata['clubId'],
+    user?.userMetadata?['clubId'],
+  ];
+
+  for (final candidate in candidates) {
+    final parsed = int.tryParse(candidate?.toString().trim() ?? '');
+    if (parsed != null) {
+      return parsed;
+    }
+  }
+
+  return null;
+}
+
+class FanClubsListScreen extends ConsumerStatefulWidget {
   const FanClubsListScreen({super.key});
 
   @override
@@ -53,9 +75,19 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
 
     try {
       final client = ref.read(supabaseClientProvider);
+      final clubId = _currentClubId(client);
+      if (clubId == null) {
+        if (!mounted) return;
+        setState(() {
+          _isLoading = false;
+          _error = 'Could not resolve the active club.';
+        });
+        return;
+      }
       final clubs = await client
           .from('fan_clubs')
           .select()
+          .eq('club_id', clubId)
           .order('member_count', ascending: false);
 
       final userId = client.auth.currentUser?.id;
@@ -112,7 +144,8 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
 
     try {
       if (isJoined) {
-        await ref.read(supabaseClientProvider)
+        await ref
+            .read(supabaseClientProvider)
             .from('fan_club_members')
             .delete()
             .eq('club_id', clubId)
@@ -181,13 +214,14 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
             'SOUTHERN' => region.contains('southern'),
             'WESTERN' => region.contains('western'),
             'EASTERN' => region.contains('eastern'),
-            'INTERNATIONAL' => region.contains('international') || 
-              (!region.contains('kigali') &&
-               !region.contains('northern') &&
-               !region.contains('southern') &&
-               !region.contains('western') &&
-               !region.contains('eastern') &&
-               region != 'official'),
+            'INTERNATIONAL' =>
+              region.contains('international') ||
+                  (!region.contains('kigali') &&
+                      !region.contains('northern') &&
+                      !region.contains('southern') &&
+                      !region.contains('western') &&
+                      !region.contains('eastern') &&
+                      region != 'official'),
             'OFFICIAL' => _isOfficial(club),
             _ => true,
           };

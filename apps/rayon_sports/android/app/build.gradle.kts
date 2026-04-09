@@ -12,6 +12,11 @@ if (hasGoogleServicesConfig) {
     apply(plugin = "com.google.gms.google-services")
 }
 
+val requestedTaskNames = gradle.startParameter.taskNames.map { it.lowercase() }
+val isReleaseBuildRequested = requestedTaskNames.any { taskName ->
+    taskName.contains("release")
+}
+
 val keystoreProperties = Properties()
 val keystorePropertiesFiles = listOf(rootProject.file("keystore.properties"))
 for (propertiesFile in keystorePropertiesFiles) {
@@ -38,6 +43,16 @@ val hasReleaseSigning = !releaseStoreFile.isNullOrEmpty() &&
     !releaseStorePassword.isNullOrEmpty() &&
     !releaseKeyAlias.isNullOrEmpty() &&
     !releaseKeyPassword.isNullOrEmpty()
+
+if (isReleaseBuildRequested && !hasGoogleServicesConfig) {
+    error("Release builds require android/app/google-services.json for Firebase-backed production features.")
+}
+
+if (isReleaseBuildRequested && !hasReleaseSigning) {
+    error(
+        "Release signing credentials are required. Provide keystore.properties or the ANDROID_KEYSTORE_* environment variables."
+    )
+}
 
 android {
     namespace = "rw.gikundiro.app"

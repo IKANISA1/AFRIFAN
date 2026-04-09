@@ -43,7 +43,9 @@ class ClubProduct extends Equatable {
   factory ClubProduct.fromJson(Map<String, dynamic> json) {
     return ClubProduct(
       id: jh.asStringOrNull(json['id']) ?? '',
-      partnerId: jh.asStringOrNull(json['partner_id']) ?? '',
+      partnerId: jh.asStringOrNull(json['partner_id']) ??
+          jh.asStringOrNull(json['club_id']) ??
+          '',
       name: jh.asStringOrNull(json['name']) ?? 'Shop Item',
       description: jh.asStringOrNull(json['description']) ?? '',
       category: jh.ProductCategoryX.fromValue(json['category']?.toString()),
@@ -158,7 +160,8 @@ class ClubShopOrder extends Equatable {
     return ClubShopOrder(
       id: jh.asStringOrNull(json['id']) ?? '',
       userId: jh.asStringOrNull(json['user_id']) ?? '',
-      partnerId: jh.asStringOrNull(json['partner_id']),
+      partnerId: jh.asStringOrNull(json['partner_id']) ??
+          jh.asStringOrNull(json['club_id']),
       items: items,
       subtotal: subtotal,
       discountAmount: discount,

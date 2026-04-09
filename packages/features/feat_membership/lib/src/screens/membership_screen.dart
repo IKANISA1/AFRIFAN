@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../widgets/membership_card.dart';
 import '../widgets/tier_progress.dart';
@@ -50,12 +51,43 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     _loadPackages();
   }
 
+  int? _currentClubId(SupabaseClient client) {
+    final user = client.auth.currentUser;
+    final candidates = <Object?>[
+      user?.appMetadata['club_id'],
+      user?.userMetadata?['club_id'],
+      user?.appMetadata['clubId'],
+      user?.userMetadata?['clubId'],
+    ];
+
+    for (final candidate in candidates) {
+      final parsed = int.tryParse(candidate?.toString().trim() ?? '');
+      if (parsed != null) {
+        return parsed;
+      }
+    }
+
+    return null;
+  }
+
   Future<void> _loadPackages() async {
     try {
       final client = ref.read(supabaseClientProvider);
+      final clubId = _currentClubId(client);
+      if (clubId == null) {
+        if (mounted) {
+          setState(() {
+            _packages = _fallbackPackages;
+            _membership = null;
+            _isLoading = false;
+          });
+        }
+        return;
+      }
       final packagesResponse = await client
           .from('membership_packages')
           .select()
+          .eq('club_id', clubId)
           .eq('is_active', true)
           .order('sort_order', ascending: true);
 
@@ -66,6 +98,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
             .from('fan_memberships')
             .select()
             .eq('user_id', userId)
+            .eq('club_id', clubId)
             .order('joined_at', ascending: false)
             .limit(1)
             .maybeSingle();

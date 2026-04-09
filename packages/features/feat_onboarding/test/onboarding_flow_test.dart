@@ -7,17 +7,34 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 class FakeAuthRepository extends AuthRepository {
-  FakeAuthRepository({this.restoreResult, this.signInResult, this.updateResult})
-    : super(clubId: '24');
+  FakeAuthRepository({
+    this.restoreResult,
+    this.restoreError,
+    this.fallbackProfile,
+    this.signInResult,
+    this.updateResult,
+  }) : super(clubId: '24');
 
   final UserProfile? restoreResult;
+  final Object? restoreError;
+  final UserProfile? fallbackProfile;
   final UserProfile? signInResult;
   final UserProfile? updateResult;
 
   UserProfile? lastUpdatedProfile;
 
   @override
-  Future<UserProfile?> restoreCurrentUser() async => restoreResult;
+  Future<UserProfile?> restoreCurrentUser() async {
+    if (restoreError != null) {
+      throw restoreError!;
+    }
+    return restoreResult;
+  }
+
+  @override
+  Future<UserProfile?> restoreSessionFallbackProfile() async {
+    return fallbackProfile;
+  }
 
   @override
   Future<UserProfile> signInAnonymously() async {
@@ -175,5 +192,52 @@ void main() {
 
       expect(find.byType(OnboardingScreen), findsOneWidget);
     });
+
+    testWidgets(
+      'splash preserves an existing user via fallback profile when restore throws',
+      (tester) async {
+        final repository = FakeAuthRepository(
+          restoreError: Exception('temporary backend outage'),
+          fallbackProfile: const UserProfile(
+            id: 'user-fallback',
+            clubId: '24',
+            publicUserId: '483912',
+            momoNumber: '0781234567',
+            momoProvider: 'MoMo',
+          ),
+        );
+
+        await _pumpApp(
+          tester,
+          initialLocation: '/splash',
+          repository: repository,
+        );
+
+        await tester.pump(const Duration(seconds: 2));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Home Route'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'splash sends users to onboarding only when restore fails and no fallback session exists',
+      (tester) async {
+        final repository = FakeAuthRepository(
+          restoreError: Exception('broken session'),
+        );
+
+        await _pumpApp(
+          tester,
+          initialLocation: '/splash',
+          repository: repository,
+        );
+
+        await tester.pump(const Duration(seconds: 2));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(OnboardingScreen), findsOneWidget);
+      },
+    );
   });
 }

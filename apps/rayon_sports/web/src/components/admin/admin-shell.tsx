@@ -83,7 +83,7 @@ function AdminAuthCard() {
         <div className="flex flex-col items-center text-center space-y-4">
           <Image
             src="/icons/icon-192x192.png"
-            alt="Rayon Sports"
+            alt={`${siteConfig.shortTitle} emblem`}
             width={56}
             height={56}
             priority
@@ -257,7 +257,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           <div className="flex flex-col items-center gap-4 text-center">
             <Image
               src="/icons/icon-192x192.png"
-              alt="Rayon Sports"
+              alt={`${siteConfig.shortTitle} emblem`}
               width={64}
               height={64}
               className="animate-pulse"
@@ -325,7 +325,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-4 border-b border-border-soft pb-5">
             <Image
               src="/icons/icon-192x192.png"
-              alt="Rayon Sports"
+              alt={`${siteConfig.shortTitle} emblem`}
               width={48}
               height={48}
               className="flex-shrink-0"

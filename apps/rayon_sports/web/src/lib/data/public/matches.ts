@@ -2,14 +2,17 @@
  * Public matches data.
  */
 import { cache } from "react";
-import { rayonClub } from "@/lib/config";
+import { getActiveClubReference } from "@/lib/club-context";
 import { fallbackMatches } from "@/lib/content";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import type { MatchItem } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { sanitizeMediaUrl } from "./helpers";
 
-function mapMatchRow(row: Record<string, unknown>): MatchItem {
+function mapMatchRow(
+  row: Record<string, unknown>,
+  activeClubShortName: string,
+): MatchItem {
   const liveEvents = Array.isArray(row.live_events)
     ? row.live_events
         .map((event, index) => {
@@ -40,10 +43,10 @@ function mapMatchRow(row: Record<string, unknown>): MatchItem {
 
   return {
     id: toIdString(row.id, crypto.randomUUID()),
-    homeTeam: safeString(row.home_team, "Rayon Sports"),
+    homeTeam: safeString(row.home_team, activeClubShortName),
     awayTeam: safeString(row.away_team, "Opponent"),
     competition: safeString(row.competition, "League"),
-    venue: safeString(row.venue, "Kigali"),
+    venue: safeString(row.venue, "Club Stadium"),
     matchDate: safeString(row.match_date, new Date().toISOString()),
     kickoffTime: safeString(row.kickoff_time) || null,
     isOnSale: Boolean(row.is_on_sale),
@@ -67,18 +70,19 @@ function mapMatchRow(row: Record<string, unknown>): MatchItem {
 
 export const getMatches = cache(async function getMatches() {
   const client = getAdminSupabase();
+  const activeClub = await getActiveClubReference();
   if (client == null) return fallbackMatches;
 
   try {
     const { data } = await client
       .from("matches")
       .select("*")
-      .eq("club_id", rayonClub.numericId)
+      .eq("club_id", activeClub.numericId)
       .order("match_date", { ascending: true })
       .limit(12);
 
     if (!data || data.length == 0) return fallbackMatches;
-    return data.map((row) => mapMatchRow(row));
+    return data.map((row) => mapMatchRow(row, activeClub.shortName));
   } catch {
     return fallbackMatches;
   }

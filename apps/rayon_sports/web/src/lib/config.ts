@@ -1,14 +1,46 @@
+function parseHostMap(rawValue: string | undefined) {
+  if (!rawValue) {
+    return {} as Record<string, string>;
+  }
+
+  try {
+    const parsed = JSON.parse(rawValue) as Record<string, unknown>;
+    return Object.fromEntries(
+      Object.entries(parsed)
+        .map(([host, club]) => [host.trim().toLowerCase(), String(club).trim()])
+        .filter(([host, club]) => host.length > 0 && club.length > 0),
+    );
+  } catch {
+    return {} as Record<string, string>;
+  }
+}
+
+const configuredFanAppUrl = process.env.NEXT_PUBLIC_FAN_APP_URL?.trim() || "";
+
 export const siteConfig = {
-  title: "Gikundiro | Official Rayon Sports website",
-  shortTitle: "Gikundiro",
+  title:
+    process.env.NEXT_PUBLIC_SITE_TITLE?.trim() ||
+    "Gikundiro | Official Rayon Sports website",
+  shortTitle: process.env.NEXT_PUBLIC_SITE_SHORT_TITLE?.trim() || "Gikundiro",
   description:
-    "Official Rayon Sports website for fixtures, tickets, membership, news, shop, supporter circles, and live matchday coverage.",
+    process.env.NEXT_PUBLIC_SITE_DESCRIPTION?.trim() ||
+    "Official Rayon Sports website for fixtures, tickets, membership, news, shop, supporter circles, and fan app journeys.",
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://gikundiro.com",
-  fansUrl:
-    process.env.NEXT_PUBLIC_FANS_URL?.trim() || "https://fans.gikundiro.com",
   adminUrl:
     process.env.NEXT_PUBLIC_ADMIN_URL?.trim() || "https://admin.gikundiro.com",
+  fanAppUrl: configuredFanAppUrl,
+  fanAppLandingPath: "/supporters",
+  defaultClubSlug:
+    process.env.NEXT_PUBLIC_DEFAULT_CLUB_SLUG?.trim() || "rayon_sports_rw",
+  defaultClubId: Number.parseInt(
+    process.env.NEXT_PUBLIC_DEFAULT_CLUB_ID?.trim() || "24",
+    10,
+  ),
+  clubHostMap: parseHostMap(
+    process.env.CLUB_HOST_MAP_JSON ??
+      process.env.NEXT_PUBLIC_CLUB_HOST_MAP_JSON,
+  ),
 };
 
 export const rayonClub = {
@@ -55,4 +87,8 @@ export function hasServerSupabase() {
 
 export function absoluteUrl(pathname: string) {
   return new URL(pathname, siteConfig.siteUrl).toString();
+}
+
+export function resolveFanAppHref() {
+  return siteConfig.fanAppUrl || siteConfig.fanAppLandingPath;
 }

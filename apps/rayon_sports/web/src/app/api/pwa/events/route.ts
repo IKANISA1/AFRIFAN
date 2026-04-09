@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { rayonClub } from "@/lib/config";
+import { getActiveClubReference } from "@/lib/club-context";
 import { rejectInsecureMutation, rejectRateLimitedRequest } from "@/lib/security";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { getServerSupabase } from "@/lib/supabase/server";
@@ -66,13 +66,14 @@ export async function POST(request: NextRequest) {
     } = await serverClient.auth.getUser();
     userId = user?.id ?? null;
   }
+  const club = await getActiveClubReference();
 
   const insert = await ((adminClient as unknown as {
     from: (
       table: "pwa_engagement_events",
     ) => { insert: (values: PwaEventInsert) => Promise<{ error: { message: string } | null }> };
   }).from("pwa_engagement_events").insert({
-    club_id: rayonClub.slug,
+    club_id: club.slug,
     user_id: userId,
     event_type: eventType,
     surface,

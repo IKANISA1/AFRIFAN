@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { siteNavigation, utilityNavigation } from "@/lib/content";
-import { siteConfig } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
 import { SiteHeaderControls } from "@/components/site-header-controls";
 
@@ -26,7 +25,7 @@ export function SiteHeader({ club }: SiteHeaderProps) {
             <span className="text-slate-600 hidden sm:inline">·</span>
             <span className="text-slate-400 sm:text-slate-300">{club.league}</span>
             <span className="text-slate-600 hidden sm:inline">·</span>
-            <span className="hidden sm:inline">Kigali, Rwanda</span>
+            <span className="hidden sm:inline">Official club website</span>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             {utilityNavigation.map((item) => (
@@ -67,10 +66,10 @@ export function SiteHeader({ club }: SiteHeaderProps) {
           />
           <div className="hidden sm:block">
             <p className="font-display text-xl font-bold uppercase leading-none text-white lg:text-2xl">
-              Gikundiro
+              {club.nickname || club.shortName}
             </p>
             <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-slate-300">
-              The beloved lives here
+              {club.clubName}
             </p>
           </div>
         </Link>

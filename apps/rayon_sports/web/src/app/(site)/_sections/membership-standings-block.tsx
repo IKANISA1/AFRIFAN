@@ -22,7 +22,7 @@ export async function MembershipAndStandingsBlock() {
       <div className="glass-panel rounded-[34px] p-6">
         <SectionHeading
           eyebrow="Membership"
-          title="Join the Gikundiro family."
+          title={`Join the ${club.nickname || club.shortName} family.`}
         />
         <div className="mt-6 grid gap-4">
           {membershipPackages.map((membershipPackage) => (
@@ -121,7 +121,7 @@ export async function MembershipAndStandingsBlock() {
         <div className="glass-panel rounded-[34px] p-6">
           <SectionHeading
             eyebrow="Supporter network"
-            title="Our chapters across Rwanda."
+            title="Our supporter chapters."
           />
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
             {fanClubs.slice(0, 3).map((clubItem) => (

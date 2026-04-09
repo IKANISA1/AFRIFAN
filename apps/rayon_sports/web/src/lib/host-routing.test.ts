@@ -1,11 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   isAdminHostname,
-  isFansHostname,
   mapAdminSubdomainPath,
-  mapFansSubdomainPath,
-  normalizePortalPathname,
-  resolvePortalHref,
   resolveRoutingHostname,
   shouldBypassSubdomainRewrite,
 } from "@/lib/host-routing";
@@ -15,43 +11,20 @@ describe("host routing", () => {
     expect(isAdminHostname("admin.gikundiro.com")).toBe(true);
     expect(isAdminHostname("admin.gikundiro.com:443")).toBe(true);
     expect(isAdminHostname("gikundiro.com")).toBe(false);
-
-    expect(isFansHostname("fans.gikundiro.com")).toBe(true);
-    expect(isFansHostname("fans.gikundiro.com:443")).toBe(true);
-    expect(isFansHostname("www.gikundiro.com")).toBe(false);
   });
 
   it("normalizes forwarded host values", () => {
     expect(
       resolveRoutingHostname(
-        "fans.gikundiro.com, gikundiro-web.ikanisa.workers.dev",
+        "admin.gikundiro.com, gikundiro-web.ikanisa.workers.dev",
       ),
-    ).toBe("fans.gikundiro.com");
+    ).toBe("admin.gikundiro.com");
   });
 
   it("rewrites admin host paths to the /admin route group", () => {
     expect(mapAdminSubdomainPath("/")).toBe("/admin");
     expect(mapAdminSubdomainPath("/matches")).toBe("/admin/matches");
     expect(mapAdminSubdomainPath("/admin")).toBe("/admin");
-  });
-
-  it("rewrites fans host paths to the /app route group", () => {
-    expect(mapFansSubdomainPath("/")).toBe("/app");
-    expect(mapFansSubdomainPath("/tickets")).toBe("/app/tickets");
-    expect(mapFansSubdomainPath("/app")).toBe("/app");
-    expect(mapFansSubdomainPath("/app/fan-clubs")).toBe("/app/fan-clubs");
-  });
-
-  it("normalizes clean fans-host paths for portal route matching", () => {
-    expect(normalizePortalPathname("/home")).toBe("/app/home");
-    expect(normalizePortalPathname("/tickets")).toBe("/app/tickets");
-    expect(normalizePortalPathname("/app/shop")).toBe("/app/shop");
-  });
-
-  it("resolves host-aware portal hrefs", () => {
-    expect(resolvePortalHref("/home", "/app/home")).toBe("/home");
-    expect(resolvePortalHref("/home", "/app/tickets")).toBe("/tickets");
-    expect(resolvePortalHref("/app/home", "/app/tickets")).toBe("/app/tickets");
   });
 
   it("bypasses static assets and shared PWA endpoints", () => {

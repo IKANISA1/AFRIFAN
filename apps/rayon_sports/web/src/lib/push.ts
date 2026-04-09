@@ -85,7 +85,7 @@ export async function sendSubscriptionToServer(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Gikundiro-CSRF": "1",
+        "X-Africlub-CSRF": "1",
       },
       body: JSON.stringify({
         action: "subscribe",
@@ -116,7 +116,7 @@ export async function unsubscribeFromPush(
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Gikundiro-CSRF": "1",
+          "X-Africlub-CSRF": "1",
         },
         body: JSON.stringify({
           action: "unsubscribe",
@@ -143,7 +143,7 @@ export async function sendTestPush(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Gikundiro-CSRF": "1",
+        "X-Africlub-CSRF": "1",
       },
       body: JSON.stringify({
         action: "test",

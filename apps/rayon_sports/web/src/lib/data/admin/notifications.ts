@@ -48,6 +48,7 @@ export async function getAdminNotificationContext(client: SupabaseClient, access
 export async function sendAdminNotification(
   client: SupabaseClient,
   payload: { title: string; body: string; audience: "all_fans" | "by_tier" | "by_group"; tier?: string | null; groupId?: string | null; groupName?: string | null; deliveryMode: "send_now" | "schedule"; scheduledAt?: string | null; imageUrl?: string | null },
+  access?: AdminAccess,
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<unknown>("notifications", {
@@ -55,8 +56,23 @@ export async function sendAdminNotification(
       body: payload,
     });
   }
+  const clubId = requireAdminClubId(
+    access ?? { clubId: null },
+    "send notifications",
+  );
   const response = await client.functions.invoke("admin-send-notification", {
-    body: { title: payload.title, body: payload.body, audience: payload.audience, tier: payload.tier, group_id: payload.groupId, group_name: payload.groupName, delivery_mode: payload.deliveryMode, scheduled_at: payload.scheduledAt, image_url: payload.imageUrl },
+    body: {
+      club_id: clubId,
+      title: payload.title,
+      body: payload.body,
+      audience: payload.audience,
+      tier: payload.tier,
+      group_id: payload.groupId,
+      group_name: payload.groupName,
+      delivery_mode: payload.deliveryMode,
+      scheduled_at: payload.scheduledAt,
+      image_url: payload.imageUrl,
+    },
   });
 
   if (response.error) {

@@ -19,15 +19,18 @@ interface DynamicHeroImageProps {
 export function DynamicHeroImage({
   images,
   intervalMs = 6000,
-  alt = "Rayon Sports matchday atmosphere",
+  alt = "Club matchday atmosphere",
 }: DynamicHeroImageProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isReducedMotion, setIsReducedMotion] = useState(false);
+  const [isReducedMotion, setIsReducedMotion] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      : false,
+  );
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setIsReducedMotion(mq.matches);
     const handler = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);

@@ -3,19 +3,24 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { NewsCard } from "@/components/news-card";
 import { PageHero } from "@/components/page-hero";
-import { getNewsArticles } from "@/lib/data/public";
+import { getClubProfile, getNewsArticles } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 import { formatDate, getReadingTime } from "@/lib/utils";
 
-export const metadata = buildPageMetadata({
-  title: "Rayon Sports news",
-  description:
-    "Official Rayon Sports news, matchday updates, supporter features, and club announcements.",
-  path: "/news",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: `${club.shortName} news`,
+    description: `Official ${club.shortName} news, matchday updates, supporter features, and club announcements.`,
+    path: "/news",
+  });
+}
 
 export default async function NewsPage() {
-  const articles = await getNewsArticles();
+  const [club, articles] = await Promise.all([
+    getClubProfile(),
+    getNewsArticles(),
+  ]);
   const [featuredArticle, ...secondaryArticles] = articles;
 
   return (
@@ -23,7 +28,7 @@ export default async function NewsPage() {
       <PageHero
         eyebrow="Newsroom"
         title="Club news, matchday, and supporter stories."
-        description="Latest updates from Rayon Sports, with direct paths into fixtures, tickets, membership, and supporter campaigns."
+        description={`Latest updates from ${club.shortName}, with direct paths into fixtures, tickets, membership, and supporter campaigns.`}
         actions={
           <>
             <Link

@@ -17,6 +17,8 @@ describe("admin data helpers", () => {
 
     expect(access.hasAccess).toBe(true);
     expect(access.clubId).toBe("24");
+    expect(access.availableClubIds).toEqual(["24"]);
+    expect(access.canSelectClub).toBe(false);
     expect(access.role).toBe("club_admin");
   });
 
@@ -48,6 +50,7 @@ describe("admin data helpers", () => {
     expect(access.hasAccess).toBe(true);
     expect(access.isSuperAdmin).toBe(true);
     expect(access.role).toBe("admin");
+    expect(access.canSelectClub).toBe(true);
   });
 
   it("prefers app_metadata.role over user_metadata.role for display", () => {
@@ -86,6 +89,59 @@ describe("admin data helpers", () => {
     expect(clubAccess.role).toBe("club_admin");
     expect(bankAccess.hasAccess).toBe(true);
     expect(bankAccess.role).toBe("club_moderator");
+  });
+
+  it("allows a privileged admin to select a requested club context", () => {
+    const access = deriveAdminAccess(
+      {
+        app_metadata: {},
+        user_metadata: {},
+      },
+      [
+        { role: "admin", club_id: 24, is_active: true },
+        { role: "admin", club_id: 48, is_active: true },
+      ],
+      { requestedClubId: "48" },
+    );
+
+    expect(access.hasAccess).toBe(true);
+    expect(access.clubId).toBe("48");
+    expect(access.availableClubIds).toEqual(["24", "48"]);
+    expect(access.canSelectClub).toBe(true);
+  });
+
+  it("denies a club admin who requests an unauthorized club context", () => {
+    const access = deriveAdminAccess(
+      {
+        app_metadata: {},
+        user_metadata: { club_id: 24 },
+      },
+      [{ role: "club_admin", club_id: 24, is_active: true }],
+      { requestedClubId: "99" },
+    );
+
+    expect(access.hasAccess).toBe(false);
+    expect(access.clubId).toBeNull();
+    expect(access.availableClubIds).toEqual(["24"]);
+    expect(access.role).toBe("club_admin");
+  });
+
+  it("exposes all assigned clubs for multi-club admins without changing access scope", () => {
+    const access = deriveAdminAccess(
+      {
+        app_metadata: {},
+        user_metadata: { club_id: 24 },
+      },
+      [
+        { role: "club_admin", club_id: 24, is_active: true },
+        { role: "club_admin", club_id: 48, is_active: true },
+      ],
+    );
+
+    expect(access.hasAccess).toBe(true);
+    expect(access.clubId).toBe("24");
+    expect(access.availableClubIds).toEqual(["24", "48"]);
+    expect(access.canSelectClub).toBe(true);
   });
 
   it("denies access for null user", () => {

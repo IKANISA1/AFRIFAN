@@ -52,7 +52,7 @@ Sports
 support@ikanisa.com
 
 ## Website
-https://gikundiro.ikanisa.com
+https://gikundiro.com
 
 ## Privacy Policy URL
-https://gikundiro.ikanisa.com/privacy
+https://gikundiro.com/privacy

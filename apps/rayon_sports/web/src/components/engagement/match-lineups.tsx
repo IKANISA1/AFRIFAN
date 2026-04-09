@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface PlayerSnippet {
@@ -26,7 +26,6 @@ interface MatchLineupsProps {
 
 export function MatchLineups({ home, away }: MatchLineupsProps) {
   const [activeTab, setActiveTab] = useState<"home" | "away">("home");
-  const idPrefix = useId();
   
   const activeTeam = activeTab === "home" ? home : away;
   

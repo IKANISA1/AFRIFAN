@@ -52,11 +52,10 @@ export function trackPwaEvent({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Gikundiro-CSRF": "1",
+      "X-Africlub-CSRF": "1",
     },
     body,
     keepalive: true,
     credentials: "same-origin",
   }).catch(() => {});
 }
-

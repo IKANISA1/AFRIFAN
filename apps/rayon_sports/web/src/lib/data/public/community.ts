@@ -2,7 +2,7 @@
  * Public membership, fan clubs, contributions, standings, squad.
  */
 import { cache } from "react";
-import { rayonClub } from "@/lib/config";
+import { getActiveClubReference } from "@/lib/club-context";
 import {
   fallbackContributionGroups,
   fallbackFanClubs,
@@ -86,7 +86,7 @@ function mapFanClubRow(row: Record<string, unknown>): FanClubItem {
     region: safeString(row.region, "Official"),
     description: safeString(
       row.description,
-      "A Rayon Sports supporter chapter.",
+      "An official supporter chapter.",
     ),
     memberCount: safeNumber(row.member_count, 0),
     eventCount: safeNumber(row.event_count, 0),
@@ -119,7 +119,11 @@ function mapContributionGroupRow(row: Record<string, unknown>): ContributionGrou
   };
 }
 
-function mapStandingRow(row: Record<string, unknown>, index: number): StandingRow {
+function mapStandingRow(
+  row: Record<string, unknown>,
+  index: number,
+  activeClubSlug: string,
+): StandingRow {
   const club = safeString(
     row.club_name,
     safeString(row.club, safeString(row.team_name, `Club ${index + 1}`)),
@@ -139,8 +143,8 @@ function mapStandingRow(row: Record<string, unknown>, index: number): StandingRo
     points: safeNumber(row.points, safeNumber(row.pts, 0)),
     form,
     highlight:
-      safeString(row.club_slug) === rayonClub.slug ||
-      club.toLowerCase().includes("rayon"),
+      safeString(row.club_slug) === activeClubSlug ||
+      club.toLowerCase().includes(activeClubSlug.replaceAll("_", " ")),
   };
 }
 
@@ -158,7 +162,7 @@ function mapSquadRow(row: Record<string, unknown>): SquadPlayer {
       safeString(row.bio) ||
       safeString(row.description) ||
       safeString(row.player_summary) ||
-      "Rayon Sports first-team squad member.",
+      "First-team squad member.",
   };
 }
 
@@ -166,33 +170,23 @@ function mapSquadRow(row: Record<string, unknown>): SquadPlayer {
 
 export const getMembershipPackages = cache(async function getMembershipPackages() {
   const client = getAdminSupabase();
+  const activeClub = await getActiveClubReference();
   if (client == null) return fallbackMembershipPackages;
 
   try {
-    const scoped = await client
+    const { data } = await client
       .from("membership_packages")
       .select("*")
-      .eq("club_id", rayonClub.numericId)
+      .eq("club_id", activeClub.numericId)
       .eq("is_active", true)
       .order("sort_order", { ascending: true })
       .limit(6);
 
-    if (scoped.data && scoped.data.length > 0) {
-      return scoped.data.map((row) => mapMembershipRow(row));
-    }
-
-    const fallbackQuery = await client
-      .from("membership_packages")
-      .select("*")
-      .eq("is_active", true)
-      .order("sort_order", { ascending: true })
-      .limit(6);
-
-    if (!fallbackQuery.data || fallbackQuery.data.length == 0) {
+    if (!data || data.length == 0) {
       return fallbackMembershipPackages;
     }
 
-    return fallbackQuery.data.map((row) => mapMembershipRow(row));
+    return data.map((row) => mapMembershipRow(row));
   } catch {
     return fallbackMembershipPackages;
   }
@@ -200,31 +194,22 @@ export const getMembershipPackages = cache(async function getMembershipPackages(
 
 export const getFanClubs = cache(async function getFanClubs() {
   const client = getAdminSupabase();
+  const activeClub = await getActiveClubReference();
   if (client == null) return fallbackFanClubs;
 
   try {
-    const scoped = await client
+    const { data } = await client
       .from("fan_clubs")
       .select("*")
-      .eq("club_id", rayonClub.numericId)
+      .eq("club_id", activeClub.numericId)
       .order("member_count", { ascending: false })
       .limit(12);
 
-    if (scoped.data && scoped.data.length > 0) {
-      return scoped.data.map((row) => mapFanClubRow(row));
-    }
-
-    const fallbackQuery = await client
-      .from("fan_clubs")
-      .select("*")
-      .order("member_count", { ascending: false })
-      .limit(12);
-
-    if (!fallbackQuery.data || fallbackQuery.data.length == 0) {
+    if (!data || data.length == 0) {
       return fallbackFanClubs;
     }
 
-    return fallbackQuery.data.map((row) => mapFanClubRow(row));
+    return data.map((row) => mapFanClubRow(row));
   } catch {
     return fallbackFanClubs;
   }
@@ -232,33 +217,23 @@ export const getFanClubs = cache(async function getFanClubs() {
 
 export const getContributionGroups = cache(async function getContributionGroups() {
   const client = getAdminSupabase();
+  const activeClub = await getActiveClubReference();
   if (client == null) return fallbackContributionGroups;
 
   try {
-    const scoped = await client
+    const { data } = await client
       .from("contribution_groups")
       .select("*")
-      .eq("club_id", rayonClub.numericId)
+      .eq("club_id", activeClub.numericId)
       .eq("is_active", true)
       .order("created_at", { ascending: false })
       .limit(8);
 
-    if (scoped.data && scoped.data.length > 0) {
-      return scoped.data.map((row) => mapContributionGroupRow(row));
-    }
-
-    const fallbackQuery = await client
-      .from("contribution_groups")
-      .select("*")
-      .eq("is_closed", false)
-      .order("created_at", { ascending: false })
-      .limit(8);
-
-    if (!fallbackQuery.data || fallbackQuery.data.length == 0) {
+    if (!data || data.length == 0) {
       return fallbackContributionGroups;
     }
 
-    return fallbackQuery.data.map((row) => mapContributionGroupRow(row));
+    return data.map((row) => mapContributionGroupRow(row));
   } catch {
     return fallbackContributionGroups;
   }
@@ -266,6 +241,7 @@ export const getContributionGroups = cache(async function getContributionGroups(
 
 export const getStandings = cache(async function getStandings(): Promise<StandingRow[]> {
   const client = getAdminSupabase();
+  const activeClub = await getActiveClubReference();
   if (client == null) {
     return fallbackStandings;
   }
@@ -275,22 +251,14 @@ export const getStandings = cache(async function getStandings(): Promise<Standin
     const scopedQuery = await client
       .from(table)
       .select("*")
-      .eq("club_id", rayonClub.numericId)
+      .eq("club_id", activeClub.numericId)
       .order("position", { ascending: true })
       .limit(20);
 
     if (scopedQuery.data && scopedQuery.data.length >= 6) {
-      return scopedQuery.data.map((row, index) => mapStandingRow(row, index));
-    }
-
-    const fallbackQuery = await client
-      .from(table)
-      .select("*")
-      .order("position", { ascending: true })
-      .limit(20);
-
-    if (fallbackQuery.data && fallbackQuery.data.length > 0) {
-      return fallbackQuery.data.map((row, index) => mapStandingRow(row, index));
+      return scopedQuery.data.map((row, index) =>
+        mapStandingRow(row, index, activeClub.slug),
+      );
     }
   } catch {}
 
@@ -299,6 +267,7 @@ export const getStandings = cache(async function getStandings(): Promise<Standin
 
 export const getSquad = cache(async function getSquad(): Promise<SquadPlayer[]> {
   const client = getAdminSupabase();
+  const activeClub = await getActiveClubReference();
   if (client == null) {
     return fallbackSquad;
   }
@@ -308,22 +277,12 @@ export const getSquad = cache(async function getSquad(): Promise<SquadPlayer[]> 
     const scopedQuery = await client
       .from(table)
       .select("*")
-      .eq("club_id", rayonClub.numericId)
+      .eq("club_id", activeClub.numericId)
       .order("shirt_number", { ascending: true })
       .limit(30);
 
     if (scopedQuery.data && scopedQuery.data.length > 0) {
       return scopedQuery.data.map((row) => mapSquadRow(row));
-    }
-
-    const fallbackQuery = await client
-      .from(table)
-      .select("*")
-      .order("shirt_number", { ascending: true })
-      .limit(30);
-
-    if (fallbackQuery.data && fallbackQuery.data.length > 0) {
-      return fallbackQuery.data.map((row) => mapSquadRow(row));
     }
   } catch {}
 

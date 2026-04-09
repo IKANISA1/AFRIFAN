@@ -217,6 +217,19 @@ void main() {
       expect(product.availableSizes, hasLength(4));
     });
 
+    test('falls back to club_id when partner_id is absent', () {
+      final product = ClubProduct.fromJson({
+        'id': 'prod-2',
+        'club_id': 24,
+        'name': 'Away Jersey',
+        'category': 'jersey',
+        'price': 42000,
+        'is_active': true,
+      });
+
+      expect(product.partnerId, '24');
+    });
+
     test('discountedPrice calculates correctly', () {
       final product = ClubProduct.fromJson({
         'id': 'p-1',
@@ -257,6 +270,68 @@ void main() {
       final updated = item.copyWith(quantity: 5);
       expect(updated.quantity, 5);
       expect(updated.product.id, 'p-3');
+    });
+  });
+
+  group('club scoped compatibility fields', () {
+    test('FanMembership falls back to club_id when partner_id is absent', () {
+      final membership = FanMembership.fromJson({
+        'id': 'membership-1',
+        'user_id': 'user-1',
+        'club_id': 24,
+        'tier': 'fan',
+        'points': 10,
+        'chapter': 'Main',
+        'membership_number': 'FAN-24',
+        'joined_at': '2026-01-01T00:00:00Z',
+      });
+
+      expect(membership.partnerId, '24');
+    });
+
+    test('FanClub falls back to club_id when partner_id is absent', () {
+      final club = FanClub.fromJson({
+        'id': 'club-1',
+        'club_id': 24,
+        'name': 'Kigali Blue Army',
+        'region': 'Kigali',
+      });
+
+      expect(club.partnerId, '24');
+    });
+
+    test('ClubShopOrder falls back to club_id when partner_id is absent', () {
+      final order = ClubShopOrder.fromJson({
+        'id': 'order-1',
+        'user_id': 'user-1',
+        'club_id': 24,
+        'items': const [],
+        'subtotal': 1000,
+        'discount_amount': 0,
+        'delivery_fee': 0,
+        'total': 1000,
+        'status': 'pending',
+        'created_at': '2026-01-01T00:00:00Z',
+      });
+
+      expect(order.partnerId, '24');
+    });
+
+    test('PartnerPaymentRoute falls back to club_id when partner_id is absent',
+        () {
+      final route = PartnerPaymentRoute.fromJson({
+        'id': 'route-1',
+        'club_id': 24,
+        'partner_name': 'Rayon Sports FC',
+        'partner_slug': 'rayon_sports',
+        'country': 'RW',
+        'provider': 'mtn',
+        'recipient_code': '123456',
+        'reconciliation_label': 'Matchday',
+        'status': 'active',
+      });
+
+      expect(route.partnerId, '24');
     });
   });
 }

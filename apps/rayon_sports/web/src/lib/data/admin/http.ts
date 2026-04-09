@@ -13,6 +13,14 @@ export async function requestAdminApi<T>(
   options: AdminApiOptions = {},
 ): Promise<T> {
   const url = new URL(`/api/admin/${resource}`, window.location.origin);
+  const currentParams = new URL(window.location.href).searchParams;
+  const requestedClubId =
+    currentParams.get("club") ?? currentParams.get("club_id");
+
+  if (requestedClubId && options.query?.club == null && options.query?.club_id == null) {
+    url.searchParams.set("club", requestedClubId);
+  }
+
   for (const [key, value] of Object.entries(options.query ?? {})) {
     if (value == null) {
       continue;
@@ -27,7 +35,7 @@ export async function requestAdminApi<T>(
         ? undefined
         : {
             "Content-Type": "application/json",
-            "X-Gikundiro-CSRF": "1",
+            "X-Africlub-CSRF": "1",
           },
     body:
       options.body === undefined ? undefined : JSON.stringify(options.body),
@@ -45,7 +53,7 @@ export async function requestAdminApi<T>(
           ? undefined
           : {
               "Content-Type": "application/json",
-              "X-Gikundiro-CSRF": "1",
+              "X-Africlub-CSRF": "1",
             },
       body:
         options.body === undefined ? undefined : JSON.stringify(options.body),

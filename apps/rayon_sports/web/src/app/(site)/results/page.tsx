@@ -2,34 +2,39 @@ import Link from "next/link";
 import { ArrowRight, Trophy } from "lucide-react";
 import { MatchCard } from "@/components/match-card";
 import { PageHero } from "@/components/page-hero";
-import { getMatches } from "@/lib/data/public";
+import { getClubProfile, getMatches } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 import { isResultMatch } from "@/lib/utils";
 
-export const metadata = buildPageMetadata({
-  title: "Rayon Sports results",
-  description:
-    "Official Rayon Sports results with recent scorelines, match context, and links into the next fixture.",
-  path: "/results",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: `${club.shortName} results`,
+    description: `Official ${club.shortName} results with recent scorelines, match context, and links into the next fixture.`,
+    path: "/results",
+  });
+}
 
-function getRayonScoreline(match: Awaited<ReturnType<typeof getMatches>>[number]) {
-  const rayonIsHome = match.homeTeam.toLowerCase().includes("rayon");
+function getClubScoreline(
+  match: Awaited<ReturnType<typeof getMatches>>[number],
+  clubName: string,
+) {
+  const clubIsHome = match.homeTeam.toLowerCase().includes(clubName.toLowerCase());
   return {
-    goalsFor: rayonIsHome ? match.homeScore : match.awayScore,
-    goalsAgainst: rayonIsHome ? match.awayScore : match.homeScore,
+    goalsFor: clubIsHome ? match.homeScore : match.awayScore,
+    goalsAgainst: clubIsHome ? match.awayScore : match.homeScore,
   };
 }
 
 export default async function ResultsPage() {
-  const matches = await getMatches();
+  const [club, matches] = await Promise.all([getClubProfile(), getMatches()]);
   const results = matches.filter((match) => isResultMatch(match.matchStatus));
   const wins = results.filter((match) => {
-    const scoreline = getRayonScoreline(match);
+    const scoreline = getClubScoreline(match, club.shortName);
     return scoreline.goalsFor > scoreline.goalsAgainst;
   }).length;
   const goalsFor = results.reduce(
-    (total, match) => total + getRayonScoreline(match).goalsFor,
+    (total, match) => total + getClubScoreline(match, club.shortName).goalsFor,
     0,
   );
 
@@ -38,7 +43,7 @@ export default async function ResultsPage() {
       <PageHero
         eyebrow="Results"
         title="Recent results and match momentum."
-        description="See final scores, match summaries, and the direct route into the next Rayon Sports fixture."
+        description={`See final scores, match summaries, and the direct route into the next ${club.shortName} fixture.`}
         actions={
           <>
             <Link
@@ -65,7 +70,12 @@ export default async function ResultsPage() {
       <section className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
         <div className="grid gap-5 lg:grid-cols-2">
           {results.map((match) => (
-            <MatchCard key={match.id} match={match} />
+            <MatchCard
+              key={match.id}
+              match={match}
+              clubName={club.shortName}
+              clubLogoUrl={club.officialLogoUrl}
+            />
           ))}
         </div>
 

@@ -2,7 +2,6 @@
 
 import type { Dispatch, SetStateAction } from "react";
 import { Skeleton } from "@/components/skeleton";
-import { rayonClub } from "@/lib/config";
 import type { SettingsForm } from "./settings-form-state";
 
 interface BrandPreviewProps {
@@ -45,11 +44,11 @@ export function BrandPreview({ form, setForm, loading }: BrandPreviewProps) {
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Club slug</p>
-                <p className="mt-2 font-display text-2xl font-bold uppercase">{rayonClub.slug}</p>
+                <p className="mt-2 font-display text-2xl font-bold uppercase">{form.clubSlug}</p>
               </div>
               <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Numeric id</p>
-                <p className="mt-2 font-display text-2xl font-bold uppercase">{rayonClub.numericId}</p>
+                <p className="mt-2 font-display text-2xl font-bold uppercase">{form.id}</p>
               </div>
             </div>
           </div>

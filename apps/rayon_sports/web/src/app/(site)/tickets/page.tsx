@@ -2,19 +2,21 @@ import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 import { MatchCard } from "@/components/match-card";
 import { PageHero } from "@/components/page-hero";
-import { getMatches } from "@/lib/data/public";
+import { getClubProfile, getMatches } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 import { formatCurrency } from "@/lib/utils";
 
-export const metadata = buildPageMetadata({
-  title: "Rayon Sports tickets",
-  description:
-    "Official Rayon Sports ticket hub with fixture detail, live pricing, and secure checkout in the fan portal.",
-  path: "/tickets",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  return buildPageMetadata({
+    title: `${club.shortName} tickets`,
+    description: `Official ${club.shortName} ticket hub with fixture detail, live pricing, and secure checkout continuation in the fan app.`,
+    path: "/tickets",
+  });
+}
 
 export default async function TicketsPage() {
-  const matches = await getMatches();
+  const [club, matches] = await Promise.all([getClubProfile(), getMatches()]);
   const ticketed = matches.filter((match) => match.isOnSale || match.matchStatus === "live");
   const cheapest = ticketed.reduce(
     (lowest, match) => Math.min(lowest, match.generalPrice),
@@ -26,14 +28,14 @@ export default async function TicketsPage() {
       <PageHero
         eyebrow="Ticketing"
         title="Tickets and matchday access."
-        description="See venue, kickoff, pricing, and availability before moving into secure checkout in the fan portal."
+        description={`See venue, kickoff, pricing, and availability before moving into secure checkout in the ${club.shortName} fan app.`}
         actions={
           <>
             <Link
-              href="/app/tickets"
+              href="/supporters"
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Purchase in portal
+              Continue in fan app
             </Link>
             <Link
               href="/membership"
@@ -49,7 +51,7 @@ export default async function TicketsPage() {
             label: "From",
             value: cheapest ? formatCurrency(cheapest) : formatCurrency(0),
           },
-          { label: "Portal", value: "Secure" },
+          { label: "Checkout", value: "Fan app" },
         ]}
       />
 
@@ -60,6 +62,8 @@ export default async function TicketsPage() {
               key={match.id}
               match={match}
               href={`/tickets/${match.id}`}
+              clubName={club.shortName}
+              clubLogoUrl={club.officialLogoUrl}
             />
           ))}
         </div>

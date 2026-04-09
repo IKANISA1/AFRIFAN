@@ -69,7 +69,7 @@ export function buildNewsArticleJsonLd(article: NewsArticle) {
     },
     publisher: {
       "@type": "SportsOrganization",
-      name: "Rayon Sports FC",
+      name: siteConfig.shortTitle,
       logo: {
         "@type": "ImageObject",
         url: absoluteUrl("/icons/icon-192x192.png"),
@@ -125,7 +125,7 @@ export function buildProductJsonLd(product: ShopProduct) {
     image: absoluteUrl(product.imageUrl ?? "/media/stadium-hero.jpg"),
     brand: {
       "@type": "Brand",
-      name: "Rayon Sports FC",
+      name: siteConfig.shortTitle,
     },
     category: product.category,
     sku: product.id,
@@ -148,25 +148,19 @@ export function buildSiteJsonLd() {
       {
         "@type": "WebSite",
         name: siteConfig.shortTitle,
-        alternateName: "Rayon Sports FC",
+        alternateName: siteConfig.title,
         url: siteConfig.siteUrl,
         description: siteConfig.description,
         inLanguage: ["en", "fr", "rw"],
       },
       {
         "@type": "SportsOrganization",
-        name: "Rayon Sports FC",
+        name: siteConfig.title,
         alternateName: siteConfig.shortTitle,
         url: siteConfig.siteUrl,
         logo: absoluteUrl("/icons/icon-192x192.png"),
         sport: "Association football",
         description: siteConfig.description,
-        sameAs: [
-          "https://fb.com/RayonSportsOfficial",
-          "https://x.com/rayon_sports",
-          "https://instagram.com/rayonsports_official",
-          "https://tiktok.com/@rayonsports",
-        ],
       },
     ],
   };

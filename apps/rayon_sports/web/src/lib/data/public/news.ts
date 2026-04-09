@@ -2,7 +2,7 @@
  * Public news articles data.
  */
 import { cache } from "react";
-import { rayonClub } from "@/lib/config";
+import { getActiveClubReference } from "@/lib/club-context";
 import { fallbackNewsArticles } from "@/lib/content";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import type { NewsArticle } from "@/lib/types";
@@ -30,7 +30,7 @@ function mapNewsRow(row: Record<string, unknown>): NewsArticle {
       safeString(row.article_id) ||
       toIdString(row.id, crypto.randomUUID()),
     title: safeString(row.title, "Club update"),
-    excerpt: excerptCandidate || "Rayon Sports club update.",
+    excerpt: excerptCandidate || "Official club update.",
     content,
     category: safeString(row.category, "Club"),
     coverImageUrl: sanitizeMediaUrl(
@@ -47,6 +47,7 @@ function mapNewsRow(row: Record<string, unknown>): NewsArticle {
 
 export const getNewsArticles = cache(async function getNewsArticles() {
   const client = getAdminSupabase();
+  const activeClub = await getActiveClubReference();
   if (client == null) return fallbackNewsArticles;
 
   try {
@@ -54,7 +55,7 @@ export const getNewsArticles = cache(async function getNewsArticles() {
     const { data } = await client
       .from(table)
       .select("*")
-      .eq("club_id", rayonClub.numericId)
+      .eq("club_id", activeClub.numericId)
       .eq("is_published", true)
       .order("published_at", { ascending: false })
       .limit(12);

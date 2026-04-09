@@ -8,8 +8,10 @@ APP_DIR="$ROOT/apps/$APP_SLUG"
 PRODUCTION_JSON="$APP_DIR/assets/flavors/production.json"
 STAGING_JSON="$APP_DIR/assets/flavors/staging.json"
 ANDROID_KEY_PROPERTIES="$APP_DIR/android/key.properties"
+ANDROID_KEYSTORE_PROPERTIES="$APP_DIR/android/keystore.properties"
 ANDROID_KEYSTORE="$APP_DIR/android/upload-keystore.jks"
 ANDROID_APP_KEYSTORE="$APP_DIR/android/app/upload-keystore.jks"
+PLAY_STORE_SERVICE_ACCOUNT_JSON="$APP_DIR/android/fastlane/play-store-service-account.json"
 ANDROID_MAIN_ACTIVITY="$(find "$APP_DIR/android/app/src/main/kotlin" -name MainActivity.kt | head -n 1)"
 
 if [ ! -d "$APP_DIR" ]; then
@@ -27,9 +29,13 @@ if [ ! -f "$STAGING_JSON" ]; then
   exit 1
 fi
 
+bash "$ROOT/tools/scripts/validate_ios_release_contract.sh" "$APP_SLUG"
+
 python3 - "$PRODUCTION_JSON" "$APP_DIR" <<'PY'
 import json
 import pathlib
+import urllib.error
+import urllib.request
 import sys
 
 config_path = pathlib.Path(sys.argv[1])
@@ -61,7 +67,92 @@ crest_asset = pathlib.Path(config["CREST_ASSET"])
 crest_path = app_dir / crest_asset
 if not crest_path.exists():
     raise SystemExit(f"Configured crest asset does not exist: {crest_path}")
+
+def verify_public_url(url: str, label: str) -> None:
+    if not url.startswith("https://"):
+        raise SystemExit(f"{label} must use HTTPS: {url}")
+
+    headers = {"User-Agent": "Mozilla/5.0 (release-validator)"}
+    attempts = [
+        urllib.request.Request(url, headers=headers, method="HEAD"),
+        urllib.request.Request(url, headers=headers, method="GET"),
+    ]
+    last_error = None
+    for request in attempts:
+        try:
+            with urllib.request.urlopen(request, timeout=15) as response:
+                status = getattr(response, "status", 200) or 200
+                if 200 <= status < 400:
+                    return
+                last_error = f"HTTP {status}"
+        except urllib.error.HTTPError as exc:
+            if 200 <= exc.code < 400:
+                return
+            last_error = f"HTTP {exc.code}"
+        except Exception as exc:  # noqa: BLE001
+            last_error = str(exc)
+
+    raise SystemExit(f"{label} is not publicly reachable: {url} ({last_error})")
+
+verify_public_url(config["APP_WEBSITE_URL"], "APP_WEBSITE_URL")
+verify_public_url(config["APP_PRIVACY_URL"], "APP_PRIVACY_URL")
+verify_public_url(config["APP_TERMS_URL"], "APP_TERMS_URL")
 PY
+
+python3 - "$PRODUCTION_JSON" \
+  "$APP_DIR/store_metadata/play_store/listing.md" \
+  "$APP_DIR/store_metadata/privacy_policy.html" \
+  "$APP_DIR/landing/privacy/index.html" \
+  "$APP_DIR/landing/terms/index.html" <<'PY'
+import json
+import pathlib
+import sys
+
+config = json.loads(pathlib.Path(sys.argv[1]).read_text())
+support_email = config["APP_SUPPORT_EMAIL"]
+website_url = config["APP_WEBSITE_URL"]
+privacy_url = config["APP_PRIVACY_URL"]
+
+checks = {
+    pathlib.Path(sys.argv[2]): [support_email, website_url, privacy_url],
+    pathlib.Path(sys.argv[3]): [support_email, website_url],
+    pathlib.Path(sys.argv[4]): [support_email, website_url],
+    pathlib.Path(sys.argv[5]): [support_email, website_url],
+}
+
+missing = []
+for path, expected_values in checks.items():
+    if not path.exists():
+      missing.append(f"missing file: {path}")
+      continue
+    content = path.read_text()
+    for value in expected_values:
+      if value not in content:
+        missing.append(f"{path}: missing expected value {value}")
+
+if missing:
+    raise SystemExit("\n".join(missing))
+PY
+
+STALE_RELEASE_HITS="$(
+  rg -n -F \
+    -e 'rw.rayonsport.gikundiro' \
+    -e 'gikundiro.ikanisa.com' \
+    -e 'support@gikundiro.ikanisa.com' \
+    -e 'Firebase (crash analytics)' \
+    -e '| Email address | Yes | No | Account authentication | Yes |' \
+    -e '**Account management**: Email/phone for authentication' \
+    -e 'Transaction records are retained for 12 months' \
+    "$APP_DIR" \
+    "$ROOT/packages/features/feat_settings/lib/src/settings_actions.dart" \
+    || true
+)"
+
+if [ -n "$STALE_RELEASE_HITS" ]; then
+  echo "Stale release metadata or package identifiers detected for $APP_SLUG." >&2
+  echo "$STALE_RELEASE_HITS" >&2
+  exit 1
+fi
 
 CLUB_CONFIG_PATH="$(find "$ROOT/packages/clubs" -path "*club_${APP_SLUG}/lib/src/*config.dart" | head -n 1)"
 if [ -n "$CLUB_CONFIG_PATH" ] && rg -q "bool get hasBiopay => true;" "$CLUB_CONFIG_PATH"; then
@@ -73,8 +164,23 @@ if [ -n "$CLUB_CONFIG_PATH" ] && rg -q "bool get hasBiopay => true;" "$CLUB_CONF
   fi
 fi
 
-if [ -f "$ANDROID_KEY_PROPERTIES" ] || [ -f "$ANDROID_KEYSTORE" ] || [ -f "$ANDROID_APP_KEYSTORE" ]; then
-  echo "Committed Android signing material detected for $APP_SLUG." >&2
+tracked_signing_files=()
+for candidate in \
+  "$ANDROID_KEY_PROPERTIES" \
+  "$ANDROID_KEYSTORE_PROPERTIES" \
+  "$ANDROID_KEYSTORE" \
+  "$ANDROID_APP_KEYSTORE" \
+  "$PLAY_STORE_SERVICE_ACCOUNT_JSON"; do
+  relative_path="${candidate#"$ROOT"/}"
+  if [ -e "$candidate" ] && git -C "$ROOT" ls-files --error-unmatch "$relative_path" >/dev/null 2>&1; then
+    tracked_signing_files+=("$relative_path")
+  fi
+done
+
+if [ "${#tracked_signing_files[@]}" -gt 0 ]; then
+  echo "Committed mobile release credentials detected for $APP_SLUG." >&2
+  printf 'Tracked files:\n' >&2
+  printf '  - %s\n' "${tracked_signing_files[@]}" >&2
   exit 1
 fi
 

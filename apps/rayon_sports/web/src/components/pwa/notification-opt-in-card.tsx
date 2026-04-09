@@ -161,7 +161,7 @@ export function NotificationOptInCard({
       }
 
       const success = await sendTestPush(subscription, {
-        title: "Gikundiro match alerts",
+        title: "Official club alerts",
         body: "Your browser is ready for live match, ticket, and supporter updates.",
         url: path,
       });
@@ -236,4 +236,3 @@ export function NotificationOptInCard({
     </section>
   );
 }
-

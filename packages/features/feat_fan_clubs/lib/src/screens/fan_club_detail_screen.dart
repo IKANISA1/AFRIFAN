@@ -5,6 +5,26 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+int? _currentClubId(SupabaseClient client) {
+  final user = client.auth.currentUser;
+  final candidates = <Object?>[
+    user?.appMetadata['club_id'],
+    user?.userMetadata?['club_id'],
+    user?.appMetadata['clubId'],
+    user?.userMetadata?['clubId'],
+  ];
+
+  for (final candidate in candidates) {
+    final parsed = int.tryParse(candidate?.toString().trim() ?? '');
+    if (parsed != null) {
+      return parsed;
+    }
+  }
+
+  return null;
+}
 
 class FanClubDetailScreen extends ConsumerStatefulWidget {
   const FanClubDetailScreen({required this.clubId, super.key});
@@ -37,10 +57,20 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
 
     try {
       final client = ref.read(supabaseClientProvider);
+      final clubId = _currentClubId(client);
+      if (clubId == null) {
+        if (!mounted) return;
+        setState(() {
+          _isLoading = false;
+          _error = 'Could not resolve the active club.';
+        });
+        return;
+      }
       final clubRow = await client
           .from('fan_clubs')
           .select()
           .eq('id', widget.clubId)
+          .eq('club_id', clubId)
           .maybeSingle();
 
       if (clubRow == null) {
@@ -52,18 +82,13 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
         return;
       }
 
-      final partnerId = clubRow['partner_id']?.toString();
       Map<String, dynamic>? matchRow;
       try {
-        final query = client.from('matches').select().eq('is_on_sale', true);
-        if (partnerId != null && partnerId.isNotEmpty) {
-          query.eq('partner_id', partnerId);
-        }
-        matchRow = await query.maybeSingle();
-        matchRow ??= await client
+        matchRow = await client
             .from('matches')
             .select()
             .eq('is_on_sale', true)
+            .eq('club_id', clubId)
             .order('match_date', ascending: true)
             .limit(1)
             .maybeSingle();
@@ -389,15 +414,9 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                               : 'Join for updates & matchday coordination.',
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
-                        _SnapshotRow(
-                          title:
-                              '$events events recorded.',
-                        ),
+                        _SnapshotRow(title: '$events events recorded.'),
                         const SizedBox(height: SpacingTokens.spacing2),
-                        _SnapshotRow(
-                          title:
-                              '$members fans in this circle.',
-                        ),
+                        _SnapshotRow(title: '$members fans in this circle.'),
                       ],
                     ),
                   ),

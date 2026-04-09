@@ -1,7 +1,7 @@
 import webpush from "web-push";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { rayonClub } from "@/lib/config";
+import { getActiveClubReference } from "@/lib/club-context";
 import { rejectInsecureMutation, rejectRateLimitedRequest } from "@/lib/security";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { getServerSupabase } from "@/lib/supabase/server";
@@ -142,6 +142,7 @@ export async function POST(request: NextRequest) {
   } = serverClient
     ? await serverClient.auth.getUser()
     : { data: { user: null } };
+  const club = await getActiveClubReference();
 
   if (body.action === "subscribe") {
     if (!isSubscriptionPayload(body.subscription)) {
@@ -167,7 +168,7 @@ export async function POST(request: NextRequest) {
 
     const result = await pushSubscriptions.upsert(
       {
-        club_id: rayonClub.slug,
+        club_id: club.slug,
         user_id: user?.id ?? null,
         session_id: request.cookies.get("sb-access-token")?.value ?? null,
         surface: body.surface ?? "site",
@@ -254,14 +255,14 @@ export async function POST(request: NextRequest) {
           },
         },
         JSON.stringify({
-          title: body.title ?? "Gikundiro alerts enabled",
+          title: body.title ?? "Official club alerts enabled",
           body:
             body.body ??
             "You will now receive timely match, membership, and supporter updates.",
-          url: body.url ?? "/app",
+          url: body.url ?? "/supporters",
           icon: "/icons/icon-192x192.png",
           badge: "/icons/icon-72x72.png",
-          tag: "gikundiro-test-alert",
+          tag: "africlub-test-alert",
           requireInteraction: false,
           actions: [
             { action: "open", title: "Open app" },

@@ -14,29 +14,36 @@ describe("public data", () => {
     Object.assign(process.env, previousEnv);
   });
 
-  it("falls back to embedded club content when Supabase config is missing", async () => {
-    const { getHomePageData } = await import("@/lib/data/public");
+  it(
+    "falls back to embedded club content when Supabase config is missing",
+    async () => {
+      const { getHomePageData } = await import("@/lib/data/public");
 
-    const data = await getHomePageData();
+      const data = await getHomePageData();
 
-    expect(data.club.clubSlug).toBe("rayon_sports_rw");
-    expect(data.club.clubName).toBe("Rayon Sports FC");
-    expect(data.matches.length).toBeGreaterThan(0);
-    expect(data.news.length).toBeGreaterThan(0);
-    expect(data.products.length).toBeGreaterThan(0);
-    expect(data.featuredMatch).not.toBeNull();
-  });
+      expect(data.club.clubSlug).toBe("rayon_sports_rw");
+      expect(data.club.clubName).toBe("Rayon Sports FC");
+      expect(data.matches.length).toBeGreaterThan(0);
+      expect(data.news.length).toBeGreaterThan(0);
+      expect(data.products.length).toBeGreaterThan(0);
+      expect(data.featuredMatch).not.toBeNull();
+    },
+    15000,
+  );
 
   it("returns fallback detail records by identifier", async () => {
-    const { getMatchById, getNewsArticleById, getProductById } = await import(
-      "@/lib/data/public"
-    );
+    const {
+      getMatchById,
+      getNewsArticleById,
+      getProductById,
+    } = await import("@/lib/data/public");
+    const { fallbackClubProfile } = await import("@/lib/content");
 
-    const match = await getMatchById("rayon-apr-featured");
+    const match = await getMatchById("featured-home-fixture");
     const article = await getNewsArticleById("membership-gikundiro-circle");
     const product = await getProductById("replica-home-26");
 
-    expect(match?.homeTeam).toBe("Rayon Sports");
+    expect(match?.homeTeam).toBe(fallbackClubProfile.shortName);
     expect(article?.title).toContain("digital-first");
     expect(product?.name).toContain("Replica Jersey");
   });

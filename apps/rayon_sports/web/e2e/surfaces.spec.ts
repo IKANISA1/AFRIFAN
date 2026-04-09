@@ -52,33 +52,19 @@ test("public home renders on a phone viewport", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: /this is gikundiro/i }),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: /open fan portal/i })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /open fan app|open supporter app/i }),
+  ).toBeVisible();
 });
 
-test("fan portal boots the anonymous supporter workspace on tablet", async ({
+test("supporters handoff page renders on tablet", async ({
   page,
-  browserName,
 }) => {
-  test.skip(
-    browserName === "webkit",
-    "Playwright WebKit is unreliable for the async fan portal loader bootstrap.",
-  );
-
-  await page.goto("/app", {
-    waitUntil: browserName === "webkit" ? "networkidle" : "domcontentloaded",
-  });
-
-  await expect(page.getByText(/fan portal/i)).toBeVisible({
-    timeout: browserName === "webkit" ? 15_000 : 5_000,
-  });
+  await page.goto("/supporters", { waitUntil: "domcontentloaded" });
   await expect(
-    page.getByRole("heading", { name: /welcome supporter/i }),
-  ).toBeVisible({
-    timeout: browserName === "webkit" ? 15_000 : 5_000,
-  });
-  await expect(page.getByText(/membership tier/i)).toBeVisible({
-    timeout: browserName === "webkit" ? 15_000 : 5_000,
-  });
+    page.getByRole("heading", { name: /supporter app/i }),
+  ).toBeVisible();
+  await expect(page.getByText(/native flutter experience/i)).toBeVisible();
 });
 
 /* ────────────────────────────────────────────────────────── */
@@ -130,7 +116,7 @@ test("pwa manifest and offline route are reachable", async ({
   // Public manifest should include the usual fields
   expect(manifest).toMatchObject({
     display: "standalone",
-    start_url: "/app?source=pwa",
+    start_url: "/",
   });
   // Public manifest should NOT have admin scope
   expect(manifest.scope).not.toBe("/admin");
