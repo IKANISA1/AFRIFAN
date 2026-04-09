@@ -9,6 +9,8 @@ on:
 jobs:
   rayon-release-guard:
     runs-on: ubuntu-latest
+    env:
+      HAS_ANDROID_RELEASE_SECRETS: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' && secrets.ANDROID_KEYSTORE_PASSWORD != '' && secrets.ANDROID_KEY_ALIAS != '' && secrets.ANDROID_KEY_PASSWORD != '' }}
 
     steps:
       - name: Checkout
@@ -68,7 +70,7 @@ jobs:
           apps/rayon_sports/integration_test
 
       - name: Decode release signing keystore
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' && secrets.ANDROID_KEYSTORE_PASSWORD != '' && secrets.ANDROID_KEY_ALIAS != '' && secrets.ANDROID_KEY_PASSWORD != '' }}
+        if: env.HAS_ANDROID_RELEASE_SECRETS == 'true'
         working-directory: apps/rayon_sports
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -85,10 +87,10 @@ jobs:
           EOF
 
       - name: Build Rayon Play bundle
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' && secrets.ANDROID_KEYSTORE_PASSWORD != '' && secrets.ANDROID_KEY_ALIAS != '' && secrets.ANDROID_KEY_PASSWORD != '' }}
+        if: env.HAS_ANDROID_RELEASE_SECRETS == 'true'
         working-directory: apps/rayon_sports
         run: flutter build appbundle --dart-define-from-file=assets/flavors/production.json
 
       - name: Skip signed release bundle build
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 == '' || secrets.ANDROID_KEYSTORE_PASSWORD == '' || secrets.ANDROID_KEY_ALIAS == '' || secrets.ANDROID_KEY_PASSWORD == '' }}
+        if: env.HAS_ANDROID_RELEASE_SECRETS != 'true'
         run: echo "Skipping signed release bundle build because Android release secrets are unavailable."
