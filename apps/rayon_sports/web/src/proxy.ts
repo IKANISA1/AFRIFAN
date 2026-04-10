@@ -11,11 +11,7 @@ import {
   shouldBypassSubdomainRewrite,
 } from "@/lib/host-routing";
 
-/**
- * Keep using Edge middleware here because OpenNext Cloudflare does not yet
- * support the Node.js runtime used by Next 16 proxy.ts files.
- */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const hostname = resolveRoutingHostname(
     request.headers.get("x-forwarded-host"),
     request.headers.get("host"),

@@ -1,11 +1,9 @@
-import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../models/biopay_task_result.dart';
+import '../widgets/biopay_reference_ui.dart';
 
-/// BioPay Result — tone-branded full-screen outcome.
 class BiopayResultScreen extends StatelessWidget {
   const BiopayResultScreen({required this.args, super.key});
 
@@ -13,129 +11,111 @@ class BiopayResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).colorScheme.primary;
-
-    final Color accentColor;
-    final IconData icon;
-    switch (args.tone) {
-      case BiopayTaskResultTone.success:
-        accentColor = ColorTokens.success;
-        icon = Icons.check_circle_rounded;
-      case BiopayTaskResultTone.error:
-        accentColor = ColorTokens.error;
-        icon = Icons.error_outline_rounded;
-      case BiopayTaskResultTone.blocked:
-        accentColor = ColorTokens.warning;
-        icon = Icons.warning_rounded;
-      case BiopayTaskResultTone.pending:
-        accentColor = primaryColor;
-        icon = Icons.hourglass_top_rounded;
-    }
+    final isSuccess = args.tone == BiopayTaskResultTone.success;
+    final accent = switch (args.tone) {
+      BiopayTaskResultTone.success => biopayReferenceGreen,
+      BiopayTaskResultTone.error => Colors.red.shade500,
+      BiopayTaskResultTone.blocked => Colors.orange.shade500,
+      BiopayTaskResultTone.pending => biopayReferenceBlue,
+    };
+    final panelColor = switch (args.tone) {
+      BiopayTaskResultTone.success => const Color(0xFFD7F8DE),
+      BiopayTaskResultTone.error => const Color(0xFFFBE3E3),
+      BiopayTaskResultTone.blocked => const Color(0xFFFFF0D8),
+      BiopayTaskResultTone.pending => const Color(0xFFDCE7FF),
+    };
+    final icon = switch (args.tone) {
+      BiopayTaskResultTone.success => Icons.check_rounded,
+      BiopayTaskResultTone.error => Icons.close_rounded,
+      BiopayTaskResultTone.blocked => Icons.warning_rounded,
+      BiopayTaskResultTone.pending => Icons.schedule_rounded,
+    };
 
     return Scaffold(
-      backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: SpacingTokens.spacing6,
-            ),
-            child: Column(
-              children: [
-                const Spacer(flex: 3),
-
-                // Icon
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: accentColor.withValues(alpha: 0.14),
+      backgroundColor: biopayReferenceBackground,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(28, 8, 28, 28),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 52,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: BiopayReferenceLightBackButton(
+                    onTap: () => context.go(args.primaryRoute),
                   ),
-                  child: Icon(icon, size: 44, color: accentColor),
                 ),
-
-                const SizedBox(height: SpacingTokens.spacing6),
-
-                Text(
-                  args.title,
-                  style: TypographyTokens.headlineLarge(),
-                  textAlign: TextAlign.center,
-                ),
-
-                if (args.message.isNotEmpty) ...[
-                  const SizedBox(height: SpacingTokens.spacing3),
-                  Text(
-                    args.message,
-                    style: TypographyTokens.bodyMedium(),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-
-                // Amount / alias details
-                if (args.alias != null || args.amount != null) ...[
-                  const SizedBox(height: SpacingTokens.spacing6),
-                  GlassCard(
-                    child: Column(
-                      children: [
-                        if (args.alias != null)
-                          Text(
-                            args.alias!,
-                            style: TypographyTokens.numericAlias(fontSize: 24),
-                          ),
-                        if (args.amount != null) ...[
-                          const SizedBox(height: SpacingTokens.spacing3),
-                          Text(
-                            '${args.currencySymbol ?? ''} ${args.amount}',
-                            style: TypographyTokens.displaySmall(),
-                          ),
-                        ],
-                        if (args.maskedRecipientValue != null) ...[
-                          const SizedBox(height: SpacingTokens.spacing2),
-                          Text(
-                            args.maskedRecipientValue!,
-                            style: TypographyTokens.bodySmall(),
-                          ),
-                        ],
-                      ],
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 132,
+                      height: 132,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: panelColor,
+                      ),
+                      child: Icon(icon, color: accent, size: 70),
                     ),
-                  ),
-                ],
-
-                const Spacer(flex: 4),
-
-                // Primary CTA
-                ClaymorphicButton(
-                  label: args.primaryLabel,
-                  onPressed: () {
-                    HapticFeedback.mediumImpact();
-                    context.go(args.primaryRoute);
-                  },
-                  width: double.infinity,
-                  preserveCase: true,
-                  letterSpacing: 0.6,
-                ),
-
-                // Secondary
-                if (args.secondaryLabel != null &&
-                    args.secondaryRoute != null) ...[
-                  const SizedBox(height: SpacingTokens.spacing3),
-                  Center(
-                    child: TextButton(
-                      onPressed: () => context.go(args.secondaryRoute!),
-                      child: Text(
-                        args.secondaryLabel!,
-                        style: TypographyTokens.labelLarge().copyWith(
-                          color: ColorTokens.onSurfaceVariant,
+                    const SizedBox(height: 34),
+                    if (isSuccess)
+                      Text(
+                        'ENROLLMENT SUCCESS',
+                        style: biopayReferenceText(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                          color: biopayReferenceMuted,
+                          letterSpacing: 2.2,
                         ),
                       ),
+                    if (isSuccess) const SizedBox(height: 14),
+                    Text(
+                      args.title,
+                      style: biopayReferenceText(
+                        fontSize: 34,
+                        fontWeight: FontWeight.w900,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ],
-
-                const SizedBox(height: SpacingTokens.spacing8),
-              ],
-            ),
+                    if (args.message.isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      Text(
+                        args.message,
+                        style: biopayReferenceText(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF667A9E),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                    const SizedBox(height: 42),
+                    BiopayReferencePrimaryButton(
+                      label: args.primaryLabel,
+                      onTap: () => context.go(args.primaryRoute),
+                    ),
+                    if (args.secondaryLabel != null &&
+                        args.secondaryRoute != null) ...[
+                      const SizedBox(height: 18),
+                      TextButton(
+                        onPressed: () => context.go(args.secondaryRoute!),
+                        child: Text(
+                          args.secondaryLabel!,
+                          style: biopayReferenceText(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w800,
+                            color: biopayReferenceMuted,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

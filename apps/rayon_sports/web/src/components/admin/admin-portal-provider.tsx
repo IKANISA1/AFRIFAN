@@ -15,6 +15,7 @@ import type {
   User,
 } from "@supabase/supabase-js";
 import {
+  adminPhoneAccessDeniedMessage,
   normalizeAdminPhone,
   formatAdminPhoneForDisplay,
 } from "@/lib/admin-auth";
@@ -183,6 +184,26 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
       const normalizedPhone = normalizeAdminPhone(phone);
       setError(null);
       setNotice(null);
+
+      const eligibilityResponse = await fetch("/api/admin/auth/eligible", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Africlub-CSRF": "1",
+        },
+        body: JSON.stringify({ phone: normalizedPhone }),
+        credentials: "same-origin",
+        cache: "no-store",
+      });
+      const eligibilityPayload = (await eligibilityResponse
+        .json()
+        .catch(() => ({}))) as { error?: string };
+
+      if (!eligibilityResponse.ok) {
+        throw new Error(
+          eligibilityPayload.error ?? adminPhoneAccessDeniedMessage(),
+        );
+      }
 
       const { error: authError } = await client.auth.signInWithOtp({
         phone: normalizedPhone,

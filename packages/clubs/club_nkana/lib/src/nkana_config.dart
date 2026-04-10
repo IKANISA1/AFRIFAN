@@ -8,7 +8,7 @@ class NkanaConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'nkana');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '26');
 
   @override
   String get clubName => 'Nkana FC';

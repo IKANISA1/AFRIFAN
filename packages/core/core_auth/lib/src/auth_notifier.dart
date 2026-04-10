@@ -34,13 +34,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
         state = const AuthUnauthenticated();
       }
     } catch (e) {
-      final fallback = await _repository.restoreSessionFallbackProfile();
-      if (fallback != null) {
-        final adminAccess = await _repository.resolveAdminAccess(fallback.id);
-        state = AuthAuthenticated(profile: fallback, workspace: adminAccess);
-        return;
+      try {
+        await _repository.signOut();
+      } catch (_) {
+        // Best-effort cleanup of a stale or partially restored session.
       }
-      state = AuthError('Session restore failed', e);
+      state = AuthRecoveryRequired(
+        'Existing session could not be restored and was cleared.',
+        e,
+      );
     }
   }
 

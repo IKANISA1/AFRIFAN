@@ -9,6 +9,8 @@ class SupabaseClientFactory {
 
   static bool _initialized = false;
 
+  static bool get isInitialized => _initialized;
+
   /// Initialize Supabase with the given URL and anon key.
   /// Should be called once during app bootstrap.
   static Future<void> initialize({

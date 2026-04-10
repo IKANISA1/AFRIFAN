@@ -1,4 +1,3 @@
-import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,8 +6,8 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../models/biopay_handoff_resolution.dart';
 import '../models/biopay_payment_review_args.dart';
 import '../providers/biopay_providers.dart';
+import '../widgets/biopay_reference_ui.dart';
 
-/// BioPay QR Scan — full-screen camera scanner with GlassCard status bar.
 class BiopayQrScanScreen extends ConsumerStatefulWidget {
   const BiopayQrScanScreen({super.key});
 
@@ -26,7 +25,7 @@ class _BiopayQrScanScreenState extends ConsumerState<BiopayQrScanScreen> {
   );
 
   bool _isResolving = false;
-  String? _error;
+  String _statusLabel = 'Searching...';
 
   @override
   void dispose() {
@@ -45,7 +44,7 @@ class _BiopayQrScanScreenState extends ConsumerState<BiopayQrScanScreen> {
     await _controller.stop();
     setState(() {
       _isResolving = true;
-      _error = null;
+      _statusLabel = 'QR Detected';
     });
 
     try {
@@ -65,21 +64,20 @@ class _BiopayQrScanScreenState extends ConsumerState<BiopayQrScanScreen> {
           handoffResolution: resolution,
         ),
       );
-    } catch (error) {
+    } catch (_) {
       if (!mounted) return;
       setState(() {
-        _error = error.toString();
         _isResolving = false;
+        _statusLabel = 'Scan failed';
+      });
+      await _controller.start();
+      if (!mounted) return;
+      Future<void>.delayed(const Duration(milliseconds: 900), () {
+        if (mounted && !_isResolving) {
+          setState(() => _statusLabel = 'Searching...');
+        }
       });
     }
-  }
-
-  Future<void> _restartScanner() async {
-    setState(() {
-      _error = null;
-      _isResolving = false;
-    });
-    await _controller.start();
   }
 
   @override
@@ -90,79 +88,94 @@ class _BiopayQrScanScreenState extends ConsumerState<BiopayQrScanScreen> {
         fit: StackFit.expand,
         children: [
           MobileScanner(controller: _controller, onDetect: _onDetect),
-
-          // ── Scan frame ──
-          IgnorePointer(
-            child: Center(
-              child: Container(
-                width: 260,
-                height: 260,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: ColorTokens.ghostBorder,
-                    width: 2.5,
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // ── Back button ──
+          Container(color: Colors.black.withValues(alpha: 0.24)),
           Positioned(
-            top: MediaQuery.of(context).padding.top + 8,
-            left: 12,
-            child: GestureDetector(
-              onTap: () => context.pop(),
-              child: Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: ColorTokens.glassFill,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: ColorTokens.ghostBorder),
-                ),
-                child: const Icon(
-                  Icons.chevron_left_rounded,
-                  color: Colors.white,
-                  size: 28,
-                ),
-              ),
+            top: MediaQuery.of(context).padding.top + 24,
+            left: 28,
+            child: BiopayReferenceDarkBackButton(
+              onTap: () => context.go('/biopay'),
             ),
           ),
-
-          // ── Status / error bar ──
-          if (_isResolving || _error != null)
-            Positioned(
-              bottom: MediaQuery.of(context).padding.bottom + 32,
-              left: SpacingTokens.spacing6,
-              right: SpacingTokens.spacing6,
-              child: GlassCard(
-                animate: false,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _isResolving ? 'Verifying...' : 'Scan failed',
-                      style: TypographyTokens.titleMedium(),
-                    ),
-                    if (_error != null) ...[
-                      const SizedBox(height: SpacingTokens.spacing2),
-                      GestureDetector(
-                        onTap: _restartScanner,
-                        child: Text(
-                          'Tap to retry',
-                          style: TypographyTokens.bodySmall().copyWith(
-                            color: ColorTokens.onSurfaceVariant,
-                          ),
+          Center(
+            child: SizedBox(
+              width: 300,
+              height: 300,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: const Color(0xFFFFCD08),
+                          width: 3,
                         ),
                       ),
-                    ],
-                  ],
-                ),
+                    ),
+                  ),
+                  const _QrCorner(alignment: Alignment.topLeft),
+                  const _QrCorner(alignment: Alignment.topRight),
+                  const _QrCorner(alignment: Alignment.bottomLeft),
+                  const _QrCorner(alignment: Alignment.bottomRight),
+                ],
               ),
             ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: MediaQuery.of(context).padding.bottom + 96,
+            child: Center(
+              child: BiopayReferenceStatusPill(label: _statusLabel),
+            ),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _QrCorner extends StatelessWidget {
+  const _QrCorner({required this.alignment});
+
+  final Alignment alignment;
+
+  @override
+  Widget build(BuildContext context) {
+    final isTop = alignment.y < 0;
+    final isLeft = alignment.x < 0;
+
+    return Align(
+      alignment: alignment,
+      child: Container(
+        width: 42,
+        height: 42,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(isTop && isLeft ? 18 : 0),
+            topRight: Radius.circular(isTop && !isLeft ? 18 : 0),
+            bottomLeft: Radius.circular(!isTop && isLeft ? 18 : 0),
+            bottomRight: Radius.circular(!isTop && !isLeft ? 18 : 0),
+          ),
+          border: Border(
+            top: BorderSide(
+              color: isTop ? const Color(0xFFFFCD08) : Colors.transparent,
+              width: 4,
+            ),
+            bottom: BorderSide(
+              color: !isTop ? const Color(0xFFFFCD08) : Colors.transparent,
+              width: 4,
+            ),
+            left: BorderSide(
+              color: isLeft ? const Color(0xFFFFCD08) : Colors.transparent,
+              width: 4,
+            ),
+            right: BorderSide(
+              color: !isLeft ? const Color(0xFFFFCD08) : Colors.transparent,
+              width: 4,
+            ),
+          ),
+        ),
       ),
     );
   }

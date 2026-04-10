@@ -10,11 +10,13 @@
         <exclude domain="sharedpref" path="biopay_nfc_hce.xml" />
         <exclude domain="sharedpref" path="FlutterSecureStorage" />
         <exclude domain="database" path="." />
+        <exclude domain="file" path="." />
     </cloud-backup>
     <device-transfer>
         <!-- Allow device-to-device transfer of preferences only -->
         <exclude domain="sharedpref" path="biopay_nfc_hce.xml" />
         <exclude domain="sharedpref" path="FlutterSecureStorage" />
         <exclude domain="database" path="." />
+        <exclude domain="file" path="." />
     </device-transfer>
 </data-extraction-rules>

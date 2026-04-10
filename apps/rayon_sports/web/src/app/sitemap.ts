@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { absoluteUrl } from "@/lib/config";
 import { getActiveClubReference } from "@/lib/club-context";
 import { fallbackNewsArticles, fallbackProducts, fallbackMatches } from "@/lib/content";
-import { getAdminSupabase } from "@/lib/supabase/admin";
+import { getReadOnlySupabase } from "@/lib/supabase/admin";
 
 /**
  * Dynamic sitemap — pulls live routes from DB, falls back to content.ts constants.
@@ -36,7 +36,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Try DB, fall back to hardcoded
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
 
   if (client) {
     try {

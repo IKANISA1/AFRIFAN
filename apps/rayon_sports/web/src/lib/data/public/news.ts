@@ -4,7 +4,7 @@
 import { cache } from "react";
 import { getActiveClubReference } from "@/lib/club-context";
 import { fallbackNewsArticles } from "@/lib/content";
-import { getAdminSupabase } from "@/lib/supabase/admin";
+import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type { NewsArticle } from "@/lib/types";
 import { safeString, toIdString } from "@/lib/utils";
 import { newsTableCandidates, resolveAccessibleTable, sanitizeMediaUrl } from "./helpers";
@@ -46,7 +46,7 @@ function mapNewsRow(row: Record<string, unknown>): NewsArticle {
 }
 
 export const getNewsArticles = cache(async function getNewsArticles() {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) return fallbackNewsArticles;
 

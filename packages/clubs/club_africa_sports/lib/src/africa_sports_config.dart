@@ -8,7 +8,7 @@ class AfricaSportsConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'africa_sports');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '21');
 
   @override
   String get clubName => 'Africa Sports National';

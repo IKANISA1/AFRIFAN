@@ -8,7 +8,7 @@ class AcLeopardsConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'ac_leopards');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '49');
 
   @override
   String get clubName => 'AC Léopards';

@@ -8,7 +8,7 @@ class ZescoUnitedConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'zesco_united');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '35');
 
   @override
   String get clubName => 'ZESCO United FC';

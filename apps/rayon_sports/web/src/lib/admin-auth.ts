@@ -38,3 +38,11 @@ export function formatAdminPhoneForDisplay(phone: string) {
 
   return phone;
 }
+
+export function normalizeAdminPhoneDigits(input: string) {
+  return normalizeAdminPhone(input).replace(/\D/g, "");
+}
+
+export function adminPhoneAccessDeniedMessage() {
+  return "This WhatsApp number is not approved for admin access.";
+}

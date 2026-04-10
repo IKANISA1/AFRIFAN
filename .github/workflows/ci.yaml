@@ -24,7 +24,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.32.0'
+          flutter-version: '3.38.9'
           channel: stable
           cache: true
 
@@ -35,6 +35,10 @@ jobs:
         run: melos bootstrap
 
       - name: Validate Rayon release contract
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_SERVER_VALIDATION_MODE: ${{ github.event_name == 'pull_request' && 'auto' || 'strict' }}
         run: bash tools/scripts/validate_club_release.sh rayon_sports
 
       - name: Analyze (fatal infos + warnings)
@@ -182,7 +186,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.32.0'
+          flutter-version: '3.38.9'
           channel: stable
           cache: true
 

@@ -8,7 +8,7 @@ class AsecMimosasConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'asec_mimosas');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '14');
 
   @override
   String get clubName => 'ASEC Mimosas';

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getAdminSupabase } from "@/lib/supabase/admin";
 
 type RateLimitState = {
   count: number;
@@ -13,6 +14,24 @@ declare global {
 const rateLimitStore =
   globalThis.__gikundiroRateLimitStore ??
   (globalThis.__gikundiroRateLimitStore = new Map<string, RateLimitState>());
+
+type RateLimitRpcRow = {
+  allowed: boolean;
+  retry_after_seconds: number;
+  remaining: number;
+  reset_at: string;
+};
+
+type RateLimitClient = {
+  rpc: (
+    fn: "consume_request_rate_limit",
+    args: {
+      p_bucket_key: string;
+      p_limit: number;
+      p_window_ms: number;
+    },
+  ) => Promise<{ data: RateLimitRpcRow[] | null; error: { message: string } | null }>;
+};
 
 function cleanupExpiredBuckets(now: number) {
   for (const [key, state] of rateLimitStore.entries()) {
@@ -79,16 +98,22 @@ export function rejectInsecureMutation(request: NextRequest) {
   );
 }
 
-export function rejectRateLimitedRequest(
-  request: NextRequest,
-  key: string,
-  limit: number,
-  windowMs: number,
-) {
+function rejectWithRetryAfter(retryAfterSeconds: number) {
+  return NextResponse.json(
+    { error: "Too many requests. Please try again shortly." },
+    {
+      status: 429,
+      headers: {
+        "Retry-After": String(retryAfterSeconds),
+      },
+    },
+  );
+}
+
+function consumeLocalRateLimit(bucketKey: string, limit: number, windowMs: number) {
   const now = Date.now();
   cleanupExpiredBuckets(now);
 
-  const bucketKey = `${key}:${getClientIp(request)}`;
   const current = rateLimitStore.get(bucketKey);
 
   if (current == null || current.resetAt <= now) {
@@ -100,22 +125,46 @@ export function rejectRateLimitedRequest(
   }
 
   if (current.count >= limit) {
-    const retryAfterSeconds = Math.max(
+    return Math.max(
       1,
       Math.ceil((current.resetAt - now) / 1000),
-    );
-    return NextResponse.json(
-      { error: "Too many requests. Please try again shortly." },
-      {
-        status: 429,
-        headers: {
-          "Retry-After": String(retryAfterSeconds),
-        },
-      },
     );
   }
 
   current.count += 1;
   rateLimitStore.set(bucketKey, current);
   return null;
+}
+
+export async function rejectRateLimitedRequest(
+  request: NextRequest,
+  key: string,
+  limit: number,
+  windowMs: number,
+  client: RateLimitClient | null = null,
+) {
+  const bucketKey = `${key}:${getClientIp(request)}`;
+  const sharedClient =
+    client ?? ((getAdminSupabase() as unknown) as RateLimitClient | null);
+
+  if (sharedClient != null) {
+    const { data, error } = await sharedClient.rpc("consume_request_rate_limit", {
+      p_bucket_key: bucketKey,
+      p_limit: limit,
+      p_window_ms: windowMs,
+    });
+    const row = data?.[0] ?? null;
+    if (!error && row != null) {
+      if (row.allowed) {
+        return null;
+      }
+      return rejectWithRetryAfter(Math.max(1, row.retry_after_seconds));
+    }
+  }
+
+  const retryAfterSeconds = consumeLocalRateLimit(bucketKey, limit, windowMs);
+  if (retryAfterSeconds == null) {
+    return null;
+  }
+  return rejectWithRetryAfter(retryAfterSeconds);
 }

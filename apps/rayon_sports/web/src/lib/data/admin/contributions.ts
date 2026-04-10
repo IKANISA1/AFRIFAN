@@ -108,17 +108,35 @@ export function buildContributionExcel(snapshot: AdminContributionSnapshot) {
 }
 
 export async function downloadContributionExcel(snapshot: AdminContributionSnapshot) {
-  const XLSX = await import("xlsx");
+  const ExcelJS = await import("exceljs");
   const { headers, rows } = buildContributionExcel(snapshot);
-  const data = [headers, ...rows];
-  const workbook = XLSX.utils.book_new();
-  const worksheet = XLSX.utils.aoa_to_sheet(data);
-  worksheet["!cols"] = headers.map((header, i) => ({ wch: Math.max(header.length, ...rows.map((row) => String(row[i] ?? "").length), 12) }));
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Contributions");
-  XLSX.writeFile(
-    workbook,
-    `club-contributions-${new Date().toISOString().slice(0, 10)}.xlsx`,
-  );
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Contributions");
+
+  worksheet.addRow(headers);
+  for (const row of rows) {
+    worksheet.addRow(row);
+  }
+
+  worksheet.getRow(1).font = { bold: true };
+  worksheet.columns = headers.map((header, index) => ({
+    width: Math.max(
+      header.length,
+      ...rows.map((row) => String(row[index] ?? "").length),
+      12,
+    ),
+  }));
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `club-contributions-${new Date().toISOString().slice(0, 10)}.xlsx`;
+  anchor.click();
+  URL.revokeObjectURL(url);
 }
 
 export async function saveAdminContributionGroup(

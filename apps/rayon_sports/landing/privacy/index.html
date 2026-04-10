@@ -101,14 +101,14 @@ footer{border-top:1px solid var(--borderg);padding:28px 4vw;display:flex;justify
   <ul>
     <li><strong>Mobile Money Number:</strong> If you choose to link a MoMo number for transactions (stored securely, never shared)</li>
     <li><strong>Display Preferences:</strong> Fan club affiliations, notification preferences</li>
-    <li><strong>Biometric Data (BioPay):</strong> If you opt into BioPay face enrollment, facial feature data is processed on-device and stored as encrypted mathematical representations — never as images</li>
+    <li><strong>Biometric Data (BioPay):</strong> If you opt into BioPay face enrollment, facial feature data is processed on-device to generate embeddings, those embeddings may be transmitted securely to our backend for enrollment and matching, and raw photos are not stored as part of the BioPay flow</li>
   </ul>
 
   <h3>2.4 Camera Permission</h3>
   <p>The app requests camera access <strong>only</strong> for the BioPay face enrollment and verification feature. Camera access is:</p>
   <ul>
     <li>Requested only when you explicitly initiate BioPay enrollment</li>
-    <li>Used solely for real-time face processing — no photos are captured or stored</li>
+    <li>Used solely for real-time face processing and secure BioPay enrollment or matching requests — no raw photos are stored</li>
     <li>Fully optional — the app works without granting camera permission</li>
   </ul>
 
@@ -131,7 +131,7 @@ footer{border-top:1px solid var(--borderg);padding:28px 4vw;display:flex;justify
   <ul>
     <li>Encrypted data transmission (TLS 1.3)</li>
     <li>Row-Level Security (RLS) policies on all database tables</li>
-    <li>Encrypted storage of sensitive data (MoMo numbers, biometric templates)</li>
+    <li>Encrypted storage of sensitive data (MoMo numbers, BioPay biometric embeddings, and related account metadata)</li>
     <li>Regular security audits and dependency updates</li>
   </ul>
 

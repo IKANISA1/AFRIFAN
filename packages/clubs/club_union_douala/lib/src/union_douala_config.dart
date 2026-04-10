@@ -8,7 +8,7 @@ class UnionDoualaConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'union_douala');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '33');
 
   @override
   String get clubName => 'Union Douala';

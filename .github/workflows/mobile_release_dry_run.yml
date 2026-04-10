@@ -11,6 +11,10 @@ jobs:
     name: Android Release Dry Run
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_SERVER_VALIDATION_MODE: strict
 
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +26,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.32.0'
+          flutter-version: '3.38.9'
           channel: stable
           cache: true
 
@@ -46,13 +50,17 @@ jobs:
     name: iOS Release Dry Run
     runs-on: macos-latest
     timeout-minutes: 45
+    env:
+      FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_SERVER_VALIDATION_MODE: strict
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.32.0'
+          flutter-version: '3.38.9'
           channel: stable
           cache: true
 

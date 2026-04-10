@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Oswald, Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { absoluteUrl, siteConfig } from "@/lib/config";
-import { buildSiteJsonLd } from "@/lib/metadata";
+import { buildSiteJsonLd, renderJsonLdScriptContent } from "@/lib/metadata";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-inter",
@@ -108,7 +108,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
+          dangerouslySetInnerHTML={{
+            __html: renderJsonLdScriptContent(siteJsonLd),
+          }}
         />
         {children}
       </body>

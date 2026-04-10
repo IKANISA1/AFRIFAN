@@ -10,7 +10,7 @@ import {
   fallbackSquad,
   fallbackStandings,
 } from "@/lib/content";
-import { getAdminSupabase } from "@/lib/supabase/admin";
+import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type {
   ContributionGroup,
   FanClubItem,
@@ -169,7 +169,7 @@ function mapSquadRow(row: Record<string, unknown>): SquadPlayer {
 // ─── Fetchers ────────────────────────────────────────────
 
 export const getMembershipPackages = cache(async function getMembershipPackages() {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) return fallbackMembershipPackages;
 
@@ -193,7 +193,7 @@ export const getMembershipPackages = cache(async function getMembershipPackages(
 });
 
 export const getFanClubs = cache(async function getFanClubs() {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) return fallbackFanClubs;
 
@@ -216,7 +216,7 @@ export const getFanClubs = cache(async function getFanClubs() {
 });
 
 export const getContributionGroups = cache(async function getContributionGroups() {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) return fallbackContributionGroups;
 
@@ -240,7 +240,7 @@ export const getContributionGroups = cache(async function getContributionGroups(
 });
 
 export const getStandings = cache(async function getStandings(): Promise<StandingRow[]> {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) {
     return fallbackStandings;
@@ -266,7 +266,7 @@ export const getStandings = cache(async function getStandings(): Promise<Standin
 });
 
 export const getSquad = cache(async function getSquad(): Promise<SquadPlayer[]> {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) {
     return fallbackSquad;

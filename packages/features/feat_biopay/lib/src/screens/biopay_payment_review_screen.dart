@@ -1,6 +1,4 @@
-import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,9 +8,8 @@ import '../models/biopay_task_result.dart';
 import '../providers/biopay_providers.dart';
 import '../services/biopay_auth_gate_service.dart';
 import '../services/biopay_payment_handoff_service.dart';
-import '../widgets/biopay_branding.dart';
+import '../widgets/biopay_reference_ui.dart';
 
-/// BioPay Payment Review — summary card + amount + CTA.
 class BiopayPaymentReviewScreen extends ConsumerStatefulWidget {
   const BiopayPaymentReviewScreen({required this.args, super.key});
 
@@ -25,41 +22,16 @@ class BiopayPaymentReviewScreen extends ConsumerStatefulWidget {
 
 class _BiopayPaymentReviewScreenState
     extends ConsumerState<BiopayPaymentReviewScreen> {
-  late final TextEditingController _amountController;
   bool _isSubmitting = false;
   String? _error;
 
-  @override
-  void initState() {
-    super.initState();
-    _amountController = TextEditingController(
-      text: widget.args.suggestedAmount?.toString() ?? '',
-    );
-  }
-
-  @override
-  void dispose() {
-    _amountController.dispose();
-    super.dispose();
-  }
-
-  int? get _parsedAmount => int.tryParse(_amountController.text.trim());
-
   Future<void> _submit() async {
-    final args = widget.args;
-    final editableAmount = args.canEditAmount
-        ? _parsedAmount
-        : args.lockedAmount;
-
-    if (args.canEditAmount && (editableAmount == null || editableAmount <= 0)) {
-      setState(() => _error = 'Enter an amount.');
-      return;
-    }
-
     setState(() {
       _isSubmitting = true;
       _error = null;
     });
+
+    final args = widget.args;
 
     try {
       final gate = await ref
@@ -92,8 +64,6 @@ class _BiopayPaymentReviewScreenState
       final handoffService = ref.read(biopayPaymentHandoffServiceProvider);
       final repository = ref.read(biopayRepositoryProvider);
       bool launched;
-      var resultCurrencyCode = args.currencyCode;
-      String? resultCurrencySymbol = args.currencySymbol;
 
       if (args.matchResult != null) {
         final matchReceipt = args.matchReceipt;
@@ -102,7 +72,6 @@ class _BiopayPaymentReviewScreenState
         }
         final intent = await repository.createPaymentIntent(
           matchReceipt: matchReceipt,
-          amount: editableAmount,
         );
         if (intent.isExpired) {
           throw StateError('Payment intent expired.');
@@ -111,8 +80,6 @@ class _BiopayPaymentReviewScreenState
         if (launched) {
           await repository.markIntentDialed(intent.intentId);
         }
-        resultCurrencyCode = intent.currencyCode ?? args.currencyCode;
-        resultCurrencySymbol = intent.currencySymbol ?? args.currencySymbol;
       } else {
         final resolution = args.handoffResolution;
         if (resolution == null) {
@@ -124,8 +91,6 @@ class _BiopayPaymentReviewScreenState
               : PaymentHandoffMethod.intentDial,
           uri: resolution.launchUri,
         );
-        resultCurrencyCode = resolution.currencyCode ?? args.currencyCode;
-        resultCurrencySymbol = resolution.currencySymbol ?? args.currencySymbol;
       }
 
       if (!mounted) return;
@@ -135,223 +100,101 @@ class _BiopayPaymentReviewScreenState
 
       context.go(
         '/biopay/result',
-        extra: BiopayTaskResultArgs(
+        extra: const BiopayTaskResultArgs(
           tone: BiopayTaskResultTone.success,
           title: 'Payment Opened',
           message: 'Complete the transfer in your payment app.',
-          primaryLabel: args.successPrimaryLabel,
-          primaryRoute: args.successPrimaryRoute,
-          secondaryLabel: args.secondaryLabel,
-          secondaryRoute: args.secondaryRoute,
-          alias: args.formattedAlias,
-          maskedRecipientValue: args.maskedRecipientValue,
-          amount: editableAmount,
-          currencyCode: resultCurrencyCode,
-          currencySymbol: resultCurrencySymbol,
+          primaryLabel: 'Done',
+          primaryRoute: '/biopay',
+          secondaryLabel: 'Cancel',
+          secondaryRoute: '/biopay',
         ),
       );
     } catch (error) {
       if (!mounted) return;
-      context.go(
-        '/biopay/result',
-        extra: BiopayTaskResultArgs(
-          tone: BiopayTaskResultTone.error,
-          title: 'Payment Failed',
-          message: error.toString(),
-          primaryLabel: 'Try Again',
-          primaryRoute: widget.args.secondaryRoute ?? '/biopay',
-          secondaryLabel: 'Back',
-          secondaryRoute: '/biopay',
-          alias: widget.args.formattedAlias,
-          maskedRecipientValue: widget.args.maskedRecipientValue,
-          amount: editableAmount,
-          currencyCode: widget.args.currencyCode,
-          currencySymbol: widget.args.currencySymbol,
-        ),
-      );
-    } finally {
-      if (mounted) setState(() => _isSubmitting = false);
+      setState(() {
+        _error = error.toString();
+        _isSubmitting = false;
+      });
+      return;
+    }
+
+    if (mounted) {
+      setState(() => _isSubmitting = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final args = widget.args;
-    final primaryColor = Theme.of(context).colorScheme.primary;
-    final appName = biopayAppName(context);
+    final displayValue =
+        widget.args.matchResult?.profile?.recipientValue ??
+        widget.args.handoffResolution?.recipientValue ??
+        widget.args.maskedRecipientValue;
 
     return Scaffold(
-      backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: ColorTokens.onSurface),
-          onPressed: () => context.go('/biopay'),
-        ),
-        title: Text('Confirm Payment', style: TypographyTokens.titleLarge()),
-      ),
-      body: BiopayMoodBackground(
-        child: SafeArea(
-          top: false,
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(
-              SpacingTokens.spacing6,
-              SpacingTokens.spacing4,
-              SpacingTokens.spacing6,
-              SpacingTokens.spacing6,
-            ),
+      backgroundColor: biopayReferenceBackground,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(28, 8, 28, 28),
+          child: Column(
             children: [
-              BiopayHeroCard(
-                eyebrow: '${args.sourceTitle.toUpperCase()} • $appName',
-                title: args.formattedAlias,
-                subtitle: args.sourceDescription,
-                bottom: Wrap(
-                  spacing: SpacingTokens.spacing2,
-                  runSpacing: SpacingTokens.spacing2,
-                  children: [
-                    BiopayBadge(
-                      icon: Icons.route_rounded,
-                      label: args.routeLabel,
-                      tint: primaryColor.withValues(alpha: 0.14),
-                    ),
-                    if (args.matchScore != null)
-                      BiopayBadge(
-                        icon: Icons.verified_rounded,
-                        label:
-                            'Match ${(args.matchScore! * 100).toStringAsFixed(0)}%',
-                        tint: ColorTokens.success.withValues(alpha: 0.14),
-                      ),
-                  ],
+              SizedBox(
+                height: 52,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: BiopayReferenceLightBackButton(
+                    onTap: () => context.go('/biopay'),
+                  ),
                 ),
               ),
-              const SizedBox(height: SpacingTokens.spacing6),
-              ClayCard(
-                backgroundColor: ColorTokens.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(32),
-                padding: const EdgeInsets.all(SpacingTokens.spacing5),
+              Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _DetailLine(
-                      label: args.routeLabel,
-                      value: args.maskedRecipientValue,
+                    Text(
+                      displayValue,
+                      style: biopayReferenceText(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
-                    if (!args.canEditAmount) ...[
-                      const SizedBox(height: SpacingTokens.spacing4),
-                      _DetailLine(
-                        label: 'Amount',
-                        value: args.lockedAmountLabel,
+                    const SizedBox(height: 36),
+                    BiopayReferencePrimaryButton(
+                      label: _isSubmitting ? 'Opening Dialer' : 'Tap to Dial',
+                      onTap: _isSubmitting ? null : _submit,
+                    ),
+                    const SizedBox(height: 18),
+                    TextButton(
+                      onPressed: _isSubmitting
+                          ? null
+                          : () => context.go('/biopay'),
+                      child: Text(
+                        'Cancel',
+                        style: biopayReferenceText(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: biopayReferenceMuted,
+                        ),
+                      ),
+                    ),
+                    if (_error != null) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        _error!,
+                        style: biopayReferenceText(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.red.shade600,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ],
                 ),
               ),
-              if (args.canEditAmount) ...[
-                const SizedBox(height: SpacingTokens.spacing6),
-                Text(
-                  'Amount',
-                  style: TypographyTokens.labelSmall().copyWith(
-                    color: primaryColor,
-                    letterSpacing: 0.7,
-                  ),
-                ),
-                const SizedBox(height: SpacingTokens.spacing2),
-                ClayCard(
-                  backgroundColor: ColorTokens.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(32),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing5,
-                    vertical: SpacingTokens.spacing4,
-                  ),
-                  child: TextField(
-                    controller: _amountController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    onChanged: (_) {
-                      if (_error != null) setState(() => _error = null);
-                    },
-                    style: TypographyTokens.displaySmall().copyWith(
-                      fontSize: 28,
-                    ),
-                    decoration: InputDecoration.collapsed(
-                      hintText: '5000',
-                      hintStyle: TypographyTokens.displaySmall().copyWith(
-                        fontSize: 28,
-                        color: ColorTokens.onSurfaceVariant.withValues(
-                          alpha: 0.3,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-              if (_error != null) ...[
-                const SizedBox(height: SpacingTokens.spacing4),
-                Text(
-                  _error!,
-                  style: TypographyTokens.bodySmall().copyWith(
-                    color: ColorTokens.error,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-              const SizedBox(height: SpacingTokens.spacing8),
-              ClaymorphicButton(
-                label: _isSubmitting ? 'Opening...' : 'Confirm & Pay',
-                onPressed: _isSubmitting ? null : _submit,
-                isLoading: _isSubmitting,
-                width: double.infinity,
-                preserveCase: true,
-                letterSpacing: 0.6,
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              Center(
-                child: TextButton(
-                  onPressed: _isSubmitting ? null : () => context.go('/biopay'),
-                  child: Text(
-                    'Cancel',
-                    style: TypographyTokens.labelLarge().copyWith(
-                      color: ColorTokens.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-// ── Detail line ──
-
-class _DetailLine extends StatelessWidget {
-  const _DetailLine({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing2),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TypographyTokens.labelSmall().copyWith(letterSpacing: 0.6),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            value,
-            style: TypographyTokens.bodyLarge().copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
       ),
     );
   }

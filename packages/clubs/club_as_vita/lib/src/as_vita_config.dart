@@ -8,7 +8,7 @@ class AsVitaConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'as_vita');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '6');
 
   @override
   String get clubName => 'AS Vita Club';

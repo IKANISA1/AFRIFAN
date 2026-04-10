@@ -8,7 +8,7 @@ class MaranathaConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'maranatha');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '58');
 
   @override
   String get clubName => 'Maranatha FC';

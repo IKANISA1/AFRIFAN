@@ -4,7 +4,7 @@
 import { cache } from "react";
 import { getActiveClubReference } from "@/lib/club-context";
 import { fallbackClubProfile } from "@/lib/content";
-import { getAdminSupabase } from "@/lib/supabase/admin";
+import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type { ClubProfile } from "@/lib/types";
 import { safeNumber, safeString } from "@/lib/utils";
 import { sanitizeMediaUrl } from "./helpers";
@@ -77,7 +77,7 @@ function mapClubRow(
 }
 
 export const getClubProfile = cache(async function getClubProfile() {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   const fallback = {
     ...fallbackClubProfile,

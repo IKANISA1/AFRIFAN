@@ -2,7 +2,7 @@ import { cache } from "react";
 import { headers } from "next/headers";
 import { rayonClub, siteConfig } from "@/lib/config";
 import { isAdminHostname, resolveRoutingHostname } from "@/lib/host-routing";
-import { getAdminSupabase } from "@/lib/supabase/admin";
+import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import { safeNumber, safeString } from "@/lib/utils";
 
 type ClubLookupRow = Record<string, unknown>;
@@ -101,7 +101,7 @@ function mapClubRow(row: ClubLookupRow | null | undefined) {
 }
 
 async function fetchClubById(id: number) {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   if (client == null) {
     return null;
   }
@@ -120,7 +120,7 @@ async function fetchClubById(id: number) {
 }
 
 async function fetchClubBySlug(slug: string) {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   if (client == null) {
     return null;
   }

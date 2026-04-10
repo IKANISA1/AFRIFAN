@@ -66,3 +66,11 @@ class AuthError extends AuthState {
   final String message;
   final Object? error;
 }
+
+/// Existing local session could not be safely restored and was cleared.
+class AuthRecoveryRequired extends AuthState {
+  const AuthRecoveryRequired(this.message, [this.error]);
+
+  final String message;
+  final Object? error;
+}

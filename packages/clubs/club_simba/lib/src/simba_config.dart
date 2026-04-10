@@ -8,7 +8,7 @@ class SimbaConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'simba');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '3');
 
   @override
   String get clubName => 'Simba SC';

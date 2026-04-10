@@ -8,7 +8,7 @@ class CanonYaoundeConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'canon_yaounde');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '31');
 
   @override
   String get clubName => 'Canon Yaoundé';

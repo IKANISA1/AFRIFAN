@@ -1,20 +1,19 @@
 import 'dart:async';
-import 'dart:ui' as ui;
 
-import 'package:core_theme/core_theme.dart';
+import 'package:core_auth/core_auth.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../models/biopay_handoff_token.dart';
+import '../models/biopay_profile.dart';
 import '../providers/biopay_providers.dart';
-import '../widgets/biopay_branding.dart';
+import '../widgets/biopay_reference_ui.dart';
 
-/// BioPay QR — two-state screen: form → QR display.
 class BiopayQrScreen extends ConsumerStatefulWidget {
   const BiopayQrScreen({super.key});
 
@@ -23,32 +22,22 @@ class BiopayQrScreen extends ConsumerStatefulWidget {
 }
 
 class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
-  static const _refreshSeconds = 60;
-
-  Timer? _timer;
-  int _secondsRemaining = _refreshSeconds;
-  int? _presetAmount;
+  final _amountController = TextEditingController();
+  PaymentRecipientType? _selectedRouteType;
   BiopayHandoffToken? _handoffToken;
   bool _isLoading = false;
   String? _error;
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _amountController.dispose();
     super.dispose();
   }
 
-  void _startTimer() {
-    _timer?.cancel();
-    _secondsRemaining = _refreshSeconds;
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!mounted) return;
-      if (_secondsRemaining <= 1) {
-        _generateQr();
-        return;
-      }
-      setState(() => _secondsRemaining -= 1);
-    });
+  int? get _amount {
+    final raw = _amountController.text.replaceAll(',', '').trim();
+    if (raw.isEmpty) return null;
+    return int.tryParse(raw);
   }
 
   Future<void> _generateQr() async {
@@ -56,16 +45,16 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
       _isLoading = true;
       _error = null;
     });
+
     try {
       final token = await ref
           .read(biopayRepositoryProvider)
-          .createHandoffToken(channel: 'qr', amount: _presetAmount);
+          .createHandoffToken(channel: 'qr', amount: _amount);
       if (!mounted) return;
       setState(() {
         _handoffToken = token;
         _isLoading = false;
       });
-      _startTimer();
     } catch (error) {
       if (!mounted) return;
       setState(() {
@@ -79,302 +68,177 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
     await SharePlus.instance.share(
       ShareParams(
         text: token.resolverUrl.toString(),
-        subject: 'BioPay payment request',
+        subject: 'BioPay QR code',
       ),
     );
   }
 
-  Future<void> _saveQrToPhotos(BiopayHandoffToken token) async {
-    try {
-      final painter = QrPainter(
-        data: token.resolverUrl.toString(),
-        version: QrVersions.auto,
-        gapless: true,
-        eyeStyle: QrEyeStyle(
-          eyeShape: QrEyeShape.square,
-          color: ColorTokens.background,
-        ),
-        dataModuleStyle: QrDataModuleStyle(
-          dataModuleShape: QrDataModuleShape.square,
-          color: ColorTokens.background,
-        ),
-      );
-      final bytes = await painter.toImageData(
-        1080,
-        format: ui.ImageByteFormat.png,
-      );
-      final pngBytes = bytes?.buffer.asUint8List();
-      if (pngBytes == null || pngBytes.isEmpty) return;
-
-      await ImageGallerySaverPlus.saveImage(
-        Uint8List.fromList(pngBytes),
-        name: 'biopay_qr_${DateTime.now().millisecondsSinceEpoch}',
-        quality: 100,
-      );
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('QR saved to photos.')));
-    } catch (_) {}
+  void _formatAmount(String raw) {
+    final digits = raw.replaceAll(RegExp(r'[^0-9]'), '');
+    final formatted = biopayReferenceFormatNumber(digits);
+    _amountController.value = TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).colorScheme.primary;
-    final profile = ref.watch(biopayProfileProvider);
-    final currencyCode = profile.valueOrNull?.country.currencyCode;
-    final hasQr = _handoffToken != null && !_isLoading;
-    final appName = biopayAppName(context);
-    final routeLabel = profile.valueOrNull?.routeLabel ?? 'Payment route';
-    final maskedRecipient =
-        profile.valueOrNull?.maskedRecipientValue ?? 'Link BioPay first';
+    final profile = ref.watch(biopayProfileProvider).valueOrNull;
+    final user = ref.watch(currentUserProvider);
+    final selectedRouteType =
+        _selectedRouteType ??
+        profile?.routeType ??
+        PaymentRecipientType.phoneNumber;
 
-    return Scaffold(
-      backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: ColorTokens.onSurface),
-          onPressed: () => context.pop(),
-        ),
-        title: Text('Get QR Code', style: TypographyTokens.titleLarge()),
-      ),
-      body: BiopayMoodBackground(
-        child: SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: SpacingTokens.spacing6,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: SpacingTokens.spacing4),
-                BiopayHeroCard(
-                  eyebrow: hasQr
-                      ? '$appName REQUEST LIVE'
-                      : 'RECEIVE WITH $appName',
-                  title: hasQr
-                      ? 'Scan to pay'
-                      : 'Create a live club payment QR',
-                  subtitle: hasQr
-                      ? 'This code refreshes every minute so supporter handoffs stay safe.'
-                      : 'Supporters can scan and launch a BioPay payment straight into your linked route.',
-                  bottom: Wrap(
-                    spacing: SpacingTokens.spacing2,
-                    runSpacing: SpacingTokens.spacing2,
-                    children: [
-                      BiopayBadge(
-                        icon: Icons.route_rounded,
-                        label: routeLabel,
-                        tint: primaryColor.withValues(alpha: 0.14),
-                      ),
-                      BiopayBadge(
-                        icon: hasQr
-                            ? Icons.lock_clock_rounded
-                            : Icons.account_balance_wallet_outlined,
-                        label: hasQr
-                            ? 'Refreshes in ${_secondsRemaining}s'
-                            : maskedRecipient,
-                      ),
+    return BiopayReferencePage(
+      title: 'Get QR Code',
+      onBack: () {
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go('/biopay');
+        }
+      },
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 220),
+        child: _handoffToken == null
+            ? ListView(
+                key: const ValueKey('form'),
+                children: [
+                  BiopayReferenceSegmentedControl(
+                    selected: selectedRouteType,
+                    onChanged: (value) =>
+                        setState(() => _selectedRouteType = value),
+                  ),
+                  const SizedBox(height: 22),
+                  BiopayReferenceValueCard(
+                    label: _labelForRoute(selectedRouteType),
+                    value: _valueForRoute(selectedRouteType, profile, user),
+                  ),
+                  const SizedBox(height: 22),
+                  BiopayReferenceValueCard(
+                    label: 'Amount (Optional)',
+                    controller: _amountController,
+                    prefix: 'RWF',
+                    hintText: '0',
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9,]')),
                     ],
+                    onChanged: _formatAmount,
                   ),
-                ),
-
-                const SizedBox(height: SpacingTokens.spacing6),
-
-                // FORM STATE or QR DISPLAY STATE
-                if (hasQr)
-                  _QrDisplayState(
-                    token: _handoffToken!,
-                    secondsRemaining: _secondsRemaining,
-                    onShare: () => _shareQr(_handoffToken!),
-                    onSave: () => _saveQrToPhotos(_handoffToken!),
-                  )
-                else ...[
-                  // Amount
-                  Text(
-                    'Amount (Optional)',
-                    style: TypographyTokens.labelSmall().copyWith(
-                      letterSpacing: 0.7,
-                    ),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing2),
-                  ClayCard(
-                    backgroundColor: ColorTokens.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(32),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: SpacingTokens.spacing5,
-                      vertical: SpacingTokens.spacing4,
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          currencyCode ?? 'RWF',
-                          style: TypographyTokens.headlineSmall().copyWith(
-                            color: primaryColor,
-                          ),
-                        ),
-                        const SizedBox(width: SpacingTokens.spacing3),
-                        Expanded(
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                            ],
-                            onChanged: (v) =>
-                                setState(() => _presetAmount = int.tryParse(v)),
-                            style: TypographyTokens.displaySmall().copyWith(
-                              fontSize: 28,
-                            ),
-                            decoration: InputDecoration.collapsed(
-                              hintText: '0',
-                              hintStyle: TypographyTokens.displaySmall()
-                                  .copyWith(
-                                    fontSize: 28,
-                                    color: ColorTokens.onSurfaceVariant
-                                        .withValues(alpha: 0.3),
-                                  ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
                   if (_error != null) ...[
-                    const SizedBox(height: SpacingTokens.spacing4),
+                    const SizedBox(height: 16),
                     Text(
                       _error!,
-                      style: TypographyTokens.bodySmall().copyWith(
-                        color: ColorTokens.error,
-                        fontWeight: FontWeight.w600,
+                      style: biopayReferenceText(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.red.shade600,
                       ),
                     ),
                   ],
-                ],
-
-                const Spacer(),
-
-                // CTA
-                if (!hasQr)
-                  ClaymorphicButton(
-                    label: _isLoading ? 'Generating...' : 'Generate QR Code',
-                    onPressed: _isLoading ? null : _generateQr,
-                    isLoading: _isLoading,
+                  const SizedBox(height: 34),
+                  BiopayReferencePrimaryButton(
+                    label: _isLoading
+                        ? 'Generating QR Code'
+                        : 'Generate QR Code',
                     icon: Icons.qr_code_2_rounded,
-                    width: double.infinity,
-                    preserveCase: true,
-                    letterSpacing: 0.6,
+                    color: const Color(0xFF0E1630),
+                    onTap: _isLoading ? null : _generateQr,
                   ),
-
-                if (hasQr)
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ClaymorphicButton(
-                          label: 'Share QR Code',
-                          onPressed: () => _shareQr(_handoffToken!),
-                          icon: Icons.bolt_rounded,
-                          width: double.infinity,
-                          preserveCase: true,
-                          letterSpacing: 0.6,
+                ],
+              )
+            : ListView(
+                key: const ValueKey('qr'),
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(28),
+                    decoration: biopayReferencePanelDecoration(radius: 36),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(22),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(28),
+                        ),
+                        child: QrImageView(
+                          data: _handoffToken!.resolverUrl.toString(),
+                          size: 250,
+                          backgroundColor: Colors.white,
                         ),
                       ),
-                      const SizedBox(width: SpacingTokens.spacing3),
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () => _saveQrToPhotos(_handoffToken!),
-                          icon: const Icon(Icons.download_rounded),
-                          label: const Text('Save'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: ColorTokens.onSurface,
-                            side: BorderSide(
-                              color: Colors.white.withValues(alpha: 0.12),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: SpacingTokens.spacing4,
-                              vertical: SpacingTokens.spacing4,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(28),
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  GestureDetector(
+                    onTap: () => _shareQr(_handoffToken!),
+                    child: Container(
+                      height: 86,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.07),
+                            blurRadius: 28,
+                            offset: const Offset(0, 14),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.bolt_rounded,
+                            color: biopayReferenceBlue,
+                            size: 24,
+                          ),
+                          const SizedBox(width: 14),
+                          Text(
+                            'Share QR Code',
+                            style: biopayReferenceText(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              color: const Color(0xFF586C92),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-
-                const SizedBox(height: SpacingTokens.spacing8),
-              ],
-            ),
-          ),
-        ),
+                ],
+              ),
       ),
     );
   }
-}
 
-// ── QR Display State ──
+  String _labelForRoute(PaymentRecipientType routeType) {
+    return routeType == PaymentRecipientType.code
+        ? 'Merchant Code'
+        : 'MoMo Number';
+  }
 
-class _QrDisplayState extends StatelessWidget {
-  const _QrDisplayState({
-    required this.token,
-    required this.secondsRemaining,
-    required this.onShare,
-    required this.onSave,
-  });
+  String _valueForRoute(
+    PaymentRecipientType routeType,
+    BiopayProfile? profile,
+    UserProfile? user,
+  ) {
+    if (routeType == PaymentRecipientType.code) {
+      if (profile?.routeType == PaymentRecipientType.code &&
+          (profile?.recipientValue.trim().isNotEmpty ?? false)) {
+        return profile!.recipientValue;
+      }
+      return '23456';
+    }
 
-  final BiopayHandoffToken token;
-  final int secondsRemaining;
-  final VoidCallback onShare;
-  final VoidCallback onSave;
+    if (profile?.routeType == PaymentRecipientType.phoneNumber &&
+        (profile?.recipientValue.trim().isNotEmpty ?? false)) {
+      return profile!.recipientValue;
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          ClayCard(
-            backgroundColor: ColorTokens.surfaceContainerLow,
-            borderRadius: BorderRadius.circular(40),
-            padding: const EdgeInsets.all(SpacingTokens.spacing6),
-            child: Container(
-              width: 252,
-              height: 252,
-              padding: const EdgeInsets.all(SpacingTokens.spacing5),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(28),
-                border: Border.all(
-                  color: ColorTokens.surfaceContainerHighest,
-                  width: 2,
-                ),
-              ),
-              child: QrImageView(
-                data: token.resolverUrl.toString(),
-                version: QrVersions.auto,
-                eyeStyle: const QrEyeStyle(
-                  eyeShape: QrEyeShape.square,
-                  color: Colors.black,
-                ),
-                dataModuleStyle: const QrDataModuleStyle(
-                  dataModuleShape: QrDataModuleShape.square,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          Text(
-            'Refreshes in ${secondsRemaining}s',
-            style: TypographyTokens.labelLarge().copyWith(
-              color: ColorTokens.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    );
+    final momo = user?.momoNumber?.trim();
+    return (momo != null && momo.isNotEmpty) ? momo : '0788123456';
   }
 }

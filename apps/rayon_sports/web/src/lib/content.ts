@@ -627,6 +627,7 @@ export const adminNavigation = [
   { href: "/admin/squad", label: "Squad" },
   { href: "/admin/shop", label: "Shop" },
   { href: "/admin/membership", label: "Membership" },
+  { href: "/admin/gamification", label: "Gamification" },
   { href: "/admin/community", label: "Community" },
   { href: "/admin/standings", label: "Standings" },
   { href: "/admin/contributions", label: "Contributions" },

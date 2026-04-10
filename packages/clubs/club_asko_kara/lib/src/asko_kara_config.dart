@@ -8,7 +8,7 @@ class AskoKaraConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'asko_kara');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '45');
 
   @override
   String get clubName => 'ASKO de Kara';

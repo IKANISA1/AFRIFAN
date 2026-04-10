@@ -8,7 +8,7 @@ class Mogas90Config implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'mogas_90');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '73');
 
   @override
   String get clubName => 'Mogas 90 FC';

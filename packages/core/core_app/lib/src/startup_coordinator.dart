@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:feat_biopay/feat_biopay.dart';
 import 'package:feat_sms_ledger/feat_sms_ledger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +16,10 @@ class AppStartupOptions {
     this.initializePersistence = true,
     this.initializeBackend = true,
     this.initializeSmsAutoread = true,
+    this.deferNonCriticalBackendInitialization = true,
     this.firebaseOptions,
+    this.criticalBackendOverride,
+    this.deferredBackendOverride,
   });
 
   const AppStartupOptions.integrationTest()
@@ -21,13 +27,19 @@ class AppStartupOptions {
       initializePersistence = false,
       initializeBackend = false,
       initializeSmsAutoread = false,
-      firebaseOptions = null;
+      deferNonCriticalBackendInitialization = false,
+      firebaseOptions = null,
+      criticalBackendOverride = null,
+      deferredBackendOverride = null;
 
   final bool configureDeviceChrome;
   final bool initializePersistence;
   final bool initializeBackend;
   final bool initializeSmsAutoread;
+  final bool deferNonCriticalBackendInitialization;
   final FirebaseOptions? firebaseOptions;
+  final Future<void> Function(ClubConfig config)? criticalBackendOverride;
+  final Future<void> Function(ClubConfig config)? deferredBackendOverride;
 }
 
 /// Centralizes startup side effects so app bootstrap stays declarative.
@@ -35,6 +47,7 @@ class AppStartupCoordinator {
   AppStartupCoordinator({this.options = const AppStartupOptions()});
 
   final AppStartupOptions options;
+  static StreamSubscription<AuthState>? _authLifecycleSubscription;
 
   Future<void> initialize(ClubConfig config) async {
     ColorTokens.init(config.colors);
@@ -44,13 +57,32 @@ class AppStartupCoordinator {
     }
     if (options.initializePersistence) {
       await _initializePersistence();
+      if (config.hasBiopay) {
+        await _purgeLegacyBiopayCache();
+      }
     }
     if (options.initializeBackend) {
-      await _initializeBackend(config);
+      await _initializeCriticalBackend(config);
+      if (!options.deferNonCriticalBackendInitialization) {
+        await _initializeDeferredBackend(config);
+      }
     }
-    if (options.initializeSmsAutoread) {
-      _initializeSmsAutoread(config);
+  }
+
+  Future<void>? scheduleDeferredInitialization(ClubConfig config) {
+    if (!options.initializeBackend ||
+        !options.deferNonCriticalBackendInitialization) {
+      return null;
     }
+
+    final completer = Completer<void>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(
+        _runDeferredInitialization(config).whenComplete(completer.complete),
+      );
+    });
+    WidgetsBinding.instance.scheduleFrame();
+    return completer.future;
   }
 
   Future<void> _configureDeviceChrome() async {
@@ -73,7 +105,12 @@ class AppStartupCoordinator {
     await Hive.initFlutter();
   }
 
-  Future<void> _initializeBackend(ClubConfig config) async {
+  Future<void> _initializeCriticalBackend(ClubConfig config) async {
+    if (options.criticalBackendOverride case final override?) {
+      await override(config);
+      return;
+    }
+
     final firebaseReady = await FirebaseBootstrapService.initialize(
       options: options.firebaseOptions,
     );
@@ -96,11 +133,59 @@ class AppStartupCoordinator {
       supabaseUrl: config.supabaseUrl,
       supabaseAnonKey: config.supabaseAnonKey,
     );
+  }
 
+  Future<void> _initializeDeferredBackend(ClubConfig config) async {
+    if (options.deferredBackendOverride case final override?) {
+      await override(config);
+      return;
+    }
+
+    await _registerAuthLifecycleObservers(config);
     await PushNotificationService.initialize(clubId: config.clubId);
 
     final countryRepo = CountryRepository(client: SupabaseClientFactory.client);
     await countryRepo.loadAndInject();
+
+    if (options.initializeSmsAutoread) {
+      _initializeSmsAutoread(config);
+    }
+  }
+
+  Future<void> _runDeferredInitialization(ClubConfig config) async {
+    try {
+      await _initializeDeferredBackend(config);
+    } catch (error) {
+      debugPrint(
+        '[Bootstrap] Deferred startup initialization failed (non-fatal): $error',
+      );
+    }
+  }
+
+  Future<void> _purgeLegacyBiopayCache() async {
+    final cacheService = BiopayCacheService(
+      openBox: <T>(String name) async => Hive.openBox<T>(name),
+      deleteBox: Hive.deleteBoxFromDisk,
+    );
+    await cacheService.purgeLegacyPersistentCache();
+  }
+
+  Future<void> _registerAuthLifecycleObservers(ClubConfig config) async {
+    await _authLifecycleSubscription?.cancel();
+
+    if (!config.hasBiopay) {
+      _authLifecycleSubscription = null;
+      return;
+    }
+
+    final cacheService = BiopayCacheService();
+    _authLifecycleSubscription = SupabaseClientFactory.authStateChanges.listen((
+      auth,
+    ) {
+      if (auth.event == AuthChangeEvent.signedOut) {
+        unawaited(cacheService.clear());
+      }
+    });
   }
 
   void _initializeSmsAutoread(ClubConfig config) {

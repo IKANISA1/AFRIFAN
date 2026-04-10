@@ -8,7 +8,7 @@ class AsanteKotokoConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'asante_kotoko');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '9');
 
   @override
   String get clubName => 'Asante Kotoko SC';

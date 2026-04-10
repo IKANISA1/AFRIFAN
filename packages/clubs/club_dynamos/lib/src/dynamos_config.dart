@@ -8,7 +8,7 @@ class DynamosConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'dynamos');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '19');
 
   @override
   String get clubName => 'Dynamos FC';

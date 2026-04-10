@@ -29,7 +29,7 @@ void main() {
         modules
             .where((module) => module.tabRoute != null)
             .map((module) => module.tabRoute!.label),
-        contains('BIOPAY'),
+        contains('BioPay'),
       );
     });
 
@@ -57,16 +57,20 @@ void main() {
               ),
             ),
           ],
-          child: MaterialApp.router(
-            theme: ClubTheme.from(config),
-            routerConfig: router.router,
+          child: ClubConfigScope(
+            config: config,
+            child: MaterialApp.router(
+              theme: ClubTheme.from(config),
+              routerConfig: router.router,
+            ),
           ),
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
 
-      expect(find.text('BIOPAY & PRIVACY'), findsOneWidget);
+      expect(find.text('BioPay & Privacy'), findsOneWidget);
       expect(find.text('Privacy Controls'), findsOneWidget);
       expect(find.text('BioPay Home'), findsOneWidget);
       expect(find.text('Face ID & Enrollment'), findsOneWidget);

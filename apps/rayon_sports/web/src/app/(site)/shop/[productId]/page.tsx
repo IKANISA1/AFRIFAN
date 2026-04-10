@@ -5,7 +5,11 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import { ShareActionButton } from "@/components/pwa/share-action-button";
 import { getClubProfile, getProductById, getProducts } from "@/lib/data/public";
-import { buildPageMetadata, buildProductJsonLd } from "@/lib/metadata";
+import {
+  buildPageMetadata,
+  buildProductJsonLd,
+  renderJsonLdScriptContent,
+} from "@/lib/metadata";
 import { formatCurrency } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -49,7 +53,7 @@ export default async function ProductPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(buildProductJsonLd(product)),
+          __html: renderJsonLdScriptContent(buildProductJsonLd(product)),
         }}
       />
       <section className="glass-panel-elevated overflow-hidden rounded-[38px] border border-border-soft">

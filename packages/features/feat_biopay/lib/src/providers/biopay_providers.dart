@@ -53,6 +53,7 @@ final biopayNfcServiceProvider = Provider<BiopayNfcService>((ref) {
 final biopayCacheServiceProvider = Provider<BiopayCacheService>((ref) {
   return BiopayCacheService(
     openBox: <T>(String name) async => Hive.openBox<T>(name),
+    deleteBox: Hive.deleteBoxFromDisk,
   );
 });
 

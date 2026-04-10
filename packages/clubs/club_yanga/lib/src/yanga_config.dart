@@ -8,7 +8,7 @@ class YangaConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'yanga');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '1');
 
   @override
   String get clubName => 'Young Africans (Yanga)';

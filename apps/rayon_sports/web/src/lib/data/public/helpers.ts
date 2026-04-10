@@ -1,10 +1,10 @@
 /**
  * Shared helpers for public data modules.
  */
-import { getAdminSupabase } from "@/lib/supabase/admin";
+import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import { safeString } from "@/lib/utils";
 
-export type PublicClient = NonNullable<ReturnType<typeof getAdminSupabase>>;
+export type PublicClient = NonNullable<ReturnType<typeof getReadOnlySupabase>>;
 
 const accessibleTableCache = new Map<string, Promise<string>>();
 

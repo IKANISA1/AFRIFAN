@@ -4,7 +4,7 @@
 import { cache } from "react";
 import { getActiveClubReference } from "@/lib/club-context";
 import { fallbackMatches } from "@/lib/content";
-import { getAdminSupabase } from "@/lib/supabase/admin";
+import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type { MatchItem } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { sanitizeMediaUrl } from "./helpers";
@@ -69,7 +69,7 @@ function mapMatchRow(
 }
 
 export const getMatches = cache(async function getMatches() {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) return fallbackMatches;
 

@@ -8,4 +8,5 @@
     <exclude domain="sharedpref" path="biopay_nfc_hce.xml" />
     <exclude domain="sharedpref" path="FlutterSecureStorage" />
     <exclude domain="database" path="." />
+    <exclude domain="file" path="." />
 </full-backup-content>

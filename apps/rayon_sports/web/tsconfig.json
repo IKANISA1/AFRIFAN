@@ -34,13 +34,10 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts",
-    "/tmp/next-rayon-build/types/**/*.ts",
-    "/tmp/next-rayon-build/dev/types/**/*.ts",
-    "tmp/deploy-check/types/**/*.ts",
-    "tmp/deploy-check/dev/types/**/*.ts"
+    "**/*.mts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "tmp"
   ]
 }

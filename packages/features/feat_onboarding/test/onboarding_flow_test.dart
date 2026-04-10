@@ -51,6 +51,9 @@ class FakeAuthRepository extends AuthRepository {
   }
 
   @override
+  Future<void> signOut() async {}
+
+  @override
   Future<AdminWorkspaceAccess> resolveAdminAccess(String userId) async {
     return AdminWorkspaceAccess.none;
   }
@@ -194,17 +197,10 @@ void main() {
     });
 
     testWidgets(
-      'splash preserves an existing user via fallback profile when restore throws',
+      'splash clears a broken session and routes to onboarding when restore throws',
       (tester) async {
         final repository = FakeAuthRepository(
           restoreError: Exception('temporary backend outage'),
-          fallbackProfile: const UserProfile(
-            id: 'user-fallback',
-            clubId: '24',
-            publicUserId: '483912',
-            momoNumber: '0781234567',
-            momoProvider: 'MoMo',
-          ),
         );
 
         await _pumpApp(
@@ -216,7 +212,7 @@ void main() {
         await tester.pump(const Duration(seconds: 2));
         await tester.pumpAndSettle();
 
-        expect(find.text('Home Route'), findsOneWidget);
+        expect(find.byType(OnboardingScreen), findsOneWidget);
       },
     );
 

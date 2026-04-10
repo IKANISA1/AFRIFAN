@@ -17,7 +17,7 @@ import '../screens/biopay_scan_screen.dart';
 import '../services/biopay_auth_gate_service.dart';
 import '../services/biopay_face_detection_service.dart';
 import '../services/biopay_liveness_service.dart';
-import 'biopay_overlays.dart';
+import 'biopay_reference_ui.dart';
 import 'biopay_scan_footer.dart';
 import 'biopay_scanner_shell.dart';
 
@@ -60,7 +60,6 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
   bool _isProcessingFrame = false;
   bool _isSubmitting = false;
   DateTime? _lastFrameProcessedAt;
-  BiopayLivenessAssessment? _livenessAssessment;
 
   // Enrollment
   final List<Float32List> _enrollmentEmbeddings = [];
@@ -224,7 +223,6 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
       if (analysis.isStable) {
         final assessment = _livenessService.evaluate(analysis);
         if (assessment != null) {
-          _livenessAssessment = assessment;
           _setScannerState(
             tone: _scannerToneForLiveness(assessment.level),
             statusLabel: assessment.statusLabel,
@@ -234,7 +232,6 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
       }
 
       if (_livenessService.isSatisfied && analysis.isStable && !_isSubmitting) {
-        _livenessAssessment = null;
         final embeddingService = ref.read(biopayEmbeddingServiceProvider);
         if (!embeddingService.isLoaded) {
           await embeddingService.loadModel();
@@ -278,42 +275,36 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
 
     switch (analysis.guidance) {
       case BiopayFaceGuidance.multipleFaces:
-        _livenessAssessment = null;
         _setScannerState(
           tone: BiopayScannerTone.blocked,
           statusLabel: 'One face only',
           helperText: '',
         );
       case BiopayFaceGuidance.tooDark:
-        _livenessAssessment = null;
         _setScannerState(
           tone: BiopayScannerTone.blocked,
           statusLabel: 'Too dark',
           helperText: '',
         );
       case BiopayFaceGuidance.tooBright:
-        _livenessAssessment = null;
         _setScannerState(
           tone: BiopayScannerTone.blocked,
           statusLabel: 'Too bright',
           helperText: '',
         );
       case BiopayFaceGuidance.tooFar:
-        _livenessAssessment = null;
         _setScannerState(
           tone: BiopayScannerTone.blocked,
           statusLabel: 'Move closer',
           helperText: '',
         );
       case BiopayFaceGuidance.headTurned:
-        _livenessAssessment = null;
         _setScannerState(
           tone: BiopayScannerTone.blocked,
           statusLabel: 'Face the camera',
           helperText: '',
         );
       case BiopayFaceGuidance.eyesClosed:
-        _livenessAssessment = null;
         _setScannerState(
           tone: BiopayScannerTone.blocked,
           statusLabel: 'Open your eyes',
@@ -328,7 +319,6 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
           helperText: '',
         );
       case BiopayFaceGuidance.searching:
-        _livenessAssessment = null;
         _setScannerState(
           tone: BiopayScannerTone.searching,
           statusLabel: analysis.faceCount == 1 && analysis.stableCount > 0
@@ -543,14 +533,6 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
     };
   }
 
-  int _resolveLivenessStep(String statusLabel) {
-    final label = statusLabel.toLowerCase();
-    if (label.contains('blink') || label.contains('eyes')) return 1;
-    if (label.contains('turn')) return 2;
-    if (label.contains('look straight')) return 3;
-    return 1;
-  }
-
   void _closeScanner() {
     _controller?.stopImageStream();
     _controller?.dispose();
@@ -621,42 +603,12 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
                 ),
               ),
             ),
-            if (_livenessAssessment != null)
-              Positioned.fill(
-                child: BiopayLivenessPromptOverlay(
-                  title: _livenessAssessment!.statusLabel,
-                  helperText: '',
-                  currentStep: _resolveLivenessStep(
-                    _livenessAssessment!.statusLabel,
-                  ),
-                  totalSteps: _isEnroll ? 3 : 2,
-                  stepLabels: _isEnroll
-                      ? const ['Position', 'Angles', 'Confirm']
-                      : const ['Lock', 'Confirm'],
-                ),
-              ),
 
             // ── Back button ──
             Positioned(
-              top: MediaQuery.of(context).padding.top + 8,
-              left: 12,
-              child: GestureDetector(
-                onTap: _closeScanner,
-                child: Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: ColorTokens.glassFill,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: ColorTokens.ghostBorder),
-                  ),
-                  child: const Icon(
-                    Icons.chevron_left_rounded,
-                    color: Colors.white,
-                    size: 28,
-                  ),
-                ),
-              ),
+              top: MediaQuery.of(context).padding.top + 24,
+              left: 28,
+              child: BiopayReferenceDarkBackButton(onTap: _closeScanner),
             ),
 
             // ── Initializing indicator ──

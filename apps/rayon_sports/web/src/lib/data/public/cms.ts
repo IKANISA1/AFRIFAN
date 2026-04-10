@@ -6,7 +6,7 @@
  */
 import { cache } from "react";
 import { getActiveClubReference } from "@/lib/club-context";
-import { getAdminSupabase } from "@/lib/supabase/admin";
+import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type { AppConfigEntry, CmsContent, HomeBanner } from "@/lib/types";
 import { safeString, toIdString } from "@/lib/utils";
 
@@ -52,7 +52,7 @@ function mapAppConfig(row: Record<string, unknown>): AppConfigEntry {
 }
 
 async function getGlobalAppConfigRows() {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   if (client == null) {
     return [] as AppConfigEntry[];
   }
@@ -69,7 +69,7 @@ async function getGlobalAppConfigRows() {
 }
 
 async function getClubAppConfigRows(clubId: number) {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   if (client == null) {
     return [] as AppConfigEntry[];
   }
@@ -93,7 +93,7 @@ async function getClubAppConfigRows(clubId: number) {
 // ─── Fetchers ────────────────────────────────────────────
 
 export const getHomeBanners = cache(async function getHomeBanners(): Promise<HomeBanner[]> {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) return [];
 
@@ -116,7 +116,7 @@ export const getHomeBanners = cache(async function getHomeBanners(): Promise<Hom
 export const getCmsContent = cache(async function getCmsContent(
   contentType?: string,
 ): Promise<CmsContent[]> {
-  const client = getAdminSupabase();
+  const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) return [];
 

@@ -88,7 +88,7 @@ void main() {
   });
 
   testWidgets(
-    'preserves an existing fan session when remote profile restore falls back locally',
+    'routes back to onboarding when an existing session cannot be restored safely',
     (tester) async {
       tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
           const FakeAccessibilityFeatures(
@@ -102,14 +102,6 @@ void main() {
           startupOptions: const AppStartupOptions.integrationTest(),
           authRepository: _FakeAuthRepository(
             restoreError: Exception('temporary profile hydration failure'),
-            fallbackProfile: const UserProfile(
-              id: 'user-fallback',
-              clubId: '24',
-              publicUserId: '483912',
-              momoNumber: '0788123456',
-              momoProvider: 'MoMo',
-              languageCode: 'en',
-            ),
           ),
           providerOverrides: [
             homeFeedRepositoryProvider.overrideWithValue(
@@ -150,10 +142,9 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 2));
       await tester.pumpAndSettle();
-      await _pumpUntilVisible(tester, find.text('QUICK ACTIONS'));
+      await _pumpUntilVisible(tester, find.text('NEXT'));
 
-      expect(find.text('QUICK ACTIONS'), findsOneWidget);
-      expect(find.text('LATEST INTEL'), findsOneWidget);
+      expect(find.text('NEXT'), findsOneWidget);
     },
   );
 
@@ -188,25 +179,21 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    await _pumpUntilVisible(tester, find.text('BIOPAY & PRIVACY'));
+    await _pumpUntilVisible(tester, find.text('BioPay & Privacy'));
 
-    expect(find.text('BIOPAY & PRIVACY'), findsOneWidget);
+    expect(find.text('BioPay & Privacy'), findsOneWidget);
     expect(find.text('Privacy Controls'), findsOneWidget);
     expect(find.text('BioPay Home'), findsOneWidget);
-    expect(find.bySemanticsLabel('BIOPAY'), findsOneWidget);
+    expect(find.text('Face ID & Enrollment'), findsOneWidget);
   });
 }
 
 class _FakeAuthRepository extends AuthRepository {
-  _FakeAuthRepository({
-    this.restoreResult,
-    this.restoreError,
-    this.fallbackProfile,
-  }) : super(clubId: '24');
+  _FakeAuthRepository({this.restoreResult, this.restoreError})
+    : super(clubId: '24');
 
   final UserProfile? restoreResult;
   final Object? restoreError;
-  final UserProfile? fallbackProfile;
 
   @override
   Future<UserProfile?> restoreCurrentUser() async {
@@ -217,7 +204,7 @@ class _FakeAuthRepository extends AuthRepository {
   }
 
   @override
-  Future<UserProfile?> restoreSessionFallbackProfile() async => fallbackProfile;
+  Future<void> signOut() async {}
 
   @override
   Future<UserProfile> signInAnonymously() async {

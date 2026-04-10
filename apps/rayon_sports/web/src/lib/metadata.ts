@@ -11,6 +11,15 @@ interface PageMetadataOptions {
   robots?: Metadata["robots"];
 }
 
+export function renderJsonLdScriptContent(value: unknown) {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003C")
+    .replace(/>/g, "\\u003E")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
+
 export function buildPageMetadata({
   title,
   description,

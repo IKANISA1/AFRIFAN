@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:core_app/src/module_registry.dart';
+import 'package:core_app/src/startup_coordinator.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_home/feat_home.dart';
@@ -85,6 +88,74 @@ void main() {
       );
 
       expect(router.initialLocation, '/home');
+    });
+  });
+
+  group('AppStartupCoordinator', () {
+    testWidgets(
+      'defers non-critical backend initialization until after first frame',
+      (tester) async {
+        final steps = <String>[];
+        final deferredInitialization = Completer<void>();
+        final coordinator = AppStartupCoordinator(
+          options: AppStartupOptions(
+            configureDeviceChrome: false,
+            initializePersistence: false,
+            initializeSmsAutoread: false,
+            criticalBackendOverride: (_) async => steps.add('critical'),
+            deferredBackendOverride: (_) async {
+              steps.add('deferred');
+              deferredInitialization.complete();
+            },
+          ),
+        );
+
+        const config = _FakeClubConfig(
+          hasBiopay: true,
+          hasFanClubs: true,
+          hasShop: true,
+          hasTicketing: true,
+        );
+
+        await coordinator.initialize(config);
+        expect(steps, <String>['critical']);
+
+        await tester.pumpWidget(const SizedBox.shrink());
+        coordinator.scheduleDeferredInitialization(config);
+        expect(steps, <String>['critical']);
+
+        await tester.pump();
+        await deferredInitialization.future.timeout(const Duration(seconds: 1));
+        expect(steps, <String>['critical', 'deferred']);
+      },
+    );
+
+    testWidgets('runs deferred backend inline when deferral is disabled', (
+      tester,
+    ) async {
+      final steps = <String>[];
+      final coordinator = AppStartupCoordinator(
+        options: AppStartupOptions(
+          configureDeviceChrome: false,
+          initializePersistence: false,
+          initializeSmsAutoread: false,
+          deferNonCriticalBackendInitialization: false,
+          criticalBackendOverride: (_) async => steps.add('critical'),
+          deferredBackendOverride: (_) async => steps.add('deferred'),
+        ),
+      );
+
+      await coordinator.initialize(
+        const _FakeClubConfig(
+          hasBiopay: true,
+          hasFanClubs: true,
+          hasShop: true,
+          hasTicketing: true,
+        ),
+      );
+
+      expect(steps, <String>['critical', 'deferred']);
+      await tester.pumpWidget(const SizedBox.shrink());
     });
   });
 }

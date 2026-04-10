@@ -8,7 +8,7 @@ class TpMazembeConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'tp_mazembe');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '4');
 
   @override
   String get clubName => 'TP Mazembe';

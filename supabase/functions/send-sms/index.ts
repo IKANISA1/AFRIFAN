@@ -17,6 +17,7 @@
  */
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { hasActiveAdminAssignmentForAuthUser } from "../_shared/admin_access.ts";
 import { sendOtpTemplate } from "../_shared/whatsapp.ts";
 import { jsonOk, jsonError } from "../_shared/response.ts";
 
@@ -46,6 +47,15 @@ async function handleRequest(req: Request) {
     if (!phone || !otp) {
       console.error("send-sms: missing phone or otp in payload", payload);
       return jsonError("Missing phone or otp", 400);
+    }
+
+    const isEligibleAdmin = await hasActiveAdminAssignmentForAuthUser({
+      userId: payload.user?.id ?? null,
+      phone,
+    });
+    if (!isEligibleAdmin) {
+      console.warn(`send-sms: blocked OTP delivery for non-admin phone ${phone.slice(0, 6)}***`);
+      return jsonError("Admin WhatsApp OTP is only available for approved admin numbers.", 403);
     }
 
     console.log(`send-sms: delivering OTP to ${phone.slice(0, 6)}***`);

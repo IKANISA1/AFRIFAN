@@ -8,7 +8,7 @@ const isDevelopment = process.env.NODE_ENV === "development";
 
 const nextConfig: NextConfig = {
   distDir: process.env.NEXT_BUILD_DIR || ".next",
-  serverExternalPackages: ["xlsx"],
+  serverExternalPackages: ["exceljs"],
   images: {
     deviceSizes: [360, 390, 414, 640, 672, 720, 750, 828, 1080, 1200, 1920],
     formats: ["image/avif", "image/webp"],

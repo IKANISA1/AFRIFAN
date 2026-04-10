@@ -5,7 +5,11 @@ import { notFound } from "next/navigation";
 import { NewsCard } from "@/components/news-card";
 import { ShareActionButton } from "@/components/pwa/share-action-button";
 import { getClubProfile, getNewsArticleById, getNewsArticles } from "@/lib/data/public";
-import { buildNewsArticleJsonLd, buildPageMetadata } from "@/lib/metadata";
+import {
+  buildNewsArticleJsonLd,
+  buildPageMetadata,
+  renderJsonLdScriptContent,
+} from "@/lib/metadata";
 import { formatDate, getReadingTime } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -63,7 +67,7 @@ export default async function ArticlePage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(buildNewsArticleJsonLd(article)),
+          __html: renderJsonLdScriptContent(buildNewsArticleJsonLd(article)),
         }}
       />
       <section className="glass-panel-elevated overflow-hidden rounded-[38px] border border-border-soft">

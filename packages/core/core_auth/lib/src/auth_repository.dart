@@ -5,6 +5,16 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'models/admin_workspace_access.dart';
 import 'models/user_profile.dart';
 
+class AuthRestoreFailure implements Exception {
+  const AuthRestoreFailure(this.message, [this.cause]);
+
+  final String message;
+  final Object? cause;
+
+  @override
+  String toString() => message;
+}
+
 /// Handles Supabase authentication with numeric club_id injection and profile CRUD.
 ///
 /// Supports anonymous sign-in, profile restoration, update, and RBAC resolution.
@@ -57,20 +67,21 @@ class AuthRepository {
       return profile;
     } catch (error) {
       debugPrint(
-        '[AuthRepository] Session restore failed, using local session fallback: $error',
+        '[AuthRepository] Session restore failed and local recovery was blocked: $error',
       );
-      return _buildSeededProfile(user);
+      throw AuthRestoreFailure(
+        'Existing session could not be restored safely.',
+        error,
+      );
     }
   }
 
   /// Build the safest local fallback profile for an existing session.
   ///
-  /// This preserves the existing authenticated identity when network/profile
-  /// hydration fails during an app upgrade or transient backend outage.
+  /// Legacy helper retained for compatibility with older tests and flows.
+  /// Existing authenticated restore now fails closed instead of using this data.
   Future<UserProfile?> restoreSessionFallbackProfile() async {
-    final sessionUser = _client.auth.currentUser;
-    if (sessionUser == null) return null;
-    return _buildSeededProfile(sessionUser);
+    return null;
   }
 
   // ─── Profile CRUD ───────────────────────────────────────────

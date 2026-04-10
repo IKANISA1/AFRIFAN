@@ -79,9 +79,13 @@ export function hasClientSupabase() {
 }
 
 export function hasServerSupabase() {
+  return Boolean(serverSupabaseConfig.url && serverSupabaseConfig.anonKey);
+}
+
+export function hasAdminSupabase() {
   return Boolean(
     serverSupabaseConfig.url &&
-      (serverSupabaseConfig.serviceRoleKey || serverSupabaseConfig.anonKey),
+      serverSupabaseConfig.serviceRoleKey,
   );
 }
 

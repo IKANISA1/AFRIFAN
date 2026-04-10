@@ -5,9 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('hub preserves the core BioPay pay and receive contract', (
-    tester,
-  ) async {
+  testWidgets('hub preserves the approved BioPay home layout', (tester) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 2.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -34,8 +32,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text('BioPay'), findsOneWidget);
-    expect(find.text('How you want\nto pay today'), findsOneWidget);
+    expect(find.text('Pay & Get Paid\nInstantly'), findsOneWidget);
     expect(find.text('Face Scan'), findsOneWidget);
     expect(find.text('NFC Tap'), findsOneWidget);
     expect(find.text('Get QR'), findsOneWidget);

@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     return rejectedOrigin;
   }
 
-  const rejectedLimit = rejectRateLimitedRequest(
+  const rejectedLimit = await rejectRateLimitedRequest(
     request,
     "pwa-events",
     90,

@@ -9,7 +9,7 @@ export default defineConfig({
     exclude: ["e2e/**", "node_modules/**", ".next/**"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "html"],
+      reporter: ["text", "html", "json-summary"],
       include: ["src/lib/**/*.ts", "src/components/**/*.tsx"],
     },
   },

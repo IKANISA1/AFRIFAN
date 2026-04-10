@@ -89,3 +89,4 @@ node_modules/
 apps/rayon_sports/web/.wrangler/
 apps/rayon_sports/web/.lighthouseci/
 apps/rayon_sports/web/tmp/
+supabase/recovery/

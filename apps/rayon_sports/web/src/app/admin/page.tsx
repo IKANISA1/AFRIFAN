@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import {
+  Award,
   Users,
   CircleDollarSign,
   ArrowRightLeft,
@@ -58,6 +59,11 @@ const quickActions = [
     href: "/admin/membership",
     title: "Control membership",
     icon: Crown,
+  },
+  {
+    href: "/admin/gamification",
+    title: "Manage FET catalog",
+    icon: Award,
   },
   {
     href: "/admin/contributions",

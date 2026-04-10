@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminClubScopeCookieName, getRequestedAdminClubId } from "@/lib/admin-club-scope";
 import {
+  deleteAdminFanEngagementToken,
   deleteAdminArticle,
   deleteAdminContributionGroup,
   deleteAdminFanClub,
@@ -13,6 +14,7 @@ import {
   getAdminClubProfile,
   getAdminContributionSnapshot,
   getAdminDashboardSnapshot,
+  getAdminFanEngagementTokens,
   getAdminFanClubs,
   getAdminMatches,
   getAdminMembershipPackages,
@@ -25,6 +27,7 @@ import {
   saveAdminArticle,
   saveAdminContributionGroup,
   saveAdminFanClub,
+  saveAdminFanEngagementToken,
   saveAdminClubProfile,
   saveAdminMatch,
   saveAdminMembershipPackage,
@@ -167,6 +170,10 @@ export async function GET(
         return NextResponse.json({
           data: await getAdminSquad(adminClient, access),
         });
+      case "gamification":
+        return NextResponse.json({
+          data: await getAdminFanEngagementTokens(adminClient, access),
+        });
       default:
         return NextResponse.json({ error: "Unknown admin resource." }, {
           status: 404,
@@ -192,7 +199,7 @@ export async function POST(
     return rejectedOrigin;
   }
 
-  const rejectedLimit = rejectRateLimitedRequest(
+  const rejectedLimit = await rejectRateLimitedRequest(
     request,
     "admin-mutation",
     45,
@@ -252,6 +259,14 @@ export async function POST(
       case "squad":
         await saveAdminSquadPlayer(adminClient, access, body as never);
         return NextResponse.json({ data: { success: true } });
+      case "gamification":
+        return NextResponse.json({
+          data: await saveAdminFanEngagementToken(
+            adminClient,
+            access,
+            body as never,
+          ),
+        });
       default:
         return NextResponse.json({ error: "Unknown admin resource." }, {
           status: 404,
@@ -277,7 +292,7 @@ export async function DELETE(
     return rejectedOrigin;
   }
 
-  const rejectedLimit = rejectRateLimitedRequest(
+  const rejectedLimit = await rejectRateLimitedRequest(
     request,
     "admin-delete",
     30,
@@ -325,6 +340,9 @@ export async function DELETE(
         break;
       case "squad":
         await deleteAdminSquadPlayer(adminClient, access, id);
+        break;
+      case "gamification":
+        await deleteAdminFanEngagementToken(adminClient, access, id);
         break;
       default:
         return NextResponse.json({ error: "Unknown admin resource." }, {

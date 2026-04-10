@@ -8,7 +8,7 @@ class NyasaBulletsConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'nyasa_bullets');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '17');
 
   @override
   String get clubName => 'Nyasa Big Bullets FC';

@@ -8,7 +8,7 @@ class VitaloConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'vitalo');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '44');
 
   @override
   String get clubName => "Vital'O FC";

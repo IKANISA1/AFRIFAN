@@ -1,23 +1,43 @@
 import 'dart:math' show sqrt;
 
-import 'package:core_utils/core_utils.dart' as jh;
 import 'package:hive/hive.dart';
 
 import '../models/biopay_match_result.dart';
 
 /// Typedef for testable Hive box opening.
 typedef OpenHiveBox<T> = Future<Box<T>> Function(String name);
+typedef DeleteHiveBox = Future<void> Function(String name);
 
-/// Local cosine-similarity cache for BioPay match results.
+class _CachedMatchEntry {
+  const _CachedMatchEntry({
+    required this.ownerUserId,
+    required this.expiresAt,
+    required this.embedding,
+    required this.payload,
+  });
+
+  final String ownerUserId;
+  final DateTime expiresAt;
+  final List<double> embedding;
+  final Map<String, Object?> payload;
+}
+
+/// In-memory cosine-similarity cache for BioPay match results.
 ///
 /// Stores recent results keyed by (ownerUserId, profileId) with TTL expiry.
-/// Uses Hive for fast local storage of face embedding vectors.
+/// Persistent device storage is intentionally avoided for privacy reasons.
 class BiopayCacheService {
-  BiopayCacheService({required OpenHiveBox<dynamic> openBox})
-    : _openBox = openBox;
+  BiopayCacheService({OpenHiveBox<dynamic>? openBox, DeleteHiveBox? deleteBox})
+    : _openBox = openBox,
+      _deleteBox = deleteBox;
 
   static const boxName = 'biopay_match_cache_v1';
-  final OpenHiveBox<dynamic> _openBox;
+  static final Map<String, _CachedMatchEntry> _sharedEntries =
+      <String, _CachedMatchEntry>{};
+  static bool _legacyPersistentCachePurged = false;
+
+  final OpenHiveBox<dynamic>? _openBox;
+  final DeleteHiveBox? _deleteBox;
 
   Future<void> storeMatch(
     String ownerUserId,
@@ -29,13 +49,13 @@ class BiopayCacheService {
     if (ownerUserId.trim().isEmpty || profileId == null || profileId.isEmpty) {
       return;
     }
-    final box = await _openBox(boxName);
-    await box.put(_cacheKey(ownerUserId, profileId), <String, Object?>{
-      'owner_user_id': ownerUserId,
-      'expires_at': DateTime.now().add(ttl).toUtc().toIso8601String(),
-      'embedding': embedding,
-      'payload': _buildCachePayload(result),
-    });
+    _pruneExpiredEntries();
+    _sharedEntries[_cacheKey(ownerUserId, profileId)] = _CachedMatchEntry(
+      ownerUserId: ownerUserId,
+      expiresAt: DateTime.now().add(ttl).toUtc(),
+      embedding: List<double>.unmodifiable(embedding),
+      payload: _buildCachePayload(result),
+    );
   }
 
   Future<BiopayMatchResult?> findNearestMatch(
@@ -43,67 +63,84 @@ class BiopayCacheService {
     required String ownerUserId,
     double similarityThreshold = 0.96,
   }) async {
-    final box = await _openBox(boxName);
     final now = DateTime.now().toUtc();
     BiopayMatchResult? bestMatch;
     var bestScore = similarityThreshold;
 
-    for (final key in box.keys) {
-      final raw = jh.asMapOrNull(box.get(key));
-      if (raw == null) continue;
-
-      if ((raw['owner_user_id']?.toString() ?? '') != ownerUserId) continue;
-
-      final expiresAt = jh.parseDateTime(raw['expires_at']);
-      if (expiresAt == null || expiresAt.isBefore(now)) {
-        await box.delete(key);
+    final expiredKeys = <String>[];
+    for (final entry in _sharedEntries.entries) {
+      final cached = entry.value;
+      if (cached.ownerUserId != ownerUserId) continue;
+      if (cached.expiresAt.isBefore(now)) {
+        expiredKeys.add(entry.key);
+        continue;
+      }
+      if (cached.embedding.length != embedding.length) {
+        expiredKeys.add(entry.key);
         continue;
       }
 
-      final cachedEmbedding = (raw['embedding'] as List?)
-          ?.map((value) => jh.asDouble(value))
-          .toList(growable: false);
-      final payload = jh.asMapOrNull(raw['payload']);
-      if (cachedEmbedding == null ||
-          cachedEmbedding.length != embedding.length ||
-          payload == null) {
-        await box.delete(key);
-        continue;
-      }
-
-      final score = _cosineSimilarity(embedding, cachedEmbedding);
+      final score = _cosineSimilarity(embedding, cached.embedding);
       if (score >= bestScore) {
         bestScore = score;
-        bestMatch = BiopayMatchResult.fromCacheJson(payload);
+        bestMatch = BiopayMatchResult.fromCacheJson(cached.payload);
       }
+    }
+
+    for (final key in expiredKeys) {
+      _sharedEntries.remove(key);
     }
 
     return bestMatch;
   }
 
   Future<void> remove(String profileId, {String? ownerUserId}) async {
-    final box = await _openBox(boxName);
     if (ownerUserId != null && ownerUserId.trim().isNotEmpty) {
-      await box.delete(_cacheKey(ownerUserId, profileId));
+      _sharedEntries.remove(_cacheKey(ownerUserId, profileId));
       return;
     }
-    await box.delete(profileId);
+
+    final keysToDelete = _sharedEntries.keys
+        .where((key) => key.endsWith(':$profileId'))
+        .toList(growable: false);
+    for (final key in keysToDelete) {
+      _sharedEntries.remove(key);
+    }
   }
 
   Future<void> clear({String? ownerUserId}) async {
-    final box = await _openBox(boxName);
     if (ownerUserId != null && ownerUserId.trim().isNotEmpty) {
-      final keysToDelete = box.keys
-          .where(
-            (key) =>
-                jh.asMapOrNull(box.get(key))?['owner_user_id']?.toString() ==
-                ownerUserId,
-          )
+      final keysToDelete = _sharedEntries.entries
+          .where((entry) => entry.value.ownerUserId == ownerUserId)
+          .map((entry) => entry.key)
           .toList(growable: false);
-      await box.deleteAll(keysToDelete);
+      for (final key in keysToDelete) {
+        _sharedEntries.remove(key);
+      }
       return;
     }
-    await box.clear();
+    _sharedEntries.clear();
+  }
+
+  Future<void> purgeLegacyPersistentCache({bool force = false}) async {
+    if (_legacyPersistentCachePurged && !force) {
+      return;
+    }
+    _legacyPersistentCachePurged = true;
+
+    try {
+      if (_deleteBox case final deleteBox?) {
+        await deleteBox(boxName);
+        return;
+      }
+      if (_openBox case final openBox?) {
+        final box = await openBox(boxName);
+        await box.clear();
+        await box.close();
+      }
+    } catch (_) {
+      // Best-effort cleanup for older installs that persisted match data.
+    }
   }
 
   // ─── Math ─────────────────────────────────────────────────
@@ -150,5 +187,16 @@ class BiopayCacheService {
 
   String _cacheKey(String ownerUserId, String profileId) {
     return '$ownerUserId:$profileId';
+  }
+
+  void _pruneExpiredEntries() {
+    final now = DateTime.now().toUtc();
+    final expiredKeys = _sharedEntries.entries
+        .where((entry) => entry.value.expiresAt.isBefore(now))
+        .map((entry) => entry.key)
+        .toList(growable: false);
+    for (final key in expiredKeys) {
+      _sharedEntries.remove(key);
+    }
   }
 }

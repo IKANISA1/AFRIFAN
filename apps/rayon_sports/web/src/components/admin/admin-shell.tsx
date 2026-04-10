@@ -8,6 +8,7 @@ import type { FormEvent, ReactNode } from "react";
 import {
   Award,
   Bell,
+  Crown,
   FileText,
   HandHeart,
   Handshake,
@@ -302,7 +303,8 @@ export function AdminShell({ children }: { children: ReactNode }) {
     "/admin/matches": Trophy,
     "/admin/squad": Users,
     "/admin/shop": ShoppingBag,
-    "/admin/membership": Award,
+    "/admin/membership": Crown,
+    "/admin/gamification": Award,
     "/admin/community": Handshake,
     "/admin/standings": ListOrdered,
     "/admin/contributions": HandHeart,

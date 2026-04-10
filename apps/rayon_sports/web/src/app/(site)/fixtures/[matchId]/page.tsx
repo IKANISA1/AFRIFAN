@@ -10,7 +10,11 @@ import { MatchLineups } from "@/components/engagement/match-lineups";
 import { NotificationOptInCard } from "@/components/pwa/notification-opt-in-card";
 import { ShareActionButton } from "@/components/pwa/share-action-button";
 import { getClubProfile, getMatchById, getMatches } from "@/lib/data/public";
-import { buildMatchJsonLd, buildPageMetadata } from "@/lib/metadata";
+import {
+  buildMatchJsonLd,
+  buildPageMetadata,
+  renderJsonLdScriptContent,
+} from "@/lib/metadata";
 import {
   formatCurrency,
   formatDateTime,
@@ -64,7 +68,7 @@ export default async function FixtureDetailPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(buildMatchJsonLd(match)),
+          __html: renderJsonLdScriptContent(buildMatchJsonLd(match)),
         }}
       />
       <section className="glass-panel-elevated overflow-hidden rounded-[38px] border border-border-soft">

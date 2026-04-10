@@ -153,3 +153,24 @@ export interface AdminSmsSnapshot {
   metrics: Record<string, number>;
   syncRuns: AdminSmsSyncRun[];
 }
+
+export type AdminFanEngagementTemplateScope = "generic" | "club_specific";
+
+export interface AdminFanEngagementToken {
+  id: string;
+  clubId: number | null;
+  code: string;
+  templateScope: AdminFanEngagementTemplateScope;
+  category: string;
+  itemName: string;
+  fetValue: number;
+  triggerCondition: string;
+  activationTiming: string;
+  description: string;
+  badgeName: string;
+  implementationNotes: string | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}

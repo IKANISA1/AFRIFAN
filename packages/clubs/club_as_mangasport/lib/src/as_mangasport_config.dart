@@ -8,7 +8,7 @@ class AsMangasportConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: 'as_mangasport');
+      const String.fromEnvironment('CLUB_ID', defaultValue: '69');
 
   @override
   String get clubName => 'AS Mangasport';
