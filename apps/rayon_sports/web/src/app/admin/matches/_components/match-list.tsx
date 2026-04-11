@@ -1,23 +1,35 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { PencilLine, Trash2 } from "lucide-react";
+import { AdminEmptyState } from "@/components/admin/admin-empty-state";
+import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
+import { AdminSurface } from "@/components/admin/admin-surface";
 import { ProgressBar } from "@/components/progress-bar";
 import { Skeleton } from "@/components/skeleton";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { statusColors } from "./match-form-state";
 import type { AdminMatchItem } from "@/lib/types";
 
-function MatchStatusBadge({ status }: { status: string }) {
-  const colorClass = statusColors[status] ?? statusColors.scheduled;
-  const isLive = status === "live" || status === "halftime";
+function matchTone(status: string) {
+  switch (status) {
+    case "live":
+    case "halftime":
+      return "danger" as const;
+    case "scheduled":
+      return "info" as const;
+    case "fulltime":
+      return "neutral" as const;
+    case "postponed":
+      return "warning" as const;
+    case "cancelled":
+      return "danger" as const;
+    default:
+      return "neutral" as const;
+  }
+}
 
-  return (
-    <span className={cn("inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em]", colorClass)}>
-      {isLive ? <span className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" /> : null}
-      {status}
-    </span>
-  );
+function statusLabel(status: string) {
+  return status.replaceAll("_", " ");
 }
 
 interface MatchListProps {
@@ -57,11 +69,10 @@ export function MatchList({
   });
 
   return (
-    <section className="glass-panel rounded-[32px] p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="font-display text-3xl font-bold uppercase leading-none">
-          Fixture list
-        </p>
+    <AdminSurface
+      title="Fixtures"
+      description="Live state, sales, score, and capacity."
+      toolbar={
         <div className="flex flex-wrap gap-2">
           {["ALL", "LIVE", "UPCOMING", "COMPLETED", "ON SALE"].map((item) => (
             <button
@@ -75,99 +86,118 @@ export function MatchList({
             </button>
           ))}
         </div>
-      </div>
+      }
+      flush
+    >
+      {loading ? (
+        <div className="space-y-3 p-5 sm:p-6">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="rounded-[20px] border border-border-soft bg-white/5 p-4">
+              <Skeleton className="skeleton-text h-5 w-2/5" />
+              <Skeleton className="skeleton-text mt-2 h-3 w-full" />
+              <div className="mt-4 grid gap-3 sm:grid-cols-4">
+                {Array.from({ length: 4 }).map((_, cellIndex) => (
+                  <Skeleton key={cellIndex} className="h-10 rounded-xl" />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : filteredMatches.length === 0 ? (
+        <AdminEmptyState
+          title="No fixtures in this view"
+          description="Change the current filter or create a new fixture from the editor."
+        />
+      ) : (
+        <div className="admin-table-shell">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Fixture</th>
+                <th>Status</th>
+                <th>Kickoff</th>
+                <th>Sales</th>
+                <th>Score</th>
+                <th>Capacity</th>
+                <th className="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredMatches.map((match) => {
+                const isLive =
+                  match.matchStatus === "live" || match.matchStatus === "halftime";
 
-      <div className="mt-5 space-y-3">
-        {loading ? (
-          <div className="space-y-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="rounded-[26px] border border-border-soft bg-white/5 p-5">
-                <Skeleton className="skeleton-text h-6 w-3/5" />
-                <Skeleton className="skeleton-text mt-2 h-3 w-full" />
-                <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                  {Array.from({ length: 3 }).map((_, j) => (
-                    <Skeleton key={j} className="h-16 rounded-[22px]" />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : null}
-        {!loading && filteredMatches.length === 0 ? (
-          <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">
-            No fixtures match the current filter.
-          </p>
-        ) : null}
-        {!loading && filteredMatches.map((match) => (
-          <article
-            key={match.id}
-            className="card-interactive rounded-[26px] border border-border-soft bg-white/5 p-5"
-          >
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <p className="font-display text-2xl font-bold uppercase leading-none">
-                    {match.homeTeam} vs {match.awayTeam}
-                  </p>
-                  <MatchStatusBadge status={match.matchStatus} />
-                </div>
-                <p className="mt-2 text-sm leading-6 text-slate-300">
-                  {match.competition} • {match.venue} • {formatDate(match.matchDate)}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => onEdit(match)}
-                  className="rounded-full border border-border-soft px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-100 transition hover:bg-white/8"
-                >
-                  Edit
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onDelete(match)}
-                  className="rounded-full border border-border-soft px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-rose-200 transition hover:border-rose-400/30 hover:bg-rose-500/15"
-                >
-                  <span className="inline-flex items-center gap-1.5">
-                    <Trash2 size={12} />
-                    Delete
-                  </span>
-                </button>
-              </div>
-            </div>
-            <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
-                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-club-accent">
-                  Sales
-                </p>
-                <p className="mt-2 text-sm text-slate-200">
-                  <span className={match.isOnSale ? "text-emerald-400" : "text-slate-400"}>
-                    {match.isOnSale ? "On sale" : "Closed"}
-                  </span>
-                  {" • "}
-                  {formatCurrency(match.generalPrice)}
-                </p>
-              </div>
-              <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
-                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-club-accent">
-                  Score
-                </p>
-                <p className="mt-2 font-display text-xl font-bold text-slate-200">
-                  {match.homeScore} – {match.awayScore}
-                </p>
-              </div>
-              <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
-                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-club-accent">
-                  Capacity
-                </p>
-                <div className="mt-2">
-                  <ProgressBar value={match.soldCount} max={match.capacity} compact />
-                </div>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
+                return (
+                  <tr key={match.id} className={cn(isLive && "bg-white/[0.03]")}>
+                    <td>
+                      <p className="admin-row-title">
+                        {match.homeTeam} vs {match.awayTeam}
+                      </p>
+                      <p className="admin-row-copy">
+                        {match.competition} · {match.venue}
+                      </p>
+                    </td>
+                    <td>
+                      <AdminStatusBadge
+                        label={statusLabel(match.matchStatus)}
+                        tone={matchTone(match.matchStatus)}
+                        pulse={isLive}
+                      />
+                    </td>
+                    <td>
+                      <p className="text-sm font-medium text-white">
+                        {formatDate(match.matchDate)}
+                      </p>
+                      <p className="admin-row-meta">{match.kickoffTime}</p>
+                    </td>
+                    <td>
+                      <AdminStatusBadge
+                        label={match.isOnSale ? "On sale" : "Closed"}
+                        tone={match.isOnSale ? "success" : "neutral"}
+                      />
+                      <p className="admin-row-meta">{formatCurrency(match.generalPrice)}</p>
+                    </td>
+                    <td>
+                      <p className="text-sm font-semibold text-white">
+                        {match.homeScore} - {match.awayScore}
+                      </p>
+                      <p className="admin-row-meta">
+                        {isLive ? `${match.liveMinute ?? 0}' live` : "Match state"}
+                      </p>
+                    </td>
+                    <td className="min-w-[180px]">
+                      <ProgressBar value={match.soldCount} max={match.capacity} compact />
+                      <p className="admin-row-meta mt-2">
+                        {match.soldCount} sold · {match.capacity} capacity
+                      </p>
+                    </td>
+                    <td>
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => onEdit(match)}
+                          className="admin-action-button"
+                        >
+                          <PencilLine size={13} />
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onDelete(match)}
+                          className="admin-action-button admin-action-button-danger"
+                        >
+                          <Trash2 size={13} />
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </AdminSurface>
   );
 }

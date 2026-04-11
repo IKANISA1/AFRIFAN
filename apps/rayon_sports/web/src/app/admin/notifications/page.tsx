@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { SectionHeading } from "@/components/section-heading";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import {
   getAdminNotificationContext,
   sendAdminNotification,
@@ -135,9 +135,10 @@ export default function AdminNotificationsPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading
-        eyebrow="Notifications"
-        title="Compose and send supporter broadcasts."
+      <AdminPageHeader
+        eyebrow="Broadcasts"
+        title="Notifications"
+        description="Compose, target, schedule, and monitor supporter delivery from one queue."
       />
 
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">

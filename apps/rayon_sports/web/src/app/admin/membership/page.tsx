@@ -5,7 +5,7 @@ import { Crown } from "lucide-react";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { SectionHeading } from "@/components/section-heading";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import {
   deleteAdminMembershipPackage,
   getAdminMembershipPackages,
@@ -76,9 +76,10 @@ export default function AdminMembershipPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading
-        eyebrow="Membership"
-        title="Configure supporter tiers and pricing."
+      <AdminPageHeader
+        eyebrow="Supporter programs"
+        title="Membership"
+        description="Tier structure, pricing, and package visibility in one admin flow."
       />
 
       <div className="grid gap-5 md:grid-cols-4">

@@ -5,7 +5,7 @@ import { Users } from "lucide-react";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { SectionHeading } from "@/components/section-heading";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import {
   deleteAdminFanClub,
   getAdminFanClubs,
@@ -105,9 +105,10 @@ export default function AdminCommunityPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading
-        eyebrow="Community"
-        title="Manage supporter chapters."
+      <AdminPageHeader
+        eyebrow="Networks"
+        title="Community"
+        description="Regional supporter chapters, visibility, and engagement health."
       />
 
       <div className="grid gap-5 md:grid-cols-4">

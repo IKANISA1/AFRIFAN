@@ -5,7 +5,7 @@ import { CalendarDays, Radio, Ticket } from "lucide-react";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { SectionHeading } from "@/components/section-heading";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import {
   deleteAdminMatch,
   getAdminMatches,
@@ -74,9 +74,10 @@ export default function AdminMatchesPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading
-        eyebrow="Fixtures"
-        title="Manage matches, ticket sales, and live state."
+      <AdminPageHeader
+        eyebrow="Matchday"
+        title="Matches"
+        description="Fixtures, ticket state, live status, and capacity in one operational view."
       />
 
       <div className="grid gap-5 md:grid-cols-3">

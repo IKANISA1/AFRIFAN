@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { SectionHeading } from "@/components/section-heading";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import {
   deleteAdminArticle,
   getAdminArticles,
@@ -145,9 +145,10 @@ export default function AdminCmsPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading
-        eyebrow="CMS"
-        title="Publish club content."
+      <AdminPageHeader
+        eyebrow="Publishing"
+        title="Content"
+        description="Articles move through draft, live, and featured states without leaving the workspace."
       />
 
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">

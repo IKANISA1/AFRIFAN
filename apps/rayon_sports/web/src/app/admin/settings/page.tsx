@@ -5,7 +5,7 @@ import { Languages, Palette, Phone, ShieldCheck } from "lucide-react";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { SectionHeading } from "@/components/section-heading";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { getAdminClubProfile, saveAdminClubProfile } from "@/lib/data/admin/settings";
 import { formToProfile, profileToForm, type SettingsForm } from "./_components/settings-form-state";
 import { IdentityForm } from "./_components/identity-form";
@@ -61,9 +61,10 @@ export default function AdminSettingsPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading
-        eyebrow="Settings"
-        title="Club brand, contact, and feature flags."
+      <AdminPageHeader
+        eyebrow="Configuration"
+        title="Settings"
+        description="Club identity, contact, and feature controls for the live supporter experience."
       />
 
       <div className="grid gap-5 md:grid-cols-4">

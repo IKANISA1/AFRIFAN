@@ -5,7 +5,7 @@ import { CircleDollarSign, Coins, Users } from "lucide-react";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { SectionHeading } from "@/components/section-heading";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import {
   deleteAdminContributionGroup,
   downloadContributionExcel,
@@ -90,9 +90,10 @@ export default function AdminContributionsPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading
-        eyebrow="Contributions"
-        title="Monitor supporter circles and funding."
+      <AdminPageHeader
+        eyebrow="Funding"
+        title="Contributions"
+        description="Track groups, inflows, participation, and progress without leaving the queue."
       />
 
       <div className="grid gap-5 md:grid-cols-4">

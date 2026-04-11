@@ -1,6 +1,9 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { Download, PencilLine, Trash2 } from "lucide-react";
+import { AdminEmptyState } from "@/components/admin/admin-empty-state";
+import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
+import { AdminSurface } from "@/components/admin/admin-surface";
 import { ProgressBar } from "@/components/progress-bar";
 import { Skeleton } from "@/components/skeleton";
 import { formatCurrency } from "@/lib/utils";
@@ -55,9 +58,21 @@ export function ContributionGroupList({
     });
 
   return (
-    <section className="glass-panel rounded-[32px] p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-2">
+    <AdminSurface
+      title="Contribution groups"
+      description="Funding progress, ownership, and group health."
+      actions={
+        <button
+          type="button"
+          onClick={onExportExcel}
+          className="admin-action-button"
+        >
+          <Download size={13} />
+          Export
+        </button>
+      }
+      toolbar={
+        <div className="flex flex-wrap items-center gap-2">
           {["ALL", "CLUB PROJECTS", "COMMUNITY", "SAVINGS", "CLOSED"].map((item) => (
             <button
               key={item}
@@ -81,116 +96,123 @@ export function ContributionGroupList({
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          onClick={onExportExcel}
-          className="rounded-full bg-club-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-club-secondary"
-        >
-          Export Excel
-        </button>
-      </div>
-
-      <div className="mt-5 space-y-3">
-        {loading ? (
-          <div className="space-y-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="rounded-[26px] border border-border-soft bg-white/5 p-5">
-                <Skeleton className="skeleton-text h-6 w-2/5" />
-                <Skeleton className="skeleton-text mt-2 h-3 w-full" />
-                <Skeleton className="mt-4 h-3 w-full rounded-full" />
+      }
+      flush
+    >
+      {loading ? (
+        <div className="space-y-3 p-5 sm:p-6">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="rounded-[20px] border border-border-soft bg-white/5 p-4">
+              <Skeleton className="skeleton-text h-5 w-2/5" />
+              <Skeleton className="skeleton-text mt-2 h-3 w-full" />
+              <div className="mt-4 grid gap-3 sm:grid-cols-4">
+                {Array.from({ length: 4 }).map((_, cellIndex) => (
+                  <Skeleton key={cellIndex} className="h-10 rounded-xl" />
+                ))}
               </div>
-            ))}
-          </div>
-        ) : null}
-        {!loading && filteredGroups.length === 0 ? (
-          <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">
-            No contribution groups match the current view.
-          </p>
-        ) : null}
-        {!loading &&
-          filteredGroups.map((group) => {
-            const creatorAlias = group.creatorId
-              ? snapshot.aliases[group.creatorId] ?? "000000"
-              : "000000";
+            </div>
+          ))}
+        </div>
+      ) : filteredGroups.length === 0 ? (
+        <AdminEmptyState
+          title="No contribution groups in this view"
+          description="Adjust the current filter or create a new group from the editor."
+        />
+      ) : (
+        <div className="admin-table-shell">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Group</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Members</th>
+                <th>Raised</th>
+                <th>Progress</th>
+                <th>Owner</th>
+                <th className="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredGroups.map((group) => {
+                const creatorAlias = group.creatorId
+                  ? snapshot.aliases[group.creatorId] ?? "000000"
+                  : "000000";
 
-            return (
-              <article
-                key={group.id}
-                className="card-interactive rounded-[26px] border border-border-soft bg-white/5 p-5"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-display text-2xl font-bold uppercase leading-none">
-                        {group.name}
+                return (
+                  <tr key={group.id}>
+                    <td>
+                      <p className="admin-row-title">{group.name}</p>
+                      <p className="admin-row-copy">{group.description}</p>
+                    </td>
+                    <td>
+                      <AdminStatusBadge label={group.groupType} tone="neutral" />
+                    </td>
+                    <td>
+                      <AdminStatusBadge
+                        label={group.isClosed ? "Closed" : "Active"}
+                        tone={group.isClosed ? "danger" : "success"}
+                      />
+                    </td>
+                    <td>
+                      <p className="text-sm font-medium text-white">{group.memberCount}</p>
+                      <p className="admin-row-meta">contributors</p>
+                    </td>
+                    <td>
+                      <p className="text-sm font-medium text-white">
+                        {formatCurrency(group.currentTotal)}
                       </p>
-                      <span className="rounded-full bg-club-primary px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white">
-                        {group.groupType}
-                      </span>
-                      <span
-                        className={`rounded-full border px-3 py-1.5 text-xs uppercase tracking-[0.18em] ${
-                          group.isClosed
-                            ? "border-rose-400/30 text-rose-300"
-                            : "border-emerald-500/30 text-emerald-400"
-                        }`}
-                      >
-                        {group.isClosed ? "Closed" : "Active"}
-                      </span>
-                    </div>
-                    <p className="mt-2 text-sm leading-6 text-slate-300">
-                      {group.description}
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => onEdit(group)}
-                      className="rounded-full border border-border-soft px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-100 transition hover:bg-white/8"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onDelete(group)}
-                      className="rounded-full border border-border-soft px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-rose-200 transition hover:border-rose-400/30 hover:bg-rose-500/15"
-                    >
-                      <span className="inline-flex items-center gap-1.5">
-                        <Trash2 size={12} />
-                        Delete
-                      </span>
-                    </button>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <ProgressBar
-                    value={group.currentTotal}
-                    max={group.targetAmount}
-                    label="Funding progress"
-                    compact
-                  />
-                </div>
-                <div className="mt-4 grid gap-3 sm:grid-cols-4">
-                  <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
-                    <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-club-accent">Total</p>
-                    <p className="mt-2 text-sm text-slate-200">{formatCurrency(group.currentTotal)}</p>
-                  </div>
-                  <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
-                    <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-club-accent">Target</p>
-                    <p className="mt-2 text-sm text-slate-200">{formatCurrency(group.targetAmount)}</p>
-                  </div>
-                  <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
-                    <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-club-accent">Members</p>
-                    <p className="mt-2 text-sm text-slate-200">{group.memberCount}</p>
-                  </div>
-                  <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
-                    <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-club-accent">Creator</p>
-                    <p className="mt-2 text-sm text-slate-200">{creatorAlias}</p>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-      </div>
-    </section>
+                      <p className="admin-row-meta">
+                        Target {formatCurrency(group.targetAmount)}
+                      </p>
+                    </td>
+                    <td className="min-w-[180px]">
+                      <ProgressBar
+                        value={group.currentTotal}
+                        max={Math.max(group.targetAmount, group.currentTotal, 1)}
+                        compact
+                      />
+                      <p className="admin-row-meta mt-2">
+                        {Math.round((group.currentTotal / Math.max(group.targetAmount, 1)) * 100)}% funded
+                      </p>
+                    </td>
+                    <td>
+                      <p className="text-sm font-medium text-white">{creatorAlias}</p>
+                      <p className="admin-row-meta">
+                        {new Date(group.createdAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </td>
+                    <td>
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => onEdit(group)}
+                          className="admin-action-button"
+                        >
+                          <PencilLine size={13} />
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onDelete(group)}
+                          className="admin-action-button admin-action-button-danger"
+                        >
+                          <Trash2 size={13} />
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </AdminSurface>
   );
 }

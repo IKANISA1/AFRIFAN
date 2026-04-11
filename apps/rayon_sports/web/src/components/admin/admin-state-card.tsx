@@ -23,13 +23,13 @@ export function AdminStateCard({
   const isLoading = value === "..." || value === "";
 
   return (
-    <article className={`${ui.panel} ${ui.cardInteractive} group rounded-[28px] p-5`}>
+    <article className={`${ui.panel} ${ui.cardInteractive} group rounded-[24px] p-5`}>
       <div className="flex items-start justify-between gap-3">
-        <p className={ui.kicker}>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
           {label}
         </p>
         {Icon ? (
-          <div className={`${ui.iconButton} h-9 w-9 text-slate-400 group-hover:text-club-accent`}>
+          <div className={`${ui.iconButton} h-9 w-9 text-slate-400 group-hover:text-slate-100`}>
             <Icon size={16} />
           </div>
         ) : null}
@@ -43,16 +43,16 @@ export function AdminStateCard({
       ) : (
         <>
           <div className="mt-4 flex items-end gap-3">
-            <p className="font-display text-4xl font-bold uppercase leading-none tracking-[-0.05em]">
+            <p className="text-3xl font-semibold leading-none tracking-[-0.04em] text-white sm:text-[2rem]">
               {value}
             </p>
             {trend && trendLabel ? (
               <span
                 className={cn(
-                  "mb-1 flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em]",
-                  trend === "up" && "bg-emerald-500/15 text-emerald-400",
-                  trend === "down" && "bg-rose-500/15 text-rose-400",
-                  trend === "neutral" && "bg-white/8 text-slate-400",
+                  "mb-1 flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]",
+                  trend === "up" && "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
+                  trend === "down" && "border-rose-500/30 bg-rose-500/10 text-rose-300",
+                  trend === "neutral" && "border-border-soft bg-white/5 text-slate-400",
                 )}
               >
                 {trend === "up" ? "↑" : trend === "down" ? "↓" : "–"} {trendLabel}

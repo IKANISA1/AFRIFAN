@@ -17,11 +17,13 @@ import {
   Crown,
   Sparkles,
 } from "lucide-react";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
+import { AdminSurface } from "@/components/admin/admin-surface";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { Skeleton } from "@/components/skeleton";
-import { SectionHeading } from "@/components/section-heading";
 import { getAdminDashboardSnapshot } from "@/lib/data/admin/dashboard";
 import type { AdminDashboardSnapshot } from "@/lib/types";
 
@@ -118,9 +120,24 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading
-        eyebrow="Admin dashboard"
-        title="Operate matchdays, content, and supporter activity from one place."
+      <AdminPageHeader
+        eyebrow="Control center"
+        title="Operations dashboard"
+        description="Signal first. Actions stay one click away."
+        meta={
+          <>
+            <span className="admin-meta-chip">
+              {access.canSelectClub ? "Multi-club workspace" : "Club workspace"}
+            </span>
+            <span className="admin-meta-chip">
+              {snapshot.activity.length} recent events
+            </span>
+            <AdminStatusBadge
+              label={access.hasAccess ? "Secure session" : "Read only"}
+              tone={access.hasAccess ? "success" : "warning"}
+            />
+          </>
+        }
       />
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
@@ -146,41 +163,44 @@ export default function AdminDashboardPage() {
         />
       </div>
 
-      <section className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
-        <article className="glass-panel rounded-[32px] p-6">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-            Quick actions
-          </p>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+      <section className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
+        <AdminSurface
+          title="Operational lanes"
+          description="Most-used admin actions."
+          contentClassName="p-5 sm:p-6"
+        >
+          <div className="grid gap-3 sm:grid-cols-2">
             {quickActions.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="card-interactive rounded-[20px] border border-border-soft bg-white/5 px-4 py-3 transition group flex items-center gap-3"
+                  className="admin-quick-link group"
                 >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border-soft bg-white/5 text-slate-400 transition group-hover:text-club-accent group-hover:border-club-accent/30">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-border-soft bg-white/5 text-slate-400 transition group-hover:text-white group-hover:border-border-hover">
                     <Icon size={18} />
                   </div>
-                  <p className="font-display text-lg font-bold uppercase leading-none">
-                    {item.title}
-                  </p>
+                  <div className="space-y-1">
+                    <p className="text-sm font-semibold text-white">{item.title}</p>
+                    <p className="text-xs text-slate-400">Open module</p>
+                  </div>
                 </Link>
               );
             })}
           </div>
-        </article>
+        </AdminSurface>
 
-        <article className="glass-panel rounded-[32px] p-6">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-            Recent activity
-          </p>
-          <div className="mt-5 space-y-3">
+        <AdminSurface
+          title="Recent activity"
+          description="Latest admin and content events."
+          contentClassName="p-5 sm:p-6"
+        >
+          <div className="space-y-3">
             {loading ? (
               <div className="space-y-3">
                 {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4">
+                  <div key={i} className="rounded-[20px] border border-border-soft bg-white/5 px-4 py-4">
                     <Skeleton className="skeleton-text h-5 w-3/5" />
                     <Skeleton className="skeleton-text mt-2 h-3 w-full" />
                     <Skeleton className="skeleton-text mt-3 h-2 w-20" />
@@ -188,25 +208,22 @@ export default function AdminDashboardPage() {
                 ))}
               </div>
             ) : snapshot.activity.length === 0 ? (
-              <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">
-                No activity yet.
-              </p>
+              <div className="admin-empty-state !min-h-[12rem]">
+                <p className="admin-empty-title">No activity yet</p>
+                <p className="admin-empty-copy">Recent admin events will appear here.</p>
+              </div>
             ) : null}
             {snapshot.activity.map((item) => (
               <article
                 key={item.id}
-                className="py-4 border-b border-border-soft last:border-0"
+                className="admin-timeline-item"
               >
                 <div className="flex justify-between items-start gap-4">
                   <div>
-                    <p className="font-display text-lg font-bold uppercase leading-none">
-                      {item.title}
-                    </p>
-                    <p className="mt-1 text-sm text-slate-300">
-                      {item.detail}
-                    </p>
+                    <p className="text-sm font-semibold text-white">{item.title}</p>
+                    <p className="mt-1 text-sm text-slate-300">{item.detail}</p>
                   </div>
-                  <p className="shrink-0 font-mono text-[10px] uppercase tracking-[0.1em] text-slate-500">
+                  <p className="shrink-0 text-[11px] font-medium text-slate-500">
                     {new Date(item.createdAt).toLocaleString("en-RW", {
                       month: "short",
                       day: "numeric",
@@ -218,7 +235,7 @@ export default function AdminDashboardPage() {
               </article>
             ))}
           </div>
-        </article>
+        </AdminSurface>
       </section>
     </div>
   );

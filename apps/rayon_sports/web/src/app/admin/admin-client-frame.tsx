@@ -9,11 +9,13 @@ import { WebVitalsReporter } from "@/components/pwa/web-vitals-reporter";
 
 export function AdminClientFrame({ children }: { children: ReactNode }) {
   return (
-    <AdminPortalProvider>
-      <DeferredPwaShell />
-      <WebVitalsReporter />
-      <AdminShell>{children}</AdminShell>
-      <AdminToastProvider />
-    </AdminPortalProvider>
+    <div className="admin-workspace">
+      <AdminPortalProvider>
+        <DeferredPwaShell />
+        <WebVitalsReporter />
+        <AdminShell>{children}</AdminShell>
+        <AdminToastProvider />
+      </AdminPortalProvider>
+    </div>
   );
 }

@@ -1,8 +1,30 @@
+import { AdminEmptyState } from "@/components/admin/admin-empty-state";
+import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
+import { AdminSurface } from "@/components/admin/admin-surface";
 import { ProgressBar } from "@/components/progress-bar";
 import { Skeleton } from "@/components/skeleton";
-import { cn } from "@/lib/utils";
-import type { AdminNotificationContext } from "@/lib/types";
-import { notifStatusColors } from "./notification-state";
+import type { AdminNotificationContext, AdminNotificationRecord } from "@/lib/types";
+
+function notificationTone(status: string) {
+  switch (status) {
+    case "sent":
+    case "delivered":
+      return "success" as const;
+    case "scheduled":
+    case "pending":
+      return "warning" as const;
+    case "failed":
+      return "danger" as const;
+    default:
+      return "neutral" as const;
+  }
+}
+
+function audienceLabel(item: AdminNotificationRecord) {
+  if (item.audienceType === "all_fans") return "All fans";
+  if (item.audienceType === "by_tier") return `Tier · ${item.audienceTier}`;
+  return item.audienceGroupName ?? "Group";
+}
 
 export function NotificationList({
   context,
@@ -14,113 +36,114 @@ export function NotificationList({
   onRefresh: () => void;
 }) {
   return (
-    <section className="glass-panel rounded-[32px] p-6">
-      <div className="flex items-center justify-between gap-3">
-        <p className="font-display text-3xl font-bold uppercase leading-none">
-          Delivery history
-        </p>
+    <AdminSurface
+      title="Delivery queue"
+      description="Recent sends, schedules, and failure visibility."
+      actions={
         <button
           type="button"
           onClick={onRefresh}
-          className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+          className="admin-action-button"
         >
           Refresh
         </button>
-      </div>
+      }
+      flush
+    >
+      {loading ? (
+        <div className="space-y-3 p-5 sm:p-6">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="rounded-[20px] border border-border-soft bg-white/5 p-4">
+              <Skeleton className="skeleton-text h-5 w-2/5" />
+              <Skeleton className="skeleton-text mt-2 h-3 w-full" />
+              <div className="mt-4 grid gap-3 sm:grid-cols-4">
+                {Array.from({ length: 4 }).map((_, cellIndex) => (
+                  <Skeleton key={cellIndex} className="h-10 rounded-xl" />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : context.history.length === 0 ? (
+        <AdminEmptyState
+          title="No notifications recorded"
+          description="Campaign deliveries and schedules will appear here after the first send."
+        />
+      ) : (
+        <div className="admin-table-shell">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Message</th>
+                <th>Audience</th>
+                <th>Delivery</th>
+                <th>Status</th>
+                <th>Sent</th>
+                <th>Failures</th>
+              </tr>
+            </thead>
+            <tbody>
+              {context.history.map((item) => {
+                const total = Math.max(item.sentCount + item.failedCount, item.requestedRecipientCount);
 
-      <div className="mt-5 space-y-3">
-        {loading ? (
-          <div className="space-y-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="rounded-[26px] border border-border-soft bg-white/5 p-5">
-                <Skeleton className="skeleton-text h-6 w-2/5" />
-                <Skeleton className="skeleton-text mt-2 h-3 w-full" />
-                <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                  {Array.from({ length: 3 }).map((_, j) => (
-                    <Skeleton key={j} className="h-16 rounded-[22px]" />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : null}
-        {!loading && context.history.length === 0 ? (
-          <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">
-            No notifications have been recorded yet.
-          </p>
-        ) : null}
-        {!loading && context.history.map((item) => {
-          const total = item.sentCount + item.failedCount;
-          const statusClass = notifStatusColors[item.status] ?? notifStatusColors.pending;
-
-          return (
-            <article
-              key={item.id}
-              className="card-interactive rounded-[26px] border border-border-soft bg-white/5 p-5"
-            >
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="font-display text-2xl font-bold uppercase leading-none">
-                    {item.title}
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-slate-300">
-                    {item.body}
-                  </p>
-                </div>
-                <span className={cn("rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em]", statusClass)}>
-                  {item.status}
-                </span>
-              </div>
-              {total > 0 ? (
-                <div className="mt-4">
-                  <ProgressBar
-                    value={item.sentCount}
-                    max={total}
-                    label="Delivery success"
-                    compact
-                  />
-                </div>
-              ) : null}
-              <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
-                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-club-accent">
-                    Audience
-                  </p>
-                  <p className="mt-2 text-sm text-slate-200">
-                    {item.audienceType === "all_fans"
-                      ? "All fans"
-                      : item.audienceType === "by_tier"
-                        ? `Tier • ${item.audienceTier}`
-                        : item.audienceGroupName ?? "Group"}
-                  </p>
-                </div>
-                <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
-                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-club-accent">
-                    Delivery
-                  </p>
-                  <p className="mt-2 text-sm text-slate-200">
-                    {item.deliveryMode === "schedule" ? "Scheduled" : "Immediate"}
-                  </p>
-                </div>
-                <div className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
-                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-club-accent">
-                    Metrics
-                  </p>
-                  <p className="mt-2 text-sm text-slate-200">
-                    <span className="text-emerald-400">{item.sentCount}</span> sent •{" "}
-                    <span className={item.failedCount > 0 ? "text-rose-400" : "text-slate-400"}>{item.failedCount}</span> failed
-                  </p>
-                </div>
-              </div>
-              {item.lastError ? (
-                <p className="mt-4 rounded-[22px] border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-                  {item.lastError}
-                </p>
-              ) : null}
-            </article>
-          );
-        })}
-      </div>
-    </section>
+                return (
+                  <tr key={item.id}>
+                    <td>
+                      <p className="admin-row-title">{item.title}</p>
+                      <p className="admin-row-copy">{item.body}</p>
+                      {item.lastError ? (
+                        <div className="mt-2">
+                          <AdminStatusBadge label="Last error" tone="danger" />
+                          <p className="admin-row-meta mt-2">{item.lastError}</p>
+                        </div>
+                      ) : null}
+                    </td>
+                    <td>
+                      <p className="text-sm font-medium text-white">{audienceLabel(item)}</p>
+                      <p className="admin-row-meta">{item.audienceType.replaceAll("_", " ")}</p>
+                    </td>
+                    <td>
+                      <p className="text-sm font-medium text-white">
+                        {item.deliveryMode === "schedule" ? "Scheduled" : "Immediate"}
+                      </p>
+                      <p className="admin-row-meta">
+                        {new Date(item.scheduledAt ?? item.sentAt ?? item.createdAt).toLocaleString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    </td>
+                    <td>
+                      <AdminStatusBadge
+                        label={item.status}
+                        tone={notificationTone(item.status)}
+                      />
+                    </td>
+                    <td className="min-w-[180px]">
+                      <p className="text-sm font-medium text-white">
+                        {item.sentCount} / {total}
+                      </p>
+                      {total > 0 ? (
+                        <div className="mt-2">
+                          <ProgressBar value={item.sentCount} max={total} compact />
+                        </div>
+                      ) : null}
+                    </td>
+                    <td>
+                      <p className="text-sm font-medium text-white">{item.failedCount}</p>
+                      <p className="admin-row-meta">
+                        {item.failedCount > 0 ? "needs review" : "clear"}
+                      </p>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </AdminSurface>
   );
 }
