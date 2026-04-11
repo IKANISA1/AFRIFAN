@@ -14,6 +14,7 @@ class LeaderboardScreen extends ConsumerStatefulWidget {
 class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
   List<Map<String, dynamic>> _rows = const <Map<String, dynamic>>[];
   bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -24,11 +25,12 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
   Future<void> _loadLeaderboard() async {
     try {
       final client = ref.read(supabaseClientProvider);
-      final memberships = await client
-          .from('fan_memberships')
-          .select('user_id, points')
-          .order('points', ascending: false)
-          .limit(25);
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved();
+      var query = client.from('fan_memberships').select('user_id, points');
+      query = resolver.apply(query, scope);
+      final memberships =
+          await query.order('points', ascending: false).limit(25);
 
       final userIds = memberships
           .map((row) => row['user_id']?.toString())
@@ -74,10 +76,14 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
             })
             .toList(growable: false);
         _isLoading = false;
+        _error = null;
       });
     } catch (_) {
       if (!mounted) return;
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+        _error = 'Leaderboard is temporarily unavailable.';
+      });
     }
   }
 
@@ -141,6 +147,18 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),
+            )
+          : _error != null
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                child: AfriStateView.offline(
+                  title: 'Leaderboard unavailable',
+                  message: _error!,
+                  actionLabel: 'Retry',
+                  onAction: _loadLeaderboard,
+                ),
+              ),
             )
           : _rows.isEmpty
           ? Center(

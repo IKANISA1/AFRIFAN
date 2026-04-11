@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show SupabaseClient;
+
+import 'supabase_client_factory.dart';
 
 /// Centralized Supabase client provider — the SINGLE SOURCE OF TRUTH.
 ///
@@ -9,7 +11,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 ///   2. Consistency — one access point for the client
 ///   3. Compliance — §5.3 prohibits direct Supabase.instance access in features
 final supabaseClientProvider = Provider<SupabaseClient>(
-  (ref) => Supabase.instance.client,
+  (ref) => SupabaseClientFactory.client,
 );
 
 /// Current authenticated user ID — convenience provider.

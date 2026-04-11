@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Operational event status classification.
@@ -58,8 +58,13 @@ class OperationalHealthService {
               'Failed to record operational health event.',
         );
       }
-    } catch (error) {
-      debugPrint('[OperationalHealth] Failed to record event: $error');
+    } catch (error, stackTrace) {
+      AfriLogger.error(
+        'OperationalHealth',
+        'Failed to record event.',
+        error,
+        stackTrace,
+      );
     }
   }
 

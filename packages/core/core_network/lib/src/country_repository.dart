@@ -1,5 +1,4 @@
 import 'package:core_utils/core_utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Fetches countries from [countries] Supabase table and injects
@@ -40,8 +39,9 @@ class CountryRepository {
           .order('name', ascending: true);
 
       if (rows.isEmpty) {
-        debugPrint(
-          '[CountryRepository] No active countries in DB, using hardcoded fallback.',
+        AfriLogger.warn(
+          'CountryRepository',
+          'No active countries in DB; using hardcoded fallback.',
         );
         return AfriCountryCatalog.all;
       }
@@ -51,7 +51,10 @@ class CountryRepository {
             try {
               return AfriCountry.fromJson(_normalizeRow(row));
             } catch (e) {
-              debugPrint('[CountryRepository] Failed to parse country row: $e');
+              AfriLogger.warn(
+                'CountryRepository',
+                'Failed to parse country row: $e',
+              );
               return null;
             }
           })
@@ -60,8 +63,9 @@ class CountryRepository {
           .toList(growable: false);
 
       if (countries.isEmpty) {
-        debugPrint(
-          '[CountryRepository] All rows failed parsing, using hardcoded fallback.',
+        AfriLogger.warn(
+          'CountryRepository',
+          'All rows failed parsing; using hardcoded fallback.',
         );
         return AfriCountryCatalog.all;
       }
@@ -73,13 +77,17 @@ class CountryRepository {
       _cached = countries;
       _cachedAt = DateTime.now();
 
-      debugPrint(
-        '[CountryRepository] Loaded ${countries.length} countries from DB.',
+      AfriLogger.info(
+        'CountryRepository',
+        'Loaded ${countries.length} countries from DB.',
       );
       return countries;
-    } catch (e) {
-      debugPrint(
-        '[CountryRepository] Failed to fetch countries: $e — using hardcoded fallback.',
+    } catch (error, stackTrace) {
+      AfriLogger.error(
+        'CountryRepository',
+        'Failed to fetch countries; using hardcoded fallback.',
+        error,
+        stackTrace,
       );
       return AfriCountryCatalog.all;
     }

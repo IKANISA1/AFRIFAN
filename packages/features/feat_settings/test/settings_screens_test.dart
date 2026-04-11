@@ -6,8 +6,9 @@ import 'package:feat_settings/src/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '../../test_support/design_font_loader.dart';
 
 void main() {
@@ -45,13 +46,11 @@ void main() {
   });
 
   testWidgets(
-    'settings shows BioPay entries only when enabled and routes exist',
+    'settings shows BioPay entries when the feature is enabled',
     (tester) async {
       const config = _FakeClubConfig(hasBiopay: true);
 
-      await tester.pumpWidget(
-        _buildSettingsApp(config: config, includeBiopayRoutes: true),
-      );
+      await tester.pumpWidget(_buildSettingsApp(config: config));
       await tester.pumpAndSettle();
 
       expect(find.text('BioPay & Privacy'), findsOneWidget);
@@ -62,30 +61,12 @@ void main() {
     },
   );
 
-  testWidgets('settings hides BioPay entries when routes are unavailable', (
-    tester,
-  ) async {
-    const config = _FakeClubConfig(hasBiopay: true);
-
-    await tester.pumpWidget(
-      _buildSettingsApp(config: config, includeBiopayRoutes: false),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.text('Privacy'), findsOneWidget);
-    expect(find.text('BioPay & Privacy'), findsNothing);
-    expect(find.text('BioPay home'), findsNothing);
-    expect(find.text('Face ID & enrollment'), findsNothing);
-  });
-
   testWidgets('settings hides BioPay entries when feature flag is disabled', (
     tester,
   ) async {
     const config = _FakeClubConfig(hasBiopay: false);
 
-    await tester.pumpWidget(
-      _buildSettingsApp(config: config, includeBiopayRoutes: true),
-    );
+    await tester.pumpWidget(_buildSettingsApp(config: config));
     await tester.pumpAndSettle();
 
     expect(find.text('Privacy'), findsOneWidget);
@@ -98,10 +79,7 @@ void main() {
     _setMobileSurface(tester);
 
     await tester.pumpWidget(
-      _buildSettingsApp(
-        config: const _FakeClubConfig(hasBiopay: true),
-        includeBiopayRoutes: true,
-      ),
+      _buildSettingsApp(config: const _FakeClubConfig(hasBiopay: true)),
     );
     await tester.pumpAndSettle();
 
@@ -112,43 +90,16 @@ void main() {
   });
 }
 
-Widget _buildSettingsApp({
-  required _FakeClubConfig config,
-  required bool includeBiopayRoutes,
-}) {
-  final routes = <RouteBase>[
-    GoRoute(
-      path: '/settings',
-      builder: (context, state) => const SettingsScreen(),
-    ),
-  ];
-
-  if (includeBiopayRoutes) {
-    routes.addAll(<RouteBase>[
+Widget _buildSettingsApp({required _FakeClubConfig config}) {
+  final router = GoRouter(
+    initialLocation: '/settings',
+    routes: <RouteBase>[
       GoRoute(
-        path: '/biopay',
-        name: 'biopay',
-        builder: (context, state) => const SizedBox.shrink(),
+        path: '/settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
-      GoRoute(
-        path: '/biopay/profile',
-        name: 'biopay_profile',
-        builder: (context, state) => const SizedBox.shrink(),
-      ),
-      GoRoute(
-        path: '/biopay/qr',
-        name: 'biopay_qr',
-        builder: (context, state) => const SizedBox.shrink(),
-      ),
-      GoRoute(
-        path: '/biopay/nfc',
-        name: 'biopay_nfc',
-        builder: (context, state) => const SizedBox.shrink(),
-      ),
-    ]);
-  }
-
-  final router = GoRouter(initialLocation: '/settings', routes: routes);
+    ],
+  );
 
   return ProviderScope(
     overrides: [currentUserProvider.overrideWith((ref) => null)],

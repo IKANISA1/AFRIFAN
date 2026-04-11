@@ -50,28 +50,31 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
 
     try {
       final client = ref.read(supabaseClientProvider);
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved();
 
       final profileFuture = client
           .from('user_private_contacts')
           .select('momo_number')
           .eq('user_id', userId)
           .maybeSingle();
-      final membershipFuture = client
+      var membershipFuture = client
           .from('fan_memberships')
           .select('points')
           .eq('user_id', userId)
-          .limit(1)
-          .maybeSingle();
+          .limit(1);
+      membershipFuture = resolver.apply(membershipFuture, scope);
       final clubsFuture = client
           .from('fan_club_members')
           .select('club_id')
           .eq('user_id', userId)
           .limit(10);
-      final groupsFuture = client
+      var groupsFuture = client
           .from('contribution_groups')
           .select('id')
           .eq('creator_id', userId)
           .limit(10);
+      groupsFuture = resolver.apply(groupsFuture, scope);
       final ticketsFuture = client
           .from('tickets')
           .select('id')
@@ -80,7 +83,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
 
       final results = await Future.wait([
         profileFuture,
-        membershipFuture,
+        membershipFuture.maybeSingle(),
         clubsFuture,
         groupsFuture,
         ticketsFuture,

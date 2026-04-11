@@ -16,28 +16,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   int _currentPage = 0;
   bool _isSubmitting = false;
 
-  // §2.4 LOCKED — no hardcoded club names. Use compile-time constant.
-  static const _appName = String.fromEnvironment(
-    'APP_NAME',
-    defaultValue: 'Gikundiro',
-  );
-
-  final List<Map<String, String>> _slides = [
-    {
-      'title': 'YOUR CLUB. YOUR APP.',
-      'body':
-          'The official $_appName fan platform. Matches, contributions, and more.',
-    },
-    {
-      'title': 'FAN MEMBERSHIP. TICKETS. CONTRIBUTIONS.',
-      'body':
-          'Earn XP, buy match tickets, and contribute to club projects — all in one place.',
-    },
-    {
-      'title': 'READY TO PLAY?',
-      'body': 'Tickets, merch, and fan communities — all anonymous.',
-    },
-  ];
+  List<Map<String, String>> _slidesFor(String appName) {
+    final label = appName.trim().isEmpty ? 'AFRICLUB' : appName.trim();
+    return <Map<String, String>>[
+      {
+        'title': 'YOUR CLUB. YOUR APP.',
+        'body':
+            'The official $label fan platform. Matches, contributions, and more.',
+      },
+      {
+        'title': 'FAN MEMBERSHIP. TICKETS. CONTRIBUTIONS.',
+        'body':
+            'Earn XP, buy match tickets, and contribute to club projects — all in one place.',
+      },
+      {
+        'title': 'READY TO PLAY?',
+        'body': 'Tickets, merch, and fan communities — all anonymous.',
+      },
+    ];
+  }
 
   @override
   void dispose() {
@@ -77,6 +74,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appName =
+        ClubConfigScope.maybeOf(context)?.appName ??
+        RuntimeBranding.displayAppName;
+    final slides = _slidesFor(appName);
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: GradientBackground(
@@ -86,11 +87,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,
-                  itemCount: _slides.length,
+                  itemCount: slides.length,
                   onPageChanged: (idx) {
                     setState(() => _currentPage = idx);
                   },
-                  itemBuilder: (context, index) => _buildSlide(context, index),
+                  itemBuilder: (context, index) =>
+                      _buildSlide(context, slides[index], index),
                 ),
               ),
               Padding(
@@ -111,7 +113,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       Expanded(
                         child: Row(
                           children: List.generate(
-                            _slides.length,
+                            slides.length,
                             (index) => AnimatedContainer(
                               duration: const Duration(milliseconds: 300),
                               margin: const EdgeInsets.only(right: 8),
@@ -142,11 +144,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                 ),
                               )
                             : ClaymorphicButton(
-                                label: _currentPage == _slides.length - 1
+                                label: _currentPage == slides.length - 1
                                     ? 'GET STARTED'
                                     : 'NEXT',
                                 width: double.infinity,
-                                onPressed: _currentPage == _slides.length - 1
+                                onPressed: _currentPage == slides.length - 1
                                     ? _handleGetStarted
                                     : () {
                                         _pageController.nextPage(
@@ -169,7 +171,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
-  Widget _buildSlide(BuildContext context, int index) {
+  Widget _buildSlide(
+    BuildContext context,
+    Map<String, String> slideContent,
+    int index,
+  ) {
     final icon = switch (index) {
       0 => Icons.stadium_outlined,
       1 => Icons.workspace_premium_outlined,
@@ -178,106 +184,134 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final accent = index == 1 ? ColorTokens.clubAccent : ColorTokens.primary;
     final pageNumber = '${index + 1}'.padLeft(2, '0');
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        SpacingTokens.spacing6,
-        SpacingTokens.spacing4,
-        SpacingTokens.spacing6,
-        SpacingTokens.spacing8,
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            child: Text(
-              pageNumber,
-              style: TypographyTokens.displayLarge(
-                ColorTokens.primaryContainer.withValues(alpha: 0.14),
-              ),
-            ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompact = constraints.maxHeight < 560;
+        final slide = Padding(
+          padding: EdgeInsets.fromLTRB(
+            SpacingTokens.spacing6,
+            SpacingTokens.spacing4,
+            SpacingTokens.spacing6,
+            isCompact ? SpacingTokens.spacing6 : SpacingTokens.spacing8,
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
             children: [
-              Transform.translate(
-                offset: const Offset(0, -8),
-                child: GlassCard(
-                  height: 280,
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(SpacingTokens.spacing8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: SpacingTokens.spacing4,
-                          vertical: SpacingTokens.spacing2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: ColorTokens.secondaryContainer,
-                          borderRadius: ShapeTokens.chipRadius,
-                        ),
-                        child: Text(
-                          'OFFICIAL SUPPORTER OS',
-                          style: TypographyTokens.labelSmall().copyWith(
-                            color: ColorTokens.onSurface,
-                            letterSpacing: 1.1,
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          width: 124,
-                          height: 124,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: ColorTokens.heroGradient(
-                              from: accent,
-                              to: ColorTokens.primaryContainer,
-                            ),
-                            boxShadow: [
-                              ...AfriShadows.primaryGlow(
-                                ColorTokens.primaryContainer,
-                              ),
-                            ],
-                          ),
-                          child: Icon(icon, size: 52, color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Transform.translate(
-                offset: const Offset(0, -28),
+              Positioned(
+                top: 0,
+                left: 0,
                 child: Text(
-                  _slides[index]['title']!,
-                  style: TypographyTokens.displaySmall().copyWith(
-                    fontSize: 40,
-                    height: 0.95,
+                  pageNumber,
+                  style: TypographyTokens.displayLarge(
+                    ColorTokens.primaryContainer.withValues(alpha: 0.14),
                   ),
                 ),
               ),
-              Transform.translate(
-                offset: const Offset(0, -12),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 320),
-                  child: Text(
-                    _slides[index]['body']!,
-                    style: TypographyTokens.bodyLarge().copyWith(
-                      color: ColorTokens.onSurfaceVariant,
+              Column(
+                mainAxisAlignment: isCompact
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Transform.translate(
+                    offset: Offset(0, isCompact ? 0 : -8),
+                    child: GlassCard(
+                      height: isCompact ? 220 : 280,
+                      width: double.infinity,
+                      padding: EdgeInsets.all(
+                        isCompact
+                            ? SpacingTokens.spacing6
+                            : SpacingTokens.spacing8,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: SpacingTokens.spacing4,
+                              vertical: SpacingTokens.spacing2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: ColorTokens.secondaryContainer,
+                              borderRadius: ShapeTokens.chipRadius,
+                            ),
+                            child: Text(
+                              'OFFICIAL SUPPORTER OS',
+                              style: TypographyTokens.labelSmall().copyWith(
+                                color: ColorTokens.onSurface,
+                                letterSpacing: 1.1,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              width: isCompact ? 104 : 124,
+                              height: isCompact ? 104 : 124,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: ColorTokens.heroGradient(
+                                  from: accent,
+                                  to: ColorTokens.primaryContainer,
+                                ),
+                                boxShadow: [
+                                  ...AfriShadows.primaryGlow(
+                                    ColorTokens.primaryContainer,
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                icon,
+                                size: isCompact ? 44 : 52,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                  Transform.translate(
+                    offset: Offset(0, isCompact ? -12 : -28),
+                    child: Text(
+                      slideContent['title']!,
+                      style: TypographyTokens.displaySmall().copyWith(
+                        fontSize: isCompact ? 32 : 40,
+                        height: 0.95,
+                      ),
+                    ),
+                  ),
+                  Transform.translate(
+                    offset: Offset(0, isCompact ? -4 : -12),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 320),
+                      child: Text(
+                        slideContent['body']!,
+                        style: TypographyTokens.bodyLarge().copyWith(
+                          color: ColorTokens.onSurfaceVariant,
+                          fontSize: isCompact ? 16 : null,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+
+        if (!isCompact) {
+          return slide;
+        }
+
+        return SingleChildScrollView(
+          padding: EdgeInsets.zero,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: slide,
+          ),
+        );
+      },
     );
   }
 }

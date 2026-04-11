@@ -36,9 +36,13 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
 
     try {
       final client = ref.read(supabaseClientProvider);
-      final memberships = await client
-          .from('fan_memberships')
-          .select('user_id, points')
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved();
+      var membershipsQuery = client.from('fan_memberships').select(
+        'user_id, points',
+      );
+      membershipsQuery = resolver.apply(membershipsQuery, scope);
+      final memberships = await membershipsQuery
           .order('points', ascending: false)
           .limit(10);
       final events = userId == null

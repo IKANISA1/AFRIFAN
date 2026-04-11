@@ -1,3 +1,4 @@
+import 'package:core_utils/core_utils.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -17,7 +18,10 @@ class AppCheckService {
     }
 
     if (Firebase.apps.isEmpty) {
-      debugPrint('[AppCheck] Firebase not initialized — skipping activation.');
+      AfriLogger.warn(
+        'AppCheck',
+        'Firebase not initialized; skipping activation.',
+      );
       return false;
     }
 
@@ -31,9 +35,9 @@ class AppCheckService {
             : const AppleAppAttestProvider(),
       );
       _initialized = true;
-      debugPrint('[AppCheck] Activated.');
-    } catch (error) {
-      debugPrint('[AppCheck] Activation failed: $error');
+      AfriLogger.info('AppCheck', 'Activated.');
+    } catch (error, stackTrace) {
+      AfriLogger.error('AppCheck', 'Activation failed.', error, stackTrace);
     }
 
     return _initialized;
@@ -44,8 +48,13 @@ class AppCheckService {
 
     try {
       return await FirebaseAppCheck.instance.getLimitedUseToken();
-    } catch (error) {
-      debugPrint('[AppCheck] Limited-use token fetch failed: $error');
+    } catch (error, stackTrace) {
+      AfriLogger.error(
+        'AppCheck',
+        'Limited-use token fetch failed.',
+        error,
+        stackTrace,
+      );
       return null;
     }
   }

@@ -31,6 +31,7 @@ void main() {
           'membership',
           'gamification',
           'contributions',
+          'fantasy',
           'live',
           'admin',
         ]),
@@ -59,6 +60,7 @@ void main() {
           'contributions',
           'ticketing',
           'fan_clubs',
+          'fantasy',
           'live',
           'admin',
           'shop',
@@ -123,6 +125,47 @@ void main() {
         await tester.pumpWidget(const SizedBox.shrink());
         coordinator.scheduleDeferredInitialization(config);
         expect(steps, <String>['critical']);
+
+        await tester.pump();
+        await deferredInitialization.future.timeout(const Duration(seconds: 1));
+        expect(steps, <String>['critical', 'deferred']);
+      },
+    );
+
+    testWidgets(
+      'coalesces repeated deferred initialization requests into a single run',
+      (tester) async {
+        final steps = <String>[];
+        final deferredInitialization = Completer<void>();
+        final coordinator = AppStartupCoordinator(
+          options: AppStartupOptions(
+            configureDeviceChrome: false,
+            initializePersistence: false,
+            initializeSmsAutoread: false,
+            criticalBackendOverride: (_) async => steps.add('critical'),
+            deferredBackendOverride: (_) async {
+              steps.add('deferred');
+              if (!deferredInitialization.isCompleted) {
+                deferredInitialization.complete();
+              }
+            },
+          ),
+        );
+
+        const config = _FakeClubConfig(
+          hasBiopay: true,
+          hasFanClubs: true,
+          hasShop: true,
+          hasTicketing: true,
+        );
+
+        await coordinator.initialize(config);
+        await tester.pumpWidget(const SizedBox.shrink());
+
+        final first = coordinator.scheduleDeferredInitialization(config);
+        final second = coordinator.scheduleDeferredInitialization(config);
+
+        expect(first, same(second));
 
         await tester.pump();
         await deferredInitialization.future.timeout(const Duration(seconds: 1));

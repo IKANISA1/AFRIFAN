@@ -1,5 +1,6 @@
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,7 @@ class ClubProjectsScreen extends ConsumerStatefulWidget {
 class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
   List<Map<String, dynamic>> _projects = const <Map<String, dynamic>>[];
   bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -25,23 +27,52 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
 
   Future<void> _loadProjects() async {
     try {
-      final response = await ref
-          .read(supabaseClientProvider)
-          .from('contribution_groups')
-          .select()
-          .eq('is_closed', false)
-          .order('current_total', ascending: false)
-          .order('created_at', ascending: false)
-          .limit(20);
+      final groups = await ref.read(clubRepositoryProvider).getContributionGroups();
+      final projects = groups
+          .map(
+            (group) => <String, dynamic>{
+              'id': group.id,
+              'name': group.name,
+              'description': group.description,
+              'current_total': group.currentTotal,
+              'target_amount': group.targetAmount,
+              'member_count': group.memberCount,
+              'created_at': group.createdAt.toIso8601String(),
+            },
+          )
+          .toList(growable: false)
+        ..sort((left, right) {
+          final totalDiff =
+              ((right['current_total'] as num?)?.toInt() ?? 0) -
+              ((left['current_total'] as num?)?.toInt() ?? 0);
+          if (totalDiff != 0) {
+            return totalDiff;
+          }
+          final rightCreated = DateTime.tryParse(
+            right['created_at']?.toString() ?? '',
+          );
+          final leftCreated = DateTime.tryParse(
+            left['created_at']?.toString() ?? '',
+          );
+          if (leftCreated == null || rightCreated == null) {
+            return 0;
+          }
+          return rightCreated.compareTo(leftCreated);
+        });
+      final limitedProjects = projects.take(20).toList(growable: false);
 
       if (!mounted) return;
       setState(() {
-        _projects = List<Map<String, dynamic>>.from(response);
+        _projects = limitedProjects;
         _isLoading = false;
+        _error = null;
       });
     } catch (_) {
       if (!mounted) return;
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+        _error = 'Club projects are temporarily unavailable.';
+      });
     }
   }
 
@@ -68,6 +99,18 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),
+            )
+          : _error != null
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                child: AfriStateView.offline(
+                  title: 'Projects unavailable',
+                  message: _error!,
+                  actionLabel: 'Retry',
+                  onAction: _loadProjects,
+                ),
+              ),
             )
           : _projects.isEmpty
           ? Center(

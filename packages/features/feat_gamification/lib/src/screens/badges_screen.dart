@@ -36,24 +36,29 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
 
     try {
       final client = ref.read(supabaseClientProvider);
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved();
+      var membershipQuery = client
+          .from('fan_memberships')
+          .select('points')
+          .eq('user_id', userId)
+          .limit(1);
+      membershipQuery = resolver.apply(membershipQuery, scope);
+      var groupsQuery = client
+          .from('contribution_groups')
+          .select('id')
+          .eq('creator_id', userId)
+          .limit(10);
+      groupsQuery = resolver.apply(groupsQuery, scope);
       final results = await Future.wait([
         client
             .from('user_private_contacts')
             .select('momo_number')
             .eq('user_id', userId)
             .maybeSingle(),
-        client
-            .from('fan_memberships')
-            .select('points')
-            .eq('user_id', userId)
-            .limit(1)
-            .maybeSingle(),
+        membershipQuery.maybeSingle(),
         client.from('tickets').select('id').eq('user_id', userId).limit(10),
-        client
-            .from('contribution_groups')
-            .select('id')
-            .eq('creator_id', userId)
-            .limit(10),
+        groupsQuery,
         client
             .from('fan_club_members')
             .select('club_id')

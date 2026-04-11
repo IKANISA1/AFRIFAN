@@ -15,10 +15,10 @@ class SettingsScreen extends ConsumerWidget {
     final profile = ref.watch(currentUserProvider);
     final config = ClubConfigScope.maybeOf(context);
     final appName = config?.appName ?? RuntimeBranding.displayAppName;
-    final showBiopayEntries =
-        (config?.hasBiopay ?? false) &&
-        _hasRoute(context, 'biopay') &&
-        _hasRoute(context, 'biopay_profile');
+    // Feature composition owns route registration for BioPay-enabled builds.
+    // The settings surface should reflect feature availability rather than
+    // probing shell-internal router state at runtime.
+    final showBiopayEntries = config?.hasBiopay ?? false;
     final alias = profile?.publicUserId == null
         ? '#------'
         : '#${AliasGenerator.format(profile!.publicUserId!)}';
@@ -199,15 +199,6 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
   }
-
-  bool _hasRoute(BuildContext context, String routeName) {
-    try {
-      GoRouter.of(context).namedLocation(routeName);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
 }
 
 class _Section extends StatelessWidget {
@@ -228,14 +219,11 @@ class _Section extends StatelessWidget {
             style: TypographyTokens.labelMedium(ColorTokens.onSurfaceVariant),
           ),
         ),
-        ...children
-            .map(
-              (child) => Padding(
-                padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
-                child: child,
-              ),
-            )
-            .toList(),
+        for (final child in children)
+          Padding(
+            padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
+            child: child,
+          ),
       ],
     );
   }

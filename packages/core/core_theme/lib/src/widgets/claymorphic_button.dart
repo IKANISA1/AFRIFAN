@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../tokens/border_tokens.dart';
-import '../tokens/color_tokens.dart';
 import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';

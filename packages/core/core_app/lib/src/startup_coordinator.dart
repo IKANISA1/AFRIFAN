@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:feat_biopay/feat_biopay.dart';
 import 'package:feat_sms_ledger/feat_sms_ledger.dart';
 import 'package:flutter/foundation.dart';
@@ -48,6 +49,9 @@ class AppStartupCoordinator {
 
   final AppStartupOptions options;
   static StreamSubscription<AuthState>? _authLifecycleSubscription;
+  static StreamSubscription<AuthState>? _smsAutoreadAuthSubscription;
+  Future<void>? _deferredInitializationTask;
+  Future<void>? _scheduledDeferredInitialization;
 
   Future<void> initialize(ClubConfig config) async {
     ColorTokens.init(config.colors);
@@ -64,7 +68,7 @@ class AppStartupCoordinator {
     if (options.initializeBackend) {
       await _initializeCriticalBackend(config);
       if (!options.deferNonCriticalBackendInitialization) {
-        await _initializeDeferredBackend(config);
+        await _ensureDeferredBackendInitialized(config);
       }
     }
   }
@@ -75,10 +79,19 @@ class AppStartupCoordinator {
       return null;
     }
 
+    if (_scheduledDeferredInitialization != null) {
+      return _scheduledDeferredInitialization;
+    }
+
     final completer = Completer<void>();
+    _scheduledDeferredInitialization = completer.future;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       unawaited(
-        _runDeferredInitialization(config).whenComplete(completer.complete),
+        _runDeferredInitialization(config).whenComplete(() {
+          if (!completer.isCompleted) {
+            completer.complete();
+          }
+        }),
       );
     });
     WidgetsBinding.instance.scheduleFrame();
@@ -86,11 +99,6 @@ class AppStartupCoordinator {
   }
 
   Future<void> _configureDeviceChrome() async {
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -149,16 +157,23 @@ class AppStartupCoordinator {
     await countryRepo.loadAndInject();
 
     if (options.initializeSmsAutoread) {
-      _initializeSmsAutoread(config);
+      await _initializeSmsAutoread(config);
     }
+  }
+
+  Future<void> _ensureDeferredBackendInitialized(ClubConfig config) {
+    return _deferredInitializationTask ??= _initializeDeferredBackend(config);
   }
 
   Future<void> _runDeferredInitialization(ClubConfig config) async {
     try {
-      await _initializeDeferredBackend(config);
-    } catch (error) {
-      debugPrint(
-        '[Bootstrap] Deferred startup initialization failed (non-fatal): $error',
+      await _ensureDeferredBackendInitialized(config);
+    } catch (error, stackTrace) {
+      AfriLogger.error(
+        'Bootstrap',
+        'Deferred startup initialization failed (non-fatal).',
+        error,
+        stackTrace,
       );
     }
   }
@@ -213,18 +228,29 @@ class AppStartupCoordinator {
         }
         return;
       }
-    } catch (error) {
-      debugPrint('[Bootstrap] Fantasy topic sync fallback engaged: $error');
+    } catch (error, stackTrace) {
+      AfriLogger.warn(
+        'Bootstrap',
+        'Fantasy topic sync fallback engaged: $error',
+      );
+      if (kDebugMode) {
+        AfriLogger.error(
+          'Bootstrap',
+          'Fantasy topic sync stack trace.',
+          error,
+          stackTrace,
+        );
+      }
     }
 
     await PushNotificationService.subscribeToTopic('fantasy_pl_2526');
     await PushNotificationService.subscribeToTopic('fantasy_wc_2026');
   }
 
-  void _initializeSmsAutoread(ClubConfig config) {
+  Future<void> _initializeSmsAutoread(ClubConfig config) async {
     try {
       if (!EnvConfig.enableAndroidMomoSmsAutoread) {
-        debugPrint('[Bootstrap] SMS autoread disabled for this build.');
+        AfriLogger.info('Bootstrap', 'SMS autoread disabled for this build.');
         return;
       }
 
@@ -236,7 +262,10 @@ class AppStartupCoordinator {
       );
       final reconciliationService = LedgerReconciliationService(client: client);
 
-      client.auth.onAuthStateChange.listen((event) {
+      await _smsAutoreadAuthSubscription?.cancel();
+      _smsAutoreadAuthSubscription = client.auth.onAuthStateChange.listen((
+        event,
+      ) {
         if (event.event == AuthChangeEvent.signedIn ||
             event.event == AuthChangeEvent.tokenRefreshed) {
           smsService.refresh();
@@ -250,8 +279,13 @@ class AppStartupCoordinator {
         smsService.refresh();
         _runReconciliation(reconciliationService);
       }
-    } catch (error) {
-      debugPrint('[Bootstrap] SMS autoread init failed (non-fatal): $error');
+    } catch (error, stackTrace) {
+      AfriLogger.error(
+        'Bootstrap',
+        'SMS autoread init failed (non-fatal).',
+        error,
+        stackTrace,
+      );
     }
   }
 
@@ -260,10 +294,15 @@ class AppStartupCoordinator {
       try {
         final count = await service.reconcilePending();
         if (count > 0) {
-          debugPrint('[Bootstrap] Reconciled $count contributions.');
+          AfriLogger.info('Bootstrap', 'Reconciled $count contributions.');
         }
-      } catch (error) {
-        debugPrint('[Bootstrap] Reconciliation failed (non-fatal): $error');
+      } catch (error, stackTrace) {
+        AfriLogger.error(
+          'Bootstrap',
+          'Reconciliation failed (non-fatal).',
+          error,
+          stackTrace,
+        );
       }
     });
   }

@@ -73,6 +73,16 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
   @override
   Future<HomeFeedSnapshot> load() async {
     final currentUserId = client.auth.currentUser?.id;
+    late final ClubScope scope;
+
+    try {
+      scope = await ClubScopeResolver(client: client).requireResolved();
+    } catch (_) {
+      return const HomeFeedSnapshot(
+        status: HomeFeedStatus.error,
+        message: 'Could not resolve the active club. Pull to refresh.',
+      );
+    }
 
     List<Map<String, dynamic>> memberships = const <Map<String, dynamic>>[];
     List<Map<String, dynamic>> matches = const <Map<String, dynamic>>[];
@@ -80,24 +90,26 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     Object? matchesError;
 
     try {
+      var membershipsQuery = client.from('fan_memberships').select();
+      membershipsQuery = ClubScopeResolver(client: client).apply(
+        membershipsQuery,
+        scope,
+      );
       memberships = List<Map<String, dynamic>>.from(
-        await client
-            .from('fan_memberships')
-            .select()
-            .order('points', ascending: false)
-            .limit(20),
+        await membershipsQuery.order('points', ascending: false).limit(20),
       );
     } catch (error) {
       membershipsError = error;
     }
 
     try {
+      var matchesQuery = client.from('matches').select();
+      matchesQuery = ClubScopeResolver(client: client).apply(
+        matchesQuery,
+        scope,
+      );
       matches = List<Map<String, dynamic>>.from(
-        await client
-            .from('matches')
-            .select()
-            .order('match_date', ascending: true)
-            .limit(5),
+        await matchesQuery.order('match_date', ascending: true).limit(5),
       );
     } catch (error) {
       matchesError = error;
@@ -399,12 +411,11 @@ class SupabaseLatestIntelRepository implements LatestIntelRepository {
   @override
   Future<LatestIntelSnapshot> loadPublishedArticles() async {
     try {
-      final response = await client
-          .from('news_articles')
-          .select()
-          .eq('is_published', true)
-          .order('sort_order', ascending: true)
-          .limit(10);
+      final scope = await ClubScopeResolver(client: client).requireResolved();
+      var query = client.from('news_articles').select().eq('is_published', true);
+      query = ClubScopeResolver(client: client).apply(query, scope);
+      final response =
+          await query.order('sort_order', ascending: true).limit(10);
 
       final articles = List<Map<String, dynamic>>.from(response);
       if (articles.isEmpty) {

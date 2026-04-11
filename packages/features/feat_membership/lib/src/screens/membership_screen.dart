@@ -20,29 +20,8 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   List<Map<String, dynamic>> _packages = [];
   Map<String, dynamic>? _membership;
   bool _isLoading = true;
-
-  static const List<Map<String, dynamic>> _fallbackPackages = [
-    <String, dynamic>{
-      'tier': 'bronze',
-      'title': 'Bronze Supporter',
-      'description': 'Entry tier. Match access & starter rewards.',
-    },
-    <String, dynamic>{
-      'tier': 'silver',
-      'title': 'Silver Ultras',
-      'description': 'Faster progression & earlier access.',
-    },
-    <String, dynamic>{
-      'tier': 'gold',
-      'title': 'Gold Faithful',
-      'description': 'Premium recognition & matchday priority.',
-    },
-    <String, dynamic>{
-      'tier': 'legend',
-      'title': 'Legend Circle',
-      'description': 'Reserved for long-term fan leaders.',
-    },
-  ];
+  String? _error;
+  String? _emptyMessage;
 
   @override
   void initState() {
@@ -50,39 +29,15 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     _loadPackages();
   }
 
-  int? _currentClubId(SupabaseClient client) {
-    final user = client.auth.currentUser;
-    final candidates = <Object?>[
-      user?.appMetadata['club_id'],
-      user?.userMetadata?['club_id'],
-      user?.appMetadata['clubId'],
-      user?.userMetadata?['clubId'],
-    ];
-
-    for (final candidate in candidates) {
-      final parsed = int.tryParse(candidate?.toString().trim() ?? '');
-      if (parsed != null) {
-        return parsed;
-      }
-    }
-
-    return null;
-  }
-
   Future<void> _loadPackages() async {
     try {
       final client = ref.read(supabaseClientProvider);
-      final clubId = _currentClubId(client);
-      if (clubId == null) {
-        if (mounted) {
-          setState(() {
-            _packages = _fallbackPackages;
-            _membership = null;
-            _isLoading = false;
-          });
-        }
-        return;
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved();
+      if (scope.clubId == null) {
+        throw StateError('Membership requires a numeric club_id scope.');
       }
+      final clubId = scope.clubId!;
       final packagesResponse = await client
           .from('membership_packages')
           .select()
@@ -108,18 +63,24 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
           final loadedPackages = List<Map<String, dynamic>>.from(
             packagesResponse,
           );
-          _packages = loadedPackages.isEmpty
-              ? _fallbackPackages
-              : loadedPackages;
+          _packages = loadedPackages;
           _membership = membership == null
               ? null
               : Map<String, dynamic>.from(membership);
           _isLoading = false;
+          _error = null;
+          _emptyMessage = loadedPackages.isEmpty
+              ? 'Membership packages will appear once the club publishes them.'
+              : null;
         });
       }
-    } catch (e) {
+    } catch (_) {
       if (mounted) {
-        setState(() => _isLoading = false);
+        setState(() {
+          _isLoading = false;
+          _error = 'Membership details are temporarily unavailable.';
+          _emptyMessage = null;
+        });
       }
     }
   }
@@ -209,7 +170,37 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
               ),
             ),
 
-          if (!_isLoading)
+          if (!_isLoading && _error != null)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: SpacingTokens.spacing6,
+                ),
+                child: AfriStateView.offline(
+                  title: 'Membership unavailable',
+                  message: _error!,
+                  actionLabel: 'Retry',
+                  onAction: _loadPackages,
+                ),
+              ),
+            ),
+
+          if (!_isLoading && _error == null && _packages.isEmpty)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: SpacingTokens.spacing6,
+                ),
+                child: AfriStateView.empty(
+                  title: 'No packages published',
+                  message:
+                      _emptyMessage ??
+                      'Membership packages will appear once the club publishes them.',
+                ),
+              ),
+            ),
+
+          if (!_isLoading && _error == null)
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(

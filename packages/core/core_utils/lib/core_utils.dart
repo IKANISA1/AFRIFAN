@@ -2,7 +2,6 @@
 library;
 
 export 'src/alias_generator.dart';
-export 'src/checkout_service.dart';
 export 'src/club_domain_types.dart';
 export 'src/country_catalog.dart';
 export 'src/currency_formatter.dart';

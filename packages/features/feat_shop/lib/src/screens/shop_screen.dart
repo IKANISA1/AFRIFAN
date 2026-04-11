@@ -40,11 +40,12 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
   Future<void> _loadProducts() async {
     try {
       final client = ref.read(supabaseClientProvider);
-      final response = await client
-          .from(_productsTable)
-          .select()
-          .eq('is_active', true)
-          .order('sort_order', ascending: true);
+      final user = ref.read(currentUserProvider);
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved(user?.clubId);
+      var query = client.from(_productsTable).select().eq('is_active', true);
+      query = resolver.apply(query, scope);
+      final response = await query.order('sort_order', ascending: true);
 
       if (mounted) {
         final products = List<Map<String, dynamic>>.from(response);
@@ -61,6 +62,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
           _categories.clear();
           _categories.addAll(categories);
           _isLoading = false;
+          _error = null;
         });
       }
     } catch (e) {
@@ -213,9 +215,20 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                     ),
                   ),
 
-                // §2.3 LOCKED — no empty state card. Render nothing.
                 if (!_isLoading && _error == null && _filteredProducts.isEmpty)
-                  const SliverToBoxAdapter(child: SizedBox.shrink()),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: SpacingTokens.spacing6,
+                      ),
+                      child: AfriStateView.empty(
+                        title: 'No products found',
+                        message:
+                            'No active products match this category yet. Try another filter.',
+                        compact: true,
+                      ),
+                    ),
+                  ),
 
                 // Bottom padding for checkout bar
                 SliverToBoxAdapter(

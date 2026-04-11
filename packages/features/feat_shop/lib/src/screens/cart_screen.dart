@@ -160,8 +160,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Order $orderId created successfully.'),
-          backgroundColor: ColorTokens.success,
+          content: Text(
+            'Order $orderId created. Payment verification is still pending.',
+          ),
+          backgroundColor: ColorTokens.info,
         ),
       );
       context.go('/shop');
@@ -248,12 +250,12 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             Text(
-              'Approve the MOMO prompt, then confirm.',
+              'Approve the MOMO prompt, then confirm once you have submitted the payment request. Orders remain pending until verification completes.',
               style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
             ),
             const SizedBox(height: SpacingTokens.spacing5),
             ClaymorphicButton(
-              label: 'Confirm & launch MOMO',
+              label: 'I submitted the MOMO request',
               preserveCase: true,
               width: double.infinity,
               onPressed: () => Navigator.of(context).pop(true),
@@ -280,6 +282,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserProvider);
+    final config = ClubConfigScope.maybeOf(context);
+    final deliveryHint = config == null
+        ? 'Enter your delivery address'
+        : 'Street, city, ${config.country}';
     _ensurePaymentRouteState(user);
 
     final items = ref.watch(shopCartProvider);
@@ -366,8 +372,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                         TextField(
                           controller: _addressController,
                           maxLines: 2,
-                          decoration: const InputDecoration(
-                            hintText: 'KG 8 Ave, Kigali, Rwanda',
+                          decoration: InputDecoration(
+                            hintText: deliveryHint,
                           ),
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),

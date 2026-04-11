@@ -58,6 +58,7 @@ build/
 # Coverage
 coverage/
 *.lcov
+**/test/failures/
 
 # Generated
 *.g.dart

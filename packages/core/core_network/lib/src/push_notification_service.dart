@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_utils/core_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -19,8 +20,9 @@ enum PushPermissionStatus {
 Future<void> afriClubFirebaseMessagingBackgroundHandler(
   RemoteMessage message,
 ) async {
-  debugPrint(
-    '[Push] Background message received: ${message.messageId ?? 'unknown'}',
+  AfriLogger.info(
+    'Push',
+    'Background message received: ${message.messageId ?? 'unknown'}',
   );
 }
 
@@ -47,8 +49,8 @@ class PushNotificationService {
 
     try {
       await FirebaseMessaging.instance.setAutoInitEnabled(true);
-    } catch (error) {
-      debugPrint('[Push] Auto-init enable skipped: $error');
+    } catch (error, stackTrace) {
+      AfriLogger.error('Push', 'Auto-init enable skipped.', error, stackTrace);
     }
 
     if (defaultTargetPlatform == TargetPlatform.iOS ||
@@ -60,14 +62,20 @@ class PushNotificationService {
               badge: true,
               sound: true,
             );
-      } catch (error) {
-        debugPrint('[Push] Foreground presentation setup failed: $error');
+      } catch (error, stackTrace) {
+        AfriLogger.error(
+          'Push',
+          'Foreground presentation setup failed.',
+          error,
+          stackTrace,
+        );
       }
     }
 
     FirebaseMessaging.onMessage.listen((message) {
-      debugPrint(
-        '[Push] Foreground message received: ${message.messageId ?? 'unknown'}',
+      AfriLogger.info(
+        'Push',
+        'Foreground message received: ${message.messageId ?? 'unknown'}',
       );
     });
 
@@ -77,7 +85,12 @@ class PushNotificationService {
             await _upsertToken(token: token);
           },
           onError: (Object error, StackTrace stackTrace) {
-            debugPrint('[Push] Token refresh stream error: $error');
+            AfriLogger.error(
+              'Push',
+              'Token refresh stream error.',
+              error,
+              stackTrace,
+            );
           },
         );
 
@@ -109,8 +122,13 @@ class PushNotificationService {
       final settings = await FirebaseMessaging.instance
           .getNotificationSettings();
       return _mapAuthorizationStatus(settings.authorizationStatus);
-    } catch (error) {
-      debugPrint('[Push] Notification settings unavailable: $error');
+    } catch (error, stackTrace) {
+      AfriLogger.error(
+        'Push',
+        'Notification settings unavailable.',
+        error,
+        stackTrace,
+      );
       return PushPermissionStatus.unavailable;
     }
   }
@@ -133,8 +151,8 @@ class PushNotificationService {
         await syncToken();
       }
       return status;
-    } catch (error) {
-      debugPrint('[Push] Permission request failed: $error');
+    } catch (error, stackTrace) {
+      AfriLogger.error('Push', 'Permission request failed.', error, stackTrace);
       return PushPermissionStatus.unavailable;
     }
   }
@@ -152,8 +170,8 @@ class PushNotificationService {
       final token = await FirebaseMessaging.instance.getToken();
       if (token == null || token.trim().isEmpty) return;
       await _upsertToken(token: token);
-    } catch (error) {
-      debugPrint('[Push] Token sync failed: $error');
+    } catch (error, stackTrace) {
+      AfriLogger.error('Push', 'Token sync failed.', error, stackTrace);
     }
   }
 
@@ -171,8 +189,8 @@ class PushNotificationService {
           .delete()
           .eq('user_id', user.id)
           .eq('token', token);
-    } catch (error) {
-      debugPrint('[Push] Token unregister failed: $error');
+    } catch (error, stackTrace) {
+      AfriLogger.error('Push', 'Token unregister failed.', error, stackTrace);
     }
   }
 
@@ -183,8 +201,13 @@ class PushNotificationService {
 
     try {
       await FirebaseMessaging.instance.subscribeToTopic(topic.trim());
-    } catch (error) {
-      debugPrint('[Push] Topic subscription failed for $topic: $error');
+    } catch (error, stackTrace) {
+      AfriLogger.error(
+        'Push',
+        'Topic subscription failed for $topic.',
+        error,
+        stackTrace,
+      );
     }
   }
 
@@ -193,8 +216,13 @@ class PushNotificationService {
 
     try {
       await FirebaseMessaging.instance.unsubscribeFromTopic(topic.trim());
-    } catch (error) {
-      debugPrint('[Push] Topic unsubscribe failed for $topic: $error');
+    } catch (error, stackTrace) {
+      AfriLogger.error(
+        'Push',
+        'Topic unsubscribe failed for $topic.',
+        error,
+        stackTrace,
+      );
     }
   }
 
@@ -248,8 +276,9 @@ class PushNotificationService {
     } on PostgrestException catch (error) {
       // Older environments can lack the unique index required by ON CONFLICT.
       if (error.code != '42P10') rethrow;
-      debugPrint(
-        '[Push] Falling back to legacy token sync path while token uniqueness is repaired.',
+      AfriLogger.warn(
+        'Push',
+        'Falling back to legacy token sync path while token uniqueness is repaired.',
       );
       await _upsertTokenLegacy(userId: user.id, payload: payload);
     }

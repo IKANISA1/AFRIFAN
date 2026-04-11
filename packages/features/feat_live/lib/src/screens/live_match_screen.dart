@@ -43,11 +43,11 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
 
     try {
       final client = ref.read(supabaseClientProvider);
-      final rows = await client
-          .from('matches')
-          .select()
-          .order('match_date', ascending: true)
-          .limit(12);
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved();
+      var query = client.from('matches').select();
+      query = resolver.apply(query, scope);
+      final rows = await query.order('match_date', ascending: true).limit(12);
       final matches = List<Map<String, dynamic>>.from(rows);
       final selected = _pickFeaturedMatch(matches);
 

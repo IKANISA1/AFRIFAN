@@ -10,10 +10,11 @@ export 'src/club_config_scope.dart';
 export 'src/club_theme.dart';
 export 'src/extensions.dart';
 export 'src/runtime_branding.dart';
+
 // ── Tokens ──
 export 'src/tokens/afri_semantic_colors.dart';
-export 'src/tokens/border_tokens.dart';
 export 'src/tokens/blur_tokens.dart';
+export 'src/tokens/border_tokens.dart';
 export 'src/tokens/color_tokens.dart';
 export 'src/tokens/motion_tokens.dart';
 export 'src/tokens/responsive_tokens.dart';

@@ -6,6 +6,7 @@ import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:feat_home/src/widgets/match_card.dart';
+import 'package:feat_home/src/widgets/quick_actions_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -93,11 +94,11 @@ void main() {
       );
 
       await _pumpShellReady(tester);
-      await _pumpUntilVisible(tester, find.text('QUICK ACTIONS'));
+      await _pumpUntilVisible(tester, find.byType(QuickActionsGrid));
 
       expect(find.byType(MaterialApp), findsOneWidget);
-      expect(find.text('QUICK ACTIONS'), findsOneWidget);
-      expect(find.text('LATEST INTEL'), findsOneWidget);
+      expect(find.byType(QuickActionsGrid), findsOneWidget);
+      expect(find.text('News'), findsOneWidget);
       expect(find.text('Training ground update'), findsOneWidget);
     });
 
@@ -157,13 +158,13 @@ void main() {
 
       await tester.tap(find.bySemanticsLabel('SETTINGS'));
       await tester.pump(const Duration(milliseconds: 300));
-      await _pumpUntilVisible(tester, find.text('ACCOUNT'));
-      expect(find.text('ACCOUNT'), findsOneWidget);
+      await _pumpUntilVisible(tester, find.text('Account'));
+      expect(find.text('Account'), findsOneWidget);
 
       await tester.tap(find.bySemanticsLabel('HOME'));
       await tester.pump(const Duration(milliseconds: 300));
-      await _pumpUntilVisible(tester, find.text('QUICK ACTIONS'));
-      expect(find.text('QUICK ACTIONS'), findsOneWidget);
+      await _pumpUntilVisible(tester, find.byType(QuickActionsGrid));
+      expect(find.byType(QuickActionsGrid), findsOneWidget);
 
       semantics.dispose();
     });

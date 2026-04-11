@@ -167,14 +167,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     ),
                     AfriIconButton(
                       icon: Icons.photo_camera_outlined,
-                      tooltip: 'Photo upload coming soon',
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Photo upload coming soon.'),
-                          ),
-                        );
-                      },
+                      tooltip: 'Profile photo upload is not available in this release',
+                      onTap: null,
                     ),
                   ],
                 ),

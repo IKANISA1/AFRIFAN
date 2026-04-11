@@ -2,6 +2,7 @@ import 'package:core_app/core_app.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:feat_home/src/widgets/match_card.dart';
+import 'package:feat_home/src/widgets/quick_actions_grid.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rayon_sports/main.dart';
@@ -80,10 +81,10 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(seconds: 2));
     await tester.pumpAndSettle();
-    await _pumpUntilVisible(tester, find.text('QUICK ACTIONS'));
+    await _pumpUntilVisible(tester, find.byType(QuickActionsGrid));
 
-    expect(find.text('QUICK ACTIONS'), findsOneWidget);
-    expect(find.text('LATEST INTEL'), findsOneWidget);
+    expect(find.byType(QuickActionsGrid), findsOneWidget);
+    expect(find.text('News'), findsOneWidget);
     expect(find.text('Training ground update'), findsOneWidget);
   });
 
@@ -161,7 +162,16 @@ void main() {
     await startRayonSportsApp(
       options: AfriClubBootstrapOptions(
         startupOptions: const AppStartupOptions.integrationTest(),
-        authRepository: _FakeAuthRepository(),
+        authRepository: _FakeAuthRepository(
+          restoreResult: const UserProfile(
+            id: 'user-1',
+            clubId: '24',
+            publicUserId: '483912',
+            momoNumber: '0788123456',
+            momoProvider: 'MoMo',
+            languageCode: 'en',
+          ),
+        ),
         initialLocation: '/settings',
         providerOverrides: [
           currentUserProvider.overrideWith(
@@ -179,12 +189,13 @@ void main() {
     );
 
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('BioPay & Privacy'), 240);
     await _pumpUntilVisible(tester, find.text('BioPay & Privacy'));
 
     expect(find.text('BioPay & Privacy'), findsOneWidget);
-    expect(find.text('Privacy Controls'), findsOneWidget);
-    expect(find.text('BioPay Home'), findsOneWidget);
-    expect(find.text('Face ID & Enrollment'), findsOneWidget);
+    expect(find.text('Privacy controls'), findsOneWidget);
+    expect(find.text('BioPay home'), findsOneWidget);
+    expect(find.text('Face ID & enrollment'), findsOneWidget);
   });
 }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../extensions.dart';
-import '../tokens/border_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'clay_card.dart';

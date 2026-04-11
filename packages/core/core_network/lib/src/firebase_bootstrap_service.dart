@@ -1,3 +1,4 @@
+import 'package:core_utils/core_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
@@ -30,9 +31,17 @@ class FirebaseBootstrapService {
       } else {
         await Firebase.initializeApp();
       }
-      debugPrint('[Firebase] Initialized default app.');
-    } catch (error) {
-      debugPrint('[Firebase] Initialization skipped: $error');
+      AfriLogger.info('Firebase', 'Initialized default app.');
+    } catch (error, stackTrace) {
+      AfriLogger.warn('Firebase', 'Initialization skipped: $error');
+      if (kDebugMode) {
+        AfriLogger.error(
+          'Firebase',
+          'Initialization stack trace.',
+          error,
+          stackTrace,
+        );
+      }
     }
 
     return Firebase.apps.isNotEmpty;

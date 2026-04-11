@@ -69,11 +69,12 @@ void main() {
 
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
+      await tester.scrollUntilVisible(find.text('BioPay & Privacy'), 240);
 
       expect(find.text('BioPay & Privacy'), findsOneWidget);
-      expect(find.text('Privacy Controls'), findsOneWidget);
-      expect(find.text('BioPay Home'), findsOneWidget);
-      expect(find.text('Face ID & Enrollment'), findsOneWidget);
+      expect(find.text('Privacy controls'), findsOneWidget);
+      expect(find.text('BioPay home'), findsOneWidget);
+      expect(find.text('Face ID & enrollment'), findsOneWidget);
     });
   });
 }

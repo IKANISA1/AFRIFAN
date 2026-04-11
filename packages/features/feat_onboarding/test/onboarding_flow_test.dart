@@ -4,8 +4,9 @@ import 'package:feat_onboarding/src/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '../../test_support/design_font_loader.dart';
 
 class FakeAuthRepository extends AuthRepository {
@@ -262,10 +263,32 @@ void main() {
       matchesGoldenFile('goldens/onboarding_screen.png'),
     );
   });
+
+  testWidgets(
+    'onboarding stays usable on compact-height viewports',
+    (tester) async {
+      _setCompactSurface(tester);
+
+      await tester.pumpWidget(
+        const ProviderScope(child: MaterialApp(home: OnboardingScreen())),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('NEXT'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
 
 void _setMobileSurface(WidgetTester tester) {
   tester.view.physicalSize = const Size(393, 852);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+}
+
+void _setCompactSurface(WidgetTester tester) {
+  tester.view.physicalSize = const Size(752, 435);
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);

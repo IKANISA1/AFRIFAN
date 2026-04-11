@@ -122,12 +122,10 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
                                 _leagueActionInFlight ||
                                 entryAsync.valueOrNull == null,
                             onCreate: () => _showCreateLeagueSheet(
-                              context: context,
                               competitionId: competition.id,
                               entry: entryAsync.valueOrNull,
                             ),
                             onJoin: () => _showJoinLeagueSheet(
-                              context: context,
                               competitionId: competition.id,
                               entry: entryAsync.valueOrNull,
                             ),
@@ -205,7 +203,6 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
                                         onPressed: _leagueActionInFlight
                                             ? null
                                             : () => _leaveLeague(
-                                                context: context,
                                                 competitionId: competition.id,
                                                 league: selected,
                                                 entry: entryAsync.valueOrNull,
@@ -318,7 +315,6 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
   }
 
   Future<void> _showCreateLeagueSheet({
-    required BuildContext context,
     required String competitionId,
     required FantasyEntry? entry,
   }) async {
@@ -368,7 +364,6 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
   }
 
   Future<void> _showJoinLeagueSheet({
-    required BuildContext context,
     required String competitionId,
     required FantasyEntry? entry,
   }) async {
@@ -412,7 +407,6 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
   }
 
   Future<void> _leaveLeague({
-    required BuildContext context,
     required String competitionId,
     required FantasyLeague league,
     required FantasyEntry? entry,

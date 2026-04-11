@@ -13,7 +13,7 @@ class _CreateFanClubScreenState extends State<CreateFanClubScreen> {
   final _nameController = TextEditingController();
   final _locationController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final Set<String> _regions = <String>{'Kigali'};
+  final Set<String> _regions = <String>{'Local'};
   bool _isPrivate = false;
 
   @override
@@ -26,6 +26,18 @@ class _CreateFanClubScreenState extends State<CreateFanClubScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ClubConfigScope.maybeOf(context);
+    final appName = config?.appName ?? RuntimeBranding.displayAppName;
+    final country = config?.country ?? 'your country';
+    final clubLabel = config?.clubName ?? RuntimeBranding.displayClubName;
+    final regionOptions = <String>[
+      'Local',
+      'Regional',
+      'National',
+      'Diaspora',
+      'International',
+    ];
+
     return Scaffold(
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
@@ -51,7 +63,9 @@ class _CreateFanClubScreenState extends State<CreateFanClubScreen> {
               label: 'CLUB NAME',
               child: TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(hintText: 'Blue Army Kigali'),
+                decoration: InputDecoration(
+                  hintText: '$appName Supporters',
+                ),
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
@@ -59,7 +73,9 @@ class _CreateFanClubScreenState extends State<CreateFanClubScreen> {
               label: 'LOCATION / REGION',
               child: TextField(
                 controller: _locationController,
-                decoration: const InputDecoration(hintText: 'Kigali, Rwanda'),
+                decoration: InputDecoration(
+                  hintText: 'City or region, $country',
+                ),
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
@@ -81,18 +97,9 @@ class _CreateFanClubScreenState extends State<CreateFanClubScreen> {
                 children: [
                   Text('PHOTO', style: TypographyTokens.labelSmall()),
                   const SizedBox(height: SpacingTokens.spacing3),
-                  OutlinedButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Photo upload coming soon.'),
-                        ),
-                      );
-                    },
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 72),
-                    ),
-                    child: const Text('UPLOAD CLUB PHOTO'),
+                  Text(
+                    'Add the club photo after approval so it matches the official $clubLabel branding review.',
+                    style: TypographyTokens.bodyMedium(),
                   ),
                 ],
               ),
@@ -132,19 +139,10 @@ class _CreateFanClubScreenState extends State<CreateFanClubScreen> {
                 children: [
                   Text('REGIONS SERVED', style: TypographyTokens.labelSmall()),
                   const SizedBox(height: SpacingTokens.spacing3),
-                  Wrap(
+                    Wrap(
                     spacing: SpacingTokens.spacing2,
                     runSpacing: SpacingTokens.spacing2,
-                    children:
-                        [
-                              'Kigali',
-                              'Northern',
-                              'Southern',
-                              'Western',
-                              'Eastern',
-                              'International',
-                            ]
-                            .map((region) {
+                    children: regionOptions.map((region) {
                               return FilterChip(
                                 selected: _regions.contains(region),
                                 label: Text(region),
@@ -158,8 +156,7 @@ class _CreateFanClubScreenState extends State<CreateFanClubScreen> {
                                   });
                                 },
                               );
-                            })
-                            .toList(growable: false),
+                            }).toList(growable: false),
                   ),
                 ],
               ),

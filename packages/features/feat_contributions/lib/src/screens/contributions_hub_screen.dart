@@ -1,5 +1,6 @@
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +19,7 @@ class _ContributionsHubScreenState
     extends ConsumerState<ContributionsHubScreen> {
   List<Map<String, dynamic>> _groups = const <Map<String, dynamic>>[];
   bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -27,22 +29,46 @@ class _ContributionsHubScreenState
 
   Future<void> _loadGroups() async {
     try {
-      final rows = await ref
-          .read(supabaseClientProvider)
-          .from('contribution_groups')
-          .select()
-          .eq('is_closed', false)
-          .order('created_at', ascending: false)
-          .limit(8);
+      final groups = await ref.read(clubRepositoryProvider).getContributionGroups();
+      final rows = groups
+          .map(
+            (group) => <String, dynamic>{
+              'id': group.id,
+              'name': group.name,
+              'description': group.description,
+              'current_total': group.currentTotal,
+              'target_amount': group.targetAmount,
+              'member_count': group.memberCount,
+              'privacy': group.privacy.value,
+              'created_at': group.createdAt.toIso8601String(),
+            },
+          )
+          .toList(growable: false)
+        ..sort((left, right) {
+          final rightCreated = DateTime.tryParse(
+            right['created_at']?.toString() ?? '',
+          );
+          final leftCreated = DateTime.tryParse(
+            left['created_at']?.toString() ?? '',
+          );
+          if (leftCreated == null || rightCreated == null) {
+            return 0;
+          }
+          return rightCreated.compareTo(leftCreated);
+        });
 
       if (!mounted) return;
       setState(() {
-        _groups = List<Map<String, dynamic>>.from(rows);
+        _groups = rows.take(8).toList(growable: false);
         _isLoading = false;
+        _error = null;
       });
     } catch (_) {
       if (!mounted) return;
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+        _error = 'Contribution circles are temporarily unavailable.';
+      });
     }
   }
 
@@ -167,6 +193,14 @@ class _ContributionsHubScreenState
                     const SizedBox(height: SpacingTokens.spacing3),
                     if (_isLoading)
                       const AfriSkeletonList()
+                    else if (_error != null)
+                      AfriStateView.offline(
+                        title: 'Circles unavailable',
+                        message: _error!,
+                        actionLabel: 'Retry',
+                        onAction: _loadGroups,
+                        compact: true,
+                      )
                     else if (_groups.isEmpty)
                       Text(
                         'No circles yet.',

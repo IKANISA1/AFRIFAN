@@ -8,6 +8,8 @@ class SupabaseClientFactory {
   SupabaseClientFactory._();
 
   static bool _initialized = false;
+  static String? _initializedUrl;
+  static String? _initializedAnonKey;
 
   static bool get isInitialized => _initialized;
 
@@ -17,7 +19,17 @@ class SupabaseClientFactory {
     required String supabaseUrl,
     required String supabaseAnonKey,
   }) async {
-    if (_initialized) return;
+    if (_initialized) {
+      final sameConfig =
+          _initializedUrl == supabaseUrl &&
+          _initializedAnonKey == supabaseAnonKey;
+      if (!sameConfig) {
+        throw StateError(
+          'SupabaseClientFactory was already initialized with a different configuration.',
+        );
+      }
+      return;
+    }
 
     await Supabase.initialize(
       url: supabaseUrl,
@@ -27,6 +39,8 @@ class SupabaseClientFactory {
       ),
     );
 
+    _initializedUrl = supabaseUrl;
+    _initializedAnonKey = supabaseAnonKey;
     _initialized = true;
   }
 
