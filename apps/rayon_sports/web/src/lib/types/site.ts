@@ -62,7 +62,14 @@ export interface SearchIndexItem {
   title: string;
   description: string;
   href: string;
-  category: "Page" | "Match" | "News" | "Shop" | "Community" | "Membership";
+  category:
+    | "Page"
+    | "Match"
+    | "News"
+    | "Shop"
+    | "Community"
+    | "Membership"
+    | "Fantasy";
   meta?: string;
 }
 
@@ -177,4 +184,47 @@ export interface AppConfigEntry {
   value: string;
   description: string;
   country: string;
+}
+
+export type FantasyCompetitionMode = "season_long" | "tournament";
+export type FantasyCompetitionStatus =
+  | "planned"
+  | "preview"
+  | "playable"
+  | "archived";
+
+export interface FantasyCompetition {
+  id: string;
+  slug: string;
+  name: string;
+  shortName: string;
+  season: string;
+  description: string;
+  mode: FantasyCompetitionMode;
+  status: FantasyCompetitionStatus;
+  primaryColor: string;
+  logoUrl: string | null;
+  countryCode: string | null;
+  provider: string | null;
+  promoTitle: string | null;
+  promoBody: string | null;
+  badgeLabel: string | null;
+  ctaLabel: string | null;
+  heroImageUrl: string | null;
+  sortOrder: number;
+  isVisible: boolean;
+  isFeatured: boolean;
+  isPlayable: boolean;
+  startAt: string | null;
+  endAt: string | null;
+  entryWindowOpensAt: string | null;
+  entryWindowClosesAt: string | null;
+}
+
+export interface FantasyLeaderboardEntry {
+  rank: number;
+  teamName: string;
+  managerName: string;
+  points: number;
+  isCurrentUser: boolean;
 }

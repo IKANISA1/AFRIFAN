@@ -2,7 +2,6 @@ import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../models/user_privacy_settings.dart';
 import '../settings_actions.dart';
@@ -100,7 +99,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
         appBar: AppBar(
           title: Text(
             'PRIVACY',
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 22,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.6,

@@ -196,14 +196,12 @@ class BiopayLivenessService {
       _BiopayLivenessStep.turnSide => const BiopayLivenessAssessment(
         level: BiopayLivenessFeedbackLevel.ready,
         statusLabel: 'Turn your head slightly',
-        helperText:
-            'Turn your head slightly to verify liveness.',
+        helperText: 'Turn your head slightly to verify liveness.',
       ),
       _BiopayLivenessStep.recenter => const BiopayLivenessAssessment(
         level: BiopayLivenessFeedbackLevel.ready,
         statusLabel: 'Look straight again',
-        helperText:
-            'Center your face in the oval to continue.',
+        helperText: 'Center your face in the oval to continue.',
       ),
     };
   }
@@ -216,8 +214,7 @@ class BiopayLivenessService {
       return const BiopayLivenessAssessment(
         level: BiopayLivenessFeedbackLevel.blocked,
         statusLabel: 'Keep both eyes visible',
-        helperText:
-            'Both eyes must be visible for the blink challenge.',
+        helperText: 'Both eyes must be visible for the blink challenge.',
       );
     }
 
@@ -234,16 +231,14 @@ class BiopayLivenessService {
       return const BiopayLivenessAssessment(
         level: BiopayLivenessFeedbackLevel.ready,
         statusLabel: 'Blink once',
-        helperText:
-            'Blink naturally to confirm a live face.',
+        helperText: 'Blink naturally to confirm a live face.',
       );
     }
 
     return const BiopayLivenessAssessment(
       level: BiopayLivenessFeedbackLevel.ready,
       statusLabel: 'Open your eyes again',
-      helperText:
-          'Blink detected. Open your eyes to finish.',
+      helperText: 'Blink detected. Open your eyes to finish.',
     );
   }
 

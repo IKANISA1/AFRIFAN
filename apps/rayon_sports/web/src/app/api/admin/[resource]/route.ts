@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminClubScopeCookieName, getRequestedAdminClubId } from "@/lib/admin-club-scope";
 import {
+  deleteAdminFantasyCompetition,
+  deleteAdminFantasyGameweek,
+  deleteAdminFantasyPlayer,
   deleteAdminFanEngagementToken,
   deleteAdminArticle,
+  deleteAdminConfigEntry,
   deleteAdminContributionGroup,
   deleteAdminFanClub,
   deleteAdminMatch,
@@ -11,9 +15,12 @@ import {
   deleteAdminSquadPlayer,
   deleteAdminStandingRow,
   getAdminArticles,
+  getAdminAppConfig,
   getAdminClubProfile,
   getAdminContributionSnapshot,
   getAdminDashboardSnapshot,
+  getAdminFantasyCompetitions,
+  getAdminFantasyOperations,
   getAdminFanEngagementTokens,
   getAdminFanClubs,
   getAdminMatches,
@@ -25,9 +32,13 @@ import {
   getAdminStandings,
   resolveAdminAccess,
   saveAdminArticle,
+  saveAdminConfigEntry,
   saveAdminContributionGroup,
   saveAdminFanClub,
   saveAdminFanEngagementToken,
+  saveAdminFantasyCompetition,
+  saveAdminFantasyGameweek,
+  saveAdminFantasyPlayer,
   saveAdminClubProfile,
   saveAdminMatch,
   saveAdminMembershipPackage,
@@ -134,6 +145,10 @@ export async function GET(
         return NextResponse.json({
           data: await getAdminArticles(adminClient, access),
         });
+      case "cms-config":
+        return NextResponse.json({
+          data: await getAdminAppConfig(adminClient, access),
+        });
       case "settings":
         return NextResponse.json({
           data: await getAdminClubProfile(adminClient, access),
@@ -150,6 +165,22 @@ export async function GET(
         return NextResponse.json({
           data: await getAdminFanClubs(adminClient, access),
         });
+      case "fantasy":
+        return NextResponse.json({
+          data: await getAdminFantasyCompetitions(adminClient, access),
+        });
+      case "fantasy-operations": {
+        const competitionId = request.nextUrl.searchParams.get("competition_id");
+        if (!competitionId) {
+          return NextResponse.json(
+            { error: "A competition_id query parameter is required." },
+            { status: 400 },
+          );
+        }
+        return NextResponse.json({
+          data: await getAdminFantasyOperations(adminClient, access, competitionId),
+        });
+      }
       case "standings":
         return NextResponse.json({
           data: await getAdminStandings(adminClient, access),
@@ -228,6 +259,10 @@ export async function POST(
         return NextResponse.json({
           data: await saveAdminArticle(adminClient, access, body as never),
         });
+      case "cms-config":
+        return NextResponse.json({
+          data: await saveAdminConfigEntry(adminClient, access, body as never),
+        });
       case "settings":
         return NextResponse.json({
           data: await saveAdminClubProfile(adminClient, access, body as never),
@@ -243,6 +278,18 @@ export async function POST(
       case "fan-clubs":
         return NextResponse.json({
           data: await saveAdminFanClub(adminClient, access, body as never),
+        });
+      case "fantasy":
+        return NextResponse.json({
+          data: await saveAdminFantasyCompetition(adminClient, access, body as never),
+        });
+      case "fantasy-players":
+        return NextResponse.json({
+          data: await saveAdminFantasyPlayer(adminClient, access, body as never),
+        });
+      case "fantasy-gameweeks":
+        return NextResponse.json({
+          data: await saveAdminFantasyGameweek(adminClient, access, body as never),
         });
       case "standings":
         return NextResponse.json({
@@ -323,6 +370,9 @@ export async function DELETE(
       case "cms":
         await deleteAdminArticle(adminClient, access, id);
         break;
+      case "cms-config":
+        await deleteAdminConfigEntry(adminClient, access, id);
+        break;
       case "membership":
         await deleteAdminMembershipPackage(adminClient, access, id);
         break;
@@ -331,6 +381,28 @@ export async function DELETE(
         break;
       case "fan-clubs":
         await deleteAdminFanClub(adminClient, access, id);
+        break;
+      case "fantasy":
+        await deleteAdminFantasyCompetition(adminClient, access, id);
+        break;
+      case "fantasy-players": {
+        const competitionId = request.nextUrl.searchParams.get("competition_id");
+        if (!competitionId) {
+          return NextResponse.json(
+            { error: "A competition_id query parameter is required." },
+            { status: 400 },
+          );
+        }
+        await deleteAdminFantasyPlayer(
+          adminClient,
+          access,
+          competitionId,
+          Number(id),
+        );
+        break;
+      }
+      case "fantasy-gameweeks":
+        await deleteAdminFantasyGameweek(adminClient, access, id);
         break;
       case "standings":
         await deleteAdminStandingRow(adminClient, access, id);

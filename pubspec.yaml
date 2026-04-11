@@ -58,6 +58,7 @@ workspace:
   - packages/features/feat_club
   - packages/features/feat_home
   - packages/features/feat_fan_clubs
+  - packages/features/feat_fantasy
   - packages/features/feat_live
   - packages/features/feat_membership
   - packages/features/feat_gamification
@@ -67,6 +68,7 @@ workspace:
   - packages/features/feat_settings
   - packages/features/feat_onboarding
   - packages/features/feat_ticketing
+  - packages/africlub_fantasy
   # ── Club config packages ──
   - packages/clubs/club_rayon_sports
   - packages/clubs/club_vitalo

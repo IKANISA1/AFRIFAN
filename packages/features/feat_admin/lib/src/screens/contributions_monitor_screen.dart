@@ -211,10 +211,7 @@ class _ContributionsMonitorScreenState
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(
-          'CONTRIBUTIONS',
-          style: TypographyTokens.titleLarge(),
-        ),
+        title: Text('CONTRIBUTIONS', style: TypographyTokens.titleLarge()),
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back_rounded),
@@ -291,8 +288,7 @@ class _ContributionsMonitorScreenState
                   if (_filteredGroups.isEmpty)
                     const _AdminMonitorState(
                       title: 'No active circles',
-                      body:
-                          'Groups will appear when created.',
+                      body: 'Groups will appear when created.',
                       actionLabel: null,
                     )
                   else
@@ -324,7 +320,10 @@ class _ContributionsMonitorScreenState
                                     child: Text(
                                       (group['name']?.toString() ?? 'Circle')
                                           .toUpperCase(),
-                                      style: TypographyTokens.titleLarge().copyWith(color: ColorTokens.onSurface),
+                                      style: TypographyTokens.titleLarge()
+                                          .copyWith(
+                                            color: ColorTokens.onSurface,
+                                          ),
                                     ),
                                   ),
                                   _StateChip(
@@ -345,9 +344,8 @@ class _ContributionsMonitorScreenState
                               Text(
                                 'FRw ${_currency.format(total)}'
                                 '${target > 0 ? ' / FRw ${_currency.format(target)}' : ''}',
-                                style: TypographyTokens.headlineLarge().copyWith(
-                                  color: ColorTokens.clubAccent,
-                                ),
+                                style: TypographyTokens.headlineLarge()
+                                    .copyWith(color: ColorTokens.clubAccent),
                               ),
                               const SizedBox(height: SpacingTokens.spacing2),
                               Text(
@@ -431,7 +429,9 @@ class _AdminMonitorState extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: TypographyTokens.headlineMedium().copyWith(color: ColorTokens.onSurface),
+              style: TypographyTokens.headlineMedium().copyWith(
+                color: ColorTokens.onSurface,
+              ),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             Text(

@@ -1,3 +1,5 @@
+import { ui } from "@/design-system";
+
 interface SectionHeadingProps {
   eyebrow?: string;
   title: string;
@@ -14,11 +16,11 @@ export function SectionHeading({
   return (
     <div className={className ?? "space-y-3"}>
       {eyebrow ? (
-        <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
+        <p className={ui.kicker}>
           {eyebrow}
         </p>
       ) : null}
-      <h2 className="fluid-heading font-display font-bold uppercase leading-none text-balance text-white">
+      <h2 className="fluid-heading font-display font-bold uppercase leading-none tracking-[-0.05em] text-balance text-white">
         {title}
       </h2>
       {description ? (

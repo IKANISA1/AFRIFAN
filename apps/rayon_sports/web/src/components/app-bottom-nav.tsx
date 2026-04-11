@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Landmark, ShieldCheck, Ticket } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ui } from "@/design-system";
 
 const tabs = [
   {
@@ -30,6 +31,7 @@ function resolveActiveTab(pathname: string): string {
   if (
     pathname === "/" ||
     pathname === "/home" ||
+    pathname.startsWith("/fantasy") ||
     pathname.startsWith("/fixtures") ||
     pathname.startsWith("/results") ||
     pathname.startsWith("/standings") ||
@@ -64,10 +66,10 @@ export function AppBottomNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-border-soft bg-surface-strong/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl"
+      className={`fixed inset-x-0 bottom-0 z-50 pb-[env(safe-area-inset-bottom)] ${ui.shellBar}`}
       aria-label="Main navigation"
     >
-      <div className="mx-auto flex max-w-md items-stretch justify-around">
+      <div className="mx-auto flex max-w-md items-stretch justify-around px-3 pt-2">
         {tabs.map((tab) => {
           const active = tab.id === activeTab;
           const Icon = tab.icon;
@@ -80,10 +82,8 @@ export function AppBottomNav() {
               aria-current={active ? "page" : undefined}
               aria-label={tab.label}
               className={cn(
-                "relative flex flex-1 flex-col items-center gap-1 rounded-xl py-2.5 text-[11px] font-medium transition-colors",
-                active
-                  ? "bg-club-primary/10 text-club-accent"
-                  : "text-slate-300 active:text-slate-200",
+                active ? ui.navTabActive : ui.navTab,
+                !active && "active:text-slate-200",
               )}
             >
               <Icon
@@ -91,9 +91,11 @@ export function AppBottomNav() {
                 strokeWidth={active ? 2.2 : 1.6}
                 className="transition-transform active:scale-90"
               />
-              <span className="leading-none">{tab.label}</span>
+              <span className={cn("leading-none", active ? ui.kicker : "text-[11px] uppercase tracking-[0.22em]")}>
+                {tab.label}
+              </span>
               {active ? (
-                <span className="absolute top-0 left-1/2 h-[2.5px] w-5 -translate-x-1/2 rounded-full bg-club-accent" />
+                <span className={ui.navIndicator} />
               ) : null}
             </Link>
           );

@@ -1,7 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Top navigation bar for the shop screen with back, branding,
 /// search, filter, and cart actions.
@@ -43,7 +42,7 @@ class ShopTopBar extends StatelessWidget {
           const Spacer(),
           Text(
             RuntimeBranding.displayAppName.toUpperCase(),
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 18,
               fontWeight: FontWeight.w800,
               color: ColorTokens.onSurface,
@@ -95,7 +94,7 @@ class ShopTopBar extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: primary,
                       shape: BoxShape.circle,
-                      border: Border.all(
+                      border: BorderTokens.all(
                         color: ColorTokens.background,
                         width: 2,
                       ),
@@ -103,7 +102,7 @@ class ShopTopBar extends StatelessWidget {
                     child: Center(
                       child: Text(
                         '$cartItemCount',
-                        style: GoogleFonts.inter(
+                        style: TypographyTokens.editorialFont(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
                           color: ColorTokens.onSurface,

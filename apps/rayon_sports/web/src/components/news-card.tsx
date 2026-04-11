@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { NewsArticle } from "@/lib/types";
 import { formatDate, getReadingTime } from "@/lib/utils";
+import { ui } from "@/design-system";
 
 export function NewsCard({ article }: { article: NewsArticle }) {
   const readingTime = getReadingTime(article.content || article.excerpt);
@@ -11,7 +12,7 @@ export function NewsCard({ article }: { article: NewsArticle }) {
     <Link
       href={`/news/${article.id}`}
       prefetch={false}
-      className="glass-panel card-interactive flex h-full flex-col gap-4 rounded-[30px] border border-border-soft p-4"
+      className={`${ui.panel} ${ui.cardInteractive} flex h-full flex-col gap-4 rounded-[30px] p-4`}
     >
       <div className="img-zoom relative overflow-hidden rounded-[24px]">
         <Image
@@ -25,27 +26,27 @@ export function NewsCard({ article }: { article: NewsArticle }) {
         />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_35%,rgba(3,10,24,0.82)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 px-4 py-3">
-          <span className="rounded-full bg-club-primary/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white">
+          <span className={`${ui.chip} bg-club-primary/65 px-3 py-1 text-[10px] text-white`}>
             {article.category}
           </span>
-          <span className="text-[10px] uppercase tracking-[0.22em] text-slate-200">
+          <span className={ui.meta}>
             {readingTime} min read
           </span>
         </div>
       </div>
 
       <div className="space-y-3">
-        <div className="flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.22em] text-slate-300">
+        <div className={`flex items-center justify-between gap-3 ${ui.meta}`}>
           <span>Club media</span>
           <span>{formatDate(article.publishedAt)}</span>
         </div>
-        <h3 className="font-display text-3xl font-bold uppercase leading-none text-balance text-white">
+        <h3 className="font-display text-3xl font-bold uppercase leading-none tracking-[-0.05em] text-balance text-white">
           {article.title}
         </h3>
         <p className="text-sm leading-7 text-slate-300">{article.excerpt}</p>
       </div>
 
-      <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/8 pt-4">
+      <div className="mt-auto flex items-center justify-between gap-3 pt-4">
         <span className="text-sm font-semibold text-white">Read story</span>
         <ArrowRight size={18} className="text-slate-300" />
       </div>

@@ -37,7 +37,9 @@ class AdminRouteGuard extends ConsumerWidget {
                     Text(
                       'ADMIN ACCESS REQUIRED',
                       textAlign: TextAlign.center,
-                      style: TypographyTokens.headlineMedium().copyWith(color: ColorTokens.onSurface),
+                      style: TypographyTokens.headlineMedium().copyWith(
+                        color: ColorTokens.onSurface,
+                      ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     Text(

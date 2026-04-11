@@ -1,6 +1,5 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ContributorEntry {
   const ContributorEntry({
@@ -49,7 +48,7 @@ class ContributorLeaderboard extends StatelessWidget {
       children: [
         Text(
           'TOP SUPPORTERS',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 18,
             fontWeight: FontWeight.w700,
             color: ColorTokens.onSurface,
@@ -75,6 +74,7 @@ class _ContributorRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
     final isFirst = data.rank == 1;
+    final pointsLabel = '${formatPoints(data.points)} PTS';
 
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
@@ -84,9 +84,7 @@ class _ContributorRow extends StatelessWidget {
           horizontal: SpacingTokens.spacing4,
           vertical: SpacingTokens.spacing4,
         ),
-        backgroundColor: isFirst
-            ? primaryColor.withValues(alpha: 0.08)
-            : null,
+        backgroundColor: isFirst ? primaryColor.withValues(alpha: 0.08) : null,
         child: Row(
           children: [
             if (isFirst)
@@ -98,14 +96,15 @@ class _ContributorRow extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: primaryColor.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: primaryColor.withValues(alpha: 0.5),
-                    width: 1,
+                  border: BorderTokens.all(
+                    color: primaryColor,
+                    width: BorderTokens.standard,
+                    opacity: 0.5,
                   ),
                 ),
                 child: Text(
                   data.rank.toString().padLeft(2, '0'),
-                  style: GoogleFonts.barlowCondensed(
+                  style: TypographyTokens.monolithFont(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
                     color: primaryColor,
@@ -118,7 +117,7 @@ class _ContributorRow extends StatelessWidget {
                 width: 32,
                 child: Text(
                   data.rank.toString().padLeft(2, '0'),
-                  style: GoogleFonts.barlowCondensed(
+                  style: TypographyTokens.monolithFont(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: ColorTokens.onSurfaceVariant,
@@ -127,23 +126,30 @@ class _ContributorRow extends StatelessWidget {
                 ),
               ),
             const SizedBox(width: SpacingTokens.spacing3),
-            Text(
-              '#${data.alias}',
-              style: GoogleFonts.barlowCondensed(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: ColorTokens.onSurface,
-                letterSpacing: 2.0,
+            Expanded(
+              child: Text(
+                '#${data.alias}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TypographyTokens.monolithFont(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: ColorTokens.onSurface,
+                  letterSpacing: 1.2,
+                ),
               ),
             ),
-            const Spacer(),
-            Text(
-              '${formatPoints(data.points)} PTS',
-              style: GoogleFonts.barlowCondensed(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-                color: isFirst ? primaryColor : ColorTokens.onSurfaceVariant,
-                letterSpacing: 0.5,
+            const SizedBox(width: SpacingTokens.spacing3),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                pointsLabel,
+                style: TypographyTokens.monolithFont(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: isFirst ? primaryColor : ColorTokens.onSurfaceVariant,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
           ],

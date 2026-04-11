@@ -4,7 +4,6 @@ import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../widgets/contribution_overlays.dart';
@@ -291,7 +290,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
         backgroundColor: Colors.transparent,
         title: Text(
           'CIRCLE SETTINGS',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -321,7 +320,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
                             children: [
                               Text(
                                 _groupName,
-                                style: GoogleFonts.barlowCondensed(
+                                style: TypographyTokens.monolithFont(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w800,
                                   color: ColorTokens.onSurface,
@@ -521,7 +520,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
+                        border: BorderTokens.all(
                           color: ColorTokens.error.withValues(alpha: 0.32),
                         ),
                       ),
@@ -531,7 +530,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
                         children: [
                           Text(
                             'DANGER ZONE',
-                            style: GoogleFonts.barlowCondensed(
+                            style: TypographyTokens.monolithFont(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                               color: ColorTokens.error,

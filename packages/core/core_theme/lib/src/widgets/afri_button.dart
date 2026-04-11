@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../extensions.dart';
+import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/motion_tokens.dart';
 import '../tokens/shape_tokens.dart';
@@ -132,7 +133,7 @@ class _AfriButtonState extends State<AfriButton>
       case AfriButtonVariant.outline:
         bg = Colors.transparent;
         fg = colors.primaryText;
-        border = Border.all(color: colors.border);
+        border = BorderTokens.all(color: colors.border, opacity: 0.72);
       case AfriButtonVariant.ghost:
         bg = Colors.transparent;
         fg = colors.secondaryText;

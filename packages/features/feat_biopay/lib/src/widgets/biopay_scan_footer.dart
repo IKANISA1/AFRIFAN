@@ -1,7 +1,7 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
-/// Renders the footer for the BioPay Scan Screen, primarily handling 
+/// Renders the footer for the BioPay Scan Screen, primarily handling
 /// error states and manual camera initialization triggers.
 class BiopayScanFooter extends StatelessWidget {
   const BiopayScanFooter({

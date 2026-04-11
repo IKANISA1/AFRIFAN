@@ -60,7 +60,7 @@ export default async function ShopPage() {
 
       {featuredProduct ? (
         <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-          <article className="glass-panel card-interactive grid overflow-hidden rounded-[34px] border border-border-soft lg:grid-cols-[0.95fr_1.05fr]">
+          <article className="glass-panel card-interactive grid overflow-hidden rounded-[34px] lg:grid-cols-[0.95fr_1.05fr]">
             <div className="img-zoom relative min-h-[18rem]">
               <Image
                 src={featuredProduct.imageUrl ?? "/media/stadium-hero.jpg"}

@@ -1,7 +1,7 @@
-/// AFRICLUB Core Theme — Kinetic Football Authority Design System
+/// AFRICLUB Core Theme — Tactile Monolith Design System
 ///
-/// "The Stadium Pulse" — a cinematic, editorial sports UI engine
-/// built on Glass-on-Pulse layering: Glassmorphism precision + Claymorphic tactility.
+/// Shared mobile design-system source of truth for Flutter surfaces, tokens,
+/// and primitives.
 library;
 
 // ── Configuration ──
@@ -12,6 +12,7 @@ export 'src/extensions.dart';
 export 'src/runtime_branding.dart';
 // ── Tokens ──
 export 'src/tokens/afri_semantic_colors.dart';
+export 'src/tokens/border_tokens.dart';
 export 'src/tokens/blur_tokens.dart';
 export 'src/tokens/color_tokens.dart';
 export 'src/tokens/motion_tokens.dart';

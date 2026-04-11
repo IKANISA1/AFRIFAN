@@ -65,10 +65,7 @@ class _CmsContentManagerScreenState
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: ColorTokens.surfaceContainer,
-        title: Text(
-          'NEW ARTICLE',
-          style: TypographyTokens.titleLarge(),
-        ),
+        title: Text('NEW ARTICLE', style: TypographyTokens.titleLarge()),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -117,10 +114,7 @@ class _CmsContentManagerScreenState
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(
-          'CONTENT MANAGER',
-          style: TypographyTokens.titleLarge(),
-        ),
+        title: Text('CONTENT MANAGER', style: TypographyTokens.titleLarge()),
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back_rounded),
@@ -215,7 +209,9 @@ class _ArticleCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   title.toUpperCase(),
-                  style: TypographyTokens.titleLarge().copyWith(color: ColorTokens.onSurface),
+                  style: TypographyTokens.titleLarge().copyWith(
+                    color: ColorTokens.onSurface,
+                  ),
                 ),
               ),
               Container(

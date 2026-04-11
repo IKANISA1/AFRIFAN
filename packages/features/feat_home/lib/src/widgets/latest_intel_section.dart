@@ -3,7 +3,6 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../repositories/home_content_repository.dart';
 
@@ -67,7 +66,7 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
           ),
           child: Text(
             'LATEST INTEL',
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: ColorTokens.onSurface,
@@ -106,16 +105,13 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
         );
       case LatestIntelStatus.empty:
         return const Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: SpacingTokens.spacing6,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: SpacingTokens.spacing6),
           child: GlassCard(
             animate: false,
             child: AfriEmptyView(
               compact: true,
               title: 'NO INTEL YET',
-              message:
-                  'Club updates will appear when published.',
+              message: 'Club updates will appear when published.',
               icon: Icons.article_outlined,
             ),
           ),
@@ -179,12 +175,9 @@ class _IntelCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: ColorTokens.glassFill,
               borderRadius: ShapeTokens.cardRadius,
-              border: Border.all(
-                color: state.isFocused
-                    ? primaryColor.withValues(alpha: 0.70)
-                    : ColorTokens.ghostBorder,
-                width: state.isFocused ? 1.2 : 0.5,
-              ),
+              border: state.isFocused
+                  ? BorderTokens.focusAll(color: primaryColor, opacity: 0.70)
+                  : BorderTokens.ghost(),
               boxShadow: state.isFocused || state.isHovered
                   ? [
                       BoxShadow(
@@ -231,7 +224,7 @@ class _IntelCard extends StatelessWidget {
                           title,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.barlowCondensed(
+                          style: TypographyTokens.monolithFont(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
                             color: ColorTokens.onSurface,
@@ -244,7 +237,7 @@ class _IntelCard extends StatelessWidget {
                           subtitle,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.inter(
+                          style: TypographyTokens.editorialFont(
                             fontSize: 15,
                             fontWeight: FontWeight.w400,
                             color: ColorTokens.onSurfaceVariant,
@@ -303,7 +296,7 @@ class _IntelCardSkeleton extends StatelessWidget {
           decoration: BoxDecoration(
             color: ColorTokens.glassFill,
             borderRadius: ShapeTokens.cardRadius,
-            border: Border.all(color: ColorTokens.ghostBorder, width: 0.5),
+            border: BorderTokens.ghost(),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

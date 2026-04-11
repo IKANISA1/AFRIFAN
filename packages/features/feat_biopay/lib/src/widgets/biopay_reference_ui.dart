@@ -1,7 +1,7 @@
+import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 const biopayReferenceBackground = Color(0xFFFFFFFF);
 const biopayReferencePanel = Color(0xFFF4F7FB);
@@ -20,7 +20,7 @@ TextStyle biopayReferenceText({
   double? height,
   double? letterSpacing,
 }) {
-  return GoogleFonts.inter(
+  return TypographyTokens.editorialFont(
     fontSize: fontSize,
     fontWeight: fontWeight,
     color: color,
@@ -466,24 +466,44 @@ class BiopayReferenceHomeTile extends StatelessWidget {
         HapticFeedback.lightImpact();
         onTap();
       },
-      child: Container(
-        decoration: biopayReferencePanelDecoration(radius: 34),
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: color, size: 48),
-            const SizedBox(height: 24),
-            Text(
-              label,
-              style: biopayReferenceText(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-              ),
-              textAlign: TextAlign.center,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final compact =
+              constraints.maxWidth < 124 || constraints.maxHeight < 132;
+          final padding = compact ? 18.0 : 24.0;
+          final iconSize = compact ? 40.0 : 48.0;
+          final gap = compact ? 14.0 : 24.0;
+          final labelHeight = compact ? 22.0 : 28.0;
+          final fontSize = compact ? 17.0 : 20.0;
+
+          return Container(
+            decoration: biopayReferencePanelDecoration(radius: 34),
+            padding: EdgeInsets.all(padding),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, color: color, size: iconSize),
+                SizedBox(height: gap),
+                SizedBox(
+                  height: labelHeight,
+                  child: Center(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        label,
+                        style: biopayReferenceText(
+                          fontSize: fontSize,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -508,7 +528,7 @@ class BiopayReferenceStatusPill extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+        border: BorderTokens.all(color: Colors.white, opacity: 0.12),
       ),
       child: Text(
         label,

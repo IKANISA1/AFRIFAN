@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/motion_tokens.dart';
 import '../tokens/shape_tokens.dart';
@@ -222,7 +223,7 @@ class _AfriScannerShellState extends State<AfriScannerShell>
                   decoration: BoxDecoration(
                     color: ColorTokens.background.withValues(alpha: 0.66),
                     borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
-                    border: Border.all(color: ColorTokens.ghostBorder),
+                    border: BorderTokens.ghost(),
                   ),
                   child: Text(
                     widget.helperText,
@@ -276,7 +277,11 @@ class _FloatingStatusChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: ColorTokens.background.withValues(alpha: 0.72),
           borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
-          border: Border.all(color: color.withValues(alpha: 0.35), width: 1.5),
+          border: BorderTokens.all(
+            color: color,
+            width: BorderTokens.strong,
+            opacity: 0.35,
+          ),
           boxShadow: [
             BoxShadow(
               color: color.withValues(alpha: 0.15),
@@ -382,7 +387,7 @@ class _CapturedDot extends StatelessWidget {
             : (isCurrent
                   ? color.withValues(alpha: 0.15)
                   : ColorTokens.glassFill),
-        border: Border.all(
+        border: BorderTokens.all(
           color: isFilled
               ? ColorTokens.success
               : (isCurrent
@@ -446,7 +451,7 @@ class _PrivacyBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: ColorTokens.glassFill,
         borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
-        border: Border.all(color: ColorTokens.ghostBorder),
+        border: BorderTokens.ghost(),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

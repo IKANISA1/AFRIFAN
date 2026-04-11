@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../extensions.dart';
+import '../tokens/border_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_button.dart';
@@ -171,7 +172,7 @@ class AfriStateView extends StatelessWidget {
       decoration: BoxDecoration(
         color: _backgroundColor(colors),
         borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
-        border: Border.all(
+        border: BorderTokens.all(
           color: accentColor.withValues(
             alpha: tone == AfriStateTone.empty ? 0.2 : 0.28,
           ),

@@ -1,6 +1,5 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Group card — glassmorphic tile showing group name, progress, members.
 class GroupCard extends StatelessWidget {
@@ -45,7 +44,7 @@ class GroupCard extends StatelessWidget {
                   children: [
                     Text(
                       name.toUpperCase(),
-                      style: GoogleFonts.barlowCondensed(
+                      style: TypographyTokens.monolithFont(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         color: ColorTokens.onSurface,
@@ -56,7 +55,7 @@ class GroupCard extends StatelessWidget {
                     ),
                     Text(
                       '$memberCount members',
-                      style: GoogleFonts.inter(
+                      style: TypographyTokens.editorialFont(
                         fontSize: 15,
                         color: ColorTokens.onSurfaceVariant,
                       ),
@@ -86,7 +85,7 @@ class GroupCard extends StatelessWidget {
             const SizedBox(height: SpacingTokens.spacing1),
             Text(
               '${(progress * 100).toStringAsFixed(0)}% of goal',
-              style: GoogleFonts.inter(
+              style: TypographyTokens.editorialFont(
                 fontSize: 15,
                 color: ColorTokens.onSurfaceVariant,
               ),

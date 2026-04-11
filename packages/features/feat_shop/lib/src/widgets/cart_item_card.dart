@@ -1,7 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// A single cart item card showing product name, variant, quantity controls,
 /// and price.
@@ -50,7 +49,7 @@ class CartItemCard extends StatelessWidget {
               children: [
                 Text(
                   item.product.name.toUpperCase(),
-                  style: GoogleFonts.barlowCondensed(
+                  style: TypographyTokens.monolithFont(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
                     color: ColorTokens.onSurface,
@@ -84,7 +83,7 @@ class CartItemCard extends StatelessWidget {
           ),
           Text(
             priceLabel,
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 24,
               fontWeight: FontWeight.w800,
               color: ColorTokens.onSurface,

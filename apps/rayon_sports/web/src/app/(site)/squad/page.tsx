@@ -66,7 +66,7 @@ export default async function SquadPage() {
           {squad.map((player) => (
             <article
               key={player.id}
-              className="glass-panel card-interactive rounded-[30px] border border-border-soft p-6"
+              className="glass-panel card-interactive rounded-[30px] p-6"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>

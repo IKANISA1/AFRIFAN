@@ -60,3 +60,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mocktail: ^1.0.3
+
+flutter:
+  assets:
+    - test/fonts/

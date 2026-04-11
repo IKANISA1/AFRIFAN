@@ -185,10 +185,8 @@ class _PushNotificationsScreenState
         scheduledAt == null
             ? 'Notification queued for scheduled delivery.'
             : 'Notification scheduled for ${DateFormat('dd MMM yyyy • HH:mm').format(scheduledAt.toLocal())}.',
-      'sent' =>
-        'Sent to $requested supporters. $sent delivered.',
-      'partial' =>
-        'Partial: $sent delivered, $failed failed.',
+      'sent' => 'Sent to $requested supporters. $sent delivered.',
+      'partial' => 'Partial: $sent delivered, $failed failed.',
       'failed' =>
         errors != null && errors.isNotEmpty
             ? errors.first
@@ -268,11 +266,7 @@ class _PushNotificationsScreenState
       await Clipboard.setData(ClipboardData(text: payload));
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Payload copied to clipboard.',
-          ),
-        ),
+        const SnackBar(content: Text('Payload copied to clipboard.')),
       );
     } finally {
       if (mounted) {

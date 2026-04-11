@@ -78,124 +78,205 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorTokens.background,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: _slides.length,
-                onPageChanged: (idx) {
-                  setState(() => _currentPage = idx);
-                },
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: SpacingTokens.spacing10,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Placeholder for slide illustration
-                        ClayCard(
-                          height: 200,
-                          width: double.infinity,
-                          backgroundColor: ColorTokens.surface,
-                          child: Center(
-                            child: Icon(
-                              index == 0
-                                  ? Icons.stadium_outlined
-                                  : (index == 1
-                                        ? Icons.security_outlined
-                                        : Icons
-                                              .account_balance_wallet_outlined),
-                              size: 80,
-                              color: ColorTokens.clubPrimary,
+      backgroundColor: Colors.transparent,
+      body: GradientBackground(
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: _slides.length,
+                  onPageChanged: (idx) {
+                    setState(() => _currentPage = idx);
+                  },
+                  itemBuilder: (context, index) => _buildSlide(context, index),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  SpacingTokens.spacing6,
+                  0,
+                  SpacingTokens.spacing6,
+                  SpacingTokens.spacing6,
+                ),
+                child: GlassCard(
+                  animate: false,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: SpacingTokens.spacing6,
+                    vertical: SpacingTokens.spacing5,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: List.generate(
+                            _slides.length,
+                            (index) => AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              margin: const EdgeInsets.only(right: 8),
+                              height: 6,
+                              width: _currentPage == index ? 28 : 8,
+                              decoration: BoxDecoration(
+                                color: _currentPage == index
+                                    ? ColorTokens.primaryContainer
+                                    : ColorTokens.ghostBorder,
+                                borderRadius: BorderRadius.circular(
+                                  ShapeTokens.radiusFull,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: SpacingTokens.spacing10),
-                        Text(
-                          _slides[index]['title']!,
-                          style: TypographyTokens.headlineLarge(),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing4),
-                        Text(
-                          _slides[index]['body']!,
-                          style: TypographyTokens.bodyLarge().copyWith(
-                            color: ColorTokens.onSurfaceVariant,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: List.generate(
-                      _slides.length,
-                      (index) => AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        margin: const EdgeInsets.only(right: 8),
-                        height: 6,
-                        width: _currentPage == index ? 24 : 6,
-                        decoration: BoxDecoration(
-                          color: _currentPage == index
-                              ? ColorTokens.clubPrimary
-                              : ColorTokens.outlineVariant,
-                          borderRadius: BorderRadius.circular(3),
-                        ),
                       ),
-                    ),
-                  ),
-                  _currentPage == _slides.length - 1
-                      ? _isSubmitting
-                            ? SizedBox(
-                                width: 150,
-                                height: 48,
-                                child: Center(
-                                  child: SizedBox(
-                                    height: 24,
-                                    width: 24,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: ColorTokens.clubPrimary,
-                                    ),
+                      SizedBox(
+                        width: 180,
+                        child: _isSubmitting
+                            ? const Center(
+                                child: SizedBox(
+                                  height: 24,
+                                  width: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
                                   ),
                                 ),
                               )
                             : ClaymorphicButton(
-                                label: 'GET STARTED',
-                                onPressed: _handleGetStarted,
-                              )
-                      : TextButton(
-                          onPressed: () {
-                            _pageController.nextPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          },
-                          child: Text(
-                            'NEXT',
-                            style: TypographyTokens.labelLarge().copyWith(
-                              color: ColorTokens.onSurface,
-                            ),
-                          ),
-                        ),
-                ],
+                                label: _currentPage == _slides.length - 1
+                                    ? 'GET STARTED'
+                                    : 'NEXT',
+                                width: double.infinity,
+                                onPressed: _currentPage == _slides.length - 1
+                                    ? _handleGetStarted
+                                    : () {
+                                        _pageController.nextPage(
+                                          duration: const Duration(
+                                            milliseconds: 300,
+                                          ),
+                                          curve: Curves.easeInOut,
+                                        );
+                                      },
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSlide(BuildContext context, int index) {
+    final icon = switch (index) {
+      0 => Icons.stadium_outlined,
+      1 => Icons.workspace_premium_outlined,
+      _ => Icons.account_balance_wallet_outlined,
+    };
+    final accent = index == 1 ? ColorTokens.clubAccent : ColorTokens.primary;
+    final pageNumber = '${index + 1}'.padLeft(2, '0');
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        SpacingTokens.spacing6,
+        SpacingTokens.spacing4,
+        SpacingTokens.spacing6,
+        SpacingTokens.spacing8,
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            child: Text(
+              pageNumber,
+              style: TypographyTokens.displayLarge(
+                ColorTokens.primaryContainer.withValues(alpha: 0.14),
               ),
             ),
-          ],
-        ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Transform.translate(
+                offset: const Offset(0, -8),
+                child: GlassCard(
+                  height: 280,
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(SpacingTokens.spacing8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: SpacingTokens.spacing4,
+                          vertical: SpacingTokens.spacing2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: ColorTokens.secondaryContainer,
+                          borderRadius: ShapeTokens.chipRadius,
+                        ),
+                        child: Text(
+                          'OFFICIAL SUPPORTER OS',
+                          style: TypographyTokens.labelSmall().copyWith(
+                            color: ColorTokens.onSurface,
+                            letterSpacing: 1.1,
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          width: 124,
+                          height: 124,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: ColorTokens.heroGradient(
+                              from: accent,
+                              to: ColorTokens.primaryContainer,
+                            ),
+                            boxShadow: [
+                              ...AfriShadows.primaryGlow(
+                                ColorTokens.primaryContainer,
+                              ),
+                            ],
+                          ),
+                          child: Icon(icon, size: 52, color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Transform.translate(
+                offset: const Offset(0, -28),
+                child: Text(
+                  _slides[index]['title']!,
+                  style: TypographyTokens.displaySmall().copyWith(
+                    fontSize: 40,
+                    height: 0.95,
+                  ),
+                ),
+              ),
+              Transform.translate(
+                offset: const Offset(0, -12),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 320),
+                  child: Text(
+                    _slides[index]['body']!,
+                    style: TypographyTokens.bodyLarge().copyWith(
+                      color: ColorTokens.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

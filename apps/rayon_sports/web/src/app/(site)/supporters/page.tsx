@@ -66,7 +66,7 @@ export default function SupportersPage() {
         ].map(({ icon: Icon, title, copy }) => (
           <article
             key={title}
-            className="glass-panel rounded-[30px] border border-border-soft p-6"
+            className="glass-panel rounded-[30px] p-6"
           >
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-club-primary/15 text-club-accent">
               <Icon size={20} />

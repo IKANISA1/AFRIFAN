@@ -1,6 +1,5 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// §2.4 LOCKED — no hardcoded tier names or perk descriptions.
 /// All display values are passed as parameters from the caller (DB-sourced).
@@ -22,7 +21,7 @@ Future<void> showXpLevelUpModal(
             children: [
               Text(
                 'LEVEL UP!',
-                style: GoogleFonts.barlowCondensed(
+                style: TypographyTokens.monolithFont(
                   fontSize: 42,
                   fontWeight: FontWeight.w900,
                   color: ColorTokens.onSurface,
@@ -31,7 +30,7 @@ Future<void> showXpLevelUpModal(
               const SizedBox(height: SpacingTokens.spacing3),
               Text(
                 tierName.toUpperCase(),
-                style: GoogleFonts.barlowCondensed(
+                style: TypographyTokens.monolithFont(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
                   color: ColorTokens.clubAccent,
@@ -91,7 +90,7 @@ Future<void> showBadgeEarnedModal(
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
                 badgeName,
-                style: GoogleFonts.barlowCondensed(
+                style: TypographyTokens.monolithFont(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
                   color: ColorTokens.onSurface,

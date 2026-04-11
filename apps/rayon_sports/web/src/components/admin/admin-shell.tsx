@@ -20,6 +20,7 @@ import {
   ShieldCheck,
   ShoppingBag,
   Smartphone,
+  Sparkles,
   Trophy,
   Users,
   X,
@@ -30,6 +31,7 @@ import { siteConfig } from "@/lib/config";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { formatAdminRoleLabel } from "@/lib/data/admin/access";
 import { cn } from "@/lib/utils";
+import { ui } from "@/design-system";
 
 function AdminAuthCard() {
   const {
@@ -80,7 +82,7 @@ function AdminAuthCard() {
 
   return (
     <div className="page-shell py-8 sm:py-14">
-      <div className="glass-panel mx-auto grid max-w-xl gap-6 rounded-[32px] p-6 sm:p-8">
+      <div className={`${ui.panel} mx-auto grid max-w-xl gap-6 rounded-[32px] p-6 sm:p-8`}>
         <div className="flex flex-col items-center text-center space-y-4">
           <Image
             src="/icons/icon-192x192.png"
@@ -90,16 +92,16 @@ function AdminAuthCard() {
             priority
           />
           <div className="space-y-1">
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
+            <p className={ui.kicker}>
               Admin workspace
             </p>
-            <h1 className="font-display text-4xl font-bold uppercase leading-none">
+            <h1 className="font-display text-4xl font-bold uppercase leading-none tracking-[-0.05em]">
               Sign in
             </h1>
           </div>
         </div>
 
-        <div className="grid gap-4 rounded-[24px] border border-border-soft bg-white/5 p-5">
+        <div className={`${ui.panelInset} grid gap-4 rounded-[24px] p-5`}>
           <div className="flex items-center gap-3">
             <div className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#25d366]/30 bg-[#25d366]/12 text-[#25d366]">
               <MessageCircle className="h-4 w-4" />
@@ -126,13 +128,13 @@ function AdminAuthCard() {
                   onChange={(event) => setPhone(event.target.value)}
                   placeholder="+250 7xx xxx xxx"
                   autoComplete="tel"
-                  className="dashboard-input"
+                  className={ui.input}
                 />
               </label>
               <button
                 type="submit"
                 disabled={loading}
-                className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
+                className={`${ui.buttonPrimary} disabled:opacity-60`}
               >
                 {loading ? "Sending\u2026" : "Send code"}
               </button>
@@ -162,13 +164,13 @@ function AdminAuthCard() {
                   pattern="[0-9]{6}"
                   autoComplete="one-time-code"
                   placeholder="000000"
-                  className="dashboard-input text-center tracking-[0.5em] text-lg"
+                  className={`${ui.input} text-center tracking-[0.5em] text-lg`}
                 />
               </label>
               <button
                 type="submit"
                 disabled={loading || code.length < 6}
-                className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
+                className={`${ui.buttonPrimary} disabled:opacity-60`}
               >
                 {loading ? "Verifying\u2026" : "Verify"}
               </button>
@@ -179,7 +181,7 @@ function AdminAuthCard() {
                   setStatus(null);
                   resetPendingPhone();
                 }}
-                className="rounded-full border border-border-soft px-5 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-white/6"
+                className={ui.buttonSecondary}
               >
                 Use a different number
               </button>
@@ -209,15 +211,15 @@ function AdminUnauthorizedCard() {
 
   return (
     <div className="page-shell py-8 sm:py-14">
-      <div className="glass-panel mx-auto grid max-w-3xl gap-5 rounded-[32px] p-6 sm:p-8">
-        <div className="inline-flex h-14 w-14 items-center justify-center rounded-full border border-border-soft bg-white/6">
+      <div className={`${ui.panel} mx-auto grid max-w-3xl gap-5 rounded-[32px] p-6 sm:p-8`}>
+        <div className={`${ui.iconButton} h-14 w-14 text-club-accent`}>
           <ShieldCheck className="h-6 w-6 text-club-accent" />
         </div>
         <div className="space-y-3">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
+          <p className={ui.kicker}>
             Access blocked
           </p>
-          <h1 className="font-display text-4xl font-bold uppercase leading-none sm:text-5xl">
+          <h1 className="font-display text-4xl font-bold uppercase leading-none tracking-[-0.05em] sm:text-5xl">
             Access restricted.
           </h1>
           <p className="text-base leading-7 text-slate-300">
@@ -231,13 +233,13 @@ function AdminUnauthorizedCard() {
           <button
             type="button"
             onClick={() => signOut().catch(() => {})}
-            className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
+            className={ui.buttonPrimary}
           >
             Sign out
           </button>
           <Link
             href={siteConfig.siteUrl}
-            className="rounded-full border border-border-soft px-5 py-3 font-semibold text-slate-100 transition hover:bg-white/6"
+            className={ui.buttonSecondary}
           >
             Return to website
           </Link>
@@ -254,7 +256,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   if (loading) {
     return (
       <div className="page-shell py-8 sm:py-14">
-        <div className="glass-panel mx-auto max-w-md rounded-[32px] p-8">
+        <div className={`${ui.panel} mx-auto max-w-md rounded-[32px] p-8`}>
           <div className="flex flex-col items-center gap-4 text-center">
             <Image
               src="/icons/icon-192x192.png"
@@ -264,7 +266,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
               className="animate-pulse"
               priority
             />
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
+            <p className={ui.kicker}>
               Admin workspace
             </p>
             <p className="text-lg text-slate-200">
@@ -299,6 +301,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const navIcons: Record<string, typeof LayoutDashboard> = {
     "/admin": LayoutDashboard,
     "/admin/settings": Settings,
+    "/admin/fantasy": Sparkles,
     "/admin/cms": FileText,
     "/admin/matches": Trophy,
     "/admin/squad": Users,
@@ -317,14 +320,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
       {/* Skip to main content link for keyboard nav */}
       <a
         href="#admin-main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-club-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+        className={`sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 ${ui.buttonPrimary} focus:px-4 focus:py-2 focus:text-sm`}
       >
         Skip to main content
       </a>
       <div className="grid gap-6 xl:grid-cols-[300px_minmax(0,1fr)]">
-        <aside className="glass-panel hidden h-fit rounded-[32px] p-5 xl:block">
+        <aside className={`${ui.panel} hidden h-fit rounded-[32px] p-5 xl:block`}>
           {/* Crest + branding */}
-          <div className="flex items-center gap-4 border-b border-border-soft pb-5">
+          <div className="flex items-center gap-4 pb-5">
             <Image
               src="/icons/icon-192x192.png"
               alt={`${siteConfig.shortTitle} emblem`}
@@ -333,16 +336,16 @@ export function AdminShell({ children }: { children: ReactNode }) {
               className="flex-shrink-0"
             />
             <div>
-              <p className="font-display text-2xl font-bold uppercase leading-none">
+              <p className="font-display text-2xl font-bold uppercase leading-none tracking-[-0.05em]">
                 Club admin
               </p>
             </div>
           </div>
 
           {/* Session card */}
-          <div className="mt-4 rounded-[22px] border border-border-soft bg-white/[0.03] p-4 text-sm text-slate-200">
+          <div className={`${ui.panelInset} mt-4 rounded-[22px] p-4 text-sm text-slate-200`}>
             <div className="flex items-center justify-between gap-2">
-              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-club-accent">
+              <p className={ui.kicker}>
                 Signed in
               </p>
               <span className={cn("rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]", roleColor)}>
@@ -395,7 +398,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           <button
             type="button"
             onClick={() => signOut().catch(() => {})}
-            className="mt-5 w-full rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/6 hover:border-rose-400/30 hover:text-rose-200"
+            className={`${ui.buttonSecondary} mt-5 w-full hover:border-rose-400/30 hover:text-rose-200`}
           >
             Sign out
           </button>
@@ -436,10 +439,10 @@ function AdminMobileNav({ adminNavigation, navIcons, pathname, onSignOut }: Admi
   return (
     <>
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-border-soft bg-surface-strong/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl xl:hidden"
+        className={`fixed inset-x-0 bottom-0 z-30 pb-[env(safe-area-inset-bottom)] xl:hidden ${ui.shellBar}`}
         aria-label="Admin mobile navigation"
       >
-        <div className="mx-auto flex max-w-md items-stretch justify-around">
+        <div className="mx-auto flex max-w-md items-stretch justify-around px-3 pt-2">
           {primaryItems.map((item) => {
             const active =
               pathname === item.href ||
@@ -452,10 +455,8 @@ function AdminMobileNav({ adminNavigation, navIcons, pathname, onSignOut }: Admi
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "relative flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
-                  active
-                    ? "text-club-accent"
-                    : "text-slate-400 active:text-slate-200",
+                  active ? ui.navTabActive : ui.navTab,
+                  !active && "active:text-slate-200",
                 )}
               >
                 <IconComponent
@@ -463,9 +464,9 @@ function AdminMobileNav({ adminNavigation, navIcons, pathname, onSignOut }: Admi
                   strokeWidth={active ? 2.2 : 1.6}
                   className="transition-transform active:scale-90"
                 />
-                <span className="leading-none">{item.label}</span>
+                <span className={cn("leading-none", active ? ui.kicker : "text-[11px] uppercase tracking-[0.22em]")}>{item.label}</span>
                 {active ? (
-                  <span className="absolute top-0 left-1/2 h-[2.5px] w-5 -translate-x-1/2 rounded-full bg-club-accent" />
+                  <span className={ui.navIndicator} />
                 ) : null}
               </Link>
             );
@@ -476,8 +477,8 @@ function AdminMobileNav({ adminNavigation, navIcons, pathname, onSignOut }: Admi
             type="button"
             onClick={() => setSheetOpen(true)}
             className={cn(
-              "relative flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
-              sheetOpen ? "text-club-accent" : "text-slate-400 active:text-slate-200",
+              sheetOpen ? ui.navTabActive : ui.navTab,
+              !sheetOpen && "active:text-slate-200",
             )}
             aria-label="Show more admin options"
           >
@@ -497,18 +498,18 @@ function AdminMobileNav({ adminNavigation, navIcons, pathname, onSignOut }: Admi
         >
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className={`absolute inset-0 ${ui.drawerScrim}`}
             onClick={() => setSheetOpen(false)}
             onKeyDown={(event) => event.key === "Escape" && setSheetOpen(false)}
           />
           {/* Sheet */}
-          <div className="absolute inset-x-0 bottom-0 rounded-t-[28px] border-t border-border-soft bg-surface-strong p-5 pb-[calc(env(safe-area-inset-bottom)+1rem)]">
+          <div className={`${ui.panel} absolute inset-x-0 bottom-0 rounded-t-[28px] p-5 pb-[calc(env(safe-area-inset-bottom)+1rem)]`}>
             <div className="flex items-center justify-between pb-4">
-              <p className="font-display text-lg font-bold uppercase text-white">More</p>
+              <p className="font-display text-lg font-bold uppercase tracking-[-0.04em] text-white">More</p>
               <button
                 type="button"
                 onClick={() => setSheetOpen(false)}
-                className="rounded-full p-2 text-slate-300 hover:bg-white/8"
+                className={`${ui.iconButton} h-10 w-10 p-2 text-slate-300`}
                 aria-label="Close"
               >
                 <X size={20} />
@@ -528,10 +529,8 @@ function AdminMobileNav({ adminNavigation, navIcons, pathname, onSignOut }: Admi
                     onClick={() => setSheetOpen(false)}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition",
-                      active
-                        ? "bg-club-primary text-white"
-                        : "text-slate-200 hover:bg-white/8",
+                      "flex items-center gap-3 text-sm",
+                      active ? ui.drawerLinkActive : ui.drawerLink,
                     )}
                   >
                     <IconComponent size={18} className="text-club-accent" />
@@ -546,7 +545,7 @@ function AdminMobileNav({ adminNavigation, navIcons, pathname, onSignOut }: Admi
                 setSheetOpen(false);
                 onSignOut();
               }}
-              className="mt-4 w-full rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-rose-400/30 hover:text-rose-200"
+              className={`${ui.buttonSecondary} mt-4 w-full hover:border-rose-400/30 hover:text-rose-200`}
             >
               Sign out
             </button>

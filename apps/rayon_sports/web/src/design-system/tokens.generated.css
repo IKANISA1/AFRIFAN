@@ -1,0 +1,78 @@
+/* AUTO-GENERATED FILE. DO NOT EDIT.
+ * Source of truth:
+ * - packages/core/core_theme/lib/src/tokens/color_tokens.dart
+ * - packages/core/core_theme/lib/src/tokens/shape_tokens.dart
+ * - packages/core/core_theme/lib/src/tokens/blur_tokens.dart
+ * - packages/core/core_theme/lib/src/tokens/border_tokens.dart
+ */
+
+:root {
+  color-scheme: dark;
+
+  --void: #0d0a27;
+  --background: #0d0a27;
+  --surface-dim: #0d0a27;
+  --surface-container-lowest: #120d30;
+  --surface-container-low: #18123b;
+  --surface-container: #22194a;
+  --surface: #2a2057;
+  --surface-container-high: #322968;
+  --surface-container-highest: #3a307b;
+  --surface-bright: #4a3f93;
+  --surface-variant: rgba(50, 41, 104, 0.18);
+  --surface-strong: rgba(18, 13, 48, 0.88);
+  --surface-card: rgba(34, 25, 74, 0.78);
+  --surface-elevated: rgba(58, 48, 123, 0.88);
+  --surface-hero: rgba(123, 91, 255, 0.08);
+
+  --primary: #7b5bff;
+  --primary-container: #a98dff;
+  --secondary-container: #4a3f93;
+  --outline-variant: rgba(255, 255, 255, 0.12);
+  --outline-ghost: rgba(169, 141, 255, 0.15);
+  --outline-focus: rgba(169, 141, 255, 0.4);
+  --glass-fill: rgba(74, 63, 147, 0.6);
+
+  --foreground: #f8f4ff;
+  --foreground-muted: rgba(201, 192, 232, 0.92);
+  --foreground-soft: rgba(201, 192, 232, 0.72);
+  --foreground-faint: rgba(201, 192, 232, 0.52);
+
+  --border-soft: rgba(169, 141, 255, 0.15);
+  --border-hover: rgba(169, 141, 255, 0.22);
+
+  --club-primary: #7b5bff;
+  --club-primary-light: #a98dff;
+  --club-primary-dark: #5c44c3;
+  --club-primary-glow: rgba(123, 91, 255, 0.34);
+  --club-secondary: #c9c0e8;
+  --club-accent: #f8f4ff;
+  --club-accent-light: #ffffff;
+  --club-ink: #110c2e;
+
+  --success: #52d39f;
+  --warning: #f4c96b;
+  --error: #ff6b8c;
+  --info: #7fb6ff;
+
+  --radius-sm: 18px;
+  --radius-md: 24px;
+  --radius-lg: 32px;
+  --radius-xl: 48px;
+  --radius-pill: 9999px;
+
+  --blur-subtle: 12px;
+  --blur-standard: 20px;
+  --blur-overlay: 28px;
+  --blur-atmospheric: 40px;
+
+  --border-hairline: 0.6px;
+  --border-focus: 1.2px;
+
+  --shadow-standard: 0px 10px 28px -6px rgba(6, 10, 31, 0.24);
+  --shadow-floating: 0px 20px 80px -10px rgba(6, 10, 31, 0.42);
+  --shadow-glass: 0px 20px 80px -10px rgba(6, 10, 31, 0.4);
+  --shadow-primary-glow-token: 0px 10px 36px -6px rgba(123, 91, 255, 0.34);
+  --shadow-clay-highlight: -6px -6px 14px -6px rgba(255, 255, 255, 0.18);
+  --shadow-clay-depth: 10px 12px 20px -8px rgba(6, 10, 31, 0.28);
+}

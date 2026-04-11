@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/typography_tokens.dart';
@@ -49,7 +50,7 @@ class NumericAlias extends StatelessWidget {
           decoration: BoxDecoration(
             color: ColorTokens.glassFill,
             borderRadius: ShapeTokens.aliasPillRadius,
-            border: Border.all(color: ColorTokens.ghostBorder, width: 0.5),
+            border: BorderTokens.ghost(),
           ),
           child: textWidget,
         ),

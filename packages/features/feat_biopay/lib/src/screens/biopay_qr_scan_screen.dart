@@ -1,3 +1,4 @@
+import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -106,7 +107,7 @@ class _BiopayQrScanScreenState extends ConsumerState<BiopayQrScanScreen> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(
+                        border: BorderTokens.all(
                           color: const Color(0xFFFFCD08),
                           width: 3,
                         ),
@@ -158,19 +159,19 @@ class _QrCorner extends StatelessWidget {
             bottomRight: Radius.circular(!isTop && !isLeft ? 18 : 0),
           ),
           border: Border(
-            top: BorderSide(
+            top: BorderTokens.side(
               color: isTop ? const Color(0xFFFFCD08) : Colors.transparent,
               width: 4,
             ),
-            bottom: BorderSide(
+            bottom: BorderTokens.side(
               color: !isTop ? const Color(0xFFFFCD08) : Colors.transparent,
               width: 4,
             ),
-            left: BorderSide(
+            left: BorderTokens.side(
               color: isLeft ? const Color(0xFFFFCD08) : Colors.transparent,
               width: 4,
             ),
-            right: BorderSide(
+            right: BorderTokens.side(
               color: !isLeft ? const Color(0xFFFFCD08) : Colors.transparent,
               width: 4,
             ),

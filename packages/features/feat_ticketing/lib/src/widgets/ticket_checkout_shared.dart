@@ -30,7 +30,7 @@ class SeatTypeCard extends StatelessWidget {
                 ? ColorTokens.clubPrimary.withValues(alpha: 0.1)
                 : Colors.transparent,
             borderRadius: ShapeTokens.cardRadius,
-            border: Border.all(
+            border: BorderTokens.all(
               color: selected ? ColorTokens.clubPrimary : Colors.transparent,
             ),
           ),

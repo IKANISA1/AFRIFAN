@@ -176,7 +176,7 @@ class BiopayBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: tint ?? Colors.white.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        border: BorderTokens.all(color: Colors.white, opacity: 0.08),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

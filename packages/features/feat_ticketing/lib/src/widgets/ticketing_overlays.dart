@@ -1,6 +1,5 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 Future<bool> showTicketPurchaseConfirmSheet(
   BuildContext context, {
@@ -63,7 +62,7 @@ class _TicketPurchaseConfirmSheet extends StatelessWidget {
         const SizedBox(height: SpacingTokens.spacing4),
         Text(
           'CONFIRM PURCHASE',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 26,
             fontWeight: FontWeight.w800,
             color: ColorTokens.onSurface,
@@ -139,7 +138,7 @@ class _SheetRow extends StatelessWidget {
           Text(
             value,
             style: highlighted
-                ? GoogleFonts.barlowCondensed(
+                ? TypographyTokens.monolithFont(
                     fontSize: 28,
                     fontWeight: FontWeight.w800,
                     color: ColorTokens.clubAccent,

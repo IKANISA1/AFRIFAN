@@ -178,6 +178,26 @@ class PushNotificationService {
 
   static bool get _isSupported => !kIsWeb && Firebase.apps.isNotEmpty;
 
+  static Future<void> subscribeToTopic(String topic) async {
+    if (!_isSupported || topic.trim().isEmpty) return;
+
+    try {
+      await FirebaseMessaging.instance.subscribeToTopic(topic.trim());
+    } catch (error) {
+      debugPrint('[Push] Topic subscription failed for $topic: $error');
+    }
+  }
+
+  static Future<void> unsubscribeFromTopic(String topic) async {
+    if (!_isSupported || topic.trim().isEmpty) return;
+
+    try {
+      await FirebaseMessaging.instance.unsubscribeFromTopic(topic.trim());
+    } catch (error) {
+      debugPrint('[Push] Topic unsubscribe failed for $topic: $error');
+    }
+  }
+
   static PushPermissionStatus _mapAuthorizationStatus(
     AuthorizationStatus status,
   ) {

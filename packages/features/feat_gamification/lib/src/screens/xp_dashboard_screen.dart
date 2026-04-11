@@ -3,7 +3,6 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../widgets/badge_grid.dart';
 import '../widgets/xp_arc.dart';
@@ -208,16 +207,13 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_rounded,
-            color: ColorTokens.onSurface,
-          ),
+          icon: Icon(Icons.arrow_back_rounded, color: ColorTokens.onSurface),
           onPressed: () => context.pop(),
           tooltip: 'Back',
         ),
         title: Text(
           'GAMIFICATION',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 18,
             fontWeight: FontWeight.w700,
             color: ColorTokens.onSurface,
@@ -233,216 +229,216 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
           : CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: SpacingTokens.spacing4),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: SpacingTokens.spacing4),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.spacing6,
+                    ),
+                    child: GlassCard(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          XpArc(
+                            currentXp: _currentXp,
+                            maxXp: _nextTierThreshold(_currentXp),
+                            tier: _tier,
+                            nextTier: _nextTier,
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _StatColumn(
+                                value: '+$_weeklyXp',
+                                label: 'THIS WEEK',
+                                color: ColorTokens.success,
+                              ),
+                              _StatColumn(
+                                value:
+                                    '${_achievements.where((a) => a['is_earned'] == true).length}',
+                                label: 'BADGES',
+                                color: primary,
+                              ),
+                              _StatColumn(
+                                value: _fanRank == 0 ? '--' : '#$_fanRank',
+                                label: 'RANK',
+                                color: ColorTokens.warning,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing2),
+                        ],
+                      ),
+                    ),
                   ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      SpacingTokens.spacing6,
+                      SpacingTokens.spacing4,
+                      SpacingTokens.spacing6,
+                      0,
+                    ),
+                    child: Wrap(
+                      spacing: SpacingTokens.spacing2,
+                      runSpacing: SpacingTokens.spacing2,
+                      children: [
+                        _RouteChip(
+                          label: 'CHALLENGES',
+                          onTap: () => context.push('/xp/challenges'),
+                        ),
+                        _RouteChip(
+                          label: 'LEADERBOARD',
+                          onTap: () => context.push('/xp/leaderboard'),
+                        ),
+                        _RouteChip(
+                          label: 'BADGES',
+                          onTap: () => context.push('/xp/badges'),
+                        ),
+                        _RouteChip(
+                          label: 'STREAK',
+                          onTap: () => context.push('/xp/streak'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: SpacingTokens.spacing8),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.spacing6,
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          'ACHIEVEMENTS',
+                          style: TypographyTokens.monolithFont(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: ColorTokens.onSurfaceVariant,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          '${_achievements.where((a) => a['is_earned'] == true).length} EARNED',
+                          style: TypographyTokens.editorialFont(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: SpacingTokens.spacing4),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.spacing6,
+                    ),
+                    child: BadgeGrid(achievements: _achievements),
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: SpacingTokens.spacing8),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.spacing6,
+                    ),
+                    child: Text(
+                      'LEADERBOARD',
+                      style: TypographyTokens.monolithFont(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: ColorTokens.onSurfaceVariant,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: SpacingTokens.spacing4),
+                ),
+                if (_leaderboard.isEmpty)
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: SpacingTokens.spacing6,
                       ),
                       child: GlassCard(
-                        child: Column(
-                          children: [
-                            const SizedBox(height: SpacingTokens.spacing4),
-                            XpArc(
-                              currentXp: _currentXp,
-                              maxXp: _nextTierThreshold(_currentXp),
-                              tier: _tier,
-                              nextTier: _nextTier,
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing4),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                _StatColumn(
-                                  value: '+$_weeklyXp',
-                                  label: 'THIS WEEK',
-                                  color: ColorTokens.success,
-                                ),
-                                _StatColumn(
-                                  value:
-                                      '${_achievements.where((a) => a['is_earned'] == true).length}',
-                                  label: 'BADGES',
-                                  color: primary,
-                                ),
-                                _StatColumn(
-                                  value: _fanRank == 0 ? '--' : '#$_fanRank',
-                                  label: 'RANK',
-                                  color: ColorTokens.warning,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing2),
-                          ],
+                        animate: false,
+                        child: Text(
+                          'No supporter rankings are available yet.',
+                          style: TypographyTokens.bodyMedium(),
                         ),
                       ),
                     ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        SpacingTokens.spacing6,
-                        SpacingTokens.spacing4,
-                        SpacingTokens.spacing6,
-                        0,
-                      ),
-                      child: Wrap(
-                        spacing: SpacingTokens.spacing2,
-                        runSpacing: SpacingTokens.spacing2,
-                        children: [
-                          _RouteChip(
-                            label: 'CHALLENGES',
-                            onTap: () => context.push('/xp/challenges'),
-                          ),
-                          _RouteChip(
-                            label: 'LEADERBOARD',
-                            onTap: () => context.push('/xp/leaderboard'),
-                          ),
-                          _RouteChip(
-                            label: 'BADGES',
-                            onTap: () => context.push('/xp/badges'),
-                          ),
-                          _RouteChip(
-                            label: 'STREAK',
-                            onTap: () => context.push('/xp/streak'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: SpacingTokens.spacing8),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: SpacingTokens.spacing6,
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            'ACHIEVEMENTS',
-                            style: GoogleFonts.barlowCondensed(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: ColorTokens.onSurfaceVariant,
-                              letterSpacing: 1.5,
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            '${_achievements.where((a) => a['is_earned'] == true).length} EARNED',
-                            style: GoogleFonts.inter(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              color: primary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: SpacingTokens.spacing4),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: SpacingTokens.spacing6,
-                      ),
-                      child: BadgeGrid(achievements: _achievements),
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: SpacingTokens.spacing8),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: SpacingTokens.spacing6,
-                      ),
-                      child: Text(
-                        'LEADERBOARD',
-                        style: GoogleFonts.barlowCondensed(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: ColorTokens.onSurfaceVariant,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: SpacingTokens.spacing4),
-                  ),
-                  if (_leaderboard.isEmpty)
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: SpacingTokens.spacing6,
+                  )
+                else
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final entry = _leaderboard[index];
+                      return Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          SpacingTokens.spacing6,
+                          0,
+                          SpacingTokens.spacing6,
+                          index == _leaderboard.length - 1
+                              ? SpacingTokens.spacing20
+                              : SpacingTokens.spacing2,
                         ),
                         child: GlassCard(
                           animate: false,
-                          child: Text(
-                            'No supporter rankings are available yet.',
-                            style: TypographyTokens.bodyMedium(),
+                          child: Row(
+                            children: [
+                              Text(
+                                '#${(index + 1).toString().padLeft(2, '0')}',
+                                style: TypographyTokens.monolithFont(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800,
+                                  color: index == 0
+                                      ? primary
+                                      : ColorTokens.onSurface,
+                                ),
+                              ),
+                              const SizedBox(width: SpacingTokens.spacing4),
+                              Expanded(
+                                child: Text(
+                                  '#${entry['alias']}',
+                                  style: TypographyTokens.numericAlias(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                '${entry['points']} XP',
+                                style: TypographyTokens.monolithFont(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800,
+                                  color: ColorTokens.clubAccent,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    )
-                  else
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final entry = _leaderboard[index];
-                        return Padding(
-                          padding: EdgeInsets.fromLTRB(
-                            SpacingTokens.spacing6,
-                            0,
-                            SpacingTokens.spacing6,
-                            index == _leaderboard.length - 1
-                                ? SpacingTokens.spacing20
-                                : SpacingTokens.spacing2,
-                          ),
-                          child: GlassCard(
-                            animate: false,
-                            child: Row(
-                              children: [
-                                Text(
-                                  '#${(index + 1).toString().padLeft(2, '0')}',
-                                  style: GoogleFonts.barlowCondensed(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w800,
-                                    color: index == 0
-                                        ? primary
-                                        : ColorTokens.onSurface,
-                                  ),
-                                ),
-                                const SizedBox(width: SpacingTokens.spacing4),
-                                Expanded(
-                                  child: Text(
-                                    '#${entry['alias']}',
-                                    style: TypographyTokens.numericAlias(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  '${entry['points']} XP',
-                                  style: GoogleFonts.barlowCondensed(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w800,
-                                    color: ColorTokens.clubAccent,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }, childCount: _leaderboard.length),
-                    ),
-                ],
-              ),
+                      );
+                    }, childCount: _leaderboard.length),
+                  ),
+              ],
+            ),
     );
   }
 }
@@ -464,7 +460,7 @@ class _StatColumn extends StatelessWidget {
       children: [
         Text(
           value,
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 24,
             fontWeight: FontWeight.w800,
             color: color,
@@ -473,7 +469,7 @@ class _StatColumn extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           label,
-          style: GoogleFonts.inter(
+          style: TypographyTokens.editorialFont(
             fontSize: 15,
             fontWeight: FontWeight.w600,
             color: ColorTokens.onSurfaceVariant,
@@ -501,11 +497,11 @@ class _RouteChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: ColorTokens.surfaceContainerLow,
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: ColorTokens.ghostBorder),
+          border: BorderTokens.ghost(),
         ),
         child: Text(
           label,
-          style: GoogleFonts.inter(
+          style: TypographyTokens.editorialFont(
             fontSize: 15,
             fontWeight: FontWeight.w700,
             color: ColorTokens.onSurface,

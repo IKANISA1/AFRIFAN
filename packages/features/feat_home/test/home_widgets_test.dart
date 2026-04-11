@@ -3,6 +3,7 @@ import 'package:feat_home/src/widgets/quick_actions_grid.dart';
 import 'package:feat_home/src/widgets/stats_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -87,23 +88,26 @@ void main() {
           GoRoute(path: '/shop', builder: (_, __) => const SizedBox()),
           GoRoute(path: '/fan-clubs', builder: (_, __) => const SizedBox()),
           GoRoute(path: '/xp', builder: (_, __) => const SizedBox()),
+          GoRoute(path: '/fantasy', builder: (_, __) => const SizedBox()),
           GoRoute(path: '/membership', builder: (_, __) => const SizedBox()),
           GoRoute(path: '/contribute', builder: (_, __) => const SizedBox()),
         ],
       );
 
-      return MaterialApp.router(
-        routerConfig: router,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: ColorTokens.clubPrimary,
-            brightness: Brightness.dark,
+      return ProviderScope(
+        child: MaterialApp.router(
+          routerConfig: router,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: ColorTokens.clubPrimary,
+              brightness: Brightness.dark,
+            ),
           ),
         ),
       );
     }
 
-    testWidgets('renders all 5 quick action labels', (tester) async {
+    testWidgets('renders all quick action labels', (tester) async {
       await tester.pumpWidget(buildTestApp());
       await tester.pumpAndSettle();
 
@@ -111,7 +115,8 @@ void main() {
       expect(find.text('SHOP'), findsOneWidget);
       expect(find.text('FAN CLUBS'), findsOneWidget);
       expect(find.text('GAMES'), findsOneWidget);
-      expect(find.text('MEMBERSHIP'), findsOneWidget);
+      expect(find.text('FANTASY'), findsOneWidget);
+      expect(find.text('MEMBERS'), findsOneWidget);
     });
 
     testWidgets('renders SUPPORT button', (tester) async {

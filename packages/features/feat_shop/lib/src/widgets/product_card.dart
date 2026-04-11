@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Full-width "Armoury" product card -- cinematic editorial style.
 ///
@@ -95,7 +94,7 @@ class _ArmouryProductCardState extends State<ArmouryProductCard>
             decoration: BoxDecoration(
               color: ColorTokens.surfaceContainerLowest, // Very dark blue/black
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: ColorTokens.ghostBorder, width: 0.5),
+              border: BorderTokens.ghost(),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -153,7 +152,7 @@ class _ArmouryProductCardState extends State<ArmouryProductCard>
                         children: [
                           Text(
                             currency.format(price),
-                            style: GoogleFonts.barlowCondensed(
+                            style: TypographyTokens.monolithFont(
                               fontSize: 28,
                               fontWeight: FontWeight.w900,
                               color: ColorTokens.onSurface,
@@ -251,7 +250,7 @@ class _ArmouryProductCardState extends State<ArmouryProductCard>
                   ),
                 Text(
                   name.toUpperCase(),
-                  style: GoogleFonts.barlowCondensed(
+                  style: TypographyTokens.monolithFont(
                     fontSize: 32,
                     fontWeight: FontWeight.w900,
                     color: ColorTokens.onSurface,
@@ -381,9 +380,10 @@ class _AddToCartFab extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: primary,
-          border: Border.all(
-            color: ColorTokens.onSurface.withValues(alpha: 0.2),
-            width: 1.5,
+          border: BorderTokens.all(
+            color: ColorTokens.onSurface,
+            width: BorderTokens.strong,
+            opacity: 0.2,
           ),
           boxShadow: [
             BoxShadow(
@@ -421,14 +421,14 @@ class _BadgePill extends StatelessWidget {
           decoration: BoxDecoration(
             color: ColorTokens.background.withValues(alpha: 0.55),
             borderRadius: BorderRadius.circular(6),
-            border: Border.all(
-              color: ColorTokens.onSurface.withValues(alpha: 0.1),
-              width: 0.5,
+            border: BorderTokens.all(
+              color: ColorTokens.onSurface,
+              opacity: 0.1,
             ),
           ),
           child: Text(
             label.toUpperCase(),
-            style: GoogleFonts.inter(
+            style: TypographyTokens.editorialFont(
               fontSize: 15,
               fontWeight: FontWeight.w700,
               color: ColorTokens.onSurface.withValues(alpha: 0.9),
@@ -458,11 +458,11 @@ class _ProductIdBadge extends StatelessWidget {
           decoration: BoxDecoration(
             color: ColorTokens.glassFill,
             borderRadius: ShapeTokens.aliasPillRadius,
-            border: Border.all(color: ColorTokens.ghostBorder, width: 0.5),
+            border: BorderTokens.ghost(),
           ),
           child: Text(
             'ID: $productId',
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 15,
               fontWeight: FontWeight.w800,
               color: ColorTokens.onSurfaceVariant,

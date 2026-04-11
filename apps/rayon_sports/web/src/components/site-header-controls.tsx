@@ -6,6 +6,7 @@ import { Menu, Search, User } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
+import { ui } from "@/design-system";
 
 const MobileNavDrawer = dynamic(
   () => import("./mobile-nav-drawer").then((mod) => mod.MobileNavDrawer),
@@ -46,17 +47,17 @@ export function SiteHeaderControls({ club }: SiteHeaderControlsProps) {
         <button
           type="button"
           onClick={() => setIsSearchOpen(true)}
-          className="flex h-11 min-w-11 items-center justify-center rounded-full border border-border-soft bg-white/4 px-3 text-slate-200 transition hover:bg-white/10 hover:text-white focus-ring"
+          className={`${ui.iconButton} min-w-11 px-3 text-slate-200 focus-ring`}
           aria-label="Search"
         >
           <Search size={18} />
-          <span className="ml-2 hidden text-xs uppercase tracking-[0.18em] text-slate-300 xl:inline">
+          <span className={`ml-2 hidden ${ui.meta} xl:inline`}>
             Search
           </span>
         </button>
         <Link
           href={resolveFanAppHref()}
-          className="hidden min-h-11 items-center gap-2 rounded-full bg-club-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-club-primary-light cta-glow focus-ring md:inline-flex"
+          className={`${ui.buttonPrimary} cta-glow hidden px-4 py-2.5 focus-ring md:inline-flex`}
         >
           <User size={15} />
           Fan app
@@ -64,7 +65,7 @@ export function SiteHeaderControls({ club }: SiteHeaderControlsProps) {
         <button
           type="button"
           onClick={() => setIsDrawerOpen(true)}
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-border-soft bg-white/5 text-white transition hover:bg-white/10 focus-ring lg:hidden"
+          className={`${ui.iconButton} text-white focus-ring lg:hidden`}
           aria-label="Open menu"
         >
           <Menu size={20} />

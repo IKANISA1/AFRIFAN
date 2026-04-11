@@ -1,11 +1,10 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Side-by-side stat cards — "Global XP" + "Fan Rank"
 ///
-/// Massive Barlow Condensed display numbers with
-/// claymorphic containers per the Kinetic Football Authority design system.
+/// Massive monolith display numbers with
+/// claymorphic containers per the Tactile Monolith design system.
 class StatsRow extends StatelessWidget {
   final int globalXp;
   final int fanRank;
@@ -46,7 +45,7 @@ class StatsRow extends StatelessWidget {
               children: [
                 Text(
                   'GLOBAL XP',
-                  style: GoogleFonts.barlowCondensed(
+                  style: TypographyTokens.monolithFont(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: ColorTokens.onSurface.withValues(alpha: 0.76),
@@ -56,7 +55,7 @@ class StatsRow extends StatelessWidget {
                 const SizedBox(height: SpacingTokens.spacing1),
                 Text(
                   _formatXp(globalXp),
-                  style: GoogleFonts.barlowCondensed(
+                  style: TypographyTokens.monolithFont(
                     fontSize: 36,
                     fontWeight: FontWeight.w800,
                     color: ColorTokens.onSurface,
@@ -82,7 +81,7 @@ class StatsRow extends StatelessWidget {
               children: [
                 Text(
                   'FAN RANK',
-                  style: GoogleFonts.barlowCondensed(
+                  style: TypographyTokens.monolithFont(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: ColorTokens.onSurface.withValues(alpha: 0.76),
@@ -92,7 +91,7 @@ class StatsRow extends StatelessWidget {
                 const SizedBox(height: SpacingTokens.spacing1),
                 Text(
                   '#${fanRank.toString().padLeft(3, '0')}',
-                  style: GoogleFonts.barlowCondensed(
+                  style: TypographyTokens.monolithFont(
                     fontSize: 36,
                     fontWeight: FontWeight.w800,
                     color: Color.alphaBlend(

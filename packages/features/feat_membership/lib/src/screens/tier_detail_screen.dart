@@ -1,7 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class TierDetailScreen extends StatelessWidget {
   const TierDetailScreen({required this.tierId, super.key});
@@ -22,7 +21,7 @@ class TierDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           title,
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
@@ -61,7 +60,7 @@ class TierDetailScreen extends StatelessWidget {
                   const SizedBox(height: SpacingTokens.spacing4),
                   Text(
                     '15,000 - 40,000 XP',
-                    style: GoogleFonts.barlowCondensed(
+                    style: TypographyTokens.monolithFont(
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
                       color: ColorTokens.onSurface,
@@ -112,7 +111,7 @@ class _PerkCard extends StatelessWidget {
         children: [
           Text(
             title.toUpperCase(),
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 20,
               fontWeight: FontWeight.w700,
               color: ColorTokens.onSurface,

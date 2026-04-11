@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { ui } from "@/design-system";
 
 interface AdminStateCardProps {
   label: string;
@@ -22,13 +23,13 @@ export function AdminStateCard({
   const isLoading = value === "..." || value === "";
 
   return (
-    <article className="glass-panel card-interactive rounded-[28px] p-5 group">
+    <article className={`${ui.panel} ${ui.cardInteractive} group rounded-[28px] p-5`}>
       <div className="flex items-start justify-between gap-3">
-        <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
+        <p className={ui.kicker}>
           {label}
         </p>
         {Icon ? (
-          <div className="flex h-9 w-9 items-center justify-center rounded-full border border-border-soft bg-white/5 text-slate-400 transition group-hover:text-club-accent group-hover:border-club-accent/30">
+          <div className={`${ui.iconButton} h-9 w-9 text-slate-400 group-hover:text-club-accent`}>
             <Icon size={16} />
           </div>
         ) : null}
@@ -42,7 +43,7 @@ export function AdminStateCard({
       ) : (
         <>
           <div className="mt-4 flex items-end gap-3">
-            <p className="font-display text-4xl font-bold uppercase leading-none">
+            <p className="font-display text-4xl font-bold uppercase leading-none tracking-[-0.05em]">
               {value}
             </p>
             {trend && trendLabel ? (

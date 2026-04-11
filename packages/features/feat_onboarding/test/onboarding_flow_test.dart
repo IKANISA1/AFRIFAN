@@ -4,7 +4,9 @@ import 'package:feat_onboarding/src/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import '../../test_support/design_font_loader.dart';
 
 class FakeAuthRepository extends AuthRepository {
   FakeAuthRepository({
@@ -84,6 +86,7 @@ Future<void> _pumpApp(
   required String initialLocation,
   required FakeAuthRepository repository,
 }) async {
+  _setMobileSurface(tester);
   await tester.pumpWidget(
     ProviderScope(
       overrides: [authRepositoryProvider.overrideWithValue(repository)],
@@ -93,6 +96,10 @@ Future<void> _pumpApp(
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  GoogleFonts.config.allowRuntimeFetching = false;
+  setUpAll(loadDesignFonts);
+
   group('Onboarding auth flow — §2.2 compliant', () {
     testWidgets('splash routes authenticated users with MOMO to home', (
       tester,
@@ -236,4 +243,30 @@ void main() {
       },
     );
   });
+
+  testWidgets('matches the onboarding editorial layout on mobile', (
+    tester,
+  ) async {
+    _setMobileSurface(tester);
+
+    await tester.pumpWidget(
+      const ProviderScope(child: MaterialApp(home: OnboardingScreen())),
+    );
+
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('NEXT'));
+    await tester.pumpAndSettle();
+
+    await expectLater(
+      find.byType(OnboardingScreen),
+      matchesGoldenFile('goldens/onboarding_screen.png'),
+    );
+  });
+}
+
+void _setMobileSurface(WidgetTester tester) {
+  tester.view.physicalSize = const Size(393, 852);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
 }

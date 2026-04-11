@@ -145,11 +145,11 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
             decoration: BoxDecoration(
               color: ColorTokens.surface,
               borderRadius: ShapeTokens.cardRadius,
-              border: Border.all(
+              border: BorderTokens.all(
                 color: isActive
                     ? ColorTokens.clubPrimary.withValues(alpha: 0.5)
                     : ColorTokens.ghostBorder,
-                width: isActive ? 1.5 : 1,
+                width: isActive ? 1.5 : BorderTokens.standard,
               ),
             ),
             padding: const EdgeInsets.all(SpacingTokens.spacing4),

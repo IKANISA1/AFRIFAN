@@ -4,7 +4,6 @@ import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../widgets/contribution_overlays.dart';
@@ -158,7 +157,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
         backgroundColor: Colors.transparent,
         title: Text(
           title.toUpperCase(),
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 20,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.4,
@@ -200,7 +199,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                       children: [
                         Text(
                           _currency.format(currentTotal),
-                          style: GoogleFonts.barlowCondensed(
+                          style: TypographyTokens.monolithFont(
                             fontSize: 44,
                             fontWeight: FontWeight.w900,
                             color: ColorTokens.clubAccent,
@@ -285,7 +284,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                       Expanded(
                         child: Text(
                           'LEDGER',
-                          style: GoogleFonts.barlowCondensed(
+                          style: TypographyTokens.monolithFont(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
                             color: ColorTokens.onSurface,
@@ -441,7 +440,7 @@ class _LedgerRow extends StatelessWidget {
           ),
           Text(
             amount,
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 24,
               fontWeight: FontWeight.w800,
               color: ColorTokens.clubAccent,

@@ -15,6 +15,7 @@ import {
   Settings,
   ShoppingBag,
   Crown,
+  Sparkles,
 } from "lucide-react";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
@@ -39,6 +40,11 @@ const quickActions = [
     href: "/admin/settings",
     title: "Tune club settings",
     icon: Settings,
+  },
+  {
+    href: "/admin/fantasy",
+    title: "Launch fantasy",
+    icon: Sparkles,
   },
   {
     href: "/admin/cms",

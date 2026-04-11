@@ -1,6 +1,5 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 /// Ledger item — a single transaction row in the contribution ledger.
@@ -48,7 +47,7 @@ class LedgerItem extends StatelessWidget {
               children: [
                 Text(
                   alias,
-                  style: GoogleFonts.inter(
+                  style: TypographyTokens.editorialFont(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                     color: ColorTokens.onSurface,
@@ -57,7 +56,7 @@ class LedgerItem extends StatelessWidget {
                 if (date != null)
                   Text(
                     DateFormat('MMM d, HH:mm').format(date),
-                    style: GoogleFonts.inter(
+                    style: TypographyTokens.editorialFont(
                       fontSize: 15,
                       color: ColorTokens.onSurfaceVariant,
                     ),
@@ -69,7 +68,7 @@ class LedgerItem extends StatelessWidget {
           // Amount
           Text(
             'FRw ${NumberFormat('#,##0').format(amount)}',
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: isConfirmed ? ColorTokens.success : primary,

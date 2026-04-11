@@ -1,6 +1,5 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 Future<bool> showDeleteAccountConfirmDialog(BuildContext context) async {
   final controller = TextEditingController();
@@ -39,7 +38,7 @@ Future<bool> showDeleteAccountConfirmDialog(BuildContext context) async {
                       Expanded(
                         child: Text(
                           'DELETE YOUR ACCOUNT?',
-                          style: GoogleFonts.barlowCondensed(
+                          style: TypographyTokens.monolithFont(
                             fontSize: 24,
                             fontWeight: FontWeight.w800,
                             color: ColorTokens.onSurface,
@@ -119,7 +118,7 @@ Future<bool> showNotificationPermissionModal(BuildContext context) async {
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
                 'STAY IN THE GAME',
-                style: GoogleFonts.barlowCondensed(
+                style: TypographyTokens.monolithFont(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
                   color: ColorTokens.onSurface,
@@ -176,7 +175,7 @@ Future<bool> showSignOutConfirmationSheet(BuildContext context) async {
           const SizedBox(height: SpacingTokens.spacing4),
           Text(
             'SIGN OUT?',
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 26,
               fontWeight: FontWeight.w800,
               color: ColorTokens.onSurface,
@@ -233,7 +232,7 @@ Future<bool> showSignOutOtherDevicesSheet(BuildContext context) async {
           const SizedBox(height: SpacingTokens.spacing4),
           Text(
             'SIGN OUT OTHER DEVICES?',
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 26,
               fontWeight: FontWeight.w800,
               color: ColorTokens.onSurface,

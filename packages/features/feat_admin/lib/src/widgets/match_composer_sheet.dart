@@ -17,20 +17,13 @@ Future<bool?> showMatchComposerSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (context) => _MatchComposerSheet(
-      ref: ref,
-      existing: existing,
-      partnerId: partnerId,
-    ),
+    builder: (context) =>
+        _MatchComposerSheet(ref: ref, existing: existing, partnerId: partnerId),
   );
 }
 
 class _MatchComposerSheet extends StatefulWidget {
-  const _MatchComposerSheet({
-    required this.ref,
-    this.existing,
-    this.partnerId,
-  });
+  const _MatchComposerSheet({required this.ref, this.existing, this.partnerId});
 
   final WidgetRef ref;
   final Map<String, dynamic>? existing;
@@ -65,23 +58,25 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
   void initState() {
     super.initState();
     _homeController = TextEditingController(
-      text: _existing?['home_team']?.toString() ??
+      text:
+          _existing?['home_team']?.toString() ??
           RuntimeBranding.displayHomeTeamName,
     );
     _awayController = TextEditingController(
       text: _existing?['away_team']?.toString() ?? '',
     );
     _competitionController = TextEditingController(
-      text: _existing?['competition']?.toString() ??
+      text:
+          _existing?['competition']?.toString() ??
           RuntimeBranding.displayCompetitionName,
     );
     _venueController = TextEditingController(
-      text: _existing?['venue']?.toString() ??
+      text:
+          _existing?['venue']?.toString() ??
           RuntimeBranding.displayHomeVenueName,
     );
     _generalController = TextEditingController(
-      text:
-          '${(_existing?['ticket_general_price'] as num?)?.toInt() ?? 18000}',
+      text: '${(_existing?['ticket_general_price'] as num?)?.toInt() ?? 18000}',
     );
     _vipController = TextEditingController(
       text: '${(_existing?['ticket_vip_price'] as num?)?.toInt() ?? 45000}',
@@ -104,14 +99,14 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
 
     _selectedDate =
         DateTime.tryParse(_existing?['match_date']?.toString() ?? '') ??
-            DateTime.now().add(const Duration(days: 7));
+        DateTime.now().add(const Duration(days: 7));
     _selectedTime =
         _parseTime(_existing?['kickoff_time']?.toString()) ??
-            const TimeOfDay(hour: 15, minute: 30);
+        const TimeOfDay(hour: 15, minute: 30);
     _isOnSale = _existing?['is_on_sale'] == true;
     _matchStatus =
         _existing?['match_status']?.toString().trim().toLowerCase() ??
-            'scheduled';
+        'scheduled';
   }
 
   @override
@@ -182,10 +177,7 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
       if (_existing == null) {
         await client.from('matches').insert(payload);
       } else {
-        await client
-            .from('matches')
-            .update(payload)
-            .eq('id', _existing!['id']);
+        await client.from('matches').update(payload).eq('id', _existing!['id']);
       }
 
       if (!mounted) return;
@@ -210,9 +202,8 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
     return Container(
       decoration: BoxDecoration(
         color: ColorTokens.surface,
-        borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(28)),
-        border: Border.all(color: ColorTokens.ghostBorder, width: 0.5),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        border: BorderTokens.ghost(),
       ),
       padding: EdgeInsets.fromLTRB(
         SpacingTokens.spacing6,
@@ -229,8 +220,9 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
           children: [
             Text(
               _existing == null ? 'CREATE MATCH' : 'UPDATE MATCH',
-              style: TypographyTokens.headlineMedium()
-                  .copyWith(color: ColorTokens.onSurface),
+              style: TypographyTokens.headlineMedium().copyWith(
+                color: ColorTokens.onSurface,
+              ),
             ),
             const SizedBox(height: SpacingTokens.spacing4),
             TextField(
@@ -279,8 +271,7 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                   child: TextField(
                     controller: _generalController,
                     keyboardType: TextInputType.number,
-                    decoration:
-                        const InputDecoration(labelText: 'General FRw'),
+                    decoration: const InputDecoration(labelText: 'General FRw'),
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
@@ -288,8 +279,7 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                   child: TextField(
                     controller: _vipController,
                     keyboardType: TextInputType.number,
-                    decoration:
-                        const InputDecoration(labelText: 'VIP FRw'),
+                    decoration: const InputDecoration(labelText: 'VIP FRw'),
                   ),
                 ),
               ],
@@ -310,20 +300,14 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
             const SizedBox(height: SpacingTokens.spacing3),
             DropdownButtonFormField<String>(
               initialValue: _matchStatus,
-              decoration:
-                  const InputDecoration(labelText: 'Match status'),
+              decoration: const InputDecoration(labelText: 'Match status'),
               items: const [
-                DropdownMenuItem(
-                    value: 'scheduled', child: Text('Scheduled')),
+                DropdownMenuItem(value: 'scheduled', child: Text('Scheduled')),
                 DropdownMenuItem(value: 'live', child: Text('Live')),
-                DropdownMenuItem(
-                    value: 'halftime', child: Text('Half-time')),
-                DropdownMenuItem(
-                    value: 'fulltime', child: Text('Full-time')),
-                DropdownMenuItem(
-                    value: 'postponed', child: Text('Postponed')),
-                DropdownMenuItem(
-                    value: 'cancelled', child: Text('Cancelled')),
+                DropdownMenuItem(value: 'halftime', child: Text('Half-time')),
+                DropdownMenuItem(value: 'fulltime', child: Text('Full-time')),
+                DropdownMenuItem(value: 'postponed', child: Text('Postponed')),
+                DropdownMenuItem(value: 'cancelled', child: Text('Cancelled')),
               ],
               onChanged: (value) {
                 if (value != null) setState(() => _matchStatus = value);
@@ -336,8 +320,7 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                   child: TextField(
                     controller: _homeScoreController,
                     keyboardType: TextInputType.number,
-                    decoration:
-                        const InputDecoration(labelText: 'Home score'),
+                    decoration: const InputDecoration(labelText: 'Home score'),
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
@@ -345,8 +328,7 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                   child: TextField(
                     controller: _awayScoreController,
                     keyboardType: TextInputType.number,
-                    decoration:
-                        const InputDecoration(labelText: 'Away score'),
+                    decoration: const InputDecoration(labelText: 'Away score'),
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
@@ -354,8 +336,7 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                   child: TextField(
                     controller: _liveMinuteController,
                     keyboardType: TextInputType.number,
-                    decoration:
-                        const InputDecoration(labelText: 'Live minute'),
+                    decoration: const InputDecoration(labelText: 'Live minute'),
                   ),
                 ),
               ],
@@ -373,8 +354,9 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
                 _errorText!,
-                style: TypographyTokens.bodySmall()
-                    .copyWith(color: ColorTokens.error),
+                style: TypographyTokens.bodySmall().copyWith(
+                  color: ColorTokens.error,
+                ),
               ),
             ],
             const SizedBox(height: SpacingTokens.spacing4),

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -182,11 +181,7 @@ class _StatementDownloadScreenState
   Future<void> _downloadStatement() async {
     if (_format == 'PDF') {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'PDF export not available yet. Use CSV.',
-          ),
-        ),
+        const SnackBar(content: Text('PDF export not available yet. Use CSV.')),
       );
       return;
     }
@@ -241,7 +236,7 @@ class _StatementDownloadScreenState
         backgroundColor: Colors.transparent,
         title: Text(
           'DOWNLOAD STATEMENT',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -367,7 +362,7 @@ class _StatementDownloadScreenState
                               ),
                               Text(
                                 _currency.format(_statementTotal),
-                                style: GoogleFonts.barlowCondensed(
+                                style: TypographyTokens.monolithFont(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w800,
                                   color: ColorTokens.clubAccent,
@@ -509,7 +504,7 @@ class _FormatCard extends StatelessWidget {
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
               label,
-              style: GoogleFonts.barlowCondensed(
+              style: TypographyTokens.monolithFont(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
                 color: ColorTokens.onSurface,

@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function AdminOfflinePage() {
   return (
     <div className="page-shell py-16">
-      <div className="glass-panel-elevated rounded-[36px] border border-border-soft p-8 sm:p-10">
+      <div className="glass-panel-elevated rounded-[36px] p-8 sm:p-10">
         <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
           Admin offline
         </p>

@@ -7,6 +7,7 @@ import { FocusOnRouteChange } from "@/components/focus-on-route-change";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getClubProfile, getMatches } from "@/lib/data/public";
+import { ui } from "@/design-system";
 
 /* ─────────────────────────────────────────────────────────────
    Async server islands — each fetches its own data so the
@@ -62,7 +63,7 @@ export default function SiteLayout({
     <>
       <a
         href="#main-content"
-        className="sr-only fixed left-4 top-4 z-[80] rounded-full bg-white px-4 py-2 text-sm font-semibold text-club-ink shadow-lg focus:not-sr-only"
+        className={`sr-only fixed left-4 top-4 z-[80] ${ui.buttonPrimary} px-4 py-2 text-sm focus:not-sr-only`}
       >
         Skip to content
       </a>

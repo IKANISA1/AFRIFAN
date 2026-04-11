@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import { ui } from "@/design-system";
 
 interface BackButtonProps {
   /** Optional label next to the arrow. Defaults to no label (icon only). */
@@ -22,7 +23,7 @@ export function BackButton({ label, className }: BackButtonProps) {
       type="button"
       onClick={() => router.back()}
       aria-label={label ?? "Go back"}
-      className={`inline-flex items-center gap-2 rounded-full border border-border-soft bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10 hover:text-white active:scale-95 focus-ring ${className ?? ""}`}
+      className={`${ui.buttonSecondary} px-3 py-2 text-sm font-medium active:scale-95 focus-ring ${className ?? ""}`}
     >
       <ArrowLeft size={18} />
       {label ? <span>{label}</span> : null}

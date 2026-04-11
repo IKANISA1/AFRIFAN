@@ -3,7 +3,6 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../widgets/contribution_overlays.dart';
 
@@ -26,7 +25,8 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
 
   Future<void> _loadProjects() async {
     try {
-      final response = await ref.read(supabaseClientProvider)
+      final response = await ref
+          .read(supabaseClientProvider)
           .from('contribution_groups')
           .select()
           .eq('is_closed', false)
@@ -53,7 +53,7 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
         backgroundColor: Colors.transparent,
         title: Text(
           'CLUB PROJECTS',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -129,7 +129,7 @@ class _ProjectCard extends StatelessWidget {
         children: [
           Text(
             title.toUpperCase(),
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 24,
               fontWeight: FontWeight.w800,
               color: ColorTokens.onSurface,

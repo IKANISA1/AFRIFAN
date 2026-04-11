@@ -1,6 +1,5 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class FanClubFeaturedCard extends StatelessWidget {
   const FanClubFeaturedCard({
@@ -48,7 +47,7 @@ class FanClubFeaturedCard extends StatelessWidget {
                   ),
                   child: Text(
                     'FEATURED CLUB',
-                    style: GoogleFonts.inter(
+                    style: TypographyTokens.editorialFont(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
                       color: ColorTokens.clubAccent,
@@ -59,7 +58,7 @@ class FanClubFeaturedCard extends StatelessWidget {
                 const SizedBox(height: SpacingTokens.spacing3),
                 Text(
                   (club['name']?.toString() ?? 'FAN CLUB').toUpperCase(),
-                  style: GoogleFonts.barlowCondensed(
+                  style: TypographyTokens.monolithFont(
                     fontSize: 30,
                     fontWeight: FontWeight.w800,
                     color: ColorTokens.onSurface,
@@ -77,23 +76,42 @@ class FanClubFeaturedCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing4),
-                Row(
-                  children: [
-                    FanClubFeaturedMeta(
-                      label: 'REGION',
-                      value: club['region']?.toString() ?? 'Unknown',
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing3),
-                    FanClubFeaturedMeta(
-                      label: 'MEMBERS',
-                      value: '${(club['member_count'] as num?)?.toInt() ?? 0}',
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing3),
-                    FanClubFeaturedMeta(
-                      label: 'EVENTS',
-                      value: '${(club['event_count'] as num?)?.toInt() ?? 0}',
-                    ),
-                  ],
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final itemWidth =
+                        (constraints.maxWidth - (SpacingTokens.spacing3 * 2)) /
+                        3;
+
+                    return Wrap(
+                      spacing: SpacingTokens.spacing3,
+                      runSpacing: SpacingTokens.spacing3,
+                      children: [
+                        SizedBox(
+                          width: itemWidth,
+                          child: FanClubFeaturedMeta(
+                            label: 'REGION',
+                            value: club['region']?.toString() ?? 'Unknown',
+                          ),
+                        ),
+                        SizedBox(
+                          width: itemWidth,
+                          child: FanClubFeaturedMeta(
+                            label: 'MEMBERS',
+                            value:
+                                '${(club['member_count'] as num?)?.toInt() ?? 0}',
+                          ),
+                        ),
+                        SizedBox(
+                          width: itemWidth,
+                          child: FanClubFeaturedMeta(
+                            label: 'EVENTS',
+                            value:
+                                '${(club['event_count'] as num?)?.toInt() ?? 0}',
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ],
             ),
@@ -140,7 +158,7 @@ class FanClubListItem extends StatelessWidget {
                   children: [
                     Text(
                       (club['name']?.toString() ?? 'Fan Club').toUpperCase(),
-                      style: GoogleFonts.barlowCondensed(
+                      style: TypographyTokens.monolithFont(
                         fontSize: 24,
                         fontWeight: FontWeight.w800,
                         color: ColorTokens.onSurface,
@@ -171,7 +189,7 @@ class FanClubListItem extends StatelessWidget {
                   ),
                   child: Text(
                     'OFFICIAL',
-                    style: GoogleFonts.inter(
+                    style: TypographyTokens.editorialFont(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
                       color: ColorTokens.clubAccent,
@@ -239,30 +257,33 @@ class FanClubFeaturedMeta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: ColorTokens.onSurfaceVariant,
-              letterSpacing: 1.1,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TypographyTokens.editorialFont(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: ColorTokens.onSurfaceVariant,
+            letterSpacing: 0.9,
           ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: GoogleFonts.barlowCondensed(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: ColorTokens.onSurface,
-            ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TypographyTokens.monolithFont(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: ColorTokens.onSurface,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -288,7 +309,7 @@ class FanClubMetaPill extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             label,
-            style: GoogleFonts.inter(
+            style: TypographyTokens.editorialFont(
               fontSize: 15,
               fontWeight: FontWeight.w500,
               color: ColorTokens.onSurfaceVariant,

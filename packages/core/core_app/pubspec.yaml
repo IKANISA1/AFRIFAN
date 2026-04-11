@@ -46,6 +46,10 @@ dependencies:
     path: ../../features/feat_ticketing
   feat_fan_clubs:
     path: ../../features/feat_fan_clubs
+  feat_fantasy:
+    path: ../../features/feat_fantasy
+  africlub_fantasy:
+    path: ../../africlub_fantasy
   feat_live:
     path: ../../features/feat_live
   feat_admin:

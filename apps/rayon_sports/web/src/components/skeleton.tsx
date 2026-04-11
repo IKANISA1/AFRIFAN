@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { ui } from "@/design-system";
 
 export function Skeleton({
   className,
@@ -10,7 +11,7 @@ export function Skeleton({
 
 export function SkeletonCard() {
   return (
-    <div className="glass-panel rounded-[28px] p-5">
+    <div className={`${ui.panel} rounded-[28px] p-5`}>
       <Skeleton className="h-40 w-full rounded-[22px]" />
       <div className="mt-5 space-y-3">
         <Skeleton className="skeleton-text h-3 w-24" />
@@ -24,7 +25,7 @@ export function SkeletonCard() {
 
 export function SkeletonHero() {
   return (
-    <div className="glass-panel-elevated overflow-hidden rounded-[38px] p-6">
+    <div className={`${ui.panelElevated} overflow-hidden rounded-[38px] p-6`}>
       <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
         <div className="space-y-4">
           <Skeleton className="skeleton-text h-3 w-28" />
@@ -43,7 +44,7 @@ export function SkeletonHero() {
 
 export function SkeletonTable() {
   return (
-    <div className="glass-panel rounded-[30px] p-5">
+    <div className={`${ui.panel} rounded-[30px] p-5`}>
       <div className="space-y-3">
         {Array.from({ length: 6 }).map((_, index) => (
           <Skeleton

@@ -5,6 +5,7 @@ packages:
   - apps/**
   - packages/core/**
   - packages/features/**
+  - packages/africlub_fantasy
   - packages/clubs/**
 
 command:

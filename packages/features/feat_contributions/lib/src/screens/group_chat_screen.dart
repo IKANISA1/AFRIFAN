@@ -3,7 +3,6 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 int? _currentClubId(SupabaseClient client) {
@@ -215,7 +214,7 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
           children: [
             Text(
               _groupName,
-              style: GoogleFonts.barlowCondensed(
+              style: TypographyTokens.monolithFont(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.6,
@@ -392,7 +391,7 @@ class _ComposerIconButton extends StatelessWidget {
             decoration: BoxDecoration(
               color: ColorTokens.surfaceContainerLow,
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: ColorTokens.ghostBorder),
+              border: BorderTokens.ghost(),
             ),
             alignment: Alignment.center,
             child: Icon(icon, color: ColorTokens.clubAccent),
@@ -419,7 +418,7 @@ class _TransactionMessageBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: ColorTokens.success.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: ColorTokens.success.withValues(alpha: 0.24)),
+        border: BorderTokens.all(color: ColorTokens.success, opacity: 0.24),
       ),
       child: Text(
         message,

@@ -42,7 +42,7 @@ Runbook:
 
 ## Critical Audit Report: AfriClub Supabase Implementation
 
-**Objective:** Assess the structural integrity, security, and production-readiness of the AfriClub Supabase backend, specifically regarding the Kinetic Football Authority multi-tenant mandates.
+**Objective:** Assess the structural integrity, security, and production-readiness of the AfriClub Supabase backend, specifically regarding the Tactile Monolith multi-tenant mandates.
 
 **Last Updated:** 2026-04-04
 

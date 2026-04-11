@@ -30,7 +30,7 @@ class PrivacyPill extends StatelessWidget {
               ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.16)
               : ColorTokens.surfaceContainerLow,
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(
+          border: BorderTokens.all(
             color: selected
                 ? Theme.of(context).colorScheme.primary
                 : ColorTokens.ghostBorder,

@@ -5,7 +5,6 @@ import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Glassmorphic digital membership card — the fan's identity.
 class MembershipCard extends ConsumerWidget {
@@ -45,7 +44,7 @@ class MembershipCard extends ConsumerWidget {
           filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: ColorTokens.ghostBorder),
+              border: BorderTokens.ghost(),
               borderRadius: ShapeTokens.cardRadius,
             ),
             padding: const EdgeInsets.all(SpacingTokens.spacing6),
@@ -56,7 +55,7 @@ class MembershipCard extends ConsumerWidget {
                   children: [
                     Text(
                       RuntimeBranding.displayHomeTeamName.toUpperCase(),
-                      style: GoogleFonts.barlowCondensed(
+                      style: TypographyTokens.monolithFont(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: ColorTokens.onSurface.withValues(alpha: 0.7),
@@ -66,7 +65,7 @@ class MembershipCard extends ConsumerWidget {
                     const Spacer(),
                     Text(
                       'FAN CARD',
-                      style: GoogleFonts.inter(
+                      style: TypographyTokens.editorialFont(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                         color: ColorTokens.onSurface.withValues(alpha: 0.5),
@@ -81,7 +80,7 @@ class MembershipCard extends ConsumerWidget {
                 // Alias display
                 Text(
                   alias,
-                  style: GoogleFonts.barlowCondensed(
+                  style: TypographyTokens.monolithFont(
                     fontSize: 36,
                     fontWeight: FontWeight.w800,
                     color: ColorTokens.onSurface,
@@ -104,7 +103,7 @@ class MembershipCard extends ConsumerWidget {
                       ),
                       child: Text(
                         resolvedTier,
-                        style: GoogleFonts.barlowCondensed(
+                        style: TypographyTokens.monolithFont(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
                           color: ColorTokens.onSurface,
@@ -115,7 +114,7 @@ class MembershipCard extends ConsumerWidget {
                     const Spacer(),
                     Text(
                       '$resolvedXp XP',
-                      style: GoogleFonts.barlowCondensed(
+                      style: TypographyTokens.monolithFont(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                         color: primary,

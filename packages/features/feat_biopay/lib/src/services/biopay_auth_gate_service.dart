@@ -127,12 +127,9 @@ extension on BiopayAuthAction {
   };
 
   String get canceledMessage => switch (this) {
-    BiopayAuthAction.enrollment =>
-      'Enrollment canceled.',
-    BiopayAuthAction.revocation =>
-      'Revocation canceled.',
-    BiopayAuthAction.paymentHandoff =>
-      'Payment canceled.',
+    BiopayAuthAction.enrollment => 'Enrollment canceled.',
+    BiopayAuthAction.revocation => 'Revocation canceled.',
+    BiopayAuthAction.paymentHandoff => 'Payment canceled.',
   };
 
   String get failureMessage => switch (this) {

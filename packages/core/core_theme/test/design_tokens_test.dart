@@ -1,43 +1,27 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Design token assertions — Kinetic Football Authority compliance.
-///
-/// These tests enforce the mandated design system values so regressions
-/// are caught at CI time rather than during visual audits.
-///
-/// Typography tests validate font sizes indirectly via a dedicated
-/// constants map, avoiding GoogleFonts async font-loading side effects.
+/// Design token assertions — Tactile Monolith compliance.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  // ═══════════════════════════════════════════════════════════
-  // Typography — body floor and metadata hierarchy (validated via known token values)
-  // ═══════════════════════════════════════════════════════════
-  //
-  // GoogleFonts methods trigger async font loading which breaks pure
-  // unit tests. Instead, we validate the SIZE VALUES that the tokens
-  // are configured to use — these are the authoritative constants.
-
   group('Typography Tokens — body and label hierarchy (known values)', () {
-    // These values mirror TypographyTokens exactly.
-    // If tokens change, these tests catch the regression.
-    const bodyFontSizes = {
-      'bodyLarge': 16.0,
-      'bodyMedium': 15.0,
-      'bodySmall': 14.0,
+    final bodyFontSizes = {
+      'bodyLarge': TypographyTokens.semanticSizes['bodyLarge']!,
+      'bodyMedium': TypographyTokens.semanticSizes['bodyMedium']!,
+      'bodySmall': TypographyTokens.semanticSizes['bodySmall']!,
     };
 
-    const labelFontSizes = {
-      'labelLarge': 16.0,
-      'labelMedium': 14.0,
-      'labelSmall': 12.0,
+    final labelFontSizes = {
+      'labelLarge': TypographyTokens.semanticSizes['labelLarge']!,
+      'labelMedium': TypographyTokens.semanticSizes['labelMedium']!,
+      'labelSmall': TypographyTokens.semanticSizes['labelSmall']!,
     };
 
-    const titleFontSizes = {
-      'titleLarge': 22.0,
-      'titleMedium': 18.0,
-      'titleSmall': 16.0,
+    final titleFontSizes = {
+      'titleLarge': TypographyTokens.semanticSizes['titleLarge']!,
+      'titleMedium': TypographyTokens.semanticSizes['titleMedium']!,
+      'titleSmall': TypographyTokens.semanticSizes['titleSmall']!,
     };
 
     for (final entry in bodyFontSizes.entries) {
@@ -83,11 +67,11 @@ void main() {
   });
 
   group('Typography Tokens — 32sp Hero Floor (known values)', () {
-    const heroFontSizes = {
-      'displayLarge': 56.0,
-      'displayMedium': 44.0,
-      'displaySmall': 36.0,
-      'headlineLarge': 32.0,
+    final heroFontSizes = {
+      'displayLarge': TypographyTokens.semanticSizes['displayLarge']!,
+      'displayMedium': TypographyTokens.semanticSizes['displayMedium']!,
+      'displaySmall': TypographyTokens.semanticSizes['displaySmall']!,
+      'headlineLarge': TypographyTokens.semanticSizes['headlineLarge']!,
     };
 
     for (final entry in heroFontSizes.entries) {
@@ -97,35 +81,31 @@ void main() {
     }
   });
 
-  // ═══════════════════════════════════════════════════════════
-  // Blur Tokens
-  // ═══════════════════════════════════════════════════════════
-
-  group('Blur Tokens — Kinetic Mandate', () {
-    test('standard blur is 12px', () {
-      expect(AfriBlur.standard, equals(12.0));
+  group('Blur Tokens — glass depth', () {
+    test('standard blur is 20px', () {
+      expect(AfriBlur.standard, equals(20.0));
     });
 
-    test('overlay blur is 20px', () {
-      expect(AfriBlur.overlay, equals(20.0));
+    test('overlay blur is 28px', () {
+      expect(AfriBlur.overlay, equals(28.0));
     });
 
-    test('atmospheric blur is 32px', () {
-      expect(AfriBlur.atmospheric, equals(32.0));
+    test('atmospheric blur is 40px', () {
+      expect(AfriBlur.atmospheric, equals(40.0));
     });
 
-    test('subtle blur is 8px', () {
-      expect(AfriBlur.subtle, equals(8.0));
+    test('subtle blur is 12px', () {
+      expect(AfriBlur.subtle, equals(12.0));
     });
   });
-
-  // ═══════════════════════════════════════════════════════════
-  // Color Tokens
-  // ═══════════════════════════════════════════════════════════
 
   group('Color Tokens — Dark Mode Enforced', () {
     test('clubPrimary is defined and not transparent', () {
       expect(ColorTokens.clubPrimary.a, greaterThan(0));
+    });
+
+    test('system primary is defined and not transparent', () {
+      expect(ColorTokens.primary.a, greaterThan(0));
     });
 
     test('glassFill is defined', () {
@@ -143,11 +123,18 @@ void main() {
     test('surface is dark', () {
       expect(ColorTokens.surface.computeLuminance(), lessThan(0.5));
     });
-  });
 
-  // ═══════════════════════════════════════════════════════════
-  // Spacing Tokens
-  // ═══════════════════════════════════════════════════════════
+    test('primary container is brighter than the background', () {
+      expect(
+        ColorTokens.primaryContainer.computeLuminance(),
+        greaterThan(ColorTokens.background.computeLuminance()),
+      );
+    });
+
+    test('ghost border stays subtle', () {
+      expect(ColorTokens.ghostBorder.a, lessThan(0.3));
+    });
+  });
 
   group('Spacing Tokens — Consistency', () {
     test('spacing values are positive and monotonically increasing', () {
@@ -162,6 +149,26 @@ void main() {
     test('breathing room spacings are >= 32', () {
       expect(SpacingTokens.spacing8, greaterThanOrEqualTo(32));
       expect(SpacingTokens.spacing10, greaterThanOrEqualTo(40));
+    });
+  });
+
+  group('Shape Tokens — tactile rounding', () {
+    test('minimum shared radius is 24px', () {
+      expect(ShapeTokens.radiusMd, equals(24.0));
+    });
+
+    test('main card radius is 48px', () {
+      expect(ShapeTokens.radiusXl, equals(48.0));
+    });
+  });
+
+  group('Border Tokens — ghost outline fallback', () {
+    test('hairline outline is 0.6px', () {
+      expect(BorderTokens.hairline, equals(0.6));
+    });
+
+    test('focus outline is stronger than the default', () {
+      expect(BorderTokens.focus, greaterThan(BorderTokens.standard));
     });
   });
 }

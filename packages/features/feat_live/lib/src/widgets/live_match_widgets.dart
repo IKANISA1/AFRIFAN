@@ -28,7 +28,7 @@ class TeamBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: ColorTokens.ghostBorder),
+        border: BorderTokens.ghost(),
       ),
       alignment: Alignment.center,
       child: Text(

@@ -2,62 +2,59 @@ import 'package:flutter/material.dart';
 
 import '../club_config.dart';
 
-/// Color tokens for the ROUGEBLACK design system.
+/// Color tokens for the Tactile Monolith design system.
 ///
-/// "The Stadium Pulse" palette: deep midnight stadium shadows
-/// punctuated by high-velocity club accents.
-///
-/// ## Architecture
-/// **Platform constants** (background, surface, glass, semantic) are identical
-/// across all 50+ clubs and are compile-time `const`.
-///
-/// **Club-specific accents** (`clubPrimary`, `clubSecondary`, `clubAccent`,
-/// `navActive`, hero gradient) are initialized ONCE at startup from
-/// [ClubColors] via [ColorTokens.init].
-///
-/// Legacy aliases `clubRed`, `deepNavy`, `trophyGold` delegate to the
-/// dynamic getters so existing widget code keeps compiling without changes.
+/// The app keeps club identity colors for domain accents, but the platform
+/// shell is anchored in a shared nocturnal violet palette so every surface
+/// feels carved from the same material system.
 class ColorTokens {
   ColorTokens._();
 
-  // ────────────────────────────────────────────────────────────────────────
-  //  §1 — Dynamic Club Colors (set once at startup via init)
-  // ────────────────────────────────────────────────────────────────────────
-
-  /// Has [init] been called?
   static bool _initialized = false;
 
-  // Backing stores — Rayon Sports blue defaults (overwritten by init).
-  static Color _primary = const Color(0xFF0038A8); // Rayon Blue
-  static Color _secondary = const Color(0xFF001742); // Deep Navy
-  static Color _accent = const Color(0xFFD4A017); // Trophy Gold
-  static List<Color> _gradient = const [Color(0xFF8885F0), Color(0xFF0038A8)];
-  // ── Design system defaults (used when a club color is white) ──
+  static Color _primary = const Color(0xFF0038A8);
+  static Color _secondary = const Color(0xFF001742);
+  static Color _accent = const Color(0xFFD4A017);
+  static List<Color> _gradient = const [Color(0xFF1F1147), Color(0xFF7B5BFF)];
+
   static const Color _defaultPrimary = Color(0xFF0038A8);
   static const Color _defaultSecondary = Color(0xFF001742);
   static const Color _defaultAccent = Color(0xFFD4A017);
 
-  /// Returns true if a color is white or near-white (luminance > 0.9).
-  /// White colors break the dark-mode UI, so they are dropped.
-  static bool _isWhite(Color c) => c.computeLuminance() > 0.9;
+  static const Color _monolithViolet = Color(0xFF7B5BFF);
+  static const Color _monolithOrchid = Color(0xFFA98DFF);
+  static const Color _voidBase = Color(0xFF0D0A27);
 
-  /// Initialize club-specific colors from [ClubColors].
-  ///
-  /// **Must be called once** in `bootstrap()` before `runApp()`.
-  /// Calling multiple times is safe (idempotent) — it overwrites the
-  /// previous palette.
-  ///
-  /// **White-drop rule:** If any club color is white/near-white, it is
-  /// replaced with the design system default for that slot. This ensures
-  /// all accent surfaces remain visible on the dark theme.
-  ///
-  /// ```dart
-  /// Future<void> bootstrap(ClubConfig config) async {
-  ///   ...
-  ///   ColorTokens.init(config.colors);
-  ///   runApp(AfriClubApp(...));
-  /// }
-  /// ```
+  static bool _isWhite(Color color) => color.computeLuminance() > 0.9;
+
+  static Color _stackColor(
+    Color base, {
+    double primaryAlpha = 0.0,
+    double secondaryAlpha = 0.0,
+    double whiteAlpha = 0.0,
+  }) {
+    var current = base;
+    if (secondaryAlpha > 0) {
+      current = Color.alphaBlend(
+        _secondary.withValues(alpha: secondaryAlpha.clamp(0.0, 1.0)),
+        current,
+      );
+    }
+    if (primaryAlpha > 0) {
+      current = Color.alphaBlend(
+        _primary.withValues(alpha: primaryAlpha.clamp(0.0, 1.0)),
+        current,
+      );
+    }
+    if (whiteAlpha > 0) {
+      current = Color.alphaBlend(
+        Colors.white.withValues(alpha: whiteAlpha.clamp(0.0, 1.0)),
+        current,
+      );
+    }
+    return current;
+  }
+
   static void init(ClubColors colors) {
     _primary = _isWhite(colors.primary) ? _defaultPrimary : colors.primary;
     _secondary = _isWhite(colors.secondary)
@@ -67,44 +64,86 @@ class ColorTokens {
 
     _gradient = colors.gradient.isNotEmpty
         ? colors.gradient
-        : [_primary, _secondary];
+        : [_secondary, _primary];
 
-    // ── Pre-calculate both DARK and LIGHT palettes ──
-    final hsl = HSLColor.fromColor(_primary);
-    final coreLight = hsl.withLightness(0.97).withSaturation(0.15).toColor();
+    _darkBackground = _stackColor(
+      _voidBase,
+      primaryAlpha: 0.08,
+      secondaryAlpha: 0.16,
+    );
+    _darkSurfaceDim = _darkBackground;
+    _darkSurfaceContainerLowest = _stackColor(
+      const Color(0xFF120D30),
+      secondaryAlpha: 0.16,
+      primaryAlpha: 0.04,
+    );
+    _darkSurfaceContainerLow = _stackColor(
+      const Color(0xFF18123B),
+      secondaryAlpha: 0.14,
+      primaryAlpha: 0.06,
+    );
+    _darkSurfaceContainer = _stackColor(
+      const Color(0xFF22194A),
+      secondaryAlpha: 0.10,
+      primaryAlpha: 0.08,
+    );
+    _darkSurface = _stackColor(
+      const Color(0xFF2A2057),
+      secondaryAlpha: 0.08,
+      primaryAlpha: 0.10,
+    );
+    _darkSurfaceContainerHigh = _stackColor(
+      const Color(0xFF322968),
+      primaryAlpha: 0.14,
+      whiteAlpha: 0.02,
+    );
+    _darkSurfaceContainerHighest = _stackColor(
+      const Color(0xFF3A307B),
+      primaryAlpha: 0.18,
+      whiteAlpha: 0.04,
+    );
+    _darkSurfaceBright = _stackColor(
+      const Color(0xFF4A3F93),
+      primaryAlpha: 0.22,
+      whiteAlpha: 0.06,
+    );
+    _darkPrimary = Color.lerp(_monolithViolet, _primary, 0.14)!;
+    _darkPrimaryContainer = Color.lerp(_monolithOrchid, _primary, 0.10)!;
+    _darkSecondaryContainer = Color.alphaBlend(
+      _accent.withValues(alpha: 0.18),
+      _darkSurfaceContainerHigh,
+    );
+    _darkOutlineVariant = Color.alphaBlend(
+      _darkPrimaryContainer.withValues(alpha: 0.15),
+      Colors.white.withValues(alpha: 0.06),
+    );
 
-    // Dark Palette - strictly using club colors, no synthetic blacks
-    _darkSurfaceContainerLowest = _secondary;
-    _darkBackground = Color.lerp(_secondary, _primary, 0.05)!;
-    _darkSurfaceContainerLow = Color.lerp(_secondary, _primary, 0.11)!;
-    _darkSurfaceContainer = Color.lerp(_secondary, _primary, 0.19)!;
-    _darkSurface = Color.lerp(_secondary, _primary, 0.27)!;
-    _darkSurfaceContainerHigh = Color.lerp(_secondary, _primary, 0.37)!;
-    _darkSurfaceContainerHighest = Color.lerp(_secondary, _primary, 0.48)!;
-    _darkOutlineVariant = Color.lerp(_secondary, Colors.white, 0.28)!;
-
-    // Light Palette
-    _lightBackground = coreLight;
-    _lightSurface = Color.lerp(coreLight, _primary, 0.05)!;
-    _lightSurfaceContainerLowest = Color.lerp(coreLight, Colors.white, 0.4)!;
-    _lightSurfaceContainerLow = Color.lerp(coreLight, _primary, 0.02)!;
-    _lightSurfaceContainer = Color.lerp(coreLight, _primary, 0.06)!;
-    _lightSurfaceContainerHigh = Color.lerp(coreLight, _primary, 0.12)!;
-    _lightSurfaceContainerHighest = Color.lerp(coreLight, _primary, 0.18)!;
-    _lightOutlineVariant = Color.lerp(coreLight, _primary, 0.25)!;
+    _lightBackground = const Color(0xFFF7F4FF);
+    _lightSurfaceDim = _lightBackground;
+    _lightSurfaceContainerLowest = const Color(0xFFFFFFFF);
+    _lightSurfaceContainerLow = const Color(0xFFF3EEFF);
+    _lightSurfaceContainer = const Color(0xFFECE4FF);
+    _lightSurface = const Color(0xFFE5DAFF);
+    _lightSurfaceContainerHigh = const Color(0xFFDDD0FF);
+    _lightSurfaceContainerHighest = const Color(0xFFD4C3FF);
+    _lightSurfaceBright = const Color(0xFFF9F5FF);
+    _lightPrimary = _monolithViolet;
+    _lightPrimaryContainer = _monolithOrchid;
+    _lightSecondaryContainer = Color.alphaBlend(
+      _accent.withValues(alpha: 0.20),
+      _lightSurfaceContainerHigh,
+    );
+    _lightOutlineVariant = Color.alphaBlend(
+      _lightPrimary.withValues(alpha: 0.15),
+      const Color(0xFF322968).withValues(alpha: 0.06),
+    );
 
     _initialized = true;
   }
 
-  /// Whether the dynamic palette has been initialized.
   static bool get isInitialized => _initialized;
 
-  // ── Theme brightness contract ──
-  // The shared app theme is dark-only, so tokens must not branch on
-  // platform brightness or they drift away from ThemeData at runtime.
   static const bool isDark = true;
-
-  // ── Public getters — the dynamic palette ──
 
   static Color get clubPrimary => _primary;
   static Color get clubSecondary => _secondary;
@@ -118,30 +157,45 @@ class ColorTokens {
   @Deprecated('Use clubAccent instead')
   static Color get trophyGold => _accent;
 
-  // ────────────────────────────────────────────────────────────────────────
-  //  §2 — Platform Constants (Dynamic by Brightness)
-  // ────────────────────────────────────────────────────────────────────────
+  static Color _darkBackground = _voidBase;
+  static Color _darkSurfaceDim = _voidBase;
+  static Color _darkSurface = const Color(0xFF2A2057);
+  static Color _darkSurfaceContainerLowest = const Color(0xFF120D30);
+  static Color _darkSurfaceContainerLow = const Color(0xFF18123B);
+  static Color _darkSurfaceContainer = const Color(0xFF22194A);
+  static Color _darkSurfaceContainerHigh = const Color(0xFF322968);
+  static Color _darkSurfaceContainerHighest = const Color(0xFF3A307B);
+  static Color _darkSurfaceBright = const Color(0xFF4A3F93);
+  static Color _darkPrimary = _monolithViolet;
+  static Color _darkPrimaryContainer = _monolithOrchid;
+  static Color _darkSecondaryContainer = const Color(0xFF4A3F93);
+  static Color _darkOutlineVariant = Colors.white.withValues(alpha: 0.12);
 
-  static Color _darkBackground = _defaultPrimary;
-  static Color _darkSurface = _defaultPrimary;
-  static Color _darkSurfaceContainerLowest = _defaultPrimary;
-  static Color _darkSurfaceContainerLow = _defaultPrimary;
-  static Color _darkSurfaceContainer = _defaultPrimary;
-  static Color _darkSurfaceContainerHigh = _defaultPrimary;
-  static Color _darkSurfaceContainerHighest = _defaultPrimary;
-  static Color _darkOutlineVariant = _defaultPrimary;
-
-  static Color _lightBackground = _defaultPrimary;
-  static Color _lightSurface = _defaultPrimary;
-  static Color _lightSurfaceContainerLowest = _defaultPrimary;
-  static Color _lightSurfaceContainerLow = _defaultPrimary;
-  static Color _lightSurfaceContainer = _defaultPrimary;
-  static Color _lightSurfaceContainerHigh = _defaultPrimary;
-  static Color _lightSurfaceContainerHighest = _defaultPrimary;
-  static Color _lightOutlineVariant = _defaultPrimary;
+  static Color _lightBackground = const Color(0xFFF7F4FF);
+  static Color _lightSurfaceDim = const Color(0xFFF7F4FF);
+  static Color _lightSurface = const Color(0xFFE5DAFF);
+  static Color _lightSurfaceContainerLowest = Colors.white;
+  static Color _lightSurfaceContainerLow = const Color(0xFFF3EEFF);
+  static Color _lightSurfaceContainer = const Color(0xFFECE4FF);
+  static Color _lightSurfaceContainerHigh = const Color(0xFFDDD0FF);
+  static Color _lightSurfaceContainerHighest = const Color(0xFFD4C3FF);
+  static Color _lightSurfaceBright = const Color(0xFFF9F5FF);
+  static Color _lightPrimary = _monolithViolet;
+  static Color _lightPrimaryContainer = _monolithOrchid;
+  static Color _lightSecondaryContainer = const Color(0xFFECE4FF);
+  static Color _lightOutlineVariant = const Color(0x332A2057);
 
   static Color get background => isDark ? _darkBackground : _lightBackground;
+  static Color get surfaceDim => isDark ? _darkSurfaceDim : _lightSurfaceDim;
   static Color get surface => isDark ? _darkSurface : _lightSurface;
+  static Color get surfaceBright =>
+      isDark ? _darkSurfaceBright : _lightSurfaceBright;
+  static Color get surfaceVariant => surfaceContainerHigh;
+  static Color get primary => isDark ? _darkPrimary : _lightPrimary;
+  static Color get primaryContainer =>
+      isDark ? _darkPrimaryContainer : _lightPrimaryContainer;
+  static Color get secondaryContainer =>
+      isDark ? _darkSecondaryContainer : _lightSecondaryContainer;
   static Color get surfaceContainerLowest =>
       isDark ? _darkSurfaceContainerLowest : _lightSurfaceContainerLowest;
   static Color get surfaceContainerLow =>
@@ -155,60 +209,44 @@ class ColorTokens {
   static Color get outlineVariant =>
       isDark ? _darkOutlineVariant : _lightOutlineVariant;
 
-  // ── On Surface (Text) ──
   static Color get onSurface =>
-      isDark ? const Color(0xFFFFFFFF) : const Color(0xFF1E293B);
+      isDark ? const Color(0xFFF8F4FF) : const Color(0xFF1D1538);
   static Color get onSurfaceVariant =>
-      isDark ? const Color(0xFFC9D4EA) : const Color(0xFF475569);
+      isDark ? const Color(0xFFC9C0E8) : const Color(0xFF544C77);
 
-  // ── Glass Mandate Parameters ──
-  static Color get glassFill => isDark
-      ? Colors.white.withValues(alpha: 0.05)
-      : _primary.withValues(alpha: 0.05);
+  static Color get glassFill =>
+      surfaceBright.withValues(alpha: isDark ? 0.60 : 0.72);
+  static Color get ghostBorder =>
+      primaryContainer.withValues(alpha: isDark ? 0.15 : 0.18);
 
-  static Color get ghostBorder => isDark
-      ? Colors.white.withValues(alpha: 0.10)
-      : _primary.withValues(alpha: 0.10);
+  static const double glassBlurSigma = 20.0;
 
-  static const double glassBlurSigma = 12.0;
+  static Color get navActive => primaryContainer;
 
-  // ── Active state for navigation ──
-  static Color get navActive {
-    return _accent;
-  }
+  static Color get ambientShadow => Color.alphaBlend(
+    clubSecondary.withValues(alpha: 0.22),
+    const Color(0xFF080614).withValues(alpha: 0.92),
+  );
 
-  // ── Ambient shadow (for glass cards) ──
-  // "Don't use standard Drop Shadows" — all shadows tinted with surface hue.
-  static Color get ambientShadow {
-    return _primary.withValues(alpha: 0.25);
-  }
+  static Color get scrim => background.withValues(alpha: 0.76);
 
-  // ── Modals & Overlays ──
-  static Color get scrim {
-    return _primary.withValues(alpha: 0.60);
-  }
+  static const Color success = Color(0xFF52D39F);
+  static const Color warning = Color(0xFFF4C96B);
+  static const Color error = Color(0xFFFF6B8C);
+  static const Color info = Color(0xFF7FB6FF);
 
-  // ── Semantic ──
-  static const Color success = Color(0xFF4ADE80);
-  static const Color warning = Color(0xFFFBBF24);
-  static const Color error = Color(0xFFEF4444);
-  static const Color info = Color(0xFF60A5FA);
-
-  // ── Signature gradient (secondary → primary, 135°) ──
   static LinearGradient heroGradient({Color? from, Color? to}) {
     return LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: [from ?? _accent, to ?? _primary],
+      colors: [from ?? primary, to ?? primaryContainer],
+      stops: const [0.0, 1.0],
     );
   }
 
-  // ── Utility: Generate a tinted surface from the club primary ──
-  /// Returns the club primary at a given alpha (for subtle tinted cards).
   static Color primaryTint(double alpha) =>
-      _primary.withValues(alpha: alpha.clamp(0.0, 1.0));
+      primary.withValues(alpha: alpha.clamp(0.0, 1.0));
 
-  /// Returns the club accent at a given alpha.
   static Color accentTint(double alpha) =>
-      _accent.withValues(alpha: alpha.clamp(0.0, 1.0));
+      clubAccent.withValues(alpha: alpha.clamp(0.0, 1.0));
 }

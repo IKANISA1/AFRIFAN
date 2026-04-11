@@ -13,7 +13,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// A single match/event slide — CMS-managed, admin-controlled.
 class MatchSlide {
@@ -218,7 +217,7 @@ class _HeroSlide extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: '${slide.homeTeam.toUpperCase()} ',
-                            style: GoogleFonts.barlowCondensed(
+                            style: TypographyTokens.monolithFont(
                               fontSize: 64,
                               fontWeight: FontWeight.w900,
                               color: Colors.white,
@@ -228,7 +227,7 @@ class _HeroSlide extends StatelessWidget {
                           ),
                           TextSpan(
                             text: 'VS\n',
-                            style: GoogleFonts.barlowCondensed(
+                            style: TypographyTokens.monolithFont(
                               fontSize: 64,
                               fontWeight: FontWeight.w900,
                               color: accentColor,
@@ -238,7 +237,7 @@ class _HeroSlide extends StatelessWidget {
                           ),
                           TextSpan(
                             text: slide.awayTeam.toUpperCase(),
-                            style: GoogleFonts.barlowCondensed(
+                            style: TypographyTokens.monolithFont(
                               fontSize: 64,
                               fontWeight: FontWeight.w900,
                               color: Colors.white,
@@ -268,7 +267,7 @@ class _HeroSlide extends StatelessWidget {
                     const SizedBox(width: 10),
                     Text(
                       slide.dateInfo,
-                      style: GoogleFonts.inter(
+                      style: TypographyTokens.editorialFont(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                         color: Colors.white.withValues(alpha: 0.55),

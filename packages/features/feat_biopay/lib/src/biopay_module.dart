@@ -81,8 +81,7 @@ class BioPayModule extends FeatureModule {
             args: BiopayRecoveryArgs(
               issue: BiopayRecoveryIssue.feature,
               title: 'BioPay Status Lost',
-              message:
-                  'Could not restore result. Return to BioPay.',
+              message: 'Could not restore result. Return to BioPay.',
               primaryLabel: 'Back to BioPay',
               primaryRoute: '/biopay',
             ),
@@ -101,8 +100,7 @@ class BioPayModule extends FeatureModule {
             args: BiopayRecoveryArgs(
               issue: BiopayRecoveryIssue.feature,
               title: 'Recovery Context Missing',
-              message:
-                  'Could not load recovery guidance. Return to BioPay.',
+              message: 'Could not load recovery guidance. Return to BioPay.',
               primaryLabel: 'Back to BioPay',
               primaryRoute: '/biopay',
             ),

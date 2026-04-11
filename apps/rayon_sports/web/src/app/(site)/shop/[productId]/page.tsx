@@ -56,7 +56,7 @@ export default async function ProductPage({
           __html: renderJsonLdScriptContent(buildProductJsonLd(product)),
         }}
       />
-      <section className="glass-panel-elevated overflow-hidden rounded-[38px] border border-border-soft">
+      <section className="glass-panel-elevated overflow-hidden rounded-[38px]">
         <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="img-zoom relative min-h-[22rem]">
             <Image

@@ -1,15 +1,18 @@
 import Link from "next/link";
 import { Ticket, User } from "lucide-react";
+import { ui } from "@/design-system";
 import { resolveFanAppHref } from "@/lib/config";
 
 export function MobileBottomBar() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border-soft bg-surface-strong/95 backdrop-blur-xl md:hidden">
+    <div
+      className={`fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)] md:hidden ${ui.shellBar}`}
+    >
       <div className="flex items-center justify-center gap-3 px-4 py-2.5">
         <Link
           href="/tickets"
           prefetch={false}
-          className="flex-1 flex items-center justify-center gap-2 rounded-full border border-border-soft bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+          className={`${ui.buttonSecondary} flex-1 px-4 py-2.5 text-sm`}
         >
           <Ticket size={16} />
           Tickets
@@ -17,7 +20,7 @@ export function MobileBottomBar() {
         <Link
           href={resolveFanAppHref()}
           prefetch={false}
-          className="flex-1 flex items-center justify-center gap-2 rounded-full bg-club-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-club-primary-light cta-glow"
+          className={`${ui.buttonPrimary} cta-glow flex-1 px-4 py-2.5 text-sm`}
         >
           <User size={16} />
           Fan app

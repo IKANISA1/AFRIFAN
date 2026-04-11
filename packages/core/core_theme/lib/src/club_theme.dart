@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'club_config.dart';
 import 'tokens/afri_semantic_colors.dart';
+import 'tokens/border_tokens.dart';
 import 'tokens/color_tokens.dart';
 import 'tokens/motion_tokens.dart';
 import 'tokens/shape_tokens.dart';
@@ -11,41 +11,29 @@ import 'tokens/typography_tokens.dart';
 
 /// Generates a complete [ThemeData] from any [ClubConfig].
 ///
-/// The ROUGEBLACK design system uses a Soft Slate (Middle Ground) Dark Mode.
-/// Platform constants (glass, shadows, typography) adapt dynamically.
-/// Only the primary/secondary/accent colors change per club via
-/// [AfriSemanticColors.copyWith].
-///
-/// Key features ported from Cool repo:
-/// - [AfriSemanticColors] as ThemeExtension (lerp + copyWith)
-/// - Ripple-less interaction model (scale + opacity + haptic)
-/// - Branded page transitions (fade + scale)
+/// Club identity colors still come from tenant config, but the shared shell,
+/// surfaces, and typography all flow through the Tactile Monolith system in
+/// `core_theme`.
 class ClubTheme {
   ClubTheme._();
 
-  /// Generate a complete ThemeData from a ClubConfig.
   static ThemeData from(ClubConfig config) {
-    final colors = config.colors;
-
-    // ── Build semantic colors for this club ──
     final semanticColors = AfriSemanticColors.dark.copyWith(
-      buttonPrimaryBackground: colors.primary,
-      accent: colors.accent,
+      accent: ColorTokens.primaryContainer,
+      accentSoft: ColorTokens.primaryContainer.withValues(alpha: 0.18),
+      buttonPrimaryBackground: ColorTokens.primaryContainer,
     );
 
     final colorScheme = ColorScheme(
       brightness: Brightness.dark,
-      // Primary
-      primary: colors.primary,
+      primary: ColorTokens.primary,
       onPrimary: Colors.white,
-      primaryContainer: colors.primary,
+      primaryContainer: ColorTokens.primaryContainer,
       onPrimaryContainer: Colors.white,
-      // Secondary
-      secondary: colors.accent,
+      secondary: ColorTokens.clubAccent,
       onSecondary: ColorTokens.background,
-      secondaryContainer: colors.accent.withValues(alpha: 0.2),
-      onSecondaryContainer: colors.accent,
-      // Surface hierarchy
+      secondaryContainer: ColorTokens.secondaryContainer,
+      onSecondaryContainer: ColorTokens.onSurface,
       surface: ColorTokens.surface,
       onSurface: ColorTokens.onSurface,
       surfaceContainerLowest: ColorTokens.surfaceContainerLowest,
@@ -53,12 +41,10 @@ class ClubTheme {
       surfaceContainer: ColorTokens.surfaceContainer,
       surfaceContainerHigh: ColorTokens.surfaceContainerHigh,
       surfaceContainerHighest: ColorTokens.surfaceContainerHighest,
-      // Error
       error: ColorTokens.error,
       onError: ColorTokens.background,
-      // Outline
       outline: ColorTokens.outlineVariant,
-      outlineVariant: ColorTokens.outlineVariant.withValues(alpha: 0.15),
+      outlineVariant: ColorTokens.ghostBorder,
     );
 
     return ThemeData(
@@ -66,17 +52,11 @@ class ClubTheme {
       brightness: Brightness.dark,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: ColorTokens.background,
-
-      // ── Attach semantic colors as ThemeExtension ──
+      dividerColor: Colors.transparent,
       extensions: <ThemeExtension>[semanticColors],
-
-      // ── Ripple-less interaction model ──
-      // Replace Material ripple with scale + opacity + haptic feedback
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       splashFactory: NoSplash.splashFactory,
-
-      // ── Branded page transitions (fade + scale) ──
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
           TargetPlatform.android: _AfriPageTransitionsBuilder(),
@@ -86,146 +66,122 @@ class ClubTheme {
           TargetPlatform.windows: _AfriPageTransitionsBuilder(),
         },
       ),
-
-      // ── App Bar ──
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        titleTextStyle: TypographyTokens.titleLarge(colors.primary),
+        titleTextStyle: TypographyTokens.titleLarge(),
         iconTheme: IconThemeData(color: ColorTokens.onSurface),
       ),
-
-      // ── Card (Glassmorphism) ──
       cardTheme: CardThemeData(
-        color: ColorTokens.glassFill,
+        color: ColorTokens.surfaceContainerHigh,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: ShapeTokens.cardRadius,
-          side: BorderSide(color: ColorTokens.ghostBorder, width: 1),
+          side: BorderTokens.side(
+            color: ColorTokens.ghostBorder,
+            opacity: 0.12,
+          ),
         ),
       ),
-
-      // ── Bottom Navigation ──
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: ColorTokens.surfaceContainerLowest.withValues(
-          alpha: 0.9,
-        ),
-        selectedItemColor: colors.primary,
+        backgroundColor: Colors.transparent,
+        selectedItemColor: ColorTokens.primaryContainer,
         unselectedItemColor: ColorTokens.onSurface.withValues(alpha: 0.5),
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
         elevation: 0,
       ),
-
-      // ── Text Theme ──
-      textTheme: _buildTextTheme(colors.primary),
-
-      // ── Elevated Button (Claymorphic) ──
+      textTheme: _buildTextTheme(),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: colors.primary,
+          backgroundColor: ColorTokens.primaryContainer,
           foregroundColor: Colors.white,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          shadowColor: ColorTokens.primary.withValues(alpha: 0.35),
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 18),
           shape: RoundedRectangleBorder(borderRadius: ShapeTokens.buttonRadius),
-          textStyle: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
-          ),
+          textStyle: TypographyTokens.labelLarge(),
         ),
       ),
-
-      // ── Filled Button ──
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: colors.primary,
+          backgroundColor: ColorTokens.primaryContainer,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(
-            horizontal: SpacingTokens.spacing6,
-            vertical: SpacingTokens.spacing4,
+            horizontal: SpacingTokens.spacing8,
+            vertical: SpacingTokens.spacing5,
           ),
           shape: RoundedRectangleBorder(borderRadius: ShapeTokens.buttonRadius),
-          textStyle: GoogleFonts.inter(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-          ),
+          textStyle: TypographyTokens.labelLarge(),
         ),
       ),
-
-      // ── Text Button ──
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: colors.primary,
-          textStyle: GoogleFonts.inter(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
+          foregroundColor: ColorTokens.primaryContainer,
+          textStyle: TypographyTokens.labelMedium().copyWith(
+            color: ColorTokens.primaryContainer,
           ),
         ),
       ),
-
-      // ── Input ──
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: ColorTokens.surfaceContainerHigh,
-        border: OutlineInputBorder(
+        fillColor: ColorTokens.surfaceContainerLowest,
+        border: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
-          borderSide: BorderSide.none,
+          color: ColorTokens.ghostBorder,
+          opacity: 0.12,
         ),
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
-          borderSide: BorderSide(color: ColorTokens.ghostBorder),
+          color: ColorTokens.ghostBorder,
+          opacity: 0.12,
         ),
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
-          borderSide: BorderSide(color: colors.primary, width: 1.5),
+          color: ColorTokens.primaryContainer,
+          opacity: 0.40,
+          width: BorderTokens.focus,
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 20,
           vertical: 16,
         ),
-        hintStyle: GoogleFonts.inter(
-          color: ColorTokens.onSurface.withValues(alpha: 0.4),
-          fontSize: 15,
+        hintStyle: TypographyTokens.bodyMedium().copyWith(
+          color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.72),
+        ),
+        labelStyle: TypographyTokens.bodyMedium().copyWith(
+          color: ColorTokens.onSurfaceVariant,
         ),
       ),
-
-      // ── Divider (should not be used — but fallback) ──
-      dividerTheme: DividerThemeData(
-        color: ColorTokens.ghostBorder,
-        thickness: 0.5,
+      dividerTheme: const DividerThemeData(
+        color: Colors.transparent,
+        thickness: 0,
         space: 0,
       ),
-
-      // ── Chip ──
       chipTheme: ChipThemeData(
-        backgroundColor: ColorTokens.surfaceContainerHigh,
-        selectedColor: colors.primary.withValues(alpha: 0.2),
-        labelStyle: GoogleFonts.inter(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
+        backgroundColor: ColorTokens.secondaryContainer,
+        selectedColor: Color.alphaBlend(
+          ColorTokens.primary.withValues(alpha: 0.22),
+          ColorTokens.surfaceContainerHighest,
+        ),
+        labelStyle: TypographyTokens.labelMedium().copyWith(
           color: ColorTokens.onSurface,
         ),
-        side: BorderSide(color: ColorTokens.ghostBorder),
+        side: BorderTokens.side(color: ColorTokens.ghostBorder, opacity: 0.10),
         shape: RoundedRectangleBorder(borderRadius: ShapeTokens.chipRadius),
       ),
-
-      // ── Snackbar ──
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: ColorTokens.surfaceContainerHighest,
-        contentTextStyle: GoogleFonts.inter(
-          color: ColorTokens.onSurface,
-          fontSize: 15,
+        backgroundColor: ColorTokens.surfaceContainerHighest.withValues(
+          alpha: 0.94,
         ),
+        contentTextStyle: TypographyTokens.bodyMedium(),
         shape: RoundedRectangleBorder(borderRadius: ShapeTokens.cardRadius),
         behavior: SnackBarBehavior.floating,
       ),
-
-      // ── Bottom Sheet ──
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -236,8 +192,6 @@ class ClubTheme {
           ),
         ),
       ),
-
-      // ── Toggles & Checkboxes ──
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.selected)) {
@@ -247,7 +201,7 @@ class ClubTheme {
         }),
         trackColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.selected)) {
-            return colors.accent;
+            return ColorTokens.primaryContainer;
           }
           return ColorTokens.surfaceContainerHighest;
         }),
@@ -255,37 +209,33 @@ class ClubTheme {
       checkboxTheme: CheckboxThemeData(
         fillColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.selected)) {
-            return colors.accent;
+            return ColorTokens.primaryContainer;
           }
           return Colors.transparent;
         }),
         checkColor: WidgetStateProperty.all(ColorTokens.onSurface),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        side: BorderSide(color: ColorTokens.outlineVariant),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
+        ),
+        side: BorderTokens.side(),
       ),
     );
   }
 
-  /// Build the complete text theme with Barlow Condensed + Inter.
-  static TextTheme _buildTextTheme(Color primaryColor) {
+  static TextTheme _buildTextTheme() {
     return TextTheme(
-      // ── Display: Barlow Condensed ExtraBold 800 ──
-      displayLarge: TypographyTokens.displayLarge(primaryColor),
-      displayMedium: TypographyTokens.displayMedium(primaryColor),
-      displaySmall: TypographyTokens.displaySmall(primaryColor),
-      // ── Headlines: Barlow Condensed Bold 700 ──
+      displayLarge: TypographyTokens.displayLarge(),
+      displayMedium: TypographyTokens.displayMedium(),
+      displaySmall: TypographyTokens.displaySmall(),
       headlineLarge: TypographyTokens.headlineLarge(),
       headlineMedium: TypographyTokens.headlineMedium(),
       headlineSmall: TypographyTokens.headlineSmall(),
-      // ── Titles: Barlow Condensed Bold 700 ──
-      titleLarge: TypographyTokens.titleLarge(primaryColor),
+      titleLarge: TypographyTokens.titleLarge(),
       titleMedium: TypographyTokens.titleMedium(),
       titleSmall: TypographyTokens.titleSmall(),
-      // ── Body: Inter Regular 400 ──
       bodyLarge: TypographyTokens.bodyLarge(),
       bodyMedium: TypographyTokens.bodyMedium(),
       bodySmall: TypographyTokens.bodySmall(),
-      // ── Labels: Inter SemiBold 600 ──
       labelLarge: TypographyTokens.labelLarge(),
       labelMedium: TypographyTokens.labelMedium(),
       labelSmall: TypographyTokens.labelSmall(),
@@ -293,10 +243,6 @@ class ClubTheme {
   }
 }
 
-/// Custom page transition: Fade + subtle scale (0.98 → 1.0).
-///
-/// Creates the premium, smooth transition feel used throughout
-/// the Cool app. This replaces the default Material zoom transition.
 class _AfriPageTransitionsBuilder extends PageTransitionsBuilder {
   const _AfriPageTransitionsBuilder();
 

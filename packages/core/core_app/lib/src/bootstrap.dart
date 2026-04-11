@@ -38,11 +38,11 @@ Future<void> bootstrap(
   ClubConfig config, {
   AfriClubBootstrapOptions options = const AfriClubBootstrapOptions(),
 }) async {
-  WidgetsFlutterBinding.ensureInitialized();
-  _installGlobalErrorHandlers();
-
   await runZonedGuarded(
     () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      _installGlobalErrorHandlers();
+
       final normalizedClubId = int.tryParse(config.clubId);
       assert(
         config.appName.trim().isNotEmpty,

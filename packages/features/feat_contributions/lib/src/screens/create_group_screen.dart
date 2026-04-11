@@ -5,7 +5,6 @@ import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CreateGroupScreen extends ConsumerStatefulWidget {
   const CreateGroupScreen({super.key});
@@ -167,7 +166,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
         backgroundColor: Colors.transparent,
         title: Text(
           'NEW CIRCLE',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -303,7 +302,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                 children: [
                   Text(
                     'LIVE PREVIEW',
-                    style: GoogleFonts.barlowCondensed(
+                    style: TypographyTokens.monolithFont(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: ColorTokens.onSurface,

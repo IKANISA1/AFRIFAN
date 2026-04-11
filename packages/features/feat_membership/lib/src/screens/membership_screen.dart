@@ -3,7 +3,6 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../widgets/membership_card.dart';
@@ -144,7 +143,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
         ),
         title: Text(
           'MEMBERSHIP',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 18,
             fontWeight: FontWeight.w700,
             color: ColorTokens.onSurface,
@@ -185,7 +184,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
               ),
               child: Text(
                 'MEMBERSHIP PACKAGES',
-                style: GoogleFonts.barlowCondensed(
+                style: TypographyTokens.monolithFont(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                   color: ColorTokens.onSurfaceVariant,
@@ -229,7 +228,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                           children: [
                             Text(
                               currentTier.toUpperCase(),
-                              style: GoogleFonts.barlowCondensed(
+                              style: TypographyTokens.monolithFont(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w800,
                                 color: ColorTokens.clubAccent,
@@ -272,18 +271,22 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                       children: [
                         Row(
                           children: [
-                            Text(
-                              (pkg['title'] ?? pkg['tier'] ?? 'Package')
-                                  .toString()
-                                  .toUpperCase(),
-                              style: GoogleFonts.barlowCondensed(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: ColorTokens.onSurface,
-                                letterSpacing: 0.5,
+                            Expanded(
+                              child: Text(
+                                (pkg['title'] ?? pkg['tier'] ?? 'Package')
+                                    .toString()
+                                    .toUpperCase(),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TypographyTokens.monolithFont(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: ColorTokens.onSurface,
+                                  letterSpacing: 0.5,
+                                ),
                               ),
                             ),
-                            const Spacer(),
+                            const SizedBox(width: SpacingTokens.spacing3),
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 10,
@@ -295,7 +298,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                               ),
                               child: Text(
                                 (pkg['tier'] ?? '').toString().toUpperCase(),
-                                style: GoogleFonts.barlowCondensed(
+                                style: TypographyTokens.monolithFont(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
                                   color: primary,

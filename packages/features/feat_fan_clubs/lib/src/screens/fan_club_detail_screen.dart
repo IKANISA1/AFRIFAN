@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 int? _currentClubId(SupabaseClient client) {
@@ -308,7 +307,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                               ),
                               child: Text(
                                 'OFFICIAL',
-                                style: GoogleFonts.inter(
+                                style: TypographyTokens.editorialFont(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
                                   color: ColorTokens.clubAccent,
@@ -321,7 +320,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                       const SizedBox(height: SpacingTokens.spacing4),
                       Text(
                         name.toUpperCase(),
-                        style: GoogleFonts.barlowCondensed(
+                        style: TypographyTokens.monolithFont(
                           fontSize: 34,
                           fontWeight: FontWeight.w800,
                           color: ColorTokens.onSurface,
@@ -375,7 +374,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                       children: [
                         Text(
                           'ABOUT THIS CLUB',
-                          style: GoogleFonts.barlowCondensed(
+                          style: TypographyTokens.monolithFont(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
                             color: ColorTokens.onSurface,
@@ -400,7 +399,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                       children: [
                         Text(
                           'CIRCLE SNAPSHOT',
-                          style: GoogleFonts.barlowCondensed(
+                          style: TypographyTokens.monolithFont(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
                             color: ColorTokens.onSurface,
@@ -428,7 +427,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                       children: [
                         Text(
                           'MATCHDAY AGENDA',
-                          style: GoogleFonts.barlowCondensed(
+                          style: TypographyTokens.monolithFont(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
                             color: ColorTokens.onSurface,
@@ -444,7 +443,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                         else ...[
                           Text(
                             '${match['home_team']} vs ${match['away_team']}',
-                            style: GoogleFonts.barlowCondensed(
+                            style: TypographyTokens.monolithFont(
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
                               color: ColorTokens.onSurface,
@@ -480,7 +479,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                         child: OutlinedButton(
                           onPressed: _copyShareLink,
                           style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: primary),
+                            side: BorderTokens.side(color: primary),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18),
                             ),
@@ -516,7 +515,7 @@ class _DetailStat extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             value,
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 28,
               fontWeight: FontWeight.w800,
               color: ColorTokens.clubAccent,

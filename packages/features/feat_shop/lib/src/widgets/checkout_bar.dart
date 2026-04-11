@@ -1,7 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Floating checkout bar — sticky at the bottom of the shop.
 ///
@@ -41,7 +40,7 @@ class CheckoutBar extends StatelessWidget {
             decoration: BoxDecoration(
               color: ColorTokens.surfaceContainerLowest,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: ColorTokens.ghostBorder, width: 1.0),
+              border: BorderTokens.ghost(width: BorderTokens.standard),
               boxShadow: [
                 BoxShadow(
                   color: ColorTokens.background.withValues(alpha: 0.8),
@@ -71,14 +70,11 @@ class CheckoutBar extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: ColorTokens.surfaceContainerHigh,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: ColorTokens.ghostBorder,
-                        width: 0.5,
-                      ),
+                      border: BorderTokens.ghost(),
                     ),
                     child: Text(
                       '$itemCount',
-                      style: GoogleFonts.inter(
+                      style: TypographyTokens.editorialFont(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                         color: ColorTokens.onSurfaceVariant,
@@ -90,7 +86,7 @@ class CheckoutBar extends StatelessWidget {
                   // Total price
                   Text(
                     currency.format(total),
-                    style: GoogleFonts.barlowCondensed(
+                    style: TypographyTokens.monolithFont(
                       fontSize: 32,
                       fontWeight: FontWeight.w900,
                       color: ColorTokens.onSurface,
@@ -119,7 +115,7 @@ class CheckoutBar extends StatelessWidget {
                         const SizedBox(width: 8),
                         Text(
                           'CHECKOUT',
-                          style: GoogleFonts.barlowCondensed(
+                          style: TypographyTokens.monolithFont(
                             fontSize: 16,
                             fontWeight: FontWeight.w800,
                             color: ColorTokens.onSurface,

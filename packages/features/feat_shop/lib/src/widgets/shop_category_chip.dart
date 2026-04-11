@@ -1,6 +1,5 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Animated category filter chip for the Shop screen.
 class ShopCategoryChip extends StatelessWidget {
@@ -31,9 +30,9 @@ class ShopCategoryChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected ? primary : Colors.transparent,
           borderRadius: ShapeTokens.buttonRadius,
-          border: Border.all(
+          border: BorderTokens.all(
             color: isSelected ? primary : ColorTokens.ghostBorder,
-            width: 1,
+            width: BorderTokens.standard,
           ),
           boxShadow: isSelected
               ? [
@@ -48,7 +47,7 @@ class ShopCategoryChip extends StatelessWidget {
         child: Center(
           child: Text(
             label.toUpperCase(),
-            style: GoogleFonts.inter(
+            style: TypographyTokens.editorialFont(
               fontSize: 15,
               fontWeight: FontWeight.w600,
               color: isSelected

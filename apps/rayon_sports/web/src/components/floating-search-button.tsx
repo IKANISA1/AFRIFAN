@@ -3,6 +3,7 @@
 import { Search } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useState } from "react";
+import { ui } from "@/design-system";
 
 const SearchDialog = dynamic(
   () => import("./search-dialog").then((mod) => mod.SearchDialog),
@@ -22,7 +23,7 @@ export function FloatingSearchButton() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Search"
-        className="fixed bottom-[calc(env(safe-area-inset-bottom)+68px)] right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-club-primary shadow-lg shadow-club-primary/30 text-white transition hover:bg-club-primary-light active:scale-90 lg:hidden"
+        className={`fixed bottom-[calc(env(safe-area-inset-bottom)+68px)] right-4 z-50 h-12 w-12 ${ui.buttonPrimary} px-0 shadow-lg shadow-club-primary/30 active:scale-90 lg:hidden`}
       >
         <Search size={20} strokeWidth={2} />
       </button>

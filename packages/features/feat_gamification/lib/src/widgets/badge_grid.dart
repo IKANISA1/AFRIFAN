@@ -1,7 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Grid of achievement badges — earned and locked.
 ///
@@ -52,7 +51,7 @@ class BadgeGrid extends StatelessWidget {
                             alpha: 0.5,
                           ),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
+                    border: BorderTokens.all(
                       color: isEarned
                           ? primary.withValues(alpha: 0.3)
                           : ColorTokens.glassFill,
@@ -71,7 +70,7 @@ class BadgeGrid extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   name.toUpperCase(),
-                  style: GoogleFonts.inter(
+                  style: TypographyTokens.editorialFont(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: isEarned

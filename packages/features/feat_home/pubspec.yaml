@@ -18,6 +18,8 @@ dependencies:
     path: ../../core/core_network
   core_utils:
     path: ../../core/core_utils
+  feat_fantasy:
+    path: ../feat_fantasy
   flutter_riverpod: ^2.6.1
   go_router: ^14.8.1
   supabase_flutter: ^2.12.2
@@ -32,3 +34,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 resolution: workspace
+
+flutter:
+  assets:
+    - test/fonts/

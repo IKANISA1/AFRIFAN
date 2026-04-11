@@ -9,6 +9,8 @@
   "packageManager": "npm@11.8.0",
   "scripts": {
     "build": "node -e \"require('node:fs').rmSync('tmp/deploy-check', { recursive: true, force: true })\" && node --max-old-space-size=6144 ./node_modules/next/dist/bin/next build --webpack && node scripts/fix-route-group-manifests.mjs",
+    "design-system:check": "node scripts/generate-design-tokens.mjs --check",
+    "design-system:sync": "node scripts/generate-design-tokens.mjs",
     "dev": "next dev",
     "start": "next start",
     "lint": "eslint .",

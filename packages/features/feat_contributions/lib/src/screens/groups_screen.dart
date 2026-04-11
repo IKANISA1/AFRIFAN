@@ -5,7 +5,6 @@ import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../widgets/group_card.dart';
 
@@ -92,7 +91,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                   children: [
                     Text(
                       'MY CIRCLES',
-                      style: GoogleFonts.barlowCondensed(
+                      style: TypographyTokens.monolithFont(
                         fontSize: 22,
                         fontWeight: FontWeight.w700,
                         color: ColorTokens.onSurface,
@@ -275,7 +274,7 @@ class _SummaryItem extends StatelessWidget {
       children: [
         Text(
           value,
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w800,
             color: color,
@@ -284,7 +283,7 @@ class _SummaryItem extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           label,
-          style: GoogleFonts.inter(
+          style: TypographyTokens.editorialFont(
             fontSize: 15,
             fontWeight: FontWeight.w600,
             color: ColorTokens.onSurfaceVariant,

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Calendar } from "lucide-react";
+import { ui } from "@/design-system";
 import type { MatchItem } from "@/lib/types";
 import { formatDateTime, isLiveMatch } from "@/lib/utils";
 
@@ -15,7 +16,7 @@ export function MatchRibbon({ match }: MatchRibbonProps) {
   if (live) {
     return (
       <div
-        className="relative z-[65] overflow-hidden border-b border-white/10 bg-gradient-to-r from-club-primary via-club-primary-light to-club-secondary text-white"
+        className={`relative z-[65] overflow-hidden text-white ${ui.ribbonLive}`}
         style={{ minHeight: "var(--ribbon-height)" }}
       >
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.18)_50%,transparent_100%)] opacity-40 [background-size:200%_100%] animate-[shimmer_3s_linear_infinite]" />
@@ -34,7 +35,7 @@ export function MatchRibbon({ match }: MatchRibbonProps) {
               {match.awayTeam}
             </span>
             {match.liveMinute != null ? (
-              <span className="rounded-full border border-white/10 bg-black/15 px-2.5 py-1 text-[10px] uppercase tracking-[0.22em] text-white/85">
+              <span className={`${ui.ribbonPill} rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.22em] text-white/85`}>
                 {match.liveMinute}&rsquo;
               </span>
             ) : null}
@@ -42,7 +43,7 @@ export function MatchRibbon({ match }: MatchRibbonProps) {
           <Link
             href={`/fixtures/${match.id}`}
             prefetch={false}
-            className="rounded-full border border-white/14 bg-black/15 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] transition hover:bg-black/25"
+            className={ui.ribbonAction}
           >
             Follow live
           </Link>
@@ -54,7 +55,7 @@ export function MatchRibbon({ match }: MatchRibbonProps) {
   // Non-live: show next fixture ribbon (subtle, minimal)
   return (
     <div
-      className="relative z-[65] border-b border-border-soft bg-surface-strong/90 backdrop-blur-sm"
+      className={`relative z-[65] ${ui.ribbonSubtle}`}
       style={{ minHeight: "var(--ribbon-height)" }}
     >
       <div className="page-shell flex min-h-[var(--ribbon-height)] flex-wrap items-center justify-center gap-x-3 gap-y-1 py-1.5 text-center sm:justify-between">
@@ -73,7 +74,7 @@ export function MatchRibbon({ match }: MatchRibbonProps) {
         <Link
           href={`/fixtures/${match.id}`}
           prefetch={false}
-          className="rounded-full border border-border-soft bg-white/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-200 transition hover:bg-white/10"
+          className={`${ui.ribbonAction} px-3 py-1 text-[10px] text-slate-200`}
         >
           Details
         </Link>

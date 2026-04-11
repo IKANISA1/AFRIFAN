@@ -4,7 +4,6 @@ import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Full contribution flow: Amount → USSD Confirmation → Record → Success.
 ///
@@ -119,7 +118,7 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
               'HOW MUCH TO CONTRIBUTE?',
-              style: GoogleFonts.barlowCondensed(
+              style: TypographyTokens.monolithFont(
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
                 color: ColorTokens.onSurface,
@@ -130,7 +129,7 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
               currency.format(_amount),
-              style: GoogleFonts.barlowCondensed(
+              style: TypographyTokens.monolithFont(
                 fontSize: 48,
                 fontWeight: FontWeight.w900,
                 color: ColorTokens.clubAccent,
@@ -195,7 +194,7 @@ class _UssdConfirmationSheet extends StatelessWidget {
           children: [
             Text(
               'LAUNCHING MOMO',
-              style: GoogleFonts.barlowCondensed(
+              style: TypographyTokens.monolithFont(
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
                 color: ColorTokens.onSurface,
@@ -277,7 +276,7 @@ class _ContributionSuccessDialog extends StatelessWidget {
               recordedPending
                   ? 'PENDING CONFIRMATION'
                   : 'PAYMENT HANDOFF STARTED',
-              style: GoogleFonts.barlowCondensed(
+              style: TypographyTokens.monolithFont(
                 fontSize: 30,
                 fontWeight: FontWeight.w800,
                 color: ColorTokens.onSurface,
@@ -286,7 +285,7 @@ class _ContributionSuccessDialog extends StatelessWidget {
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
               currency.format(amount),
-              style: GoogleFonts.barlowCondensed(
+              style: TypographyTokens.monolithFont(
                 fontSize: 34,
                 fontWeight: FontWeight.w800,
                 color: ColorTokens.clubAccent,

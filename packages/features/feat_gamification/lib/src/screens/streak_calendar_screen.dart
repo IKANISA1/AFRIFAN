@@ -3,13 +3,13 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class StreakCalendarScreen extends ConsumerStatefulWidget {
   const StreakCalendarScreen({super.key});
 
   @override
-  ConsumerState<StreakCalendarScreen> createState() => _StreakCalendarScreenState();
+  ConsumerState<StreakCalendarScreen> createState() =>
+      _StreakCalendarScreenState();
 }
 
 class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
@@ -39,7 +39,8 @@ class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
       final since = DateTime.now()
           .subtract(const Duration(days: 34))
           .toIso8601String();
-      final events = await ref.read(supabaseClientProvider)
+      final events = await ref
+          .read(supabaseClientProvider)
           .from('cool_events')
           .select('event_at')
           .eq('user_id', userId)
@@ -119,7 +120,7 @@ class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
         backgroundColor: Colors.transparent,
         title: Text(
           'YOUR STREAK',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -141,7 +142,7 @@ class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
                 children: [
                   Text(
                     '$_currentStreak DAYS',
-                    style: GoogleFonts.barlowCondensed(
+                    style: TypographyTokens.monolithFont(
                       fontSize: 56,
                       fontWeight: FontWeight.w900,
                       color: ColorTokens.clubAccent,
@@ -213,7 +214,7 @@ class _StreakMetric extends StatelessWidget {
         const SizedBox(height: SpacingTokens.spacing2),
         Text(
           value,
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 28,
             fontWeight: FontWeight.w800,
             color: ColorTokens.onSurface,

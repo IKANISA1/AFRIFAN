@@ -1,7 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../settings_actions.dart';
 import '../widgets/settings_navigation_scope.dart';
@@ -20,7 +19,7 @@ class AboutScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(
             'ABOUT',
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 22,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.6,
@@ -53,7 +52,7 @@ class AboutScreen extends StatelessWidget {
                         appName.length >= 2
                             ? appName.substring(0, 2).toUpperCase()
                             : appName.toUpperCase(),
-                        style: GoogleFonts.barlowCondensed(
+                        style: TypographyTokens.monolithFont(
                           fontSize: 28,
                           fontWeight: FontWeight.w800,
                           color: Theme.of(context).colorScheme.primary,
@@ -63,7 +62,7 @@ class AboutScreen extends StatelessWidget {
                     const SizedBox(height: SpacingTokens.spacing4),
                     Text(
                       appName.toUpperCase(),
-                      style: GoogleFonts.barlowCondensed(
+                      style: TypographyTokens.monolithFont(
                         fontSize: 32,
                         fontWeight: FontWeight.w800,
                         color: ColorTokens.onSurface,
@@ -130,8 +129,9 @@ class AboutScreen extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: ColorTokens.onSurface,
                   minimumSize: const Size(double.infinity, 58),
-                  side: BorderSide(
-                    color: ColorTokens.onSurface.withValues(alpha: 0.2),
+                  side: BorderTokens.side(
+                    color: ColorTokens.onSurface,
+                    opacity: 0.2,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -162,8 +162,9 @@ class AboutScreen extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: ColorTokens.onSurface,
                   minimumSize: const Size(double.infinity, 58),
-                  side: BorderSide(
-                    color: ColorTokens.onSurface.withValues(alpha: 0.2),
+                  side: BorderTokens.side(
+                    color: ColorTokens.onSurface,
+                    opacity: 0.2,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),

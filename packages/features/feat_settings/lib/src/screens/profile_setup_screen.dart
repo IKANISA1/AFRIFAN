@@ -156,7 +156,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                 decoration: BoxDecoration(
                   color: ColorTokens.surface,
                   borderRadius: ShapeTokens.cardRadius,
-                  border: Border.all(color: ColorTokens.ghostBorder),
+                  border: BorderTokens.ghost(),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,20 +185,6 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                   hintText: 'e.g. 078...',
                   hintStyle: TypographyTokens.headlineMedium().copyWith(
                     color: ColorTokens.outlineVariant,
-                  ),
-                  filled: true,
-                  fillColor: ColorTokens.surface,
-                  border: OutlineInputBorder(
-                    borderRadius: ShapeTokens.inputRadius,
-                    borderSide: BorderSide(color: ColorTokens.ghostBorder),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: ShapeTokens.inputRadius,
-                    borderSide: BorderSide(color: ColorTokens.ghostBorder),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: ShapeTokens.inputRadius,
-                    borderSide: BorderSide(color: ColorTokens.clubPrimary),
                   ),
                   prefixIcon: Icon(
                     Icons.phone_android,

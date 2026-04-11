@@ -3,7 +3,6 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../widgets/contribution_overlays.dart';
 
@@ -158,7 +157,7 @@ class _ContributionsHubScreenState
                   children: [
                     Text(
                       'LIVE CIRCLES',
-                      style: GoogleFonts.barlowCondensed(
+                      style: TypographyTokens.monolithFont(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                         color: ColorTokens.onSurface,
@@ -206,7 +205,7 @@ class _ContributionsHubScreenState
                                       children: [
                                         Text(
                                           name.toUpperCase(),
-                                          style: GoogleFonts.barlowCondensed(
+                                          style: TypographyTokens.monolithFont(
                                             fontSize: 20,
                                             fontWeight: FontWeight.w700,
                                             color: ColorTokens.onSurface,
@@ -291,7 +290,7 @@ class _HubCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: GoogleFonts.barlowCondensed(
+                      style: TypographyTokens.monolithFont(
                         fontSize: 26,
                         fontWeight: FontWeight.w800,
                         color: ColorTokens.onSurface,
@@ -309,7 +308,7 @@ class _HubCard extends StatelessWidget {
                     ),
                     child: Text(
                       metricLabel,
-                      style: GoogleFonts.inter(
+                      style: TypographyTokens.editorialFont(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: ColorTokens.onSurfaceVariant,

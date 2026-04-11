@@ -6,9 +6,15 @@ import 'package:feat_settings/src/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import '../../test_support/design_font_loader.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  GoogleFonts.config.allowRuntimeFetching = false;
+  setUpAll(loadDesignFonts);
+
   testWidgets('about screen shows actionable policy and support actions', (
     tester,
   ) async {
@@ -86,6 +92,23 @@ void main() {
     expect(find.text('BioPay & Privacy'), findsNothing);
     expect(find.text('BioPay Home'), findsNothing);
     expect(find.text('Face ID & Enrollment'), findsNothing);
+  });
+
+  testWidgets('matches the shared settings glass layout', (tester) async {
+    _setMobileSurface(tester);
+
+    await tester.pumpWidget(
+      _buildSettingsApp(
+        config: const _FakeClubConfig(hasBiopay: true),
+        includeBiopayRoutes: true,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await expectLater(
+      find.byType(SettingsScreen),
+      matchesGoldenFile('goldens/settings_screen.png'),
+    );
   });
 }
 
@@ -223,4 +246,11 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const <String>['rw', 'fr', 'en'];
+}
+
+void _setMobileSurface(WidgetTester tester) {
+  tester.view.physicalSize = const Size(393, 852);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
 }

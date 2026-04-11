@@ -5,6 +5,7 @@ import { Search, Sparkles, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SearchIndexItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { ui } from "@/design-system";
 
 interface SearchDialogProps {
   open: boolean;
@@ -132,7 +133,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-start justify-center bg-[#020814]/88 px-4 py-10 backdrop-blur-md">
+    <div className="fixed inset-0 z-[70] flex items-start justify-center bg-[rgba(6,4,12,0.88)] px-4 py-10 backdrop-blur-md">
       <button
         type="button"
         className="absolute inset-0 cursor-default"
@@ -146,8 +147,8 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
         aria-modal="true"
         aria-label="Search"
       >
-        <div className="glass-panel-elevated overflow-hidden rounded-[32px] border border-border-soft">
-          <div className="flex items-center gap-3 border-b border-border-soft px-5 py-4">
+        <div className={`${ui.panelElevated} overflow-hidden rounded-[32px]`}>
+          <div className="flex items-center gap-3 px-5 py-4">
             <Search size={18} className="text-club-accent" />
             <input
               ref={inputRef}
@@ -159,14 +160,14 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
             <button
               type="button"
               onClick={handleClose}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border-soft bg-white/5 text-slate-300 transition hover:bg-white/10 hover:text-white"
+              className={`${ui.iconButton} h-10 w-10 text-slate-300`}
               aria-label="Close search"
             >
               <X size={16} />
             </button>
           </div>
 
-          <div className="flex items-center justify-between border-b border-border-soft px-5 py-3 text-[11px] uppercase tracking-[0.24em] text-slate-300">
+          <div className={`flex items-center justify-between px-5 py-3 ${ui.meta}`}>
             <div className="flex items-center gap-2">
               <Sparkles size={14} className="text-club-accent" />
               Fast search
@@ -176,8 +177,8 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
 
           <div className="max-h-[65vh] overflow-y-auto p-3">
             {isLoading ? (
-              <div className="rounded-[24px] border border-dashed border-border-soft bg-white/3 px-5 py-10 text-center">
-                <p className="font-display text-3xl font-bold uppercase text-white">
+              <div className={`${ui.panelInset} rounded-[24px] px-5 py-10 text-center`}>
+                <p className="font-display text-3xl font-bold uppercase tracking-[-0.05em] text-white">
                   Loading
                 </p>
                 <p className="mt-3 text-sm leading-7 text-slate-300">
@@ -191,16 +192,16 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                     key={item.id}
                     href={item.href}
                     onClick={handleClose}
-                    className="card-interactive rounded-[24px] border border-border-soft bg-white/4 px-4 py-4"
+                    className={`${ui.panelInset} ${ui.cardInteractive} rounded-[24px] px-4 py-4`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full bg-club-primary/18 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-club-accent">
+                          <span className={`${ui.chip} ${ui.chipSignal} px-2.5 py-1 text-[10px]`}>
                             {item.category}
                           </span>
                           {item.meta ? (
-                            <span className="text-[11px] uppercase tracking-[0.22em] text-slate-500">
+                            <span className={ui.meta}>
                               {item.meta}
                             </span>
                           ) : null}
@@ -218,8 +219,8 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                 ))}
               </div>
             ) : (
-              <div className="rounded-[24px] border border-dashed border-border-soft bg-white/3 px-5 py-10 text-center">
-                <p className="font-display text-3xl font-bold uppercase text-white">
+              <div className={`${ui.panelInset} rounded-[24px] px-5 py-10 text-center`}>
+                <p className="font-display text-3xl font-bold uppercase tracking-[-0.05em] text-white">
                   No results
                 </p>
                 <p className="mt-3 text-sm leading-7 text-slate-300">
@@ -229,7 +230,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
             )}
           </div>
 
-          <div className="flex flex-wrap gap-2 border-t border-border-soft px-5 py-4">
+          <div className="flex flex-wrap gap-2 px-5 py-4">
             {["Fixtures", "Tickets", "Membership", "Circles", "Shop"].map(
               (token) => (
                 <button
@@ -237,7 +238,9 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                   type="button"
                   onClick={() => setQuery(token)}
                   className={cn(
-                    "rounded-full border border-border-soft px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-300 transition hover:bg-white/8 hover:text-white",
+                    ui.chip,
+                    ui.chipMuted,
+                    "px-3 py-1.5 text-[11px] transition hover:text-white",
                     query === token && "bg-club-primary/20 text-white",
                   )}
                 >

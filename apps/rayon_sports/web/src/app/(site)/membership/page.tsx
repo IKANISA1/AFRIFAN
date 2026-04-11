@@ -73,7 +73,7 @@ export default async function MembershipPage() {
         {packages.map((membershipPackage) => (
           <article
             key={membershipPackage.id}
-            className="glass-panel card-interactive rounded-[32px] border border-border-soft p-6"
+            className="glass-panel card-interactive rounded-[32px] p-6"
           >
             <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
               {membershipPackage.tier}

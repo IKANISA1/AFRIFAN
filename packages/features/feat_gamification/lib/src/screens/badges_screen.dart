@@ -3,7 +3,6 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../widgets/gamification_overlays.dart';
 
@@ -161,7 +160,7 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
         backgroundColor: Colors.transparent,
         title: Text(
           'YOUR BADGES',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -203,7 +202,7 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
                         color: earned
                             ? ColorTokens.clubAccent.withValues(alpha: 0.18)
                             : ColorTokens.surfaceContainerHigh,
-                        border: Border.all(
+                        border: BorderTokens.all(
                           color: earned
                               ? ColorTokens.clubAccent
                               : ColorTokens.ghostBorder,

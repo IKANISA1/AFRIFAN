@@ -24,7 +24,7 @@ export function StandingList({
   onDelete,
 }: StandingListProps) {
   return (
-    <section className="glass-panel overflow-hidden rounded-[32px] border border-border-soft">
+    <section className="glass-panel overflow-hidden rounded-[32px]">
       <div className="p-6">
         <p className="font-display text-3xl font-bold uppercase leading-none">
           League table

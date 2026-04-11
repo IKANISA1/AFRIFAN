@@ -1,6 +1,5 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 Future<void> showNfcPairingSheet(BuildContext context) {
   return showAfriBottomSheet<void>(
@@ -32,10 +31,9 @@ Future<void> showNfcPairingSheet(BuildContext context) {
                   height: 56 + (index * 32),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: const Color(
-                        0xFF57D0FF,
-                      ).withValues(alpha: 0.38 - (index * 0.1)),
+                    border: BorderTokens.all(
+                      color: const Color(0xFF57D0FF),
+                      opacity: 0.38 - (index * 0.1),
                     ),
                   ),
                 ),
@@ -117,7 +115,7 @@ class BiopayLivenessPromptOverlay extends StatelessWidget {
                     Expanded(
                       child: Text(
                         title,
-                        style: GoogleFonts.barlowCondensed(
+                        style: TypographyTokens.monolithFont(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
                           color: ColorTokens.onSurface,
@@ -148,7 +146,7 @@ class BiopayLivenessPromptOverlay extends StatelessWidget {
                               ? ColorTokens.clubAccent.withValues(alpha: 0.18)
                               : ColorTokens.surfaceContainerLow,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
+                          border: BorderTokens.all(
                             color: index < currentStep
                                 ? ColorTokens.clubAccent
                                 : ColorTokens.ghostBorder,

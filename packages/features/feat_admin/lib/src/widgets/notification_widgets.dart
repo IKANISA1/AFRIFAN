@@ -24,9 +24,7 @@ class NotificationPreviewCard extends StatelessWidget {
         children: [
           Text(
             'PREVIEW',
-            style: TypographyTokens.titleMedium().copyWith(
-              letterSpacing: 1.2,
-            ),
+            style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.2),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           Container(
@@ -50,9 +48,7 @@ class NotificationPreviewCard extends StatelessWidget {
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  body.isEmpty
-                      ? 'Your message preview appears here.'
-                      : body,
+                  body.isEmpty ? 'Your message preview appears here.' : body,
                   style: TypographyTokens.bodyMedium(),
                 ),
               ],

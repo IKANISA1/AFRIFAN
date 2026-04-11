@@ -143,6 +143,8 @@ class AppStartupCoordinator {
 
     await _registerAuthLifecycleObservers(config);
     await PushNotificationService.initialize(clubId: config.clubId);
+    await PushNotificationService.subscribeToTopic('fantasy_pl_2526');
+    await PushNotificationService.subscribeToTopic('fantasy_wc_2026');
 
     final countryRepo = CountryRepository(client: SupabaseClientFactory.client);
     await countryRepo.loadAndInject();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../extensions.dart';
+import '../tokens/border_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_button.dart';
 
@@ -54,7 +55,11 @@ class AfriEmptyView extends StatelessWidget {
         decoration: BoxDecoration(
           color: colors.cardSurface,
           shape: BoxShape.circle,
-          border: Border.all(color: colors.border, width: 1.5),
+          border: BorderTokens.all(
+            color: colors.border,
+            width: BorderTokens.standard,
+            opacity: 0.55,
+          ),
         ),
         child: Icon(icon, size: iconSize, color: colors.tertiaryText),
       ),

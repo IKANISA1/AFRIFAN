@@ -223,25 +223,27 @@ After any refactor that moves or removes features:
 
 Before touching **any** file in `lib/features/` or `lib/core/theme/`, read all of the following in order:
 
-1. `docs/design.md` — ROUGEBLACK design language specification  
+1. `docs/design.md` — canonical design system specification  
 2. `docs/blueprint.md` — full app architecture and screen-by-screen specification  
-3. `docs/design_mandate.md` — non-negotiable visual rules  
-4. `docs/screen_inventory.md` — complete screen list with Stitch prompts  
-5. The relevant feature's own `README.md` if it exists
+3. `docs/screen_inventory.md` — complete screen list with Stitch prompts  
+4. The relevant feature's own `README.md` if it exists
 
 **If any of these files do not exist yet, stop and alert the owner — do not proceed.**
 
 ### **4.2 Adaptive Theming (Light, Dark, System)**
 
-This app supports **System, Light, and Dark mode**. Themes dynamically respond to user system preferences while maintaining the club's "Stadium Pulse" energetic feel across all variants.
-
-* **Primary Action:** `ColorTokens.clubPrimary` background (dynamic per club). color  
-* Never use `Colors.black` as a text color — use `AppColors.textPrimary` (`#F7F9FC`)  
-* All surfaces must be deep navy variants (`#0A0F2C`, `#0D1333`, `#1A1F3A`)  
+This app supports **System, Light, and Dark mode**. Theme behavior, visual hierarchy, and token values must follow `docs/design.md`. Do not duplicate or redefine token values in this rules file.
 
 ### **4.3 Design Token System — Never Bypass It**
 
-All colors, typography, spacing, and border radii must use tokens from `core_theme`:
+All colors, typography, spacing, radii, and surface recipes must use platform design tokens:
+
+* Web: `apps/rayon_sports/web/src/design-system/`
+* Flutter: `packages/core/core_theme/`
+
+Hardcoded visual values are only acceptable inside those design-system sources.
+
+Example:
 
 ```dart
 // ✅ CORRECT — dynamic club colors
@@ -318,7 +320,7 @@ Never use durations above 500ms except for looping ambient effects. Always pair 
 
 ### **4.8 No Emoji as Icons**
 
-Never use emoji characters as UI icons. Use the approved SVG icon set (`core_theme/icons/`) or Phosphor Icons. Emoji are culturally variable, render differently across Android versions, and are prohibited by the `design_mandate.md`.
+Never use emoji characters as UI icons. Use the approved SVG icon set (`core_theme/icons/`) or Phosphor Icons. Emoji are culturally variable, render differently across Android versions, and are prohibited by `docs/design.md`.
 
 ---
 
@@ -693,7 +695,7 @@ When updating, add an entry to the changelog at the bottom of this file.
 ALWAYS:
   ✅ Read this file before starting any task
   ✅ Do a full repo review before writing code
-  ✅ Read design.md, blueprint.md, design_mandate.md before touching UI
+  ✅ Read design.md and blueprint.md before touching UI
   ✅ Use ColorTokens.*, TypographyTokens.*, GlassCard, ClubConfig tokens
   ✅ Hide sections when data is empty (SizedBox.shrink)
   ✅ Delete old code when replacing it
@@ -731,4 +733,3 @@ NEVER:
 ---
 
 *This document is the authoritative source of truth for all AI agent and developer behavior in this repository. When in doubt, stop and ask — do not guess.*
-

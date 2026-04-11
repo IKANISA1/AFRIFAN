@@ -11,7 +11,8 @@
 Dark glassmorphic mobile UI, deep navy (#0A0F2C) background gradient,
 frosted glass cards (white 6% opacity, blur, 0.5pt white border),
 primary red (#C8102E) CTAs, gold (#D4A017) accents,
-Barlow Condensed bold for headlines, Inter for body text,
+Legacy visual notes remain below for screen-by-screen product inventory.
+Canonical Flutter design-system guidance now lives in `packages/core/core_theme/README.md`.
 minimum 15sp body text, 375×812pt mobile frame, dark mode only,
 football-first aesthetic, Rwanda Rayon Sports FC branding,
 club crest top-left where applicable, no light backgrounds.
@@ -44,21 +45,21 @@ club crest top-left where applicable, no light backgrounds.
 <details><summary>1.1 Splash Screen</summary>
 
 ```
-Mobile splash screen for a football club app. Full-bleed dark stadium photograph at night, dramatic floodlights, deep blue-black atmosphere. Centered club crest (Rayon Sports FC red-and-black shield) scaling up from 0 with a soft red glow pulse. App name "Rayon Sports" in Barlow Condensed ExtraBold 56sp white below the crest, fading in. Thin red horizontal rule beneath the name. Loading progress bar at bottom (thin red line). No other UI elements.
+Mobile splash screen for a football club app. Full-bleed dark stadium photograph at night, dramatic floodlights, deep blue-black atmosphere. Centered club crest (Rayon Sports FC red-and-black shield) scaling up from 0 with a soft red glow pulse. App name "Rayon Sports" in Space Grotesk ExtraBold 56sp white below the crest, fading in. Thin red horizontal rule beneath the name. Loading progress bar at bottom (thin red line). No other UI elements.
 ```
 </details>
 
 <details><summary>1.2 Onboarding — Slide 1</summary>
 
 ```
-Mobile onboarding screen 1 of 3. Full-bleed dark navy gradient background with a faint stadium silhouette texture. Top 60% shows a dramatic close-up photograph of fans in red stadium stands. Bottom 40%: frosted glass card. Large headline "Your club. Your app." in Barlow Condensed ExtraBold 38sp white. Subtext in Inter 16sp steel-gray: "The official Rayon Sports FC fan platform. Matches, contributions, and more." Pagination dots ● ○ ○ in red/gray. Large red claymorphic "Next" button (full width, 56pt height, 28pt radius). Skip text link top-right.
+Mobile onboarding screen 1 of 3. Full-bleed dark navy gradient background with a faint stadium silhouette texture. Top 60% shows a dramatic close-up photograph of fans in red stadium stands. Bottom 40%: frosted glass card. Large headline "Your club. Your app." in Space Grotesk ExtraBold 38sp white. Subtext in Manrope 16sp steel-gray: "The official Rayon Sports FC fan platform. Matches, contributions, and more." Pagination dots ● ○ ○ in red/gray. Large red claymorphic "Next" button (full width, 56pt height, 28pt radius). Skip text link top-right.
 ```
 </details>
 
 <details><summary>1.3 Onboarding — Slide 2</summary>
 
 ```
-Mobile onboarding screen 2 of 3. Dark navy background. Top area shows three glassmorphic cards floating: one shows XP badge, one shows a ticket QR code, one shows a MOMO contribution circle. Headline: "Fan membership. Tickets. Contributions." in Barlow Condensed 36sp white. Subtext: "Earn XP, buy match tickets, and contribute to club projects — all in one place." Pagination dots ○ ● ○. Red "Next" button.
+Mobile onboarding screen 2 of 3. Dark navy background. Top area shows three glassmorphic cards floating: one shows XP badge, one shows a ticket QR code, one shows a MOMO contribution circle. Headline: "Fan membership. Tickets. Contributions." in Space Grotesk 36sp white. Subtext: "Earn XP, buy match tickets, and contribute to club projects — all in one place." Pagination dots ○ ● ○. Red "Next" button.
 ```
 </details>
 
@@ -72,7 +73,7 @@ Mobile onboarding screen 3 of 3. Dark navy. Large centered icon of a phone with 
 <details><summary>1.5 Profile Setup</summary>
 
 ```
-Mobile profile setup screen. Dark navy background. Top: large progress bar "Step 1 of 1 — Link your MOMO". Center: frosted glass card. Headline "Your MOMO number" in Barlow Condensed 32sp. Large phone number input field (dark glass surface, white text, red underline focus state, placeholder "+250 7XX XXX XXX"). Helper text: "This links your payments to your anonymous profile. Never shown publicly." Your alias: large JetBrains Mono 36sp gold "483 912" in a dark chip — "This is your public identity." Red full-width CTA "Confirm & Enter".
+Mobile profile setup screen. Dark navy background. Top: large progress bar "Step 1 of 1 — Link your MOMO". Center: frosted glass card. Headline "Your MOMO number" in Space Grotesk 32sp. Large phone number input field (dark glass surface, white text, red underline focus state, placeholder "+250 7XX XXX XXX"). Helper text: "This links your payments to your anonymous profile. Never shown publicly." Your alias: large JetBrains Mono 36sp gold "483 912" in a dark chip — "This is your public identity." Red full-width CTA "Confirm & Enter".
 ```
 </details>
 
@@ -87,7 +88,7 @@ Mobile profile setup screen. Dark navy background. Top: large progress bar "Step
 <details><summary>2.1 Home Screen</summary>
 
 ```
-Mobile football club homescreen. Dark navy gradient. Scrollable feed. TOP ZONE: full-width glassmorphic hero card — Rayon Sports crest left, opponent crest right, match countdown "2d 14h" in Barlow Condensed 40sp gold, "NEXT MATCH" chip, status PRE-MATCH mint. ZONE 2: horizontal quick actions rail — 6 claymorphic icon chips (red pill-shaped): Tickets · Shop · Contribute · Games · Membership · Fan Clubs. ZONE 3: admin banner carousel with dots. ZONE 4: "My Active Circles" horizontal scroll — 2 partial glass cards with progress rings. ZONE 5: Gamification teaser — alias "483912" XP arc, "Bronze · 2,340 XP", mini leaderboard. ZONE 6: Club news feed — 2 image-first cards. Bottom: 3-tab nav bar (Home active red, BioPay, Settings).
+Mobile football club homescreen. Dark navy gradient. Scrollable feed. TOP ZONE: full-width glassmorphic hero card — Rayon Sports crest left, opponent crest right, match countdown "2d 14h" in Space Grotesk 40sp gold, "NEXT MATCH" chip, status PRE-MATCH mint. ZONE 2: horizontal quick actions rail — 6 claymorphic icon chips (red pill-shaped): Tickets · Shop · Contribute · Games · Membership · Fan Clubs. ZONE 3: admin banner carousel with dots. ZONE 4: "My Active Circles" horizontal scroll — 2 partial glass cards with progress rings. ZONE 5: Gamification teaser — alias "483912" XP arc, "Bronze · 2,340 XP", mini leaderboard. ZONE 6: Club news feed — 2 image-first cards. Bottom: 3-tab nav bar (Home active red, BioPay, Settings).
 ```
 </details>
 
@@ -106,14 +107,14 @@ Mobile football club homescreen. Dark navy gradient. Scrollable feed. TOP ZONE: 
 <details><summary>2.2a Match List</summary>
 
 ```
-Mobile match fixtures list screen. Dark navy. Header: back arrow, "Tickets" Barlow Condensed 28sp center, filter icon. Tabs: UPCOMING · PAST (red underline). List of glassmorphic match cards: home crest | home team | date | away team | away crest, venue below, price chip gold bottom-right, AVAILABLE/SOLD OUT status chip. Red FAB "Buy Ticket" bottom-right.
+Mobile match fixtures list screen. Dark navy. Header: back arrow, "Tickets" Space Grotesk 28sp center, filter icon. Tabs: UPCOMING · PAST (red underline). List of glassmorphic match cards: home crest | home team | date | away team | away crest, venue below, price chip gold bottom-right, AVAILABLE/SOLD OUT status chip. Red FAB "Buy Ticket" bottom-right.
 ```
 </details>
 
 <details><summary>2.2b Match Detail / Buy Ticket</summary>
 
 ```
-Mobile match ticket purchase screen. Dark navy. Large glassmorphic hero: Rayon Sports vs APR FC crests, date "Sat 5 Apr 2026", time "16:00", stadium name. Zone selector cards: 4 options (VIP Gold, Tribune Red, East Stand, Standing) with prices, selected = red border glow. Quantity stepper. Bottom: total price Barlow Condensed 32sp gold, "Pay via MOMO" red full-width button.
+Mobile match ticket purchase screen. Dark navy. Large glassmorphic hero: Rayon Sports vs APR FC crests, date "Sat 5 Apr 2026", time "16:00", stadium name. Zone selector cards: 4 options (VIP Gold, Tribune Red, East Stand, Standing) with prices, selected = red border glow. Quantity stepper. Bottom: total price Space Grotesk 32sp gold, "Pay via MOMO" red full-width button.
 ```
 </details>
 
@@ -134,7 +135,7 @@ Mobile "My Tickets" screen. Dark navy. Header "My Tickets". Tabs: UPCOMING · PA
 <details><summary>2.2e E-Ticket / QR</summary>
 
 ```
-Mobile full-screen e-ticket. Very dark background. Center: large white QR code on dark glass card 400pt square. Above: crest + match name Barlow Condensed 24sp. Below QR: seat code "C-14" JetBrains Mono 22sp gold, date/time, zone. Animated scanning line across QR. Bottom: NFC icon "Tap to share via NFC".
+Mobile full-screen e-ticket. Very dark background. Center: large white QR code on dark glass card 400pt square. Above: crest + match name Space Grotesk 24sp. Below QR: seat code "C-14" JetBrains Mono 22sp gold, date/time, zone. Animated scanning line across QR. Bottom: NFC icon "Tap to share via NFC".
 ```
 </details>
 
@@ -158,14 +159,14 @@ Mobile club merchandise shop. Dark navy. Header "Club Shop" + cart icon with bad
 <details><summary>2.3b Product Detail</summary>
 
 ```
-Mobile product detail — Rayon Sports football kit. Dark navy. Large product image full-width (dots for swipe). Product name Barlow Condensed 28sp, price gold, rating stars, category chip. Size selector: S M L XL glass pills (selected = red). Color circles. Description expandable. "Add to Cart" red full-width button. "Pay with MOMO" secondary glass outline button.
+Mobile product detail — Rayon Sports football kit. Dark navy. Large product image full-width (dots for swipe). Product name Space Grotesk 28sp, price gold, rating stars, category chip. Size selector: S M L XL glass pills (selected = red). Color circles. Description expandable. "Add to Cart" red full-width button. "Pay with MOMO" secondary glass outline button.
 ```
 </details>
 
 <details><summary>2.3c Cart Screen</summary>
 
 ```
-Mobile shopping cart. Dark navy. Header "Your Cart" + count. Cart items: thumbnail left, name + size + quantity stepper right, price right, remove button. Order summary: subtotal, delivery, total Barlow Condensed gold. Delivery address glass input. "Checkout via MOMO" red full-width button.
+Mobile shopping cart. Dark navy. Header "Your Cart" + count. Cart items: thumbnail left, name + size + quantity stepper right, price right, remove button. Order summary: subtotal, delivery, total Space Grotesk gold. Delivery address glass input. "Checkout via MOMO" red full-width button.
 ```
 </details>
 
@@ -198,7 +199,7 @@ Mobile challenges screen. Dark navy. Header "Challenges". Tabs: DAILY · WEEKLY 
 <details><summary>2.4c Leaderboard</summary>
 
 ```
-Mobile fan leaderboard. Dark navy. Top 3 podium: #2 silver glass left, #1 gold glass center red glow largest, #3 bronze right. Each: alias JetBrains Mono, XP Barlow Condensed. Below: scrollable list — rank | alias | tier badge | XP. Current user row highlighted red tint. "Your rank: #47" sticky bottom bar.
+Mobile fan leaderboard. Dark navy. Top 3 podium: #2 silver glass left, #1 gold glass center red glow largest, #3 bronze right. Each: alias JetBrains Mono, XP Space Grotesk. Below: scrollable list — rank | alias | tier badge | XP. Current user row highlighted red tint. "Your rank: #47" sticky bottom bar.
 ```
 </details>
 
@@ -212,7 +213,7 @@ Mobile badges collection. Dark navy. Header "Your Badges". Stats "8/34 earned". 
 <details><summary>2.4e Streak Calendar</summary>
 
 ```
-Mobile activity streak screen. Dark navy. Large "14 days" Barlow Condensed 56sp gold. GitHub-style heatmap calendar 7-column: cells dark navy to bright red by activity. Streak goal arc. "Current: 14 · Best: 21". XP milestone markers: 7-day · 30-day · 60-day.
+Mobile activity streak screen. Dark navy. Large "14 days" Space Grotesk 56sp gold. GitHub-style heatmap calendar 7-column: cells dark navy to bright red by activity. Streak goal arc. "Current: 14 · Best: 21". XP milestone markers: 7-day · 30-day · 60-day.
 ```
 </details>
 
@@ -241,7 +242,7 @@ Mobile contributions hub. Dark navy. Header "Contribute". Three large category c
 <details><summary>2.5b Club Projects List</summary>
 
 ```
-Mobile club contribution projects list. Dark navy. Each project card glassmorphic: title Barlow Condensed 22sp, 2-line description, goal progress bar red "FRw 2.4M / FRw 5M", contributor count, days remaining chip, "Contribute" red button. Admin-created gold badge.
+Mobile club contribution projects list. Dark navy. Each project card glassmorphic: title Space Grotesk 22sp, 2-line description, goal progress bar red "FRw 2.4M / FRw 5M", contributor count, days remaining chip, "Contribute" red button. Admin-created gold badge.
 ```
 </details>
 
@@ -306,7 +307,7 @@ Mobile fan membership screen. Dark navy. Top: digital membership card glassmorph
 <details><summary>2.6b Tier Detail</summary>
 
 ```
-Mobile tier detail. Dark navy. Header "GOLD FAITHFUL" gold Barlow Condensed 36sp. Large tier badge glassmorphic circular trophy. XP range "15,000–40,000 XP". Perks with checkmarks: 15% shop discount · VIP events · Priority support · Early tickets. Progress to next tier bar. "How to earn XP faster" collapsible.
+Mobile tier detail. Dark navy. Header "GOLD FAITHFUL" gold Space Grotesk 36sp. Large tier badge glassmorphic circular trophy. XP range "15,000–40,000 XP". Perks with checkmarks: 15% shop discount · VIP events · Priority support · Early tickets. Progress to next tier bar. "How to earn XP faster" collapsible.
 ```
 </details>
 
@@ -330,7 +331,7 @@ Mobile fan clubs directory. Dark navy. Header "Fan Clubs". Search glass bar. Fea
 <details><summary>2.7b Fan Club Detail</summary>
 
 ```
-Mobile fan club detail. Dark navy. Header photo. Club name Barlow Condensed 30sp + OFFICIAL chip. Stats: Members · Founded · Location. About expandable. Activities feed. Members 6 alias avatars. Upcoming events card. JOIN red large or JOINED green outline. Share button.
+Mobile fan club detail. Dark navy. Header photo. Club name Space Grotesk 30sp + OFFICIAL chip. Stats: Members · Founded · Location. About expandable. Activities feed. Members 6 alias avatars. Upcoming events card. JOIN red large or JOINED green outline. Share button.
 ```
 </details>
 
@@ -353,14 +354,14 @@ Mobile create fan club form. Dark navy. Header "Start a Fan Club". Fields: Club 
 <details><summary>2.8a Live Match Screen</summary>
 
 ```
-Mobile live match center. Dark navy subtle red pulse. "LIVE" mint chip pulsing dot. Both team crests large. Score "2 — 1" Barlow Condensed 64sp white, mint underline winner. Clock "67'" gold. Commentary feed: timestamped GOAL · YELLOW CARD · SUBSTITUTION events. Stats: possession bar, shots, corners. Share button.
+Mobile live match center. Dark navy subtle red pulse. "LIVE" mint chip pulsing dot. Both team crests large. Score "2 — 1" Space Grotesk 64sp white, mint underline winner. Clock "67'" gold. Commentary feed: timestamped GOAL · YELLOW CARD · SUBSTITUTION events. Stats: possession bar, shots, corners. Share button.
 ```
 </details>
 
 <details><summary>2.8b News Article</summary>
 
 ```
-Mobile news article. Dark navy. Back arrow + "Club News". Hero image full-width. Category chip red. Title Barlow Condensed 28sp. Author + date gray. Body Inter 16sp. Related articles scroll bottom. Share button floating right.
+Mobile news article. Dark navy. Back arrow + "Club News". Hero image full-width. Category chip red. Title Space Grotesk 28sp. Author + date gray. Body Manrope 16sp. Related articles scroll bottom. Share button floating right.
 ```
 </details>
 
@@ -502,7 +503,7 @@ Mobile privacy settings. Dark navy. Group visibility pills: PUBLIC / MEMBERS ONL
 <details><summary>4.6 About Screen</summary>
 
 ```
-Mobile about screen. Dark navy. Large crest + "Rayon Sports FC" Barlow Condensed 32sp. App version gray. "Powered by AFRICLUB" gold chip. Links: Terms · Privacy · Licenses. "Support via WhatsApp" green + "Email Support" buttons. Rate App 5 gold stars. Build info fine print.
+Mobile about screen. Dark navy. Large crest + "Rayon Sports FC" Space Grotesk 32sp. App version gray. "Powered by AFRICLUB" gold chip. Links: Terms · Privacy · Licenses. "Support via WhatsApp" green + "Email Support" buttons. Rate App 5 gold stars. Build info fine print.
 ```
 </details>
 
@@ -521,7 +522,7 @@ Mobile about screen. Dark navy. Large crest + "Rayon Sports FC" Barlow Condensed
 <details><summary>5.1 Admin Dashboard</summary>
 
 ```
-Mobile admin dashboard. Dark navy. Header "Club Admin — Rayon Sports" + logout. Stats row 4 glassmorphic cards: Total Users · Active Circles · Transactions Today · Tickets Sold — numbers Barlow Condensed gold. Quick actions: Manage CMS · Create Match · Send Notification · Reports. Recent activity feed.
+Mobile admin dashboard. Dark navy. Header "Club Admin — Rayon Sports" + logout. Stats row 4 glassmorphic cards: Total Users · Active Circles · Transactions Today · Tickets Sold — numbers Space Grotesk gold. Quick actions: Manage CMS · Create Match · Send Notification · Reports. Recent activity feed.
 ```
 </details>
 
@@ -542,7 +543,7 @@ Mobile match management admin. Dark navy. Header "Matches". Fixture cards: date,
 <details><summary>5.4 Contributions Monitor</summary>
 
 ```
-Mobile contributions monitor admin. Dark navy. Filter chips. Total raised Barlow Condensed 40sp gold. Active groups list: name, creator alias, type, total FRw, contributors, last activity. Export report button.
+Mobile contributions monitor admin. Dark navy. Filter chips. Total raised Space Grotesk 40sp gold. Active groups list: name, creator alias, type, total FRw, contributors, last activity. Export report button.
 ```
 </details>
 
@@ -578,7 +579,7 @@ Mobile notification composer admin. Dark navy. Audience: ALL / BY TIER chips / B
 <details><summary>6.1 MOMO Amount Entry</summary>
 
 ```
-Mobile MOMO amount entry bottom sheet 40% height. Dark navy, rounded top corners 28pt. Handle bar. Title "How much to contribute?" Barlow Condensed 26sp. Amount display "FRw 0" 48sp gold updates as typed. Quick chips: +1,000 +2,000 +5,000 +10,000 red glass pills. "Launch MOMO Dialer" red button. Note: "You'll confirm in MTN MOMO app."
+Mobile MOMO amount entry bottom sheet 40% height. Dark navy, rounded top corners 28pt. Handle bar. Title "How much to contribute?" Space Grotesk 26sp. Amount display "FRw 0" 48sp gold updates as typed. Quick chips: +1,000 +2,000 +5,000 +10,000 red glass pills. "Launch MOMO Dialer" red button. Note: "You'll confirm in MTN MOMO app."
 ```
 </details>
 
@@ -592,21 +593,21 @@ Mobile MOMO USSD confirmation sheet 35% height. Dark navy. Title "Launching MOMO
 <details><summary>6.3 Contribution Success</summary>
 
 ```
-Mobile contribution success modal. Dark navy center. Animated mint green circle + white checkmark bounce. "Contribution Sent!" Barlow Condensed 36sp. Amount gold. Group name. "+50 XP earned" red claymorphic badge. "View Ledger" outlined + "Done" red buttons. Red/gold confetti particles.
+Mobile contribution success modal. Dark navy center. Animated mint green circle + white checkmark bounce. "Contribution Sent!" Space Grotesk 36sp. Amount gold. Group name. "+50 XP earned" red claymorphic badge. "View Ledger" outlined + "Done" red buttons. Red/gold confetti particles.
 ```
 </details>
 
 <details><summary>6.4 XP Level Up</summary>
 
 ```
-Mobile XP level-up celebration full-screen overlay. Dark navy red/gold radial burst. Center: tier badge bouncing in (SILVER ULTRAS silver gradient glow). "LEVEL UP!" Barlow Condensed ExtraBold 52sp. New tier name. XP total gold. Perks unlocked list. "Awesome!" red large button.
+Mobile XP level-up celebration full-screen overlay. Dark navy red/gold radial burst. Center: tier badge bouncing in (SILVER ULTRAS silver gradient glow). "LEVEL UP!" Space Grotesk ExtraBold 52sp. New tier name. XP total gold. Perks unlocked list. "Awesome!" red large button.
 ```
 </details>
 
 <details><summary>6.5 Badge Earned</summary>
 
 ```
-Mobile badge earned modal. Dark navy overlay. Circular claymorphic badge expanding with gold glow ring. Badge name Barlow Condensed 30sp. Description. "New Badge Unlocked" label. "Share" outlined + "Keep Going" red buttons. Particles animation.
+Mobile badge earned modal. Dark navy overlay. Circular claymorphic badge expanding with gold glow ring. Badge name Space Grotesk 30sp. Description. "New Badge Unlocked" label. "Share" outlined + "Keep Going" red buttons. Particles animation.
 ```
 </details>
 
@@ -620,14 +621,14 @@ Mobile share group invite bottom sheet 50% height. Dark navy. Header "Invite to 
 <details><summary>6.7 Ticket Purchase Confirm</summary>
 
 ```
-Mobile ticket purchase confirmation sheet 55% height. Dark navy. Summary: match, zone, seat "C-14", quantity. Price: ticket FRw 3,000 + fee FRw 200, Total FRw 3,200 Barlow Condensed 32sp gold. MOMO masked. "Confirm & Launch MOMO" red full-width. "Back" text link. Fine print.
+Mobile ticket purchase confirmation sheet 55% height. Dark navy. Summary: match, zone, seat "C-14", quantity. Price: ticket FRw 3,000 + fee FRw 200, Total FRw 3,200 Space Grotesk 32sp gold. MOMO masked. "Confirm & Launch MOMO" red full-width. "Back" text link. Fine print.
 ```
 </details>
 
 <details><summary>6.8 Delete Account Confirm</summary>
 
 ```
-Mobile delete account danger confirmation. Dark navy center modal. Large red warning triangle. "Delete your account?" Barlow Condensed 26sp. Consequences body text. Safety gate: type "DELETE" input. "Cancel" gray full-width | "Delete Permanently" red full-width stacked.
+Mobile delete account danger confirmation. Dark navy center modal. Large red warning triangle. "Delete your account?" Space Grotesk 26sp. Consequences body text. Safety gate: type "DELETE" input. "Cancel" gray full-width | "Delete Permanently" red full-width stacked.
 ```
 </details>
 
@@ -641,14 +642,14 @@ Mobile SMS permission explanation. Dark navy. Phone + SMS badge icon. "Read your
 <details><summary>6.10 Face Liveness Prompt</summary>
 
 ```
-Mobile face liveness overlay on camera. Dark navy semi-transparent over camera preview. Blinking eye animation. "Please blink to confirm you're present" Barlow Condensed 24sp. Countdown 3…2…1 gold. Progress bar. "Need help?" link.
+Mobile face liveness overlay on camera. Dark navy semi-transparent over camera preview. Blinking eye animation. "Please blink to confirm you're present" Space Grotesk 24sp. Countdown 3…2…1 gold. Progress bar. "Need help?" link.
 ```
 </details>
 
 <details><summary>6.11 NFC Pairing Sheet</summary>
 
 ```
-Mobile NFC pairing in-progress sheet 40% height. Dark navy. Animated concentric mint rings from phone graphic. "Waiting for tap…" Barlow Condensed 28sp. "Hold phones back-to-back." "Cancel" outlined. Countdown "30s" gold.
+Mobile NFC pairing in-progress sheet 40% height. Dark navy. Animated concentric mint rings from phone graphic. "Waiting for tap…" Space Grotesk 28sp. "Hold phones back-to-back." "Cancel" outlined. Countdown "30s" gold.
 ```
 </details>
 
@@ -669,7 +670,7 @@ Mobile notification permission request. Dark navy center card. Bell icon red bad
 <details><summary>6.14 Sign Out Confirm</summary>
 
 ```
-Mobile sign out confirmation sheet 35% height. Dark navy. "Sign out?" Barlow Condensed 24sp. Note: "Your profile and XP are saved." "Sign Out" red outlined full-width | "Stay" red filled full-width stacked.
+Mobile sign out confirmation sheet 35% height. Dark navy. "Sign out?" Space Grotesk 24sp. Note: "Your profile and XP are saved." "Sign Out" red outlined full-width | "Stay" red filled full-width stacked.
 ```
 </details>
 

@@ -4,6 +4,7 @@ import { buildPageMetadata } from "@/lib/metadata";
 import { AnimateOnScroll } from "@/components/animate-on-scroll";
 import { getClubProfile } from "@/lib/data/public";
 import { HeroBlock } from "./_sections/hero-block";
+import { FantasyBlock } from "./_sections/fantasy-block";
 import { StoriesBlock } from "./_sections/stories-block";
 import { CirclesAndMatchdayBlock } from "./_sections/circles-matchday-block";
 import { FixturesBlock } from "./_sections/fixtures-block";
@@ -38,6 +39,13 @@ export default function HomePage() {
       <Suspense fallback={<SectionSkeleton cols={2} />}>
         <HeroBlock />
       </Suspense>
+
+      <AnimateOnScroll animation="fade-up" delay={60} threshold={0.08}>
+        <Suspense fallback={<SectionSkeleton cols={2} />}>
+          <FantasyBlock />
+        </Suspense>
+      </AnimateOnScroll>
+
       {/* Stories — inline ring carousel (Instagram-style) */}
       <StoriesBlock />
 

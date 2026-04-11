@@ -35,6 +35,12 @@ export {
   deleteAdminArticle,
 } from "./cms";
 
+export {
+  getAdminAppConfig,
+  saveAdminConfigEntry,
+  deleteAdminConfigEntry,
+} from "./cms-content";
+
 // Dashboard
 export { getAdminDashboardSnapshot } from "./dashboard";
 
@@ -112,3 +118,15 @@ export {
   saveAdminFanEngagementToken,
   deleteAdminFanEngagementToken,
 } from "./gamification";
+
+// Fantasy
+export {
+  getAdminFantasyCompetitions,
+  getAdminFantasyOperations,
+  saveAdminFantasyCompetition,
+  saveAdminFantasyGameweek,
+  saveAdminFantasyPlayer,
+  deleteAdminFantasyCompetition,
+  deleteAdminFantasyGameweek,
+  deleteAdminFantasyPlayer,
+} from "./fantasy";

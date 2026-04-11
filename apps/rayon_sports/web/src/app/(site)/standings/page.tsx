@@ -50,7 +50,7 @@ export default async function StandingsPage() {
       />
 
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <div className="glass-panel overflow-hidden rounded-[32px] border border-border-soft">
+        <div className="glass-panel overflow-hidden rounded-[32px]">
           <table className="w-full text-left text-sm">
             <thead className="bg-white/8 text-xs uppercase tracking-[0.24em] text-slate-300">
               <tr>

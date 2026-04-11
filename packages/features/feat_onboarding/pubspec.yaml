@@ -27,3 +27,7 @@ resolution: workspace
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter:
+  assets:
+    - test/fonts/

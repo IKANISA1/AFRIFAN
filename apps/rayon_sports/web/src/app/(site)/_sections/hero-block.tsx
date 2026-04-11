@@ -4,6 +4,7 @@ import { fallbackContributionGroups } from "@/lib/content";
 import {
   getClubProfile,
   getContributionGroups,
+  getFeaturedFantasyCompetition,
   getFanClubs,
   getCmsContentBlock,
   getHomeBanners,
@@ -13,6 +14,7 @@ import {
 
 const fallbackQuickLinks = [
   { href: "/tickets", label: "Buy tickets" },
+  { href: "/fantasy", label: "Fantasy football" },
   { href: "/circles", label: "Support circles" },
   { href: "/membership", label: "Membership tiers" },
   { href: "/news", label: "Latest club news" },
@@ -20,7 +22,7 @@ const fallbackQuickLinks = [
 ];
 
 export async function HeroBlock() {
-  const [club, matches, fanClubs, contributionGroups, membershipPackages, banners, heroCms] =
+  const [club, matches, fanClubs, contributionGroups, membershipPackages, banners, heroCms, featuredFantasyCompetition] =
     await Promise.all([
       getClubProfile(),
       getMatches(),
@@ -29,6 +31,7 @@ export async function HeroBlock() {
       getMembershipPackages(),
       getHomeBanners(),
       getCmsContentBlock("hero_headline"),
+      getFeaturedFantasyCompetition(),
     ]);
 
   const featuredMatch =
@@ -47,6 +50,20 @@ export async function HeroBlock() {
       ? banners.map((b) => ({ href: b.route, label: b.ctaLabel || b.title }))
       : fallbackQuickLinks;
 
+  const fantasyQuickLink =
+    featuredFantasyCompetition == null
+      ? null
+      : {
+          href: `/fantasy/${featuredFantasyCompetition.slug}`,
+          label: featuredFantasyCompetition.ctaLabel || featuredFantasyCompetition.name,
+        };
+
+  const quickLinksWithFantasy =
+    fantasyQuickLink == null ||
+    quickLinks.some((item) => item.href === fantasyQuickLink.href)
+      ? quickLinks
+      : [fantasyQuickLink, ...quickLinks];
+
   return (
     <>
       <HeroSection
@@ -61,7 +78,7 @@ export async function HeroBlock() {
       />
 
       <div className="page-shell flex flex-wrap gap-3">
-        {quickLinks.map((item) => (
+        {quickLinksWithFantasy.map((item) => (
           <Link
             key={item.href}
             href={item.href}

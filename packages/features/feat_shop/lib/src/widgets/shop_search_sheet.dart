@@ -1,7 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Bottom sheet for searching products in the shop.
 void showShopSearchSheet({
@@ -34,7 +33,7 @@ void showShopSearchSheet({
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(28),
               ),
-              border: Border.all(color: ColorTokens.ghostBorder, width: 0.5),
+              border: BorderTokens.ghost(),
             ),
             padding: EdgeInsets.fromLTRB(
               SpacingTokens.spacing6,
@@ -81,7 +80,7 @@ void showShopSearchSheet({
                                 children: [
                                   Text(
                                     name.toUpperCase(),
-                                    style: GoogleFonts.barlowCondensed(
+                                    style: TypographyTokens.monolithFont(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700,
                                       color: ColorTokens.onSurface,
@@ -100,7 +99,7 @@ void showShopSearchSheet({
                             const SizedBox(width: SpacingTokens.spacing3),
                             Text(
                               'FRw ${price.toStringAsFixed(0)}',
-                              style: GoogleFonts.barlowCondensed(
+                              style: TypographyTokens.monolithFont(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w800,
                                 color: ColorTokens.clubAccent,

@@ -5,7 +5,6 @@ import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../shop_cart_provider.dart';
 import '../widgets/cart_item_card.dart';
 
@@ -206,7 +205,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
               'CONFIRM CHECKOUT',
-              style: GoogleFonts.barlowCondensed(
+              style: TypographyTokens.monolithFont(
                 fontSize: 28,
                 fontWeight: FontWeight.w800,
                 color: ColorTokens.onSurface,
@@ -256,7 +255,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   const SizedBox(height: SpacingTokens.spacing2),
                   Text(
                     'Total: ${_currency.format(total)}',
-                    style: GoogleFonts.barlowCondensed(
+                    style: TypographyTokens.monolithFont(
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
                       color: ColorTokens.clubAccent,
@@ -311,7 +310,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         backgroundColor: Colors.transparent,
         title: Text(
           'YOUR CART',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -425,7 +424,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                             Text('TOTAL', style: TypographyTokens.labelLarge()),
                             Text(
                               _currency.format(total),
-                              style: GoogleFonts.barlowCondensed(
+                              style: TypographyTokens.monolithFont(
                                 fontSize: 28,
                                 fontWeight: FontWeight.w800,
                                 color: ColorTokens.clubAccent,

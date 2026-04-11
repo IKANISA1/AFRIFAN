@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../extensions.dart';
+import '../tokens/border_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 
 /// Themed snackbar system for the AFRICLUB platform.
@@ -74,7 +75,11 @@ abstract final class AfriToast {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: config.color.withValues(alpha: 0.3)),
+          side: BorderTokens.side(
+            color: config.color,
+            width: BorderTokens.standard,
+            opacity: 0.3,
+          ),
         ),
         margin: const EdgeInsets.fromLTRB(
           SpacingTokens.spacing4,

@@ -3,7 +3,6 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ChallengesScreen extends ConsumerStatefulWidget {
   const ChallengesScreen({super.key});
@@ -167,7 +166,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
         backgroundColor: Colors.transparent,
         title: Text(
           'CHALLENGES',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -261,7 +260,7 @@ class _ChallengeCard extends StatelessWidget {
         children: [
           Text(
             data.title.toUpperCase(),
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 22,
               fontWeight: FontWeight.w700,
               color: ColorTokens.onSurface,

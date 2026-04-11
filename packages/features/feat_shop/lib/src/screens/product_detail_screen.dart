@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../shop_cart_provider.dart';
 
@@ -218,10 +217,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         decoration: BoxDecoration(
                           color: ColorTokens.glassFill,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: ColorTokens.ghostBorder,
-                            width: 0.5,
-                          ),
+                          border: BorderTokens.ghost(),
                         ),
                         child: IconButton(
                           icon: Icon(
@@ -287,14 +283,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                 alpha: 0.6,
                               ),
                               borderRadius: BorderRadius.circular(6),
-                              border: Border.all(
-                                color: ColorTokens.ghostBorder,
-                                width: 0.5,
-                              ),
+                              border: BorderTokens.ghost(),
                             ),
                             child: Text(
                               badge.toUpperCase(),
-                              style: GoogleFonts.inter(
+                              style: TypographyTokens.editorialFont(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
                                 color: ColorTokens.onSurface.withValues(
@@ -342,7 +335,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       const SizedBox(height: SpacingTokens.spacing8),
                       Text(
                         'SELECT SIZE',
-                        style: GoogleFonts.inter(
+                        style: TypographyTokens.editorialFont(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                           color: ColorTokens.onSurfaceVariant,
@@ -369,16 +362,13 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               decoration: BoxDecoration(
                                 color: selected ? primary : Colors.transparent,
                                 borderRadius: ShapeTokens.buttonRadius,
-                                border: Border.all(
-                                  color: selected
-                                      ? primary
-                                      : ColorTokens.ghostBorder,
-                                  width: 0.5,
-                                ),
+                                border: selected
+                                    ? BorderTokens.all(color: primary)
+                                    : BorderTokens.ghost(),
                               ),
                               child: Text(
                                 size,
-                                style: GoogleFonts.inter(
+                                style: TypographyTokens.editorialFont(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
                                   color: selected
@@ -396,7 +386,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         children: [
                           Text(
                             'QUANTITY',
-                            style: GoogleFonts.inter(
+                            style: TypographyTokens.editorialFont(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                               color: ColorTokens.onSurfaceVariant,
@@ -407,10 +397,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                             decoration: BoxDecoration(
                               color: ColorTokens.surfaceContainerLow,
                               borderRadius: ShapeTokens.buttonRadius,
-                              border: Border.all(
-                                color: ColorTokens.ghostBorder,
-                                width: 0.5,
-                              ),
+                              border: BorderTokens.ghost(),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -461,12 +448,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: ColorTokens.glassFill,
-                        border: Border(
-                          top: BorderSide(
-                            color: ColorTokens.ghostBorder,
-                            width: 0.5,
-                          ),
-                        ),
+                        border: BorderTokens.top(),
                       ),
                       child: SafeArea(
                         top: false,
@@ -479,7 +461,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                 children: [
                                   Text(
                                     'TOTAL',
-                                    style: GoogleFonts.inter(
+                                    style: TypographyTokens.editorialFont(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w600,
                                       color: ColorTokens.onSurfaceVariant,

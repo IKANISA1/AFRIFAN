@@ -1,7 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../settings_actions.dart';
 import '../widgets/settings_navigation_scope.dart';
@@ -20,7 +19,7 @@ class HelpSupportScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(
             'HELP & SUPPORT',
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 22,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.6,
@@ -127,7 +126,7 @@ class _SupportCard extends StatelessWidget {
         children: [
           Text(
             title.toUpperCase(),
-            style: GoogleFonts.barlowCondensed(
+            style: TypographyTokens.monolithFont(
               fontSize: 22,
               fontWeight: FontWeight.w700,
               color: ColorTokens.onSurface,

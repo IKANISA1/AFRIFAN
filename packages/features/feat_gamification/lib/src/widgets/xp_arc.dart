@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Radial XP progress arc with massive center number.
 class XpArc extends StatelessWidget {
@@ -47,7 +46,7 @@ class XpArc extends StatelessWidget {
             children: [
               Text(
                 currentXp.toString(),
-                style: GoogleFonts.barlowCondensed(
+                style: TypographyTokens.monolithFont(
                   fontSize: 48,
                   fontWeight: FontWeight.w800,
                   color: primary,
@@ -58,7 +57,7 @@ class XpArc extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 'XP',
-                style: GoogleFonts.barlowCondensed(
+                style: TypographyTokens.monolithFont(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: ColorTokens.onSurfaceVariant,
@@ -77,7 +76,7 @@ class XpArc extends StatelessWidget {
                 ),
                 child: Text(
                   tier,
-                  style: GoogleFonts.barlowCondensed(
+                  style: TypographyTokens.monolithFont(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                     color: primary,

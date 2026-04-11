@@ -175,8 +175,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         fanRank == 0) {
       return const HomeFeedSnapshot(
         status: HomeFeedStatus.empty,
-        message:
-            'Matchday data will appear when published.',
+        message: 'Matchday data will appear when published.',
         showFixturePlaceholder: true,
       );
     }
@@ -258,13 +257,17 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
           );
           return MatchSlide(
             imageUrl: row['image_url']?.toString(),
-            homeTeam: _resolveText(
-              row['home_team']?.toString(),
-              RuntimeBranding.displayHomeTeamName,
+            homeTeam: _compactHeroTeamName(
+              _resolveText(
+                row['home_team']?.toString(),
+                RuntimeBranding.displayHomeTeamName,
+              ),
             ),
-            awayTeam: _resolveText(
-              row['away_team']?.toString(),
-              RuntimeBranding.displayRivalTeamName,
+            awayTeam: _compactHeroTeamName(
+              _resolveText(
+                row['away_team']?.toString(),
+                RuntimeBranding.displayRivalTeamName,
+              ),
             ),
             venue: _resolveText(
               row['venue']?.toString(),
@@ -291,6 +294,39 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
   String _resolveText(String? value, String fallback) {
     final trimmed = value?.trim() ?? '';
     return trimmed.isEmpty ? fallback : trimmed;
+  }
+
+  String _compactHeroTeamName(String value) {
+    final normalized = value.replaceAll(RegExp(r'\s+'), ' ').trim();
+    if (normalized.isEmpty) {
+      return value;
+    }
+
+    final suffixStripped = normalized.replaceFirst(
+      RegExp(r'\s+(FC|SC|CF|AFC)$', caseSensitive: false),
+      '',
+    );
+
+    if (suffixStripped.length <= 12) {
+      return suffixStripped;
+    }
+
+    final words = suffixStripped.split(' ');
+    if (words.length >= 2) {
+      final firstTwo = '${words.first} ${words[1]}';
+      if (firstTwo.length <= 12) {
+        if (firstTwo.length <= 10) {
+          return firstTwo;
+        }
+        if (words[1].length > 3) {
+          return '${words.first} ${words[1][0]}.';
+        }
+        return words.first;
+      }
+      return words.first;
+    }
+
+    return suffixStripped;
   }
 
   String _resolveMatchStatus(
@@ -374,8 +410,7 @@ class SupabaseLatestIntelRepository implements LatestIntelRepository {
       if (articles.isEmpty) {
         return const LatestIntelSnapshot(
           status: LatestIntelStatus.empty,
-          message:
-              'Club updates will appear when published.',
+          message: 'Club updates will appear when published.',
         );
       }
 

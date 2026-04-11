@@ -71,7 +71,7 @@ export default async function FixtureDetailPage({
           __html: renderJsonLdScriptContent(buildMatchJsonLd(match)),
         }}
       />
-      <section className="glass-panel-elevated overflow-hidden rounded-[38px] border border-border-soft">
+      <section className="glass-panel-elevated overflow-hidden rounded-[38px]">
         <div className="grid gap-8 lg:grid-cols-[1.02fr_0.98fr]">
           <div className="p-6 sm:p-8">
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">

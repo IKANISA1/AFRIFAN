@@ -3,7 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../tokens/blur_tokens.dart';
+import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/shadow_tokens.dart';
+import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_press_feedback.dart';
@@ -42,89 +45,73 @@ class AfriClubBottomNav extends StatelessWidget {
         bottomPadding + SpacingTokens.spacing4,
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
         child: BackdropFilter(
           filter: ImageFilter.blur(
             sigmaX: AfriBlur.overlay,
             sigmaY: AfriBlur.overlay,
           ),
           child: Container(
-            height: 72,
+            height: 92,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-              // ── Soft gradient fill ──
+              borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.white.withValues(alpha: 0.08),
-                  Colors.white.withValues(alpha: 0.03),
-                  ColorTokens.clubPrimary.withValues(alpha: 0.03),
+                  ColorTokens.surfaceBright.withValues(alpha: 0.72),
+                  ColorTokens.surfaceVariant.withValues(alpha: 0.46),
+                  ColorTokens.primary.withValues(alpha: 0.22),
                 ],
                 stops: const [0.0, 0.6, 1.0],
               ),
-              // ── Ghost border ──
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.12),
-                width: 0.8,
-              ),
-              // ── Claymorphic double inner shadows + ambient outer ──
+              border: BorderTokens.ghost(),
               boxShadow: [
-                // Top-left inner highlight (clay light)
+                ...AfriShadows.glass(),
                 BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.07),
-                  blurRadius: 2,
-                  offset: const Offset(-1.5, -1.5),
+                  color: Colors.white.withValues(alpha: 0.10),
+                  blurRadius: 16,
+                  spreadRadius: -12,
+                  offset: const Offset(-8, -10),
                   blurStyle: BlurStyle.inner,
                 ),
-                // Bottom-right inner shadow (clay depth)
                 BoxShadow(
-                  color: ColorTokens.background.withValues(alpha: 0.30),
-                  blurRadius: 4,
-                  offset: const Offset(2, 2),
+                  color: ColorTokens.ambientShadow.withValues(alpha: 0.24),
+                  blurRadius: 20,
+                  spreadRadius: -12,
+                  offset: const Offset(10, 14),
                   blurStyle: BlurStyle.inner,
-                ),
-                // Ambient outer shadow (floating feel)
-                BoxShadow(
-                  color: ColorTokens.background.withValues(alpha: 0.35),
-                  blurRadius: 24,
-                  spreadRadius: -4,
-                  offset: const Offset(0, 8),
-                ),
-                // Subtle warm underglow
-                BoxShadow(
-                  color: ColorTokens.clubPrimary.withValues(alpha: 0.06),
-                  blurRadius: 32,
-                  spreadRadius: -2,
-                  offset: const Offset(0, 12),
                 ),
               ],
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: items.asMap().entries.map((entry) {
-                final index = entry.key;
-                final item = entry.value;
-                final isActive = index == currentIndex;
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(6, 10, 6, 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: items.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final item = entry.value;
+                  final isActive = index == currentIndex;
 
-                return Expanded(
-                  child: AfriPressFeedback(
-                    onTap: () => onTap(index),
-                    tooltip: item.label,
-                    semanticsLabel: item.label,
-                    semanticsHint: 'Open ${item.label}',
-                    selected: isActive,
-                    excludeChildSemantics: true,
-                    builder: (context, state) => _FloatingNavItem(
-                      icon: item.icon,
-                      activeIcon: item.activeIcon ?? item.icon,
-                      label: item.label,
-                      isActive: isActive,
-                      isFocused: state.isFocused,
+                  return Expanded(
+                    child: AfriPressFeedback(
+                      onTap: () => onTap(index),
+                      tooltip: item.label,
+                      semanticsLabel: item.label,
+                      semanticsHint: 'Open ${item.label}',
+                      selected: isActive,
+                      excludeChildSemantics: true,
+                      builder: (context, state) => _FloatingNavItem(
+                        icon: item.icon,
+                        activeIcon: item.activeIcon ?? item.icon,
+                        label: item.label,
+                        isActive: isActive,
+                        isFocused: state.isFocused,
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             ),
           ),
         ),
@@ -204,37 +191,36 @@ class _FloatingNavItemState extends State<_FloatingNavItem>
               Transform.scale(
                 scale: 1.0 + (progress * 0.15),
                 child: Container(
-                  width: 44,
-                  height: 36,
+                  width: 48,
+                  height: 38,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    // Active pill: soft red glow
+                    borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
                     gradient: isActive
                         ? LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              ColorTokens.clubPrimary.withValues(alpha: 0.22),
-                              ColorTokens.clubPrimary.withValues(alpha: 0.10),
+                              ColorTokens.primary.withValues(alpha: 0.82),
+                              ColorTokens.primaryContainer.withValues(
+                                alpha: 0.82,
+                              ),
                             ],
                           )
                         : null,
                     border: widget.isFocused
-                        ? Border.all(
-                            color: ColorTokens.navActive.withValues(
-                              alpha: 0.58,
-                            ),
+                        ? BorderTokens.focusAll(
+                            color: ColorTokens.navActive,
+                            opacity: 0.58,
                             width: 1.1,
                           )
                         : null,
                     boxShadow: isActive || widget.isFocused
                         ? [
-                            // Active glow
                             BoxShadow(
                               color:
                                   (widget.isFocused
                                           ? ColorTokens.navActive
-                                          : ColorTokens.clubPrimary)
+                                          : ColorTokens.primaryContainer)
                                       .withValues(
                                         alpha: widget.isFocused ? 0.18 : 0.25,
                                       ),
@@ -249,8 +235,8 @@ class _FloatingNavItemState extends State<_FloatingNavItem>
                   child: Icon(
                     isActive ? widget.activeIcon : widget.icon,
                     color: isActive
-                        ? ColorTokens.navActive
-                        : ColorTokens.onSurface.withValues(alpha: 0.38),
+                        ? Colors.white
+                        : ColorTokens.onSurface.withValues(alpha: 0.44),
                     size: 22,
                   ),
                 ),
@@ -268,11 +254,11 @@ class _FloatingNavItemState extends State<_FloatingNavItem>
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TypographyTokens.labelSmall().copyWith(
-                            color: ColorTokens.navActive,
+                            color: Colors.white,
                             fontSize: 11,
                             fontWeight: FontWeight.w700,
                             letterSpacing: 0.7,
-                            height: 1.0,
+                            height: 1.1,
                           ),
                         ),
                       )

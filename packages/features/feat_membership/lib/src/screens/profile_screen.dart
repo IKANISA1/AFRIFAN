@@ -4,7 +4,6 @@ import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Settings screen — fan identity, feature links, and app settings.
 class ProfileScreen extends ConsumerWidget {
@@ -29,7 +28,7 @@ class ProfileScreen extends ConsumerWidget {
         ),
         title: Text(
           'PROFILE',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 18,
             fontWeight: FontWeight.w700,
             color: ColorTokens.onSurface,
@@ -42,7 +41,6 @@ class ProfileScreen extends ConsumerWidget {
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-
             const SliverToBoxAdapter(
               child: SizedBox(height: SpacingTokens.spacing4),
             ),
@@ -63,9 +61,10 @@ class ProfileScreen extends ConsumerWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: primary.withValues(alpha: 0.15),
-                          border: Border.all(
-                            color: primary.withValues(alpha: 0.3),
+                          border: BorderTokens.all(
+                            color: primary,
                             width: 2,
+                            opacity: 0.3,
                           ),
                         ),
                         child: Center(
@@ -77,7 +76,7 @@ class ProfileScreen extends ConsumerWidget {
                       // Alias
                       Text(
                         alias,
-                        style: GoogleFonts.barlowCondensed(
+                        style: TypographyTokens.monolithFont(
                           fontSize: 40,
                           fontWeight: FontWeight.w900,
                           color: ColorTokens.clubAccent,
@@ -110,7 +109,7 @@ class ProfileScreen extends ConsumerWidget {
                             ),
                             child: Text(
                               'BRONZE',
-                              style: GoogleFonts.barlowCondensed(
+                              style: TypographyTokens.monolithFont(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
                                 color: primary,
@@ -121,7 +120,7 @@ class ProfileScreen extends ConsumerWidget {
                           const SizedBox(width: SpacingTokens.spacing3),
                           Text(
                             '2,450 XP',
-                            style: GoogleFonts.barlowCondensed(
+                            style: TypographyTokens.monolithFont(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                               color: ColorTokens.onSurfaceVariant,
@@ -147,7 +146,7 @@ class ProfileScreen extends ConsumerWidget {
                 ),
                 child: Text(
                   'MY CLUB',
-                  style: GoogleFonts.barlowCondensed(
+                  style: TypographyTokens.monolithFont(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                     color: ColorTokens.onSurfaceVariant,
@@ -208,7 +207,7 @@ class ProfileScreen extends ConsumerWidget {
                 ),
                 child: Text(
                   'APP',
-                  style: GoogleFonts.barlowCondensed(
+                  style: TypographyTokens.monolithFont(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                     color: ColorTokens.onSurfaceVariant,
@@ -297,7 +296,7 @@ class _MenuItem extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: GoogleFonts.inter(
+              style: TypographyTokens.editorialFont(
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
                 color: ColorTokens.onSurface,
@@ -307,7 +306,7 @@ class _MenuItem extends StatelessWidget {
           if (trailing != null)
             Text(
               trailing!,
-              style: GoogleFonts.inter(
+              style: TypographyTokens.editorialFont(
                 fontSize: 15,
                 color: ColorTokens.onSurfaceVariant,
               ),

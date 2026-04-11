@@ -59,7 +59,7 @@ export default async function HistoryPage() {
         {moments.map((moment, index) => (
           <article
             key={moment.title}
-            className="glass-panel card-interactive rounded-[30px] border border-border-soft p-6"
+            className="glass-panel card-interactive rounded-[30px] p-6"
           >
             <div className="flex items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-club-accent/15 text-club-accent">

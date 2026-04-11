@@ -28,6 +28,12 @@ export {
   getConfigValue,
 } from "./cms";
 export {
+  getFantasyCompetitions,
+  getFeaturedFantasyCompetition,
+  getFantasyCompetitionBySlug,
+  getFantasyLeaderboard,
+} from "./fantasy";
+export {
   getMembershipPackages,
   getFanClubs,
   getContributionGroups,
@@ -40,6 +46,7 @@ import { getClubProfile } from "./club";
 import { getMatches } from "./matches";
 import { getNewsArticles } from "./news";
 import { getProducts } from "./shop";
+import { getFantasyCompetitions } from "./fantasy";
 import {
   getMembershipPackages,
   getFanClubs,
@@ -81,11 +88,12 @@ export const getHomePageData = cache(async function getHomePageData() {
 });
 
 export const getSiteSearchIndex = cache(async function getSiteSearchIndex(): Promise<SearchIndexItem[]> {
-  const [matches, news, products, groups] = await Promise.all([
+  const [matches, news, products, groups, fantasyCompetitions] = await Promise.all([
     getMatches(),
     getNewsArticles(),
     getProducts(),
     getContributionGroups(),
+    getFantasyCompetitions(),
   ]);
 
   return [
@@ -123,6 +131,14 @@ export const getSiteSearchIndex = cache(async function getSiteSearchIndex(): Pro
       href: "/circles",
       category: "Community" as const,
       meta: group.groupType,
+    })),
+    ...fantasyCompetitions.slice(0, 6).map((competition) => ({
+      id: `fantasy-${competition.id}`,
+      title: competition.name,
+      description: competition.description,
+      href: `/fantasy/${competition.slug}`,
+      category: "Fantasy" as const,
+      meta: competition.season,
     })),
   ];
 });

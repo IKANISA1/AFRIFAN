@@ -1,139 +1,124 @@
-# Design System Documentation: Kinetic Football Authority
+# Design System: The Tactile Monolith
 
-## 1. Overview & Creative North Star
-**Creative North Star: "The Stadium Pulse"**
-This design system is engineered to capture the high-stakes atmospheric tension of a stadium tunnel before kickoff. It moves away from generic "app-like" layouts toward a cinematic, editorial experience that feels heavy, intentional, and athletic.
+## Canonical Source
 
-The aesthetic is driven by **Kinetic Energy**. We break the traditional grid through radical typography scales and a "Glass-on-Pulse" layering strategy. By combining the technical precision of Glassmorphism with the tactile, physical feedback of Claymorphism, we create a UI that feels like a premium sports instrument rather than a static interface.
+The web design system has one implementation source of truth:
 
-## 2. Color & Atmospheric Depth
+- `apps/rayon_sports/web/src/design-system/theme.css`
 
-### 2.1 Dynamic Club Color System
+The shared recipe entrypoint for JSX is:
 
-**Colors are NOT hardcoded.** Every club in the AfriClub platform has its own brand colors stored in the Supabase `african_football_clubs` table and injected at app startup via `ColorTokens.init(ClubConfig.colors)`.
+- `apps/rayon_sports/web/src/design-system/index.ts`
 
-**Architecture:**
-- **Platform constants** (background, surface, glass, semantic) are identical across all 50+ clubs and remain compile-time `const`.
-- **Club-specific tokens** (`clubPrimary`, `clubSecondary`, `clubAccent`, `navActive`, `heroGradient`) are initialized ONCE at startup from `ClubColors` via `ColorTokens.init()`.
+Do not create new visual rules in `globals.css`, feature-level CSS, or ad hoc class strings when a semantic recipe already exists.
 
-**Color token mapping:**
+## Review Summary
 
-| Token | Resolves to | Example (Rayon Sports) | Example (Simba SC) |
-|-------|-------------|------------------------|---------------------|
-| `ColorTokens.clubPrimary` | Club's main brand color | `#0038A8` (Blue) | `#CC0000` (Red) |
-| `ColorTokens.clubSecondary` | Club's secondary / gradient base | `#001F5C` (Deep Blue) | Design default |
-| `ColorTokens.clubAccent` | Highlight / trophy / emphasis | `#D4A017` (Gold) | `#FFD700` (Gold) |
-| `ColorTokens.navActive` | Auto-derived pastel of primary | Light blue tint | Light red tint |
-| `ColorTokens.heroGradient()` | secondary → primary at 135° | Deep Blue → Blue | Default → Red |
+This redesign replaced a fragmented setup:
 
-**Legacy aliases** (`clubRed`, `deepNavy`, `trophyGold`) delegate to the dynamic getters above. All existing widget code continues to work without changes.
+1. The written docs described a legacy "Tactile Monolith / Tactile Monolith" system that no longer matched the live web UI.
+2. The live web theme was embedded directly in `apps/rayon_sports/web/src/app/globals.css`, which made the global file both implementation and policy document.
+3. Shared recipes such as glass panels, pill buttons, rounded cards, and dashboard inputs were repeated inline across many components and pages.
+4. Typography drifted away from the intended authority hierarchy; the live app used a mixed stack that diluted display contrast.
+5. Borders and dividers had crept back into the UI, weakening the intended molded, tactile surface language.
 
-**White-drop rule:** If any club color is white or near-white (luminance > 0.9), it is automatically replaced with the design system default for that slot. White colors break the dark-mode UI and are never used as accent/UI colors.
+The current web system now consolidates those concerns under `src/design-system/`.
 
-### 2.2 Surface Hierarchy (Platform Constants)
+## Creative North Star
 
-The palette is rooted in the deep shadows of a midnight stadium, punctuated by high-velocity club-specific accents.
+The system is built around **The Tactile Monolith**:
 
-* **The "No-Line" Rule:** Direct structural lines are prohibited. To separate sections, use background shifts. A section utilizing `surface-container-low` should sit adjacent to the base `surface` to define boundaries.
-* **Surface Hierarchy:** Depth is achieved through "Nesting."
-  * Base Layer: `background` (`#0C112E`).
-  * Secondary Content: `surface-container-low`.
-  * Interactive Elements: `surface-container-high`.
-* **The Glass Mandate:** Cards must utilize Glassmorphism to maintain the "Kinetic" feel.
-  * **BackdropFilter Blur:** 12px.
-  * **Fill:** White at 0.06 opacity.
-  * **Border:** White at 0.15 opacity (The "Ghost Border").
-* **Signature Textures:** Use linear gradients for hero backgrounds transitioning from `ColorTokens.clubSecondary` to `ColorTokens.clubPrimary` at a 135-degree angle to simulate movement. **Never hardcode hex values — always use the dynamic token getters.**
-* **Hero Section Sizing:** Hero section images, content, and container must take exactly 1/4 of the height of the home screen.
+- Massive, condensed headlines in **Space Grotesk** create authority.
+- **Manrope** carries body copy and makes the interface feel premium rather than utilitarian.
+- **Inter** is reserved for labels, control text, and micro-copy.
+- Surfaces feel carved from violet light and frosted glass, not drawn with flat panels.
+- Layouts should feel editorial and asymmetrical rather than template-like.
 
-### 2.3 Initialization Flow
+The interface must read as a physical stack of surfaces, not a grid of boxes.
 
-```dart
-// In every app's bootstrap.dart:
-Future<void> bootstrap(ClubConfig config) async {
-  WidgetsFlutterBinding.ensureInitialized();
-  // ...orientation lock...
+## System Rules
 
-  // ── MUST happen before any widget code ──
-  ColorTokens.init(config.colors);
+### 1. Color and Surfaces
 
-  // ...supabase init, etc...
-  runApp(AfriClubApp(config: config, modules: modules));
-}
-```
+- `surface-dim` is the base void. Everything else floats above it.
+- Use tonal surface shifts before you use separators.
+- Treat borders as ghost borders only: low-opacity accessibility outlines, not structure.
+- Use glass surfaces for navigation, dialogs, overlays, and elevated cards.
+- Use the violet primary gradient for hero CTAs and singular actions that deserve focus.
 
-### 2.4 Club Color Data Source (Supabase)
+### 2. Typography
 
-All club colors are stored in `african_football_clubs`:
+- Use **Space Grotesk** for `display` and `headline` moments.
+- Use **Manrope** for long-form and supporting text.
+- Use **Inter** for labels, navigation micro-copy, and operational UI.
+- Default to dramatic scale contrast: big headline, restrained supporting copy.
+- Avoid middle-weight, middle-size hierarchy that flattens the page.
 
-| Column | Type | Example |
-|--------|------|---------|
-| `primary_color_hex` | `TEXT` | `#0038A8` |
-| `secondary_color_hex` | `TEXT` | `#001F5C` |
-| `accent_color_hex` | `TEXT` | `#D4A017` |
+### 3. Shape and Depth
 
-These are loaded into `ClubConfig.colors` at compile time and passed to `ColorTokens.init()`.
+- Nothing sharp. The minimum practical radius is `1.5rem`.
+- Primary cards should feel molded: `2rem` to `3rem` radii.
+- Use layered blur, tinted ambient shadow, and inner highlights for depth.
+- Use inset shadows for inputs and sunken surfaces.
+- Avoid neutral grey shadows. Depth should be violet-tinted or derived from the void.
 
-## 3. Typography: Radical Minimalism
-Hierarchy is communicated through extreme scale. We prioritize "Barlow Condensed" for its athletic, high-density feel and "Inter" for technical clarity.
+### 4. Component Doctrine
 
-* Scale up to `display-lg` (3.5rem) for primary data points.
-* **Titles (Barlow Condensed):**
-  * Use **Bold 700** for screen headers.
-  * Headlines should be "All Caps" to reinforce authority.
-* **Body & Meta (Inter):**
-  * **SemiBold 600** for sub-headers and button labels.
-  * **Regular 400** for descriptions.
-* **Anonymous Identity:** Never design for names. All layouts must be optimized for 6-digit numeric aliases (e.g., `882-941`). These should be treated with the same typographic weight as primary headlines.
+- Primary button: glossy clay gradient, pill shape, one hero CTA per cluster.
+- Secondary button: glass button, same silhouette, lower emphasis.
+- Tertiary button: text-first action, no container.
+- Cards: no divider lines; use whitespace and surface hierarchy.
+- Inputs: sunken, heavy radius, electric-violet focus halo.
+- Chips: pebble-like, pill-shaped, low-contrast surface with strong label typography.
+- Header: fixed frosted-glass pane with strong blur and a ghost edge only.
 
-## 4. Elevation & Tactile Depth
-We move beyond flat design by utilizing **Claymorphic Interaction** for primary touchpoints and **Tonal Layering** for structure.
+## Implementation Guidance
 
-* **Claymorphic Tactility:** Buttons and badges must feel like physical objects.
-  * **Primary Action:** `ColorTokens.clubPrimary` background (dynamic per club).
-  * **Top-Left Inner Shadow:** `white` at 20% opacity, 2px blur, offset 2px.
-  * **Bottom-Right Inner Shadow:** `black` at 30% opacity, 4px blur, offset 4px.
-* **Ambient Shadows:** For floating glass cards, use a diffused shadow: `rgba(7, 11, 40, 0.8)` with a 40px blur. Avoid grey shadows; always tint shadows with the `surface_container_lowest` hue.
-* **The Ghost Border:** For accessibility on glass cards, use the `outline_variant` token at 15% opacity. Never use 100% opaque borders.
+### Use semantic recipes first
 
-## 5. Components
+Shared JSX should prefer recipes from `@/design-system`:
 
-### Primary Buttons (Claymorphic)
-* **Style:** High-radius (`full` 9999px), `ColorTokens.clubPrimary` fill (dynamic per club).
-* **Animation:** On press, the dual inner shadows invert to simulate a physical "press-in."
-* **Constraint:** Only one Primary Button per view to maintain Radical Minimalism.
+- `ui.panel`
+- `ui.panelElevated`
+- `ui.panelInset`
+- `ui.buttonPrimary`
+- `ui.buttonSecondary`
+- `ui.buttonTertiary`
+- `ui.iconButton`
+- `ui.chip`
+- `ui.chipMuted`
+- `ui.chipSignal`
+- `ui.statCard`
+- `ui.input`
+- `ui.kicker`
+- `ui.meta`
+- `ui.monolithBleed`
 
-### Glass Cards
-* **Style:** `xl` (1.5rem) corner radius.
-* **Structure:** No internal divider lines. Use `spacing-6` (2rem) to separate internal content blocks.
-* **Visuals:** Must float over a dynamic gradient background (`ColorTokens.heroGradient()`) to maximize the blur effect.
+### Backwards compatibility
 
-### Interactive Lists
-* **Style:** Transparent backgrounds with `surface-container-highest` backgrounds on the active state.
-* **Dividers:** Strictly forbidden. Use a vertical `spacing-2` (0.7rem) gap between list items to create separation.
+Legacy classes remain mapped to the new system for migration:
 
-### Bottom Navigation
-* **Mandate:** Icon-only by default.
-* **Interaction:** On press, the icon scales up (1.2x), the `label-md` appears below it, and a haptic "pop" is triggered. Use `ColorTokens.navActive` (auto-derived pastel tint of club primary) for the active state icon.
+- `glass-panel`
+- `glass-panel-elevated`
+- `clay-card`
+- `card-interactive`
+- `dashboard-input`
+- `dashboard-chip`
 
-### Numeric Aliases (Identity Badges)
-* **Style:** Monospaced-style tracking for the 6-digit numbers.
-* **Container:** Glassmorphic pill with `sm` (0.25rem) radius.
+Do not add new usage of those legacy names in new work. Use the `ui.*` recipes instead.
 
-## 6. Do's and Don'ts
+## Do
 
-### Do:
-* **Do** use `Barlow Condensed` at massive scales for numbers to create an "Editorial Sports" look.
-* **Do** rely on `spacing-8` and `spacing-10` to create breathing room between high-contrast elements.
-* **Do** ensure all "Primary Actions" use the dual-inner-shadow Claymorphic style.
-* **Do** use the "Ghost Border" (low opacity) exclusively for container boundaries.
-* **Do** use `ColorTokens.clubPrimary` / `.clubAccent` — never hardcode hex color values.
-* **Do** call `ColorTokens.init(config.colors)` in bootstrap before any widget renders.
+- Use whitespace aggressively.
+- Let oversized display type bleed behind glass panels when the layout benefits from it.
+- Keep the number of equally weighted actions low.
+- Favor asymmetry and layered overlap over perfectly even blocks.
+- Use `theme.css` for token changes rather than editing dozens of components.
 
-### Don't:
-* **Don't** use 1px solid, high-contrast borders or dividers.
-* **Don't** include labels in the bottom navigation's idle state.
-* **Don't** use standard "Drop Shadows." All depth must be Tonal (background shift) or Claymorphic (inner shadows).
-* **Do** use responsive themes that adapt to system, light, and dark modes smoothly.
-* **Don't** hardcode any hex color value (e.g., `Color(0xFFC8102E)`) in feature widgets — always use `ColorTokens.*` getters.
-* **Don't** use white (`#FFFFFF`) as any club accent color — the white-drop rule filters this automatically.
+## Don’t
+
+- Do not introduce 1px structural dividers.
+- Do not hardcode new radii, panel recipes, or button treatments inline if a recipe already exists.
+- Do not fall back to generic SaaS blue-on-white panels.
+- Do not add new font families outside the approved trio.
+- Do not split design-system guidance across multiple docs again.

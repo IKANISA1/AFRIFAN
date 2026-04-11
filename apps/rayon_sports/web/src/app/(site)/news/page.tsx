@@ -65,7 +65,7 @@ export default async function NewsPage() {
           <Link
             href={`/news/${featuredArticle.id}`}
             prefetch={false}
-            className="glass-panel card-interactive grid overflow-hidden rounded-[34px] border border-border-soft lg:grid-cols-[1.05fr_0.95fr]"
+            className="glass-panel card-interactive grid overflow-hidden rounded-[34px] lg:grid-cols-[1.05fr_0.95fr]"
           >
             <div className="p-6 sm:p-8">
               <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">

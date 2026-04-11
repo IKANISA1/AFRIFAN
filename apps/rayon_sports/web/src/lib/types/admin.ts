@@ -2,6 +2,7 @@
  * Admin panel types.
  */
 import type { ContributionGroup, FanClubItem, MatchItem, MembershipPackage, ShopProduct } from "./site";
+import type { FantasyCompetitionMode } from "./site";
 
 export type AdminRole =
   | "super_admin"
@@ -173,4 +174,80 @@ export interface AdminFanEngagementToken {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface AdminFantasyCompetition {
+  id: string;
+  clubId: number | null;
+  slug: string;
+  name: string;
+  shortName: string;
+  season: string;
+  description: string;
+  mode: FantasyCompetitionMode;
+  backendStatus: "draft" | "active" | "finished";
+  primaryColor: string;
+  logoUrl: string | null;
+  countryCode: string | null;
+  provider: string | null;
+  promoTitle: string | null;
+  promoBody: string | null;
+  badgeLabel: string | null;
+  ctaLabel: string | null;
+  heroImageUrl: string | null;
+  sortOrder: number;
+  isVisible: boolean;
+  isFeatured: boolean;
+  isPlayable: boolean;
+  activeEntries: number;
+  startAt: string;
+  endAt: string;
+  entryWindowOpensAt: string | null;
+  entryWindowClosesAt: string | null;
+}
+
+export type AdminFantasyPlayerPosition = "GK" | "DEF" | "MID" | "FWD";
+export type AdminFantasyGameweekStatus =
+  | "upcoming"
+  | "live"
+  | "scoring"
+  | "finished";
+
+export interface AdminFantasyPlayer {
+  id: string;
+  competitionId: string;
+  externalId: number;
+  name: string;
+  shortName: string;
+  position: AdminFantasyPlayerPosition;
+  teamId: number;
+  teamName: string;
+  teamShort: string;
+  nationality: string | null;
+  photoUrl: string | null;
+  teamLogoUrl: string | null;
+  price: number;
+  priceChange: number;
+  ownershipPercent: number;
+  updatedAt: string;
+}
+
+export interface AdminFantasyGameweek {
+  id: string;
+  competitionId: string;
+  number: number;
+  name: string;
+  status: AdminFantasyGameweekStatus;
+  deadlineAt: string;
+  startAt: string;
+  endAt: string;
+  isDoubleGameweek: boolean;
+  averageScore: number | null;
+  highestScore: number | null;
+}
+
+export interface AdminFantasyOperationsSnapshot {
+  competitionId: string;
+  players: AdminFantasyPlayer[];
+  gameweeks: AdminFantasyGameweek[];
 }

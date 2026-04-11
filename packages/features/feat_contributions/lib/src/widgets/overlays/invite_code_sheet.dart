@@ -1,7 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Shows the invite code bottom sheet with the real code from the group.
@@ -72,7 +71,7 @@ class _InviteCodeSheet extends StatelessWidget {
           children: [
             Text(
               'INVITE TO CIRCLE',
-              style: GoogleFonts.barlowCondensed(
+              style: TypographyTokens.monolithFont(
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
                 color: ColorTokens.onSurface,
@@ -94,7 +93,7 @@ class _InviteCodeSheet extends StatelessWidget {
               decoration: BoxDecoration(
                 color: ColorTokens.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
+                border: BorderTokens.all(
                   color: ColorTokens.clubAccent.withValues(alpha: 0.25),
                 ),
               ),
@@ -144,7 +143,7 @@ class _InviteCodeSheet extends StatelessWidget {
               decoration: BoxDecoration(
                 color: ColorTokens.clubAccent.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
+                border: BorderTokens.all(
                   color: ColorTokens.clubAccent.withValues(alpha: 0.15),
                 ),
               ),
@@ -209,7 +208,7 @@ class _ShareAction extends StatelessWidget {
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: color.withValues(alpha: 0.2)),
+            border: BorderTokens.all(color: color, opacity: 0.2),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,

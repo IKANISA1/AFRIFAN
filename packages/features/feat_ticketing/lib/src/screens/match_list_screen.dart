@@ -163,7 +163,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
           decoration: BoxDecoration(
             color: ColorTokens.surface,
             borderRadius: ShapeTokens.cardRadius,
-            border: Border.all(color: ColorTokens.ghostBorder),
+            border: BorderTokens.ghost(),
           ),
           padding: const EdgeInsets.all(SpacingTokens.spacing4),
           child: Column(

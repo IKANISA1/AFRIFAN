@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../shop_cart_provider.dart';
 import '../widgets/checkout_bar.dart';
@@ -19,7 +18,7 @@ import '../widgets/shop_top_bar.dart';
 /// "THE ARMOURY" — cinematic, editorial merchandise catalog.
 ///
 /// Full-width product cards, category chips, floating checkout bar.
-/// Dark midnight stadium aesthetic per Kinetic Football Authority.
+/// Dark midnight stadium aesthetic per Tactile Monolith.
 class ShopScreen extends ConsumerStatefulWidget {
   const ShopScreen({super.key});
 
@@ -152,7 +151,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                         const SizedBox(width: 6),
                         Text(
                           '> SHOP',
-                          style: GoogleFonts.inter(
+                          style: TypographyTokens.editorialFont(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
                             color: ColorTokens.onSurfaceVariant.withValues(
@@ -178,7 +177,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                             ),
                             child: Text(
                               'THE ARMOURY',
-                              style: GoogleFonts.barlowCondensed(
+                              style: TypographyTokens.monolithFont(
                                 fontSize: 48,
                                 fontWeight: FontWeight.w900,
                                 color: ColorTokens.onSurface,
@@ -310,7 +309,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
               'CONNECTION ERROR',
-              style: GoogleFonts.barlowCondensed(
+              style: TypographyTokens.monolithFont(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
                 color: ColorTokens.onSurface,

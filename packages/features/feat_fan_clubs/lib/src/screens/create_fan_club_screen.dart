@@ -1,7 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CreateFanClubScreen extends StatefulWidget {
   const CreateFanClubScreen({super.key});
@@ -33,7 +32,7 @@ class _CreateFanClubScreenState extends State<CreateFanClubScreen> {
         backgroundColor: Colors.transparent,
         title: Text(
           'START A FAN CLUB',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -86,9 +85,7 @@ class _CreateFanClubScreenState extends State<CreateFanClubScreen> {
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text(
-                            'Photo upload coming soon.',
-                          ),
+                          content: Text('Photo upload coming soon.'),
                         ),
                       );
                     },

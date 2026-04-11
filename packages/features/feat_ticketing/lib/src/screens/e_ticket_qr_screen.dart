@@ -95,7 +95,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                     decoration: BoxDecoration(
                       color: ColorTokens.surface,
                       borderRadius: ShapeTokens.cardRadius,
-                      border: Border.all(color: ColorTokens.ghostBorder),
+                      border: BorderTokens.ghost(),
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,

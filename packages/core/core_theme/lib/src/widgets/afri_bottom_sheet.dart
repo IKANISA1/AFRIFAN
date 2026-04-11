@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../extensions.dart';
+import '../tokens/border_tokens.dart';
 import '../tokens/blur_tokens.dart';
 import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
@@ -41,11 +42,7 @@ class AfriBottomSheet extends StatelessWidget {
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(borderRadius),
             ),
-            border: Border(
-              top: BorderSide(color: borderCol, width: 1.0),
-              left: BorderSide(color: borderCol, width: 1.0),
-              right: BorderSide(color: borderCol, width: 1.0),
-            ),
+            border: BorderTokens.sheet(color: borderCol, opacity: 0.16),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,

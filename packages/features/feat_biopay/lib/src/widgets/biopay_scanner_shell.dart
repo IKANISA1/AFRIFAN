@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
 import 'biopay_reference_ui.dart';
@@ -69,7 +70,7 @@ class BiopayScannerShell extends StatelessWidget {
             height: 470,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(160),
-              border: Border.all(color: _frameColor(), width: 4),
+              border: BorderTokens.all(color: _frameColor(), width: 4),
             ),
           ),
         ),

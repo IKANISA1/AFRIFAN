@@ -1,6 +1,5 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 Future<bool> showSmsPermissionModal(BuildContext context) async {
   var allowReading = false;
@@ -34,7 +33,7 @@ Future<bool> showSmsPermissionModal(BuildContext context) async {
                   const SizedBox(height: SpacingTokens.spacing4),
                   Text(
                     'ENABLE MOMO SMS SYNC',
-                    style: GoogleFonts.barlowCondensed(
+                    style: TypographyTokens.monolithFont(
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
                       color: ColorTokens.onSurface,

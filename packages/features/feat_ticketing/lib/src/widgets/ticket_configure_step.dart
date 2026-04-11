@@ -134,9 +134,8 @@ class TicketConfigureStep extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing6),
           ClaymorphicButton(
             label: 'REVIEW RESERVATION',
-            onPressed: match.isSoldOut || !match.isOnSale
-                ? null
-                : onReviewRequested,
+            onPressed:
+                match.isSoldOut || !match.isOnSale ? null : onReviewRequested,
             width: double.infinity,
           ),
         ],

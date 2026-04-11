@@ -1,6 +1,5 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 Future<String?> showGroupPrivacySettingsSheet(
   BuildContext context, {
@@ -75,7 +74,7 @@ class _GroupPrivacySettingsSheetState
         const SizedBox(height: SpacingTokens.spacing4),
         Text(
           'CIRCLE PRIVACY',
-          style: GoogleFonts.barlowCondensed(
+          style: TypographyTokens.monolithFont(
             fontSize: 26,
             fontWeight: FontWeight.w800,
             color: ColorTokens.onSurface,
@@ -163,7 +162,7 @@ class _PrivacyOptionCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: ColorTokens.surfaceContainerLow,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
+          border: BorderTokens.all(
             color: selected ? ColorTokens.clubPrimary : ColorTokens.ghostBorder,
             width: selected ? 1.4 : 1,
           ),
@@ -203,7 +202,7 @@ class _PrivacyOptionCard extends StatelessWidget {
                 children: [
                   Text(
                     data.title,
-                    style: GoogleFonts.barlowCondensed(
+                    style: TypographyTokens.monolithFont(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       color: ColorTokens.onSurface,

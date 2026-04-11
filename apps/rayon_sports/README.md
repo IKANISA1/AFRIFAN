@@ -7,7 +7,7 @@ This is the Rayon Sports club application generated from the monorepo architectu
 This application acts as a "flavor" or "tenant" of the greater platform:
 - **No Duplicate Business Logic**: All features (Ticketing, Contributions, Gamification, Shop) live in `packages/features/`.
 - **Dynamic Design System**: Colors and branding are not hardcoded. At bootstrap, the app retrieves its specific branding (Primary, Secondary, Accent colors, Crest) from `ClubConfig`, and initializes the `ColorTokens` system.
-- **The White-Drop Rule**: To adhere to the Kinetic Football Authority (dark-mode only) design language, any club colors that are white or near-white are automatically dropped and replaced with system defaults. This ensures that the glassmorphism and deep gradients render perfectly.
+- **The White-Drop Rule**: To adhere to the Tactile Monolith (dark-mode only) design language, any club colors that are white or near-white are automatically dropped and replaced with system defaults. This ensures that the glassmorphism and deep gradients render perfectly.
 
 ## Building and Running
 

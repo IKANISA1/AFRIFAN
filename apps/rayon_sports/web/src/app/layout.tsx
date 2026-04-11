@@ -1,33 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Bebas_Neue, Oswald, Outfit, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Manrope, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { absoluteUrl, siteConfig } from "@/lib/config";
 import { buildSiteJsonLd, renderJsonLdScriptContent } from "@/lib/metadata";
 
-const plusJakarta = Plus_Jakarta_Sans({
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
-});
-
-const oswald = Oswald({
-  variable: "--font-barlow",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const outfit = Outfit({
-  variable: "--font-outfit",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const bebasNeue = Bebas_Neue({
-  variable: "--font-bebas",
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -89,7 +81,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#0038a8",
+  themeColor: "#7b5bff",
 };
 
 export default function RootLayout({
@@ -102,7 +94,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${plusJakarta.variable} ${oswald.variable} ${outfit.variable} ${bebasNeue.variable} h-full antialiased`}
+      className={`${manrope.variable} ${spaceGrotesk.variable} ${inter.variable} h-full antialiased`}
     >
       <head />
       <body className="min-h-full flex flex-col">

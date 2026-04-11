@@ -1,3 +1,4 @@
+import '../tokens/border_tokens.dart';
 import 'package:core_theme/src/tokens/color_tokens.dart';
 import 'package:core_theme/src/tokens/spacing_tokens.dart';
 import 'package:core_theme/src/widgets/afri_press_feedback.dart';
@@ -16,17 +17,47 @@ class AfriIconButton extends StatelessWidget {
       onTap: onTap,
       builder: (context, state) => AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.all(SpacingTokens.spacing2),
+        padding: const EdgeInsets.all(SpacingTokens.spacing3),
         decoration: BoxDecoration(
-          color: ColorTokens.surface,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              ColorTokens.surfaceBright.withValues(alpha: 0.78),
+              ColorTokens.surfaceContainerHigh.withValues(alpha: 0.78),
+            ],
+          ),
           shape: BoxShape.circle,
-          border: Border.all(color: ColorTokens.ghostBorder),
+          border: state.isFocused
+              ? BorderTokens.focusAll(
+                  color: ColorTokens.primaryContainer,
+                  opacity: 0.45,
+                  width: BorderTokens.standard,
+                )
+              : BorderTokens.ghost(),
           boxShadow: state.isPressed
-              ? []
+              ? [
+                  BoxShadow(
+                    color: ColorTokens.ambientShadow.withValues(alpha: 0.18),
+                    blurRadius: 14,
+                    spreadRadius: -10,
+                    offset: const Offset(4, 4),
+                    blurStyle: BlurStyle.inner,
+                  ),
+                ]
               : [
                   BoxShadow(
-                    color: ColorTokens.onSurface.withValues(alpha: 0.1),
-                    blurRadius: 4,
+                    color: Colors.white.withValues(alpha: 0.10),
+                    blurRadius: 14,
+                    spreadRadius: -10,
+                    offset: const Offset(-6, -6),
+                    blurStyle: BlurStyle.inner,
+                  ),
+                  BoxShadow(
+                    color: ColorTokens.ambientShadow.withValues(alpha: 0.20),
+                    blurRadius: 24,
+                    spreadRadius: -8,
+                    offset: const Offset(0, 10),
                   ),
                 ],
         ),

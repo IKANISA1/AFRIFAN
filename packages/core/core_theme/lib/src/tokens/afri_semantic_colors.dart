@@ -101,50 +101,53 @@ class AfriSemanticColors extends ThemeExtension<AfriSemanticColors> {
   final LinearGradient surfaceGradient;
 
   // ─────────────────────────────────────────────────────────────────
-  // Dark theme — default "Stadium Pulse" palette (ROUGEBLACK)
+  // Dark theme — default Tactile Monolith palette
   // ─────────────────────────────────────────────────────────────────
   static AfriSemanticColors get dark => AfriSemanticColors(
     // ── App-level surfaces ──
     appBackground: ColorTokens.background,
     elevatedBackground: ColorTokens.surfaceContainerLow,
-    shellGradientTop: ColorTokens.surfaceContainerLowest,
-    shellGradientBottom: ColorTokens.surfaceContainerLow,
+    shellGradientTop: ColorTokens.surfaceDim,
+    shellGradientBottom: ColorTokens.surfaceContainerHigh,
     // ── Card surfaces ──
-    cardSurface: ColorTokens.surfaceContainer,
-    cardSurfaceStrong: ColorTokens.surfaceContainerHigh,
-    overlaySurface: ColorTokens.surfaceContainerLow,
+    cardSurface: ColorTokens.surfaceContainerHigh,
+    cardSurfaceStrong: ColorTokens.surfaceContainerHighest,
+    overlaySurface: ColorTokens.surfaceBright,
     // ── Input surfaces ──
-    inputSurface: ColorTokens.surfaceContainerHigh,
+    inputSurface: ColorTokens.surfaceContainerLowest,
     // ── Text hierarchy ──
-    primaryText: const Color(0xFFF0F0F5),
-    secondaryText: const Color(0xFF9898B0),
-    tertiaryText: const Color(0xFF6A6A85),
+    primaryText: ColorTokens.onSurface,
+    secondaryText: ColorTokens.onSurfaceVariant,
+    tertiaryText: ColorTokens.onSurfaceVariant.withValues(alpha: 0.65),
     // ── Borders ──
-    border: ColorTokens.outlineVariant,
-    borderStrong: ColorTokens.surfaceContainerHighest,
+    border: ColorTokens.ghostBorder,
+    borderStrong: ColorTokens.primaryContainer.withValues(alpha: 0.28),
     // ── Interactive ──
-    accent: const Color(0xFF4ADE80),
-    accentSoft: const Color(0x1A4ADE80),
-    buttonPrimaryBackground: ColorTokens.clubPrimary,
+    accent: ColorTokens.primaryContainer,
+    accentSoft: ColorTokens.primaryContainer.withValues(alpha: 0.18),
+    buttonPrimaryBackground: ColorTokens.primaryContainer,
     buttonPrimaryForeground: const Color(0xFFFFFFFF),
     // ── Semantic status ──
-    danger: const Color(0xFFFF4D6A),
-    warning: const Color(0xFFFBBF24),
-    info: const Color(0xFF60A5FA),
-    success: const Color(0xFF4ADE80),
+    danger: ColorTokens.error,
+    warning: ColorTokens.warning,
+    info: ColorTokens.info,
+    success: ColorTokens.success,
     // ── Domain surfaces ──
     operationalSurface: ColorTokens.surfaceContainer,
     analyticsSurface: ColorTokens.surfaceContainerHigh,
-    commerceSurface: ColorTokens.surfaceContainerLowest,
-    teamSurface: ColorTokens.surfaceContainerLow,
+    commerceSurface: ColorTokens.secondaryContainer,
+    teamSurface: ColorTokens.surfaceContainerLowest,
     // ── Glass ──
-    highlightColor: const Color(0xFFFFFFFF),
-    shadowColor: ColorTokens.surfaceContainerLowest,
+    highlightColor: Colors.white.withValues(alpha: 0.16),
+    shadowColor: ColorTokens.ambientShadow,
     // ── Gradients ──
     surfaceGradient: LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: [ColorTokens.surfaceContainer, ColorTokens.surfaceContainerHigh],
+      colors: [
+        ColorTokens.surfaceContainerHigh,
+        ColorTokens.surfaceContainerHighest,
+      ],
     ),
   );
 

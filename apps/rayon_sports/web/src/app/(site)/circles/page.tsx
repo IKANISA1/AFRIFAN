@@ -59,7 +59,7 @@ export default async function CirclesPage() {
           {groups.map((group) => (
             <article
               key={group.id}
-              className="glass-panel card-interactive rounded-[32px] border border-border-soft p-6"
+              className="glass-panel card-interactive rounded-[32px] p-6"
             >
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div>

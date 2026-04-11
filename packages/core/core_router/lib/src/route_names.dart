@@ -23,6 +23,7 @@ class RouteNames {
   static const String chat = 'chat';
   static const String biopay = 'biopay';
   static const String settings = 'settings';
+  static const String fantasy = 'fantasy';
 
   // Admin
   static const String admin = 'admin';

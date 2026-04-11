@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, ShoppingBag } from "lucide-react";
 import type { ShopProduct } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
+import { ui } from "@/design-system";
 
 export function ProductCard({ product }: { product: ShopProduct }) {
   const productImage = product.imageUrl ?? "/media/stadium-hero.jpg";
@@ -11,7 +12,7 @@ export function ProductCard({ product }: { product: ShopProduct }) {
     <Link
       href={`/shop/${product.id}`}
       prefetch={false}
-      className="group glass-panel card-interactive flex h-full flex-col gap-4 rounded-[30px] border border-border-soft p-4"
+      className={`group ${ui.panel} ${ui.cardInteractive} flex h-full flex-col gap-4 rounded-[30px] p-4`}
     >
       <div className="img-zoom relative overflow-hidden rounded-[24px]">
         <Image
@@ -25,10 +26,10 @@ export function ProductCard({ product }: { product: ShopProduct }) {
         />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_40%,rgba(3,10,24,0.82)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 px-4 py-3">
-          <span className="rounded-full bg-black/55 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white">
+          <span className={`${ui.chip} bg-black/45 px-3 py-1 text-[10px] text-white`}>
             {product.category}
           </span>
-          <span className="rounded-full bg-club-accent/85 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-950">
+          <span className={`${ui.chip} bg-club-accent/85 px-3 py-1 text-[10px] text-slate-950`}>
             {product.collection ?? "Official"}
           </span>
         </div>
@@ -44,7 +45,7 @@ export function ProductCard({ product }: { product: ShopProduct }) {
       </div>
 
       <div className="space-y-2">
-        <h3 className="font-display text-3xl font-bold uppercase leading-none text-white">
+        <h3 className="font-display text-3xl font-bold uppercase leading-none tracking-[-0.05em] text-white">
           {product.name}
         </h3>
         <p className="text-sm leading-7 text-slate-300">{product.subtitle}</p>
@@ -54,17 +55,17 @@ export function ProductCard({ product }: { product: ShopProduct }) {
         {product.sizes.slice(0, 4).map((size) => (
           <span
             key={size}
-            className="rounded-full border border-border-soft bg-white/4 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200"
+            className={`${ui.chip} ${ui.chipMuted} text-[11px]`}
           >
             {size}
           </span>
         ))}
       </div>
 
-      <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/8 pt-4">
+      <div className="mt-auto flex items-center justify-between gap-3 pt-4">
         <div className="flex items-center gap-2">
           <ShoppingBag size={16} className="text-club-accent" />
-          <span className="font-score text-4xl font-bold uppercase text-white">
+          <span className="font-score text-4xl font-bold uppercase tracking-[-0.05em] text-white">
             {formatCurrency(product.price)}
           </span>
         </div>

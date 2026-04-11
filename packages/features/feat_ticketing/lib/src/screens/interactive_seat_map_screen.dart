@@ -93,7 +93,7 @@ class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
             padding: const EdgeInsets.all(SpacingTokens.spacing4),
             decoration: BoxDecoration(
               color: ColorTokens.surface,
-              border: Border(top: BorderSide(color: ColorTokens.ghostBorder)),
+              border: BorderTokens.top(),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -111,7 +111,7 @@ class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
               decoration: BoxDecoration(
                 color: ColorTokens.surfaceContainerHighest,
-                border: Border(top: BorderSide(color: ColorTokens.ghostBorder)),
+                border: BorderTokens.top(),
               ),
               child: SafeArea(
                 child: Row(

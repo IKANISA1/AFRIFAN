@@ -36,7 +36,7 @@ class FloatingStatusChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: color.withValues(alpha: 0.25)),
+        border: BorderTokens.all(color: color, opacity: 0.25),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -188,13 +188,9 @@ class ScannerReticlePainter extends CustomPainter {
         Path.combine(
           PathOperation.difference,
           Path()..addRect(fullRect),
-          Path()
-            ..addRRect(
-              RRect.fromRectAndRadius(
-                reticleRect,
-                Radius.circular(cornerRadius),
-              ),
-            ),
+          Path()..addRRect(
+            RRect.fromRectAndRadius(reticleRect, Radius.circular(cornerRadius)),
+          ),
         ),
         bgPaint,
       );
@@ -213,17 +209,49 @@ class ScannerReticlePainter extends CustomPainter {
     final bottom = reticleRect.bottom;
 
     // TL
-    canvas.drawLine(Offset(left, top + bracketLen), Offset(left, top), bracketPaint);
-    canvas.drawLine(Offset(left, top), Offset(left + bracketLen, top), bracketPaint);
+    canvas.drawLine(
+      Offset(left, top + bracketLen),
+      Offset(left, top),
+      bracketPaint,
+    );
+    canvas.drawLine(
+      Offset(left, top),
+      Offset(left + bracketLen, top),
+      bracketPaint,
+    );
     // TR
-    canvas.drawLine(Offset(right - bracketLen, top), Offset(right, top), bracketPaint);
-    canvas.drawLine(Offset(right, top), Offset(right, top + bracketLen), bracketPaint);
+    canvas.drawLine(
+      Offset(right - bracketLen, top),
+      Offset(right, top),
+      bracketPaint,
+    );
+    canvas.drawLine(
+      Offset(right, top),
+      Offset(right, top + bracketLen),
+      bracketPaint,
+    );
     // BL
-    canvas.drawLine(Offset(left, bottom - bracketLen), Offset(left, bottom), bracketPaint);
-    canvas.drawLine(Offset(left, bottom), Offset(left + bracketLen, bottom), bracketPaint);
+    canvas.drawLine(
+      Offset(left, bottom - bracketLen),
+      Offset(left, bottom),
+      bracketPaint,
+    );
+    canvas.drawLine(
+      Offset(left, bottom),
+      Offset(left + bracketLen, bottom),
+      bracketPaint,
+    );
     // BR
-    canvas.drawLine(Offset(right - bracketLen, bottom), Offset(right, bottom), bracketPaint);
-    canvas.drawLine(Offset(right, bottom), Offset(right, bottom - bracketLen), bracketPaint);
+    canvas.drawLine(
+      Offset(right - bracketLen, bottom),
+      Offset(right, bottom),
+      bracketPaint,
+    );
+    canvas.drawLine(
+      Offset(right, bottom),
+      Offset(right, bottom - bracketLen),
+      bracketPaint,
+    );
   }
 
   @override

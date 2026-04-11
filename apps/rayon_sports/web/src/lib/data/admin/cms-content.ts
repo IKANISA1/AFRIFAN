@@ -6,6 +6,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess } from "@/lib/types";
 import type { HomeBanner, CmsContent, AppConfigEntry } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
+import { requestAdminApi } from "./http";
 import { requireAdminClubId } from "./helpers";
 
 // ─── Home Banners ────────────────────────────────────────
@@ -190,6 +191,10 @@ function mapConfig(row: Record<string, unknown>): AppConfigEntry {
 }
 
 export async function getAdminAppConfig(client: SupabaseClient, _access: AdminAccess) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<AppConfigEntry[]>("cms-config");
+  }
+
   const clubId = requireAdminClubId(_access, "load app configuration");
   const { data, error } = await client
     .from("club_app_config")
@@ -206,6 +211,14 @@ export async function saveAdminConfigEntry(
   _access: AdminAccess,
   input: { key: string; value: string; description?: string; country?: string },
 ) {
+  if (typeof window !== "undefined") {
+    await requestAdminApi<string>("cms-config", {
+      method: "POST",
+      body: input,
+    });
+    return;
+  }
+
   const clubId = requireAdminClubId(_access, "save app configuration");
   const payload = {
     club_id: clubId,
@@ -223,6 +236,14 @@ export async function saveAdminConfigEntry(
 }
 
 export async function deleteAdminConfigEntry(client: SupabaseClient, _access: AdminAccess, key: string) {
+  if (typeof window !== "undefined") {
+    await requestAdminApi<{ success: true }>("cms-config", {
+      method: "DELETE",
+      query: { id: key },
+    });
+    return;
+  }
+
   const clubId = requireAdminClubId(_access, "delete app configuration");
   const { error } = await client
     .from("club_app_config")

@@ -1,6 +1,5 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Tier progress — shows all tiers with current position.
 class TierProgress extends StatelessWidget {
@@ -51,13 +50,13 @@ class TierProgress extends StatelessWidget {
                               : isReached
                               ? ColorTokens.success.withValues(alpha: 0.18)
                               : ColorTokens.surfaceContainerHigh,
-                          border: Border.all(
+                          border: BorderTokens.all(
                             color: isCurrent
                                 ? primary
                                 : isReached
                                 ? ColorTokens.success
                                 : ColorTokens.ghostBorder,
-                            width: isCurrent ? 2 : 1,
+                            width: isCurrent ? 2 : BorderTokens.standard,
                           ),
                         ),
                         child: Center(
@@ -72,17 +71,27 @@ class TierProgress extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        tier.$1,
-                        style: GoogleFonts.barlowCondensed(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: isCurrent
-                              ? primary
-                              : isReached
-                              ? ColorTokens.success
-                              : ColorTokens.onSurfaceVariant.withValues(alpha: 0.5),
-                          letterSpacing: 1.0,
+                      SizedBox(
+                        height: 20,
+                        width: double.infinity,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            tier.$1,
+                            maxLines: 1,
+                            style: TypographyTokens.monolithFont(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: isCurrent
+                                  ? primary
+                                  : isReached
+                                  ? ColorTokens.success
+                                  : ColorTokens.onSurfaceVariant.withValues(
+                                      alpha: 0.5,
+                                    ),
+                              letterSpacing: 1.0,
+                            ),
+                          ),
                         ),
                       ),
                     ],

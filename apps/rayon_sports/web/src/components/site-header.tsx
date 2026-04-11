@@ -3,6 +3,7 @@ import Link from "next/link";
 import { siteNavigation, utilityNavigation } from "@/lib/content";
 import type { ClubProfile } from "@/lib/types";
 import { SiteHeaderControls } from "@/components/site-header-controls";
+import { ui } from "@/design-system";
 
 const PRIMARY_LINKS = siteNavigation.filter(
   (item) =>
@@ -17,14 +18,14 @@ export function SiteHeader({ club }: SiteHeaderProps) {
   const logoUrl = club.officialLogoUrl ?? "/icons/icon-192x192.png";
 
   return (
-    <header className="sticky top-0 z-[60] border-b border-transparent bg-surface-strong/80 backdrop-blur-xl">
-      <div className="overflow-hidden border-b border-transparent">
+    <header className={`sticky top-0 z-[60] ${ui.glassHeader}`}>
+      <div className="overflow-hidden">
         <div className="page-shell flex flex-wrap items-center justify-between gap-3 py-2 text-[10px] uppercase tracking-[0.24em] text-slate-300">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <span>{club.shortName}</span>
-            <span className="text-slate-600 hidden sm:inline">·</span>
+            <span className={ui.kicker}>{club.shortName}</span>
+            <span className="hidden text-white/20 sm:inline">•</span>
             <span className="text-slate-400 sm:text-slate-300">{club.league}</span>
-            <span className="text-slate-600 hidden sm:inline">·</span>
+            <span className="hidden text-white/20 sm:inline">•</span>
             <span className="hidden sm:inline">Official club website</span>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -38,13 +39,13 @@ export function SiteHeader({ club }: SiteHeaderProps) {
                 {item.label}
               </Link>
             ))}
-            <span className="text-slate-600">|</span>
+            <span className="text-white/20">|</span>
             <div className="flex items-center gap-2">
               {club.supportedLanguages.map((language, index) => (
                 <span key={language} className="transition hover:text-white">
                   {language.toUpperCase()}
                   {index < club.supportedLanguages.length - 1 ? (
-                    <span className="ml-2 text-slate-600">/</span>
+                    <span className="ml-2 text-white/20">/</span>
                   ) : null}
                 </span>
               ))}
@@ -62,13 +63,13 @@ export function SiteHeader({ club }: SiteHeaderProps) {
             height={64}
             priority
             sizes="48px"
-            className="h-12 w-12 rounded-full border border-white/10 bg-white/5 object-cover"
+            className={`${ui.brandMark} h-12 w-12 rounded-full object-cover`}
           />
           <div className="hidden sm:block">
-            <p className="font-display text-xl font-bold uppercase leading-none text-white lg:text-2xl">
+            <p className="font-display text-xl font-bold uppercase leading-none tracking-[-0.04em] text-white lg:text-2xl">
               {club.nickname || club.shortName}
             </p>
-            <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-slate-300">
+            <p className={`mt-1 ${ui.meta}`}>
               {club.clubName}
             </p>
           </div>
@@ -80,7 +81,7 @@ export function SiteHeader({ club }: SiteHeaderProps) {
               key={item.href}
               href={item.href}
               prefetch={false}
-              className="rounded-full px-3.5 py-2 text-sm font-semibold text-slate-300 transition-all duration-200 hover:bg-white/6 hover:text-white focus-ring"
+              className={`${ui.button} ${ui.buttonTertiary} rounded-full px-3.5 py-2 text-sm text-slate-300 hover:text-white focus-ring`}
             >
               {item.label}
             </Link>

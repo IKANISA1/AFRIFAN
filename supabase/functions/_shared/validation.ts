@@ -8,7 +8,7 @@ import { jsonUnauthorized, jsonForbidden } from "./response.ts";
 export interface ValidatedRequest {
   userId: string;
   clubId: string | null;
-  supabase: ReturnType<typeof createClient>;
+  supabase: ReturnType<typeof createClient> | any;
 }
 
 const GLOBAL_ADMIN_ROLES = new Set(["admin", "super_admin"]);

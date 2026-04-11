@@ -124,9 +124,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
             children: [
               Text(
                 'CLUB ADMIN',
-                style: TypographyTokens.titleSmall().copyWith(
-                  letterSpacing: 2,
-                ),
+                style: TypographyTokens.titleSmall().copyWith(letterSpacing: 2),
               ),
               Text(
                 'COMMAND CENTER',
@@ -190,9 +188,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
       children: [
         Text(
           'QUICK ACTIONS',
-          style: TypographyTokens.titleMedium().copyWith(
-            letterSpacing: 1.4,
-          ),
+          style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.4),
         ),
         const SizedBox(height: SpacingTokens.spacing4),
         _AdminActionTile(
@@ -241,9 +237,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         children: [
           Text(
             'RECENT ACTIVITY',
-            style: TypographyTokens.titleMedium().copyWith(
-              letterSpacing: 1.2,
-            ),
+            style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.2),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           if (_activity.isEmpty)
@@ -284,7 +278,9 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                     const SizedBox(height: SpacingTokens.spacing4),
                     Text(
                       'ACCESS DENIED',
-                      style: TypographyTokens.headlineMedium().copyWith(color: ColorTokens.onSurface),
+                      style: TypographyTokens.headlineMedium().copyWith(
+                        color: ColorTokens.onSurface,
+                      ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     Text(
@@ -417,7 +413,9 @@ class _AdminActionTile extends StatelessWidget {
               children: [
                 Text(
                   title.toUpperCase(),
-                  style: TypographyTokens.titleLarge().copyWith(color: ColorTokens.onSurface),
+                  style: TypographyTokens.titleLarge().copyWith(
+                    color: ColorTokens.onSurface,
+                  ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(subtitle, style: TypographyTokens.bodyMedium()),
