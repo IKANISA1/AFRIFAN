@@ -10,12 +10,14 @@ class AIAdvisorRepository {
   Future<AIAdvice> getAdvice({
     required String entryId,
     String? question,
+    bool debrief = false,
   }) async {
     try {
       final response = await _client.functions.invoke(
         'fantasy-ai-advisor',
         body: <String, dynamic>{
           'entry_id': entryId,
+          'mode': debrief ? 'debrief' : 'advice',
           if (question != null && question.trim().isNotEmpty)
             'question': question.trim(),
         },
@@ -30,7 +32,9 @@ class AIAdvisorRepository {
         advice: json['advice'] as String? ?? 'No advice available.',
         question: question?.trim().isNotEmpty == true
             ? question!.trim()
-            : 'What should I prioritise this week?',
+            : debrief
+            ? 'Give me a post-gameweek debrief.'
+            : 'What should I prioritize this week?',
         generatedAt: DateTime.now().toUtc(),
       );
     } on FunctionException catch (error) {

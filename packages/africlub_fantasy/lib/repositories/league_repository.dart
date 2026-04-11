@@ -2,6 +2,8 @@ import 'package:africlub_fantasy/core/exceptions.dart';
 import 'package:africlub_fantasy/models/entry_gameweek_score.dart';
 import 'package:africlub_fantasy/models/fantasy_entry.dart';
 import 'package:africlub_fantasy/models/fantasy_league.dart';
+import 'package:africlub_fantasy/models/league_h2h_fixture.dart';
+import 'package:africlub_fantasy/models/league_member.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LeagueRepository {
@@ -64,30 +66,13 @@ class LeagueRepository {
   }
 
   Future<List<FantasyLeague>> getMyLeagues(String competitionId) async {
-    final userId = _client.auth.currentUser?.id;
-    if (userId == null) return const <FantasyLeague>[];
-
     try {
-      final entries = await _client
-          .schema('fantasy')
-          .from('fantasy_entries')
-          .select('id')
-          .eq('competition_id', competitionId)
-          .eq('user_id', userId);
-      final entryIds = (entries as List<dynamic>)
-          .map((row) => row['id'] as String)
-          .toList(growable: false);
-      if (entryIds.isEmpty) return const <FantasyLeague>[];
-
-      final memberships = await _client
-          .schema('fantasy')
-          .from('league_memberships')
-          .select('league:leagues(*)')
-          .inFilter('entry_id', entryIds);
-
-      return (memberships as List<dynamic>)
-          .map((row) => row['league'])
-          .whereType<Map<String, dynamic>>()
+      final result = await _client.rpc(
+        'fantasy_get_my_leagues',
+        params: <String, dynamic>{'p_competition_id': competitionId},
+      );
+      return (result as List<dynamic>)
+          .map((row) => Map<String, dynamic>.from(row))
           .map(FantasyLeague.fromJson)
           .toList(growable: false);
     } on PostgrestException catch (error) {
@@ -147,8 +132,11 @@ class LeagueRepository {
 
   Future<FantasyLeague> createLeague({
     required String competitionId,
+    required String entryId,
     required String name,
+    required FantasyLeagueType type,
     required bool isPublic,
+    int maxEntries = 50,
   }) async {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) {
@@ -158,40 +146,97 @@ class LeagueRepository {
     }
 
     try {
-      final result = await _client
-          .schema('fantasy')
-          .from('leagues')
-          .insert(<String, dynamic>{
-            'competition_id': competitionId,
-            'name': name,
-            'created_by': userId,
-            'is_public': isPublic,
-          })
-          .select()
-          .single();
-      return FantasyLeague.fromJson(Map<String, dynamic>.from(result));
+      final result = await _client.rpc(
+        'fantasy_create_league',
+        params: <String, dynamic>{
+          'p_competition_id': competitionId,
+          'p_entry_id': entryId,
+          'p_name': name,
+          'p_type': _leagueTypeRpcValue(type),
+          'p_is_public': isPublic,
+          'p_max_entries': maxEntries,
+        },
+      );
+      final rows = result as List<dynamic>;
+      return FantasyLeague.fromJson(Map<String, dynamic>.from(rows.first));
     } on PostgrestException catch (error) {
       throw FantasyException.validation(error.message);
     }
   }
 
-  Future<void> joinLeague({
+  Future<FantasyLeague> joinLeague({
     required String leagueCode,
     required FantasyEntry entry,
   }) async {
     try {
-      final league = await _client
-          .schema('fantasy')
-          .from('leagues')
-          .select('id')
-          .eq('code', leagueCode.toUpperCase())
-          .single();
+      final result = await _client.rpc(
+        'fantasy_join_league',
+        params: <String, dynamic>{
+          'p_league_code': leagueCode.trim().toUpperCase(),
+          'p_entry_id': entry.id,
+        },
+      );
+      final rows = result as List<dynamic>;
+      return FantasyLeague.fromJson(Map<String, dynamic>.from(rows.first));
+    } on PostgrestException catch (error) {
+      throw FantasyException.validation(error.message);
+    }
+  }
 
-      await _client.schema('fantasy').from('league_memberships').insert(
-        <String, dynamic>{'league_id': league['id'], 'entry_id': entry.id},
+  Future<void> leaveLeague({
+    required String leagueId,
+    required FantasyEntry entry,
+  }) async {
+    try {
+      await _client.rpc(
+        'fantasy_leave_league',
+        params: <String, dynamic>{
+          'p_league_id': leagueId,
+          'p_entry_id': entry.id,
+        },
       );
     } on PostgrestException catch (error) {
       throw FantasyException.validation(error.message);
     }
+  }
+
+  Future<List<LeagueMember>> getLeagueMembers(String leagueId) async {
+    try {
+      final result = await _client.rpc(
+        'fantasy_get_league_members',
+        params: <String, dynamic>{'p_league_id': leagueId},
+      );
+      return (result as List<dynamic>)
+          .map((row) => LeagueMember.fromJson(Map<String, dynamic>.from(row)))
+          .toList(growable: false);
+    } on PostgrestException catch (error) {
+      throw FantasyException.data(error.message);
+    }
+  }
+
+  Future<List<LeagueH2HFixture>> getHeadToHeadFixtures(
+    String leagueId, {
+    int limit = 100,
+  }) async {
+    try {
+      final result = await _client.rpc(
+        'fantasy_get_h2h_fixtures',
+        params: <String, dynamic>{'p_league_id': leagueId, 'p_limit': limit},
+      );
+      return (result as List<dynamic>)
+          .map(
+            (row) => LeagueH2HFixture.fromJson(Map<String, dynamic>.from(row)),
+          )
+          .toList(growable: false);
+    } on PostgrestException catch (error) {
+      throw FantasyException.data(error.message);
+    }
+  }
+
+  String _leagueTypeRpcValue(FantasyLeagueType type) {
+    return switch (type) {
+      FantasyLeagueType.classic => 'classic',
+      FantasyLeagueType.headToHead => 'head_to_head',
+    };
   }
 }

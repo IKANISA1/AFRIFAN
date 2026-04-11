@@ -2,116 +2,109 @@ import 'package:africlub_fantasy/core/constants.dart';
 import 'package:africlub_fantasy/features/shared/fantasy_ui.dart';
 import 'package:africlub_fantasy/features/world_cup/bracket_node_widget.dart';
 import 'package:africlub_fantasy/features/world_cup/stage_advance_banner.dart';
+import 'package:africlub_fantasy/models/world_cup_bracket_match.dart';
 import 'package:africlub_fantasy/providers/competition_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class WCBracketScreen extends ConsumerWidget {
-  const WCBracketScreen({super.key});
+  const WCBracketScreen({required this.slug, super.key});
+
+  final String slug;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final standingsAsync = ref.watch(worldCupStandingsProvider);
+    final competitionAsync = ref.watch(competitionProvider(slug));
 
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        return FantasyScaffold(
-          title: 'World Cup Bracket',
-          child: standingsAsync.when(
-            data: (standings) {
-              final groups = _groupStandings(standings);
-              return ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.all(FantasySpacing.md),
-                children: <Widget>[
-                  SizedBox(
-                    width: orientation == Orientation.landscape ? 420 : 320,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        const StageAdvanceBanner(
-                          label:
-                              'Your tracked nation just advanced to the next round.',
+    return FantasyScaffold(
+      title: 'World Cup Bracket',
+      child: competitionAsync.when(
+        data: (competition) {
+          final standingsAsync = ref.watch(worldCupStandingsProvider);
+          final bracketAsync = ref.watch(
+            worldCupBracketProvider(competition.id),
+          );
+
+          return standingsAsync.when(
+            data: (standings) => bracketAsync.when(
+              data: (matches) => OrientationBuilder(
+                builder: (context, orientation) {
+                  final groups = _groupStandings(standings);
+                  final stages = _groupStages(matches);
+                  return ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.all(FantasySpacing.md),
+                    children: <Widget>[
+                      SizedBox(
+                        width: orientation == Orientation.landscape ? 420 : 320,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            StageAdvanceBanner(
+                              label: _buildBannerLabel(matches),
+                            ),
+                            const SizedBox(height: FantasySpacing.md),
+                            Text(
+                              'Groups',
+                              style: FantasyTypography.h2.copyWith(
+                                color: FantasyColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: FantasySpacing.md),
+                            Expanded(
+                              child: GridView.count(
+                                crossAxisCount:
+                                    orientation == Orientation.landscape
+                                    ? 3
+                                    : 2,
+                                mainAxisSpacing: FantasySpacing.md,
+                                crossAxisSpacing: FantasySpacing.md,
+                                childAspectRatio: 1.2,
+                                children: groups.entries
+                                    .map(
+                                      (entry) => _GroupCard(
+                                        group: entry.key,
+                                        rows: entry.value,
+                                      ),
+                                    )
+                                    .toList(growable: false),
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: FantasySpacing.md),
-                        Text(
-                          'Groups',
-                          style: FantasyTypography.h2.copyWith(
-                            color: FantasyColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: FantasySpacing.md),
-                        Expanded(
-                          child: GridView.count(
-                            crossAxisCount: orientation == Orientation.landscape
-                                ? 3
-                                : 2,
-                            mainAxisSpacing: FantasySpacing.md,
-                            crossAxisSpacing: FantasySpacing.md,
-                            childAspectRatio: 1.2,
-                            children: groups.entries
-                                .map(
-                                  (entry) => _GroupCard(
-                                    group: entry.key,
-                                    rows: entry.value,
+                      ),
+                      const SizedBox(width: FantasySpacing.lg),
+                      SizedBox(
+                        width: 760,
+                        child: ListView(
+                          children: stages.entries
+                              .map(
+                                (entry) => Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: FantasySpacing.md,
                                   ),
-                                )
-                                .toList(growable: false),
-                          ),
+                                  child: _StageColumn(
+                                    title: entry.key,
+                                    matches: entry.value,
+                                  ),
+                                ),
+                              )
+                              .toList(growable: false),
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: FantasySpacing.lg),
-                  SizedBox(
-                    width: 700,
-                    child: ListView(
-                      children: const <Widget>[
-                        _StageColumn(
-                          title: 'R32',
-                          labels: <String>[
-                            'A1 vs B2',
-                            'C1 vs D2',
-                            'E1 vs F2',
-                            'G1 vs H2',
-                          ],
-                        ),
-                        SizedBox(height: FantasySpacing.md),
-                        _StageColumn(
-                          title: 'R16',
-                          labels: <String>[
-                            'Winner 1',
-                            'Winner 2',
-                            'Winner 3',
-                            'Winner 4',
-                          ],
-                        ),
-                        SizedBox(height: FantasySpacing.md),
-                        _StageColumn(
-                          title: 'QF',
-                          labels: <String>[
-                            'Quarter 1',
-                            'Quarter 2',
-                            'Quarter 3',
-                            'Quarter 4',
-                          ],
-                        ),
-                        SizedBox(height: FantasySpacing.md),
-                        _StageColumn(
-                          title: 'SF',
-                          labels: <String>['Semi 1', 'Semi 2'],
-                        ),
-                        SizedBox(height: FantasySpacing.md),
-                        _StageColumn(
-                          title: 'Final',
-                          labels: <String>['Champion'],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
+                      ),
+                    ],
+                  );
+                },
+              ),
+              loading: () => const Center(child: FantasyStateCard.loading()),
+              error: (error, _) => Center(
+                child: FantasyStateCard.error(
+                  title: 'Bracket failed to load',
+                  message: error.toString(),
+                ),
+              ),
+            ),
             loading: () => const Center(child: FantasyStateCard.loading()),
             error: (error, _) => Center(
               child: FantasyStateCard.error(
@@ -119,9 +112,16 @@ class WCBracketScreen extends ConsumerWidget {
                 message: error.toString(),
               ),
             ),
+          );
+        },
+        loading: () => const Center(child: FantasyStateCard.loading()),
+        error: (error, _) => Center(
+          child: FantasyStateCard.error(
+            title: 'Competition failed to load',
+            message: error.toString(),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -144,6 +144,40 @@ class WCBracketScreen extends ConsumerWidget {
       grouped.putIfAbsent(group, () => <Map<String, dynamic>>[]).add(row);
     }
     return grouped;
+  }
+
+  Map<String, List<WorldCupBracketMatch>> _groupStages(
+    List<WorldCupBracketMatch> matches,
+  ) {
+    final grouped = <String, List<WorldCupBracketMatch>>{};
+    for (final match in matches) {
+      grouped
+          .putIfAbsent(match.stage, () => <WorldCupBracketMatch>[])
+          .add(match);
+    }
+    final entries = grouped.entries.toList()
+      ..sort((left, right) {
+        final leftOrder = left.value.isEmpty ? 99 : left.value.first.stageOrder;
+        final rightOrder = right.value.isEmpty
+            ? 99
+            : right.value.first.stageOrder;
+        return leftOrder.compareTo(rightOrder);
+      });
+    return <String, List<WorldCupBracketMatch>>{
+      for (final entry in entries) entry.key: entry.value,
+    };
+  }
+
+  String _buildBannerLabel(List<WorldCupBracketMatch> matches) {
+    if (matches.isEmpty) {
+      return 'Knockout fixtures will appear here once tournament data syncs.';
+    }
+    final live = matches.where((match) => match.isLive).length;
+    final finished = matches.where((match) => match.isFinished).length;
+    if (live > 0) {
+      return '$live knockout fixtures are live. Stage-advance scoring will update automatically when results lock.';
+    }
+    return '$finished knockout fixtures have synced. Follow the bracket from groups through the final.';
   }
 }
 
@@ -177,8 +211,8 @@ class _GroupCard extends StatelessWidget {
                 : Column(
                     children: rows
                         .take(4)
-                        .map((row) {
-                          return Padding(
+                        .map(
+                          (row) => Padding(
                             padding: const EdgeInsets.only(
                               bottom: FantasySpacing.sm,
                             ),
@@ -204,8 +238,8 @@ class _GroupCard extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          );
-                        })
+                          ),
+                        )
                         .toList(growable: false),
                   ),
           ),
@@ -216,10 +250,10 @@ class _GroupCard extends StatelessWidget {
 }
 
 class _StageColumn extends StatelessWidget {
-  const _StageColumn({required this.title, required this.labels});
+  const _StageColumn({required this.title, required this.matches});
 
   final String title;
-  final List<String> labels;
+  final List<WorldCupBracketMatch> matches;
 
   @override
   Widget build(BuildContext context) {
@@ -237,11 +271,13 @@ class _StageColumn extends StatelessWidget {
           Wrap(
             spacing: FantasySpacing.md,
             runSpacing: FantasySpacing.md,
-            children: labels
+            children: matches
                 .map(
-                  (label) => BracketNodeWidget(
-                    label: label,
-                    highlight: label == 'Champion',
+                  (match) => BracketNodeWidget(
+                    label: '${match.homeTeamName}\nvs\n${match.awayTeamName}',
+                    subtitle: match.scoreLabel,
+                    statusLabel: _statusLabel(match),
+                    highlight: match.isLive || match.isFinished,
                   ),
                 )
                 .toList(growable: false),
@@ -249,5 +285,18 @@ class _StageColumn extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _statusLabel(WorldCupBracketMatch match) {
+    if (match.isFinished) {
+      return 'Final';
+    }
+    if (match.isLive) {
+      return 'Live';
+    }
+    if (match.kickoffAt == null) {
+      return match.label;
+    }
+    return DateFormat('dd MMM, HH:mm').format(match.kickoffAt!.toLocal());
   }
 }

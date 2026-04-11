@@ -49,7 +49,8 @@ class AfriclubFantasyModule extends FeatureModule {
             ),
             GoRoute(
               path: 'wc-bracket',
-              builder: (context, state) => const WCBracketScreen(),
+              builder: (context, state) =>
+                  WCBracketScreen(slug: state.pathParameters['slug']!),
             ),
             GoRoute(
               path: 'advisor',

@@ -10,9 +10,7 @@ binding = "FANTASY_KV"
 id = "YOUR_KV_NAMESPACE_ID"
 
 [vars]
-API_FOOTBALL_LEAGUE_ID = "39"
-API_FOOTBALL_SEASON = "2025"
-ACTIVE_COMPETITION_SLUG = "pl-2526"
+WORKER_ROLE = "multi-competition-sync"
 
 # Secrets (set via wrangler secret put)
 # RAPIDAPI_KEY

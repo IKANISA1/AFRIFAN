@@ -12,10 +12,18 @@ class AIAdviceController extends StateNotifier<AsyncValue<AIAdvice?>> {
 
   final AIAdvisorRepository _repository;
 
-  Future<void> ask({required String entryId, String? question}) async {
+  Future<void> ask({
+    required String entryId,
+    String? question,
+    bool debrief = false,
+  }) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(
-      () => _repository.getAdvice(entryId: entryId, question: question),
+      () => _repository.getAdvice(
+        entryId: entryId,
+        question: question,
+        debrief: debrief,
+      ),
     );
   }
 

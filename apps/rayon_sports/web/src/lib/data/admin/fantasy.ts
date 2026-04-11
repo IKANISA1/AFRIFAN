@@ -112,6 +112,10 @@ function mapFantasyCompetition(
     logoUrl: safeString(row.logo_url) || null,
     countryCode: safeString(row.country_code) || null,
     provider: safeString(row.provider) || null,
+    externalLeagueId:
+      typeof row.external_league_id === "number"
+        ? row.external_league_id
+        : null,
     promoTitle: safeString(enablement?.promo_title) || null,
     promoBody: safeString(enablement?.promo_body) || null,
     badgeLabel: safeString(enablement?.badge_label) || null,
@@ -252,6 +256,7 @@ export async function saveAdminFantasyCompetition(
     logoUrl?: string | null;
     countryCode?: string | null;
     provider?: string | null;
+    externalLeagueId?: number | null;
     promoTitle?: string | null;
     promoBody?: string | null;
     badgeLabel?: string | null;
@@ -286,6 +291,11 @@ export async function saveAdminFantasyCompetition(
     primary_color: safeString(input.primaryColor, "#1A7A4E"),
     country_code: safeString(input.countryCode) || null,
     provider: safeString(input.provider) || null,
+    external_league_id:
+      typeof input.externalLeagueId === "number" &&
+        Number.isFinite(input.externalLeagueId)
+        ? input.externalLeagueId
+        : null,
     status: input.backendStatus,
     start_date: input.startAt,
     end_date: input.endAt,
@@ -432,30 +442,65 @@ export async function getAdminFantasyOperations(
       competitionId: "",
       players: [],
       gameweeks: [],
+      leagueCount: 0,
+      headToHeadFixtureCount: 0,
+      injuryCount: 0,
+      notificationTopic: null,
+      nextDeadlineAt: null,
     };
   }
 
-  const [{ data: priceRows, error: priceError }, { data: gameweekRows, error: gameweekError }] =
-    await Promise.all([
-      client
-        .schema("fantasy")
-        .from("player_competition_prices")
-        .select("*")
-        .eq("competition_id", trimmedCompetitionId)
-        .order("price", { ascending: false }),
-      client
-        .schema("fantasy")
-        .from("gameweeks")
-        .select("*")
-        .eq("competition_id", trimmedCompetitionId)
-        .order("number", { ascending: true }),
-    ]);
+  const [
+    { data: priceRows, error: priceError },
+    { data: gameweekRows, error: gameweekError },
+    { data: leagueRows, error: leagueError },
+    { count: injuryCount, error: injuryError },
+    { data: competitionRow, error: competitionError },
+  ] = await Promise.all([
+    client
+      .schema("fantasy")
+      .from("player_competition_prices")
+      .select("*")
+      .eq("competition_id", trimmedCompetitionId)
+      .order("price", { ascending: false }),
+    client
+      .schema("fantasy")
+      .from("gameweeks")
+      .select("*")
+      .eq("competition_id", trimmedCompetitionId)
+      .order("number", { ascending: true }),
+    client
+      .schema("fantasy")
+      .from("leagues")
+      .select("id, type")
+      .eq("competition_id", trimmedCompetitionId),
+    client
+      .schema("fantasy")
+      .from("fixture_injuries")
+      .select("id", { count: "exact", head: true })
+      .eq("competition_id", trimmedCompetitionId),
+    client
+      .schema("fantasy")
+      .from("competitions")
+      .select("slug")
+      .eq("id", trimmedCompetitionId)
+      .maybeSingle(),
+  ]);
 
   if (priceError) {
     throw new Error(priceError.message);
   }
   if (gameweekError) {
     throw new Error(gameweekError.message);
+  }
+  if (leagueError) {
+    throw new Error(leagueError.message);
+  }
+  if (injuryError) {
+    throw new Error(injuryError.message);
+  }
+  if (competitionError) {
+    throw new Error(competitionError.message);
   }
 
   const playerIds = (priceRows ?? [])
@@ -478,6 +523,33 @@ export async function getAdminFantasyOperations(
     }
   }
 
+  const leagues = (leagueRows ?? []) as Array<Record<string, unknown>>;
+  const leagueIds = leagues.map((row) => safeString(row.id)).filter(Boolean);
+  let headToHeadFixtureCount = 0;
+  if (leagueIds.length > 0) {
+    const { count, error } = await client
+      .schema("fantasy")
+      .from("league_h2h_fixtures")
+      .select("id", { count: "exact", head: true })
+      .in("league_id", leagueIds);
+    if (error) {
+      throw new Error(error.message);
+    }
+    headToHeadFixtureCount = count ?? 0;
+  }
+
+  const mappedGameweeks = (gameweekRows ?? [])
+    .map((row) => mapFantasyGameweek(row as Record<string, unknown>));
+  const nextGameweek =
+    mappedGameweeks.find((gameweek) =>
+      gameweek.status === "live" ||
+      gameweek.status === "scoring" ||
+      gameweek.status === "upcoming"
+    ) ?? mappedGameweeks[0] ?? null;
+  const competitionSlug = safeString(
+    (competitionRow as Record<string, unknown> | null)?.slug,
+  );
+
   return {
     competitionId: trimmedCompetitionId,
     players: (priceRows ?? [])
@@ -497,8 +569,14 @@ export async function getAdminFantasyOperations(
         }
         return left.name.localeCompare(right.name);
       }),
-    gameweeks: (gameweekRows ?? [])
-      .map((row) => mapFantasyGameweek(row as Record<string, unknown>)),
+    gameweeks: mappedGameweeks,
+    leagueCount: leagues.length,
+    headToHeadFixtureCount,
+    injuryCount: injuryCount ?? 0,
+    notificationTopic: competitionSlug
+      ? `fantasy_${competitionSlug.replace(/-/g, "_")}`
+      : null,
+    nextDeadlineAt: nextGameweek?.deadlineAt ?? null,
   };
 }
 

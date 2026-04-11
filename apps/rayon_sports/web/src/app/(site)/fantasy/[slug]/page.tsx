@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight, Globe2, Medal, Smartphone } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import {
+  getFantasyBracket,
   getFantasyCompetitionBySlug,
   getFantasyLeaderboard,
 } from "@/lib/data/public";
@@ -27,6 +28,22 @@ function statusLabel(status: string, isPlayable: boolean) {
     default:
       return "Planned";
   }
+}
+
+function groupBracketByStage(
+  matches: Awaited<ReturnType<typeof getFantasyBracket>>,
+) {
+  const grouped = new Map<string, typeof matches>();
+  for (const match of matches) {
+    const bucket = grouped.get(match.stage) ?? [];
+    bucket.push(match);
+    grouped.set(match.stage, bucket);
+  }
+  return [...grouped.entries()].sort((left, right) => {
+    const leftOrder = left[1][0]?.stageOrder ?? 99;
+    const rightOrder = right[1][0]?.stageOrder ?? 99;
+    return leftOrder - rightOrder;
+  });
 }
 
 export async function generateMetadata({
@@ -63,7 +80,13 @@ export default async function FantasyCompetitionDetailPage({
     notFound();
   }
 
-  const leaderboard = await getFantasyLeaderboard(competition.slug, 8);
+  const [leaderboard, bracket] = await Promise.all([
+    getFantasyLeaderboard(competition.slug, 8),
+    competition.mode === "tournament"
+      ? getFantasyBracket(competition.slug)
+      : Promise.resolve([]),
+  ]);
+  const bracketStages = groupBracketByStage(bracket);
 
   return (
     <div className="page-shell section-grid py-12">
@@ -151,6 +174,47 @@ export default async function FantasyCompetitionDetailPage({
               </div>
             ))}
           </div>
+          {bracketStages.length > 0 ? (
+            <div className="mt-6 rounded-[24px] border border-border-soft bg-white/5 p-4">
+              <p className="font-display text-2xl font-bold uppercase leading-none text-white">
+                Knockout tracker
+              </p>
+              <div className="mt-4 grid gap-4">
+                {bracketStages.map(([stage, matches]) => (
+                  <div
+                    key={stage}
+                    className="rounded-[20px] border border-border-soft bg-black/20 p-4"
+                  >
+                    <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-club-accent">
+                      {stage}
+                    </p>
+                    <div className="mt-3 grid gap-3 md:grid-cols-2">
+                      {matches.map((match) => (
+                        <div
+                          key={`${stage}-${match.label}-${match.homeTeamName}-${match.awayTeamName}`}
+                          className="rounded-[18px] border border-border-soft bg-white/5 p-4"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <p className="font-semibold text-white">
+                                {match.homeTeamName} vs {match.awayTeamName}
+                              </p>
+                              <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-400">
+                                {match.label}
+                              </p>
+                            </div>
+                            <p className="font-score text-2xl font-bold uppercase text-white">
+                              {match.homeGoals ?? "-"}:{match.awayGoals ?? "-"}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </article>
 
         <aside className="grid gap-6">

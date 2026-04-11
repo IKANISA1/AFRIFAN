@@ -190,6 +190,7 @@ export interface AdminFantasyCompetition {
   logoUrl: string | null;
   countryCode: string | null;
   provider: string | null;
+  externalLeagueId: number | null;
   promoTitle: string | null;
   promoBody: string | null;
   badgeLabel: string | null;
@@ -250,4 +251,9 @@ export interface AdminFantasyOperationsSnapshot {
   competitionId: string;
   players: AdminFantasyPlayer[];
   gameweeks: AdminFantasyGameweek[];
+  leagueCount: number;
+  headToHeadFixtureCount: number;
+  injuryCount: number;
+  notificationTopic: string | null;
+  nextDeadlineAt: string | null;
 }

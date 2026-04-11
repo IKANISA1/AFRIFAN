@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 class BracketNodeWidget extends StatelessWidget {
   const BracketNodeWidget({
     required this.label,
+    this.subtitle,
+    this.statusLabel,
     this.highlight = false,
     super.key,
   });
 
   final String label;
+  final String? subtitle;
+  final String? statusLabel;
   final bool highlight;
 
   @override
@@ -25,13 +29,40 @@ class BracketNodeWidget extends StatelessWidget {
           color: highlight ? FantasyColors.wcGold : FantasyColors.border,
         ),
       ),
-      child: Text(
-        label,
-        textAlign: TextAlign.center,
-        style: FantasyTypography.caption.copyWith(
-          color: FantasyColors.textPrimary,
-          fontWeight: FontWeight.w600,
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: FantasyTypography.caption.copyWith(
+              color: FantasyColors.textPrimary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          if (subtitle != null) ...<Widget>[
+            const SizedBox(height: 4),
+            Text(
+              subtitle!,
+              textAlign: TextAlign.center,
+              style: FantasyTypography.label.copyWith(
+                color: FantasyColors.textSecondary,
+              ),
+            ),
+          ],
+          if (statusLabel != null) ...<Widget>[
+            const SizedBox(height: 6),
+            Text(
+              statusLabel!,
+              textAlign: TextAlign.center,
+              style: FantasyTypography.label.copyWith(
+                color: highlight
+                    ? FantasyColors.wcGold
+                    : FantasyColors.successGreen,
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

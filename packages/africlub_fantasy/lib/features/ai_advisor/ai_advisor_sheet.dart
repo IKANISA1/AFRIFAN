@@ -1,13 +1,15 @@
 import 'package:africlub_fantasy/core/constants.dart';
 import 'package:africlub_fantasy/features/ai_advisor/advice_card_widget.dart';
 import 'package:africlub_fantasy/features/shared/fantasy_ui.dart';
-import 'package:africlub_fantasy/providers/competition_providers.dart';
 import 'package:africlub_fantasy/providers/ai_providers.dart';
+import 'package:africlub_fantasy/providers/competition_providers.dart';
 import 'package:africlub_fantasy/providers/squad_providers.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:core_theme/core_theme.dart';
+
+enum _AdvisorMode { advice, debrief }
 
 class AIAdvisorSheet extends ConsumerStatefulWidget {
   const AIAdvisorSheet({required this.entryId, this.slug, super.key});
@@ -24,11 +26,20 @@ class AIAdvisorSheet extends ConsumerStatefulWidget {
 
 class _AIAdvisorSheetState extends ConsumerState<AIAdvisorSheet> {
   final TextEditingController _controller = TextEditingController();
-  static const List<String> _prompts = <String>[
-    'Should I wildcard?',
-    'Best transfer?',
+  _AdvisorMode _mode = _AdvisorMode.advice;
+
+  static const List<String> _advicePrompts = <String>[
+    'Best transfer this week?',
     'Captain pick?',
-    'Fixture analysis',
+    'Should I play a chip?',
+    'Biggest risk in my squad?',
+  ];
+
+  static const List<String> _debriefPrompts = <String>[
+    'Give me a post-gameweek debrief.',
+    'What cost me points?',
+    'Who overperformed in my squad?',
+    'What should I change next week?',
   ];
 
   @override
@@ -105,6 +116,10 @@ class _AIAdvisorSheetState extends ConsumerState<AIAdvisorSheet> {
     String entryId,
     AsyncValue<dynamic> adviceState,
   ) {
+    final prompts = _mode == _AdvisorMode.debrief
+        ? _debriefPrompts
+        : _advicePrompts;
+
     return ListView(
       padding: const EdgeInsets.all(FantasySpacing.md),
       children: <Widget>[
@@ -113,7 +128,7 @@ class _AIAdvisorSheetState extends ConsumerState<AIAdvisorSheet> {
             const _GeminiMark(),
             const SizedBox(width: FantasySpacing.sm),
             Text(
-              'AI Advisor',
+              _mode == _AdvisorMode.debrief ? 'AI Debrief' : 'AI Advisor',
               style: FantasyTypography.h2.copyWith(
                 color: FantasyColors.textPrimary,
               ),
@@ -124,7 +139,24 @@ class _AIAdvisorSheetState extends ConsumerState<AIAdvisorSheet> {
         Wrap(
           spacing: FantasySpacing.sm,
           runSpacing: FantasySpacing.sm,
-          children: _prompts
+          children: <Widget>[
+            FantasyChipChoice(
+              label: 'Advice',
+              selected: _mode == _AdvisorMode.advice,
+              onTap: () => setState(() => _mode = _AdvisorMode.advice),
+            ),
+            FantasyChipChoice(
+              label: 'Debrief',
+              selected: _mode == _AdvisorMode.debrief,
+              onTap: () => setState(() => _mode = _AdvisorMode.debrief),
+            ),
+          ],
+        ),
+        const SizedBox(height: FantasySpacing.md),
+        Wrap(
+          spacing: FantasySpacing.sm,
+          runSpacing: FantasySpacing.sm,
+          children: prompts
               .map(
                 (prompt) => FantasyChipChoice(
                   label: prompt,
@@ -137,33 +169,57 @@ class _AIAdvisorSheetState extends ConsumerState<AIAdvisorSheet> {
         const SizedBox(height: FantasySpacing.md),
         FantasySearchField(
           controller: _controller,
-          hintText: 'Ask a custom question',
+          hintText: _mode == _AdvisorMode.debrief
+              ? 'Ask for a post-gameweek breakdown'
+              : 'Ask a custom fantasy question',
         ),
         const SizedBox(height: FantasySpacing.md),
         AfriButton(
-          label: 'Ask',
+          label: _mode == _AdvisorMode.debrief ? 'Generate debrief' : 'Ask',
           onTap: () {
             ref
                 .read(aiAdviceControllerProvider.notifier)
-                .ask(entryId: entryId, question: _controller.text.trim());
+                .ask(
+                  entryId: entryId,
+                  question: _controller.text.trim(),
+                  debrief: _mode == _AdvisorMode.debrief,
+                );
           },
           variant: AfriButtonVariant.accent,
         ),
         const SizedBox(height: FantasySpacing.lg),
         adviceState.when(
           data: (advice) => advice == null
-              ? const FantasyStateCard.empty(
-                  title: 'No advice yet',
-                  message: 'Ask a question to get a tactical recommendation.',
+              ? FantasyStateCard.empty(
+                  title: _mode == _AdvisorMode.debrief
+                      ? 'No debrief yet'
+                      : 'No advice yet',
+                  message: _mode == _AdvisorMode.debrief
+                      ? 'Generate a debrief to review your latest gameweek.'
+                      : 'Ask a question to get a tactical recommendation.',
                 )
-              : AdviceCardWidget(
-                  advice: advice.advice,
-                  onCopy: () async {
-                    await Clipboard.setData(ClipboardData(text: advice.advice));
-                    if (context.mounted) {
-                      AfriToast.success(context, 'Advice copied.');
-                    }
-                  },
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      advice.question,
+                      style: FantasyTypography.caption.copyWith(
+                        color: FantasyColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: FantasySpacing.sm),
+                    AdviceCardWidget(
+                      advice: advice.advice,
+                      onCopy: () async {
+                        await Clipboard.setData(
+                          ClipboardData(text: advice.advice),
+                        );
+                        if (context.mounted) {
+                          AfriToast.success(context, 'Advice copied.');
+                        }
+                      },
+                    ),
+                  ],
                 ),
           loading: () => const _TypingIndicator(),
           error: (error, _) => FantasyStateCard.error(

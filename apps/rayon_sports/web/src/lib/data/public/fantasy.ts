@@ -2,6 +2,7 @@ import { cache } from "react";
 import { getActiveClubReference } from "@/lib/club-context";
 import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type {
+  FantasyBracketMatch,
   FantasyCompetition,
   FantasyCompetitionMode,
   FantasyCompetitionStatus,
@@ -208,6 +209,56 @@ export const getFantasyLeaderboard = cache(
           isCurrentUser: item.is_current_user === true,
         } satisfies FantasyLeaderboardEntry;
       });
+    } catch {
+      return [];
+    }
+  },
+);
+
+export const getFantasyBracket = cache(
+  async function getFantasyBracket(
+    competitionSlug: string,
+  ): Promise<FantasyBracketMatch[]> {
+    const enabled = await isFantasyWebEnabled();
+    if (!enabled || !competitionSlug.trim()) {
+      return [];
+    }
+
+    const client = getReadOnlySupabase();
+    if (client == null) {
+      return [];
+    }
+
+    try {
+      const competition = await getFantasyCompetitionBySlug(competitionSlug);
+      if (competition == null) {
+        return [];
+      }
+
+      const { data } = await (client as any).rpc(
+        "fantasy_get_competition_bracket",
+        {
+          p_competition_id: competition.id,
+        },
+      );
+
+      if (!Array.isArray(data) || data.length === 0) {
+        return [];
+      }
+
+      return (data as Array<Record<string, unknown>>).map((row) => ({
+        stage: safeString(row.stage, "Groups"),
+        stageOrder: Number(row.stage_order ?? 99),
+        label: safeString(row.label, "Fixture"),
+        homeTeamName: safeString(row.home_team_name, "TBD"),
+        awayTeamName: safeString(row.away_team_name, "TBD"),
+        homeGoals:
+          typeof row.home_goals === "number" ? row.home_goals : null,
+        awayGoals:
+          typeof row.away_goals === "number" ? row.away_goals : null,
+        statusShort: safeString(row.status_short) || null,
+        kickoffAt: safeString(row.kickoff_at) || null,
+      }));
     } catch {
       return [];
     }

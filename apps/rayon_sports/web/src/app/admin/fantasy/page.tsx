@@ -39,6 +39,7 @@ type FantasyForm = {
   logoUrl: string;
   countryCode: string;
   provider: string;
+  externalLeagueId: string;
   promoTitle: string;
   promoBody: string;
   badgeLabel: string;
@@ -115,6 +116,7 @@ const emptyForm: FantasyForm = {
   logoUrl: "",
   countryCode: "",
   provider: "",
+  externalLeagueId: "",
   promoTitle: "",
   promoBody: "",
   badgeLabel: "",
@@ -171,6 +173,10 @@ function competitionToForm(competition: AdminFantasyCompetition): FantasyForm {
     logoUrl: competition.logoUrl ?? "",
     countryCode: competition.countryCode ?? "",
     provider: competition.provider ?? "",
+    externalLeagueId:
+      competition.externalLeagueId == null
+        ? ""
+        : String(competition.externalLeagueId),
     promoTitle: competition.promoTitle ?? "",
     promoBody: competition.promoBody ?? "",
     badgeLabel: competition.badgeLabel ?? "",
@@ -319,6 +325,9 @@ export default function AdminFantasyPage() {
         logoUrl: form.logoUrl,
         countryCode: form.countryCode,
         provider: form.provider,
+        externalLeagueId: form.externalLeagueId
+          ? Number(form.externalLeagueId)
+          : null,
         promoTitle: form.promoTitle,
         promoBody: form.promoBody,
         badgeLabel: form.badgeLabel,
@@ -521,6 +530,24 @@ export default function AdminFantasyPage() {
           helper="Operational rounds loaded."
           icon={CalendarDays}
         />
+        <AdminStateCard
+          label="Leagues"
+          value={opsLoading ? "..." : String(operations?.leagueCount ?? 0)}
+          helper="Classic and private H2H groups."
+          icon={Users}
+        />
+        <AdminStateCard
+          label="H2H fixtures"
+          value={opsLoading ? "..." : String(operations?.headToHeadFixtureCount ?? 0)}
+          helper="Scheduled private matchups."
+          icon={CalendarDays}
+        />
+        <AdminStateCard
+          label="Injury flags"
+          value={opsLoading ? "..." : String(operations?.injuryCount ?? 0)}
+          helper="Latest synced player issues."
+          icon={Sparkles}
+        />
       </div>
 
       <div className="glass-panel rounded-[32px] p-6">
@@ -652,7 +679,7 @@ export default function AdminFantasyPage() {
             />
           </label>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-4">
             <label className="grid gap-2">
               <span className="text-sm font-semibold text-slate-100">Primary color</span>
               <input
@@ -675,6 +702,17 @@ export default function AdminFantasyPage() {
                 value={form.provider}
                 onChange={(event) => setForm((current) => ({ ...current, provider: event.target.value }))}
                 className="rounded-2xl border border-border-soft bg-white/5 px-4 py-3 text-white outline-none"
+              />
+            </label>
+            <label className="grid gap-2">
+              <span className="text-sm font-semibold text-slate-100">External league id</span>
+              <input
+                value={form.externalLeagueId}
+                onChange={(event) =>
+                  setForm((current) => ({ ...current, externalLeagueId: event.target.value }))
+                }
+                className="rounded-2xl border border-border-soft bg-white/5 px-4 py-3 text-white outline-none"
+                placeholder="39"
               />
             </label>
           </div>

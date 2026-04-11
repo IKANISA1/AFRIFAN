@@ -32,6 +32,7 @@ export {
   getFeaturedFantasyCompetition,
   getFantasyCompetitionBySlug,
   getFantasyLeaderboard,
+  getFantasyBracket,
 } from "./fantasy";
 export {
   getMembershipPackages,

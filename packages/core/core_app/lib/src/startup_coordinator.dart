@@ -143,8 +143,7 @@ class AppStartupCoordinator {
 
     await _registerAuthLifecycleObservers(config);
     await PushNotificationService.initialize(clubId: config.clubId);
-    await PushNotificationService.subscribeToTopic('fantasy_pl_2526');
-    await PushNotificationService.subscribeToTopic('fantasy_wc_2026');
+    await _syncFantasyTopics();
 
     final countryRepo = CountryRepository(client: SupabaseClientFactory.client);
     await countryRepo.loadAndInject();
@@ -174,20 +173,52 @@ class AppStartupCoordinator {
 
   Future<void> _registerAuthLifecycleObservers(ClubConfig config) async {
     await _authLifecycleSubscription?.cancel();
-
-    if (!config.hasBiopay) {
-      _authLifecycleSubscription = null;
-      return;
-    }
-
     final cacheService = BiopayCacheService();
     _authLifecycleSubscription = SupabaseClientFactory.authStateChanges.listen((
       auth,
     ) {
-      if (auth.event == AuthChangeEvent.signedOut) {
+      if (config.hasBiopay && auth.event == AuthChangeEvent.signedOut) {
         unawaited(cacheService.clear());
       }
+      if (auth.event == AuthChangeEvent.signedIn ||
+          auth.event == AuthChangeEvent.signedOut ||
+          auth.event == AuthChangeEvent.tokenRefreshed ||
+          auth.event == AuthChangeEvent.userUpdated) {
+        unawaited(_syncFantasyTopics());
+      }
     });
+  }
+
+  Future<void> _syncFantasyTopics() async {
+    try {
+      final result = await SupabaseClientFactory.client.rpc(
+        'fantasy_get_notification_topics',
+      );
+      final rows = (result as List<dynamic>)
+          .map((row) => Map<String, dynamic>.from(row))
+          .toList(growable: false);
+
+      if (rows.isNotEmpty) {
+        for (final row in rows) {
+          final topic = row['topic']?.toString().trim() ?? '';
+          if (topic.isEmpty) {
+            continue;
+          }
+          final enabled = row['enabled'] == null || row['enabled'] == true;
+          if (enabled) {
+            await PushNotificationService.subscribeToTopic(topic);
+          } else {
+            await PushNotificationService.unsubscribeFromTopic(topic);
+          }
+        }
+        return;
+      }
+    } catch (error) {
+      debugPrint('[Bootstrap] Fantasy topic sync fallback engaged: $error');
+    }
+
+    await PushNotificationService.subscribeToTopic('fantasy_pl_2526');
+    await PushNotificationService.subscribeToTopic('fantasy_wc_2026');
   }
 
   void _initializeSmsAutoread(ClubConfig config) {

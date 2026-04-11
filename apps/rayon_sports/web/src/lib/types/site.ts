@@ -228,3 +228,15 @@ export interface FantasyLeaderboardEntry {
   points: number;
   isCurrentUser: boolean;
 }
+
+export interface FantasyBracketMatch {
+  stage: string;
+  stageOrder: number;
+  label: string;
+  homeTeamName: string;
+  awayTeamName: string;
+  homeGoals: number | null;
+  awayGoals: number | null;
+  statusShort: string | null;
+  kickoffAt: string | null;
+}
