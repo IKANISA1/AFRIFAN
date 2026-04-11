@@ -198,8 +198,7 @@ class _FeaturedCompetitionCard extends StatelessWidget {
                 ),
               ),
               FilledButton.tonalIcon(
-                onPressed: () =>
-                    context.push('/fantasy/competition/${competition.slug}'),
+                onPressed: () => context.push('/fantasy/${competition.slug}'),
                 icon: const Icon(Icons.arrow_forward_rounded),
                 label: Text(competition.ctaLabel),
               ),
@@ -250,8 +249,7 @@ class _CompetitionListCard extends StatelessWidget {
           ),
           const SizedBox(width: SpacingTokens.spacing4),
           IconButton.filledTonal(
-            onPressed: () =>
-                context.push('/fantasy/competition/${competition.slug}'),
+            onPressed: () => context.push('/fantasy/${competition.slug}'),
             icon: const Icon(Icons.arrow_forward_rounded),
             tooltip: 'Open competition',
           ),

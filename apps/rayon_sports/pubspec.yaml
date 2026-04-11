@@ -74,6 +74,8 @@ dependencies:
   firebase_core: ^4.5.0
 
 dev_dependencies:
+  core_modules:
+    path: ../../packages/core/core_modules
   integration_test:
     sdk: flutter
   flutter_test:

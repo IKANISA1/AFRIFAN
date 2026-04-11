@@ -9,11 +9,44 @@ class TierDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = switch (tierId.toLowerCase()) {
-      'legend' => 'LEGEND CIRCLE',
+    final normalizedTier = tierId.toLowerCase();
+    final title = switch (normalizedTier) {
+      'platinum' => 'PLATINUM CIRCLE',
       'gold' => 'GOLD FAITHFUL',
-      'silver' => 'SILVER ULTRAS',
-      _ => 'BRONZE SUPPORTER',
+      'bronze' || 'silver' => 'BRONZE SUPPORTER',
+      _ => 'FAN MEMBERSHIP',
+    };
+    final xpBand = switch (normalizedTier) {
+      'platinum' => '5,000+ XP',
+      'gold' => '2,000 - 4,999 XP',
+      'bronze' || 'silver' => '1,000 - 1,999 XP',
+      _ => '0 - 999 XP',
+    };
+    final tierPerks = switch (normalizedTier) {
+      'platinum' => const <String>[
+        '15% shop discount',
+        'Priority support',
+        'Early ticket access',
+        'VIP event invites',
+      ],
+      'gold' => const <String>[
+        '10% shop discount',
+        '48-hour ticket priority',
+        'Priority club updates',
+        'Season rewards eligibility',
+      ],
+      'bronze' || 'silver' => const <String>[
+        '5% shop discount',
+        '24-hour ticket priority',
+        'Member badge on profile',
+        'Access to supporter campaigns',
+      ],
+      _ => const <String>[
+        'Official fan identity',
+        'Access to supporter campaigns',
+        'Progress tracking toward Bronze',
+        'Club news and matchday access',
+      ],
     };
 
     return Scaffold(
@@ -59,7 +92,7 @@ class TierDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
                   Text(
-                    '15,000 - 40,000 XP',
+                    xpBand,
                     style: TypographyTokens.monolithFont(
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
@@ -70,15 +103,7 @@ class TierDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing4),
-            const _PerkCard(
-              title: 'Tier perks',
-              items: [
-                '15% shop discount',
-                'Priority support',
-                'Early ticket access',
-                'VIP event invites',
-              ],
-            ),
+            _PerkCard(title: 'Tier perks', items: tierPerks),
             const SizedBox(height: SpacingTokens.spacing4),
             const _PerkCard(
               title: 'How to earn XP faster',

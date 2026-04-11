@@ -41,6 +41,16 @@ class ClubProduct extends Equatable {
   }
 
   factory ClubProduct.fromJson(Map<String, dynamic> json) {
+    final rawSizes = switch (json['available_sizes'] ?? json['sizes']) {
+      final List<dynamic> values => values,
+      final String value when value.trim().isNotEmpty => value
+          .split(',')
+          .map((part) => part.trim())
+          .where((part) => part.isNotEmpty)
+          .toList(),
+      _ => const <dynamic>[],
+    };
+
     return ClubProduct(
       id: jh.asStringOrNull(json['id']) ?? '',
       partnerId: jh.asStringOrNull(json['partner_id']) ??
@@ -54,11 +64,10 @@ class ClubProduct extends Equatable {
       isActive: jh.asBool(json['is_active'], fallback: true),
       isNew: jh.asBool(json['is_new']),
       imageUrl: jh.asStringOrNull(json['image_url']),
-      availableSizes: (json['sizes'] as List?)
-              ?.map((s) => s.toString().trim())
-              .where((s) => s.isNotEmpty)
-              .toList() ??
-          const <String>[],
+      availableSizes: rawSizes
+          .map((size) => size.toString().trim())
+          .where((size) => size.isNotEmpty)
+          .toList(growable: false),
       badgeLabel: jh.asStringOrNull(json['badge_label']),
       collection: jh.asStringOrNull(json['collection']),
       sortOrder: jh.asInt(json['sort_order']),

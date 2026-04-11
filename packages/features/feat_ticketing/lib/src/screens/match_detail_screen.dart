@@ -32,10 +32,10 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
   PartnerPaymentRoute? _paymentRoute;
   String? _paymentRouteMessage;
   String? _paymentRouteLookupKey;
-  final _currency = CurrencyFormatter(
-    currencyCode: 'RWF',
-    currencySymbol: 'FRw',
-  );
+  CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
+        currencyCode: context.afriCurrencyCode,
+        currencySymbol: context.afriCurrencySymbol,
+      );
 
   void _ensurePaymentRouteState(UserProfile? user) {
     final lookupKey =
@@ -144,7 +144,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
         zone: _selectedSeatType.label,
         quantity: _quantity,
         seatCode: _selectedSeatCode,
-        totalLabel: _currency.format(total),
+        totalLabel: _currencyFormatter.format(total),
       );
 
       if (!confirmed || !mounted) return;
@@ -270,7 +270,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
                 ? TicketConfigureStep(
                     key: const ValueKey(_CheckoutWizardStep.configure),
                     match: match,
-                    currency: _currency,
+                    currency: _currencyFormatter,
                     selectedSeatType: _selectedSeatType,
                     selectedSeatCode: _selectedSeatCode,
                     quantity: _quantity,
@@ -290,7 +290,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
                 : TicketCheckoutStep(
                     key: const ValueKey(_CheckoutWizardStep.checkout),
                     match: match,
-                    currency: _currency,
+                    currency: _currencyFormatter,
                     selectedSeatType: _selectedSeatType,
                     selectedSeatCode: _selectedSeatCode,
                     quantity: _quantity,

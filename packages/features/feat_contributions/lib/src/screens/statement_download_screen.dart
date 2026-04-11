@@ -20,9 +20,9 @@ class StatementDownloadScreen extends ConsumerStatefulWidget {
 
 class _StatementDownloadScreenState
     extends ConsumerState<StatementDownloadScreen> {
-  final _currency = CurrencyFormatter(
-    currencyCode: 'RWF',
-    currencySymbol: 'FRw',
+  CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
+    currencyCode: context.afriCurrencyCode,
+    currencySymbol: context.afriCurrencySymbol,
   );
 
   List<_StatementEntry> _entries = const <_StatementEntry>[];
@@ -83,10 +83,7 @@ class _StatementDownloadScreenState
                 alias: '#$alias',
                 amount: (row['amount'] as num?)?.toInt() ?? 0,
                 status: status,
-                reference:
-                    row['momo_reference']?.toString() ??
-                    row['external_ref']?.toString() ??
-                    '',
+                reference: row['momo_reference']?.toString() ?? '',
                 createdAt: createdAt ?? DateTime.now(),
               );
             })
@@ -105,13 +102,13 @@ class _StatementDownloadScreenState
   Future<List<Map<String, dynamic>>> _loadGroupContributionRows(
     SupabaseClient client,
   ) async {
-    var legacyQuery = client
-        .from('contributions')
-        .select('id, user_id, amount, status, external_ref, created_at')
+    var contributionQuery = client
+        .from('group_contributions')
+        .select('id, user_id, amount, status, momo_reference, created_at')
         .eq('group_id', widget.groupId);
 
     if (_from != null) {
-      legacyQuery = legacyQuery.gte(
+      contributionQuery = contributionQuery.gte(
         'created_at',
         DateTime(
           _from!.year,
@@ -121,14 +118,14 @@ class _StatementDownloadScreenState
       );
     }
     if (_to != null) {
-      legacyQuery = legacyQuery.lt(
+      contributionQuery = contributionQuery.lt(
         'created_at',
         DateTime(_to!.year, _to!.month, _to!.day + 1).toUtc().toIso8601String(),
       );
     }
 
     return List<Map<String, dynamic>>.from(
-      await legacyQuery.order('created_at', ascending: false) as List,
+      await contributionQuery.order('created_at', ascending: false) as List,
     );
   }
 
@@ -228,6 +225,7 @@ class _StatementDownloadScreenState
 
   @override
   Widget build(BuildContext context) {
+    final currency = _currencyFormatter;
     final previewEntries = _sortedEntries.take(5).toList(growable: false);
 
     return Scaffold(
@@ -361,7 +359,7 @@ class _StatementDownloadScreenState
                                 ),
                               ),
                               Text(
-                                _currency.format(_statementTotal),
+                                currency.format(_statementTotal),
                                 style: TypographyTokens.monolithFont(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w800,
@@ -399,7 +397,7 @@ class _StatementDownloadScreenState
                                     Expanded(
                                       flex: 3,
                                       child: Text(
-                                        _currency.format(entry.amount),
+                                        currency.format(entry.amount),
                                         style: TypographyTokens.bodySmall(),
                                         textAlign: TextAlign.center,
                                       ),

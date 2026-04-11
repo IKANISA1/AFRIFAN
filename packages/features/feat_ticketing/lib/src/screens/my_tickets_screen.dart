@@ -17,10 +17,11 @@ class MyTicketsScreen extends ConsumerStatefulWidget {
 class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
-  final _currency = CurrencyFormatter(
-    currencyCode: 'RWF',
-    currencySymbol: 'FRw',
-  );
+
+  CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
+        currencyCode: context.afriCurrencyCode,
+        currencySymbol: context.afriCurrencySymbol,
+      );
 
   @override
   void initState() {
@@ -172,7 +173,7 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
                       ),
                       const SizedBox(height: SpacingTokens.spacing2),
                       Text(
-                        '${ticket.seatType.label}  •  ${_currency.format(ticket.amountPaid)}',
+                        '${ticket.seatType.label}  •  ${_currencyFormatter.format(ticket.amountPaid)}',
                         style: TypographyTokens.bodyMedium(),
                       ),
                       const SizedBox(height: SpacingTokens.spacing4),

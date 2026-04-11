@@ -1,5 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'club_scope.dart';
+
 /// Centralized key constants for the `app_config` table.
 abstract final class AppConfigKeys {
   // BioPay
@@ -29,19 +31,9 @@ class AppConfigRepository {
 
   final SupabaseClient _client;
   final Map<String, String> _cache = {};
-
-  int? _currentClubId() {
-    final user = _client.auth.currentUser;
-    final rawValue =
-        user?.appMetadata['club_id'] ??
-        user?.userMetadata?['club_id'] ??
-        user?.appMetadata['clubId'] ??
-        user?.userMetadata?['clubId'];
-    if (rawValue is int) return rawValue;
-    if (rawValue is num) return rawValue.toInt();
-    if (rawValue == null) return null;
-    return int.tryParse(rawValue.toString().trim());
-  }
+  late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
+    client: _client,
+  );
 
   bool _isMissingRelation(Object error, String relation) {
     if (error is! PostgrestException) {
@@ -100,7 +92,7 @@ class AppConfigRepository {
 
   /// Fetch a single config value by key.
   Future<String?> getValue(String key, {bool forceRefresh = false}) async {
-    final clubId = _currentClubId();
+    final clubId = _scopeResolver.currentClubId;
     final scopedCacheKey = _cacheKey(key, clubId);
 
     if (!forceRefresh && _cache.containsKey(scopedCacheKey)) {
@@ -130,7 +122,7 @@ class AppConfigRepository {
   /// Fetch all config entries.
   Future<Map<String, String>> getAll() async {
     final result = <String, String>{};
-    final clubId = _currentClubId();
+    final clubId = _scopeResolver.currentClubId;
 
     final globalRows = await _getRowsFromTable('app_config');
     for (final row in globalRows) {

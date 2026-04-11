@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { absoluteUrl, siteConfig } from "@/lib/config";
+import { absoluteUrl, rayonClub, siteConfig } from "@/lib/config";
 import type { MatchItem, NewsArticle, ShopProduct } from "@/lib/types";
 
 interface PageMetadataOptions {
@@ -114,7 +114,7 @@ export function buildMatchJsonLd(match: MatchItem) {
       ? [
           {
             "@type": "Offer",
-            priceCurrency: "RWF",
+            priceCurrency: rayonClub.currencyCode,
             price: match.generalPrice,
             availability: "https://schema.org/InStock",
             url: absoluteUrl(`/tickets/${match.id}`),
@@ -140,7 +140,7 @@ export function buildProductJsonLd(product: ShopProduct) {
     sku: product.id,
     offers: {
       "@type": "Offer",
-      priceCurrency: "RWF",
+      priceCurrency: rayonClub.currencyCode,
       price: product.price,
       availability: product.isActive
         ? "https://schema.org/InStock"

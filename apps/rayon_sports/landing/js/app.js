@@ -1,3 +1,29 @@
+const landingBranding = window.afriLandingBranding ?? {
+  currencyCode: document.documentElement.dataset.currencyCode?.trim() || 'LOCAL',
+  currencySymbol:
+    document.documentElement.dataset.currencySymbol?.trim() ||
+    document.documentElement.dataset.currencyCode?.trim() ||
+    'LOCAL',
+  currencyName:
+    document.documentElement.dataset.currencyName?.trim() ||
+    document.documentElement.dataset.currencyCode?.trim() ||
+    'Local currency',
+  normalizeAmount(raw) {
+    if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
+    const digits = Number.parseInt(
+      String(raw ?? '').replace(/[^\d-]/g, ''),
+      10,
+    );
+    return Number.isFinite(digits) ? digits : 0;
+  },
+  formatCurrencyCode(amount) {
+    return `${this.currencyCode} ${this.normalizeAmount(amount).toLocaleString()}`;
+  },
+  formatMembershipPrice(amount) {
+    return `${this.formatCurrencyCode(amount)} per month`;
+  },
+};
+
 /* ??????????????????????????????????????????
    DATA
 ?????????????????????????????????????????? */
@@ -202,7 +228,7 @@ function addProd(name,id,size,price){
 function updateCartUI(){
   const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
   const count=cart.reduce((s,i)=>s+i.qty,0);
-  document.getElementById('cart-total').textContent='RWF '+total.toLocaleString();
+  document.getElementById('cart-total').textContent=landingBranding.formatCurrencyCode(total);
   const badge=document.getElementById('cart-badge');
   badge.textContent=count;badge.style.display=count>0?'flex':'none';
   const list=document.getElementById('cart-items');
@@ -212,7 +238,7 @@ function updateCartUI(){
       <div class="citem-img" style="background:linear-gradient(135deg,var(--blue-p),var(--mid))">??</div>
       <div class="citem-info">
         <div class="citem-name">${item.name}</div>
-        <div class="citem-meta">Size: ${item.size}  RWF ${item.price.toLocaleString()}</div>
+        <div class="citem-meta">Size: ${item.size}  ${landingBranding.formatCurrencyCode(item.price)}</div>
         <div class="citem-ctrls">
           <button onclick="chgQty(${idx},-1)">?</button>
           <span>${item.qty}</span>
@@ -233,7 +259,9 @@ updateCartUI();
 ?????????????????????????????????????????? */
 function openMembership(tier,price){
   document.getElementById('mem-title').textContent='Join '+tier;
-  document.getElementById('mem-sub').textContent='RWF '+price+' per month';
+  document.getElementById('mem-sub').textContent=landingBranding.formatMembershipPrice(
+    landingBranding.normalizeAmount(price),
+  );
   document.getElementById('mem-modal-bg').classList.add('open');
   document.body.style.overflow='hidden';
 }
@@ -267,14 +295,14 @@ function pickZone(id,name,min,max){
   selZone=name;zoneBasePrice=min;
   document.getElementById('seat-selection').innerHTML=`
     <div style="font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:7px">${name} Selected</div>
-    <div style="font-size:11.5px;color:var(--text2)">RWF ${min.toLocaleString()}  ${max.toLocaleString()} per ticket</div>`;
+    <div style="font-size:11.5px;color:var(--text2)">${landingBranding.formatCurrencyCode(min)}  ${landingBranding.formatCurrencyCode(max)} per ticket</div>`;
   const btn=document.getElementById('tp2-proceed');
   btn.removeAttribute('disabled');btn.style.opacity='1';
 }
 function goToCheckout(){refreshOrder();goStep(3)}
 function refreshOrder(){
   const qty=parseInt(document.getElementById('tkt-qty')?.value||1);
-  document.getElementById('order-txt').innerHTML=`<strong style="color:var(--text)">${selMatch}</strong><br>${selZone}  ${qty} ticket${qty>1?'s':''}<br><strong style="color:var(--gold)">Total: RWF ${(zoneBasePrice*qty).toLocaleString()}</strong>`;
+  document.getElementById('order-txt').innerHTML=`<strong style="color:var(--text)">${selMatch}</strong><br>${selZone}  ${qty} ticket${qty>1?'s':''}<br><strong style="color:var(--gold)">Total: ${landingBranding.formatCurrencyCode(zoneBasePrice*qty)}</strong>`;
 }
 function confirmOrder(){alert('Tickets booked! A confirmation SMS has been sent to your phone.\n\nEnjoy the match!\nGIKUNDIRO! ???');goStep(1);document.querySelectorAll('.mpick').forEach(r=>r.classList.remove('on'))}
 
@@ -284,4 +312,3 @@ function confirmOrder(){alert('Tickets booked! A confirmation SMS has been sent 
 function toggleMore(){document.getElementById('more-drawer').classList.toggle('open')}
 function closeMore(){document.getElementById('more-drawer').classList.remove('open')}
 window.addEventListener('scroll',closeMore);
-</script>

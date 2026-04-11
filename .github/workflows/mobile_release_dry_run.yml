@@ -36,6 +36,26 @@ jobs:
       - name: Bootstrap workspace
         run: melos bootstrap
 
+      - name: Validate all club release contracts
+        run: |
+          for app in apps/*/; do
+            slug="$(basename "$app")"
+            if [ "$slug" = "output" ]; then
+              continue
+            fi
+            bash tools/scripts/validate_club_release.sh "$slug"
+          done
+
+      - name: Run white-label app shell smoke tests
+        run: |
+          smoke_tests=$(find apps -path '*/test/app_shell_smoke_test.dart' ! -path 'apps/rayon_sports/*' | sort)
+          if [ -z "$smoke_tests" ]; then
+            echo "❌ No white-label app shell smoke tests found."
+            exit 1
+          fi
+          echo "$smoke_tests"
+          flutter test $smoke_tests
+
       - name: Build Android release dry run
         run: bash tools/scripts/dry_run_android_release.sh rayon_sports
 
@@ -69,6 +89,26 @@ jobs:
 
       - name: Bootstrap workspace
         run: melos bootstrap
+
+      - name: Validate all club release contracts
+        run: |
+          for app in apps/*/; do
+            slug="$(basename "$app")"
+            if [ "$slug" = "output" ]; then
+              continue
+            fi
+            bash tools/scripts/validate_club_release.sh "$slug"
+          done
+
+      - name: Run white-label app shell smoke tests
+        run: |
+          smoke_tests=$(find apps -path '*/test/app_shell_smoke_test.dart' ! -path 'apps/rayon_sports/*' | sort)
+          if [ -z "$smoke_tests" ]; then
+            echo "❌ No white-label app shell smoke tests found."
+            exit 1
+          fi
+          echo "$smoke_tests"
+          flutter test $smoke_tests
 
       - name: Build iOS release dry run
         run: bash tools/scripts/dry_run_ios_release.sh rayon_sports

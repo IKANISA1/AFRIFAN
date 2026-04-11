@@ -1,10 +1,12 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../biopay_display_resolver.dart';
 import '../models/biopay_profile.dart';
 import '../providers/biopay_providers.dart';
 import '../services/biopay_nfc_service.dart';
@@ -102,6 +104,7 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
         _selectedRouteType ??
         profile?.routeType ??
         PaymentRecipientType.phoneNumber;
+    final currencyCode = context.afriCurrencyCode;
 
     return BiopayReferencePage(
       title: 'NFC Payment',
@@ -127,7 +130,7 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
           BiopayReferenceValueCard(
             label: 'Amount (Optional)',
             controller: _amountController,
-            prefix: 'RWF',
+            prefix: currencyCode,
             hintText: '0',
             keyboardType: TextInputType.number,
             inputFormatters: [
@@ -168,20 +171,7 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
     BiopayProfile? profile,
     UserProfile? user,
   ) {
-    if (routeType == PaymentRecipientType.code) {
-      if (profile?.routeType == PaymentRecipientType.code &&
-          (profile?.recipientValue.trim().isNotEmpty ?? false)) {
-        return profile!.recipientValue;
-      }
-      return '23456';
-    }
-
-    if (profile?.routeType == PaymentRecipientType.phoneNumber &&
-        (profile?.recipientValue.trim().isNotEmpty ?? false)) {
-      return profile!.recipientValue;
-    }
-
-    final momo = user?.momoNumber?.trim();
-    return (momo != null && momo.isNotEmpty) ? momo : '0788123456';
+    return resolveBiopayRouteValue(routeType, profile, user) ??
+        kBiopayUnlinkedLabel;
   }
 }

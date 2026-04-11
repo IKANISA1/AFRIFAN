@@ -13,6 +13,7 @@ class LiveModule extends FeatureModule {
 
   @override
   List<RouteBase> get routes => [
+    GoRoute(path: '/live', redirect: (_, __) => '/live-match'),
     GoRoute(
       path: '/live-match',
       builder: (context, state) => const LiveMatchScreen(),

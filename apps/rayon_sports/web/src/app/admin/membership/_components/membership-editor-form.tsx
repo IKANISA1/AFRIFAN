@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { showAdminToast } from "@/components/admin/admin-toast";
+import { fallbackClubProfile } from "@/lib/content";
 import { saveAdminMembershipPackage } from "@/lib/data/admin/membership";
 import type { AdminAccess, AdminMembershipPackage } from "@/lib/types";
 import { emptyForm, type MembershipForm } from "./membership-state";
@@ -123,7 +124,7 @@ export function MembershipEditorForm({
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-2 text-sm">
-          Annual price (RWF)
+          Annual price ({fallbackClubProfile.currencyCode})
           <input
             type="number"
             name="annualPrice"

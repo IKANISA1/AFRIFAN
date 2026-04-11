@@ -17,7 +17,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   bool _isSubmitting = false;
 
   List<Map<String, String>> _slidesFor(String appName) {
-    final label = appName.trim().isEmpty ? 'AFRICLUB' : appName.trim();
+    final label = appName.trim().isEmpty ? 'your club' : appName.trim();
     return <Map<String, String>>[
       {
         'title': 'YOUR CLUB. YOUR APP.',
@@ -45,8 +45,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Future<void> _handleGetStarted() async {
     final authState = ref.read(authStateProvider);
     if (authState is AuthAuthenticated) {
-      // §2.2 LOCKED — no MOMO gate on launch. Always go to /home.
-      context.go('/home');
+      context.go(_postAuthDestination());
       return;
     }
 
@@ -57,8 +56,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     final nextState = ref.read(authStateProvider);
     if (nextState is AuthAuthenticated) {
-      // §2.2 LOCKED — go straight to home after anonymous sign-in.
-      context.go('/home');
+      context.go(_postAuthDestination());
       return;
     }
 
@@ -70,6 +68,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  String _postAuthDestination() {
+    final raw = GoRouterState.of(context).uri.queryParameters['from']?.trim();
+    if (raw == null || raw.isEmpty) {
+      return '/home';
+    }
+
+    final uri = Uri.tryParse(raw);
+    final path = uri?.path;
+    if (path == null ||
+        path.isEmpty ||
+        !path.startsWith('/') ||
+        path == '/splash' ||
+        path == '/onboarding') {
+      return '/home';
+    }
+
+    return uri.toString();
   }
 
   @override

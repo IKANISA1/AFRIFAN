@@ -9,7 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../test_support/design_font_loader.dart';
+import 'package:test_support/design_font_loader.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -22,44 +22,42 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: AboutScreen()));
     await tester.pumpAndSettle();
 
-    expect(find.text('Terms of Use'), findsOneWidget);
-    expect(find.text('Privacy Policy'), findsOneWidget);
-    expect(find.text('Club Website'), findsOneWidget);
     expect(find.text('Open Source Licenses'), findsOneWidget);
     expect(find.text('CONTACT SUPPORT'), findsOneWidget);
     expect(find.text('RATE THIS APP'), findsOneWidget);
   });
 
-  testWidgets('help screen shows website, whatsapp, and export request', (
-    tester,
-  ) async {
-    await tester.pumpWidget(const MaterialApp(home: HelpSupportScreen()));
-    await tester.pumpAndSettle();
-
-    expect(find.text('OFFICIAL WEBSITE'), findsOneWidget);
-    expect(find.text('WHATSAPP SUPPORT'), findsOneWidget);
-
-    final returnButton = find.text('RETURN TO SETTINGS');
-    await tester.scrollUntilVisible(returnButton, 200);
-    expect(returnButton, findsOneWidget);
-    expect(find.text('REQUEST DATA EXPORT'), findsOneWidget);
-  });
-
   testWidgets(
-    'settings shows BioPay entries when the feature is enabled',
+    'help screen remains usable without configured support channels',
     (tester) async {
-      const config = _FakeClubConfig(hasBiopay: true);
-
-      await tester.pumpWidget(_buildSettingsApp(config: config));
+      await tester.pumpWidget(const MaterialApp(home: HelpSupportScreen()));
       await tester.pumpAndSettle();
 
-      expect(find.text('BioPay & Privacy'), findsOneWidget);
-      expect(find.text('BioPay home'), findsOneWidget);
-      expect(find.text('Face ID & enrollment'), findsOneWidget);
-      expect(find.text('QR receive & pay'), findsOneWidget);
-      expect(find.text('NFC receive & pay'), findsOneWidget);
+      expect(
+        find.text('Support channels are not configured for this build yet.'),
+        findsOneWidget,
+      );
+
+      final returnButton = find.text('RETURN TO SETTINGS');
+      await tester.scrollUntilVisible(returnButton, 200);
+      expect(returnButton, findsOneWidget);
     },
   );
+
+  testWidgets('settings shows BioPay entries when the feature is enabled', (
+    tester,
+  ) async {
+    const config = _FakeClubConfig(hasBiopay: true);
+
+    await tester.pumpWidget(_buildSettingsApp(config: config));
+    await tester.pumpAndSettle();
+
+    expect(find.text('BioPay & Privacy'), findsOneWidget);
+    expect(find.text('BioPay home'), findsOneWidget);
+    expect(find.text('Face ID & enrollment'), findsOneWidget);
+    expect(find.text('QR receive & pay'), findsOneWidget);
+    expect(find.text('NFC receive & pay'), findsOneWidget);
+  });
 
   testWidgets('settings hides BioPay entries when feature flag is disabled', (
     tester,
@@ -149,7 +147,7 @@ class _FakeClubConfig implements ClubConfig {
   String get currency => 'RWF';
 
   @override
-  String get currencySymbol => 'FRw';
+  String get currencySymbol => 'RWF';
 
   @override
   bool get hasChat => true;

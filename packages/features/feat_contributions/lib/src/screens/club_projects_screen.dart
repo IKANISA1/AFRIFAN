@@ -1,5 +1,5 @@
-import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,38 +27,41 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
 
   Future<void> _loadProjects() async {
     try {
-      final groups = await ref.read(clubRepositoryProvider).getContributionGroups();
-      final projects = groups
-          .map(
-            (group) => <String, dynamic>{
-              'id': group.id,
-              'name': group.name,
-              'description': group.description,
-              'current_total': group.currentTotal,
-              'target_amount': group.targetAmount,
-              'member_count': group.memberCount,
-              'created_at': group.createdAt.toIso8601String(),
-            },
-          )
-          .toList(growable: false)
-        ..sort((left, right) {
-          final totalDiff =
-              ((right['current_total'] as num?)?.toInt() ?? 0) -
-              ((left['current_total'] as num?)?.toInt() ?? 0);
-          if (totalDiff != 0) {
-            return totalDiff;
-          }
-          final rightCreated = DateTime.tryParse(
-            right['created_at']?.toString() ?? '',
-          );
-          final leftCreated = DateTime.tryParse(
-            left['created_at']?.toString() ?? '',
-          );
-          if (leftCreated == null || rightCreated == null) {
-            return 0;
-          }
-          return rightCreated.compareTo(leftCreated);
-        });
+      final groups = await ref
+          .read(clubRepositoryProvider)
+          .getContributionGroups();
+      final projects =
+          groups
+              .map(
+                (group) => <String, dynamic>{
+                  'id': group.id,
+                  'name': group.name,
+                  'description': group.description,
+                  'current_total': group.currentTotal,
+                  'target_amount': group.targetAmount,
+                  'member_count': group.memberCount,
+                  'created_at': group.createdAt.toIso8601String(),
+                },
+              )
+              .toList(growable: false)
+            ..sort((left, right) {
+              final totalDiff =
+                  ((right['current_total'] as num?)?.toInt() ?? 0) -
+                  ((left['current_total'] as num?)?.toInt() ?? 0);
+              if (totalDiff != 0) {
+                return totalDiff;
+              }
+              final rightCreated = DateTime.tryParse(
+                right['created_at']?.toString() ?? '',
+              );
+              final leftCreated = DateTime.tryParse(
+                left['created_at']?.toString() ?? '',
+              );
+              if (leftCreated == null || rightCreated == null) {
+                return 0;
+              }
+              return rightCreated.compareTo(leftCreated);
+            });
       final limitedProjects = projects.take(20).toList(growable: false);
 
       if (!mounted) return;
@@ -150,6 +153,10 @@ class _ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currency = CurrencyFormatter(
+      currencyCode: context.afriCurrencyCode,
+      currencySymbol: context.afriCurrencySymbol,
+    );
     final title = project['name']?.toString() ?? 'Project';
     final body =
         project['description']?.toString() ??
@@ -190,7 +197,7 @@ class _ProjectCard extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            'FRw $currentTotal / FRw $targetAmount',
+            '${currency.format(currentTotal)} / ${currency.format(targetAmount)}',
             style: TypographyTokens.bodySmall(),
           ),
           const SizedBox(height: SpacingTokens.spacing1),

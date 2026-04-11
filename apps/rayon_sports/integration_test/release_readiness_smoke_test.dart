@@ -1,4 +1,4 @@
-import 'package:core_app/core_app.dart';
+import 'package:core_app/bootstrap.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:feat_home/src/widgets/match_card.dart';
@@ -6,6 +6,7 @@ import 'package:feat_home/src/widgets/quick_actions_grid.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rayon_sports/main.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -79,7 +80,7 @@ void main() {
     );
 
     await tester.pump();
-    await tester.pump(const Duration(seconds: 2));
+    await tester.pump();
     await tester.pumpAndSettle();
     await _pumpUntilVisible(tester, find.byType(QuickActionsGrid));
 
@@ -141,7 +142,7 @@ void main() {
       );
 
       await tester.pump();
-      await tester.pump(const Duration(seconds: 2));
+      await tester.pump();
       await tester.pumpAndSettle();
       await _pumpUntilVisible(tester, find.text('NEXT'));
 
@@ -229,6 +230,10 @@ class _FakeAuthRepository extends AuthRepository {
   Future<AdminWorkspaceAccess> resolveAdminAccess(String userId) async {
     return AdminWorkspaceAccess.none;
   }
+
+  @override
+  Stream<supabase.AuthState> get authStateChanges =>
+      const Stream<supabase.AuthState>.empty();
 }
 
 class _FakeHomeFeedRepository implements HomeFeedRepository {

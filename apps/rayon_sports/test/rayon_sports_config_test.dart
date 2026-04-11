@@ -23,7 +23,7 @@ void main() {
 
     test('has valid currency configuration', () {
       expect(config.currency, 'RWF');
-      expect(config.currencySymbol, 'FRw');
+      expect(config.currencySymbol, 'RWF');
     });
 
     test('has valid color configuration', () {

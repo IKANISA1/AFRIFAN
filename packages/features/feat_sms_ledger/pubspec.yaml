@@ -16,6 +16,8 @@ dependencies:
     path: ../../core/core_network
   core_auth:
     path: ../../core/core_auth
+  core_theme:
+    path: ../../core/core_theme
 
   # State management & DI
   flutter_riverpod: ^2.6.1

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../biopay_display_resolver.dart';
 import '../models/biopay_enrollment_draft.dart';
+import '../providers/biopay_providers.dart';
 import '../widgets/biopay_reference_ui.dart';
 import 'biopay_scan_screen.dart';
 
@@ -30,7 +32,11 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
   @override
   void initState() {
     super.initState();
-    _recipientController.text = '0788123456';
+    _recipientController.text = initialBiopayRecipientValue(
+      _routeType,
+      ref.read(currentUserProvider),
+      _country,
+    );
   }
 
   @override
@@ -74,9 +80,11 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
     setState(() {
       _routeType = routeType;
       _error = null;
-      _recipientController.text = routeType == PaymentRecipientType.phoneNumber
-          ? '0788123456'
-          : '23456';
+      _recipientController.text = initialBiopayRecipientValue(
+        routeType,
+        ref.read(currentUserProvider),
+        _country,
+      );
     });
   }
 
@@ -88,9 +96,7 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
     }
 
     final user = ref.read(currentUserProvider);
-    final alias = user?.publicUserId?.trim().isNotEmpty == true
-        ? user!.publicUserId!
-        : '882931';
+    final alias = biopayEnrollmentAlias(user);
 
     setState(() {
       _draft = BiopayEnrollmentDraft(
@@ -151,6 +157,7 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
                 ? 'Merchant Code'
                 : 'MoMo Number',
             controller: _recipientController,
+            hintText: biopayRecipientHint(_routeType, _country),
             keyboardType: TextInputType.number,
             onChanged: (_) {
               if (_error != null) {
@@ -180,10 +187,9 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
   }
 
   Widget _buildSuccess(BuildContext context) {
+    final profile = ref.watch(biopayProfileProvider).valueOrNull;
     final user = ref.watch(currentUserProvider);
-    final bioPayId = user?.publicUserId?.trim().isNotEmpty == true
-        ? user!.publicUserId!
-        : '882931';
+    final bioPayId = resolveBiopayId(profile, user) ?? kBiopayPendingSyncLabel;
 
     return Scaffold(
       backgroundColor: biopayReferenceBackground,

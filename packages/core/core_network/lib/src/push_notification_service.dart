@@ -31,6 +31,8 @@ class PushNotificationService {
 
   static bool _initialized = false;
   static String? _clubId;
+  static String? _lastKnownUserId;
+  static String? _lastKnownToken;
   static StreamSubscription<AuthState>? _authSubscription;
   static StreamSubscription<String>? _tokenRefreshSubscription;
 
@@ -82,7 +84,8 @@ class PushNotificationService {
     _tokenRefreshSubscription = FirebaseMessaging.instance.onTokenRefresh
         .listen(
           (token) async {
-            await _upsertToken(token: token);
+            _lastKnownToken = token;
+            await syncToken();
           },
           onError: (Object error, StackTrace stackTrace) {
             AfriLogger.error(
@@ -95,14 +98,29 @@ class PushNotificationService {
         );
 
     _authSubscription = SupabaseClientFactory.authStateChanges.listen((auth) {
+      final sessionUserId = auth.session?.user.id;
+      if (sessionUserId != null && sessionUserId.trim().isNotEmpty) {
+        _lastKnownUserId = sessionUserId;
+      }
       switch (auth.event) {
         case AuthChangeEvent.signedIn:
         case AuthChangeEvent.tokenRefreshed:
         case AuthChangeEvent.userUpdated:
-          syncToken();
+          unawaited(syncToken());
           break;
         case AuthChangeEvent.signedOut:
-          unregisterCurrentDevice();
+          final signedOutUserId = _lastKnownUserId;
+          final signedOutToken = _lastKnownToken;
+          if (signedOutUserId != null && signedOutToken != null) {
+            unawaited(
+              unregisterCurrentDevice(
+                userId: signedOutUserId,
+                token: signedOutToken,
+              ),
+            );
+          }
+          _lastKnownUserId = null;
+          _lastKnownToken = null;
           break;
         default:
           break;
@@ -166,29 +184,63 @@ class PushNotificationService {
       return;
     }
 
+    final user = SupabaseClientFactory.currentUser;
+    if (user == null) {
+      return;
+    }
+    if (!await _isPushEnabledForUser(user.id)) {
+      await unregisterCurrentDevice(userId: user.id, token: _lastKnownToken);
+      return;
+    }
+
     try {
       final token = await FirebaseMessaging.instance.getToken();
       if (token == null || token.trim().isEmpty) return;
+      _lastKnownToken = token;
       await _upsertToken(token: token);
     } catch (error, stackTrace) {
       AfriLogger.error('Push', 'Token sync failed.', error, stackTrace);
     }
   }
 
-  static Future<void> unregisterCurrentDevice() async {
+  static Future<void> unregisterCurrentDevice({
+    String? userId,
+    String? token,
+  }) async {
     if (!_isSupported) return;
 
-    final user = SupabaseClientFactory.currentUser;
-    if (user == null) return;
+    final resolvedUserId = userId?.trim().isNotEmpty == true
+        ? userId!.trim()
+        : SupabaseClientFactory.currentUser?.id;
+    if (resolvedUserId == null || resolvedUserId.isEmpty) return;
 
     try {
-      final token = await FirebaseMessaging.instance.getToken();
-      if (token == null || token.trim().isEmpty) return;
-      await SupabaseClientFactory.client
-          .from('user_fcm_tokens')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('token', token);
+      final resolvedToken = token?.trim().isNotEmpty == true
+          ? token!.trim()
+          : (_lastKnownToken ?? await FirebaseMessaging.instance.getToken());
+      if (resolvedToken != null && resolvedToken.trim().isNotEmpty) {
+        await SupabaseClientFactory.client
+            .from('user_fcm_tokens')
+            .delete()
+            .eq('user_id', resolvedUserId)
+            .eq('token', resolvedToken);
+      }
+      try {
+        await FirebaseMessaging.instance.deleteToken();
+      } catch (error, stackTrace) {
+        AfriLogger.error(
+          'Push',
+          'Token deletion failed during unregister.',
+          error,
+          stackTrace,
+        );
+      }
+      if (_lastKnownUserId == resolvedUserId) {
+        _lastKnownUserId = null;
+      }
+      if (resolvedToken != null && _lastKnownToken == resolvedToken) {
+        _lastKnownToken = null;
+      }
     } catch (error, stackTrace) {
       AfriLogger.error('Push', 'Token unregister failed.', error, stackTrace);
     }
@@ -196,8 +248,31 @@ class PushNotificationService {
 
   static bool get _isSupported => !kIsWeb && Firebase.apps.isNotEmpty;
 
+  static Future<bool> _isPushEnabledForUser(String userId) async {
+    try {
+      final row = await SupabaseClientFactory.client
+          .from('user_notification_settings')
+          .select('push_enabled')
+          .eq('user_id', userId)
+          .maybeSingle();
+      return row?['push_enabled'] == true;
+    } catch (error, stackTrace) {
+      AfriLogger.error(
+        'Push',
+        'Push preference lookup failed.',
+        error,
+        stackTrace,
+      );
+      return false;
+    }
+  }
+
   static Future<void> subscribeToTopic(String topic) async {
     if (!_isSupported || topic.trim().isEmpty) return;
+    final user = SupabaseClientFactory.currentUser;
+    if (user == null || !await _isPushEnabledForUser(user.id)) {
+      return;
+    }
 
     try {
       await FirebaseMessaging.instance.subscribeToTopic(topic.trim());
@@ -259,6 +334,8 @@ class PushNotificationService {
   static Future<void> _upsertToken({required String token}) async {
     final user = SupabaseClientFactory.currentUser;
     if (user == null) return;
+    _lastKnownUserId = user.id;
+    _lastKnownToken = token;
 
     final payload = <String, dynamic>{
       'user_id': user.id,

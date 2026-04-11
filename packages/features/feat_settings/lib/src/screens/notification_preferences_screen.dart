@@ -1,4 +1,3 @@
-import 'package:core_auth/core_auth.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -48,18 +47,19 @@ class _NotificationPreferencesScreenState
     });
   }
 
-  UserNotificationSettings _recomputeAllowAll(
+  UserNotificationSettings _normalizeForSave(
     UserNotificationSettings settings,
   ) {
-    final allowAll =
-        settings.matchAlerts &&
-        settings.contributionReceipts &&
-        settings.xpMilestones &&
-        settings.teamNews &&
-        settings.challenges &&
-        settings.groupChat;
-
-    return settings.copyWith(allowAll: allowAll);
+    final enabled = settings.pushEnabled;
+    return settings.copyWith(
+      allowAll: enabled,
+      matchAlerts: enabled,
+      contributionReceipts: enabled,
+      xpMilestones: enabled,
+      teamNews: enabled,
+      challenges: enabled,
+      groupChat: enabled,
+    );
   }
 
   Future<void> _togglePush(UserNotificationSettings settings) async {
@@ -103,7 +103,7 @@ class _NotificationPreferencesScreenState
     try {
       final saved = await ref
           .read(settingsRepositoryProvider)
-          .updateNotificationSettings(_recomputeAllowAll(settings));
+          .updateNotificationSettings(_normalizeForSave(settings));
       if (saved.pushEnabled) {
         await PushNotificationService.syncToken();
       } else {
@@ -134,7 +134,6 @@ class _NotificationPreferencesScreenState
     final appName =
         ClubConfigScope.maybeOf(context)?.appName ??
         RuntimeBranding.displayAppName;
-    final authState = ref.watch(authStateProvider);
     final asyncSettings = ref.watch(notificationSettingsProvider);
     final loadedSettings = asyncSettings.valueOrNull;
     if (loadedSettings != null) {
@@ -234,87 +233,22 @@ class _NotificationPreferencesScreenState
                   GlassCard(
                     animate: false,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SwitchListTile(
-                          value: settings.allowAll,
-                          activeThumbColor: Theme.of(
-                            context,
-                          ).colorScheme.primary,
-                          title: Text(
-                            'Allow all',
-                            style: TypographyTokens.bodyLarge(),
-                          ),
-                          subtitle: Text(
-                            'All $appName categories',
-                            style: TypographyTokens.bodySmall(),
-                          ),
-                          onChanged: (value) {
-                            setState(
-                              () => _draft = settings.copyWith(
-                                allowAll: value,
-                                matchAlerts: value,
-                                contributionReceipts: value,
-                                xpMilestones: value,
-                                teamNews: value,
-                                challenges: value,
-                                groupChat: value,
-                              ),
-                            );
-                          },
+                        Text(
+                          'DELIVERY MODEL',
+                          style: TypographyTokens.labelSmall(),
                         ),
-                        const SizedBox(height: SpacingTokens.spacing4),
-                        _NotificationToggle(
-                          label: 'Match alerts',
-                          value: settings.matchAlerts,
-                          onChanged: (value) => setState(
-                            () => _draft = _recomputeAllowAll(
-                              settings.copyWith(matchAlerts: value),
-                            ),
-                          ),
+                        const SizedBox(height: SpacingTokens.spacing2),
+                        Text(
+                          'When alerts are enabled, this release delivers the full $appName notification stream available for your account.',
+                          style: TypographyTokens.bodyMedium(),
                         ),
-                        _NotificationToggle(
-                          label: 'Contribution receipts',
-                          value: settings.contributionReceipts,
-                          onChanged: (value) => setState(
-                            () => _draft = _recomputeAllowAll(
-                              settings.copyWith(contributionReceipts: value),
-                            ),
-                          ),
-                        ),
-                        _NotificationToggle(
-                          label: 'XP milestones',
-                          value: settings.xpMilestones,
-                          onChanged: (value) => setState(
-                            () => _draft = _recomputeAllowAll(
-                              settings.copyWith(xpMilestones: value),
-                            ),
-                          ),
-                        ),
-                        _NotificationToggle(
-                          label: 'Team news',
-                          value: settings.teamNews,
-                          onChanged: (value) => setState(
-                            () => _draft = _recomputeAllowAll(
-                              settings.copyWith(teamNews: value),
-                            ),
-                          ),
-                        ),
-                        _NotificationToggle(
-                          label: 'Challenges',
-                          value: settings.challenges,
-                          onChanged: (value) => setState(
-                            () => _draft = _recomputeAllowAll(
-                              settings.copyWith(challenges: value),
-                            ),
-                          ),
-                        ),
-                        _NotificationToggle(
-                          label: 'Group chat',
-                          value: settings.groupChat,
-                          onChanged: (value) => setState(
-                            () => _draft = _recomputeAllowAll(
-                              settings.copyWith(groupChat: value),
-                            ),
+                        const SizedBox(height: SpacingTokens.spacing2),
+                        Text(
+                          'Per-category tuning is not configurable on this build yet, so this switch controls the entire device delivery state.',
+                          style: TypographyTokens.bodySmall(
+                            ColorTokens.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -324,35 +258,11 @@ class _NotificationPreferencesScreenState
                   ClaymorphicButton(
                     label: _isSaving ? 'SAVING...' : 'SAVE',
                     width: double.infinity,
-                    onPressed: _isSaving || authState.user == null
-                        ? null
-                        : () => _saveSettings(settings),
+                    onPressed: _isSaving ? null : () => _saveSettings(settings),
                   ),
                 ],
               ),
       ),
-    );
-  }
-}
-
-class _NotificationToggle extends StatelessWidget {
-  const _NotificationToggle({
-    required this.label,
-    required this.value,
-    required this.onChanged,
-  });
-
-  final String label;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return SwitchListTile(
-      value: value,
-      activeThumbColor: Theme.of(context).colorScheme.primary,
-      title: Text(label, style: TypographyTokens.bodyLarge()),
-      onChanged: onChanged,
     );
   }
 }

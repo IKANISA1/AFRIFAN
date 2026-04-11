@@ -1,4 +1,5 @@
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -60,6 +61,10 @@ void showShopSearchSheet({
                     separatorBuilder: (_, __) =>
                         const SizedBox(height: SpacingTokens.spacing2),
                     itemBuilder: (context, index) {
+                      final currency = CurrencyFormatter(
+                        currencyCode: context.afriCurrencyCode,
+                        currencySymbol: context.afriCurrencySymbol,
+                      );
                       final product = results[index];
                       final id = product['id']?.toString() ?? '';
                       final name = product['name']?.toString() ?? 'Product';
@@ -70,7 +75,7 @@ void showShopSearchSheet({
                       return ClayCard(
                         onTap: () {
                           context.pop();
-                          context.go('/shop/product/$id');
+                          context.push('/shop/product/$id');
                         },
                         child: Row(
                           children: [
@@ -98,7 +103,7 @@ void showShopSearchSheet({
                             ),
                             const SizedBox(width: SpacingTokens.spacing3),
                             Text(
-                              'FRw ${price.toStringAsFixed(0)}',
+                              currency.format(price),
                               style: TypographyTokens.monolithFont(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w800,

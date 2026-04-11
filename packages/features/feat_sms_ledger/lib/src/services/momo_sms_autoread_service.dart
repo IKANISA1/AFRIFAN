@@ -118,24 +118,24 @@ class MomoSmsAutoreadService {
   String? _activeUserId;
   String? _initialSyncScheduledForUserId;
 
-  Future<void> refresh({
+  Future<bool> refresh({
     bool forcePermissionRequest = false,
     Future<bool> Function()? onShowRationale,
   }) async {
     if (!_supportsSmsAutoread) {
       await stop();
-      return;
+      return false;
     }
 
     if (!EnvConfig.enableAndroidMomoSmsAutoread) {
       await stop();
-      return;
+      return false;
     }
 
     final session = _client.auth.currentSession;
     if (session == null) {
       await stop(resetPermissionPromptState: true);
-      return;
+      return false;
     }
 
     final smsEnabledInApp = await _appAccessService.isEnabled(
@@ -143,7 +143,7 @@ class MomoSmsAutoreadService {
     );
     if (!smsEnabledInApp) {
       await stop();
-      return;
+      return false;
     }
 
     final permissionGranted = await _ensureSmsPermission(
@@ -152,7 +152,7 @@ class MomoSmsAutoreadService {
     );
     if (!permissionGranted) {
       await stop();
-      return;
+      return false;
     }
 
     if (!_isListening || _activeUserId != session.user.id) {
@@ -176,6 +176,59 @@ class MomoSmsAutoreadService {
 
     // Drain any queued messages from previous background failures (G8).
     unawaited(_drainRetryQueue());
+    return true;
+  }
+
+  Future<bool> enable({
+    Future<bool> Function()? onShowRationale,
+  }) async {
+    if (!_supportsSmsAutoread || !EnvConfig.enableAndroidMomoSmsAutoread) {
+      return false;
+    }
+
+    if (_client.auth.currentSession == null) {
+      return false;
+    }
+
+    await _appAccessService.setEnabled(AppAccessPermission.sms, true);
+
+    final activated = await refresh(
+      forcePermissionRequest: true,
+      onShowRationale: onShowRationale ?? _consentCallback,
+    );
+    if (!activated) {
+      await _appAccessService.setEnabled(AppAccessPermission.sms, false);
+      await stop(resetPermissionPromptState: true);
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<void> syncConsentFromServer() async {
+    final session = _client.auth.currentSession;
+    if (session == null) {
+      await _appAccessService.setEnabled(AppAccessPermission.sms, false);
+      return;
+    }
+
+    try {
+      final row = await _client
+          .from('user_privacy_settings')
+          .select('momo_sms_autoread_enabled')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+
+      final enabled = row is Map<String, dynamic> &&
+          row['momo_sms_autoread_enabled'] == true;
+      await _appAccessService.setEnabled(AppAccessPermission.sms, enabled);
+    } catch (error, stackTrace) {
+      await _crashlytics?.recordError(
+        error,
+        stackTrace: stackTrace,
+        reason: 'momo_sms_sync_consent_from_server_failed',
+      );
+    }
   }
 
   Future<void> stop({bool resetPermissionPromptState = false}) async {
@@ -197,6 +250,11 @@ class MomoSmsAutoreadService {
 
   void dispose() {
     unawaited(stop());
+  }
+
+  Future<void> disable() async {
+    await _appAccessService.setEnabled(AppAccessPermission.sms, false);
+    await stop();
   }
 
   /// Drains the Hive-based retry queue of captures that failed during
@@ -234,6 +292,10 @@ class MomoSmsAutoreadService {
     }
 
     if (status.isPermanentlyDenied || status.isRestricted) {
+      return false;
+    }
+
+    if (!forceRequest && onShowRationale == null) {
       return false;
     }
 

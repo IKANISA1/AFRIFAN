@@ -1,12 +1,33 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../settings_actions.dart';
 import '../widgets/settings_navigation_scope.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
+
+  Future<String> _loadVersionLabel() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      final version = packageInfo.version.trim();
+      final build = packageInfo.buildNumber.trim();
+      if (version.isEmpty && build.isEmpty) {
+        return 'Version unavailable';
+      }
+      if (build.isEmpty) {
+        return 'v$version';
+      }
+      if (version.isEmpty) {
+        return 'Build $build';
+      }
+      return 'v$version ($build)';
+    } catch (_) {
+      return 'Version unavailable';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,41 +91,55 @@ class AboutScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     Text(
-                      'Powered by $appName',
+                      'Official mobile experience for $appName supporters',
                       style: TypographyTokens.bodyMedium(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
-                    Text('v1.0.0', style: TypographyTokens.bodySmall()),
+                    FutureBuilder<String>(
+                      future: _loadVersionLabel(),
+                      builder: (context, snapshot) {
+                        return Text(
+                          snapshot.data ?? 'Loading version…',
+                          style: TypographyTokens.bodySmall(),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              _LinkCard(
-                title: 'Terms of Use',
-                onTap: () => launchExternalUri(
-                  context,
-                  Uri.parse(AppLinks.termsUrl),
-                  failureMessage: 'Terms of use are not available yet.',
+              if (AppLinks.hasTerms) ...[
+                const SizedBox(height: SpacingTokens.spacing4),
+                _LinkCard(
+                  title: 'Terms of Use',
+                  onTap: () => launchExternalUri(
+                    context,
+                    AppLinks.termsUri!,
+                    failureMessage: 'Terms of use are not available yet.',
+                  ),
                 ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              _LinkCard(
-                title: 'Privacy Policy',
-                onTap: () => launchExternalUri(
-                  context,
-                  Uri.parse(AppLinks.privacyPolicyUrl),
-                  failureMessage: 'Privacy policy is not available yet.',
+              ],
+              if (AppLinks.hasPrivacyPolicy) ...[
+                const SizedBox(height: SpacingTokens.spacing3),
+                _LinkCard(
+                  title: 'Privacy Policy',
+                  onTap: () => launchExternalUri(
+                    context,
+                    AppLinks.privacyPolicyUri!,
+                    failureMessage: 'Privacy policy is not available yet.',
+                  ),
                 ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              _LinkCard(
-                title: 'Club Website',
-                onTap: () => launchExternalUri(
-                  context,
-                  Uri.parse(AppLinks.websiteUrl),
-                  failureMessage: 'Club website is not available yet.',
+              ],
+              if (AppLinks.hasWebsite) ...[
+                const SizedBox(height: SpacingTokens.spacing3),
+                _LinkCard(
+                  title: 'Club Website',
+                  onTap: () => launchExternalUri(
+                    context,
+                    AppLinks.websiteUri!,
+                    failureMessage: 'Club website is not available yet.',
+                  ),
                 ),
-              ),
+              ],
               const SizedBox(height: SpacingTokens.spacing3),
               _LinkCard(
                 title: 'Open Source Licenses',
@@ -117,28 +152,30 @@ class AboutScreen extends StatelessWidget {
                 width: double.infinity,
                 onPressed: () => context.push('/settings/help'),
               ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              OutlinedButton(
-                onPressed: () async {
-                  await launchWhatsApp(
-                    context,
-                    message: 'Hi, I need help with $appName.',
-                    failureMessage: 'Could not open WhatsApp.',
-                  );
-                },
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: ColorTokens.onSurface,
-                  minimumSize: const Size(double.infinity, 58),
-                  side: BorderTokens.side(
-                    color: ColorTokens.onSurface,
-                    opacity: 0.2,
+              if (AppLinks.hasSupportWhatsApp) ...[
+                const SizedBox(height: SpacingTokens.spacing3),
+                OutlinedButton(
+                  onPressed: () async {
+                    await launchWhatsApp(
+                      context,
+                      message: 'Hi, I need help with $appName.',
+                      failureMessage: 'Could not open WhatsApp.',
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: ColorTokens.onSurface,
+                    minimumSize: const Size(double.infinity, 58),
+                    side: BorderTokens.side(
+                      color: ColorTokens.onSurface,
+                      opacity: 0.2,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                  child: const Text('WHATSAPP SUPPORT'),
                 ),
-                child: const Text('WHATSAPP SUPPORT'),
-              ),
+              ],
               const SizedBox(height: SpacingTokens.spacing3),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

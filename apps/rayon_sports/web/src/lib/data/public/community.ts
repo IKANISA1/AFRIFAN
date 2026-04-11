@@ -4,6 +4,7 @@
 import { cache } from "react";
 import { getActiveClubReference } from "@/lib/club-context";
 import {
+  fallbackClubProfile,
   fallbackContributionGroups,
   fallbackFanClubs,
   fallbackMembershipPackages,
@@ -112,7 +113,7 @@ function mapContributionGroupRow(row: Record<string, unknown>): ContributionGrou
         : "general",
     targetAmount: safeNumber(row.target_amount, 0),
     currentTotal: safeNumber(row.current_total, 0),
-    currency: safeString(row.currency, "RWF"),
+    currency: safeString(row.currency, fallbackClubProfile.currencyCode),
     memberCount: safeNumber(row.member_count, 0),
     inviteCode: safeString(row.invite_code) || null,
     isActive: row.is_closed !== true && row.is_active !== false,

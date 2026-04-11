@@ -1,0 +1,30 @@
+name: test_support
+description: Shared test helpers for AfriClub feature packages
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core_app:
+    path: ../../core/core_app
+  core_modules:
+    path: ../../core/core_modules
+  core_auth:
+    path: ../../core/core_auth
+  core_router:
+    path: ../../core/core_router
+  core_theme:
+    path: ../../core/core_theme
+  feat_home:
+    path: ../feat_home
+  flutter_riverpod: ^2.6.1
+  google_fonts: ^6.2.1
+  path_provider_platform_interface: ^2.1.2
+  plugin_platform_interface: ^2.1.8
+
+resolution: workspace

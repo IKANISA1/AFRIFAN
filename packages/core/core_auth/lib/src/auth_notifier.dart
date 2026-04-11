@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
+
 import 'auth_repository.dart';
 import 'auth_state.dart';
 import 'models/user_profile.dart';
@@ -16,6 +18,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       super(const AuthInitial());
 
   final AuthRepository _repository;
+  String? _hydratingSessionUserId;
 
   /// Restore the current session on app start.
   ///
@@ -43,6 +46,49 @@ class AuthNotifier extends StateNotifier<AuthState> {
         'Existing session could not be restored and was cleared.',
         e,
       );
+    }
+  }
+
+  /// Keep local auth state aligned with the underlying Supabase session.
+  Future<void> syncWithAuthChange(supabase.AuthState change) async {
+    final session = change.session;
+    if (change.event == supabase.AuthChangeEvent.signedOut || session == null) {
+      state = const AuthUnauthenticated();
+      return;
+    }
+
+    final sessionUserId = session.user.id;
+    final current = state;
+
+    if (change.event == supabase.AuthChangeEvent.tokenRefreshed &&
+        current is AuthAuthenticated &&
+        current.profile.id == sessionUserId) {
+      return;
+    }
+
+    if (_hydratingSessionUserId == sessionUserId) {
+      return;
+    }
+
+    _hydratingSessionUserId = sessionUserId;
+    try {
+      final profile = await _repository.restoreCurrentUser();
+      if (profile == null) {
+        state = const AuthUnauthenticated();
+        return;
+      }
+      final adminAccess = await _repository.resolveAdminAccess(profile.id);
+      state = AuthAuthenticated(profile: profile, workspace: adminAccess);
+    } catch (error) {
+      if (current is AuthAuthenticated && current.profile.id == sessionUserId) {
+        state = current;
+      } else {
+        state = AuthError('Session refresh failed', error);
+      }
+    } finally {
+      if (_hydratingSessionUserId == sessionUserId) {
+        _hydratingSessionUserId = null;
+      }
     }
   }
 

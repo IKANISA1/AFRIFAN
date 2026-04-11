@@ -36,16 +36,44 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (!mounted || _hasNavigated) return;
 
     final resolvedState = ref.read(authStateProvider);
+    final deferredLocation = _deferredLocation();
 
     if (resolvedState is AuthAuthenticated) {
       _hasNavigated = true;
-      // §2.2 LOCKED — no MOMO gate on launch. Always go to /home.
-      context.go('/home');
+      context.go(deferredLocation ?? '/home');
       return;
     }
 
     _hasNavigated = true;
-    context.go('/onboarding');
+    if (deferredLocation == null) {
+      context.go('/onboarding');
+      return;
+    }
+    context.go(
+      Uri(
+        path: '/onboarding',
+        queryParameters: <String, String>{'from': deferredLocation},
+      ).toString(),
+    );
+  }
+
+  String? _deferredLocation() {
+    final raw = GoRouterState.of(context).uri.queryParameters['from']?.trim();
+    if (raw == null || raw.isEmpty) {
+      return null;
+    }
+
+    final uri = Uri.tryParse(raw);
+    final path = uri?.path;
+    if (path == null ||
+        path.isEmpty ||
+        !path.startsWith('/') ||
+        path == '/splash' ||
+        path == '/onboarding') {
+      return null;
+    }
+
+    return uri.toString();
   }
 
   @override

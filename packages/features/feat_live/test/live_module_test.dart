@@ -24,15 +24,16 @@ void main() {
       expect(module.tabRoute, isNull);
     });
 
-    test('registers live-match and news routes', () {
+    test('registers live alias, live-match, and news routes', () {
       final paths = module.routes
           .whereType<GoRoute>()
           .map((r) => r.path)
           .toList();
 
+      expect(paths, contains('/live'));
       expect(paths, contains('/live-match'));
       expect(paths, contains('/news/:articleId'));
-      expect(paths, hasLength(2));
+      expect(paths, hasLength(3));
     });
 
     test('isEnabled returns true when live feature is in config', () {

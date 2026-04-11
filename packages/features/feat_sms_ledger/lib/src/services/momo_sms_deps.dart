@@ -1,15 +1,21 @@
+import 'package:core_network/core_network.dart' as core_network;
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EnvConfig {
   static const bool enableAndroidMomoSmsAutoread = bool.fromEnvironment(
     'ENABLE_ANDROID_MOMO_SMS_AUTOREAD',
-    defaultValue: true,
+    defaultValue: false,
   );
-  static const String? criticalConfigurationError = null;
-  static const String supabaseUrl = 'mock_url';
-  static const String supabaseAnonKey = 'mock_key';
+  static const String supabaseUrl = String.fromEnvironment(
+    'SUPABASE_URL',
+    defaultValue: '',
+  );
+  static const String supabaseAnonKey = String.fromEnvironment(
+    'SUPABASE_ANON_KEY',
+    defaultValue: '',
+  );
 
   /// Country code from the club config (e.g. 'RW' for Rayon Sports).
   /// In production this is injected from dart-define-from-file.
@@ -20,21 +26,76 @@ class EnvConfig {
           ''
       ? null
       : String.fromEnvironment('COUNTRY_CODE');
+
+  static String? get criticalConfigurationError {
+    final missing = <String>[
+      if (supabaseUrl.trim().isEmpty) 'SUPABASE_URL',
+      if (supabaseAnonKey.trim().isEmpty) 'SUPABASE_ANON_KEY',
+    ];
+    if (missing.isEmpty) {
+      return null;
+    }
+    return 'Missing required dart defines: ${missing.join(', ')}';
+  }
 }
 
-enum AppAccessPermission { sms }
+enum AppAccessPermission {
+  sms;
+
+  String get storageKey => switch (this) {
+        AppAccessPermission.sms => 'sms',
+      };
+}
 
 class AppAccessService {
-  AppAccessService({required OpenHiveBox<bool> openBox});
+  AppAccessService({required OpenHiveBox<bool> openBox}) : _openBox = openBox;
+
+  static const String _boxName = 'app_access_permissions';
+
+  final OpenHiveBox<bool> _openBox;
 
   Future<bool> isEnabled(AppAccessPermission permission) async {
-    return true; // Enabled by default for rayon_sports
+    try {
+      final box = await _openBox(_boxName);
+      return box.get(permission.storageKey) ?? false;
+    } catch (error, stackTrace) {
+      AfriLogger.warn(
+        'AppAccess',
+        'Failed to read ${permission.storageKey} permission state; defaulting to disabled.',
+      );
+      if (kDebugMode) {
+        AfriLogger.error(
+          'AppAccess',
+          'Permission state lookup failed.',
+          error,
+          stackTrace,
+        );
+      }
+      return false;
+    }
+  }
+
+  Future<void> setEnabled(
+    AppAccessPermission permission,
+    bool isEnabled,
+  ) async {
+    try {
+      final box = await _openBox(_boxName);
+      await box.put(permission.storageKey, isEnabled);
+    } catch (error, stackTrace) {
+      AfriLogger.error(
+        'AppAccess',
+        'Failed to persist ${permission.storageKey} permission state.',
+        error,
+        stackTrace,
+      );
+    }
   }
 }
 
 class CrashlyticsService {
   Future<void> log(String message) async {
-    debugPrint('[Crashlytics Log]: $message');
+    AfriLogger.info('Crashlytics', message);
   }
 
   Future<void> recordError(
@@ -42,30 +103,18 @@ class CrashlyticsService {
     StackTrace? stackTrace,
     String? reason,
   }) async {
-    debugPrint('[Crashlytics Error]: $reason -> $error');
+    AfriLogger.error(
+      'Crashlytics',
+      reason ?? 'Unhandled error',
+      error,
+      stackTrace,
+    );
   }
 }
 
-enum OperationalHealthStatus { ok, warn, error }
-
-enum OperationalHealthSeverity { info, warning, critical }
-
-class OperationalHealthService {
-  OperationalHealthService({required this.client});
-  final SupabaseClient client;
-
-  Future<void> recordEvent({
-    required String service,
-    required String component,
-    required OperationalHealthStatus status,
-    OperationalHealthSeverity? severity,
-    String? issueCode,
-    required String message,
-    Map<String, dynamic>? metadata,
-  }) async {
-    debugPrint('[OperationalHealth]: $issueCode - $message');
-  }
-}
+typedef OperationalHealthStatus = core_network.OperationalHealthStatus;
+typedef OperationalHealthSeverity = core_network.OperationalHealthSeverity;
+typedef OperationalHealthService = core_network.OperationalHealthService;
 
 typedef OpenHiveBox<T> = Future<Box<T>> Function(String boxName);
 

@@ -7,7 +7,7 @@ class CurrencyFormatter {
 
   CurrencyFormatter({required this.currencyCode, required this.currencySymbol});
 
-  /// Format amount with currency symbol: 5000 → 'FRw 5,000'
+  /// Format amount with currency symbol: 5000 → 'RWF 5,000'
   String format(num amount) {
     final formatter = NumberFormat('#,##0', 'en');
     return '$currencySymbol ${formatter.format(amount)}';

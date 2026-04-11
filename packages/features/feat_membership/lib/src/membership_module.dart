@@ -2,7 +2,6 @@ import 'package:core_router/core_router.dart';
 import 'package:go_router/go_router.dart';
 
 import 'screens/membership_screen.dart';
-import 'screens/profile_screen.dart';
 import 'screens/tier_detail_screen.dart';
 
 /// Membership feature module — non-tab module with standalone routes.
@@ -23,12 +22,12 @@ class MembershipModule extends FeatureModule {
     GoRoute(
       path: '/profile',
       name: 'profile',
-      builder: (context, state) => const ProfileScreen(),
+      builder: (context, state) => const MembershipScreen(),
     ),
     GoRoute(
       path: '/membership/tier/:tierId',
       builder: (context, state) =>
-          TierDetailScreen(tierId: state.pathParameters['tierId'] ?? 'bronze'),
+          TierDetailScreen(tierId: state.pathParameters['tierId'] ?? 'fan'),
     ),
   ];
 }

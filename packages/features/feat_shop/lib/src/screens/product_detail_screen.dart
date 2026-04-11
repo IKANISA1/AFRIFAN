@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -30,13 +31,57 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   Map<String, dynamic>? _product;
   String? _error;
 
-  String _selectedSize = 'M';
-  final List<String> _sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+  String? _selectedSize;
   int _quantity = 1;
-  final _currency = CurrencyFormatter(
-    currencyCode: 'RWF',
-    currencySymbol: 'FRw',
-  );
+
+  CurrencyFormatter _currencyFormatter(BuildContext context) =>
+      CurrencyFormatter(
+        currencyCode: context.afriCurrencyCode,
+        currencySymbol: context.afriCurrencySymbol,
+      );
+
+  List<String> _availableSizes(Map<String, dynamic>? product) {
+    return switch (product?['available_sizes'] ?? product?['sizes']) {
+      final List<dynamic> values =>
+        values
+            .map((value) => value.toString().trim())
+            .where((value) => value.isNotEmpty)
+            .toList(growable: false),
+      final String value when value.trim().isNotEmpty =>
+        value
+            .split(',')
+            .map((entry) => entry.trim())
+            .where((entry) => entry.isNotEmpty)
+            .toList(growable: false),
+      _ => const <String>[],
+    };
+  }
+
+  int? _stockCount(Map<String, dynamic>? product) {
+    final rawValue = product?['stock'] ?? product?['inventory_count'];
+    return switch (rawValue) {
+      final num value => value.toInt(),
+      final String value => int.tryParse(value.trim()),
+      _ => null,
+    };
+  }
+
+  bool _isInStock(Map<String, dynamic>? product) {
+    final stockCount = _stockCount(product);
+    final flaggedInStock = product?['in_stock'] as bool? ?? true;
+    if (stockCount != null) {
+      return flaggedInStock && stockCount > 0;
+    }
+    return flaggedInStock;
+  }
+
+  int _maxQuantityFor(Map<String, dynamic>? product) {
+    final stockCount = _stockCount(product);
+    if (stockCount != null) {
+      return stockCount.clamp(0, 99).toInt();
+    }
+    return _isInStock(product) ? 10 : 0;
+  }
 
   @override
   void initState() {
@@ -48,23 +93,13 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     try {
       final client = ref.read(supabaseClientProvider);
       final user = ref.read(currentUserProvider);
-      if (user == null || user.clubId.isEmpty) {
-        if (mounted) {
-          setState(() {
-            _error = 'Could not resolve the active club.';
-            _isLoading = false;
-          });
-        }
-        return;
-      }
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved(user?.clubId);
       var query = client
           .from(_productsTable)
           .select()
           .eq('id', widget.productId);
-      final numericClubId = int.tryParse(user.clubId);
-      query = numericClubId != null
-          ? query.eq('club_id', numericClubId)
-          : query.eq('partner_id', user.clubId);
+      query = resolver.apply(query, scope);
       final response = await query.maybeSingle();
 
       if (!mounted) return;
@@ -78,8 +113,18 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       }
 
       setState(() {
-        _product = Map<String, dynamic>.from(response);
+        final product = Map<String, dynamic>.from(response);
+        final sizes = _availableSizes(product);
+        _product = product;
+        _selectedSize = sizes.isEmpty
+            ? null
+            : (sizes.contains(_selectedSize) ? _selectedSize : sizes.first);
+        final maxQuantity = _maxQuantityFor(product);
+        _quantity = maxQuantity > 0
+            ? _quantity.clamp(1, maxQuantity).toInt()
+            : 1;
         _isLoading = false;
+        _error = null;
       });
     } catch (_) {
       if (mounted) {
@@ -92,7 +137,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   }
 
   void _increment() {
-    if (_quantity < 10) {
+    final maxQuantity = _maxQuantityFor(_product);
+    if (_quantity < maxQuantity) {
       setState(() => _quantity++);
       HapticFeedback.lightImpact();
     }
@@ -116,13 +162,36 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       return;
     }
 
+    if (!_isInStock(product)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('This item is currently out of stock.'),
+          backgroundColor: ColorTokens.error,
+        ),
+      );
+      return;
+    }
+
+    final sizes = _availableSizes(product);
+    if (sizes.isNotEmpty &&
+        (_selectedSize == null || !sizes.contains(_selectedSize))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Select a size before adding to cart.')),
+      );
+      return;
+    }
+
+    final quantity = _quantity
+        .clamp(1, math.max(1, _maxQuantityFor(product)))
+        .toInt();
+
     ref
         .read(shopCartProvider.notifier)
         .addRawProduct(
           product,
           partnerId: user.clubId,
-          selectedVariant: _selectedSize,
-          quantity: _quantity,
+          selectedVariant: sizes.isEmpty ? null : _selectedSize,
+          quantity: quantity,
         );
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -177,12 +246,17 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
     final name = product['name']?.toString() ?? 'Product';
     final price = (product['price'] as num?)?.toInt() ?? 0;
+    final currency = _currencyFormatter(context);
     final total = price * _quantity;
     final description =
         product['description']?.toString() ?? 'Official club merchandise.';
     final imageUrl = product['image_url']?.toString();
     final badge = product['badge_label']?.toString();
     final primary = Theme.of(context).colorScheme.primary;
+    final sizes = _availableSizes(product);
+    final inStock = _isInStock(product);
+    final stockCount = _stockCount(product);
+    final maxQuantity = _maxQuantityFor(product);
 
     if (isSkeleton) {
       return Scaffold(
@@ -319,7 +393,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           ),
                           const SizedBox(width: SpacingTokens.spacing4),
                           Text(
-                            _currency.format(price),
+                            currency.format(price),
                             style: TypographyTokens.displayMedium(primary),
                           ),
                         ],
@@ -332,55 +406,70 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           height: 1.5,
                         ),
                       ).animate().fadeIn(delay: 100.ms, duration: 400.ms),
-                      const SizedBox(height: SpacingTokens.spacing8),
+                      const SizedBox(height: SpacingTokens.spacing4),
                       Text(
-                        'SELECT SIZE',
-                        style: TypographyTokens.editorialFont(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: ColorTokens.onSurfaceVariant,
-                          letterSpacing: 1,
+                        inStock
+                            ? (stockCount != null
+                                  ? '$stockCount available now'
+                                  : 'Available now')
+                            : 'Out of stock',
+                        style: TypographyTokens.bodyMedium().copyWith(
+                          color: inStock
+                              ? ColorTokens.success
+                              : ColorTokens.error,
                         ),
                       ),
-                      const SizedBox(height: SpacingTokens.spacing3),
-                      Wrap(
-                        spacing: SpacingTokens.spacing3,
-                        runSpacing: SpacingTokens.spacing3,
-                        children: _sizes.map((size) {
-                          final selected = size == _selectedSize;
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() => _selectedSize = size);
-                              HapticFeedback.lightImpact();
-                            },
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: selected ? primary : Colors.transparent,
-                                borderRadius: ShapeTokens.buttonRadius,
-                                border: selected
-                                    ? BorderTokens.all(color: primary)
-                                    : BorderTokens.ghost(),
-                              ),
-                              child: Text(
-                                size,
-                                style: TypographyTokens.editorialFont(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
+                      const SizedBox(height: SpacingTokens.spacing8),
+                      if (sizes.isNotEmpty) ...[
+                        Text(
+                          'SELECT SIZE',
+                          style: TypographyTokens.editorialFont(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: ColorTokens.onSurfaceVariant,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing3),
+                        Wrap(
+                          spacing: SpacingTokens.spacing3,
+                          runSpacing: SpacingTokens.spacing3,
+                          children: sizes.map((size) {
+                            final selected = size == _selectedSize;
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() => _selectedSize = size);
+                                HapticFeedback.lightImpact();
+                              },
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
                                   color: selected
-                                      ? ColorTokens.onSurface
-                                      : ColorTokens.onSurface,
+                                      ? primary
+                                      : Colors.transparent,
+                                  borderRadius: ShapeTokens.buttonRadius,
+                                  border: selected
+                                      ? BorderTokens.all(color: primary)
+                                      : BorderTokens.ghost(),
+                                ),
+                                child: Text(
+                                  size,
+                                  style: TypographyTokens.editorialFont(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: ColorTokens.onSurface,
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: SpacingTokens.spacing6),
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing6),
+                      ],
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -404,7 +493,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               children: [
                                 IconButton(
                                   icon: const Icon(Icons.remove_rounded),
-                                  onPressed: _decrement,
+                                  onPressed: _quantity > 1 ? _decrement : null,
                                 ),
                                 SizedBox(
                                   width: 40,
@@ -419,7 +508,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.add_rounded),
-                                  onPressed: _increment,
+                                  onPressed: _quantity < maxQuantity
+                                      ? _increment
+                                      : null,
                                 ),
                               ],
                             ),
@@ -469,7 +560,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                     ),
                                   ),
                                   Text(
-                                    _currency.format(total),
+                                    currency.format(total),
                                     style: TypographyTokens.displayMedium(
                                       ColorTokens.onSurface,
                                     ),
@@ -485,16 +576,18 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                   ClaymorphicButton(
                                     label: 'ADD TO CART',
                                     icon: Icons.shopping_bag_outlined,
-                                    onPressed: _addToCart,
+                                    onPressed: inStock ? _addToCart : null,
                                   ),
                                   const SizedBox(
                                     height: SpacingTokens.spacing2,
                                   ),
                                   OutlinedButton(
-                                    onPressed: () {
-                                      _addToCart();
-                                      context.push('/shop/cart');
-                                    },
+                                    onPressed: inStock
+                                        ? () {
+                                            _addToCart();
+                                            context.push('/shop/cart');
+                                          }
+                                        : null,
                                     style: OutlinedButton.styleFrom(
                                       minimumSize: const Size(
                                         double.infinity,
@@ -504,7 +597,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                     ),
-                                    child: const Text('PAY WITH MOMO'),
+                                    child: const Text('REVIEW CHECKOUT'),
                                   ),
                                 ],
                               ),

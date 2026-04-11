@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'club_config_scope.dart';
+import 'runtime_branding.dart';
 import 'tokens/afri_semantic_colors.dart';
 import 'tokens/spacing_tokens.dart';
 
@@ -20,6 +22,21 @@ extension AfriThemeExtension on BuildContext {
 
   /// Access the spacing token helper.
   AfriSpaceHelper get afriSpace => const AfriSpaceHelper();
+
+  /// Active club currency code, falling back to runtime branding.
+  String get afriCurrencyCode =>
+      ClubConfigScope.maybeOf(this)?.currency ??
+      RuntimeBranding.displayCurrencyCode;
+
+  /// Active club currency symbol, falling back to runtime branding.
+  String get afriCurrencySymbol =>
+      ClubConfigScope.maybeOf(this)?.currencySymbol ??
+      RuntimeBranding.displayCurrencySymbol;
+
+  /// Active club country code, falling back to runtime branding.
+  String get afriCountryCode =>
+      ClubConfigScope.maybeOf(this)?.countryCode ??
+      RuntimeBranding.displayCountryCode;
 }
 
 /// Helper class for accessing spacing tokens as properties.

@@ -27,7 +27,7 @@ void main() {
       expect(fantasyRoute.routes.whereType<GoRoute>().length, 1);
 
       final competitionRoute = fantasyRoute.routes.whereType<GoRoute>().first;
-      expect(competitionRoute.path, 'competition/:slug');
+      expect(competitionRoute.path, ':slug');
 
       final nestedPaths = competitionRoute.routes
           .whereType<GoRoute>()

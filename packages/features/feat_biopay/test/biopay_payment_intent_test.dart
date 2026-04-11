@@ -18,7 +18,7 @@ void main() {
         'route_type': 'phone_number',
         'amount': 5000,
         'currency_code': 'RWF',
-        'currency_symbol': 'FRw',
+        'currency_symbol': 'RWF',
         'country_code': 'RW',
       });
     });
@@ -33,7 +33,7 @@ void main() {
       expect(intent.recipientValue, '0781234567');
       expect(intent.amount, 5000);
       expect(intent.currencyCode, 'RWF');
-      expect(intent.currencySymbol, 'FRw');
+      expect(intent.currencySymbol, 'RWF');
     });
 
     test('isExpired returns false for future dates', () {
@@ -103,7 +103,7 @@ void main() {
     });
 
     test('formattedAmount uses symbol when available', () {
-      expect(intent.formattedAmount, 'FRw 5000');
+      expect(intent.formattedAmount, 'RWF 5000');
     });
 
     test('formattedAmount falls back to currency code', () {
@@ -162,10 +162,10 @@ void main() {
       expect(
         formatBiopayAmount(
           amount: 1000,
-          currencySymbol: 'FRw',
+          currencySymbol: 'RWF',
           currencyCode: 'RWF',
         ),
-        'FRw 1000',
+        'RWF 1000',
       );
     });
 

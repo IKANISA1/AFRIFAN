@@ -6,8 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
-import '../../test_support/design_font_loader.dart';
+import 'package:test_support/design_font_loader.dart';
 
 class FakeAuthRepository extends AuthRepository {
   FakeAuthRepository({
@@ -60,6 +61,10 @@ class FakeAuthRepository extends AuthRepository {
   Future<AdminWorkspaceAccess> resolveAdminAccess(String userId) async {
     return AdminWorkspaceAccess.none;
   }
+
+  @override
+  Stream<supabase.AuthState> get authStateChanges =>
+      const Stream<supabase.AuthState>.empty();
 }
 
 GoRouter _buildRouter(String initialLocation) {
@@ -122,7 +127,7 @@ void main() {
         repository: repository,
       );
 
-      await tester.pump(const Duration(seconds: 2));
+      await tester.pump();
       await tester.pumpAndSettle();
 
       expect(find.text('Home Route'), findsOneWidget);
@@ -147,7 +152,7 @@ void main() {
           repository: repository,
         );
 
-        await tester.pump(const Duration(seconds: 2));
+        await tester.pump();
         await tester.pumpAndSettle();
 
         // §2.2: Always go to /home — never gate on MOMO during launch
@@ -198,7 +203,7 @@ void main() {
         repository: repository,
       );
 
-      await tester.pump(const Duration(seconds: 2));
+      await tester.pump();
       await tester.pumpAndSettle();
 
       expect(find.byType(OnboardingScreen), findsOneWidget);
@@ -217,7 +222,7 @@ void main() {
           repository: repository,
         );
 
-        await tester.pump(const Duration(seconds: 2));
+        await tester.pump();
         await tester.pumpAndSettle();
 
         expect(find.byType(OnboardingScreen), findsOneWidget);
@@ -237,7 +242,7 @@ void main() {
           repository: repository,
         );
 
-        await tester.pump(const Duration(seconds: 2));
+        await tester.pump();
         await tester.pumpAndSettle();
 
         expect(find.byType(OnboardingScreen), findsOneWidget);

@@ -13,6 +13,12 @@ class HelpSupportScreen extends StatelessWidget {
     final appName =
         ClubConfigScope.maybeOf(context)?.appName ??
         RuntimeBranding.displayAppName;
+    final hasChannels =
+        AppLinks.hasWebsite ||
+        AppLinks.hasSupportWhatsApp ||
+        AppLinks.hasSupportEmail;
+    final canRequestExport =
+        AppLinks.hasSupportWhatsApp || AppLinks.hasSupportEmail;
     return SettingsBackGuard(
       child: Scaffold(
         backgroundColor: ColorTokens.background,
@@ -44,52 +50,87 @@ class HelpSupportScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
                   Text(
-                    'Need help? Use the support channels below.',
+                    hasChannels
+                        ? 'Need help? Use the configured support channels below.'
+                        : 'Support channels are not configured for this build yet.',
                     style: TypographyTokens.bodyLarge(),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: SpacingTokens.spacing4),
-            _SupportCard(
-              title: 'Official Website',
-              subtitle: 'Club updates & matchday info.',
-              trailing: 'OPEN SITE',
-              onTap: () async {
-                await launchExternalUri(
-                  context,
-                  Uri.parse(AppLinks.websiteUrl),
-                  failureMessage: 'Club website is not available yet.',
-                );
-              },
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            _SupportCard(
-              title: 'WhatsApp Support',
-              subtitle: 'For account, payment, and app issues.',
-              trailing: AppLinks.supportWhatsApp,
-              onTap: () async {
-                await launchWhatsApp(
-                  context,
-                  message: 'Hi, I need help with $appName.',
-                  failureMessage: 'Could not open WhatsApp.',
-                );
-              },
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            _SupportCard(
-              title: 'Request Data Export',
-              subtitle: 'Request a copy of your data from support.',
-              trailing: 'REQUEST',
-              onTap: () async {
-                await launchWhatsApp(
-                  context,
-                  message:
-                      'Data export request for $appName. Please send me a copy of the data stored for my account.',
-                  failureMessage: 'Could not open WhatsApp.',
-                );
-              },
-            ),
+            if (AppLinks.hasWebsite) ...[
+              const SizedBox(height: SpacingTokens.spacing4),
+              _SupportCard(
+                title: 'Official Website',
+                subtitle: 'Club updates, schedules, and matchday info.',
+                trailing: 'OPEN SITE',
+                onTap: () async {
+                  await launchExternalUri(
+                    context,
+                    AppLinks.websiteUri!,
+                    failureMessage: 'Club website is not available yet.',
+                  );
+                },
+              ),
+            ],
+            if (AppLinks.hasSupportWhatsApp) ...[
+              const SizedBox(height: SpacingTokens.spacing3),
+              _SupportCard(
+                title: 'WhatsApp Support',
+                subtitle: 'For account, payment, and app issues.',
+                trailing: AppLinks.supportWhatsApp,
+                onTap: () async {
+                  await launchWhatsApp(
+                    context,
+                    message: 'Hi, I need help with $appName.',
+                    failureMessage: 'Could not open WhatsApp.',
+                  );
+                },
+              ),
+            ],
+            if (AppLinks.hasSupportEmail) ...[
+              const SizedBox(height: SpacingTokens.spacing3),
+              _SupportCard(
+                title: 'Email Support',
+                subtitle: 'Reach the support team by email.',
+                trailing: AppLinks.supportEmail,
+                onTap: () async {
+                  await launchMailTo(
+                    context,
+                    email: AppLinks.supportEmail,
+                    subject: '$appName support request',
+                    failureMessage: 'Could not open your mail app.',
+                  );
+                },
+              ),
+            ],
+            if (canRequestExport) ...[
+              const SizedBox(height: SpacingTokens.spacing3),
+              _SupportCard(
+                title: 'Request Data Export',
+                subtitle: 'Ask support for a copy of your account data.',
+                trailing: 'REQUEST',
+                onTap: () async {
+                  if (AppLinks.hasSupportWhatsApp) {
+                    await launchWhatsApp(
+                      context,
+                      message:
+                          'Data export request for $appName. Please send me a copy of the data stored for my account.',
+                      failureMessage: 'Could not open WhatsApp.',
+                    );
+                    return;
+                  }
+                  await launchMailTo(
+                    context,
+                    email: AppLinks.supportEmail,
+                    subject: '$appName data export request',
+                    body:
+                        'Please send me a copy of the data stored for my account.',
+                    failureMessage: 'Could not open your mail app.',
+                  );
+                },
+              ),
+            ],
             const SizedBox(height: SpacingTokens.spacing6),
             ClaymorphicButton(
               label: 'RETURN TO SETTINGS',

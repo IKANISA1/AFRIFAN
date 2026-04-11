@@ -5,25 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-int? _currentClubId(SupabaseClient client) {
-  final user = client.auth.currentUser;
-  final candidates = <Object?>[
-    user?.appMetadata['club_id'],
-    user?.userMetadata?['club_id'],
-    user?.appMetadata['clubId'],
-    user?.userMetadata?['clubId'],
-  ];
-
-  for (final candidate in candidates) {
-    final parsed = int.tryParse(candidate?.toString().trim() ?? '');
-    if (parsed != null) {
-      return parsed;
-    }
-  }
-
-  return null;
-}
-
 class GroupChatScreen extends ConsumerStatefulWidget {
   const GroupChatScreen({required this.groupId, super.key});
 
@@ -42,6 +23,7 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
   bool _sending = false;
   String _groupName = 'GROUP CHAT';
   int _memberCount = 0;
+  String? _error;
   RealtimeChannel? _channel;
 
   @override
@@ -62,18 +44,19 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
   Future<void> _loadMessages() async {
     try {
       final client = ref.read(supabaseClientProvider);
-      final clubId = _currentClubId(client);
-      if (clubId == null) {
-        if (!mounted) return;
-        setState(() => _isLoading = false);
-        return;
+      final scope = await ClubScopeResolver(client: client).requireResolved();
+      if (scope.clubId == null) {
+        throw StateError('Contribution circles require a numeric club scope.');
       }
       final group = await client
           .from('contribution_groups')
           .select('name, member_count')
           .eq('id', widget.groupId)
-          .eq('club_id', clubId)
+          .eq('club_id', scope.clubId!)
           .maybeSingle();
+      if (group == null) {
+        throw StateError('This circle is no longer available.');
+      }
 
       final messages = await client
           .from('group_messages')
@@ -111,8 +94,8 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
       if (!mounted) return;
 
       setState(() {
-        _groupName = group?['name']?.toString().toUpperCase() ?? 'GROUP CHAT';
-        _memberCount = (group?['member_count'] as num?)?.toInt() ?? 0;
+        _groupName = group['name']?.toString().toUpperCase() ?? 'GROUP CHAT';
+        _memberCount = (group['member_count'] as num?)?.toInt() ?? 0;
         _messages = messages
             .map((row) {
               final map = Map<String, dynamic>.from(row);
@@ -123,6 +106,7 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
             })
             .toList(growable: false);
         _isLoading = false;
+        _error = null;
       });
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -131,7 +115,10 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
       });
     } catch (_) {
       if (!mounted) return;
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+        _error = 'Circle chat is temporarily unavailable.';
+      });
     }
   }
 
@@ -249,6 +236,18 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
                 ? const Padding(
                     padding: EdgeInsets.all(SpacingTokens.spacing6),
                     child: AfriSkeletonList(),
+                  )
+                : _error != null
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                      child: AfriStateView.offline(
+                        title: 'Chat unavailable',
+                        message: _error!,
+                        actionLabel: 'Retry',
+                        onAction: _loadMessages,
+                      ),
+                    ),
                   )
                 : _messages.isEmpty
                 ? Center(

@@ -4,6 +4,7 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'shell.dart';
 
@@ -31,7 +32,6 @@ class AfriClubApp extends StatefulWidget {
 }
 
 class _AfriClubAppState extends State<AfriClubApp> {
-  late final AppRouter _appRouter;
   late final AuthRepository _authRepository;
   late final ThemeData _theme;
   late final List<Locale> _supportedLocales;
@@ -46,16 +46,6 @@ class _AfriClubAppState extends State<AfriClubApp> {
     _supportedLocales = _buildSupportedLocales(
       widget.config.supportedLanguages,
     );
-
-    _appRouter = AppRouter(
-      modules: widget.modules,
-      initialLocation: widget.initialLocation,
-      shellBuilder: (context, shell) => AppShell(
-        shell: shell,
-        config: widget.config,
-        modules: widget.modules,
-      ),
-    );
   }
 
   @override
@@ -67,30 +57,13 @@ class _AfriClubAppState extends State<AfriClubApp> {
 
     return ProviderScope(
       overrides: providerOverrides,
-      child: Consumer(
-        builder: (context, ref, _) {
-          final languageCode =
-              ref.watch(currentUserProvider)?.languageCode ??
-              widget.config.language;
-
-          return MaterialApp.router(
-            title: widget.config.appName,
-            debugShowCheckedModeBanner: false,
-            theme: _theme,
-            routerConfig: _appRouter.router,
-            builder: (context, child) => ClubConfigScope(
-              config: widget.config,
-              child: child ?? const SizedBox.shrink(),
-            ),
-            locale: _frameworkLocaleForLanguageCode(languageCode),
-            supportedLocales: _supportedLocales,
-            localizationsDelegates: const [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-          );
-        },
+      child: _AfriClubMaterialApp(
+        config: widget.config,
+        modules: widget.modules,
+        theme: _theme,
+        supportedLocales: _supportedLocales,
+        initialLocation: widget.initialLocation,
+        frameworkLocaleForLanguageCode: _frameworkLocaleForLanguageCode,
       ),
     );
   }
@@ -122,5 +95,141 @@ class _AfriClubAppState extends State<AfriClubApp> {
       'en' => const Locale('en'),
       _ => Locale(code),
     };
+  }
+}
+
+class _AfriClubMaterialApp extends ConsumerStatefulWidget {
+  const _AfriClubMaterialApp({
+    required this.config,
+    required this.modules,
+    required this.theme,
+    required this.supportedLocales,
+    required this.frameworkLocaleForLanguageCode,
+    this.initialLocation,
+  });
+
+  final ClubConfig config;
+  final List<FeatureModule> modules;
+  final ThemeData theme;
+  final List<Locale> supportedLocales;
+  final String? initialLocation;
+  final Locale Function(String? languageCode) frameworkLocaleForLanguageCode;
+
+  @override
+  ConsumerState<_AfriClubMaterialApp> createState() =>
+      _AfriClubMaterialAppState();
+}
+
+class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
+  static const Set<String> _publicPaths = <String>{'/splash', '/onboarding'};
+
+  late final ValueNotifier<int> _routerRefreshTick;
+  late final ProviderSubscription<AuthState> _authSubscription;
+  late final AppRouter _appRouter;
+
+  @override
+  void initState() {
+    super.initState();
+    _routerRefreshTick = ValueNotifier<int>(0);
+    _authSubscription = ref.listenManual<AuthState>(authStateProvider, (_, __) {
+      _routerRefreshTick.value = _routerRefreshTick.value + 1;
+    });
+    _appRouter = AppRouter(
+      modules: widget.modules,
+      initialLocation: widget.initialLocation,
+      refreshListenable: _routerRefreshTick,
+      redirect: _handleRedirect,
+      shellBuilder: (context, shell) => AppShell(
+        shell: shell,
+        config: widget.config,
+        modules: widget.modules,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _authSubscription.close();
+    _routerRefreshTick.dispose();
+    super.dispose();
+  }
+
+  String? _handleRedirect(BuildContext context, GoRouterState state) {
+    final location = state.matchedLocation;
+    final authState = ref.read(authStateProvider);
+
+    if (authState is AuthInitial || authState is AuthLoading) {
+      if (_isPublicPath(location)) {
+        return null;
+      }
+      return _buildRedirectUri('/splash', state);
+    }
+
+    if (authState is AuthAuthenticated) {
+      if (_isPublicPath(location)) {
+        return _safeDeferredDestination(state) ?? '/home';
+      }
+
+      if (location.startsWith('/admin') && !ref.read(hasAdminAccessProvider)) {
+        return '/settings';
+      }
+
+      return null;
+    }
+
+    if (_isPublicPath(location)) {
+      return null;
+    }
+
+    return _buildRedirectUri('/onboarding', state);
+  }
+
+  bool _isPublicPath(String location) => _publicPaths.contains(location);
+
+  String _buildRedirectUri(String publicPath, GoRouterState state) {
+    final requestedLocation = state.uri.toString();
+    return Uri(
+      path: publicPath,
+      queryParameters: <String, String>{'from': requestedLocation},
+    ).toString();
+  }
+
+  String? _safeDeferredDestination(GoRouterState state) {
+    final raw = state.uri.queryParameters['from']?.trim();
+    if (raw == null || raw.isEmpty) {
+      return null;
+    }
+
+    final uri = Uri.tryParse(raw);
+    final path = uri?.path;
+    if (path == null || !path.startsWith('/') || _isPublicPath(path)) {
+      return null;
+    }
+
+    return uri.toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final languageCode =
+        ref.watch(currentUserProvider)?.languageCode ?? widget.config.language;
+
+    return MaterialApp.router(
+      title: widget.config.appName,
+      debugShowCheckedModeBanner: false,
+      theme: widget.theme,
+      routerConfig: _appRouter.router,
+      builder: (context, child) => ClubConfigScope(
+        config: widget.config,
+        child: child ?? const SizedBox.shrink(),
+      ),
+      locale: widget.frameworkLocaleForLanguageCode(languageCode),
+      supportedLocales: widget.supportedLocales,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+    );
   }
 }

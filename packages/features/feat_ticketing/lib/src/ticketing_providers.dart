@@ -15,11 +15,10 @@ final ticketMatchProvider =
   if (user == null || matchId.isEmpty) return null;
 
   final client = ref.watch(supabaseClientProvider);
-  final numericClubId = int.tryParse(user.clubId);
+  final resolver = ClubScopeResolver(client: client);
+  final scope = await resolver.requireResolved(user.clubId);
   var query = client.from('matches').select().eq('id', matchId);
-  query = numericClubId != null
-      ? query.eq('club_id', numericClubId)
-      : query.eq('partner_id', user.clubId);
+  query = resolver.apply(query, scope);
   final row = await query.maybeSingle();
 
   if (row == null) return null;
@@ -29,7 +28,7 @@ final ticketMatchProvider =
 final myTicketsProvider = FutureProvider<List<ClubTicket>>((ref) async {
   final user = ref.watch(currentUserProvider);
   if (user == null) return const <ClubTicket>[];
-  return ref.watch(clubRepositoryProvider).getMyTickets(user.id);
+  return ref.watch(clubRepositoryProvider).getMyTickets(user.id, user.clubId);
 });
 
 final myTicketProvider =
@@ -37,13 +36,16 @@ final myTicketProvider =
   final user = ref.watch(currentUserProvider);
   if (user == null || ticketId.isEmpty) return null;
 
-  final row = await ref
-      .watch(supabaseClientProvider)
+  final client = ref.watch(supabaseClientProvider);
+  final resolver = ClubScopeResolver(client: client);
+  final scope = await resolver.requireResolved(user.clubId);
+  var query = client
       .from('tickets')
       .select('*, match:matches(*)')
       .eq('user_id', user.id)
-      .eq('id', ticketId)
-      .maybeSingle();
+      .eq('id', ticketId);
+  query = resolver.apply(query, scope);
+  final row = await query.maybeSingle();
 
   if (row == null) return null;
   return ClubTicket.fromJson(Map<String, dynamic>.from(row));

@@ -199,6 +199,7 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final currencySymbol = context.afriCurrencySymbol;
     return Container(
       decoration: BoxDecoration(
         color: ColorTokens.surface,
@@ -271,7 +272,9 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                   child: TextField(
                     controller: _generalController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'General FRw'),
+                    decoration: InputDecoration(
+                      labelText: 'General $currencySymbol',
+                    ),
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
@@ -279,7 +282,9 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                   child: TextField(
                     controller: _vipController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'VIP FRw'),
+                    decoration: InputDecoration(
+                      labelText: 'VIP $currencySymbol',
+                    ),
                   ),
                 ),
               ],

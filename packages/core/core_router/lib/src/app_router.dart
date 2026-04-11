@@ -9,11 +9,17 @@ class AppRouter {
   final Widget Function(BuildContext context, StatefulNavigationShell shell)
   shellBuilder;
   final String? _explicitInitialLocation;
+  final GoRouterRedirect? redirect;
+  final Listenable? refreshListenable;
+  final GoRouterWidgetBuilder? errorBuilder;
 
   AppRouter({
     required this.modules,
     required this.shellBuilder,
     String? initialLocation,
+    this.redirect,
+    this.refreshListenable,
+    this.errorBuilder,
   }) : _explicitInitialLocation = initialLocation;
 
   String get initialLocation =>
@@ -21,6 +27,11 @@ class AppRouter {
 
   late final GoRouter router = GoRouter(
     initialLocation: initialLocation,
+    redirect: redirect,
+    refreshListenable: refreshListenable,
+    errorBuilder:
+        errorBuilder ??
+        (context, state) => _RouterErrorScreen(error: state.error),
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => shellBuilder(context, shell),
@@ -90,6 +101,42 @@ class AppRouter {
 
     throw StateError(
       'AppRouter requires at least one tab route or absolute standalone route.',
+    );
+  }
+}
+
+class _RouterErrorScreen extends StatelessWidget {
+  const _RouterErrorScreen({required this.error});
+
+  final Exception? error;
+
+  @override
+  Widget build(BuildContext context) {
+    final message = error?.toString().trim();
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error_outline_rounded, size: 48),
+              const SizedBox(height: 16),
+              Text(
+                message == null || message.isEmpty
+                    ? 'We could not open that page.'
+                    : message,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () => context.go('/home'),
+                child: const Text('Go Home'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

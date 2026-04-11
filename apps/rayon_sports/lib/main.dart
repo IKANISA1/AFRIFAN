@@ -1,5 +1,5 @@
 import 'package:club_rayon_sports/club_rayon_sports.dart';
-import 'package:core_app/core_app.dart';
+import 'package:core_app/bootstrap.dart';
 import 'firebase_options.dart';
 
 Future<void> startRayonSportsApp({

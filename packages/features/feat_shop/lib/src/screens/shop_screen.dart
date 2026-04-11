@@ -206,7 +206,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                             index: index,
                             onTap: () {
                               final id = product['id']?.toString() ?? '';
-                              context.go('/shop/product/$id');
+                              context.push('/shop/product/$id');
                             },
                             onAddToCart: () => _addToCart(product),
                           ),

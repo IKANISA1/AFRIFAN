@@ -18,7 +18,7 @@ class MembershipCard extends ConsumerWidget {
     final primary = Theme.of(context).colorScheme.primary;
     final profile = ref.watch(currentUserProvider);
     final alias = AliasGenerator.format(profile?.publicUserId ?? '000000');
-    final resolvedTier = (tierLabel ?? 'Bronze').toUpperCase();
+    final resolvedTier = (tierLabel ?? 'Fan').toUpperCase();
     final resolvedXp = xp ?? 0;
 
     return Container(

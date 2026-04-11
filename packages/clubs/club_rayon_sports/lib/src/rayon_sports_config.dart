@@ -38,7 +38,7 @@ class RayonSportsConfig implements ClubConfig {
   String get currency => 'RWF';
 
   @override
-  String get currencySymbol => 'FRw';
+  String get currencySymbol => 'RWF';
 
   @override
   ClubColors get colors => const ClubColors(

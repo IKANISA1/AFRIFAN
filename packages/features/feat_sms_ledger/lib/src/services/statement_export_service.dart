@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:core_network/core_network.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -12,7 +14,7 @@ class StatementExportService {
 
   final SupabaseClient _client;
 
-  static const _defaultCurrency = 'RWF';
+  String get _defaultCurrency => RuntimeBranding.displayCurrencyCode;
 
   /// Export all contributions for a specific group as CSV.
   Future<String> exportGroupContributions(String groupId) async {
@@ -24,9 +26,7 @@ class StatementExportService {
         'Amount',
         'Currency',
         'Status',
-        'Payment Method',
         'Reference',
-        'Note',
         'Confirmed At',
         'Created At',
       ],
@@ -37,9 +37,7 @@ class StatementExportService {
                 r['amount'],
                 r['currency'] ?? _defaultCurrency,
                 r['status'],
-                r['payment_method'] ?? '',
-                r['external_ref'] ?? r['momo_reference'] ?? '',
-                r['note'] ?? '',
+                r['momo_reference'] ?? '',
                 r['confirmed_at'] ?? '',
                 r['created_at'],
               ])
@@ -137,12 +135,19 @@ class StatementExportService {
   Future<List<Map<String, dynamic>>> _loadContributionRows(
       String groupId) async {
     final contributions = await _client
-        .from('contributions')
-        .select('id, user_id, amount, currency, status, '
-            'payment_method, external_ref, note, confirmed_at, created_at')
+        .from('group_contributions')
+        .select(
+            'id, user_id, amount, status, momo_reference, confirmed_at, created_at')
         .eq('group_id', groupId)
         .order('created_at', ascending: false);
-    return List<Map<String, dynamic>>.from(contributions as List);
+    return List<Map<String, dynamic>>.from(
+      (contributions as List).map(
+        (row) => <String, dynamic>{
+          ...Map<String, dynamic>.from(row as Map),
+          'currency': _defaultCurrency,
+        },
+      ),
+    );
   }
 
   Future<List<Map<String, dynamic>>> _loadGroupRows() async {

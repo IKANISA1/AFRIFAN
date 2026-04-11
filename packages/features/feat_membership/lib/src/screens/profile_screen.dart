@@ -15,6 +15,13 @@ class ProfileScreen extends ConsumerWidget {
     final primary = theme.colorScheme.primary;
     final profile = ref.watch(currentUserProvider);
     final alias = AliasGenerator.format(profile?.publicUserId ?? '000000');
+    final languageLabel = switch ((profile?.languageCode ?? 'en')
+        .trim()
+        .toLowerCase()) {
+      'fr' => 'Français',
+      'rw' => 'English (Kinyarwanda soon)',
+      _ => 'English',
+    };
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -108,7 +115,7 @@ class ProfileScreen extends ConsumerWidget {
                               borderRadius: ShapeTokens.chipRadius,
                             ),
                             child: Text(
-                              'BRONZE',
+                              'FAN',
                               style: TypographyTokens.monolithFont(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
@@ -119,7 +126,7 @@ class ProfileScreen extends ConsumerWidget {
                           ),
                           const SizedBox(width: SpacingTokens.spacing3),
                           Text(
-                            '2,450 XP',
+                            'XP in Membership',
                             style: TypographyTokens.monolithFont(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
@@ -231,7 +238,7 @@ class ProfileScreen extends ConsumerWidget {
                     _MenuItem(
                       icon: Icons.language,
                       label: 'Language',
-                      trailing: 'Kinyarwanda',
+                      trailing: languageLabel,
                       onTap: () => context.push('/settings/language'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),

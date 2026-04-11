@@ -165,11 +165,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         ],
                       ),
                     ),
-                    AfriIconButton(
-                      icon: Icons.photo_camera_outlined,
-                      tooltip: 'Profile photo upload is not available in this release',
-                      onTap: null,
-                    ),
                   ],
                 ),
               ),
@@ -239,8 +234,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
 String _languageLabel(String? languageCode) {
   return switch ((languageCode ?? 'en').trim().toLowerCase()) {
-    'rw' => 'Kinyarwanda',
     'fr' => 'Français',
+    'rw' => 'English (Kinyarwanda soon)',
     _ => 'English',
   };
 }

@@ -15,7 +15,7 @@ void main() {
 
       // Verify text elements
       expect(find.text('3'), findsOneWidget);
-      expect(find.text('FRw 15,400'), findsOneWidget);
+      expect(find.text('RWF 15,400'), findsOneWidget);
       expect(find.text('Checkout'), findsOneWidget);
     });
 

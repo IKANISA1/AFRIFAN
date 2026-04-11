@@ -41,11 +41,35 @@ jobs:
           FIREBASE_SERVER_VALIDATION_MODE: ${{ github.event_name == 'pull_request' && 'auto' || 'strict' }}
         run: bash tools/scripts/validate_club_release.sh rayon_sports
 
+      - name: Validate all club release contracts
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_SERVER_VALIDATION_MODE: ${{ github.event_name == 'pull_request' && 'auto' || 'strict' }}
+        run: |
+          for app in apps/*/; do
+            slug="$(basename "$app")"
+            if [ "$slug" = "output" ]; then
+              continue
+            fi
+            bash tools/scripts/validate_club_release.sh "$slug"
+          done
+
       - name: Analyze (fatal infos + warnings)
         run: melos exec -- dart analyze --fatal-infos --fatal-warnings
 
       - name: Run unit & widget tests
         run: melos run test_all
+
+      - name: Run white-label app shell smoke tests
+        run: |
+          smoke_tests=$(find apps -path '*/test/app_shell_smoke_test.dart' ! -path 'apps/rayon_sports/*' | sort)
+          if [ -z "$smoke_tests" ]; then
+            echo "❌ No white-label app shell smoke tests found."
+            exit 1
+          fi
+          echo "$smoke_tests"
+          flutter test $smoke_tests
 
       - name: Run Rayon integration smoke tests
         run: flutter test apps/rayon_sports/integration_test

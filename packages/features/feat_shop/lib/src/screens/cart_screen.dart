@@ -21,9 +21,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   PartnerPaymentRoute? _paymentRoute;
   String? _paymentRouteMessage;
   String? _paymentRouteLookupKey;
-  final _currency = CurrencyFormatter(
-    currencyCode: 'RWF',
-    currencySymbol: 'FRw',
+
+  CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
+    currencyCode: context.afriCurrencyCode,
+    currencySymbol: context.afriCurrencySymbol,
   );
 
   @override
@@ -186,6 +187,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     required List<CartItem> items,
     required int total,
   }) async {
+    final currency = _currencyFormatter;
     final result = await showAfriBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
@@ -219,7 +221,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                 ),
                               ),
                               Text(
-                                _currency.format(item.lineTotal),
+                                currency.format(item.lineTotal),
                                 style: TypographyTokens.labelLarge(),
                               ),
                             ],
@@ -240,7 +242,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   ),
                   const SizedBox(height: SpacingTokens.spacing2),
                   Text(
-                    _currency.format(total),
+                    currency.format(total),
                     style: TypographyTokens.headlineSmall(
                       ColorTokens.clubAccent,
                     ),
@@ -283,6 +285,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserProvider);
     final config = ClubConfigScope.maybeOf(context);
+    final currency = _currencyFormatter;
     final deliveryHint = config == null
         ? 'Enter your delivery address'
         : 'Street, city, ${config.country}';
@@ -347,7 +350,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       ),
                       child: CartItemCard(
                         item: item,
-                        priceLabel: _currency.format(item.lineTotal),
+                        priceLabel: currency.format(item.lineTotal),
                         onIncrement: () =>
                             ref.read(shopCartProvider.notifier).increment(item),
                         onDecrement: () =>
@@ -372,9 +375,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                         TextField(
                           controller: _addressController,
                           maxLines: 2,
-                          decoration: InputDecoration(
-                            hintText: deliveryHint,
-                          ),
+                          decoration: InputDecoration(hintText: deliveryHint),
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
                         Row(
@@ -385,7 +386,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               style: TypographyTokens.bodyMedium(),
                             ),
                             Text(
-                              _currency.format(total),
+                              currency.format(total),
                               style: TypographyTokens.bodyLarge(),
                             ),
                           ],
@@ -398,7 +399,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               'Delivery',
                               style: TypographyTokens.bodyMedium(),
                             ),
-                            Text('FRw 0', style: TypographyTokens.bodyLarge()),
+                            Text(
+                              currency.format(0),
+                              style: TypographyTokens.bodyLarge(),
+                            ),
                           ],
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
@@ -407,7 +411,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           children: [
                             Text('TOTAL', style: TypographyTokens.labelLarge()),
                             Text(
-                              _currency.format(total),
+                              currency.format(total),
                               style: TypographyTokens.headlineSmall(
                                 ColorTokens.clubAccent,
                               ),

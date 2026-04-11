@@ -1,5 +1,6 @@
 import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:feat_sms_ledger/feat_sms_ledger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -47,6 +48,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
       final saved = await ref
           .read(settingsRepositoryProvider)
           .updatePrivacySettings(settings);
+      await _synchronizeSmsAutoreadConsent(saved);
       ref.invalidate(privacySettingsProvider);
       if (!mounted) return;
       setState(() => _draft = saved);
@@ -80,11 +82,71 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
+  Future<void> _synchronizeSmsAutoreadConsent(
+    UserPrivacySettings settings,
+  ) async {
+    final config = ClubConfigScope.maybeOf(context);
+    if (config?.hasBiopay != true) {
+      return;
+    }
+
+    final appAccessService = AppAccessService(openBox: openHiveBox<bool>);
+    await appAccessService.setEnabled(
+      AppAccessPermission.sms,
+      settings.momoSmsAutoreadEnabled,
+    );
+
+    final smsService = ref.read(momoSmsAutoreadServiceProvider);
+    if (!settings.momoSmsAutoreadEnabled) {
+      await smsService.stop(resetPermissionPromptState: true);
+      return;
+    }
+
+    await smsService.syncConsentFromServer();
+    final started = await smsService.refresh(
+      forcePermissionRequest: true,
+      onShowRationale: _showMomoSmsConsentDisclosure,
+    );
+    if (!mounted || started) {
+      return;
+    }
+
+    _showMessage(
+      'SMS sync stays off until you grant Android SMS access for BioPay verification.',
+    );
+  }
+
+  Future<bool> _showMomoSmsConsentDisclosure() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Enable SMS verification'),
+          content: const Text(
+            'BioPay can read only approved Mobile Money verification SMS on this device to match your payments automatically. This does not enable general message access in the app UI.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Not now'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Continue'),
+            ),
+          ],
+        );
+      },
+    );
+    return confirmed ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final appName =
         ClubConfigScope.maybeOf(context)?.appName ??
         RuntimeBranding.displayAppName;
+    final hasBiopay = ClubConfigScope.maybeOf(context)?.hasBiopay ?? false;
     final asyncSettings = ref.watch(privacySettingsProvider);
     final loadedSettings = asyncSettings.valueOrNull;
     if (loadedSettings != null) {
@@ -154,32 +216,25 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                           }).toList(),
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
-                        SwitchListTile(
-                          value: settings.analyticsEnabled,
-                          onChanged: (value) => setState(
-                            () => _draft = settings.copyWith(
-                              analyticsEnabled: value,
+                        if (hasBiopay)
+                          SwitchListTile(
+                            value: settings.momoSmsAutoreadEnabled,
+                            onChanged: (value) => setState(
+                              () => _draft = settings.copyWith(
+                                momoSmsAutoreadEnabled: value,
+                              ),
+                            ),
+                            title: const Text('BioPay SMS verification'),
+                            subtitle: const Text(
+                              'Allow approved Mobile Money SMS to be matched automatically for faster BioPay payment verification.',
                             ),
                           ),
-                          title: const Text('Analytics data'),
-                        ),
-                        SwitchListTile(
-                          value: settings.biometricLoginEnabled,
-                          onChanged: (value) => setState(
-                            () => _draft = settings.copyWith(
-                              biometricLoginEnabled: value,
-                            ),
+                        const SizedBox(height: SpacingTokens.spacing2),
+                        Text(
+                          'Additional analytics, device security, and presence controls are managed by app policy and by your phone in this release.',
+                          style: TypographyTokens.bodySmall(
+                            ColorTokens.onSurfaceVariant,
                           ),
-                          title: const Text('Biometric login'),
-                        ),
-                        SwitchListTile(
-                          value: settings.showActivityStatus,
-                          onChanged: (value) => setState(
-                            () => _draft = settings.copyWith(
-                              showActivityStatus: value,
-                            ),
-                          ),
-                          title: const Text('Show activity status'),
                         ),
                       ],
                     ),
@@ -193,28 +248,52 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                         Text('YOUR DATA', style: TypographyTokens.labelSmall()),
                         const SizedBox(height: SpacingTokens.spacing3),
                         Text(
-                          'Request a data export via club support.',
+                          'Request a data export through a configured support channel.',
                           style: TypographyTokens.bodyMedium(),
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
                         ClaymorphicButton(
                           label: 'REQUEST DATA EXPORT',
                           width: double.infinity,
-                          onPressed: () async {
-                            await launchWhatsApp(
-                              context,
-                              message:
-                                  'Data export request for $appName. Please send me a copy of my account data.',
-                              failureMessage: 'Could not open WhatsApp.',
-                            );
-                          },
+                          onPressed:
+                              AppLinks.hasSupportWhatsApp ||
+                                  AppLinks.hasSupportEmail
+                              ? () async {
+                                  if (AppLinks.hasSupportWhatsApp) {
+                                    await launchWhatsApp(
+                                      context,
+                                      message:
+                                          'Data export request for $appName. Please send me a copy of my account data.',
+                                      failureMessage:
+                                          'Could not open WhatsApp.',
+                                    );
+                                    return;
+                                  }
+                                  await launchMailTo(
+                                    context,
+                                    email: AppLinks.supportEmail,
+                                    subject: '$appName data export request',
+                                    body:
+                                        'Please send me a copy of my account data.',
+                                    failureMessage:
+                                        'Could not open your mail app.',
+                                  );
+                                }
+                              : null,
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
                         OutlinedButton(
                           onPressed: () async {
+                            final uri = AppLinks.privacyPolicyUri;
+                            if (uri == null) {
+                              _showMessage(
+                                'Privacy policy is not configured for this build.',
+                              );
+                              return;
+                            }
                             await launchExternalUri(
                               context,
-                              Uri.parse(AppLinks.privacyPolicyUrl),
+                              uri,
                               failureMessage:
                                   'Privacy policy is not available yet.',
                             );
@@ -234,7 +313,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
-                          'Current device session  •  Active now',
+                          'Use the action below to revoke any other active sessions linked to your account.',
                           style: TypographyTokens.bodyMedium(),
                         ),
                       ],

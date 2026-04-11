@@ -3,6 +3,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { GroupForm } from "./group-form-state";
 import { showAdminToast } from "@/components/admin/admin-toast";
+import { fallbackClubProfile } from "@/lib/content";
 import { saveAdminContributionGroup } from "@/lib/data/admin/contributions";
 import type { AdminAccess, AdminContributionGroup } from "@/lib/types";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -39,7 +40,9 @@ export function ContributionGroupForm({
         groupType: String(formData.get("groupType") ?? "project") as AdminContributionGroup["groupType"],
         targetAmount: Number(formData.get("targetAmount") ?? 0),
         currentTotal: Number(formData.get("currentTotal") ?? 0),
-        currency: String(formData.get("currency") ?? "RWF"),
+        currency: String(
+          formData.get("currency") ?? fallbackClubProfile.currencyCode,
+        ),
         memberCount: Number(formData.get("memberCount") ?? 0),
         inviteCode: String(formData.get("inviteCode") ?? ""),
         isClosed: formData.get("isClosed") === "on",

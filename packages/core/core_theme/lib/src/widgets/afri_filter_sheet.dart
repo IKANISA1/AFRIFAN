@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../extensions.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
@@ -214,11 +215,11 @@ Future<AfriFilterSortResult?> showAfriFilterSortSheet({
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'FRw ${amountRange.start.round()}',
+                            '${context.afriCurrencySymbol} ${amountRange.start.round()}',
                             style: TypographyTokens.bodySmall(),
                           ),
                           Text(
-                            'FRw ${amountRange.end.round()}',
+                            '${context.afriCurrencySymbol} ${amountRange.end.round()}',
                             style: TypographyTokens.bodySmall(),
                           ),
                         ],

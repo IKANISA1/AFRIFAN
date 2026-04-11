@@ -1,4 +1,5 @@
 import 'package:core_network/core_network.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,6 +23,25 @@ class ClubRepository {
   );
 
   String? get _userId => _client.auth.currentUser?.id;
+
+  Future<ClubScope> _requireGroupScope(String groupId) async {
+    final activeScope = await _scopeResolver.requireResolved();
+    var query = _client
+        .from('contribution_groups')
+        .select('partner_id, club_id')
+        .eq('id', groupId);
+    query = _scopeResolver.apply(query, activeScope);
+    final row = await query.maybeSingle();
+    if (row == null) {
+      throw StateError('Contribution group not found for the active club.');
+    }
+
+    return ClubScope(
+      partnerId: row['partner_id']?.toString() ?? activeScope.partnerId,
+      clubId:
+          int.tryParse(row['club_id']?.toString() ?? '') ?? activeScope.clubId,
+    );
+  }
 
   // ═══════════════════════════════════════════════════════════
   // Membership
@@ -51,19 +71,28 @@ class ClubRepository {
     String userId, {
     required String partnerId,
     String chapter = 'Main',
+    FanTier tier = FanTier.fan,
+    int? points,
+    DateTime? expiresAt,
+    DateTime? renewedAt,
   }) async {
     final scope = await _scopeResolver.requireResolved(partnerId);
     final membershipNumber = 'FAN-${DateTime.now().millisecondsSinceEpoch}';
+    final effectivePoints = points ?? tier.minPoints;
 
     final row = await _client
         .from('fan_memberships')
         .insert({
           'user_id': userId,
           ..._scopeResolver.payload(scope),
-          'tier': FanTier.fan.value,
-          'points': 0,
+          'tier': tier.value,
+          'points': effectivePoints,
           'chapter': chapter,
           'membership_number': membershipNumber,
+          if (expiresAt != null)
+            'expires_at': expiresAt.toUtc().toIso8601String(),
+          if (renewedAt != null)
+            'renewed_at': renewedAt.toUtc().toIso8601String(),
         })
         .select()
         .single();
@@ -74,6 +103,62 @@ class ClubRepository {
       service: 'club',
       component: 'membership',
       message: 'Fan membership created',
+      status: OperationalHealthStatus.ok,
+      userId: userId,
+      subjectType: 'fan_membership',
+      subjectId: membership.id,
+    );
+
+    return membership;
+  }
+
+  /// Activate or renew the current user's selected membership package.
+  Future<FanMembership> activateMembershipPackage({
+    required String userId,
+    required String partnerId,
+    required String packageTier,
+    String chapter = 'Main',
+  }) async {
+    final scope = await _scopeResolver.requireResolved(partnerId);
+    final tier = FanTierX.fromValue(packageTier);
+    final now = DateTime.now().toUtc();
+    final expiresAt = now.add(const Duration(days: 365));
+    final existing = await getFanMembership(userId, scope.partnerId);
+
+    if (existing == null) {
+      return createFanMembership(
+        userId,
+        partnerId: scope.partnerId,
+        chapter: chapter,
+        tier: tier,
+        points: tier.minPoints,
+        renewedAt: now,
+        expiresAt: expiresAt,
+      );
+    }
+
+    final upgradedPoints =
+        existing.points >= tier.minPoints ? existing.points : tier.minPoints;
+
+    final row = await _client
+        .from('fan_memberships')
+        .update({
+          'tier': tier.value,
+          'points': upgradedPoints,
+          'chapter': chapter,
+          'renewed_at': now.toIso8601String(),
+          'expires_at': expiresAt.toIso8601String(),
+        })
+        .eq('id', existing.id)
+        .select()
+        .single();
+
+    final membership = FanMembership.fromJson(row);
+
+    await _health.recordEvent(
+      service: 'club',
+      component: 'membership',
+      message: 'Fan membership activated',
       status: OperationalHealthStatus.ok,
       userId: userId,
       subjectType: 'fan_membership',
@@ -183,31 +268,44 @@ class ClubRepository {
     required int quantity,
     required String paymentReference,
   }) async {
-    final rows = await _client.rpc('purchase_club_tickets', params: {
-      'p_match_id': matchId,
-      'p_user_id': userId,
-      'p_seat_type': seatType,
-      'p_quantity': quantity,
-      'p_payment_reference': paymentReference,
-    });
-
-    final list = rows as List;
-    final tickets = list
-        .whereType<Map<String, dynamic>>()
-        .map((row) => ClubTicket.fromJson(row))
-        .toList(growable: false);
-    if (tickets.isEmpty) {
-      throw StateError('Ticket purchase was not confirmed by the backend.');
+    try {
+      final result = await _client.rpc('purchase_club_tickets', params: {
+        'p_match_id': matchId,
+        'p_user_id': userId,
+        'p_seat_type': seatType,
+        'p_quantity': quantity,
+        'p_payment_reference': paymentReference,
+      });
+      final ticketIds = _extractTicketIds(result);
+      if (ticketIds.isNotEmpty) {
+        return _fetchTicketsByIds(ticketIds);
+      }
+      throw StateError('Ticket purchase returned no issued tickets.');
+    } on PostgrestException catch (error) {
+      if (!_isMissingPurchaseRpc(error)) {
+        rethrow;
+      }
+      debugPrint(
+        '[ClubRepository] purchase_club_tickets RPC missing, using direct ticket issuance fallback.',
+      );
+      return _createTicketsDirect(
+        matchId: matchId,
+        userId: userId,
+        seatType: seatType,
+        quantity: quantity,
+        paymentReference: paymentReference,
+      );
     }
-    return tickets;
   }
 
-  Future<List<ClubTicket>> getMyTickets(String userId) async {
-    final rows = await _client
+  Future<List<ClubTicket>> getMyTickets(String userId, String partnerId) async {
+    final scope = await _scopeResolver.requireResolved(partnerId);
+    var query = _client
         .from('tickets')
         .select('*, match:matches(*)')
-        .eq('user_id', userId)
-        .order('purchased_at', ascending: false);
+        .eq('user_id', userId);
+    query = _scopeResolver.apply(query, scope);
+    final rows = await query.order('purchased_at', ascending: false);
     return rows.map((r) => ClubTicket.fromJson(r)).toList();
   }
 
@@ -275,11 +373,10 @@ class ClubRepository {
   }
 
   Future<List<ClubShopOrder>> getMyOrders(String userId) async {
-    final rows = await _client
-        .from('shop_orders')
-        .select()
-        .eq('user_id', userId)
-        .order('created_at', ascending: false);
+    final scope = await _scopeResolver.requireResolved();
+    var query = _client.from('shop_orders').select().eq('user_id', userId);
+    query = _scopeResolver.apply(query, scope);
+    final rows = await query.order('created_at', ascending: false);
     return rows.map((r) => ClubShopOrder.fromJson(r)).toList();
   }
 
@@ -313,6 +410,12 @@ class ClubRepository {
     ContributionGroup group,
   ) async {
     final scope = await _scopeResolver.requireResolved();
+    final countryCode = RuntimeBranding.displayCountryCode;
+    if (countryCode.isEmpty) {
+      throw StateError(
+        'Country code must be configured before creating contribution groups.',
+      );
+    }
     // Prefer the atomic RPC that also adds creator as admin member
     try {
       final rpcResult = await _client.rpc('create_group_atomic', params: {
@@ -321,9 +424,9 @@ class ClubRepository {
         'p_privacy': group.privacy.value,
         'p_group_type': group.groupType.value,
         'p_target_amount': group.targetAmount,
-        'p_currency': 'RWF',
+        'p_currency': RuntimeBranding.displayCurrencyCode,
         'p_cycle_days': 30,
-        'p_country_code': 'RW',
+        'p_country_code': countryCode,
       });
 
       final result = rpcResult is Map<String, dynamic>
@@ -361,30 +464,17 @@ class ClubRepository {
     required String paymentReference,
     String paymentMethod = 'momo',
   }) async {
+    await _requireGroupScope(groupId);
     final createdAt = DateTime.now().toIso8601String();
 
-    final group = await _client
-        .from('contribution_groups')
-        .select('club_id')
-        .eq('id', groupId)
-        .maybeSingle();
-    final clubId = group?['club_id'];
-    if (clubId == null) {
-      throw StateError(
-        'Could not resolve legacy club_id for contribution group $groupId',
-      );
-    }
-
     final row = await _client
-        .from('contributions')
+        .from('group_contributions')
         .insert({
           'group_id': groupId,
           'user_id': userId,
-          'club_id': clubId,
           'amount': amount,
           'status': 'pending',
-          'payment_method': paymentMethod,
-          'external_ref': paymentReference,
+          'momo_reference': paymentReference,
           'created_at': createdAt,
         })
         .select()
@@ -424,25 +514,131 @@ class ClubRepository {
     String groupId, {
     int limit = 50,
   }) async {
-    final rows = await _client
-        .from('contributions')
+    await _requireGroupScope(groupId);
+    final query = _client
+        .from('group_contributions')
         .select(
-            'id, group_id, user_id, amount, status, external_ref, created_at')
-        .eq('group_id', groupId)
-        .order('created_at', ascending: false)
-        .limit(limit);
+            'id, group_id, user_id, amount, status, momo_reference, created_at')
+        .eq('group_id', groupId);
+    final rows = await query.order('created_at', ascending: false).limit(limit);
     return List<Map<String, dynamic>>.from(
-      rows.map(
-        (row) => <String, dynamic>{
-          ...Map<String, dynamic>.from(row),
-          'momo_reference': row['external_ref'],
-        },
-      ),
+      rows.map((row) => Map<String, dynamic>.from(row)),
     );
+  }
+
+  Future<List<ClubTicket>> _fetchTicketsByIds(List<String> ticketIds) async {
+    final rows = await _client
+        .from('tickets')
+        .select('*, match:matches(*)')
+        .inFilter('id', ticketIds)
+        .order('purchased_at', ascending: false);
+    final tickets = List<Map<String, dynamic>>.from(rows as List)
+        .map(ClubTicket.fromJson)
+        .toList(growable: false);
+    if (tickets.isEmpty) {
+      throw StateError('Ticket purchase was not confirmed by the backend.');
+    }
+    return tickets;
+  }
+
+  List<String> _extractTicketIds(dynamic result) {
+    if (result is List) {
+      return result
+          .map((entry) {
+            if (entry is String) {
+              return entry;
+            }
+            if (entry is Map<String, dynamic>) {
+              return entry['id']?.toString();
+            }
+            if (entry is Map) {
+              return entry['id']?.toString();
+            }
+            return null;
+          })
+          .whereType<String>()
+          .where((id) => id.isNotEmpty)
+          .toList(growable: false);
+    }
+
+    if (result is Map<String, dynamic>) {
+      final directId = result['id']?.toString();
+      if (directId != null && directId.isNotEmpty) {
+        return <String>[directId];
+      }
+      final ids = result['ticket_ids'];
+      if (ids is List) {
+        return ids.map((id) => id.toString()).toList(growable: false);
+      }
+    }
+
+    return const <String>[];
+  }
+
+  bool _isMissingPurchaseRpc(PostgrestException error) {
+    final message = error.message.toLowerCase();
+    return message.contains('purchase_club_tickets') &&
+        (message.contains('not found') ||
+            message.contains('schema cache') ||
+            message.contains('could not find'));
+  }
+
+  Future<List<ClubTicket>> _createTicketsDirect({
+    required String matchId,
+    required String userId,
+    required String seatType,
+    required int quantity,
+    required String paymentReference,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    var matchQuery = _client
+        .from('matches')
+        .select(
+            'id, club_id, is_on_sale, ticket_general_price, ticket_vip_price')
+        .eq('id', matchId);
+    matchQuery = _scopeResolver.apply(matchQuery, scope);
+    final match = await matchQuery.maybeSingle();
+
+    if (match == null) {
+      throw StateError('Match not found for the active club.');
+    }
+    if (match['is_on_sale'] != true) {
+      throw StateError('Tickets are not on sale for this fixture.');
+    }
+
+    final normalizedSeatType =
+        seatType.trim().toLowerCase() == 'vip' ? 'vip' : 'general';
+    final amountPaid = normalizedSeatType == 'vip'
+        ? (match['ticket_vip_price'] as num?)?.toInt() ?? 0
+        : (match['ticket_general_price'] as num?)?.toInt() ?? 0;
+    final purchasedAt = DateTime.now().toUtc().toIso8601String();
+    final rows = List.generate(
+      quantity,
+      (_) => <String, dynamic>{
+        'match_id': matchId,
+        'user_id': userId,
+        'club_id': match['club_id'],
+        'seat_type': normalizedSeatType,
+        'amount_paid': amountPaid,
+        'momo_reference': paymentReference,
+        'status': 'valid',
+        'confirmed_at': purchasedAt,
+        'purchased_at': purchasedAt,
+      },
+    );
+
+    final inserted = await _client.from('tickets').insert(rows).select('id');
+    final ticketIds = List<Map<String, dynamic>>.from(inserted as List)
+        .map((row) => row['id']?.toString())
+        .whereType<String>()
+        .where((id) => id.isNotEmpty)
+        .toList(growable: false);
+    return _fetchTicketsByIds(ticketIds);
   }
 
   /// Get group members for a specific group.
   Future<List<Map<String, dynamic>>> getGroupMembers(String groupId) async {
+    await _requireGroupScope(groupId);
     final rows = await _client
         .from('group_members')
         .select('*, profile:profiles(public_user_id, display_name)')
@@ -538,6 +734,7 @@ class ClubRepository {
     String groupId, {
     int limit = 50,
   }) async {
+    await _requireGroupScope(groupId);
     final rows = await _client
         .from('group_messages')
         .select()

@@ -6,6 +6,16 @@ import '../services/momo_sms_autoread_service.dart';
 import '../services/momo_sms_deps.dart';
 import '../services/momo_sms_sync_support.dart';
 
+final momoSmsAppAccessServiceProvider = Provider<AppAccessService>((ref) {
+  return AppAccessService(openBox: openHiveBox<bool>);
+});
+
+final momoSmsSyncEnabledProvider = FutureProvider<bool>((ref) async {
+  return ref
+      .watch(momoSmsAppAccessServiceProvider)
+      .isEnabled(AppAccessPermission.sms);
+});
+
 /// Provides the singleton [MomoSmsAutoreadService] instance.
 ///
 /// This service listens for incoming MoMo SMS on Android,
@@ -15,7 +25,7 @@ final momoSmsAutoreadServiceProvider = Provider<MomoSmsAutoreadService>((ref) {
   final client = ref.watch(supabaseClientProvider);
   final service = MomoSmsAutoreadService(
     client: client,
-    appAccessService: AppAccessService(openBox: openHiveBox<bool>),
+    appAccessService: ref.watch(momoSmsAppAccessServiceProvider),
     countryCode: EnvConfig.countryCode,
   );
   ref.onDispose(service.dispose);

@@ -14,6 +14,9 @@ class AdminRepository {
   static const _fallbackNewsTable = 'news_articles';
 
   final SupabaseClient _client;
+  late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
+    client: _client,
+  );
 
   // ── RBAC Check ──
 
@@ -26,7 +29,7 @@ class AdminRepository {
     }
 
     try {
-      final currentClubId = _currentClubId(user);
+      final currentClubId = _scopeResolver.currentClubId;
       final assignments = List<Map<String, dynamic>>.from(
         await _client
             .from('admin_role_assignments')
@@ -87,18 +90,21 @@ class AdminRepository {
       final now = DateTime.now().toUtc();
       final startOfDay = DateTime.utc(now.year, now.month, now.day);
       final endOfDay = startOfDay.add(const Duration(days: 1));
+      final scope = await _scopeResolver.resolve(null);
 
-      final usersResult = await _client
-          .from('profiles')
-          .select('id')
-          .count(CountOption.exact);
-      final groupsResult = await _client
+      var usersQuery = _client.from('profiles').select('id');
+      usersQuery = _scopeResolver.apply(usersQuery, scope);
+      final usersResult = await usersQuery.count(CountOption.exact);
+
+      var groupsQuery = _client
           .from('contribution_groups')
           .select('id')
-          .eq('is_closed', false)
-          .count(CountOption.exact);
-      final txCount = await _countTransactionsToday(startOfDay, endOfDay);
-      final ticketsCount = await _countTicketsSold();
+          .eq('is_closed', false);
+      groupsQuery = _scopeResolver.apply(groupsQuery, scope);
+      final groupsResult = await groupsQuery.count(CountOption.exact);
+
+      final txCount = await _countTransactionsToday(startOfDay, endOfDay, scope);
+      final ticketsCount = await _countTicketsSold(scope);
 
       return AdminDashboardMetrics(
         totalUsers: usersResult.count,
@@ -115,22 +121,39 @@ class AdminRepository {
   Future<int> _countTransactionsToday(
     DateTime startOfDay,
     DateTime endOfDay,
+    ClubScope scope,
   ) async {
+    var groupsQuery = _client.from('contribution_groups').select('id');
+    groupsQuery = _scopeResolver.apply(groupsQuery, scope);
+    final groupRows = List<Map<String, dynamic>>.from(
+      (await groupsQuery as List).map(
+        (row) => Map<String, dynamic>.from(row as Map),
+      ),
+    );
+    final groupIds = groupRows
+        .map((row) => row['id']?.toString())
+        .whereType<String>()
+        .where((id) => id.isNotEmpty)
+        .toList(growable: false);
+    if (groupIds.isEmpty) {
+      return 0;
+    }
+
     final result = await _client
-        .from('contributions')
+        .from('group_contributions')
         .select('id')
+        .inFilter('group_id', groupIds)
         .gte('created_at', startOfDay.toIso8601String())
         .lt('created_at', endOfDay.toIso8601String())
         .count(CountOption.exact);
     return result.count;
   }
 
-  Future<int> _countTicketsSold() async {
+  Future<int> _countTicketsSold(ClubScope scope) async {
     try {
-      final result = await _client
-          .from('tickets')
-          .select('id')
-          .count(CountOption.exact);
+      var query = _client.from('tickets').select('id');
+      query = _scopeResolver.apply(query, scope);
+      final result = await query.count(CountOption.exact);
       return result.count;
     } on PostgrestException catch (error) {
       if (_isMissingTable(error)) {
@@ -138,15 +161,6 @@ class AdminRepository {
       }
       rethrow;
     }
-  }
-
-  int? _currentClubId(User? user) {
-    final rawValue =
-        user?.appMetadata['club_id'] ??
-        user?.userMetadata?['club_id'] ??
-        user?.userMetadata?['clubId'] ??
-        user?.appMetadata['clubId'];
-    return _asInt(rawValue);
   }
 
   bool _assignmentMatchesClub(Map<String, dynamic> row, int? currentClubId) {
@@ -187,13 +201,14 @@ class AdminRepository {
     int limit = 50,
     int offset = 0,
   }) async {
-    final data = await _client
-        .from('contribution_groups')
-        .select(
-          'id, name, description, group_type, privacy, '
-          'target_amount, current_total, member_count, '
-          'is_closed, creator_id, created_at, invite_code',
-        )
+    final scope = await _scopeResolver.resolve(null);
+    var query = _client.from('contribution_groups').select(
+      'id, name, description, group_type, privacy, '
+      'target_amount, current_total, member_count, '
+      'is_closed, creator_id, created_at, invite_code',
+    );
+    query = _scopeResolver.apply(query, scope);
+    final data = await query
         .order('created_at', ascending: false)
         .range(offset, offset + limit - 1);
     return List<Map<String, dynamic>>.from(data as List);
@@ -205,18 +220,13 @@ class AdminRepository {
     int limit = 100,
   }) async {
     final data = await _client
-        .from('contributions')
-        .select('id, user_id, amount, status, external_ref, created_at')
+        .from('group_contributions')
+        .select('id, user_id, amount, status, momo_reference, created_at')
         .eq('group_id', groupId)
         .order('created_at', ascending: false)
         .limit(limit);
     return List<Map<String, dynamic>>.from(
-      (data as List).map(
-        (row) => <String, dynamic>{
-          ...Map<String, dynamic>.from(row as Map),
-          'momo_reference': row['external_ref'],
-        },
-      ),
+      (data as List).map((row) => Map<String, dynamic>.from(row as Map)),
     );
   }
 
@@ -228,9 +238,10 @@ class AdminRepository {
     int offset = 0,
   }) async {
     final newsTable = await _resolveNewsTable();
-    final data = await _client
-        .from(newsTable)
-        .select('*')
+    final scope = await _scopeResolver.resolve(null);
+    var query = _client.from(newsTable).select('*');
+    query = _scopeResolver.apply(query, scope);
+    final data = await query
         .order('created_at', ascending: false)
         .range(offset, offset + limit - 1);
     return List<Map<String, dynamic>>.from(data as List);
@@ -250,10 +261,11 @@ class AdminRepository {
     int sortOrder = 0,
   }) async {
     final newsTable = await _resolveNewsTable();
+    final effectiveClubId = clubId ?? _scopeResolver.currentClubId;
     final data = await _client
         .from(newsTable)
         .insert({
-          if (clubId != null) 'club_id': clubId,
+          if (effectiveClubId != null) 'club_id': effectiveClubId,
           'title': title,
           'subtitle': subtitle,
           'body': body,
@@ -278,18 +290,20 @@ class AdminRepository {
     Map<String, dynamic> updates,
   ) async {
     final newsTable = await _resolveNewsTable();
-    await _client.from(newsTable).update(updates).eq('id', articleId);
+    final scope = await _scopeResolver.resolve(null);
+    var query = _client.from(newsTable).update(updates).eq('id', articleId);
+    query = _scopeResolver.apply(query, scope);
+    await query;
   }
 
   // ── Shop Products ──
 
   /// Returns all shop products (admin view — includes inactive).
   Future<List<Map<String, dynamic>>> getShopProducts({int limit = 50}) async {
-    final data = await _client
-        .from('shop_products')
-        .select('*')
-        .order('sort_order')
-        .limit(limit);
+    final scope = await _scopeResolver.resolve(null);
+    var query = _client.from('shop_products').select('*');
+    query = _scopeResolver.apply(query, scope);
+    final data = await query.order('sort_order').limit(limit);
     return List<Map<String, dynamic>>.from(data as List);
   }
 
@@ -298,9 +312,12 @@ class AdminRepository {
   /// Returns recent admin audit log entries.
   Future<List<Map<String, dynamic>>> getRecentActivity({int limit = 10}) async {
     try {
-      final data = await _client
+      final scope = await _scopeResolver.resolve(null);
+      var query = _client
           .from('admin_audit_log')
-          .select('id, action, entity_type, entity_id, metadata, created_at')
+          .select('id, action, entity_type, entity_id, metadata, created_at');
+      query = _scopeResolver.apply(query, scope);
+      final data = await query
           .order('created_at', ascending: false)
           .limit(limit);
       return List<Map<String, dynamic>>.from(data as List);
@@ -314,9 +331,10 @@ class AdminRepository {
   Future<List<String>> getRecentNewsTitles({int limit = 3}) async {
     try {
       final newsTable = await _resolveNewsTable();
-      final data = await _client
-          .from(newsTable)
-          .select('title')
+      final scope = await _scopeResolver.resolve(null);
+      var query = _client.from(newsTable).select('title');
+      query = _scopeResolver.apply(query, scope);
+      final data = await query
           .order('created_at', ascending: false)
           .limit(limit);
       return (data as List)

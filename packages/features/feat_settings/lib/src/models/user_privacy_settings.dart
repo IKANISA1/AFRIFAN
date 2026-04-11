@@ -4,6 +4,7 @@ class UserPrivacySettings {
     required this.clubId,
     required this.groupVisibility,
     required this.analyticsEnabled,
+    required this.momoSmsAutoreadEnabled,
     required this.biometricLoginEnabled,
     required this.showActivityStatus,
   });
@@ -12,6 +13,7 @@ class UserPrivacySettings {
   final String clubId;
   final String groupVisibility;
   final bool analyticsEnabled;
+  final bool momoSmsAutoreadEnabled;
   final bool biometricLoginEnabled;
   final bool showActivityStatus;
 
@@ -30,6 +32,7 @@ class UserPrivacySettings {
       clubId: clubId,
       groupVisibility: 'members',
       analyticsEnabled: true,
+      momoSmsAutoreadEnabled: false,
       biometricLoginEnabled: true,
       showActivityStatus: true,
     );
@@ -41,6 +44,10 @@ class UserPrivacySettings {
       clubId: _asString(json['club_id']),
       groupVisibility: _normalizeVisibility(json['group_visibility']),
       analyticsEnabled: _asBool(json['analytics_enabled'], fallback: true),
+      momoSmsAutoreadEnabled: _asBool(
+        json['momo_sms_autoread_enabled'],
+        fallback: false,
+      ),
       biometricLoginEnabled: _asBool(
         json['biometric_login_enabled'],
         fallback: true,
@@ -56,6 +63,7 @@ class UserPrivacySettings {
       if (normalizedClubId != null) 'club_id': normalizedClubId,
       'group_visibility': _normalizeVisibility(groupVisibility),
       'analytics_enabled': analyticsEnabled,
+      'momo_sms_autoread_enabled': momoSmsAutoreadEnabled,
       'biometric_login_enabled': biometricLoginEnabled,
       'show_activity_status': showActivityStatus,
     };
@@ -66,6 +74,7 @@ class UserPrivacySettings {
     String? clubId,
     String? groupVisibility,
     bool? analyticsEnabled,
+    bool? momoSmsAutoreadEnabled,
     bool? biometricLoginEnabled,
     bool? showActivityStatus,
   }) {
@@ -76,6 +85,8 @@ class UserPrivacySettings {
           ? this.groupVisibility
           : _normalizeVisibility(groupVisibility),
       analyticsEnabled: analyticsEnabled ?? this.analyticsEnabled,
+      momoSmsAutoreadEnabled:
+          momoSmsAutoreadEnabled ?? this.momoSmsAutoreadEnabled,
       biometricLoginEnabled:
           biometricLoginEnabled ?? this.biometricLoginEnabled,
       showActivityStatus: showActivityStatus ?? this.showActivityStatus,

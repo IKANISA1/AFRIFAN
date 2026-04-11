@@ -139,8 +139,7 @@ class _FantasySquadBuilderScreenState
                   body:
                       'A squad can only be saved after the competition entry exists for this manager account.',
                   primaryLabel: 'Create entry',
-                  onPrimary: () =>
-                      context.go('/fantasy/competition/${widget.slug}/entry'),
+                  onPrimary: () => context.go('/fantasy/${widget.slug}/entry'),
                 );
               }
 
@@ -150,8 +149,7 @@ class _FantasySquadBuilderScreenState
                   body:
                       'Add or schedule a gameweek in admin before managers can lock squads.',
                   primaryLabel: 'Back to competition',
-                  onPrimary: () =>
-                      context.go('/fantasy/competition/${widget.slug}'),
+                  onPrimary: () => context.go('/fantasy/${widget.slug}'),
                 );
               }
 
@@ -161,8 +159,7 @@ class _FantasySquadBuilderScreenState
                   body:
                       'Load the player pool and prices for this competition in admin before squad selection opens.',
                   primaryLabel: 'Back to competition',
-                  onPrimary: () =>
-                      context.go('/fantasy/competition/${widget.slug}'),
+                  onPrimary: () => context.go('/fantasy/${widget.slug}'),
                 );
               }
 

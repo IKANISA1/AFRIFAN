@@ -22,8 +22,9 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
   int _currentXp = 0;
   int _fanRank = 0;
   int _weeklyXp = 0;
-  String _tier = 'BRONZE';
-  String _nextTier = 'SILVER';
+  String _tier = 'FAN';
+  String _nextTier = 'BRONZE';
+  String? _error;
 
   @override
   void initState() {
@@ -38,9 +39,9 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
       final client = ref.read(supabaseClientProvider);
       final resolver = ClubScopeResolver(client: client);
       final scope = await resolver.requireResolved();
-      var membershipsQuery = client.from('fan_memberships').select(
-        'user_id, points',
-      );
+      var membershipsQuery = client
+          .from('fan_memberships')
+          .select('user_id, points');
       membershipsQuery = resolver.apply(membershipsQuery, scope);
       final memberships = await membershipsQuery
           .order('points', ascending: false)
@@ -127,10 +128,14 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
         _leaderboard = leaderboard;
         _achievements = achievements;
         _isLoading = false;
+        _error = null;
       });
     } catch (_) {
       if (!mounted) return;
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+        _error = 'Gamification stats are temporarily unavailable.';
+      });
     }
   }
 
@@ -141,24 +146,24 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
   }
 
   String _tierLabelFromXp(int xp) {
-    if (xp >= 50000) return 'LEGEND';
-    if (xp >= 15000) return 'GOLD';
-    if (xp >= 5000) return 'SILVER';
-    return 'BRONZE';
+    if (xp >= 5000) return 'PLATINUM';
+    if (xp >= 2000) return 'GOLD';
+    if (xp >= 1000) return 'BRONZE';
+    return 'FAN';
   }
 
   String _nextTierFromXp(int xp) {
-    if (xp >= 50000) return 'LEGEND';
-    if (xp >= 15000) return 'LEGEND';
-    if (xp >= 5000) return 'GOLD';
-    return 'SILVER';
+    if (xp >= 5000) return 'PLATINUM';
+    if (xp >= 2000) return 'PLATINUM';
+    if (xp >= 1000) return 'GOLD';
+    return 'BRONZE';
   }
 
   int _nextTierThreshold(int xp) {
-    if (xp >= 50000) return 50000;
-    if (xp >= 15000) return 50000;
-    if (xp >= 5000) return 15000;
-    return 5000;
+    if (xp >= 5000) return 5000;
+    if (xp >= 2000) return 5000;
+    if (xp >= 1000) return 2000;
+    return 1000;
   }
 
   List<Map<String, dynamic>> _derivedAchievements({
@@ -168,7 +173,7 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
   }) {
     return <Map<String, dynamic>>[
       {
-        'title': 'Bronze Pulse',
+        'title': 'Fan Pulse',
         'icon_key': 'match',
         'is_earned': currentXp >= 500,
       },
@@ -183,19 +188,19 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
         'is_earned': hasLeaderboard && _fanRank > 0,
       },
       {
-        'title': 'Silver Rise',
+        'title': 'Bronze Rise',
         'icon_key': 'legend',
-        'is_earned': currentXp >= 5000,
+        'is_earned': currentXp >= 1000,
       },
       {
         'title': 'Gold Faithful',
         'icon_key': 'contributor',
-        'is_earned': currentXp >= 15000,
+        'is_earned': currentXp >= 2000,
       },
       {
-        'title': 'Legend Circle',
+        'title': 'Platinum Circle',
         'icon_key': 'fan_club',
-        'is_earned': currentXp >= 50000,
+        'is_earned': currentXp >= 5000,
       },
     ];
   }
@@ -229,6 +234,18 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),
+            )
+          : _error != null
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                child: AfriStateView.offline(
+                  title: 'Gamification unavailable',
+                  message: _error!,
+                  actionLabel: 'Retry',
+                  onAction: _loadData,
+                ),
+              ),
             )
           : CustomScrollView(
               physics: const BouncingScrollPhysics(),

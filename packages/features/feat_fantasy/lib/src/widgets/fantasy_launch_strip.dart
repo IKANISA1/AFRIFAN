@@ -88,9 +88,8 @@ class FantasyLaunchStrip extends ConsumerWidget {
                       ),
                     ),
                     FilledButton.tonalIcon(
-                      onPressed: () => context.push(
-                        '/fantasy/competition/${competition.slug}',
-                      ),
+                      onPressed: () =>
+                          context.push('/fantasy/${competition.slug}'),
                       icon: const Icon(Icons.arrow_forward_rounded),
                       label: Text(competition.ctaLabel),
                     ),

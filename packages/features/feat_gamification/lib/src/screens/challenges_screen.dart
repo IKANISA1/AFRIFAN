@@ -22,6 +22,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   List<_ChallengeData> _weekly = const <_ChallengeData>[];
   List<_ChallengeData> _seasonal = const <_ChallengeData>[];
   bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
         _weekly = const <_ChallengeData>[];
         _seasonal = const <_ChallengeData>[];
         _isLoading = false;
+        _error = null;
       });
       return;
     }
@@ -75,11 +77,12 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
           .eq('creator_id', userId)
           .limit(10);
       groupsFuture = resolver.apply(groupsFuture, scope);
-      final ticketsFuture = client
+      var ticketsFuture = client
           .from('tickets')
           .select('id')
           .eq('user_id', userId)
           .limit(10);
+      ticketsFuture = resolver.apply(ticketsFuture, scope);
 
       final results = await Future.wait([
         profileFuture,
@@ -154,10 +157,14 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
           ),
         ];
         _isLoading = false;
+        _error = null;
       });
     } catch (_) {
       if (!mounted) return;
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+        _error = 'Challenges are temporarily unavailable.';
+      });
     }
   }
 
@@ -192,6 +199,18 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),
+            )
+          : _error != null
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                child: AfriStateView.offline(
+                  title: 'Challenges unavailable',
+                  message: _error!,
+                  actionLabel: 'Retry',
+                  onAction: _loadChallenges,
+                ),
+              ),
             )
           : TabBarView(
               controller: _tabController,

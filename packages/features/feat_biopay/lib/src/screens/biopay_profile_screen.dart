@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../models/biopay_profile.dart';
+import '../biopay_display_resolver.dart';
 import '../providers/biopay_providers.dart';
 import '../widgets/biopay_reference_ui.dart';
 
@@ -27,8 +27,10 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
         _selectedRouteType ??
         profile?.routeType ??
         PaymentRecipientType.phoneNumber;
-    final bioPayId = _bioPayId(profile, user);
-    final displayedValue = _valueForRoute(selectedRouteType, profile, user);
+    final bioPayId = resolveBiopayId(profile, user) ?? kBiopayUnlinkedLabel;
+    final displayedValue =
+        resolveBiopayRouteValue(selectedRouteType, profile, user) ??
+        kBiopayUnlinkedLabel;
     final displayedLabel = selectedRouteType == PaymentRecipientType.code
         ? 'Merchant Code'
         : 'MoMo Number';
@@ -135,35 +137,5 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
         ],
       ),
     );
-  }
-
-  String _bioPayId(BiopayProfile? profile, UserProfile? user) {
-    return profile?.publicId.trim().isNotEmpty == true
-        ? profile!.publicId
-        : (user?.publicUserId?.trim().isNotEmpty == true
-              ? user!.publicUserId!
-              : '882931');
-  }
-
-  String _valueForRoute(
-    PaymentRecipientType routeType,
-    BiopayProfile? profile,
-    UserProfile? user,
-  ) {
-    if (routeType == PaymentRecipientType.code) {
-      if (profile?.routeType == PaymentRecipientType.code &&
-          (profile?.recipientValue.trim().isNotEmpty ?? false)) {
-        return profile!.recipientValue;
-      }
-      return '23456';
-    }
-
-    if (profile?.routeType == PaymentRecipientType.phoneNumber &&
-        (profile?.recipientValue.trim().isNotEmpty ?? false)) {
-      return profile!.recipientValue;
-    }
-
-    final momo = user?.momoNumber?.trim();
-    return (momo != null && momo.isNotEmpty) ? momo : '0788123456';
   }
 }

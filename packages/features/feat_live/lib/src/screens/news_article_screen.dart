@@ -29,45 +29,15 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
     _loadArticle();
   }
 
-  int? _currentClubId(SupabaseClient client) {
-    final user = client.auth.currentUser;
-    final candidates = <Object?>[
-      user?.appMetadata['club_id'],
-      user?.userMetadata?['club_id'],
-      user?.appMetadata['clubId'],
-      user?.userMetadata?['clubId'],
-    ];
-
-    for (final candidate in candidates) {
-      final parsed = int.tryParse(candidate?.toString().trim() ?? '');
-      if (parsed != null) {
-        return parsed;
-      }
-    }
-
-    return null;
-  }
-
   Future<void> _loadArticle() async {
     try {
       final client = ref.read(supabaseClientProvider);
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved();
       final newsTable = await _resolveNewsTable(client);
-      final clubId = _currentClubId(client);
-      if (clubId == null) {
-        if (mounted) {
-          setState(() {
-            _loading = false;
-            _error = 'Could not resolve the active club.';
-          });
-        }
-        return;
-      }
-      final article = await client
-          .from(newsTable)
-          .select()
-          .eq('id', widget.articleId)
-          .eq('club_id', clubId)
-          .maybeSingle();
+      var articleQuery = client.from(newsTable).select().eq('id', widget.articleId);
+      articleQuery = resolver.apply(articleQuery, scope);
+      final article = await articleQuery.maybeSingle();
 
       if (article == null) {
         if (mounted) {
@@ -79,12 +49,13 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
         return;
       }
 
-      final related = await client
+      var relatedQuery = client
           .from(newsTable)
           .select('id, title, subtitle')
-          .eq('club_id', clubId)
           .eq('is_published', true)
-          .neq('id', widget.articleId)
+          .neq('id', widget.articleId);
+      relatedQuery = resolver.apply(relatedQuery, scope);
+      final related = await relatedQuery
           .order('sort_order', ascending: true)
           .limit(2);
 

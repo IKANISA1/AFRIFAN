@@ -3,27 +3,54 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 abstract final class AppLinks {
-  static const supportWhatsApp = '+250795588248';
+  static const supportWhatsApp = String.fromEnvironment(
+    'APP_SUPPORT_WHATSAPP',
+    defaultValue: '',
+  );
 
   static const supportEmail = String.fromEnvironment(
     'APP_SUPPORT_EMAIL',
-    defaultValue: 'support@ikanisa.com',
+    defaultValue: '',
   );
 
   static const websiteUrl = String.fromEnvironment(
     'APP_WEBSITE_URL',
-    defaultValue: 'https://gikundiro.com',
+    defaultValue: '',
   );
 
   static const privacyPolicyUrl = String.fromEnvironment(
     'APP_PRIVACY_URL',
-    defaultValue: 'https://gikundiro.com/privacy',
+    defaultValue: '',
   );
 
   static const termsUrl = String.fromEnvironment(
     'APP_TERMS_URL',
-    defaultValue: 'https://gikundiro.com/terms',
+    defaultValue: '',
   );
+
+  static bool get hasSupportWhatsApp => supportWhatsApp.trim().isNotEmpty;
+  static bool get hasSupportEmail => supportEmail.trim().isNotEmpty;
+  static bool get hasWebsite => websiteUri != null;
+  static bool get hasPrivacyPolicy => privacyPolicyUri != null;
+  static bool get hasTerms => termsUri != null;
+  static bool get hasAnySupportChannel =>
+      hasSupportWhatsApp || hasSupportEmail || hasWebsite;
+
+  static Uri? get websiteUri => _parseExternalUri(websiteUrl);
+  static Uri? get privacyPolicyUri => _parseExternalUri(privacyPolicyUrl);
+  static Uri? get termsUri => _parseExternalUri(termsUrl);
+
+  static Uri? _parseExternalUri(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) {
+      return null;
+    }
+    final uri = Uri.tryParse(trimmed);
+    if (uri == null || !(uri.isScheme('https') || uri.isScheme('http'))) {
+      return null;
+    }
+    return uri;
+  }
 }
 
 Uri buildMailToUri({required String email, String? subject, String? body}) {
@@ -70,6 +97,16 @@ Future<bool> launchWhatsApp(
   String? message,
   required String failureMessage,
 }) async {
+  if (!AppLinks.hasSupportWhatsApp) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('WhatsApp support is not configured for this build.'),
+        ),
+      );
+    }
+    return false;
+  }
   final encoded = Uri.encodeComponent(message ?? '');
   final uri = Uri.parse(
     'https://wa.me/${AppLinks.supportWhatsApp.replaceAll('+', '')}'

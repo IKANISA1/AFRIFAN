@@ -1,5 +1,6 @@
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -34,6 +35,14 @@ class HomeFeedSnapshot {
 }
 
 enum LatestIntelStatus { ready, empty, error }
+
+@visibleForTesting
+String homeHeroRouteForStatus(String status) {
+  return switch (status.trim().toUpperCase()) {
+    'LIVE' || 'HALF-TIME' || 'FULL-TIME' => '/live-match',
+    _ => '/tickets',
+  };
+}
 
 class LatestIntelSnapshot {
   const LatestIntelSnapshot({
@@ -91,10 +100,9 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
 
     try {
       var membershipsQuery = client.from('fan_memberships').select();
-      membershipsQuery = ClubScopeResolver(client: client).apply(
-        membershipsQuery,
-        scope,
-      );
+      membershipsQuery = ClubScopeResolver(
+        client: client,
+      ).apply(membershipsQuery, scope);
       memberships = List<Map<String, dynamic>>.from(
         await membershipsQuery.order('points', ascending: false).limit(20),
       );
@@ -104,10 +112,9 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
 
     try {
       var matchesQuery = client.from('matches').select();
-      matchesQuery = ClubScopeResolver(client: client).apply(
-        matchesQuery,
-        scope,
-      );
+      matchesQuery = ClubScopeResolver(
+        client: client,
+      ).apply(matchesQuery, scope);
       matches = List<Map<String, dynamic>>.from(
         await matchesQuery.order('match_date', ascending: true).limit(5),
       );
@@ -291,12 +298,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
               status,
               (row['live_minute'] as num?)?.toInt(),
             ),
-            route:
-                status == 'LIVE' ||
-                    status == 'HALF-TIME' ||
-                    status == 'FULL-TIME'
-                ? '/live'
-                : '/tickets',
+            route: homeHeroRouteForStatus(status),
           );
         })
         .take(3)
@@ -412,10 +414,14 @@ class SupabaseLatestIntelRepository implements LatestIntelRepository {
   Future<LatestIntelSnapshot> loadPublishedArticles() async {
     try {
       final scope = await ClubScopeResolver(client: client).requireResolved();
-      var query = client.from('news_articles').select().eq('is_published', true);
+      var query = client
+          .from('news_articles')
+          .select()
+          .eq('is_published', true);
       query = ClubScopeResolver(client: client).apply(query, scope);
-      final response =
-          await query.order('sort_order', ascending: true).limit(10);
+      final response = await query
+          .order('sort_order', ascending: true)
+          .limit(10);
 
       final articles = List<Map<String, dynamic>>.from(response);
       if (articles.isEmpty) {

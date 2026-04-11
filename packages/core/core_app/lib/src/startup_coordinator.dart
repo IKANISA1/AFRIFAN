@@ -242,9 +242,6 @@ class AppStartupCoordinator {
         );
       }
     }
-
-    await PushNotificationService.subscribeToTopic('fantasy_pl_2526');
-    await PushNotificationService.subscribeToTopic('fantasy_wc_2026');
   }
 
   Future<void> _initializeSmsAutoread(ClubConfig config) async {
@@ -268,7 +265,10 @@ class AppStartupCoordinator {
       ) {
         if (event.event == AuthChangeEvent.signedIn ||
             event.event == AuthChangeEvent.tokenRefreshed) {
-          smsService.refresh();
+          unawaited(() async {
+            await smsService.syncConsentFromServer();
+            await smsService.refresh();
+          }());
           _runReconciliation(reconciliationService);
         } else if (event.event == AuthChangeEvent.signedOut) {
           smsService.stop(resetPermissionPromptState: true);
@@ -276,7 +276,8 @@ class AppStartupCoordinator {
       });
 
       if (client.auth.currentSession != null) {
-        smsService.refresh();
+        await smsService.syncConsentFromServer();
+        await smsService.refresh();
         _runReconciliation(reconciliationService);
       }
     } catch (error, stackTrace) {

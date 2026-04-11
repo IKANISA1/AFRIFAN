@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_modules/core_modules.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
@@ -10,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app.dart';
-import 'module_registry.dart';
 import 'startup_coordinator.dart';
 
 bool _globalErrorHandlersInstalled = false;
@@ -67,6 +67,9 @@ Future<void> bootstrap(
         appName: config.appName,
         clubName: config.clubName,
         crestAsset: config.crestAsset,
+        countryCode: config.countryCode,
+        currencyCode: config.currency,
+        currencySymbol: config.currencySymbol,
       );
 
       final startupCoordinator = AppStartupCoordinator(

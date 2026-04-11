@@ -82,6 +82,20 @@ function mapCompetition(
   };
 }
 
+type SupabaseRpcResult = Promise<{ data: unknown; error: unknown }>;
+
+function invokeUntypedRpc(
+  client: NonNullable<ReturnType<typeof getReadOnlySupabase>>,
+  fn: string,
+  args?: Record<string, unknown>,
+): SupabaseRpcResult {
+  const rpc = client.rpc as unknown as (
+    fn: string,
+    args?: Record<string, unknown>,
+  ) => SupabaseRpcResult;
+  return rpc(fn, args);
+}
+
 async function isFantasyWebEnabled() {
   const [featureEnabled, webEnabled] = await Promise.all([
     getConfigValue("feature_fantasy_enabled", "true"),
@@ -190,7 +204,7 @@ export const getFantasyLeaderboard = cache(
     }
 
     try {
-      const { data } = await (client as any).rpc("fantasy_get_leaderboard", {
+      const { data } = await invokeUntypedRpc(client, "fantasy_get_leaderboard", {
         p_competition_slug: competitionSlug,
         p_limit: limit,
       });
@@ -235,7 +249,8 @@ export const getFantasyBracket = cache(
         return [];
       }
 
-      const { data } = await (client as any).rpc(
+      const { data } = await invokeUntypedRpc(
+        client,
         "fantasy_get_competition_bracket",
         {
           p_competition_id: competition.id,

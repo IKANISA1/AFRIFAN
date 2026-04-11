@@ -1,4 +1,5 @@
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -11,6 +12,10 @@ class LedgerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
+    final currency = CurrencyFormatter(
+      currencyCode: context.afriCurrencyCode,
+      currencySymbol: context.afriCurrencySymbol,
+    );
     final amount = (transaction['amount'] as num?)?.toInt() ?? 0;
     final status = transaction['status']?.toString() ?? 'pending';
     final alias =
@@ -67,7 +72,7 @@ class LedgerItem extends StatelessWidget {
 
           // Amount
           Text(
-            'FRw ${NumberFormat('#,##0').format(amount)}',
+            currency.format(amount),
             style: TypographyTokens.monolithFont(
               fontSize: 18,
               fontWeight: FontWeight.w700,

@@ -73,8 +73,12 @@ dependencies:
   hive_flutter: ^1.1.0
 
 dev_dependencies:
+  core_modules:
+    path: ../../packages/core/core_modules
   flutter_test:
     sdk: flutter
+  test_support:
+    path: ../../packages/features/test_support
   flutter_lints: ^5.0.0
 
 flutter:

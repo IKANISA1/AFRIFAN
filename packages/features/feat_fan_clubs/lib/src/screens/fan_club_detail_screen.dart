@@ -4,26 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-
-int? _currentClubId(SupabaseClient client) {
-  final user = client.auth.currentUser;
-  final candidates = <Object?>[
-    user?.appMetadata['club_id'],
-    user?.userMetadata?['club_id'],
-    user?.appMetadata['clubId'],
-    user?.userMetadata?['clubId'],
-  ];
-
-  for (final candidate in candidates) {
-    final parsed = int.tryParse(candidate?.toString().trim() ?? '');
-    if (parsed != null) {
-      return parsed;
-    }
-  }
-
-  return null;
-}
 
 class FanClubDetailScreen extends ConsumerStatefulWidget {
   const FanClubDetailScreen({required this.clubId, super.key});
@@ -56,20 +36,16 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
 
     try {
       final client = ref.read(supabaseClientProvider);
-      final clubId = _currentClubId(client);
-      if (clubId == null) {
-        if (!mounted) return;
-        setState(() {
-          _isLoading = false;
-          _error = 'Could not resolve the active club.';
-        });
-        return;
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved();
+      if (scope.clubId == null) {
+        throw StateError('Fan clubs require a numeric club scope.');
       }
       final clubRow = await client
           .from('fan_clubs')
           .select()
           .eq('id', widget.clubId)
-          .eq('club_id', clubId)
+          .eq('club_id', scope.clubId!)
           .maybeSingle();
 
       if (clubRow == null) {
@@ -83,11 +59,9 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
 
       Map<String, dynamic>? matchRow;
       try {
-        matchRow = await client
-            .from('matches')
-            .select()
-            .eq('is_on_sale', true)
-            .eq('club_id', clubId)
+        var query = client.from('matches').select().eq('is_on_sale', true);
+        query = resolver.apply(query, scope);
+        matchRow = await query
             .order('match_date', ascending: true)
             .limit(1)
             .maybeSingle();
@@ -187,10 +161,18 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
   }
 
   Future<void> _copyShareLink() async {
+    const websiteUrl = String.fromEnvironment(
+      'APP_WEBSITE_URL',
+      defaultValue: '',
+    );
+    final normalizedWebsite = websiteUrl.trim().replaceAll(RegExp(r'/$'), '');
+    final shareTarget = normalizedWebsite.isNotEmpty
+        ? '$normalizedWebsite/fan-clubs/${widget.clubId}'
+        : 'Open ${RuntimeBranding.displayAppName} and visit the Fan Clubs section.';
     await Clipboard.setData(
       ClipboardData(
         text:
-            'Join this ${RuntimeBranding.displayAppName} fan club: /fan-clubs/${widget.clubId}',
+            'Join this ${RuntimeBranding.displayAppName} fan club: $shareTarget',
       ),
     );
     if (!mounted) return;

@@ -64,6 +64,17 @@ jobs:
           flutter test
           apps/rayon_sports/test
 
+      - name: Run white-label app shell smoke tests
+        run: |
+          smoke_tests=$(find apps -path '*/test/app_shell_smoke_test.dart' ! -path 'apps/rayon_sports/*' | sort)
+          if [ -z "$smoke_tests" ]; then
+            echo "No white-label app shell smoke tests found."
+            exit 1
+          fi
+          echo "$smoke_tests"
+          # Paths are repo-controlled and space-free, so word splitting is intentional here.
+          flutter test $smoke_tests
+
       - name: Run Rayon integration smoke tests
         run: >
           flutter test

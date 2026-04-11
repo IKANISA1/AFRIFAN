@@ -7,6 +7,7 @@ import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { Skeleton } from "@/components/skeleton";
 import { SectionHeading } from "@/components/section-heading";
+import { fallbackClubProfile } from "@/lib/content";
 import { cn, formatCurrency } from "@/lib/utils";
 import {
   getAdminProducts,
@@ -133,7 +134,7 @@ export default function AdminShopPage() {
           <label className="grid gap-2 text-sm">Subtitle<input name="subtitle" value={form.subtitle} onChange={(e) => setForm((c) => ({ ...c, subtitle: e.target.value }))} className="dashboard-input" /></label>
           <label className="grid gap-2 text-sm">Description<textarea name="description" rows={3} value={form.description} onChange={(e) => setForm((c) => ({ ...c, description: e.target.value }))} className="dashboard-input min-h-20 resize-y" /></label>
           <div className="grid gap-4 sm:grid-cols-3">
-            <label className="grid gap-2 text-sm">Price (RWF)<input type="number" name="price" value={form.price} onChange={(e) => setForm((c) => ({ ...c, price: e.target.value }))} className="dashboard-input" /></label>
+            <label className="grid gap-2 text-sm">Price ({fallbackClubProfile.currencyCode})<input type="number" name="price" value={form.price} onChange={(e) => setForm((c) => ({ ...c, price: e.target.value }))} className="dashboard-input" /></label>
             <label className="grid gap-2 text-sm">Sort order<input type="number" name="sortOrder" value={form.sortOrder} onChange={(e) => setForm((c) => ({ ...c, sortOrder: e.target.value }))} className="dashboard-input" /></label>
             <label className="grid gap-2 text-sm">Collection<input name="collection" value={form.collection} onChange={(e) => setForm((c) => ({ ...c, collection: e.target.value }))} className="dashboard-input" /></label>
           </div>

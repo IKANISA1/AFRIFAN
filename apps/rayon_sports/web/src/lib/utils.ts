@@ -1,12 +1,14 @@
 import { clsx } from "clsx";
 
+import { rayonClub } from "@/lib/config";
+
 export function cn(...values: Array<string | false | null | undefined>) {
   return clsx(values);
 }
 
 export function formatCurrency(
   value: number,
-  currency = "RWF",
+  currency = rayonClub.currencyCode,
   locale = "en-RW",
 ) {
   return new Intl.NumberFormat(locale, {

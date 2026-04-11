@@ -35,24 +35,39 @@ class _ContributionsMonitorScreenState
   Future<void> _loadMonitor() async {
     try {
       final client = ref.read(supabaseClientProvider);
-      final results = await Future.wait([
-        client
-            .from('contribution_groups')
-            .select(
-              'id, name, description, group_type, target_amount, '
-              'current_total, member_count, creator_id, invite_code, '
-              'is_closed, privacy, created_at',
-            )
-            .order('created_at', ascending: false),
-        client
-            .from('contributions')
-            .select('id, group_id, user_id, amount, status, created_at')
-            .order('created_at', ascending: false)
-            .limit(500),
-      ]);
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved();
 
-      final groups = List<Map<String, dynamic>>.from(results[0] as List);
-      final contributions = List<Map<String, dynamic>>.from(results[1] as List);
+      var groupsQuery = client.from('contribution_groups').select(
+        'id, name, description, group_type, target_amount, '
+        'current_total, member_count, creator_id, invite_code, '
+        'is_closed, privacy, created_at',
+      );
+      groupsQuery = resolver.apply(groupsQuery, scope);
+      final groups = List<Map<String, dynamic>>.from(
+        ((await groupsQuery.order('created_at', ascending: false)) as List).map(
+          (row) => Map<String, dynamic>.from(row as Map),
+        ),
+      );
+      final groupIds = groups
+          .map((group) => group['id']?.toString())
+          .whereType<String>()
+          .where((id) => id.isNotEmpty)
+          .toList(growable: false);
+
+      var contributions = const <Map<String, dynamic>>[];
+      if (groupIds.isNotEmpty) {
+        contributions = List<Map<String, dynamic>>.from(
+          (await client
+                  .from('group_contributions')
+                  .select('id, group_id, user_id, amount, status, created_at')
+                  .inFilter('group_id', groupIds)
+                  .order('created_at', ascending: false)
+                  .limit(500)
+              as List)
+              .map((row) => Map<String, dynamic>.from(row as Map)),
+        );
+      }
 
       final creatorIds = groups
           .map((group) => group['creator_id']?.toString())
@@ -64,10 +79,12 @@ class _ContributionsMonitorScreenState
       final aliases = <String, String>{};
       if (creatorIds.isNotEmpty) {
         try {
-          final profiles = await client
+          var profilesQuery = client
               .from('profiles')
               .select('id, public_user_id')
               .inFilter('id', creatorIds);
+          profilesQuery = resolver.apply(profilesQuery, scope);
+          final profiles = await profilesQuery;
           for (final profile in profiles) {
             final id = profile['id']?.toString();
             final alias = profile['public_user_id']?.toString();
@@ -207,6 +224,7 @@ class _ContributionsMonitorScreenState
 
   @override
   Widget build(BuildContext context) {
+    final currencySymbol = context.afriCurrencySymbol;
     return Scaffold(
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
@@ -245,7 +263,7 @@ class _ContributionsMonitorScreenState
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
-                          'FRw ${_currency.format(_monthlyTotal)}',
+                          '$currencySymbol ${_currency.format(_monthlyTotal)}',
                           style: TypographyTokens.displayMedium(
                             ColorTokens.clubAccent,
                           ),
@@ -342,8 +360,8 @@ class _ContributionsMonitorScreenState
                               ),
                               const SizedBox(height: SpacingTokens.spacing2),
                               Text(
-                                'FRw ${_currency.format(total)}'
-                                '${target > 0 ? ' / FRw ${_currency.format(target)}' : ''}',
+                                '$currencySymbol ${_currency.format(total)}'
+                                '${target > 0 ? ' / $currencySymbol ${_currency.format(target)}' : ''}',
                                 style: TypographyTokens.headlineLarge()
                                     .copyWith(color: ColorTokens.clubAccent),
                               ),

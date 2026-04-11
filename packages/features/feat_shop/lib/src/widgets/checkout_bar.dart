@@ -19,8 +19,8 @@ class CheckoutBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final currency = CurrencyFormatter(
-      currencyCode: 'RWF',
-      currencySymbol: 'FRw',
+      currencyCode: context.afriCurrencyCode,
+      currencySymbol: context.afriCurrencySymbol,
     );
 
     return AnimatedSlide(

@@ -55,7 +55,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         ...newsTitles.map((title) => 'CMS  •  $title'),
         ...groups.take(2).map((group) {
           final total = (group['current_total'] as num?)?.toInt() ?? 0;
-          return 'CONTRIBUTIONS  •  ${group['name']?.toString() ?? 'Circle'} at FRw $total';
+          final currencySymbol = RuntimeBranding.displayCurrencySymbol;
+          return 'CONTRIBUTIONS  •  ${group['name']?.toString() ?? 'Circle'} at $currencySymbol $total';
         }),
       ];
 

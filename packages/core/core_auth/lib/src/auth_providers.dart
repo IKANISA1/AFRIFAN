@@ -18,7 +18,12 @@ final authRepositoryProvider = Provider<AuthRepository>(
 /// Core auth state — drives the entire app's auth flow.
 final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final repository = ref.watch(authRepositoryProvider);
-  return AuthNotifier(repository: repository);
+  final notifier = AuthNotifier(repository: repository);
+  final subscription = repository.authStateChanges.listen(
+    notifier.syncWithAuthChange,
+  );
+  ref.onDispose(subscription.cancel);
+  return notifier;
 });
 
 /// Current authenticated user profile, or null.

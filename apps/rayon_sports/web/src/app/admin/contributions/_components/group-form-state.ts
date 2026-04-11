@@ -1,3 +1,4 @@
+import { fallbackClubProfile } from "@/lib/content";
 import type { AdminContributionGroup } from "@/lib/types";
 
 export type GroupForm = {
@@ -22,7 +23,7 @@ export const emptyGroupForm: GroupForm = {
   groupType: "project",
   targetAmount: "0",
   currentTotal: "0",
-  currency: "RWF",
+  currency: fallbackClubProfile.currencyCode,
   memberCount: "0",
   inviteCode: "",
   isClosed: false,

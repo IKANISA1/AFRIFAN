@@ -57,7 +57,7 @@ abstract class ClubConfig {
   /// Currency code: e.g. 'RWF'
   String get currency;
 
-  /// Currency symbol: e.g. 'FRw'
+  /// Currency symbol: e.g. 'RWF'
   String get currencySymbol;
 
   /// Club-specific color palette

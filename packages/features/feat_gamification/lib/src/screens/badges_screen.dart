@@ -16,6 +16,7 @@ class BadgesScreen extends ConsumerStatefulWidget {
 class _BadgesScreenState extends ConsumerState<BadgesScreen> {
   List<Map<String, dynamic>> _badges = const <Map<String, dynamic>>[];
   bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
       setState(() {
         _badges = _defaultBadges(0, 0, 0, false);
         _isLoading = false;
+        _error = null;
       });
       return;
     }
@@ -50,6 +52,12 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
           .eq('creator_id', userId)
           .limit(10);
       groupsQuery = resolver.apply(groupsQuery, scope);
+      var ticketsQuery = client
+          .from('tickets')
+          .select('id')
+          .eq('user_id', userId)
+          .limit(10);
+      ticketsQuery = resolver.apply(ticketsQuery, scope);
       final results = await Future.wait([
         client
             .from('user_private_contacts')
@@ -57,7 +65,7 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
             .eq('user_id', userId)
             .maybeSingle(),
         membershipQuery.maybeSingle(),
-        client.from('tickets').select('id').eq('user_id', userId).limit(10),
+        ticketsQuery,
         groupsQuery,
         client
             .from('fan_club_members')
@@ -88,12 +96,14 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
           hasMomo || clubCount > 0,
         );
         _isLoading = false;
+        _error = null;
       });
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _badges = _defaultBadges(0, 0, 0, false);
+        _badges = const <Map<String, dynamic>>[];
         _isLoading = false;
+        _error = 'Badges are temporarily unavailable.';
       });
     }
   }
@@ -180,6 +190,18 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
           ? const Padding(
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),
+            )
+          : _error != null
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                child: AfriStateView.offline(
+                  title: 'Badges unavailable',
+                  message: _error!,
+                  actionLabel: 'Retry',
+                  onAction: _loadBadges,
+                ),
+              ),
             )
           : Padding(
               padding: const EdgeInsets.all(SpacingTokens.spacing6),

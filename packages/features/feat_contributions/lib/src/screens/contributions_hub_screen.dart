@@ -1,6 +1,7 @@
-import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
+import 'package:feat_sms_ledger/feat_sms_ledger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -19,6 +20,7 @@ class _ContributionsHubScreenState
     extends ConsumerState<ContributionsHubScreen> {
   List<Map<String, dynamic>> _groups = const <Map<String, dynamic>>[];
   bool _isLoading = true;
+  bool _isUpdatingSmsSync = false;
   String? _error;
 
   @override
@@ -29,33 +31,36 @@ class _ContributionsHubScreenState
 
   Future<void> _loadGroups() async {
     try {
-      final groups = await ref.read(clubRepositoryProvider).getContributionGroups();
-      final rows = groups
-          .map(
-            (group) => <String, dynamic>{
-              'id': group.id,
-              'name': group.name,
-              'description': group.description,
-              'current_total': group.currentTotal,
-              'target_amount': group.targetAmount,
-              'member_count': group.memberCount,
-              'privacy': group.privacy.value,
-              'created_at': group.createdAt.toIso8601String(),
-            },
-          )
-          .toList(growable: false)
-        ..sort((left, right) {
-          final rightCreated = DateTime.tryParse(
-            right['created_at']?.toString() ?? '',
-          );
-          final leftCreated = DateTime.tryParse(
-            left['created_at']?.toString() ?? '',
-          );
-          if (leftCreated == null || rightCreated == null) {
-            return 0;
-          }
-          return rightCreated.compareTo(leftCreated);
-        });
+      final groups = await ref
+          .read(clubRepositoryProvider)
+          .getContributionGroups();
+      final rows =
+          groups
+              .map(
+                (group) => <String, dynamic>{
+                  'id': group.id,
+                  'name': group.name,
+                  'description': group.description,
+                  'current_total': group.currentTotal,
+                  'target_amount': group.targetAmount,
+                  'member_count': group.memberCount,
+                  'privacy': group.privacy.name.replaceAll('_', ''),
+                  'created_at': group.createdAt.toIso8601String(),
+                },
+              )
+              .toList(growable: false)
+            ..sort((left, right) {
+              final rightCreated = DateTime.tryParse(
+                right['created_at']?.toString() ?? '',
+              );
+              final leftCreated = DateTime.tryParse(
+                left['created_at']?.toString() ?? '',
+              );
+              if (leftCreated == null || rightCreated == null) {
+                return 0;
+              }
+              return rightCreated.compareTo(leftCreated);
+            });
 
       if (!mounted) return;
       setState(() {
@@ -72,8 +77,89 @@ class _ContributionsHubScreenState
     }
   }
 
+  Future<void> _enableSmsSync() async {
+    final confirmed = await showSmsPermissionModal(context);
+    if (!confirmed || !mounted) return;
+
+    setState(() => _isUpdatingSmsSync = true);
+    try {
+      final enabled = await ref
+          .read(momoSmsAutoreadServiceProvider)
+          .enable(onShowRationale: () async => true);
+      ref.invalidate(momoSmsSyncEnabledProvider);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            enabled
+                ? 'MoMo SMS sync enabled for this device.'
+                : 'SMS access was not granted. Sync remains off.',
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.toString())));
+    } finally {
+      if (mounted) {
+        setState(() => _isUpdatingSmsSync = false);
+      }
+    }
+  }
+
+  Future<void> _disableSmsSync() async {
+    setState(() => _isUpdatingSmsSync = true);
+    try {
+      await ref.read(momoSmsAutoreadServiceProvider).disable();
+      ref.invalidate(momoSmsSyncEnabledProvider);
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('MoMo SMS sync disabled.')));
+    } finally {
+      if (mounted) {
+        setState(() => _isUpdatingSmsSync = false);
+      }
+    }
+  }
+
+  Future<void> _runManualSmsSync() async {
+    setState(() => _isUpdatingSmsSync = true);
+    try {
+      final result = await ref
+          .read(momoSmsAutoreadServiceProvider)
+          .syncInbox(trigger: MomoInboxSyncTrigger.manual);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'SMS sync complete: ${result.uploadedMessages} uploaded, ${result.duplicateMessages} duplicates.',
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.toString())));
+    } finally {
+      if (mounted) {
+        setState(() => _isUpdatingSmsSync = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final currency = CurrencyFormatter(
+      currencyCode: context.afriCurrencyCode,
+      currencySymbol: context.afriCurrencySymbol,
+    );
+    final smsSyncEnabledAsync = ref.watch(momoSmsSyncEnabledProvider);
+    final smsSyncEnabled = smsSyncEnabledAsync.valueOrNull ?? false;
+    const smsSyncAvailable = EnvConfig.enableAndroidMomoSmsAutoread;
     final totalRaised = _groups.fold<int>(
       0,
       (sum, group) => sum + ((group['current_total'] as num?)?.toInt() ?? 0),
@@ -124,7 +210,7 @@ class _ContributionsHubScreenState
                 title: 'CLUB PROJECTS',
                 subtitle: totalRaised == 0
                     ? 'No campaigns yet.'
-                    : 'FRw $totalRaised of $totalTarget raised.',
+                    : '${currency.format(totalRaised)} of ${currency.format(totalTarget)} raised.',
                 accent: ColorTokens.clubPrimary,
                 metricLabel: '${_groups.length} OPEN',
                 onTap: () => context.push('/contribute/projects'),
@@ -158,20 +244,60 @@ class _ContributionsHubScreenState
                     Text('MOMO SMS SYNC', style: TypographyTokens.labelLarge()),
                     const SizedBox(height: SpacingTokens.spacing2),
                     Text(
-                      'Auto-match MoMo receipts to contributions.',
+                      smsSyncAvailable
+                          ? 'Auto-match MoMo receipts to contributions on this device.'
+                          : 'SMS sync is unavailable in this build.',
                       style: TypographyTokens.bodyMedium(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
-                    OutlinedButton(
-                      onPressed: () => showSmsPermissionModal(context),
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 56),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
+                    if (!smsSyncAvailable)
+                      Text(
+                        'Release builds must enable this capability before supporters can opt in.',
+                        style: TypographyTokens.bodySmall(
+                          ColorTokens.onSurfaceVariant,
+                        ),
+                      )
+                    else if (smsSyncEnabled) ...[
+                      Text(
+                        'Status: active for this device.',
+                        style: TypographyTokens.bodySmall(
+                          ColorTokens.onSurfaceVariant,
                         ),
                       ),
-                      child: const Text('ENABLE SMS READING'),
-                    ),
+                      const SizedBox(height: SpacingTokens.spacing3),
+                      ClaymorphicButton(
+                        label: _isUpdatingSmsSync ? 'SYNCING...' : 'SYNC NOW',
+                        width: double.infinity,
+                        onPressed: _isUpdatingSmsSync
+                            ? null
+                            : _runManualSmsSync,
+                      ),
+                      const SizedBox(height: SpacingTokens.spacing3),
+                      OutlinedButton(
+                        onPressed: _isUpdatingSmsSync ? null : _disableSmsSync,
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 56),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        child: const Text('DISABLE SMS SYNC'),
+                      ),
+                    ] else
+                      OutlinedButton(
+                        onPressed: _isUpdatingSmsSync ? null : _enableSmsSync,
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 56),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        child: Text(
+                          _isUpdatingSmsSync
+                              ? 'ENABLING...'
+                              : 'ENABLE SMS SYNC',
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -249,7 +375,7 @@ class _ContributionsHubScreenState
                                           height: SpacingTokens.spacing1,
                                         ),
                                         Text(
-                                          'FRw $currentTotal raised  •  FRw $targetAmount target',
+                                          '${currency.format(currentTotal)} raised  •  ${currency.format(targetAmount)} target',
                                           style: TypographyTokens.bodySmall(),
                                         ),
                                       ],

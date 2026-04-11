@@ -22,6 +22,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isInitialLoading = true;
   bool _isRefreshing = false;
+  int _latestIntelRefreshKey = 0;
   HomeFeedSnapshot _snapshot = const HomeFeedSnapshot();
 
   @override
@@ -46,6 +47,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         _snapshot = snapshot;
         _isInitialLoading = false;
         _isRefreshing = false;
+        _latestIntelRefreshKey++;
       });
     } catch (_) {
       if (!mounted) return;
@@ -57,6 +59,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
         _isInitialLoading = false;
         _isRefreshing = false;
+        _latestIntelRefreshKey++;
       });
     }
   }
@@ -166,7 +169,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SliverToBoxAdapter(
                     child: _buildAnimatedSection(
                       context,
-                      const LatestIntelSection(),
+                      LatestIntelSection(
+                        key: ValueKey<int>(_latestIntelRefreshKey),
+                      ),
                       delayMs: 400,
                     ),
                   ),

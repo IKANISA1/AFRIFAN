@@ -145,15 +145,14 @@ class LedgerReconciliationService {
 
   Future<_PendingContributionState> _loadPendingContributions() async {
     final pending = await _client
-        .from('contributions')
-        .select(
-            'id, user_id, amount, created_at, group_id, club_id, external_ref')
+        .from('group_contributions')
+        .select('id, user_id, amount, created_at, group_id, momo_reference')
         .eq('status', 'pending')
         .order('created_at', ascending: true)
         .limit(100);
     return _PendingContributionState(
-      schema: _ContributionSchema.legacyContributions,
-      targetTable: 'contributions',
+      schema: _ContributionSchema.groupContributions,
+      targetTable: 'group_contributions',
       rows: List<Map<String, dynamic>>.from(pending as List),
     );
   }
@@ -165,13 +164,12 @@ class LedgerReconciliationService {
     required String? txId,
   }) async {
     switch (schema) {
-      case _ContributionSchema.legacyContributions:
+      case _ContributionSchema.groupContributions:
         await _client
-            .from('contributions')
+            .from('group_contributions')
             .update({
               'status': 'confirmed',
-              'external_ref': txId,
-              'ledger_entry_id': ledgerId,
+              'momo_reference': txId ?? contribution['momo_reference'],
               'confirmed_at': DateTime.now().toUtc().toIso8601String(),
             })
             .eq('id', contribution['id'])
@@ -188,9 +186,7 @@ class LedgerReconciliationService {
   }
 }
 
-enum _ContributionSchema {
-  legacyContributions,
-}
+enum _ContributionSchema { groupContributions }
 
 class _PendingContributionState {
   const _PendingContributionState({

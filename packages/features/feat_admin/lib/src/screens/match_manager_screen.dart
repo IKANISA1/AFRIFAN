@@ -103,6 +103,7 @@ class _MatchManagerScreenState extends ConsumerState<MatchManagerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currencySymbol = context.afriCurrencySymbol;
     return Scaffold(
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
@@ -239,8 +240,8 @@ class _MatchManagerScreenState extends ConsumerState<MatchManagerScreen> {
                               ),
                               const SizedBox(height: SpacingTokens.spacing3),
                               Text(
-                                'GENERAL FRw ${_currency.format((match['ticket_general_price'] as num?)?.toInt() ?? 0)}'
-                                '  •  VIP FRw ${_currency.format((match['ticket_vip_price'] as num?)?.toInt() ?? 0)}',
+                                'GENERAL $currencySymbol ${_currency.format((match['ticket_general_price'] as num?)?.toInt() ?? 0)}'
+                                '  •  VIP $currencySymbol ${_currency.format((match['ticket_vip_price'] as num?)?.toInt() ?? 0)}',
                                 style: TypographyTokens.bodyMedium(),
                               ),
                               const SizedBox(height: SpacingTokens.spacing2),

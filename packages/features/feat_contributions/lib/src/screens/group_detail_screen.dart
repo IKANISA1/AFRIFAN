@@ -4,28 +4,8 @@ import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../widgets/contribution_overlays.dart';
-
-int? _currentClubId(SupabaseClient client) {
-  final user = client.auth.currentUser;
-  final candidates = <Object?>[
-    user?.appMetadata['club_id'],
-    user?.userMetadata?['club_id'],
-    user?.appMetadata['clubId'],
-    user?.userMetadata?['clubId'],
-  ];
-
-  for (final candidate in candidates) {
-    final parsed = int.tryParse(candidate?.toString().trim() ?? '');
-    if (parsed != null) {
-      return parsed;
-    }
-  }
-
-  return null;
-}
 
 class GroupDetailScreen extends ConsumerStatefulWidget {
   const GroupDetailScreen({required this.groupId, super.key});
@@ -41,9 +21,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   List<Map<String, dynamic>> _ledger = const <Map<String, dynamic>>[];
   bool _loading = true;
   String? _error;
-  final _currency = CurrencyFormatter(
-    currencyCode: 'RWF',
-    currencySymbol: 'FRw',
+
+  CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
+    currencyCode: context.afriCurrencyCode,
+    currencySymbol: context.afriCurrencySymbol,
   );
 
   @override
@@ -55,21 +36,15 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   Future<void> _loadGroup() async {
     try {
       final client = ref.read(supabaseClientProvider);
-      final clubId = _currentClubId(client);
-      if (clubId == null) {
-        if (mounted) {
-          setState(() {
-            _loading = false;
-            _error = 'Could not resolve the active club.';
-          });
-        }
-        return;
+      final scope = await ClubScopeResolver(client: client).requireResolved();
+      if (scope.clubId == null) {
+        throw StateError('Contribution circles require a numeric club scope.');
       }
       final groupRow = await client
           .from('contribution_groups')
           .select()
           .eq('id', widget.groupId)
-          .eq('club_id', clubId)
+          .eq('club_id', scope.clubId!)
           .maybeSingle();
 
       if (groupRow == null) {
@@ -83,8 +58,8 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       }
 
       final contributions = await client
-          .from('contributions')
-          .select('user_id, amount, created_at, status')
+          .from('group_contributions')
+          .select('user_id, amount, created_at, status, momo_reference')
           .eq('group_id', widget.groupId)
           .order('created_at', ascending: false)
           .limit(20);
@@ -132,7 +107,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       if (mounted) {
         setState(() {
           _loading = false;
-          _error = 'Could not load this circle.';
+          _error = 'Could not load this circle right now.';
         });
       }
     }
@@ -140,6 +115,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currency = _currencyFormatter;
     final group = _group;
     final currentTotal = (group?['current_total'] as num?)?.toInt() ?? 0;
     final targetAmount = (group?['target_amount'] as num?)?.toInt() ?? 0;
@@ -198,7 +174,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                     child: Column(
                       children: [
                         Text(
-                          _currency.format(currentTotal),
+                          currency.format(currentTotal),
                           style: TypographyTokens.monolithFont(
                             fontSize: 44,
                             fontWeight: FontWeight.w900,
@@ -207,7 +183,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                         ),
                         const SizedBox(height: SpacingTokens.spacing1),
                         Text(
-                          'Target ${_currency.format(targetAmount)}  •  ${(progress * 100).round()}%',
+                          'Target ${currency.format(targetAmount)}  •  ${(progress * 100).round()}%',
                           style: TypographyTokens.bodyMedium(),
                         ),
                         if (description != null && description.isNotEmpty) ...[
@@ -341,7 +317,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                       ),
                       child: _LedgerRow(
                         alias: entry['alias']?.toString() ?? '#------',
-                        amount: _currency.format(
+                        amount: currency.format(
                           (entry['amount'] as num?)?.toInt() ?? 0,
                         ),
                         time:

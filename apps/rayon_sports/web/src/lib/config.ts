@@ -50,8 +50,10 @@ export const rayonClub = {
   shortName: "Rayon Sports",
   nickname: "Gikundiro",
   countryCode: "RW",
-  currencyCode: "RWF",
-  currencySymbol: "FRw",
+  currencyCode:
+    process.env.NEXT_PUBLIC_CLUB_CURRENCY_CODE?.trim() || "RWF",
+  currencySymbol:
+    process.env.NEXT_PUBLIC_CLUB_CURRENCY_SYMBOL?.trim() || "RWF",
   primaryColorHex: "#0038A8",
   secondaryColorHex: "#8885F0",
   accentColorHex: "#D4A017",

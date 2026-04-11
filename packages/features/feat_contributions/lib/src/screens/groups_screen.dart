@@ -63,6 +63,10 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
+    final currency = CurrencyFormatter(
+      currencyCode: context.afriCurrencyCode,
+      currencySymbol: context.afriCurrencySymbol,
+    );
     final totalContributed = _groups.fold<int>(
       0,
       (sum, group) => sum + ((group['current_total'] as num?)?.toInt() ?? 0),
@@ -143,8 +147,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                         color: ColorTokens.ghostBorder,
                       ),
                       _SummaryItem(
-                        value:
-                            'FRw ${CurrencyFormatter(currencyCode: 'RWF', currencySymbol: 'FRw').formatPlain(totalContributed)}',
+                        value: currency.format(totalContributed),
                         label: 'CONTRIBUTED',
                         color: ColorTokens.success,
                       ),

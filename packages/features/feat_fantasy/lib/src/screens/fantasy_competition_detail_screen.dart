@@ -208,21 +208,19 @@ class _Actions extends StatelessWidget {
       runSpacing: SpacingTokens.spacing3,
       children: [
         FilledButton.icon(
-          onPressed: () =>
-              context.push('/fantasy/competition/${competition.slug}/rules'),
+          onPressed: () => context.push('/fantasy/${competition.slug}/rules'),
           icon: const Icon(Icons.rule_rounded),
           label: const Text('Rules'),
         ),
         FilledButton.tonalIcon(
-          onPressed: () => context.push(
-            '/fantasy/competition/${competition.slug}/leaderboard',
-          ),
+          onPressed: () =>
+              context.push('/fantasy/${competition.slug}/leaderboard'),
           icon: const Icon(Icons.leaderboard_rounded),
           label: const Text('Leaderboard'),
         ),
         FilledButton.tonalIcon(
           onPressed: () => context.push(
-            '/fantasy/competition/${competition.slug}/${competition.hasEntry ? 'squad' : 'entry'}',
+            '/fantasy/${competition.slug}/${competition.hasEntry ? 'squad' : 'entry'}',
           ),
           icon: const Icon(Icons.playlist_add_check_circle_rounded),
           label: Text(competition.hasEntry ? 'Manage entry' : 'Create entry'),

@@ -51,7 +51,10 @@ class WalletLedgerEntry {
       entryType: jh.asStringOrNull(json['entry_type']) ?? 'debit',
       ledgerStatus: jh.asStringOrNull(json['ledger_status']) ?? 'draft',
       amount: jh.asInt(json['amount']),
-      currency: jh.asStringOrNull(json['currency']) ?? 'RWF',
+      currency:
+          jh.asStringOrNull(json['currency']) ??
+          jh.asStringOrNull(parsedSms['currency']) ??
+          '',
       occurredAt:
           jh.parseDateTime(json['tx_datetime']) ??
           jh.parseDateTime(json['created_at']) ??
@@ -118,7 +121,7 @@ class PayeeLedgerEntry {
       payerName: jh.asStringOrNull(json['payer_name']) ?? 'Member',
       payerPhone: jh.asStringOrNull(json['payer_phone']),
       amount: jh.asInt(json['amount']),
-      currency: jh.asStringOrNull(json['currency']) ?? 'RWF',
+      currency: jh.asStringOrNull(json['currency']) ?? '',
       occurredAt:
           jh.parseDateTime(json['tx_datetime']) ??
           jh.parseDateTime(json['created_at']) ??

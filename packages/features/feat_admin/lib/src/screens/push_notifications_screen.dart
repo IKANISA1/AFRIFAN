@@ -54,18 +54,20 @@ class _PushNotificationsScreenState
   Future<void> _loadContext() async {
     try {
       final client = ref.read(supabaseClientProvider);
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved();
+
+      var groupsQuery = client
+          .from('contribution_groups')
+          .select('id, name')
+          .eq('is_closed', false);
+      groupsQuery = resolver.apply(groupsQuery, scope);
+
+      var historyQuery = client.from('notifications').select();
+      historyQuery = resolver.apply(historyQuery, scope);
       final results = await Future.wait([
-        client
-            .from('contribution_groups')
-            .select('id, name')
-            .eq('is_closed', false)
-            .order('name', ascending: true)
-            .limit(50),
-        client
-            .from('notifications')
-            .select()
-            .order('created_at', ascending: false)
-            .limit(10),
+        groupsQuery.order('name', ascending: true).limit(50),
+        historyQuery.order('created_at', ascending: false).limit(10),
       ]);
 
       if (!mounted) return;

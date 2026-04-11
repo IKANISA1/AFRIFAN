@@ -19,7 +19,7 @@ class FantasyModule extends FeatureModule {
       builder: (context, state) => const FantasyHubScreen(),
       routes: [
         GoRoute(
-          path: 'competition/:slug',
+          path: ':slug',
           builder: (context, state) => FantasyCompetitionDetailScreen(
             slug: state.pathParameters['slug'] ?? '',
           ),

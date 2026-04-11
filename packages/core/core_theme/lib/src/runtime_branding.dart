@@ -17,6 +17,18 @@ class RuntimeBranding {
     'HOME_TEAM_NAME',
     defaultValue: '',
   );
+  static const String _defaultCountryCode = String.fromEnvironment(
+    'COUNTRY_CODE',
+    defaultValue: '',
+  );
+  static const String _defaultCurrencyCode = String.fromEnvironment(
+    'CURRENCY_CODE',
+    defaultValue: '',
+  );
+  static const String _defaultCurrencySymbol = String.fromEnvironment(
+    'CURRENCY_SYMBOL',
+    defaultValue: '',
+  );
   static const String _defaultHomeVenueName = String.fromEnvironment(
     'HOME_VENUE_NAME',
     defaultValue: 'Home Stadium',
@@ -46,6 +58,18 @@ class RuntimeBranding {
     'HOME_TEAM_NAME',
     defaultValue: '',
   );
+  static String _countryCode = const String.fromEnvironment(
+    'COUNTRY_CODE',
+    defaultValue: '',
+  );
+  static String _currencyCode = const String.fromEnvironment(
+    'CURRENCY_CODE',
+    defaultValue: '',
+  );
+  static String _currencySymbol = const String.fromEnvironment(
+    'CURRENCY_SYMBOL',
+    defaultValue: '',
+  );
   static String _homeVenueName = const String.fromEnvironment(
     'HOME_VENUE_NAME',
     defaultValue: 'Home Stadium',
@@ -67,6 +91,9 @@ class RuntimeBranding {
     required String appName,
     required String clubName,
     String? crestAsset,
+    String? countryCode,
+    String? currencyCode,
+    String? currencySymbol,
     String? homeTeamName,
     String? homeVenueName,
     String? rivalTeamName,
@@ -76,6 +103,15 @@ class RuntimeBranding {
     _clubName = clubName.trim().isEmpty ? _clubName : clubName;
     if (crestAsset != null && crestAsset.trim().isNotEmpty) {
       _crestAsset = crestAsset;
+    }
+    if (countryCode != null && countryCode.trim().isNotEmpty) {
+      _countryCode = countryCode;
+    }
+    if (currencyCode != null && currencyCode.trim().isNotEmpty) {
+      _currencyCode = currencyCode;
+    }
+    if (currencySymbol != null && currencySymbol.trim().isNotEmpty) {
+      _currencySymbol = currencySymbol;
     }
     if (homeTeamName != null && homeTeamName.trim().isNotEmpty) {
       _homeTeamName = homeTeamName;
@@ -97,6 +133,9 @@ class RuntimeBranding {
     _clubName = _defaultClubName;
     _crestAsset = _defaultCrestAsset;
     _homeTeamName = _defaultHomeTeamName;
+    _countryCode = _defaultCountryCode;
+    _currencyCode = _defaultCurrencyCode;
+    _currencySymbol = _defaultCurrencySymbol;
     _homeVenueName = _defaultHomeVenueName;
     _rivalTeamName = _defaultRivalTeamName;
     _primaryCompetitionName = _defaultPrimaryCompetitionName;
@@ -138,6 +177,18 @@ class RuntimeBranding {
   static String get displayCompetitionName {
     final trimmed = _primaryCompetitionName.trim();
     return trimmed.isEmpty ? 'League Match' : trimmed;
+  }
+
+  static String get displayCountryCode => _countryCode.trim().toUpperCase();
+
+  static String get displayCurrencyCode {
+    final trimmed = _currencyCode.trim().toUpperCase();
+    return trimmed.isEmpty ? 'RWF' : trimmed;
+  }
+
+  static String get displayCurrencySymbol {
+    final trimmed = _currencySymbol.trim();
+    return trimmed.isEmpty ? displayCurrencyCode : trimmed;
   }
 
   static String get displayCrestAsset => _crestAsset.trim();

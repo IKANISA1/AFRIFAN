@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:another_telephony/telephony.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -122,9 +123,9 @@ class MomoSmsBackgroundProcessor {
         // Non-critical: entry will be de-duplicated on retry drain.
       }
     } catch (error) {
-      debugPrint(
-        '[MoMo SMS] background ingestion failed, capture already queued '
-        'for retry: $error',
+      AfriLogger.warn(
+        'MomoSmsBackground',
+        'Background ingestion failed and capture remains queued for retry: $error',
       );
       // Capture was pre-queued before Supabase init, so no need to
       // queue again. Only record telemetry thresholds.
@@ -145,7 +146,11 @@ class MomoSmsBackgroundProcessor {
           );
         }
       } catch (queueError) {
-        debugPrint('[MoMo SMS] retry queue telemetry failed: $queueError');
+        AfriLogger.error(
+          'MomoSmsBackground',
+          'Retry queue telemetry failed.',
+          queueError,
+        );
       }
     }
   }
@@ -159,7 +164,12 @@ class MomoSmsBackgroundProcessor {
   }
 
   static Future<SupabaseClient?> _ensureSupabaseClient() async {
-    if (EnvConfig.criticalConfigurationError != null) {
+    final configurationError = EnvConfig.criticalConfigurationError;
+    if (configurationError != null) {
+      AfriLogger.warn(
+        'MomoSmsBackground',
+        'Skipping Supabase initialization because runtime configuration is incomplete: $configurationError',
+      );
       return null;
     }
 
@@ -172,6 +182,11 @@ class MomoSmsBackgroundProcessor {
       } catch (error) {
         final message = error.toString().toLowerCase();
         if (!message.contains('already initialized')) {
+          AfriLogger.error(
+            'MomoSmsBackground',
+            'Supabase initialization failed in background isolate.',
+            error,
+          );
           return null;
         }
       }

@@ -21,8 +21,8 @@ class ArmouryProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currency = CurrencyFormatter(
-      currencyCode: 'RWF',
-      currencySymbol: 'FRw',
+      currencyCode: context.afriCurrencyCode,
+      currencySymbol: context.afriCurrencySymbol,
     );
     final name = product['name']?.toString() ?? 'Product';
     final price = (product['price'] as num?)?.toDouble() ?? 0;

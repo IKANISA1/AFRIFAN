@@ -4,28 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../widgets/fan_club_cards.dart';
-
-int? _currentClubId(SupabaseClient client) {
-  final user = client.auth.currentUser;
-  final candidates = <Object?>[
-    user?.appMetadata['club_id'],
-    user?.userMetadata?['club_id'],
-    user?.appMetadata['clubId'],
-    user?.userMetadata?['clubId'],
-  ];
-
-  for (final candidate in candidates) {
-    final parsed = int.tryParse(candidate?.toString().trim() ?? '');
-    if (parsed != null) {
-      return parsed;
-    }
-  }
-
-  return null;
-}
 
 class FanClubsListScreen extends ConsumerStatefulWidget {
   const FanClubsListScreen({super.key});
@@ -74,19 +54,15 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
 
     try {
       final client = ref.read(supabaseClientProvider);
-      final clubId = _currentClubId(client);
-      if (clubId == null) {
-        if (!mounted) return;
-        setState(() {
-          _isLoading = false;
-          _error = 'Could not resolve the active club.';
-        });
-        return;
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved();
+      if (scope.clubId == null) {
+        throw StateError('Fan clubs require a numeric club scope.');
       }
       final clubs = await client
           .from('fan_clubs')
           .select()
-          .eq('club_id', clubId)
+          .eq('club_id', scope.clubId!)
           .order('member_count', ascending: false);
 
       final userId = client.auth.currentUser?.id;

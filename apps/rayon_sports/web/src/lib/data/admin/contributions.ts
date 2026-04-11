@@ -98,7 +98,16 @@ export async function getAdminContributionSnapshot(client: SupabaseClient, acces
 }
 
 export function buildContributionExcel(snapshot: AdminContributionSnapshot) {
-  const headers = ["Name", "Type", "Total (RWF)", "Target (RWF)", "Contributors", "Status", "Created"];
+  const currencyCode = fallbackClubProfile.currencyCode;
+  const headers = [
+    "Name",
+    "Type",
+    `Total (${currencyCode})`,
+    `Target (${currencyCode})`,
+    "Contributors",
+    "Status",
+    "Created",
+  ];
   const rows = snapshot.groups.map((group) => [
     group.name, group.groupType, group.currentTotal, group.targetAmount, group.memberCount,
     group.isClosed ? "Closed" : "Active",

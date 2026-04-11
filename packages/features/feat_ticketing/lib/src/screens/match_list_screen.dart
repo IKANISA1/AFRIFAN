@@ -17,10 +17,11 @@ class MatchListScreen extends ConsumerStatefulWidget {
 class _MatchListScreenState extends ConsumerState<MatchListScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
-  final _currency = CurrencyFormatter(
-    currencyCode: 'RWF',
-    currencySymbol: 'FRw',
-  );
+
+  CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
+        currencyCode: context.afriCurrencyCode,
+        currencySymbol: context.afriCurrencySymbol,
+      );
 
   @override
   void initState() {
@@ -157,7 +158,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
         final match = matches[index];
         final soldOut = match.isSoldOut;
         final onSale = match.isOnSale && !soldOut;
-        final price = _currency.format(match.ticketGeneralPrice);
+        final price = _currencyFormatter.format(match.ticketGeneralPrice);
 
         return Container(
           decoration: BoxDecoration(
@@ -253,10 +254,9 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                 ],
               ),
               const SizedBox(height: SpacingTokens.spacing6),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final priceBlock = Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('FROM', style: TypographyTokens.labelSmall()),
@@ -267,25 +267,50 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                         ),
                       ),
                     ],
-                  ),
-                  if (onSale)
-                    FilledButton(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: ColorTokens.clubPrimary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: ShapeTokens.buttonRadius,
-                        ),
-                      ),
-                      onPressed: () =>
-                          context.push('/tickets/detail/${match.id}'),
-                      child: Text(
-                        'Buy Ticket',
-                        style: TypographyTokens.labelLarge().copyWith(
-                          color: ColorTokens.onSurface,
-                        ),
+                  );
+                  final actionButton = FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: ColorTokens.clubPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: ShapeTokens.buttonRadius,
                       ),
                     ),
-                ],
+                    onPressed: () =>
+                        context.push('/tickets/detail/${match.id}'),
+                    child: Text(
+                      'Buy Ticket',
+                      style: TypographyTokens.labelLarge().copyWith(
+                        color: ColorTokens.onSurface,
+                      ),
+                    ),
+                  );
+                  final isCompactActionRow =
+                      onSale && constraints.maxWidth < 360;
+
+                  if (isCompactActionRow) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        priceBlock,
+                        const SizedBox(height: SpacingTokens.spacing3),
+                        SizedBox(
+                          width: double.infinity,
+                          child: actionButton,
+                        ),
+                      ],
+                    );
+                  }
+
+                  return Row(
+                    children: [
+                      Expanded(child: priceBlock),
+                      if (onSale) ...[
+                        const SizedBox(width: SpacingTokens.spacing4),
+                        actionButton,
+                      ],
+                    ],
+                  );
+                },
               ),
             ],
           ),

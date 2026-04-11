@@ -25,11 +25,6 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
   bool _isRecurring = false;
   bool _submitting = false;
 
-  final _currency = CurrencyFormatter(
-    currencyCode: 'RWF',
-    currencySymbol: 'FRw',
-  );
-
   @override
   void initState() {
     super.initState();
@@ -153,12 +148,16 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currency = CurrencyFormatter(
+      currencyCode: context.afriCurrencyCode,
+      currencySymbol: context.afriCurrencySymbol,
+    );
     final previewName = _nameController.text.trim().isEmpty
         ? 'YOUR CIRCLE'
         : _nameController.text.trim().toUpperCase();
     final previewTarget = _targetAmount > 0
-        ? _currency.format(_targetAmount)
-        : 'FRw 0';
+        ? currency.format(_targetAmount)
+        : currency.format(0);
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -199,7 +198,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
             _ContributionInput(
               label: 'TARGET AMOUNT',
               controller: _targetController,
-              hint: 'FRw 500,000',
+              hint: '${context.afriCurrencySymbol} 500,000',
               keyboardType: TextInputType.number,
               onChanged: (_) => setState(() {}),
             ),

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../test_support/design_font_loader.dart';
+import 'package:test_support/design_font_loader.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

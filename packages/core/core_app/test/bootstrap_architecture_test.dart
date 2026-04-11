@@ -1,81 +1,20 @@
 import 'dart:async';
 
-import 'package:core_app/src/module_registry.dart';
-import 'package:core_app/src/startup_coordinator.dart';
+import 'package:core_app/startup.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
-import 'package:feat_home/feat_home.dart';
-import 'package:feat_onboarding/feat_onboarding.dart';
-import 'package:feat_settings/feat_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
-  group('AppModuleRegistry', () {
-    test('filters disabled modules from club feature flags', () {
-      final modules = AppModuleRegistry.build(
-        const _FakeClubConfig(
-          hasBiopay: false,
-          hasFanClubs: false,
-          hasShop: false,
-          hasTicketing: false,
-        ),
-      );
-
-      expect(
-        modules.map((module) => module.featureKey),
-        orderedEquals(<String>[
-          'home',
-          'settings',
-          'onboarding',
-          'membership',
-          'gamification',
-          'contributions',
-          'fantasy',
-          'live',
-          'admin',
-        ]),
-      );
-    });
-
-    test('keeps enabled modules in registry order', () {
-      final modules = AppModuleRegistry.build(
-        const _FakeClubConfig(
-          hasBiopay: true,
-          hasFanClubs: true,
-          hasShop: true,
-          hasTicketing: true,
-        ),
-      );
-
-      expect(
-        modules.map((module) => module.featureKey),
-        orderedEquals(<String>[
-          'home',
-          'biopay',
-          'settings',
-          'onboarding',
-          'membership',
-          'gamification',
-          'contributions',
-          'ticketing',
-          'fan_clubs',
-          'fantasy',
-          'live',
-          'admin',
-          'shop',
-        ]),
-      );
-    });
-  });
-
   group('AppRouter', () {
     test('prefers splash when onboarding routes are registered', () {
       final router = AppRouter(
         modules: <FeatureModule>[
-          OnboardingModule(),
-          HomeModule(),
-          SettingsModule(),
+          _OnboardingModule(),
+          _HomeModule(),
+          _SettingsModule(),
         ],
         shellBuilder: (_, shell) => Material(child: shell),
       );
@@ -85,7 +24,7 @@ void main() {
 
     test('falls back to the first tab when splash is unavailable', () {
       final router = AppRouter(
-        modules: <FeatureModule>[HomeModule(), SettingsModule()],
+        modules: <FeatureModule>[_HomeModule(), _SettingsModule()],
         shellBuilder: (_, shell) => Material(child: shell),
       );
 
@@ -253,7 +192,7 @@ class _FakeClubConfig implements ClubConfig {
   String get currency => 'RWF';
 
   @override
-  String get currencySymbol => 'FRw';
+  String get currencySymbol => 'RWF';
 
   @override
   bool get hasChat => false;
@@ -292,4 +231,51 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const <String>['en'];
+}
+
+class _HomeModule extends FeatureModule {
+  @override
+  String get featureKey => 'home';
+
+  @override
+  List<RouteBase> get routes => const <RouteBase>[];
+
+  @override
+  TabRoute get tabRoute => TabRoute(
+    path: '/home',
+    label: 'Home',
+    icon: Icons.home_outlined,
+    activeIcon: Icons.home_rounded,
+    builder: (context, state) => const Scaffold(body: Text('Home')),
+  );
+}
+
+class _OnboardingModule extends FeatureModule {
+  @override
+  String get featureKey => 'onboarding';
+
+  @override
+  List<RouteBase> get routes => <RouteBase>[
+    GoRoute(
+      path: '/splash',
+      builder: (context, state) => const Scaffold(body: Text('Splash')),
+    ),
+  ];
+}
+
+class _SettingsModule extends FeatureModule {
+  @override
+  String get featureKey => 'settings';
+
+  @override
+  List<RouteBase> get routes => const <RouteBase>[];
+
+  @override
+  TabRoute get tabRoute => TabRoute(
+    path: '/settings',
+    label: 'Settings',
+    icon: Icons.settings_outlined,
+    activeIcon: Icons.settings,
+    builder: (context, state) => const Scaffold(body: Text('Settings')),
+  );
 }

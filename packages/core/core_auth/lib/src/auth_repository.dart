@@ -103,6 +103,8 @@ class AuthRepository {
 
   /// Delete the user account and cascade delete via edge function.
   Future<void> deleteAccount(String userId) async {
+    await PushNotificationService.unregisterCurrentDevice(userId: userId);
+
     final response = await _client.functions.invoke(
       'delete-account',
       body: <String, dynamic>{'user_id': userId},
@@ -184,6 +186,7 @@ class AuthRepository {
 
   /// Sign out locally.
   Future<void> signOut() async {
+    await PushNotificationService.unregisterCurrentDevice();
     await _client.auth.signOut();
   }
 

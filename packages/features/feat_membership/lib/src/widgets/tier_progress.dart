@@ -12,10 +12,10 @@ class TierProgress extends StatelessWidget {
     final primary = Theme.of(context).colorScheme.primary;
 
     final tiers = [
-      ('BRONZE', 0),
-      ('SILVER', 5000),
-      ('GOLD', 15000),
-      ('LEGEND', 50000),
+      ('FAN', 0),
+      ('BRONZE', 1000),
+      ('GOLD', 2000),
+      ('PLATINUM', 5000),
     ];
 
     return GlassCard(

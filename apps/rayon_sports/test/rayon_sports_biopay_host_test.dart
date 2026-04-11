@@ -1,6 +1,6 @@
 import 'package:club_rayon_sports/club_rayon_sports.dart';
 import 'package:core_app/core_app.dart';
-import 'package:core_app/src/module_registry.dart';
+import 'package:core_modules/core_modules.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';

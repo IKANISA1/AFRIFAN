@@ -60,6 +60,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mocktail: ^1.0.3
+  test_support:
+    path: ../test_support
 
 flutter:
   assets:

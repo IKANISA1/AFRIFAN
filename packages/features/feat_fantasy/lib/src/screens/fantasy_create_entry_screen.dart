@@ -65,7 +65,7 @@ class _FantasyCreateEntryScreenState
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Fantasy entry created.')));
-    context.go('/fantasy/competition/${widget.slug}/squad');
+    context.go('/fantasy/${widget.slug}/squad');
   }
 
   @override

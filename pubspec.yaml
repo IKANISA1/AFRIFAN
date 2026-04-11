@@ -46,6 +46,7 @@ workspace:
   - apps/mogas_90
   # ── Core packages ──
   - packages/core/core_app
+  - packages/core/core_modules
   - packages/core/core_auth
   - packages/core/core_network
   - packages/core/core_theme
@@ -68,6 +69,7 @@ workspace:
   - packages/features/feat_settings
   - packages/features/feat_onboarding
   - packages/features/feat_ticketing
+  - packages/features/test_support
   - packages/africlub_fantasy
   # ── Club config packages ──
   - packages/clubs/club_rayon_sports

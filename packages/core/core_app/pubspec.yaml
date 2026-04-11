@@ -23,37 +23,13 @@ dependencies:
     path: ../core_utils
   core_network:
     path: ../core_network
+  core_modules:
+    path: ../core_modules
 
-  feat_home:
-    path: ../../features/feat_home
-  feat_membership:
-    path: ../../features/feat_membership
-  feat_gamification:
-    path: ../../features/feat_gamification
-  feat_contributions:
-    path: ../../features/feat_contributions
-  feat_shop:
-    path: ../../features/feat_shop
   feat_biopay:
     path: ../../features/feat_biopay
   feat_sms_ledger:
     path: ../../features/feat_sms_ledger
-  feat_settings:
-    path: ../../features/feat_settings
-  feat_onboarding:
-    path: ../../features/feat_onboarding
-  feat_ticketing:
-    path: ../../features/feat_ticketing
-  feat_fan_clubs:
-    path: ../../features/feat_fan_clubs
-  feat_fantasy:
-    path: ../../features/feat_fantasy
-  africlub_fantasy:
-    path: ../../africlub_fantasy
-  feat_live:
-    path: ../../features/feat_live
-  feat_admin:
-    path: ../../features/feat_admin
 
   supabase_flutter: ^2.12.2
   go_router: ^14.8.1

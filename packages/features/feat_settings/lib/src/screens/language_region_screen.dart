@@ -19,16 +19,16 @@ class _LanguageRegionScreenState extends ConsumerState<LanguageRegionScreen> {
   bool _isSaving = false;
 
   static const Map<String, String> _languageOptions = <String, String>{
-    'rw': 'Kinyarwanda',
-    'fr': 'Français',
     'en': 'English',
+    'fr': 'Français',
   };
 
   @override
   void initState() {
     super.initState();
-    _languageCode = (ref.read(currentUserProvider)?.languageCode ?? 'en')
+    final preferred = (ref.read(currentUserProvider)?.languageCode ?? 'en')
         .toLowerCase();
+    _languageCode = _languageOptions.containsKey(preferred) ? preferred : 'en';
   }
 
   Future<void> _saveLanguage() async {
@@ -82,7 +82,32 @@ class _LanguageRegionScreenState extends ConsumerState<LanguageRegionScreen> {
                   children: [
                     Text('CURRENCY', style: TypographyTokens.labelSmall()),
                     const SizedBox(height: SpacingTokens.spacing2),
-                    Text('FRw', style: TypographyTokens.bodyLarge()),
+                    Text(
+                      '${context.afriCurrencySymbol} (${context.afriCurrencyCode})',
+                      style: TypographyTokens.bodyLarge(),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: SpacingTokens.spacing4),
+              GlassCard(
+                animate: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('APP LANGUAGE', style: TypographyTokens.labelSmall()),
+                    const SizedBox(height: SpacingTokens.spacing2),
+                    Text(
+                      'English and French are currently supported in this build.',
+                      style: TypographyTokens.bodyLarge(),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing2),
+                    Text(
+                      'Kinyarwanda support is in progress and is not yet selectable.',
+                      style: TypographyTokens.bodySmall(
+                        ColorTokens.onSurfaceVariant,
+                      ),
+                    ),
                   ],
                 ),
               ),

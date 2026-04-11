@@ -39,7 +39,23 @@ Future<void> showMomoAmountEntrySheet(
   // Launch the MOMO dialer with dynamic USSD
   // §2.4 LOCKED — no hardcoded MOMO fallback.
   final recipient = recipientMomo ?? '';
-  await MomoDialerService.launchMomoUssd(recipient: recipient, amount: amount);
+  final launched = await MomoDialerService.launchMomoUssd(
+    recipient: recipient,
+    amount: amount,
+  );
+
+  if (!launched) {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Could not open the MOMO dialer. No contribution was submitted.',
+        ),
+        backgroundColor: ColorTokens.error,
+      ),
+    );
+    return;
+  }
 
   // Record the contribution in the database
   var recordedPending = false;
@@ -96,8 +112,8 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
   @override
   Widget build(BuildContext context) {
     final currency = CurrencyFormatter(
-      currencyCode: 'RWF',
-      currencySymbol: 'FRw',
+      currencyCode: context.afriCurrencyCode,
+      currencySymbol: context.afriCurrencySymbol,
     );
 
     return Padding(
@@ -251,8 +267,8 @@ class _ContributionSuccessDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currency = CurrencyFormatter(
-      currencyCode: 'RWF',
-      currencySymbol: 'FRw',
+      currencyCode: context.afriCurrencyCode,
+      currencySymbol: context.afriCurrencySymbol,
     );
 
     return Dialog(

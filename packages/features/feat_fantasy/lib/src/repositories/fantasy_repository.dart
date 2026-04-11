@@ -1,3 +1,4 @@
+import 'package:core_network/core_network.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/fantasy_models.dart';
@@ -31,6 +32,9 @@ class SupabaseFantasyRepository implements FantasyRepository {
   SupabaseFantasyRepository({required this.client});
 
   final SupabaseClient client;
+  late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
+    client: client,
+  );
 
   @override
   Future<List<FantasyCompetitionSummary>> loadCompetitions() async {
@@ -45,7 +49,7 @@ class SupabaseFantasyRepository implements FantasyRepository {
         return const <FantasyCompetitionSummary>[];
       }
 
-      final clubId = _currentClubId();
+      final clubId = _scopeResolver.currentClubId;
       final enablementsByCompetitionId = <String, Map<String, dynamic>>{};
       final enteredCompetitionIds = <String>{};
 
@@ -437,19 +441,6 @@ class SupabaseFantasyRepository implements FantasyRepository {
       return value.map((key, item) => MapEntry(key.toString(), item));
     }
     return const <String, dynamic>{};
-  }
-
-  int? _currentClubId() {
-    final user = client.auth.currentUser;
-    final rawValue =
-        user?.appMetadata['club_id'] ??
-        user?.userMetadata?['club_id'] ??
-        user?.appMetadata['clubId'] ??
-        user?.userMetadata?['clubId'];
-    if (rawValue is int) return rawValue;
-    if (rawValue is num) return rawValue.toInt();
-    if (rawValue == null) return null;
-    return int.tryParse(rawValue.toString().trim());
   }
 
   bool _isMissingRelation(Object error, String relation) {
