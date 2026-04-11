@@ -85,16 +85,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(
                           SpacingTokens.spacing6,
-                          SpacingTokens.spacing6,
+                          SpacingTokens.spacing4,
                           SpacingTokens.spacing6,
                           0,
                         ),
-                        child: ClayCard(
-                          padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                          child: Text(
-                            _statusMessage!,
-                            style: TypographyTokens.bodyMedium(),
-                          ),
+                        child: AfriStateView.offline(
+                          title: 'Live updates paused',
+                          message: _statusMessage!,
+                          compact: true,
                         ),
                       ),
                     ),
@@ -250,8 +248,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       return const _HomeHeroStateCard(
         child: AfriEmptyView(
           compact: true,
-          title: 'NO FIXTURE YET',
-          message: 'Next fixture will be published when confirmed.',
+          title: 'No fixture yet',
+          message: 'The next fixture appears here when confirmed.',
           icon: Icons.calendar_month_rounded,
         ),
       );

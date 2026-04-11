@@ -2,8 +2,7 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-/// Top navigation bar for the shop screen with back, branding,
-/// search, filter, and cart actions.
+/// Minimal top bar for the shop screen.
 class ShopTopBar extends StatelessWidget {
   const ShopTopBar({
     super.key,
@@ -18,8 +17,6 @@ class ShopTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         SpacingTokens.spacing4,
@@ -31,6 +28,7 @@ class ShopTopBar extends StatelessWidget {
         children: [
           AfriIconButton(
             icon: Icons.arrow_back_rounded,
+            tooltip: 'Back',
             onTap: () {
               if (context.canPop()) {
                 context.pop();
@@ -39,75 +37,44 @@ class ShopTopBar extends StatelessWidget {
               }
             },
           ),
-          const Spacer(),
-          Text(
-            RuntimeBranding.displayAppName.toUpperCase(),
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.onSurface,
-              letterSpacing: 3.0,
-            ),
+          const SizedBox(width: SpacingTokens.spacing3),
+          Expanded(
+            child: Text('Shop', style: TypographyTokens.headlineSmall()),
           ),
-          const Spacer(),
           AfriIconButton(
-            icon: Icons.tune_rounded,
-            onTap: () => showAfriFilterSortSheet(
-              context: context,
-              title: 'Shop Filters',
-              sortOptions: const [
-                AfriFilterOption(value: 'newest', label: 'Newest'),
-                AfriFilterOption(value: 'price_high', label: 'Price High'),
-                AfriFilterOption(value: 'price_low', label: 'Price Low'),
-              ],
-              typeOptions: categories
-                  .where((category) => category != 'All')
-                  .map(
-                    (category) => AfriFilterOption(
-                      value: category.toLowerCase(),
-                      label: category.toUpperCase(),
-                    ),
-                  )
-                  .toList(growable: false),
-              showDateRange: false,
-              showAmountRange: true,
-              maxAmount: 250000,
-            ),
+            icon: Icons.search_rounded,
+            tooltip: 'Search',
+            onTap: onSearchPressed,
           ),
-          const SizedBox(width: 8),
-          AfriIconButton(icon: Icons.search_rounded, onTap: onSearchPressed),
-          const SizedBox(width: 8),
+          const SizedBox(width: SpacingTokens.spacing2),
           Stack(
             clipBehavior: Clip.none,
             children: [
               AfriIconButton(
                 icon: Icons.shopping_bag_outlined,
+                tooltip: 'Cart',
                 onTap: () => context.push('/shop/cart'),
               ),
               if (cartItemCount > 0)
                 Positioned(
-                  top: -4,
-                  right: -4,
+                  top: -2,
+                  right: -2,
                   child: Container(
-                    width: 18,
+                    constraints: const BoxConstraints(minWidth: 18),
                     height: 18,
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
                     decoration: BoxDecoration(
-                      color: primary,
-                      shape: BoxShape.circle,
+                      color: ColorTokens.primaryContainer,
+                      borderRadius: BorderRadius.circular(999),
                       border: BorderTokens.all(
                         color: ColorTokens.background,
                         width: 2,
                       ),
                     ),
-                    child: Center(
-                      child: Text(
-                        '$cartItemCount',
-                        style: TypographyTokens.editorialFont(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: ColorTokens.onSurface,
-                        ),
-                      ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '$cartItemCount',
+                      style: TypographyTokens.labelSmall(Colors.white),
                     ),
                   ),
                 ),

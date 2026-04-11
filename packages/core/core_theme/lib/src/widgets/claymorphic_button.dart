@@ -4,10 +4,11 @@ import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_press_feedback.dart';
 
-/// Primary tactile CTA with a glowing violet clay finish.
+/// Backward-compatible primary CTA with a cleaner minimalist treatment.
 class ClaymorphicButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -32,82 +33,52 @@ class ClaymorphicButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fromColor = color ?? Theme.of(context).colorScheme.primary;
-    final toColor = Color.alphaBlend(
-      ColorTokens.primaryContainer.withValues(alpha: 0.82),
-      fromColor,
-    );
-    final horizontalPadding = width == null ? 40.0 : 28.0;
+    final background = color ?? Theme.of(context).colorScheme.primary;
+    final enabled = onPressed != null && !isLoading;
 
     return AfriPressFeedback(
-      onTap: onPressed,
+      onTap: enabled ? onPressed : null,
       semanticsLabel: label,
       tooltip: label,
       excludeChildSemantics: true,
       scaleEnd: 0.985,
       builder: (context, state) => AnimatedContainer(
-        duration: const Duration(milliseconds: 120),
-        curve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 140),
+        curve: Curves.easeOutCubic,
         width: width,
-        padding: EdgeInsets.symmetric(
-          horizontal: horizontalPadding,
-          vertical: 18,
+        padding: const EdgeInsets.symmetric(
+          horizontal: SpacingTokens.spacing5,
+          vertical: 16,
         ),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [fromColor, toColor],
-          ),
+          color: enabled ? background : background.withValues(alpha: 0.45),
           borderRadius: ShapeTokens.buttonRadius,
           border: state.isFocused
               ? BorderTokens.focusAll(
-                  color: ColorTokens.onSurface,
-                  opacity: 0.75,
+                  color: Colors.white,
+                  opacity: 0.9,
                   width: BorderTokens.standard,
                 )
-              : BorderTokens.ghost(opacity: 0.08),
-          boxShadow: [
-            ...AfriShadows.primaryGlow(toColor),
-            BoxShadow(
-              color: Colors.white.withValues(
-                alpha: state.isPressed ? 0.08 : 0.16,
-              ),
-              blurRadius: 18,
-              spreadRadius: -14,
-              offset: const Offset(-8, -10),
-              blurStyle: BlurStyle.inner,
-            ),
-            BoxShadow(
-              color: ColorTokens.ambientShadow.withValues(
-                alpha: state.isPressed ? 0.20 : 0.30,
-              ),
-              blurRadius: 24,
-              spreadRadius: -16,
-              offset: const Offset(12, 16),
-              blurStyle: BlurStyle.inner,
-            ),
-          ],
+              : BorderTokens.ghost(width: BorderTokens.standard, opacity: 0.75),
+          boxShadow: enabled ? AfriShadows.primaryGlow(background) : null,
         ),
         child: Row(
           mainAxisSize: width == null ? MainAxisSize.min : MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (isLoading) ...[
-              SizedBox(
-                width: 20,
-                height: 20,
+              const SizedBox(
+                width: 18,
+                height: 18,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Colors.white.withValues(alpha: 0.82),
-                  ),
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: SpacingTokens.spacing3),
             ] else if (icon != null) ...[
-              Icon(icon, color: Colors.white, size: 20),
-              const SizedBox(width: 12),
+              Icon(icon, color: Colors.white, size: 18),
+              const SizedBox(width: SpacingTokens.spacing2),
             ],
             Flexible(
               child: Text(
@@ -115,10 +86,8 @@ class ClaymorphicButton extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
-                style: TypographyTokens.labelLarge().copyWith(
-                  color: Colors.white,
-                  letterSpacing: letterSpacing ?? (preserveCase ? 0.8 : 1.6),
-                  fontWeight: FontWeight.w700,
+                style: TypographyTokens.labelLarge(Colors.white).copyWith(
+                  letterSpacing: letterSpacing ?? (preserveCase ? 0.2 : 0.8),
                 ),
               ),
             ),

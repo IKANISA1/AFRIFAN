@@ -1,10 +1,7 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
-/// Side-by-side stat cards — "Global XP" + "Fan Rank"
-///
-/// Massive monolith display numbers with
-/// claymorphic containers per the Tactile Monolith design system.
+/// Home summary metrics.
 class StatsRow extends StatelessWidget {
   final int globalXp;
   final int fanRank;
@@ -28,82 +25,24 @@ class StatsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).colorScheme.primary;
-
     return Row(
       children: [
-        // Global XP card
         Expanded(
-          child: ClayCard(
-            backgroundColor: ColorTokens.surfaceContainerLow,
-            padding: const EdgeInsets.symmetric(
-              horizontal: SpacingTokens.spacing4,
-              vertical: SpacingTokens.spacing4,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'GLOBAL XP',
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: ColorTokens.onSurface.withValues(alpha: 0.76),
-                    letterSpacing: 1.5,
-                  ),
-                ),
-                const SizedBox(height: SpacingTokens.spacing1),
-                Text(
-                  _formatXp(globalXp),
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 36,
-                    fontWeight: FontWeight.w800,
-                    color: ColorTokens.onSurface,
-                    height: 1.0,
-                    letterSpacing: -0.5,
-                  ),
-                ),
-              ],
-            ),
+          child: AfriMetricTile(
+            label: 'XP',
+            value: _formatXp(globalXp),
+            meta: 'Supporter total',
+            icon: Icons.auto_graph_rounded,
           ),
         ),
         const SizedBox(width: SpacingTokens.spacing3),
-        // Fan Rank card
         Expanded(
-          child: ClayCard(
-            backgroundColor: ColorTokens.surfaceContainerLow,
-            padding: const EdgeInsets.symmetric(
-              horizontal: SpacingTokens.spacing4,
-              vertical: SpacingTokens.spacing4,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'FAN RANK',
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: ColorTokens.onSurface.withValues(alpha: 0.76),
-                    letterSpacing: 1.5,
-                  ),
-                ),
-                const SizedBox(height: SpacingTokens.spacing1),
-                Text(
-                  '#${fanRank.toString().padLeft(3, '0')}',
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 36,
-                    fontWeight: FontWeight.w800,
-                    color: Color.alphaBlend(
-                      primaryColor.withValues(alpha: 0.6),
-                      ColorTokens.onSurface,
-                    ),
-                    height: 1.0,
-                    letterSpacing: -0.5,
-                  ),
-                ),
-              ],
-            ),
+          child: AfriMetricTile(
+            label: 'Rank',
+            value: '#${fanRank.toString().padLeft(3, '0')}',
+            meta: 'Club standing',
+            icon: Icons.leaderboard_outlined,
+            accentColor: ColorTokens.clubAccent,
           ),
         ),
       ],

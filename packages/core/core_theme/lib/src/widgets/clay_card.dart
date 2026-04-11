@@ -4,9 +4,10 @@ import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/shadow_tokens.dart';
 import '../tokens/shape_tokens.dart';
+import '../tokens/spacing_tokens.dart';
 import 'afri_press_feedback.dart';
 
-/// Tactile clay surface with soft inner highlights and deep ambient depth.
+/// Primary neutral card surface used across the app.
 class ClayCard extends StatelessWidget {
   const ClayCard({
     required this.child,
@@ -34,47 +35,43 @@ class ClayCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveColor =
-        backgroundColor ?? Theme.of(context).colorScheme.surfaceContainerHigh;
+        backgroundColor ?? Theme.of(context).colorScheme.surfaceContainerLow;
     final effectiveRadius = borderRadius ?? ShapeTokens.cardRadius;
 
-    Widget result;
-    if (onTap != null) {
-      result = Padding(
-        padding: margin ?? EdgeInsets.zero,
-        child: AfriPressFeedback(
-          onTap: onTap,
-          semanticsLabel: semanticsLabel,
-          tooltip: semanticsLabel,
-          excludeChildSemantics: semanticsLabel != null,
-          builder: (context, state) => _ClaySurface(
-            color: effectiveColor,
-            radius: effectiveRadius,
-            width: width,
-            height: height,
-            padding: padding,
-            isPressed: state.isPressed,
-            child: child,
-          ),
-        ),
-      );
-    } else {
-      result = Padding(
-        padding: margin ?? EdgeInsets.zero,
-        child: _ClaySurface(
-          color: effectiveColor,
-          radius: effectiveRadius,
-          width: width,
-          height: height,
-          padding: padding,
-          child: child,
-        ),
-      );
-    }
+    final surface = _ClaySurface(
+      color: effectiveColor,
+      radius: effectiveRadius,
+      width: width,
+      height: height,
+      padding: padding,
+      child: child,
+    );
+
+    Widget result = Padding(
+      padding: margin ?? EdgeInsets.zero,
+      child: onTap == null
+          ? surface
+          : AfriPressFeedback(
+              onTap: onTap,
+              semanticsLabel: semanticsLabel,
+              tooltip: semanticsLabel,
+              excludeChildSemantics: semanticsLabel != null,
+              builder: (context, state) => _ClaySurface(
+                color: effectiveColor,
+                radius: effectiveRadius,
+                width: width,
+                height: height,
+                padding: padding,
+                isPressed: state.isPressed,
+                isFocused: state.isFocused,
+                child: child,
+              ),
+            ),
+    );
 
     if (semanticsLabel != null && onTap == null) {
-      return Semantics(label: semanticsLabel, child: result);
+      result = Semantics(label: semanticsLabel, child: result);
     }
-
     return result;
   }
 }
@@ -88,6 +85,7 @@ class _ClaySurface extends StatelessWidget {
     this.height,
     this.padding,
     this.isPressed = false,
+    this.isFocused = false,
   });
 
   final Color color;
@@ -97,49 +95,35 @@ class _ClaySurface extends StatelessWidget {
   final double? height;
   final EdgeInsetsGeometry? padding;
   final bool isPressed;
+  final bool isFocused;
 
   @override
   Widget build(BuildContext context) {
-    final highlight = Color.alphaBlend(
-      Colors.white.withValues(alpha: 0.06),
-      color,
-    );
-    final lowlight = Color.alphaBlend(
-      ColorTokens.primary.withValues(alpha: 0.12),
-      color,
-    );
-    final clayShadow = AfriShadows.clay(pressed: isPressed);
-
     return AnimatedContainer(
       duration: const Duration(milliseconds: 150),
       curve: Curves.easeOutCubic,
       width: width,
       height: height,
-      padding: padding,
+      padding: padding ?? const EdgeInsets.all(SpacingTokens.spacing5),
       decoration: BoxDecoration(
+        color: color,
         borderRadius: radius,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [highlight, lowlight],
-        ),
-        border: BorderTokens.ghost(opacity: 0.10),
+        border: isFocused
+            ? BorderTokens.focusAll(
+                color: ColorTokens.primaryContainer,
+                opacity: 0.9,
+              )
+            : BorderTokens.ghost(width: BorderTokens.standard),
         boxShadow: [
-          if (!isPressed) ...AfriShadows.standard(Brightness.dark),
-          BoxShadow(
-            color: clayShadow.topLeft.color,
-            blurRadius: clayShadow.topLeft.blurRadius,
-            spreadRadius: clayShadow.topLeft.spreadRadius,
-            offset: clayShadow.topLeft.offset,
-            blurStyle: BlurStyle.inner,
-          ),
-          BoxShadow(
-            color: clayShadow.bottomRight.color,
-            blurRadius: clayShadow.bottomRight.blurRadius,
-            spreadRadius: clayShadow.bottomRight.spreadRadius,
-            offset: clayShadow.bottomRight.offset,
-            blurStyle: BlurStyle.inner,
-          ),
+          ...AfriShadows.standard(Brightness.dark),
+          if (isPressed)
+            BoxShadow(
+              color: ColorTokens.ambientShadow.withValues(alpha: 0.16),
+              blurRadius: 10,
+              spreadRadius: -8,
+              offset: const Offset(0, 4),
+              blurStyle: BlurStyle.inner,
+            ),
         ],
       ),
       child: child,

@@ -7,13 +7,13 @@ class AfriShadows {
   AfriShadows._();
 
   static List<BoxShadow> standard(Brightness? brightness) {
-    final strength = brightness == Brightness.light ? 0.14 : 0.24;
+    final strength = brightness == Brightness.light ? 0.08 : 0.18;
     return [
       BoxShadow(
         color: ColorTokens.ambientShadow.withValues(alpha: strength),
-        blurRadius: 28,
-        spreadRadius: -6,
-        offset: const Offset(0, 10),
+        blurRadius: 18,
+        spreadRadius: -8,
+        offset: const Offset(0, 8),
       ),
     ];
   }
@@ -22,13 +22,13 @@ class AfriShadows {
     Brightness? brightness, {
     double strength = 1.0,
   }) {
-    final alpha = (brightness == Brightness.light ? 0.16 : 0.42) * strength;
+    final alpha = (brightness == Brightness.light ? 0.10 : 0.22) * strength;
     return [
       BoxShadow(
         color: ColorTokens.ambientShadow.withValues(alpha: alpha),
-        blurRadius: 80,
+        blurRadius: 28,
         spreadRadius: -10,
-        offset: const Offset(0, 20),
+        offset: const Offset(0, 14),
       ),
     ];
   }
@@ -36,10 +36,10 @@ class AfriShadows {
   static List<BoxShadow> primaryGlow(Color primaryColor) {
     return [
       BoxShadow(
-        color: primaryColor.withValues(alpha: 0.34),
-        blurRadius: 36,
-        spreadRadius: -6,
-        offset: const Offset(0, 10),
+        color: primaryColor.withValues(alpha: 0.16),
+        blurRadius: 20,
+        spreadRadius: -8,
+        offset: const Offset(0, 8),
       ),
     ];
   }
@@ -47,10 +47,10 @@ class AfriShadows {
   static List<BoxShadow> glass({double strength = 1.0}) {
     return [
       BoxShadow(
-        color: ColorTokens.ambientShadow.withValues(alpha: 0.4 * strength),
-        blurRadius: 80,
-        spreadRadius: -10,
-        offset: const Offset(0, 20),
+        color: ColorTokens.ambientShadow.withValues(alpha: 0.18 * strength),
+        blurRadius: 20,
+        spreadRadius: -8,
+        offset: const Offset(0, 10),
       ),
     ];
   }
@@ -61,30 +61,30 @@ class AfriShadows {
     if (pressed) {
       return (
         topLeft: BoxShadow(
-          color: ColorTokens.ambientShadow.withValues(alpha: 0.32),
-          blurRadius: 10,
-          offset: const Offset(-4, -4),
-          spreadRadius: -4,
+          color: ColorTokens.ambientShadow.withValues(alpha: 0.12),
+          blurRadius: 8,
+          offset: const Offset(-2, -2),
+          spreadRadius: -6,
         ),
         bottomRight: BoxShadow(
-          color: Colors.white.withValues(alpha: 0.08),
-          blurRadius: 12,
-          offset: const Offset(6, 6),
-          spreadRadius: -4,
+          color: Colors.white.withValues(alpha: 0.04),
+          blurRadius: 10,
+          offset: const Offset(3, 3),
+          spreadRadius: -6,
         ),
       );
     }
     return (
       topLeft: BoxShadow(
-        color: Colors.white.withValues(alpha: 0.18),
-        blurRadius: 14,
-        offset: const Offset(-6, -6),
-        spreadRadius: -6,
+        color: Colors.white.withValues(alpha: 0.05),
+        blurRadius: 12,
+        offset: const Offset(-4, -4),
+        spreadRadius: -8,
       ),
       bottomRight: BoxShadow(
-        color: ColorTokens.ambientShadow.withValues(alpha: 0.28),
-        blurRadius: 20,
-        offset: const Offset(10, 12),
+        color: ColorTokens.ambientShadow.withValues(alpha: 0.16),
+        blurRadius: 16,
+        offset: const Offset(0, 8),
         spreadRadius: -8,
       ),
     );

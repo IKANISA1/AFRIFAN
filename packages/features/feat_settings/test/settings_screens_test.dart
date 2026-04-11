@@ -55,10 +55,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('BioPay & Privacy'), findsOneWidget);
-      expect(find.text('BioPay Home'), findsOneWidget);
-      expect(find.text('Face ID & Enrollment'), findsOneWidget);
-      expect(find.text('QR Receive & Pay'), findsOneWidget);
-      expect(find.text('NFC Receive & Pay'), findsOneWidget);
+      expect(find.text('BioPay home'), findsOneWidget);
+      expect(find.text('Face ID & enrollment'), findsOneWidget);
+      expect(find.text('QR receive & pay'), findsOneWidget);
+      expect(find.text('NFC receive & pay'), findsOneWidget);
     },
   );
 
@@ -72,10 +72,10 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('PRIVACY'), findsOneWidget);
+    expect(find.text('Privacy'), findsOneWidget);
     expect(find.text('BioPay & Privacy'), findsNothing);
-    expect(find.text('BioPay Home'), findsNothing);
-    expect(find.text('Face ID & Enrollment'), findsNothing);
+    expect(find.text('BioPay home'), findsNothing);
+    expect(find.text('Face ID & enrollment'), findsNothing);
   });
 
   testWidgets('settings hides BioPay entries when feature flag is disabled', (
@@ -88,10 +88,10 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('PRIVACY'), findsOneWidget);
+    expect(find.text('Privacy'), findsOneWidget);
     expect(find.text('BioPay & Privacy'), findsNothing);
-    expect(find.text('BioPay Home'), findsNothing);
-    expect(find.text('Face ID & Enrollment'), findsNothing);
+    expect(find.text('BioPay home'), findsNothing);
+    expect(find.text('Face ID & enrollment'), findsNothing);
   });
 
   testWidgets('matches the shared settings glass layout', (tester) async {

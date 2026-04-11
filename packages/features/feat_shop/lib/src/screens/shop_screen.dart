@@ -3,7 +3,6 @@ import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,10 +14,7 @@ import '../widgets/shop_loading_skeleton.dart';
 import '../widgets/shop_search_sheet.dart';
 import '../widgets/shop_top_bar.dart';
 
-/// "THE ARMOURY" — cinematic, editorial merchandise catalog.
-///
-/// Full-width product cards, category chips, floating checkout bar.
-/// Dark midnight stadium aesthetic per Tactile Monolith.
+/// Shop catalog with compact filters and a product-first grid.
 class ShopScreen extends ConsumerStatefulWidget {
   const ShopScreen({super.key});
 
@@ -105,7 +101,6 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
     final cartItemCount = ref.watch(shopCartItemCountProvider);
     final cartTotal = ref.watch(shopCartTotalProvider);
 
@@ -118,7 +113,6 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
             child: CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
-                // ── Top Bar (Back + Search + Cart) ──
                 SliverToBoxAdapter(
                   child: ShopTopBar(
                     cartItemCount: cartItemCount,
@@ -129,69 +123,14 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                     ),
                   ),
                 ),
-
-                // ── Breadcrumb ──
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      SpacingTokens.spacing6,
-                      SpacingTokens.spacing2,
-                      SpacingTokens.spacing6,
-                      0,
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.home_rounded,
-                          size: 14,
-                          color: ColorTokens.onSurfaceVariant.withValues(
-                            alpha: 0.5,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          '> SHOP',
-                          style: TypographyTokens.editorialFont(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: ColorTokens.onSurfaceVariant.withValues(
-                              alpha: 0.5,
-                            ),
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ],
-                    ),
+                  child: AfriSectionHeader(
+                    title: 'Club store',
+                    subtitle:
+                        '${_filteredProducts.length} items${_selectedCategory == 'All' ? '' : ' in $_selectedCategory'}',
                   ),
                 ),
 
-                // ── "THE ARMOURY" Title ──
-                SliverToBoxAdapter(
-                  child:
-                      Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                              SpacingTokens.spacing6,
-                              SpacingTokens.spacing4,
-                              SpacingTokens.spacing6,
-                              SpacingTokens.spacing3,
-                            ),
-                            child: Text(
-                              'THE ARMOURY',
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 48,
-                                fontWeight: FontWeight.w900,
-                                color: ColorTokens.onSurface,
-                                letterSpacing: 1.0,
-                                height: 1.0,
-                              ),
-                            ),
-                          )
-                          .animate()
-                          .fadeIn(duration: 500.ms, curve: Curves.easeOut)
-                          .slideX(begin: -0.03, end: 0, duration: 500.ms),
-                ),
-
-                // ── Category Chips ──
                 SliverToBoxAdapter(
                   child: SizedBox(
                     height: 44,
@@ -210,7 +149,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                             right: SpacingTokens.spacing2,
                           ),
                           child: ShopCategoryChip(
-                            label: cat.toUpperCase(),
+                            label: cat,
                             isSelected: isSelected,
                             primary: ColorTokens.clubPrimary,
                             onTap: () =>
@@ -226,15 +165,22 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                   child: SizedBox(height: SpacingTokens.spacing6),
                 ),
 
-                // ── Loading State ──
                 if (_isLoading)
                   const SliverToBoxAdapter(child: ShopLoadingSkeleton()),
 
-                // ── Error State ──
                 if (_error != null && !_isLoading)
-                  SliverToBoxAdapter(child: _buildErrorState(primary)),
+                  SliverToBoxAdapter(
+                    child: _ShopErrorState(
+                      onRetry: () {
+                        setState(() {
+                          _isLoading = true;
+                          _error = null;
+                        });
+                        _loadProducts();
+                      },
+                    ),
+                  ),
 
-                // ── Products List (full-width cards) ──
                 if (!_isLoading &&
                     _error == null &&
                     _filteredProducts.isNotEmpty)
@@ -242,7 +188,14 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                     padding: const EdgeInsets.symmetric(
                       horizontal: SpacingTokens.spacing6,
                     ),
-                    sliver: SliverList(
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: SpacingTokens.spacing4,
+                            crossAxisSpacing: SpacingTokens.spacing3,
+                            childAspectRatio: 0.62,
+                          ),
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final product = _filteredProducts[index];
                         return RepaintBoundary(
@@ -276,7 +229,6 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
             ),
           ),
 
-          // ── Floating Checkout Bar ──
           Positioned(
             left: 0,
             right: 0,
@@ -293,49 +245,22 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
       ),
     );
   }
+}
 
-  // ── Error State ──
-  Widget _buildErrorState(Color primary) {
+class _ShopErrorState extends StatelessWidget {
+  const _ShopErrorState({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing10),
-      child: Center(
-        child: Column(
-          children: [
-            Icon(
-              Icons.wifi_off_rounded,
-              size: 56,
-              color: primary.withValues(alpha: 0.3),
-            ),
-            const SizedBox(height: SpacingTokens.spacing4),
-            Text(
-              'CONNECTION ERROR',
-              style: TypographyTokens.monolithFont(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: ColorTokens.onSurface,
-                letterSpacing: 1.0,
-              ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing2),
-            Text(
-              'Could not load merchandise. Try again.',
-              textAlign: TextAlign.center,
-              style: TypographyTokens.bodyMedium(),
-            ),
-            const SizedBox(height: SpacingTokens.spacing6),
-            ClaymorphicButton(
-              label: 'RETRY',
-              icon: Icons.refresh_rounded,
-              onPressed: () {
-                setState(() {
-                  _isLoading = true;
-                  _error = null;
-                });
-                _loadProducts();
-              },
-            ),
-          ],
-        ),
+      padding: const EdgeInsets.all(SpacingTokens.spacing8),
+      child: AfriStateView.offline(
+        title: 'Store unavailable',
+        message: 'Could not load merchandise right now.',
+        actionLabel: 'Retry',
+        onAction: onRetry,
       ),
     );
   }

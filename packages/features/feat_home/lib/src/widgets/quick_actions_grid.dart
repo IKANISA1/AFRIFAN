@@ -10,15 +10,11 @@ final _fantasyQuickActionEnabledProvider = FutureProvider<bool>((ref) async {
     final config = AppConfigRepository(client: client);
     return await config.isFeatureEnabled('fantasy_enabled');
   } catch (_) {
-    // Keep the home rail usable in test/offline states when config is absent.
     return true;
   }
 });
 
-/// Quick actions — horizontally scrollable row of tactile claymorphic circle icons.
-///
-/// Always one line, scrollable, with ellipsis for long names.
-/// Items driven by the [actions] list — dynamic and extensible.
+/// Compact home shortcuts with one primary CTA and a small action grid.
 class QuickActionsGrid extends ConsumerWidget {
   const QuickActionsGrid({super.key});
 
@@ -29,34 +25,34 @@ class QuickActionsGrid extends ConsumerWidget {
         .maybeWhen(data: (value) => value, orElse: () => true);
     final actions = [
       _QuickAction(
-        icon: Icons.confirmation_number_rounded,
-        label: 'TICKETS',
+        icon: Icons.confirmation_number_outlined,
+        label: 'Tickets',
         onTap: () => context.push('/tickets'),
       ),
       _QuickAction(
-        icon: Icons.shopping_bag_rounded,
-        label: 'SHOP',
+        icon: Icons.shopping_bag_outlined,
+        label: 'Shop',
         onTap: () => context.push('/shop'),
       ),
       _QuickAction(
-        icon: Icons.groups_rounded,
-        label: 'FAN CLUBS',
+        icon: Icons.groups_2_outlined,
+        label: 'Fans',
         onTap: () => context.push('/fan-clubs'),
       ),
       _QuickAction(
         icon: Icons.bolt_rounded,
-        label: 'GAMES',
+        label: 'Games',
         onTap: () => context.push('/xp'),
       ),
       if (fantasyEnabled)
         _QuickAction(
-          icon: Icons.emoji_events_rounded,
-          label: 'FANTASY',
+          icon: Icons.emoji_events_outlined,
+          label: 'Fantasy',
           onTap: () => context.push('/fantasy'),
         ),
       _QuickAction(
-        icon: Icons.military_tech_rounded,
-        label: 'MEMBERS',
+        icon: Icons.workspace_premium_outlined,
+        label: 'Members',
         onTap: () => context.push('/membership'),
       ),
     ];
@@ -64,66 +60,40 @@ class QuickActionsGrid extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // ── Full-width SUPPORT pill ──
+        const AfriSectionHeader(
+          title: 'Shortcuts',
+          subtitle: 'Fast entry to core actions',
+          padding: EdgeInsets.zero,
+        ),
+        const SizedBox(height: SpacingTokens.spacing4),
         ClaymorphicButton(
-          label: 'SUPPORT',
-          icon: Icons.volunteer_activism_rounded,
+          label: 'Support',
+          preserveCase: true,
+          icon: Icons.volunteer_activism_outlined,
           width: double.infinity,
           onPressed: () => context.push('/contribute'),
         ),
-        const SizedBox(height: SpacingTokens.spacing8),
+        const SizedBox(height: SpacingTokens.spacing4),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            const spacing = SpacingTokens.spacing3;
+            final columns = actions.length <= 4 ? 2 : 3;
+            final tileWidth =
+                (constraints.maxWidth - (spacing * (columns - 1))) / columns;
 
-        // ── Section header ──
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                'QUICK ACTIONS',
-                style: TypographyTokens.titleLarge().copyWith(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: ColorTokens.onSurface,
-                  letterSpacing: 1.2,
-                ),
-              ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'SWIPE',
-                  style: TypographyTokens.labelSmall().copyWith(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurface.withValues(alpha: 0.82),
-                    letterSpacing: 0.9,
-                  ),
-                ),
-                const SizedBox(width: SpacingTokens.spacing1),
-                Icon(
-                  Icons.swipe_left_rounded,
-                  size: 16,
-                  color: ColorTokens.navActive.withValues(alpha: 0.9),
-                ),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: SpacingTokens.spacing5),
-
-        // ── Horizontally scrollable row of circular icons ──
-        SizedBox(
-          height: _CircleActionButton.totalHeight,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.only(right: SpacingTokens.spacing2),
-            itemCount: actions.length,
-            separatorBuilder: (_, __) =>
-                const SizedBox(width: SpacingTokens.spacing3),
-            itemBuilder: (context, index) =>
-                _CircleActionButton(action: actions[index]),
-          ),
+            return Wrap(
+              spacing: spacing,
+              runSpacing: spacing,
+              children: actions
+                  .map(
+                    (action) => SizedBox(
+                      width: tileWidth,
+                      child: _QuickActionTile(action: action),
+                    ),
+                  )
+                  .toList(),
+            );
+          },
         ),
       ],
     );
@@ -142,20 +112,10 @@ class _QuickAction {
   });
 }
 
-/// Tactile circular action with a violet clay core and soft ambient lift.
-class _CircleActionButton extends StatelessWidget {
+class _QuickActionTile extends StatelessWidget {
+  const _QuickActionTile({required this.action});
+
   final _QuickAction action;
-
-  const _CircleActionButton({required this.action});
-
-  /// Fixed tile width — gives enough room for icon + short label + ellipsis.
-  static const double tileWidth = 96.0;
-
-  /// Circle diameter.
-  static const double circleSize = 58.0;
-
-  /// Total height: circle + spacing + label line.
-  static const double totalHeight = circleSize + 6 + 20;
 
   @override
   Widget build(BuildContext context) {
@@ -165,100 +125,31 @@ class _CircleActionButton extends StatelessWidget {
       semanticsHint: 'Open ${action.label}',
       tooltip: action.label,
       excludeChildSemantics: true,
-      builder: (context, state) => SizedBox(
-        width: _CircleActionButton.tileWidth,
+      builder: (context, state) => ClayCard(
+        padding: const EdgeInsets.all(SpacingTokens.spacing4),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AnimatedScale(
-              scale: state.isPressed ? 0.88 : 1.0,
-              duration: const Duration(milliseconds: 120),
-              curve: Curves.easeOut,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 120),
-                curve: Curves.easeOut,
-                width: _CircleActionButton.circleSize,
-                height: _CircleActionButton.circleSize,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [ColorTokens.primary, ColorTokens.primaryContainer],
-                  ),
-                  border: state.isFocused
-                      ? BorderTokens.focusAll(
-                          color: ColorTokens.onSurface,
-                          opacity: 0.85,
-                          width: 1.1,
-                        )
-                      : BorderTokens.ghost(opacity: 0.08),
-                  boxShadow: state.isPressed
-                      ? [
-                          BoxShadow(
-                            color: ColorTokens.ambientShadow.withValues(
-                              alpha: 0.26,
-                            ),
-                            blurRadius: 12,
-                            spreadRadius: -10,
-                            offset: const Offset(-4, -4),
-                            blurStyle: BlurStyle.inner,
-                          ),
-                          BoxShadow(
-                            color: Colors.white.withValues(alpha: 0.08),
-                            blurRadius: 12,
-                            spreadRadius: -10,
-                            offset: const Offset(4, 4),
-                            blurStyle: BlurStyle.inner,
-                          ),
-                        ]
-                      : [
-                          BoxShadow(
-                            color: Colors.white.withValues(alpha: 0.18),
-                            blurRadius: 18,
-                            spreadRadius: -14,
-                            offset: const Offset(-7, -8),
-                            blurStyle: BlurStyle.inner,
-                          ),
-                          BoxShadow(
-                            color: ColorTokens.ambientShadow.withValues(
-                              alpha: 0.30,
-                            ),
-                            blurRadius: 22,
-                            spreadRadius: -14,
-                            offset: const Offset(10, 12),
-                            blurStyle: BlurStyle.inner,
-                          ),
-                          BoxShadow(
-                            color: ColorTokens.primary.withValues(alpha: 0.22),
-                            blurRadius: 28,
-                            spreadRadius: -4,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                ),
-                child: Center(
-                  child: Icon(
-                    action.icon,
-                    color: ColorTokens.onSurface,
-                    size: _CircleActionButton.circleSize * 0.42,
-                  ),
-                ),
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: ColorTokens.primaryTint(state.isPressed ? 0.20 : 0.14),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                action.icon,
+                size: 18,
+                color: ColorTokens.primaryContainer,
               ),
             ),
-            const SizedBox(height: SpacingTokens.spacing2),
-
+            const SizedBox(height: SpacingTokens.spacing4),
             Text(
               action.label,
-              textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TypographyTokens.labelMedium().copyWith(
-                fontWeight: FontWeight.w700,
-                color: ColorTokens.onSurface.withValues(alpha: 0.92),
-                letterSpacing: 0.6,
-                height: 1.2,
-              ),
+              style: TypographyTokens.titleSmall(),
             ),
           ],
         ),

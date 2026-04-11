@@ -43,16 +43,16 @@ void main() {
       );
     }
 
-    testWidgets('renders GLOBAL XP label', (tester) async {
+    testWidgets('renders XP label', (tester) async {
       await tester.pumpWidget(buildTestApp());
       await tester.pumpAndSettle();
-      expect(find.text('GLOBAL XP'), findsOneWidget);
+      expect(find.text('XP'), findsOneWidget);
     });
 
-    testWidgets('renders FAN RANK label', (tester) async {
+    testWidgets('renders rank label', (tester) async {
       await tester.pumpWidget(buildTestApp());
       await tester.pumpAndSettle();
-      expect(find.text('FAN RANK'), findsOneWidget);
+      expect(find.text('Rank'), findsOneWidget);
     });
 
     testWidgets('renders formatted XP number with commas', (tester) async {
@@ -111,19 +111,19 @@ void main() {
       await tester.pumpWidget(buildTestApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('TICKETS'), findsOneWidget);
-      expect(find.text('SHOP'), findsOneWidget);
-      expect(find.text('FAN CLUBS'), findsOneWidget);
-      expect(find.text('GAMES'), findsOneWidget);
-      expect(find.text('FANTASY'), findsOneWidget);
-      expect(find.text('MEMBERS'), findsOneWidget);
+      expect(find.text('Tickets'), findsOneWidget);
+      expect(find.text('Shop'), findsOneWidget);
+      expect(find.text('Fans'), findsOneWidget);
+      expect(find.text('Games'), findsOneWidget);
+      expect(find.text('Fantasy'), findsOneWidget);
+      expect(find.text('Members'), findsOneWidget);
     });
 
-    testWidgets('renders SUPPORT button', (tester) async {
+    testWidgets('renders support button', (tester) async {
       await tester.pumpWidget(buildTestApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('SUPPORT'), findsOneWidget);
+      expect(find.text('Support'), findsOneWidget);
     });
   });
 }

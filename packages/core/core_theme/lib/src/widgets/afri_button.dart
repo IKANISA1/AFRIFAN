@@ -9,39 +9,9 @@ import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 
 /// Button variant enumeration for the AFRICLUB design system.
-enum AfriButtonVariant {
-  /// Claymorphic primary — dual inner shadows, high prominence.
-  primary,
+enum AfriButtonVariant { primary, secondary, outline, ghost, accent, clay }
 
-  /// Subtle filled background — medium prominence.
-  secondary,
-
-  /// Ghost border only — low prominence.
-  outline,
-
-  /// No background — text-only, minimal prominence.
-  ghost,
-
-  /// Accent color fill — for success/positive actions.
-  accent,
-
-  /// Full claymorphic with inverted shadows on press.
-  clay,
-}
-
-/// A multi-variant button for the AFRICLUB design system.
-///
-/// Supports 6 variants with consistent sizing, press feedback (scale +
-/// haptic), loading state, and disabled state. Replaces the single-variant
-/// [ClaymorphicButton] with a complete button system.
-///
-/// ```dart
-/// AfriButton(
-///   label: 'Join Club',
-///   onTap: () => join(),
-///   variant: AfriButtonVariant.primary,
-/// )
-/// ```
+/// Shared button component with a small, consistent set of emphasis levels.
 class AfriButton extends StatefulWidget {
   const AfriButton({
     required this.label,
@@ -78,7 +48,7 @@ class _AfriButtonState extends State<AfriButton>
       vsync: this,
       duration: AfriMotion.press,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.97).animate(
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.985).animate(
       CurvedAnimation(parent: _scaleController, curve: AfriMotion.pressCurve),
     );
   }
@@ -113,56 +83,56 @@ class _AfriButtonState extends State<AfriButton>
   Widget build(BuildContext context) {
     final colors = context.afriSemanticColors;
     final theme = Theme.of(context);
-    final variant = widget.variant;
 
-    // ── Resolve colors per variant ──
-    final Color bg;
-    final Color fg;
-    final Border? border;
+    late Color background;
+    late Color foreground;
+    Border? border;
+    List<BoxShadow>? shadows;
 
-    switch (variant) {
+    switch (widget.variant) {
       case AfriButtonVariant.primary:
       case AfriButtonVariant.clay:
-        bg = colors.buttonPrimaryBackground;
-        fg = colors.buttonPrimaryForeground;
-        border = null;
+        background = colors.buttonPrimaryBackground;
+        foreground = colors.buttonPrimaryForeground;
+        shadows = [
+          BoxShadow(
+            color: background.withValues(alpha: 0.16),
+            blurRadius: 16,
+            spreadRadius: -8,
+            offset: const Offset(0, 8),
+          ),
+        ];
       case AfriButtonVariant.secondary:
-        bg = colors.cardSurface;
-        fg = colors.primaryText;
-        border = null;
+        background = colors.cardSurfaceStrong;
+        foreground = colors.primaryText;
+        border = BorderTokens.ghost(width: BorderTokens.standard);
       case AfriButtonVariant.outline:
-        bg = Colors.transparent;
-        fg = colors.primaryText;
-        border = BorderTokens.all(color: colors.border, opacity: 0.72);
+        background = Colors.transparent;
+        foreground = colors.primaryText;
+        border = BorderTokens.all(
+          color: colors.borderStrong,
+          width: BorderTokens.standard,
+        );
       case AfriButtonVariant.ghost:
-        bg = Colors.transparent;
-        fg = colors.secondaryText;
-        border = null;
+        background = Colors.transparent;
+        foreground = colors.secondaryText;
       case AfriButtonVariant.accent:
-        bg = colors.accent;
-        fg = ColorTokens.background;
-        border = null;
+        background = colors.accent;
+        foreground = ColorTokens.background;
+        shadows = [
+          BoxShadow(
+            color: colors.accent.withValues(alpha: 0.14),
+            blurRadius: 14,
+            spreadRadius: -10,
+            offset: const Offset(0, 6),
+          ),
+        ];
     }
 
-    final resolvedBg = _isActive ? bg : bg.withValues(alpha: bg.a * 0.5);
-    final resolvedFg = _isActive ? fg : fg.withValues(alpha: fg.a * 0.5);
-
-    // ── Build claymorphic shadows for clay/primary variants ──
-    List<BoxShadow>? shadows;
-    if (variant == AfriButtonVariant.clay ||
-        variant == AfriButtonVariant.primary) {
-      shadows = [
-        BoxShadow(
-          color: Colors.white.withValues(alpha: 0.2),
-          blurRadius: 2,
-          offset: const Offset(-2, -2),
-        ),
-        BoxShadow(
-          color: ColorTokens.background.withValues(alpha: 0.3),
-          blurRadius: 4,
-          offset: const Offset(4, 4),
-        ),
-      ];
+    if (!_isActive) {
+      background = background.withValues(alpha: background.a * 0.45);
+      foreground = foreground.withValues(alpha: foreground.a * 0.55);
+      shadows = null;
     }
 
     final content = Row(
@@ -175,13 +145,13 @@ class _AfriButtonState extends State<AfriButton>
             height: 18,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation(resolvedFg),
+              valueColor: AlwaysStoppedAnimation(foreground),
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
         ] else if (widget.icon != null) ...[
-          Icon(widget.icon, size: 20, color: resolvedFg),
-          const SizedBox(width: SpacingTokens.spacing3),
+          Icon(widget.icon, size: 18, color: foreground),
+          const SizedBox(width: SpacingTokens.spacing2),
         ],
         Flexible(
           child: Text(
@@ -189,8 +159,9 @@ class _AfriButtonState extends State<AfriButton>
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.labelLarge?.copyWith(
+              color: foreground,
               fontWeight: FontWeight.w700,
-              color: resolvedFg,
+              letterSpacing: 0.2,
             ),
           ),
         ),
@@ -214,11 +185,11 @@ class _AfriButtonState extends State<AfriButton>
             curve: AfriMotion.enterCurve,
             constraints: const BoxConstraints(minHeight: 48),
             padding: const EdgeInsets.symmetric(
-              horizontal: SpacingTokens.spacing6,
-              vertical: SpacingTokens.spacing4,
+              horizontal: SpacingTokens.spacing5,
+              vertical: 14,
             ),
             decoration: BoxDecoration(
-              color: resolvedBg,
+              color: background,
               borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
               border: border,
               boxShadow: shadows,

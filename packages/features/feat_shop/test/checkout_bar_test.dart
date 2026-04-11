@@ -16,7 +16,7 @@ void main() {
       // Verify text elements
       expect(find.text('3'), findsOneWidget);
       expect(find.text('FRw 15,400'), findsOneWidget);
-      expect(find.text('CHECKOUT'), findsOneWidget);
+      expect(find.text('Checkout'), findsOneWidget);
     });
 
     testWidgets('Triggers onCheckout when items are in cart', (tester) async {
@@ -37,7 +37,7 @@ void main() {
       );
 
       // Tap checkout
-      await tester.tap(find.text('CHECKOUT'));
+      await tester.tap(find.text('Checkout'));
       await tester.pump();
 
       expect(pressed, true);

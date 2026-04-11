@@ -26,20 +26,24 @@ void main() {
 
     for (final entry in bodyFontSizes.entries) {
       test('${entry.key} fontSize (${entry.value}) respects body floor', () {
-        final minimum = entry.key == 'bodySmall' ? 14.0 : 15.0;
+        final minimum = switch (entry.key) {
+          'bodyLarge' => 16.0,
+          'bodyMedium' => 14.0,
+          _ => 13.0,
+        };
         expect(entry.value, greaterThanOrEqualTo(minimum));
       });
     }
 
     for (final entry in labelFontSizes.entries) {
-      test('${entry.key} fontSize (${entry.value}) >= 11', () {
-        expect(entry.value, greaterThanOrEqualTo(11));
+      test('${entry.key} fontSize (${entry.value}) >= 12', () {
+        expect(entry.value, greaterThanOrEqualTo(12));
       });
     }
 
     for (final entry in titleFontSizes.entries) {
-      test('${entry.key} fontSize (${entry.value}) >= 15', () {
-        expect(entry.value, greaterThanOrEqualTo(15));
+      test('${entry.key} fontSize (${entry.value}) >= 14', () {
+        expect(entry.value, greaterThanOrEqualTo(14));
       });
     }
 
@@ -66,7 +70,7 @@ void main() {
     });
   });
 
-  group('Typography Tokens — 32sp Hero Floor (known values)', () {
+  group('Typography Tokens — compact display scale (known values)', () {
     final heroFontSizes = {
       'displayLarge': TypographyTokens.semanticSizes['displayLarge']!,
       'displayMedium': TypographyTokens.semanticSizes['displayMedium']!,
@@ -75,8 +79,9 @@ void main() {
     };
 
     for (final entry in heroFontSizes.entries) {
-      test('${entry.key} fontSize (${entry.value}) >= 32', () {
-        expect(entry.value, greaterThanOrEqualTo(32));
+      test('${entry.key} fontSize (${entry.value}) remains readable', () {
+        final minimum = entry.key == 'headlineLarge' ? 28.0 : 32.0;
+        expect(entry.value, greaterThanOrEqualTo(minimum));
       });
     }
   });
@@ -153,12 +158,12 @@ void main() {
   });
 
   group('Shape Tokens — tactile rounding', () {
-    test('minimum shared radius is 24px', () {
-      expect(ShapeTokens.radiusMd, equals(24.0));
+    test('minimum shared radius is 14px', () {
+      expect(ShapeTokens.radiusMd, equals(14.0));
     });
 
-    test('main card radius is 48px', () {
-      expect(ShapeTokens.radiusXl, equals(48.0));
+    test('main card radius is 24px', () {
+      expect(ShapeTokens.radiusXl, equals(24.0));
     });
   });
 

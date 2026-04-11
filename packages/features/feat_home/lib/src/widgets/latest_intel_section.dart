@@ -59,24 +59,9 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section header
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: SpacingTokens.spacing6,
-          ),
-          child: Text(
-            'LATEST INTEL',
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: ColorTokens.onSurface,
-              letterSpacing: 1.5,
-            ),
-          ),
-        ),
+        const AfriSectionHeader(title: 'News', subtitle: 'Latest club updates'),
         const SizedBox(height: SpacingTokens.spacing4),
-        // Horizontal scroll of cards
-        SizedBox(height: 280, child: _buildBody(context)),
+        SizedBox(height: 260, child: _buildBody(context)),
       ],
     );
   }
@@ -110,8 +95,8 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
             animate: false,
             child: AfriEmptyView(
               compact: true,
-              title: 'NO INTEL YET',
-              message: 'Club updates will appear when published.',
+              title: 'No news yet',
+              message: 'Club updates appear here when published.',
               icon: Icons.article_outlined,
             ),
           ),
@@ -159,7 +144,7 @@ class _IntelCard extends StatelessWidget {
     final imageUrl = article['image_url']?.toString();
 
     return SizedBox(
-      width: 240,
+      width: 216,
       child: AfriPressFeedback(
         onTap: articleId == null
             ? null
@@ -195,11 +180,11 @@ class _IntelCard extends StatelessWidget {
                 // Image area -- real photo or rich gradient fallback
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
                   ),
                   child: SizedBox(
-                    height: 130,
+                    height: 118,
                     width: double.infinity,
                     child: imageUrl != null && imageUrl.isNotEmpty
                         ? CachedNetworkImage(
@@ -224,26 +209,19 @@ class _IntelCard extends StatelessWidget {
                           title,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: ColorTokens.onSurface,
-                            letterSpacing: 0.5,
-                            height: 1.3,
-                          ),
+                          style: TypographyTokens.titleMedium(),
                         ),
-                        const SizedBox(height: SpacingTokens.spacing2),
-                        Text(
-                          subtitle,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TypographyTokens.editorialFont(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            color: ColorTokens.onSurfaceVariant,
-                            height: 1.4,
+                        if (subtitle.isNotEmpty) ...[
+                          const SizedBox(height: SpacingTokens.spacing2),
+                          Text(
+                            subtitle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TypographyTokens.bodySmall(
+                              ColorTokens.onSurfaceVariant,
+                            ),
                           ),
-                        ),
+                        ],
                       ],
                     ),
                   ),
@@ -289,7 +267,7 @@ class _IntelCardSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 240,
+      width: 216,
       child: ClipRRect(
         borderRadius: ShapeTokens.cardRadius,
         child: Container(
@@ -303,12 +281,12 @@ class _IntelCardSkeleton extends StatelessWidget {
             children: [
               // Image skeleton
               Container(
-                height: 130,
+                height: 118,
                 decoration: BoxDecoration(
                   color: ColorTokens.surfaceContainerLow,
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
                   ),
                 ),
               ),

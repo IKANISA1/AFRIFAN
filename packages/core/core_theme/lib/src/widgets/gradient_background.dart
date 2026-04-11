@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../tokens/blur_tokens.dart';
 import '../tokens/color_tokens.dart';
 
-/// Atmospheric app shell background with layered glows and depth.
+/// Calm app shell background with a restrained vertical gradient.
 class GradientBackground extends StatelessWidget {
   final Widget child;
   final List<Color>? colors;
@@ -17,9 +17,9 @@ class GradientBackground extends StatelessWidget {
     final gradientColors =
         colors ??
         [
-          ColorTokens.surfaceDim,
           ColorTokens.background,
-          ColorTokens.surfaceContainerHigh,
+          ColorTokens.surfaceContainerLowest,
+          ColorTokens.surfaceContainerLow,
         ];
 
     return Stack(
@@ -35,14 +35,9 @@ class GradientBackground extends StatelessWidget {
           ),
         ),
         const _GlowOrb(
-          alignment: Alignment.topRight,
-          color: Color(0x5AA98DFF),
-          size: 280,
-        ),
-        const _GlowOrb(
-          alignment: Alignment.bottomLeft,
-          color: Color(0x2E7B5BFF),
-          size: 340,
+          alignment: Alignment.topCenter,
+          color: Color(0x180D63F3),
+          size: 220,
         ),
         child,
       ],
@@ -68,13 +63,13 @@ class _GlowOrb extends StatelessWidget {
         alignment: alignment,
         child: Transform.translate(
           offset: Offset(
-            alignment.x > 0 ? size * 0.18 : -size * 0.18,
-            alignment.y > 0 ? size * 0.18 : -size * 0.18,
+            alignment.x > 0 ? size * 0.10 : -size * 0.10,
+            alignment.y > 0 ? size * 0.10 : -size * 0.10,
           ),
           child: ImageFiltered(
             imageFilter: ImageFilter.blur(
-              sigmaX: AfriBlur.atmospheric,
-              sigmaY: AfriBlur.atmospheric,
+              sigmaX: AfriBlur.standard,
+              sigmaY: AfriBlur.standard,
             ),
             child: Container(
               width: size,

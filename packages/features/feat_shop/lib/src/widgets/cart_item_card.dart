@@ -2,8 +2,7 @@ import 'package:core_theme/core_theme.dart';
 import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 
-/// A single cart item card showing product name, variant, quantity controls,
-/// and price.
+/// A single cart item card showing product, quantity controls, and price.
 class CartItemCard extends StatelessWidget {
   const CartItemCard({
     super.key,
@@ -23,20 +22,16 @@ class CartItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final variant = item.selectedVariant?.trim();
-    final meta = [
-      if (variant != null && variant.isNotEmpty) variant,
-      'Qty ${item.quantity}',
-    ].join('  •  ');
 
     return ClayCard(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      padding: const EdgeInsets.all(SpacingTokens.spacing4),
       child: Row(
         children: [
           Container(
-            width: 72,
-            height: 72,
+            width: 64,
+            height: 64,
             decoration: BoxDecoration(
-              color: ColorTokens.surfaceContainerHigh,
+              color: ColorTokens.surfaceContainer,
               borderRadius: BorderRadius.circular(18),
             ),
             alignment: Alignment.center,
@@ -48,30 +43,45 @@ class CartItemCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.product.name.toUpperCase(),
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurface,
-                  ),
+                  item.product.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TypographyTokens.titleMedium(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing1),
-                Text(meta, style: TypographyTokens.bodySmall()),
-                const SizedBox(height: SpacingTokens.spacing2),
+                Wrap(
+                  spacing: SpacingTokens.spacing2,
+                  runSpacing: SpacingTokens.spacing2,
+                  children: [
+                    if (variant != null && variant.isNotEmpty)
+                      AfriStatusChip(label: variant),
+                    AfriStatusChip(label: 'Qty ${item.quantity}'),
+                  ],
+                ),
+                const SizedBox(height: SpacingTokens.spacing3),
                 Row(
                   children: [
-                    IconButton(
-                      onPressed: onDecrement,
-                      icon: const Icon(Icons.remove_rounded),
+                    AfriIconButton(
+                      icon: Icons.remove_rounded,
+                      tooltip: 'Decrease quantity',
+                      onTap: onDecrement,
                     ),
-                    Text(
-                      '${item.quantity}',
-                      style: TypographyTokens.labelLarge(),
+                    const SizedBox(width: SpacingTokens.spacing2),
+                    SizedBox(
+                      width: 24,
+                      child: Text(
+                        '${item.quantity}',
+                        textAlign: TextAlign.center,
+                        style: TypographyTokens.labelLarge(),
+                      ),
                     ),
-                    IconButton(
-                      onPressed: onIncrement,
-                      icon: const Icon(Icons.add_rounded),
+                    const SizedBox(width: SpacingTokens.spacing2),
+                    AfriIconButton(
+                      icon: Icons.add_rounded,
+                      tooltip: 'Increase quantity',
+                      onTap: onIncrement,
                     ),
+                    const SizedBox(width: SpacingTokens.spacing3),
                     TextButton(
                       onPressed: onRemove,
                       child: const Text('Remove'),
@@ -81,14 +91,8 @@ class CartItemCard extends StatelessWidget {
               ],
             ),
           ),
-          Text(
-            priceLabel,
-            style: TypographyTokens.monolithFont(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.onSurface,
-            ),
-          ),
+          const SizedBox(width: SpacingTokens.spacing3),
+          Text(priceLabel, style: TypographyTokens.titleMedium()),
         ],
       ),
     );

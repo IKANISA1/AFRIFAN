@@ -13,10 +13,7 @@ class ContributorEntry {
   final int points;
 }
 
-/// Top contributor aliases leaderboard.
-///
-/// Accepts live entries from the home screen. When no contributor data exists
-/// yet, the section renders a truthful empty state instead of fake rankings.
+/// Compact home leaderboard.
 class ContributorLeaderboard extends StatelessWidget {
   const ContributorLeaderboard({
     super.key,
@@ -40,24 +37,25 @@ class ContributorLeaderboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // §2.3 LOCKED — if data is empty, render nothing.
     if (entries.isEmpty) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'TOP SUPPORTERS',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: ColorTokens.onSurface,
-            letterSpacing: 1.5,
-          ),
+        const AfriSectionHeader(
+          title: 'Supporters',
+          subtitle: 'Top active aliases',
+          padding: EdgeInsets.zero,
         ),
-        const SizedBox(height: SpacingTokens.spacing4),
+        const SizedBox(height: SpacingTokens.spacing3),
         ...entries.map(
-          (c) => _ContributorRow(data: c, formatPoints: _formatPoints),
+          (entry) => Padding(
+            padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
+            child: _ContributorRow(
+              data: entry,
+              pointsLabel: '${_formatPoints(entry.points)} pts',
+            ),
+          ),
         ),
       ],
     );
@@ -65,95 +63,64 @@ class ContributorLeaderboard extends StatelessWidget {
 }
 
 class _ContributorRow extends StatelessWidget {
-  const _ContributorRow({required this.data, required this.formatPoints});
+  const _ContributorRow({required this.data, required this.pointsLabel});
 
   final ContributorEntry data;
-  final String Function(int) formatPoints;
+  final String pointsLabel;
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).colorScheme.primary;
     final isFirst = data.rank == 1;
-    final pointsLabel = '${formatPoints(data.points)} PTS';
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
-      child: ClayCard(
-        borderRadius: ShapeTokens.chipRadius,
-        padding: const EdgeInsets.symmetric(
-          horizontal: SpacingTokens.spacing4,
-          vertical: SpacingTokens.spacing4,
-        ),
-        backgroundColor: isFirst ? primaryColor.withValues(alpha: 0.08) : null,
-        child: Row(
-          children: [
-            if (isFirst)
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: primaryColor.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12),
-                  border: BorderTokens.all(
-                    color: primaryColor,
-                    width: BorderTokens.standard,
-                    opacity: 0.5,
-                  ),
-                ),
-                child: Text(
-                  data.rank.toString().padLeft(2, '0'),
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                    color: primaryColor,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              )
-            else
-              SizedBox(
-                width: 32,
-                child: Text(
-                  data.rank.toString().padLeft(2, '0'),
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurfaceVariant,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
-            const SizedBox(width: SpacingTokens.spacing3),
-            Expanded(
-              child: Text(
-                '#${data.alias}',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TypographyTokens.monolithFont(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: ColorTokens.onSurface,
-                  letterSpacing: 1.2,
-                ),
+    return ClayCard(
+      borderRadius: ShapeTokens.chipRadius,
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing4,
+        vertical: SpacingTokens.spacing4,
+      ),
+      backgroundColor: isFirst
+          ? ColorTokens.primaryTint(0.10)
+          : ColorTokens.surfaceContainerLow,
+      child: Row(
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: isFirst
+                  ? ColorTokens.primaryTint(0.18)
+                  : ColorTokens.surfaceContainer,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              data.rank.toString(),
+              style: TypographyTokens.labelMedium(
+                isFirst
+                    ? ColorTokens.primaryContainer
+                    : ColorTokens.onSurfaceVariant,
               ),
             ),
-            const SizedBox(width: SpacingTokens.spacing3),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                pointsLabel,
-                style: TypographyTokens.monolithFont(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: isFirst ? primaryColor : ColorTokens.onSurfaceVariant,
-                  letterSpacing: 0.5,
-                ),
-              ),
+          ),
+          const SizedBox(width: SpacingTokens.spacing3),
+          Expanded(
+            child: Text(
+              '#${data.alias}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TypographyTokens.titleMedium(),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: SpacingTokens.spacing3),
+          Text(
+            pointsLabel,
+            style: TypographyTokens.bodySmall(
+              isFirst
+                  ? ColorTokens.primaryContainer
+                  : ColorTokens.onSurfaceVariant,
+            ),
+          ),
+        ],
       ),
     );
   }

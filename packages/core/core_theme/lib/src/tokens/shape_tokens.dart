@@ -5,11 +5,11 @@ class ShapeTokens {
   ShapeTokens._();
 
   // ── Corner Radius Values ──
-  static const double radiusSm = 18.0; // Tightest allowed tactile corner
-  static const double radiusMd = 24.0; // Minimum system radius (1.5rem)
-  static const double radiusLg = 32.0; // Inputs, floating surfaces
-  static const double radiusXl = 48.0; // Main cards (3rem)
-  static const double radiusFull = 9999.0; // Buttons (pill shape)
+  static const double radiusSm = 10.0;
+  static const double radiusMd = 14.0;
+  static const double radiusLg = 20.0;
+  static const double radiusXl = 24.0;
+  static const double radiusFull = 9999.0;
 
   // ── Border Radius Presets ──
   static BorderRadius get chipRadius => BorderRadius.circular(radiusMd);

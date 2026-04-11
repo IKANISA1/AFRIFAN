@@ -12,7 +12,7 @@ import 'tokens/typography_tokens.dart';
 /// Generates a complete [ThemeData] from any [ClubConfig].
 ///
 /// Club identity colors still come from tenant config, but the shared shell,
-/// surfaces, and typography all flow through the Tactile Monolith system in
+/// surfaces, and typography flow through a calmer minimalist system in
 /// `core_theme`.
 class ClubTheme {
   ClubTheme._();
@@ -71,19 +71,18 @@ class ClubTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        titleTextStyle: TypographyTokens.titleLarge(),
+        titleTextStyle: TypographyTokens.titleLarge().copyWith(
+          fontWeight: FontWeight.w700,
+        ),
         iconTheme: IconThemeData(color: ColorTokens.onSurface),
       ),
       cardTheme: CardThemeData(
-        color: ColorTokens.surfaceContainerHigh,
+        color: ColorTokens.surfaceContainerLow,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: ShapeTokens.cardRadius,
-          side: BorderTokens.side(
-            color: ColorTokens.ghostBorder,
-            opacity: 0.12,
-          ),
+          side: BorderTokens.side(color: ColorTokens.ghostBorder, opacity: 0.8),
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -101,8 +100,8 @@ class ClubTheme {
           backgroundColor: ColorTokens.primaryContainer,
           foregroundColor: Colors.white,
           elevation: 0,
-          shadowColor: ColorTokens.primary.withValues(alpha: 0.35),
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 18),
+          shadowColor: ColorTokens.primary.withValues(alpha: 0.18),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           shape: RoundedRectangleBorder(borderRadius: ShapeTokens.buttonRadius),
           textStyle: TypographyTokens.labelLarge(),
         ),
@@ -112,8 +111,8 @@ class ClubTheme {
           backgroundColor: ColorTokens.primaryContainer,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(
-            horizontal: SpacingTokens.spacing8,
-            vertical: SpacingTokens.spacing5,
+            horizontal: SpacingTokens.spacing6,
+            vertical: SpacingTokens.spacing4,
           ),
           shape: RoundedRectangleBorder(borderRadius: ShapeTokens.buttonRadius),
           textStyle: TypographyTokens.labelLarge(),
@@ -133,22 +132,22 @@ class ClubTheme {
         border: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
           color: ColorTokens.ghostBorder,
-          opacity: 0.12,
+          opacity: 0.95,
         ),
         enabledBorder: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
           color: ColorTokens.ghostBorder,
-          opacity: 0.12,
+          opacity: 0.95,
         ),
         focusedBorder: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
           color: ColorTokens.primaryContainer,
-          opacity: 0.40,
+          opacity: 0.75,
           width: BorderTokens.focus,
         ),
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 16,
+          horizontal: 16,
+          vertical: 14,
         ),
         hintStyle: TypographyTokens.bodyMedium().copyWith(
           color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.72),
@@ -165,17 +164,17 @@ class ClubTheme {
       chipTheme: ChipThemeData(
         backgroundColor: ColorTokens.secondaryContainer,
         selectedColor: Color.alphaBlend(
-          ColorTokens.primary.withValues(alpha: 0.22),
-          ColorTokens.surfaceContainerHighest,
+          ColorTokens.primary.withValues(alpha: 0.16),
+          ColorTokens.surfaceContainerHigh,
         ),
         labelStyle: TypographyTokens.labelMedium().copyWith(
           color: ColorTokens.onSurface,
         ),
-        side: BorderTokens.side(color: ColorTokens.ghostBorder, opacity: 0.10),
+        side: BorderTokens.side(color: ColorTokens.ghostBorder, opacity: 0.9),
         shape: RoundedRectangleBorder(borderRadius: ShapeTokens.chipRadius),
       ),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: ColorTokens.surfaceContainerHighest.withValues(
+        backgroundColor: ColorTokens.surfaceContainerHigh.withValues(
           alpha: 0.94,
         ),
         contentTextStyle: TypographyTokens.bodyMedium(),
@@ -195,15 +194,15 @@ class ClubTheme {
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.selected)) {
-            return ColorTokens.onSurface;
+            return Colors.white;
           }
-          return ColorTokens.outlineVariant;
+          return ColorTokens.surfaceContainerHighest;
         }),
         trackColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.selected)) {
             return ColorTokens.primaryContainer;
           }
-          return ColorTokens.surfaceContainerHighest;
+          return ColorTokens.surfaceContainerLow;
         }),
       ),
       checkboxTheme: CheckboxThemeData(

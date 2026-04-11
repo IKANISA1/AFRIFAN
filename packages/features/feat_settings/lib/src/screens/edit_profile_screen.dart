@@ -121,14 +121,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       child: Scaffold(
         backgroundColor: ColorTokens.background,
         appBar: AppBar(
-          title: Text(
-            'EDIT PROFILE',
-            style: TypographyTokens.monolithFont(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.6,
-            ),
-          ),
+          title: Text('Profile', style: TypographyTokens.headlineSmall()),
           leading: IconButton(
             onPressed: () => closeSettingsChild(context),
             icon: const Icon(Icons.arrow_back_rounded),
@@ -140,75 +133,61 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             children: [
               GlassCard(
                 animate: false,
-                child: Column(
+                child: Row(
                   children: [
                     Container(
-                      width: 84,
-                      height: 84,
+                      width: 64,
+                      height: 64,
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
                         color: Theme.of(
                           context,
                         ).colorScheme.primary.withValues(alpha: 0.14),
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Icon(Icons.person_rounded, size: 38),
+                      child: const Icon(Icons.person_rounded, size: 28),
                     ),
-                    const SizedBox(height: SpacingTokens.spacing3),
-                    OutlinedButton(
-                      onPressed: () {
+                    const SizedBox(width: SpacingTokens.spacing4),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '#$alias',
+                            style: TypographyTokens.headlineSmall(),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing2),
+                          Text(
+                            'Public alias',
+                            style: TypographyTokens.bodySmall(
+                              ColorTokens.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    AfriIconButton(
+                      icon: Icons.photo_camera_outlined,
+                      tooltip: 'Photo upload coming soon',
+                      onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Photo upload coming soon.'),
                           ),
                         );
                       },
-                      child: const Text('+ PHOTO'),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing3),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: ColorTokens.surfaceContainerLow,
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        '#$alias',
-                        style: TypographyTokens.numericAlias(fontSize: 18),
-                      ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
-              GlassCard(
-                animate: false,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'PUBLIC IDENTITY',
-                      style: TypographyTokens.labelSmall(),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing2),
-                    Text(
-                      'Your alias is fixed across club surfaces.',
-                      style: TypographyTokens.bodyMedium(),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
               _SettingsInput(
-                label: 'NICKNAME',
+                label: 'Nickname',
                 hint: 'Optional supporter nickname',
                 controller: _nicknameController,
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               _SettingsInput(
-                label: 'LINKED MOMO NUMBER',
+                label: 'Linked MOMO number',
                 hint: '+250 7XX XXX XXX',
                 controller: _momoController,
               ),
@@ -218,20 +197,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('LANGUAGE', style: TypographyTokens.labelSmall()),
+                    Text('Language', style: TypographyTokens.labelSmall()),
                     const SizedBox(height: SpacingTokens.spacing2),
                     Text(languageLabel, style: TypographyTokens.bodyLarge()),
-                    const SizedBox(height: SpacingTokens.spacing3),
-                    Text(
-                      'Change in Language & Region settings.',
-                      style: TypographyTokens.bodySmall(),
-                    ),
                   ],
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing6),
               ClaymorphicButton(
-                label: _isSaving ? 'SAVING...' : 'SAVE CHANGES',
+                label: _isSaving ? 'Saving...' : 'Save changes',
+                preserveCase: true,
                 width: double.infinity,
                 onPressed: _isSaving ? null : _saveProfile,
               ),
@@ -254,7 +229,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   context.go('/onboarding');
                 },
                 child: Text(
-                  'DELETE ACCOUNT',
+                  'Delete account',
                   style: TypographyTokens.labelLarge().copyWith(
                     color: ColorTokens.error,
                   ),

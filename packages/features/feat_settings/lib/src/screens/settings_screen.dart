@@ -22,10 +22,6 @@ class SettingsScreen extends ConsumerWidget {
     final alias = profile?.publicUserId == null
         ? '#------'
         : '#${AliasGenerator.format(profile!.publicUserId!)}';
-    final statusLine = [
-      profile?.hasMomo == true ? 'MOMO LINKED' : 'MOMO PENDING',
-      profile?.isAdmin == true ? 'ADMIN READY' : 'SUPPORTER',
-    ].join('  •  ');
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -34,159 +30,151 @@ class SettingsScreen extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(
               SpacingTokens.spacing6,
-              SpacingTokens.spacing8,
               SpacingTokens.spacing6,
-              92.0 + SpacingTokens.spacing8, // Clear floating bottom nav
+              SpacingTokens.spacing6,
+              92.0 + SpacingTokens.spacing8,
             ),
             children: [
-              Text(
-                'SETTINGS',
-                style: TypographyTokens.displaySmall(
-                  ColorTokens.onSurface,
-                ).copyWith(letterSpacing: 1.0),
+              const AfriSectionHeader(
+                title: 'Settings',
+                subtitle: 'Account, privacy, and support',
+                padding: EdgeInsets.zero,
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               GlassCard(
                 animate: false,
                 child: Row(
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            alias,
-                            style: TypographyTokens.numericAlias(fontSize: 22),
-                          ),
-                          const SizedBox(height: SpacingTokens.spacing2),
-                          Text(
-                            statusLine,
-                            style: TypographyTokens.labelSmall().copyWith(
-                              color: ColorTokens.onSurface.withValues(
-                                alpha: 0.74,
-                              ),
-                              letterSpacing: 1.1,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                     Container(
                       width: 52,
                       height: 52,
                       decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.14),
-                        borderRadius: BorderRadius.circular(16),
+                        color: ColorTokens.primaryTint(0.16),
+                        borderRadius: BorderRadius.circular(18),
                       ),
-                      child: const Icon(Icons.person_rounded),
+                      alignment: Alignment.center,
+                      child: const Icon(Icons.person_outline_rounded),
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing4),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(alias, style: TypographyTokens.headlineSmall()),
+                          const SizedBox(height: SpacingTokens.spacing2),
+                          Wrap(
+                            spacing: SpacingTokens.spacing2,
+                            runSpacing: SpacingTokens.spacing2,
+                            children: [
+                              AfriStatusChip(
+                                label: profile?.hasMomo == true
+                                    ? 'MOMO linked'
+                                    : 'MOMO pending',
+                                tone: profile?.hasMomo == true
+                                    ? AfriStatusTone.success
+                                    : AfriStatusTone.warning,
+                              ),
+                              AfriStatusChip(
+                                label: profile?.isAdmin == true
+                                    ? 'Admin'
+                                    : 'Supporter',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              _buildSettingsSection(
-                title: 'ACCOUNT',
+              const SizedBox(height: SpacingTokens.spacing6),
+              _Section(
+                title: 'Account',
                 children: [
-                  _buildSettingsTile(
-                    context: context,
+                  AfriListRow(
                     icon: Icons.person_outline,
-                    title: 'Edit Profile',
+                    title: 'Edit profile',
                     onTap: () => context.push('/settings/edit-profile'),
                   ),
-                  _buildSettingsTile(
-                    context: context,
+                  AfriListRow(
                     icon: Icons.phone_android_outlined,
-                    title: 'Linked Mobile Money',
+                    title: 'Linked mobile money',
                     onTap: () => context.push('/profile_setup'),
                   ),
-                  _buildSettingsTile(
-                    context: context,
+                  AfriListRow(
                     icon: Icons.notifications_none_outlined,
                     title: 'Notifications',
                     onTap: () => context.push('/settings/notifications'),
                   ),
-                  _buildSettingsTile(
-                    context: context,
+                  AfriListRow(
                     icon: Icons.language_outlined,
-                    title: 'Language & Region',
+                    title: 'Language & region',
                     onTap: () => context.push('/settings/language'),
                   ),
                 ],
               ),
               const SizedBox(height: SpacingTokens.spacing6),
-              _buildSettingsSection(
-                title: showBiopayEntries ? 'BioPay & Privacy' : 'PRIVACY',
+              _Section(
+                title: showBiopayEntries ? 'BioPay & Privacy' : 'Privacy',
                 children: [
                   if (showBiopayEntries)
-                    _buildSettingsTile(
-                      context: context,
+                    AfriListRow(
                       icon: Icons.payments_outlined,
-                      title: 'BioPay Home',
+                      title: 'BioPay home',
                       onTap: () => context.push('/biopay'),
                     ),
                   if (showBiopayEntries)
-                    _buildSettingsTile(
-                      context: context,
+                    AfriListRow(
                       icon: Icons.face_retouching_natural_rounded,
-                      title: 'Face ID & Enrollment',
+                      title: 'Face ID & enrollment',
                       onTap: () => context.push('/biopay/profile'),
                     ),
                   if (showBiopayEntries)
-                    _buildSettingsTile(
-                      context: context,
+                    AfriListRow(
                       icon: Icons.qr_code_rounded,
-                      title: 'QR Receive & Pay',
+                      title: 'QR receive & pay',
                       onTap: () => context.push('/biopay/qr'),
                     ),
                   if (showBiopayEntries)
-                    _buildSettingsTile(
-                      context: context,
+                    AfriListRow(
                       icon: Icons.nfc_rounded,
-                      title: 'NFC Receive & Pay',
+                      title: 'NFC receive & pay',
                       onTap: () => context.push('/biopay/nfc'),
                     ),
-                  _buildSettingsTile(
-                    context: context,
+                  AfriListRow(
                     icon: Icons.lock_outline,
-                    title: 'Privacy Controls',
+                    title: 'Privacy controls',
                     onTap: () => context.push('/settings/privacy'),
                   ),
                 ],
               ),
               const SizedBox(height: SpacingTokens.spacing6),
-              _buildSettingsSection(
-                title: 'SUPPORT & ABOUT',
+              _Section(
+                title: 'Support & About',
                 children: [
-                  _buildSettingsTile(
-                    context: context,
+                  AfriListRow(
                     icon: Icons.help_outline,
-                    title: 'Help Center',
+                    title: 'Help center',
                     onTap: () => context.push('/settings/help'),
                   ),
-                  _buildSettingsTile(
-                    context: context,
+                  AfriListRow(
                     icon: Icons.bug_report_outlined,
-                    title: 'Report Bug',
+                    title: 'Report bug',
                     onTap: () => context.push('/settings/help'),
                   ),
-                  _buildSettingsTile(
-                    context: context,
+                  AfriListRow(
                     icon: Icons.star_outline_rounded,
-                    title: 'Rate App',
+                    title: 'Rate app',
                     onTap: () => context.push('/settings/about'),
                   ),
-                  _buildSettingsTile(
-                    context: context,
+                  AfriListRow(
                     icon: Icons.info_outline,
                     title: 'About $appName',
                     onTap: () => context.push('/settings/about'),
                   ),
-                  _buildSettingsTile(
-                    context: context,
+                  AfriListRow(
                     icon: Icons.logout_rounded,
-                    title: 'Sign Out',
+                    title: 'Sign out',
                     onTap: () async {
                       final confirmed = await showSignOutConfirmationSheet(
                         context,
@@ -198,10 +186,9 @@ class SettingsScreen extends ConsumerWidget {
                     },
                   ),
                   if (profile?.isAdmin == true)
-                    _buildSettingsTile(
-                      context: context,
+                    AfriListRow(
                       icon: Icons.admin_panel_settings_outlined,
-                      title: 'Admin Workspace',
+                      title: 'Admin workspace',
                       onTap: () => context.push('/admin'),
                     ),
                 ],
@@ -213,57 +200,6 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSettingsSection({
-    required String title,
-    required List<Widget> children,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(
-            left: 8,
-            bottom: SpacingTokens.spacing2,
-          ),
-          child: Text(
-            title,
-            style: TypographyTokens.labelMedium().copyWith(
-              color: ColorTokens.onSurface.withValues(alpha: 0.72),
-              letterSpacing: 1.2,
-            ),
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: ColorTokens.surfaceContainerLow,
-            borderRadius: ShapeTokens.cardRadius,
-          ),
-          child: Column(children: children),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSettingsTile({
-    required BuildContext context,
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: ColorTokens.onSurface),
-      title: Text(
-        title,
-        style: TypographyTokens.titleMedium().copyWith(
-          color: ColorTokens.onSurface,
-          letterSpacing: 1.5,
-        ),
-      ),
-      trailing: Icon(Icons.chevron_right, color: ColorTokens.onSurfaceVariant),
-      onTap: onTap,
-    );
-  }
-
   bool _hasRoute(BuildContext context, String routeName) {
     try {
       GoRouter.of(context).namedLocation(routeName);
@@ -271,5 +207,36 @@ class SettingsScreen extends ConsumerWidget {
     } catch (_) {
       return false;
     }
+  }
+}
+
+class _Section extends StatelessWidget {
+  const _Section({required this.title, required this.children});
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
+          child: Text(
+            title,
+            style: TypographyTokens.labelMedium(ColorTokens.onSurfaceVariant),
+          ),
+        ),
+        ...children
+            .map(
+              (child) => Padding(
+                padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
+                child: child,
+              ),
+            )
+            .toList(),
+      ],
+    );
   }
 }

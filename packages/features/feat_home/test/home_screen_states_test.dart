@@ -149,8 +149,8 @@ void main() {
 
       await tester.pump(const Duration(milliseconds: 300));
 
-      expect(find.text('LATEST INTEL'), findsOneWidget);
-      expect(find.text('NO INTEL YET'), findsOneWidget);
+      expect(find.text('News'), findsOneWidget);
+      expect(find.text('No news yet'), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
