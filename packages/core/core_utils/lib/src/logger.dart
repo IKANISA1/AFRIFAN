@@ -21,9 +21,9 @@ class AfriLogger {
     _log(tag, message, level: 800, mirrorToConsole: kDebugMode);
   }
 
-  /// Log a warning message.
+  /// Log a warning message (debug builds only for console, always to devtools).
   static void warn(String tag, String message) {
-    _log(tag, message, level: 900, mirrorToConsole: true);
+    _log(tag, message, level: 900, mirrorToConsole: kDebugMode);
   }
 
   /// Log an error with optional exception.

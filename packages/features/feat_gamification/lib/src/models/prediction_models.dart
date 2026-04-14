@@ -42,6 +42,18 @@ class PredictionDashboard {
       streakType: json['streak_type']?.toString(),
     );
   }
+
+  /// Returns an empty dashboard for error/loading fallback.
+  factory PredictionDashboard.empty() => const PredictionDashboard(
+        totalPredictions: 0,
+        settledCount: 0,
+        wonCount: 0,
+        lostCount: 0,
+        activeCount: 0,
+        totalFetEarned: 0,
+        currentStreak: 0,
+        winRate: 0,
+      );
 }
 
 class PredictionLeaderboardEntry {

@@ -119,6 +119,7 @@ void _installGlobalErrorHandlers() {
   final previousFlutterErrorHandler = FlutterError.onError;
   FlutterError.onError = (details) {
     previousFlutterErrorHandler?.call(details);
+    unawaited(CrashlyticsService.recordFlutterError(details));
     unawaited(
       _reportUnhandledError(
         component: 'flutter_error',
@@ -129,6 +130,7 @@ void _installGlobalErrorHandlers() {
   };
 
   PlatformDispatcher.instance.onError = (error, stackTrace) {
+    unawaited(CrashlyticsService.recordError(error, stackTrace, fatal: true));
     unawaited(
       _reportUnhandledError(
         component: 'platform_dispatcher',

@@ -217,15 +217,11 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
     final languageCode =
         ref.watch(currentUserProvider)?.languageCode ?? widget.config.language;
     final themeMode = ref.watch(themeModeProvider);
-    const lockedBrightness = Brightness.dark;
-    final appTheme = ClubTheme.from(
-      widget.config,
-      brightness: lockedBrightness,
-    );
+    final appTheme = ClubTheme.from(widget.config);
 
     // The app is intentionally single-theme: always render with the original
     // dark design system regardless of device appearance settings.
-    ColorTokens.setBrightness(lockedBrightness);
+    ColorTokens.setBrightness(Brightness.dark);
 
     return MaterialApp.router(
       title: widget.config.appName,

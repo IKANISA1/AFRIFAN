@@ -10,6 +10,7 @@ export 'src/club_config_scope.dart';
 export 'src/club_theme.dart';
 export 'src/extensions.dart';
 export 'src/runtime_branding.dart';
+export 'src/theme_mode_notifier.dart';
 
 // ── Tokens ──
 export 'src/tokens/afri_semantic_colors.dart';

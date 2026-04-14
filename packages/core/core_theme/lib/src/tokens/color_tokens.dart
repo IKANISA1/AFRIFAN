@@ -139,6 +139,10 @@ class ColorTokens {
 
   static const bool isDark = true;
 
+  /// Compatibility shim for older call sites after the theme system was locked
+  /// to a single dark palette.
+  static void setBrightness(Brightness brightness) {}
+
   static Color get clubPrimary => _primary;
   static Color get clubSecondary => _secondary;
   static Color get clubAccent => _accent;

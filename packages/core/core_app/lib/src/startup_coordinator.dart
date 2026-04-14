@@ -122,6 +122,8 @@ class AppStartupCoordinator {
       options: options.firebaseOptions,
     );
     final appCheckReady = await AppCheckService.initialize();
+    await CrashlyticsService.initialize();
+    await ConnectivityService.initialize();
 
     if (kReleaseMode && config.hasBiopay) {
       if (!firebaseReady) {
