@@ -19,7 +19,7 @@ Purchase match tickets directly from the app. Skip the queues with digital entry
 Join the official Rayon Sports FC digital membership program. Access exclusive benefits, earn points, and showcase your loyalty status with your unique fan identity.
 
 🎮 FAN GAMIFICATION
-Compete with other fans through challenges and leaderboards. Climb the rankings, unlock badges, and earn XP rewards for your dedication.
+Compete with other fans through challenges and leaderboards. Climb the rankings, unlock badges, and earn FET rewards for your dedication.
 
 💰 CONTRIBUTIONS
 Support your club through transparent digital contributions. Join support circles, track group contributions, and see how your support makes a difference.

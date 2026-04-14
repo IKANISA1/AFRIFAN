@@ -5,8 +5,6 @@
 /// via ClubConfig; the catalog provides the validation + normalization.
 library;
 
-import 'country_data.dart';
-
 /// Payment recipient route type.
 enum PaymentRecipientType { phoneNumber, code }
 
