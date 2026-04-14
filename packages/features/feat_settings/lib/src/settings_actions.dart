@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 abstract final class AppLinks {
@@ -115,16 +114,3 @@ Future<bool> launchWhatsApp(
   return launchExternalUri(context, uri, failureMessage: failureMessage);
 }
 
-Future<bool> openStoreListing(BuildContext context) async {
-  try {
-    await InAppReview.instance.openStoreListing();
-    return true;
-  } catch (_) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open the app store listing.')),
-      );
-    }
-    return false;
-  }
-}

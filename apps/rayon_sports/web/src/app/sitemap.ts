@@ -2,7 +2,6 @@ import type { MetadataRoute } from "next";
 import { absoluteUrl } from "@/lib/config";
 import { getActiveClubReference } from "@/lib/club-context";
 import { fallbackNewsArticles, fallbackProducts, fallbackMatches } from "@/lib/content";
-import { getFantasyCompetitions } from "@/lib/data/public";
 import { getReadOnlySupabase } from "@/lib/supabase/admin";
 
 /**
@@ -18,7 +17,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/standings",
     "/squad",
     "/tickets",
-    "/fantasy",
     "/shop",
     "/membership",
     "/supporters",
@@ -39,7 +37,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Try DB, fall back to hardcoded
   const client = getReadOnlySupabase();
-  const fantasyCompetitions = await getFantasyCompetitions().catch(() => []);
 
   if (client) {
     try {
@@ -146,15 +143,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const m of fallbackMatches) {
       entries.push({ url: absoluteUrl(`/fixtures/${m.id}`), lastModified: new Date(m.matchDate) });
     }
-  }
-
-  for (const competition of fantasyCompetitions) {
-    entries.push({
-      url: absoluteUrl(`/fantasy/${competition.slug}`),
-      lastModified: new Date(competition.startAt ?? new Date().toISOString()),
-      changeFrequency: "weekly",
-      priority: 0.7,
-    });
   }
 
   return entries;

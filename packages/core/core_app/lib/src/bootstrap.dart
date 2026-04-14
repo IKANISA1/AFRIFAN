@@ -7,6 +7,7 @@ import 'package:core_network/core_network.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kReleaseMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -42,6 +43,9 @@ Future<void> bootstrap(
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+      if (kReleaseMode) {
+        debugPrint = (String? message, {int? wrapWidth}) {};
+      }
       _installGlobalErrorHandlers();
 
       final normalizedClubId = int.tryParse(config.clubId);
@@ -71,6 +75,9 @@ Future<void> bootstrap(
         currencyCode: config.currency,
         currencySymbol: config.currencySymbol,
       );
+
+      final builtinCountries = await loadBuiltInCountries();
+      AfriCountryCatalog.addCountries(builtinCountries);
 
       final startupCoordinator = AppStartupCoordinator(
         options: options.startupOptions,

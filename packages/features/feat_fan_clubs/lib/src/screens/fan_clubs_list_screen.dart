@@ -17,6 +17,7 @@ class FanClubsListScreen extends ConsumerStatefulWidget {
 class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
   final _searchController = TextEditingController();
   final Set<String> _joinedClubIds = <String>{};
+  final Set<String> _pendingClubIds = <String>{};
 
   List<Map<String, dynamic>> _clubs = const <Map<String, dynamic>>[];
   bool _isLoading = true;
@@ -105,7 +106,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
     final clubId = club['id']?.toString();
     final userId = ref.read(supabaseClientProvider).auth.currentUser?.id;
 
-    if (clubId == null || clubId.isEmpty) {
+    if (clubId == null || clubId.isEmpty || _pendingClubIds.contains(clubId)) {
       return;
     }
 
@@ -116,6 +117,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
 
     final isJoined = _joinedClubIds.contains(clubId);
     HapticFeedback.lightImpact();
+    setState(() => _pendingClubIds.add(clubId));
 
     try {
       if (isJoined) {
@@ -168,6 +170,10 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
           backgroundColor: ColorTokens.error,
         ),
       );
+    } finally {
+      if (mounted) {
+        setState(() => _pendingClubIds.remove(clubId));
+      }
     }
   }
 
@@ -398,6 +404,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                       final club = _visibleClubs[index];
                       final clubId = club['id']?.toString() ?? '';
                       final joined = _joinedClubIds.contains(clubId);
+                      final isPending = _pendingClubIds.contains(clubId);
 
                       return Padding(
                         padding: EdgeInsets.fromLTRB(
@@ -411,6 +418,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                         child: FanClubListItem(
                           club: club,
                           isJoined: joined,
+                          isPending: isPending,
                           isOfficial: _isOfficial(club),
                           onTap: () => context.push('/fan-clubs/$clubId'),
                           onJoinToggled: () => _toggleJoin(club),

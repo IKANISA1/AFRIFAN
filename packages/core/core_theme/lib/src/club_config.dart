@@ -33,6 +33,8 @@ class MomoConfig {
 /// Abstract interface that every club config package must implement.
 /// This is the ONLY thing that changes per club — pure data, no logic.
 abstract class ClubConfig {
+  const ClubConfig();
+
   /// Unique tenant ID: e.g. 'rayon_sports_rw'
   String get clubId;
 
@@ -86,6 +88,9 @@ abstract class ClubConfig {
   /// MOMO config
   MomoConfig get momo;
 
+  /// Environment: e.g. 'production', 'staging'
+  String get environment => 'production';
+
   /// Feature flags as a map (for dynamic checks)
   Map<String, bool> get features => {
     'biopay': hasBiopay,
@@ -95,4 +100,86 @@ abstract class ClubConfig {
     'chat': hasChat,
     'sms_ledger': hasSmsLedger,
   };
+
+  /// Minimal shared fallback used in widget tests and empty-state previews.
+  static ClubConfig fallback() => const _FallbackClubConfig();
+}
+
+class _FallbackClubConfig extends ClubConfig {
+  const _FallbackClubConfig();
+
+  @override
+  String get clubId => 'fallback';
+
+  @override
+  String get clubName => 'AFRICLUB';
+
+  @override
+  String get appName => 'AFRICLUB';
+
+  @override
+  String get country => 'Rwanda';
+
+  @override
+  String get countryCode => 'RW';
+
+  @override
+  String get language => 'en';
+
+  @override
+  String get momoPrefix => '*182*';
+
+  @override
+  String get currency => 'RWF';
+
+  @override
+  String get currencySymbol => 'RWF';
+
+  @override
+  ClubColors get colors => const ClubColors(
+    primary: Color(0xFF0038A8),
+    secondary: Color(0xFF001F5C),
+    accent: Color(0xFFD4A017),
+    gradient: <Color>[Color(0xFF001F5C), Color(0xFF0038A8)],
+  );
+
+  @override
+  String get crestAsset => 'assets/crest/fallback.png';
+
+  @override
+  String get supabaseUrl => 'https://example.supabase.co';
+
+  @override
+  String get supabaseAnonKey => 'anon';
+
+  @override
+  List<String> get supportedLanguages => const <String>['en'];
+
+  @override
+  bool get hasBiopay => false;
+
+  @override
+  bool get hasFanClubs => true;
+
+  @override
+  bool get hasShop => true;
+
+  @override
+  bool get hasTicketing => true;
+
+  @override
+  bool get hasChat => true;
+
+  @override
+  bool get hasSmsLedger => true;
+
+  @override
+  MomoConfig get momo => const MomoConfig(
+    ussdTemplate: '*182*8*1*{amount}*{momo}#',
+    senderName: 'MTN MoMo',
+    countryCode: 'RW',
+  );
+
+  @override
+  String get environment => 'test';
 }

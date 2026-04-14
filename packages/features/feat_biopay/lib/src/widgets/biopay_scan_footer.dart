@@ -29,8 +29,8 @@ class BiopayScanFooter extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: onEnableCamera,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
+                  backgroundColor: ColorTokens.surfaceContainerHighest,
+                  foregroundColor: ColorTokens.onSurface,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(ShapeTokens.radiusXl),
                   ),
@@ -39,7 +39,7 @@ class BiopayScanFooter extends StatelessWidget {
                 child: Text(
                   'Enable Camera',
                   style: TypographyTokens.labelLarge().copyWith(
-                    color: Colors.black,
+                    color: ColorTokens.onSurface,
                   ),
                 ),
               ),

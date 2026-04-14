@@ -39,15 +39,36 @@ function escapePattern(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function extractHex(source, tokenName) {
-  const pattern = new RegExp(
-    `(?:static\\s+(?:const\\s+)?Color\\s+${escapePattern(tokenName)}\\s*=\\s*(?:const\\s+)?Color\\(0xFF([0-9A-Fa-f]{6})\\);)`,
+function extractHex(source, tokenName, seen = new Set()) {
+  if (seen.has(tokenName)) {
+    throw new Error(`Circular color token alias detected for "${tokenName}".`);
+  }
+  seen.add(tokenName);
+
+  const declarationPattern = new RegExp(
+    `static\\s+(?:const\\s+)?Color\\s+${escapePattern(tokenName)}\\s*=\\s*([^;]+);`,
   );
-  const match = source.match(pattern);
-  if (!match) {
+  const declaration = source.match(declarationPattern)?.[1]?.trim();
+  if (!declaration) {
     throw new Error(`Unable to resolve color token "${tokenName}".`);
   }
-  return `#${match[1].toLowerCase()}`;
+
+  const inlineColor = declaration.match(
+    /(?:const\s+)?Color\(0xFF([0-9A-Fa-f]{6})\)/,
+  );
+  if (inlineColor) {
+    return `#${inlineColor[1].toLowerCase()}`;
+  }
+
+  if (declaration === "Colors.white") {
+    return "#ffffff";
+  }
+
+  if (/^[_A-Za-z]\w*$/.test(declaration)) {
+    return extractHex(source, declaration, seen);
+  }
+
+  throw new Error(`Unable to resolve color token "${tokenName}" from "${declaration}".`);
 }
 
 function extractGetterHex(source, getterName) {
@@ -125,7 +146,7 @@ const blurSource = readFile(sourceFiles.blur);
 const borderSource = readFile(sourceFiles.borders);
 
 const tokens = {
-  voidBase: extractHex(colorSource, "_voidBase"),
+  voidBase: extractHex(colorSource, "_inkBase"),
   defaultSecondary: extractHex(colorSource, "_defaultSecondary"),
   surfaceContainerLowest: extractHex(colorSource, "_darkSurfaceContainerLowest"),
   surfaceContainerLow: extractHex(colorSource, "_darkSurfaceContainerLow"),
@@ -134,8 +155,8 @@ const tokens = {
   surfaceContainerHigh: extractHex(colorSource, "_darkSurfaceContainerHigh"),
   surfaceContainerHighest: extractHex(colorSource, "_darkSurfaceContainerHighest"),
   surfaceBright: extractHex(colorSource, "_darkSurfaceBright"),
-  primary: extractHex(colorSource, "_monolithViolet"),
-  primaryContainer: extractHex(colorSource, "_monolithOrchid"),
+  primary: extractHex(colorSource, "_defaultPrimary"),
+  primaryContainer: extractHex(colorSource, "_darkPrimaryContainer"),
   secondaryContainer: extractHex(colorSource, "_darkSecondaryContainer"),
   onSurface: extractGetterHex(colorSource, "onSurface"),
   onSurfaceVariant: extractGetterHex(colorSource, "onSurfaceVariant"),
@@ -208,7 +229,7 @@ const generated = `/* AUTO-GENERATED FILE. DO NOT EDIT.
   --border-hover: ${rgba(tokens.primaryContainer, 0.22)};
 
   --club-primary: ${tokens.primary};
-  --club-primary-light: ${tokens.primaryContainer};
+  --club-primary-light: ${mix(tokens.primary, "#ffffff", 0.08)};
   --club-primary-dark: ${mix(tokens.primary, tokens.voidBase, 0.28)};
   --club-primary-glow: ${rgba(tokens.primary, 0.34)};
   --club-secondary: ${tokens.onSurfaceVariant};

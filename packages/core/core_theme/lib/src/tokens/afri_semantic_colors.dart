@@ -152,6 +152,47 @@ class AfriSemanticColors extends ThemeExtension<AfriSemanticColors> {
   );
 
   // ─────────────────────────────────────────────────────────────────
+  // Light theme — derived from the shared light ColorTokens palette
+  // ─────────────────────────────────────────────────────────────────
+  static AfriSemanticColors get light => AfriSemanticColors(
+    appBackground: ColorTokens.background,
+    elevatedBackground: ColorTokens.surfaceContainerLow,
+    shellGradientTop: ColorTokens.surfaceBright,
+    shellGradientBottom: ColorTokens.surfaceContainerHigh,
+    cardSurface: Colors.white,
+    cardSurfaceStrong: ColorTokens.surfaceContainerLow,
+    overlaySurface: ColorTokens.surfaceBright,
+    inputSurface: Colors.white,
+    primaryText: ColorTokens.onSurface,
+    secondaryText: ColorTokens.onSurfaceVariant,
+    tertiaryText: ColorTokens.onSurfaceVariant.withValues(alpha: 0.7),
+    border: ColorTokens.ghostBorder,
+    borderStrong: ColorTokens.outlineVariant.withValues(alpha: 0.6),
+    accent: ColorTokens.primary,
+    accentSoft: ColorTokens.primary.withValues(alpha: 0.12),
+    buttonPrimaryBackground: ColorTokens.primary,
+    buttonPrimaryForeground: const Color(0xFFFFFFFF),
+    danger: ColorTokens.error,
+    warning: ColorTokens.warning,
+    info: ColorTokens.info,
+    success: ColorTokens.success,
+    operationalSurface: ColorTokens.surfaceContainer,
+    analyticsSurface: ColorTokens.surfaceContainerHigh,
+    commerceSurface: ColorTokens.secondaryContainer,
+    teamSurface: ColorTokens.surfaceContainerLowest,
+    highlightColor: Colors.white.withValues(alpha: 0.65),
+    shadowColor: ColorTokens.ambientShadow.withValues(alpha: 0.14),
+    surfaceGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        ColorTokens.surfaceContainerLowest,
+        ColorTokens.surfaceContainerHigh,
+      ],
+    ),
+  );
+
+  // ─────────────────────────────────────────────────────────────────
   // copyWith — enables per-club color overrides
   // ─────────────────────────────────────────────────────────────────
   @override

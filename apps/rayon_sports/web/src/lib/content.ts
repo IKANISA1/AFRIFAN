@@ -486,7 +486,6 @@ export const siteNavigation = [
   { href: "/", label: "Home" },
   { href: "/fixtures", label: "Fixtures" },
   { href: "/tickets", label: "Tickets" },
-  { href: "/fantasy", label: "Fantasy" },
   { href: "/membership", label: "Membership" },
   { href: "/circles", label: "Circles" },
   { href: "/shop", label: "Shop" },
@@ -510,7 +509,6 @@ export const footerNavigationGroups = [
     links: [
       { href: "/fixtures", label: "Fixtures" },
       { href: "/tickets", label: "Tickets" },
-      { href: "/fantasy", label: "Fantasy" },
       { href: "/results", label: "Results" },
       { href: "/standings", label: "Standings" },
     ],
@@ -568,15 +566,6 @@ export const staticSearchItems: SearchIndexItem[] = [
     meta: "Buy",
   },
   {
-    id: "page-fantasy",
-    title: "Fantasy Football",
-    description:
-      "Club-native fantasy competitions for the World Cup, league formats, and localized country-specific launches.",
-    href: "/fantasy",
-    category: "Fantasy",
-    meta: "Competitions",
-  },
-  {
     id: "page-membership",
     title: "Membership",
     description: "Tier comparison, benefits, and supporter identity.",
@@ -629,8 +618,8 @@ export const staticSearchItems: SearchIndexItem[] = [
 
 export const adminNavigation = [
   { href: "/admin", label: "Dashboard" },
+  { href: "/admin/access", label: "Access" },
   { href: "/admin/settings", label: "Settings" },
-  { href: "/admin/fantasy", label: "Fantasy" },
   { href: "/admin/cms", label: "CMS" },
   { href: "/admin/cms/banners", label: "Banners" },
   { href: "/admin/cms/content", label: "Content" },
@@ -640,6 +629,7 @@ export const adminNavigation = [
   { href: "/admin/shop", label: "Shop" },
   { href: "/admin/membership", label: "Membership" },
   { href: "/admin/gamification", label: "Gamification" },
+  { href: "/admin/gamification/wallet", label: "Wallet Ops" },
   { href: "/admin/community", label: "Community" },
   { href: "/admin/standings", label: "Standings" },
   { href: "/admin/contributions", label: "Contributions" },

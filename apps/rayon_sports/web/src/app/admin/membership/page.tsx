@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Crown } from "lucide-react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   deleteAdminMembershipPackage,
   getAdminMembershipPackages,
@@ -16,10 +18,11 @@ import { MembershipEditorForm } from "./_components/membership-editor-form";
 import { MembershipList } from "./_components/membership-list";
 
 export default function AdminMembershipPage() {
-  const { access, client } = useAdminPortal();
+  const { access, activeClub, client } = useAdminPortal();
   const [packages, setPackages] = useState<AdminMembershipPackage[]>([]);
   const [form, setForm] = useState<MembershipForm>(emptyForm);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (client == null) return;
@@ -27,11 +30,15 @@ export default function AdminMembershipPage() {
     setLoading(true);
     try {
       setPackages(await getAdminMembershipPackages(client, access));
+      setLoadError(null);
     } catch (caught) {
-      showAdminToast(
+      const message =
         caught instanceof Error
           ? caught.message
-          : "Could not load membership tiers.",
+          : "Could not load membership tiers.";
+      setLoadError(message);
+      showAdminToast(
+        message,
         "error",
       );
     } finally {
@@ -60,6 +67,14 @@ export default function AdminMembershipPage() {
 
   async function removeTier(pkg: AdminMembershipPackage) {
     if (client == null) return;
+    if (
+      !confirmAdminDestructiveAction({
+        subject: pkg.title,
+        detail: "The membership tier and its pricing configuration will be removed.",
+      })
+    ) {
+      return;
+    }
 
     showAdminToast(`Removing ${pkg.title}...`, "info");
     try {
@@ -122,16 +137,28 @@ export default function AdminMembershipPage() {
         <MembershipEditorForm
           form={form}
           setForm={setForm}
+          currencyCode={activeClub?.currencyCode ?? "USD"}
           client={client}
           access={access}
           onSaved={load}
         />
-        <MembershipList
-          packages={packages}
-          loading={loading}
-          onEdit={beginEdit}
-          onDelete={removeTier}
-        />
+        {loadError && !loading ? (
+          <AdminErrorState
+            title="Membership tiers could not be loaded"
+            description={loadError}
+            onRetry={() => {
+              load().catch(() => {});
+            }}
+          />
+        ) : (
+          <MembershipList
+            packages={packages}
+            currencyCode={activeClub?.currencyCode ?? "USD"}
+            loading={loading}
+            onEdit={beginEdit}
+            onDelete={removeTier}
+          />
+        )}
       </div>
     </div>
   );

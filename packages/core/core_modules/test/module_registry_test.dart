@@ -20,13 +20,12 @@ void main() {
         modules.map((module) => module.featureKey),
         orderedEquals(<String>[
           'home',
+          'live',
+          'fanzone',
           'settings',
           'onboarding',
           'membership',
-          'gamification',
           'contributions',
-          'fantasy',
-          'live',
           'admin',
         ]),
       );
@@ -46,16 +45,15 @@ void main() {
         modules.map((module) => module.featureKey),
         orderedEquals(<String>[
           'home',
+          'live',
+          'fanzone',
           'biopay',
           'settings',
           'onboarding',
           'membership',
-          'gamification',
           'contributions',
           'ticketing',
           'fan_clubs',
-          'fantasy',
-          'live',
           'admin',
           'shop',
         ]),
@@ -153,4 +151,7 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const <String>['en'];
+
+  @override
+  String get environment => 'test';
 }

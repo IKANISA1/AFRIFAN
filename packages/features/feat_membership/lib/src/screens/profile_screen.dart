@@ -15,13 +15,6 @@ class ProfileScreen extends ConsumerWidget {
     final primary = theme.colorScheme.primary;
     final profile = ref.watch(currentUserProvider);
     final alias = AliasGenerator.format(profile?.publicUserId ?? '000000');
-    final languageLabel = switch ((profile?.languageCode ?? 'en')
-        .trim()
-        .toLowerCase()) {
-      'fr' => 'Français',
-      'rw' => 'English (Kinyarwanda soon)',
-      _ => 'English',
-    };
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -101,7 +94,7 @@ class ProfileScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: SpacingTokens.spacing2),
 
-                      // Tier + XP
+                      // Tier + FET
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -126,7 +119,7 @@ class ProfileScreen extends ConsumerWidget {
                           ),
                           const SizedBox(width: SpacingTokens.spacing3),
                           Text(
-                            'XP in Membership',
+                            'FET in Membership',
                             style: TypographyTokens.monolithFont(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
@@ -182,8 +175,20 @@ class ProfileScreen extends ConsumerWidget {
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
                       icon: Icons.bolt_rounded,
-                      label: 'XP & Achievements',
-                      onTap: () => context.push('/xp'),
+                      label: 'Predict',
+                      onTap: () => context.push('/fanzone/fixtures'),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing2),
+                    _MenuItem(
+                      icon: Icons.sports_soccer_rounded,
+                      label: 'Predictions',
+                      onTap: () => context.push('/fanzone/my'),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing2),
+                    _MenuItem(
+                      icon: Icons.workspace_premium_rounded,
+                      label: 'Rewards & Progress',
+                      onTap: () => context.push('/fanzone/challenges'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
@@ -236,13 +241,6 @@ class ProfileScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     _MenuItem(
-                      icon: Icons.language,
-                      label: 'Language',
-                      trailing: languageLabel,
-                      onTap: () => context.push('/settings/language'),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing2),
-                    _MenuItem(
                       icon: Icons.notifications_outlined,
                       label: 'Notifications',
                       onTap: () => context.push('/settings/notifications'),
@@ -252,12 +250,6 @@ class ProfileScreen extends ConsumerWidget {
                       icon: Icons.history,
                       label: 'Activity History',
                       onTap: () => context.push('/my-tickets'),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing2),
-                    _MenuItem(
-                      icon: Icons.info_outline,
-                      label: 'About ${RuntimeBranding.displayAppName}',
-                      onTap: () => context.push('/settings/about'),
                     ),
                   ],
                 ),
@@ -277,13 +269,11 @@ class ProfileScreen extends ConsumerWidget {
 class _MenuItem extends StatelessWidget {
   final IconData icon;
   final String label;
-  final String? trailing;
   final VoidCallback onTap;
 
   const _MenuItem({
     required this.icon,
     required this.label,
-    this.trailing,
     required this.onTap,
   });
 
@@ -310,14 +300,6 @@ class _MenuItem extends StatelessWidget {
               ),
             ),
           ),
-          if (trailing != null)
-            Text(
-              trailing!,
-              style: TypographyTokens.editorialFont(
-                fontSize: 15,
-                color: ColorTokens.onSurfaceVariant,
-              ),
-            ),
           const SizedBox(width: SpacingTokens.spacing2),
           Icon(
             Icons.chevron_right,

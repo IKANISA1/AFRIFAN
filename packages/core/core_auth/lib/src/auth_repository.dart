@@ -1,5 +1,7 @@
+import 'dart:io';
+
 import 'package:core_network/core_network.dart';
-import 'package:flutter/foundation.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'models/admin_workspace_access.dart';
@@ -49,6 +51,79 @@ class AuthRepository {
     return profile;
   }
 
+  /// Send a one-time code for a supporter phone sign-in flow.
+  Future<void> requestPhoneSignInOtp({
+    required String phone,
+    OtpChannel channel = OtpChannel.whatsapp,
+    bool shouldCreateUser = true,
+  }) async {
+    await _client.auth.signInWithOtp(
+      phone: phone,
+      shouldCreateUser: shouldCreateUser,
+      data: {'club_id': clubId},
+      channel: channel,
+    );
+  }
+
+  /// Verify a supporter phone sign-in code and hydrate the profile row.
+  Future<UserProfile> verifyPhoneSignInOtp({
+    required String phone,
+    required String token,
+  }) async {
+    final response = await _client.auth.verifyOTP(
+      phone: phone,
+      token: token,
+      type: OtpType.sms,
+    );
+
+    final user = response.user ?? _client.auth.currentUser;
+    if (user == null) {
+      throw Exception('Phone verification did not produce an active session.');
+    }
+
+    await _ensureProfileRow(user);
+
+    final profile = await _loadProfile(user.id);
+    if (profile == null) {
+      throw Exception(
+        'Server did not return a profile row following OTP verification.',
+      );
+    }
+
+    return profile;
+  }
+
+  /// Start a phone change / verification flow for the current authenticated user.
+  Future<void> requestPhoneVerificationOtp({required String phone}) async {
+    await _client.auth.updateUser(UserAttributes(phone: phone));
+  }
+
+  /// Confirm the OTP for a pending authenticated phone change.
+  Future<UserProfile> verifyPhoneVerificationOtp({
+    required String phone,
+    required String token,
+  }) async {
+    final response = await _client.auth.verifyOTP(
+      phone: phone,
+      token: token,
+      type: OtpType.phoneChange,
+    );
+
+    final user = response.user ?? _client.auth.currentUser;
+    if (user == null) {
+      throw Exception('Phone verification could not be confirmed.');
+    }
+
+    await _ensureProfileRow(user);
+
+    final profile = await _loadProfile(user.id);
+    if (profile == null) {
+      throw Exception('Server did not return the verified profile.');
+    }
+
+    return profile;
+  }
+
   // ─── Session Restore ────────────────────────────────────────
 
   /// Restore the current user profile strictly from Supabase.
@@ -65,9 +140,12 @@ class AuthRepository {
         return _loadProfile(user.id);
       }
       return profile;
-    } catch (error) {
-      debugPrint(
-        '[AuthRepository] Session restore failed and local recovery was blocked: $error',
+    } catch (error, stackTrace) {
+      AfriLogger.error(
+        'AuthRepository',
+        'Session restore failed and local recovery was blocked.',
+        error,
+        stackTrace,
       );
       throw AuthRestoreFailure(
         'Existing session could not be restored safely.',
@@ -176,8 +254,21 @@ class AuthRepository {
       // Fallback: check app_metadata from JWT
       final metadata = _client.auth.currentUser?.appMetadata ?? {};
       return AdminWorkspaceAccess.fromAppMetadata(metadata);
-    } catch (_) {
-      // Non-fatal: return no access
+    } on SocketException catch (error) {
+      // Network error: log but preserve existing access rather than revoking.
+      AfriLogger.warn(
+        'AuthRepository',
+        'Admin access resolution failed due to network error: $error',
+      );
+      return AdminWorkspaceAccess.none;
+    } catch (error, stackTrace) {
+      // Non-network error: log and return no access.
+      AfriLogger.error(
+        'AuthRepository',
+        'Admin access resolution failed.',
+        error,
+        stackTrace,
+      );
       return AdminWorkspaceAccess.none;
     }
   }
@@ -213,7 +304,10 @@ class AuthRepository {
     try {
       await _upsertPrivateContact(seededProfile);
     } catch (error) {
-      debugPrint('[AuthRepository] Private contact upsert skipped: $error');
+      AfriLogger.warn(
+        'AuthRepository',
+        'Private contact upsert skipped: $error',
+      );
     }
   }
 

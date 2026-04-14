@@ -3,7 +3,6 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { GroupForm } from "./group-form-state";
 import { showAdminToast } from "@/components/admin/admin-toast";
-import { fallbackClubProfile } from "@/lib/content";
 import { saveAdminContributionGroup } from "@/lib/data/admin/contributions";
 import type { AdminAccess, AdminContributionGroup } from "@/lib/types";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -12,6 +11,7 @@ interface GroupFormProps {
   form: GroupForm;
   setForm: Dispatch<SetStateAction<GroupForm>>;
   emptyForm: GroupForm;
+  defaultCurrencyCode: string;
   client: SupabaseClient | null;
   access: AdminAccess;
   onSaved: () => Promise<void>;
@@ -21,6 +21,7 @@ export function ContributionGroupForm({
   form,
   setForm,
   emptyForm,
+  defaultCurrencyCode,
   client,
   access,
   onSaved,
@@ -41,13 +42,13 @@ export function ContributionGroupForm({
         targetAmount: Number(formData.get("targetAmount") ?? 0),
         currentTotal: Number(formData.get("currentTotal") ?? 0),
         currency: String(
-          formData.get("currency") ?? fallbackClubProfile.currencyCode,
+          formData.get("currency") ?? defaultCurrencyCode,
         ),
         memberCount: Number(formData.get("memberCount") ?? 0),
         inviteCode: String(formData.get("inviteCode") ?? ""),
         isClosed: formData.get("isClosed") === "on",
       });
-      setForm(emptyForm);
+      setForm({ ...emptyForm, currency: defaultCurrencyCode });
       await onSaved();
       showAdminToast("Support circle saved.", "success");
     } catch (caught) {
@@ -136,8 +137,8 @@ export function ContributionGroupForm({
           Currency
           <input
             name="currency"
-            value={form.currency}
-            onChange={(e) => setForm((c) => ({ ...c, currency: e.target.value }))}
+            value={form.currency || defaultCurrencyCode}
+            onChange={(e) => setForm((c) => ({ ...c, currency: e.target.value.toUpperCase() }))}
             className="dashboard-input"
           />
         </label>

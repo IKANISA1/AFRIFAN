@@ -40,9 +40,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   }
 
   void _ensurePaymentRouteState(UserProfile? user) {
-    final lookupKey = user == null
-        ? 'guest'
-        : '${user.id}:${user.clubId}:${user.hasMomo}';
+    final lookupKey = user == null ? 'guest' : '${user.id}:${user.clubId}';
     if (_paymentRouteLookupKey == lookupKey) {
       return;
     }
@@ -55,7 +53,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   Future<void> _refreshPaymentRouteState(UserProfile? user) async {
     final lookupKey = _paymentRouteLookupKey;
-    if (user == null || !user.hasMomo) {
+    if (user == null) {
       if (!mounted || lookupKey != _paymentRouteLookupKey) return;
       setState(() {
         _paymentRoute = null;
@@ -81,14 +79,6 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     final user = ref.read(currentUserProvider);
     if (user == null) {
       context.go('/onboarding');
-      return;
-    }
-
-    if (!user.hasMomo) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Link your MOMO number before checkout.')),
-      );
-      context.push('/profile_setup');
       return;
     }
 
@@ -293,8 +283,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
     final items = ref.watch(shopCartProvider);
     final total = ref.watch(shopCartTotalProvider);
-    final paymentRouteBlocked =
-        user != null && user.hasMomo && _paymentRouteMessage != null;
+    final paymentRouteBlocked = user != null && _paymentRouteMessage != null;
 
     return Scaffold(
       backgroundColor: ColorTokens.background,

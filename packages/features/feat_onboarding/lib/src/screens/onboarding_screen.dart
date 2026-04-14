@@ -27,7 +27,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       {
         'title': 'FAN MEMBERSHIP. TICKETS. CONTRIBUTIONS.',
         'body':
-            'Earn XP, buy match tickets, and contribute to club projects — all in one place.',
+            'Earn FET, buy match tickets, and contribute to club projects — all in one place.',
       },
       {
         'title': 'READY TO PLAY?',
@@ -43,6 +43,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   Future<void> _handleGetStarted() async {
+    if (_isSubmitting) return;
+
     final authState = ref.read(authStateProvider);
     if (authState is AuthAuthenticated) {
       context.go(_postAuthDestination());
@@ -71,7 +73,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   String _postAuthDestination() {
-    final raw = GoRouterState.of(context).uri.queryParameters['from']?.trim();
+    final raw = _deferredDestination();
     if (raw == null || raw.isEmpty) {
       return '/home';
     }
@@ -84,6 +86,26 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         path == '/splash' ||
         path == '/onboarding') {
       return '/home';
+    }
+
+    return uri.toString();
+  }
+
+  String? _deferredDestination() {
+    final raw = GoRouterState.of(context).uri.queryParameters['from']?.trim();
+    if (raw == null || raw.isEmpty) {
+      return null;
+    }
+
+    final uri = Uri.tryParse(raw);
+    final path = uri?.path;
+    if (path == null ||
+        path.isEmpty ||
+        !path.startsWith('/') ||
+        path == '/splash' ||
+        path == '/onboarding' ||
+        path == '/auth/phone') {
+      return null;
     }
 
     return uri.toString();
@@ -181,6 +203,33 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   ),
                 ),
               ),
+              if (_currentPage == slides.length - 1)
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: SpacingTokens.spacing6,
+                    right: SpacingTokens.spacing6,
+                    bottom: SpacingTokens.spacing6,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton.icon(
+                      onPressed: _isSubmitting
+                          ? null
+                          : () => context.push(
+                              Uri(
+                                path: '/auth/phone',
+                                queryParameters: <String, String>{
+                                  if (_deferredDestination()
+                                      case final String from)
+                                    'from': from,
+                                },
+                              ).toString(),
+                            ),
+                      icon: const Icon(Icons.chat_bubble_outline_rounded),
+                      label: const Text('USE PHONE / WHATSAPP OTP'),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

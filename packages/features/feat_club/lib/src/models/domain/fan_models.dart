@@ -17,6 +17,7 @@ class FanMembership extends Equatable {
     required this.joinedAt,
     this.expiresAt,
     this.renewedAt,
+    this.paymentStatus = jh.PaymentStatus.verified,
   });
 
   final String id;
@@ -30,6 +31,7 @@ class FanMembership extends Equatable {
   final DateTime joinedAt;
   final DateTime? expiresAt;
   final DateTime? renewedAt;
+  final jh.PaymentStatus paymentStatus;
 
   bool get isExpired =>
       expiresAt != null && expiresAt!.isBefore(DateTime.now());
@@ -74,6 +76,7 @@ class FanMembership extends Equatable {
       joinedAt: jh.parseDateTime(json['joined_at']) ?? DateTime.now(),
       expiresAt: jh.parseDateTime(json['expires_at']),
       renewedAt: jh.parseDateTime(json['renewed_at']),
+      paymentStatus: jh.PaymentStatusX.fromValue(json['payment_status'] as String?),
     );
   }
 
@@ -89,6 +92,7 @@ class FanMembership extends Equatable {
         'joined_at': joinedAt.toIso8601String(),
         if (expiresAt != null) 'expires_at': expiresAt!.toIso8601String(),
         if (renewedAt != null) 'renewed_at': renewedAt!.toIso8601String(),
+        'payment_status': paymentStatus.value,
       };
 
   FanMembership copyWith({
@@ -103,6 +107,7 @@ class FanMembership extends Equatable {
     DateTime? joinedAt,
     Object? expiresAt = _unset,
     Object? renewedAt = _unset,
+    jh.PaymentStatus? paymentStatus,
   }) {
     return FanMembership(
       id: id ?? this.id,
@@ -120,6 +125,7 @@ class FanMembership extends Equatable {
       renewedAt: identical(renewedAt, _unset)
           ? this.renewedAt
           : renewedAt as DateTime?,
+      paymentStatus: paymentStatus ?? this.paymentStatus,
     );
   }
 
@@ -136,6 +142,7 @@ class FanMembership extends Equatable {
         joinedAt,
         expiresAt,
         renewedAt,
+        paymentStatus,
       ];
 }
 

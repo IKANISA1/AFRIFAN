@@ -1,6 +1,5 @@
 import { Trash2 } from "lucide-react";
 import { Skeleton } from "@/components/skeleton";
-import { siteConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import type { AdminStandingRow } from "@/lib/types";
 
@@ -13,6 +12,8 @@ const formBadge: Record<string, string> = {
 interface StandingListProps {
   rows: AdminStandingRow[];
   loading: boolean;
+  highlightedClubId: string | null;
+  highlightedClubSlug: string | null;
   onEdit: (row: AdminStandingRow) => void;
   onDelete: (row: AdminStandingRow) => Promise<void>;
 }
@@ -20,6 +21,8 @@ interface StandingListProps {
 export function StandingList({
   rows,
   loading,
+  highlightedClubId,
+  highlightedClubSlug,
   onEdit,
   onDelete,
 }: StandingListProps) {
@@ -59,7 +62,11 @@ export function StandingList({
           <tbody>
             {rows.map((row) => {
               const isHighlightedClub =
-                row.clubSlug === siteConfig.defaultClubSlug;
+                (row.clubId != null &&
+                  highlightedClubId != null &&
+                  String(row.clubId) === highlightedClubId) ||
+                (highlightedClubSlug != null &&
+                  row.clubSlug === highlightedClubSlug);
 
               return (
                 <tr

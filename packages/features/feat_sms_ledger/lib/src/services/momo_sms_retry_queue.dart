@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
+import 'package:core_utils/core_utils.dart';
 
 import '../repositories/momo_sms_ingestion_repository.dart';
 import 'momo_sms_deps.dart';
@@ -56,7 +56,7 @@ class MomoSmsRetryQueue {
       );
       return true;
     } catch (error) {
-      debugPrint('[MoMo SMS] retry queue write failed: $error');
+      AfriLogger.warn('MoMoSMS', 'Retry queue write failed: $error');
       return false;
     }
   }
@@ -93,7 +93,7 @@ class MomoSmsRetryQueue {
         await box.delete(key);
       } catch (error) {
         // Leave in queue for next drain attempt.
-        debugPrint('[MoMo SMS] retry failed for key=$key: $error');
+        AfriLogger.warn('MoMoSMS', 'Retry failed for key=$key: $error');
       }
     }
 

@@ -281,6 +281,9 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const <String>['en'];
+
+  @override
+  String get environment => 'test';
 }
 
 class _HomeModule extends FeatureModule {

@@ -76,7 +76,7 @@ Future<void> showMomoAmountEntrySheet(
         recordedPending = true;
       }
     } catch (e) {
-      debugPrint('[ContributionOverlay] Failed to record contribution: $e');
+      AfriLogger.warn('ContributionOverlay', 'Failed to record contribution: $e');
     }
   }
 

@@ -21,7 +21,7 @@ abstract class FeatureModule {
   /// Routes contributed by this module.
   /// For tab modules, these are nested sub-routes under the tab path.
   /// For non-tab modules, these become top-level standalone routes.
-  List<RouteBase> get routes;
+  List<RouteBase> get routes => const [];
 
   /// Optional: tab route for bottom navigation.
   /// If non-null, this route appears as a bottom nav tab.

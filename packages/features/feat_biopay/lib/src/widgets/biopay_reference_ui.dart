@@ -3,43 +3,48 @@ import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const biopayReferenceBackground = Color(0xFFFFFFFF);
-const biopayReferencePanel = Color(0xFFF4F7FB);
-const biopayReferenceInk = Color(0xFF111A35);
-const biopayReferenceMuted = Color(0xFF99A8C3);
-const biopayReferenceBlue = Color(0xFF1352A6);
-const biopayReferencePurple = Color(0xFF4B3BFF);
-const biopayReferenceOrange = Color(0xFFFF9800);
-const biopayReferenceTeal = Color(0xFF0D9B8A);
-const biopayReferenceGreen = Color(0xFF1FC34A);
+import '../biopay_tokens.dart';
+
+// ── Legacy aliases → BiopayTokens ──
+// Kept as getters so existing call sites continue to compile.
+// TODO(cleanup): Migrate callers to BiopayTokens directly.
+Color get biopayReferenceBackground => BiopayTokens.background;
+Color get biopayReferencePanel => BiopayTokens.panel;
+Color get biopayReferenceInk => BiopayTokens.ink;
+Color get biopayReferenceMuted => BiopayTokens.muted;
+Color get biopayReferenceBlue => BiopayTokens.accent;
+Color get biopayReferencePurple => BiopayTokens.featurePurple;
+Color get biopayReferenceOrange => BiopayTokens.featureOrange;
+Color get biopayReferenceTeal => BiopayTokens.featureTeal;
+Color get biopayReferenceGreen => BiopayTokens.successAccent;
 
 TextStyle biopayReferenceText({
   double fontSize = 16,
   FontWeight fontWeight = FontWeight.w700,
-  Color color = biopayReferenceInk,
+  Color? color,
   double? height,
   double? letterSpacing,
 }) {
   return TypographyTokens.editorialFont(
     fontSize: fontSize,
     fontWeight: fontWeight,
-    color: color,
+    color: color ?? biopayReferenceInk,
     height: height,
     letterSpacing: letterSpacing,
   );
 }
 
 BoxDecoration biopayReferencePanelDecoration({
-  Color color = biopayReferencePanel,
+  Color? color,
   double radius = 30,
 }) {
   return BoxDecoration(
-    color: color,
+    color: color ?? biopayReferencePanel,
     borderRadius: BorderRadius.circular(radius),
     boxShadow: [
       BoxShadow(
-        color: Colors.black.withValues(alpha: 0.06),
-        blurRadius: 28,
+        color: ColorTokens.ambientShadow.withValues(alpha: 0.26),
+        blurRadius: 24,
         offset: const Offset(0, 14),
       ),
     ],
@@ -70,39 +75,44 @@ class BiopayReferencePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: biopayReferenceBackground,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(28, 8, 28, 28),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 52,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    if (onBack != null)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: BiopayReferenceLightBackButton(onTap: onBack!),
-                      ),
-                    if (title != null)
-                      Center(
-                        child: Text(
-                          title!,
-                          style: biopayReferenceText(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w800,
+      body: GradientBackground(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(28, 8, 28, 28),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 52,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      if (onBack != null)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: BiopayReferenceLightBackButton(onTap: onBack!),
+                        ),
+                      if (title != null)
+                        Center(
+                          child: Text(
+                            title!,
+                            style: biopayReferenceText(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
                         ),
-                      ),
-                    if (trailing != null)
-                      Align(alignment: Alignment.centerRight, child: trailing!),
-                  ],
+                      if (trailing != null)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: trailing!,
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Expanded(child: child),
-            ],
+                const SizedBox(height: 20),
+                Expanded(child: child),
+              ],
+            ),
           ),
         ),
       ),
@@ -123,9 +133,13 @@ class BiopayReferenceLightBackButton extends StatelessWidget {
         HapticFeedback.lightImpact();
         onTap();
       },
-      child: const SizedBox(
+      child: Container(
         width: 44,
         height: 44,
+        decoration: biopayReferencePanelDecoration(
+          color: BiopayTokens.panelLight,
+          radius: 18,
+        ),
         child: Icon(
           Icons.chevron_left_rounded,
           size: 34,
@@ -181,19 +195,20 @@ class BiopayReferenceProfileButton extends StatelessWidget {
         width: 52,
         height: 52,
         decoration: BoxDecoration(
-          color: const Color(0xFFF5F8FC),
+          color: BiopayTokens.panelLight,
           shape: BoxShape.circle,
+          border: BorderTokens.all(color: ColorTokens.onSurface, opacity: 0.06),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 24,
+              color: ColorTokens.ambientShadow.withValues(alpha: 0.22),
+              blurRadius: 20,
               offset: const Offset(0, 12),
             ),
           ],
         ),
-        child: const Icon(
+        child: Icon(
           Icons.person_outline_rounded,
-          color: Color(0xFF8495B5),
+          color: BiopayTokens.iconMuted,
           size: 26,
         ),
       ),
@@ -225,13 +240,15 @@ class BiopayReferenceSegmentedControl extends StatelessWidget {
             duration: const Duration(milliseconds: 180),
             margin: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.white : Colors.transparent,
+              color: isSelected ? BiopayTokens.panelLight : Colors.transparent,
               borderRadius: BorderRadius.circular(20),
               boxShadow: isSelected
                   ? [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 16,
+                        color: ColorTokens.ambientShadow.withValues(
+                          alpha: 0.18,
+                        ),
+                        blurRadius: 14,
                         offset: const Offset(0, 8),
                       ),
                     ]
@@ -384,7 +401,7 @@ class BiopayReferencePrimaryButton extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.icon,
-    this.color = biopayReferenceBlue,
+    this.color,
     this.textColor = Colors.white,
     super.key,
   });
@@ -392,8 +409,10 @@ class BiopayReferencePrimaryButton extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
   final IconData? icon;
-  final Color color;
+  final Color? color;
   final Color textColor;
+
+  Color get _resolvedColor => color ?? BiopayTokens.accent;
 
   @override
   Widget build(BuildContext context) {
@@ -412,11 +431,11 @@ class BiopayReferencePrimaryButton extends StatelessWidget {
         child: Container(
           height: 84,
           decoration: BoxDecoration(
-            color: color,
+            color: _resolvedColor,
             borderRadius: BorderRadius.circular(32),
             boxShadow: [
               BoxShadow(
-                color: color.withValues(alpha: 0.24),
+                color: _resolvedColor.withValues(alpha: 0.24),
                 blurRadius: 30,
                 offset: const Offset(0, 16),
               ),
@@ -513,20 +532,20 @@ class BiopayReferenceStatusPill extends StatelessWidget {
   const BiopayReferenceStatusPill({
     required this.label,
     this.textColor = Colors.white,
-    this.backgroundColor = const Color(0xCC1F1F22),
+    this.backgroundColor,
     super.key,
   });
 
   final String label;
   final Color textColor;
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: backgroundColor ?? BiopayTokens.statusPillBackground,
         borderRadius: BorderRadius.circular(26),
         border: BorderTokens.all(color: Colors.white, opacity: 0.12),
       ),

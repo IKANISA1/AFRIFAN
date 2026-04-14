@@ -1,10 +1,13 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_network/core_network.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../l10n/app_localizations.dart';
 
 import 'shell.dart';
 
@@ -33,7 +36,6 @@ class AfriClubApp extends StatefulWidget {
 
 class _AfriClubAppState extends State<AfriClubApp> {
   late final AuthRepository _authRepository;
-  late final ThemeData _theme;
   late final List<Locale> _supportedLocales;
 
   @override
@@ -42,7 +44,6 @@ class _AfriClubAppState extends State<AfriClubApp> {
 
     _authRepository =
         widget.authRepository ?? AuthRepository(clubId: widget.config.clubId);
-    _theme = ClubTheme.from(widget.config);
     _supportedLocales = _buildSupportedLocales(
       widget.config.supportedLanguages,
     );
@@ -60,7 +61,6 @@ class _AfriClubAppState extends State<AfriClubApp> {
       child: _AfriClubMaterialApp(
         config: widget.config,
         modules: widget.modules,
-        theme: _theme,
         supportedLocales: _supportedLocales,
         initialLocation: widget.initialLocation,
         frameworkLocaleForLanguageCode: _frameworkLocaleForLanguageCode,
@@ -102,7 +102,6 @@ class _AfriClubMaterialApp extends ConsumerStatefulWidget {
   const _AfriClubMaterialApp({
     required this.config,
     required this.modules,
-    required this.theme,
     required this.supportedLocales,
     required this.frameworkLocaleForLanguageCode,
     this.initialLocation,
@@ -110,7 +109,6 @@ class _AfriClubMaterialApp extends ConsumerStatefulWidget {
 
   final ClubConfig config;
   final List<FeatureModule> modules;
-  final ThemeData theme;
   final List<Locale> supportedLocales;
   final String? initialLocation;
   final Locale Function(String? languageCode) frameworkLocaleForLanguageCode;
@@ -121,7 +119,11 @@ class _AfriClubMaterialApp extends ConsumerStatefulWidget {
 }
 
 class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
-  static const Set<String> _publicPaths = <String>{'/splash', '/onboarding'};
+  static const Set<String> _publicPaths = <String>{
+    '/splash',
+    '/onboarding',
+    '/auth/phone',
+  };
 
   late final ValueNotifier<int> _routerRefreshTick;
   late final ProviderSubscription<AuthState> _authSubscription;
@@ -139,6 +141,7 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
       initialLocation: widget.initialLocation,
       refreshListenable: _routerRefreshTick,
       redirect: _handleRedirect,
+      observers: [FirebaseAnalyticsService.routeObserver],
       shellBuilder: (context, shell) => AppShell(
         shell: shell,
         config: widget.config,
@@ -213,19 +216,45 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
   Widget build(BuildContext context) {
     final languageCode =
         ref.watch(currentUserProvider)?.languageCode ?? widget.config.language;
+    final themeMode = ref.watch(themeModeProvider);
+    const lockedBrightness = Brightness.dark;
+    final appTheme = ClubTheme.from(
+      widget.config,
+      brightness: lockedBrightness,
+    );
+
+    // The app is intentionally single-theme: always render with the original
+    // dark design system regardless of device appearance settings.
+    ColorTokens.setBrightness(lockedBrightness);
 
     return MaterialApp.router(
       title: widget.config.appName,
       debugShowCheckedModeBanner: false,
-      theme: widget.theme,
+      themeMode: themeMode,
+      theme: appTheme,
+      darkTheme: appTheme,
       routerConfig: _appRouter.router,
-      builder: (context, child) => ClubConfigScope(
-        config: widget.config,
-        child: child ?? const SizedBox.shrink(),
-      ),
+      builder: (context, child) {
+        final mediaQuery = MediaQuery.of(context);
+        return MediaQuery(
+          data: mediaQuery.copyWith(
+            // Prevent catastrophic layout breaks while allowing accessible scaling
+            textScaler: mediaQuery.textScaler.clamp(
+              minScaleFactor: 1.0,
+              maxScaleFactor: 1.4,
+            ),
+            accessibleNavigation: true,
+          ),
+          child: ClubConfigScope(
+            config: widget.config,
+            child: child ?? const SizedBox.shrink(),
+          ),
+        );
+      },
       locale: widget.frameworkLocaleForLanguageCode(languageCode),
       supportedLocales: widget.supportedLocales,
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

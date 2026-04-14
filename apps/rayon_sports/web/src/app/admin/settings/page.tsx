@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Languages, Palette, Phone, ShieldCheck } from "lucide-react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
@@ -15,6 +16,7 @@ export default function AdminSettingsPage() {
   const { access, client } = useAdminPortal();
   const [form, setForm] = useState<SettingsForm | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (client == null) return;
@@ -23,9 +25,13 @@ export default function AdminSettingsPage() {
     try {
       const profile = await getAdminClubProfile(client, access);
       setForm(profileToForm(profile));
+      setLoadError(null);
     } catch (caught) {
+      const message =
+        caught instanceof Error ? caught.message : "Could not load club settings.";
+      setLoadError(message);
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not load club settings.",
+        message,
         "error",
       );
     } finally {
@@ -87,11 +93,22 @@ export default function AdminSettingsPage() {
         <IdentityForm
           form={form}
           setForm={setForm}
+          error={loadError}
           loading={loading}
           onReload={() => { load().catch(() => {}); }}
           onSave={() => { submitForm().catch(() => {}); }}
         />
-        <BrandPreview form={form} setForm={setForm} loading={loading} />
+        {loadError && !loading ? (
+          <AdminErrorState
+            title="Settings could not be loaded"
+            description={loadError}
+            onRetry={() => {
+              load().catch(() => {});
+            }}
+          />
+        ) : (
+          <BrandPreview form={form} setForm={setForm} loading={loading} />
+        )}
       </div>
     </div>
   );

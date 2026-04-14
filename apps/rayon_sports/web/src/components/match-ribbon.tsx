@@ -2,13 +2,15 @@ import Link from "next/link";
 import { Calendar } from "lucide-react";
 import { ui } from "@/design-system";
 import type { MatchItem } from "@/lib/types";
+import type { SiteChromeCopy } from "@/lib/site-copy";
 import { formatDateTime, isLiveMatch } from "@/lib/utils";
 
 interface MatchRibbonProps {
   match: MatchItem | null;
+  copy: SiteChromeCopy;
 }
 
-export function MatchRibbon({ match }: MatchRibbonProps) {
+export function MatchRibbon({ match, copy }: MatchRibbonProps) {
   if (!match) return null;
 
   const live = isLiveMatch(match.matchStatus);
@@ -45,7 +47,7 @@ export function MatchRibbon({ match }: MatchRibbonProps) {
             prefetch={false}
             className={ui.ribbonAction}
           >
-            Follow live
+            {copy.followLive}
           </Link>
         </div>
       </div>
@@ -62,7 +64,7 @@ export function MatchRibbon({ match }: MatchRibbonProps) {
         <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
           <Calendar size={14} className="text-club-secondary" />
           <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-300">
-            Next
+            {copy.next}
           </span>
           <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
             {match.homeTeam} vs {match.awayTeam}
@@ -76,7 +78,7 @@ export function MatchRibbon({ match }: MatchRibbonProps) {
           prefetch={false}
           className={`${ui.ribbonAction} px-3 py-1 text-[10px] text-slate-200`}
         >
-          Details
+          {copy.details}
         </Link>
       </div>
     </div>

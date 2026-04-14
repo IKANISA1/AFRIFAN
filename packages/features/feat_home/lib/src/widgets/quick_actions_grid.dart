@@ -1,59 +1,43 @@
-import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-final _fantasyQuickActionEnabledProvider = FutureProvider<bool>((ref) async {
-  try {
-    final client = ref.watch(supabaseClientProvider);
-    final config = AppConfigRepository(client: client);
-    return await config.isFeatureEnabled('fantasy_enabled');
-  } catch (_) {
-    return true;
-  }
-});
-
 /// Compact home shortcuts with one primary CTA and a small action grid.
-class QuickActionsGrid extends ConsumerWidget {
+class QuickActionsGrid extends StatelessWidget {
   const QuickActionsGrid({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final fantasyEnabled = ref
-        .watch(_fantasyQuickActionEnabledProvider)
-        .maybeWhen(data: (value) => value, orElse: () => true);
+  Widget build(BuildContext context) {
     final actions = [
+      _QuickAction(
+        icon: Icons.sports_soccer_rounded,
+        label: 'Predict',
+        onTap: () => context.push('/fanzone/fixtures'),
+      ),
+      _QuickAction(
+        icon: Icons.receipt_long_outlined,
+        label: 'My Picks',
+        onTap: () => context.push('/fanzone/my'),
+      ),
+      _QuickAction(
+        icon: Icons.live_tv_rounded,
+        label: 'Live',
+        onTap: () => context.push('/live'),
+      ),
+      _QuickAction(
+        icon: Icons.leaderboard_outlined,
+        label: 'Leaderboard',
+        onTap: () => context.push('/fanzone/leaderboard'),
+      ),
+      _QuickAction(
+        icon: Icons.account_balance_wallet_outlined,
+        label: 'Wallet',
+        onTap: () => context.push('/fanzone/wallet'),
+      ),
       _QuickAction(
         icon: Icons.confirmation_number_outlined,
         label: 'Tickets',
         onTap: () => context.push('/tickets'),
-      ),
-      _QuickAction(
-        icon: Icons.shopping_bag_outlined,
-        label: 'Shop',
-        onTap: () => context.push('/shop'),
-      ),
-      _QuickAction(
-        icon: Icons.groups_2_outlined,
-        label: 'Fans',
-        onTap: () => context.push('/fan-clubs'),
-      ),
-      _QuickAction(
-        icon: Icons.bolt_rounded,
-        label: 'Games',
-        onTap: () => context.push('/xp'),
-      ),
-      if (fantasyEnabled)
-        _QuickAction(
-          icon: Icons.emoji_events_outlined,
-          label: 'Fantasy',
-          onTap: () => context.push('/fantasy'),
-        ),
-      _QuickAction(
-        icon: Icons.workspace_premium_outlined,
-        label: 'Members',
-        onTap: () => context.push('/membership'),
       ),
     ];
 

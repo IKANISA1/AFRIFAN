@@ -12,11 +12,6 @@ dependencies:
     sdk: flutter
   flutter_riverpod: ^2.6.1
   equatable: ^2.0.7
-  tflite_flutter: ^0.11.0
-  google_mlkit_face_detection: ^0.12.0
-  camera: ^0.11.1
-  image: ^4.5.3
-  local_auth: ^2.3.0
   hive: ^2.2.3
   crypto: ^3.0.6
   url_launcher: ^6.3.1
@@ -59,8 +54,8 @@ workspace:
   - packages/features/feat_club
   - packages/features/feat_home
   - packages/features/feat_fan_clubs
-  - packages/features/feat_fantasy
   - packages/features/feat_live
+  - packages/features/feat_prediction
   - packages/features/feat_membership
   - packages/features/feat_gamification
   - packages/features/feat_contributions
@@ -70,7 +65,6 @@ workspace:
   - packages/features/feat_onboarding
   - packages/features/feat_ticketing
   - packages/features/test_support
-  - packages/africlub_fantasy
   # ── Club config packages ──
   - packages/clubs/club_rayon_sports
   - packages/clubs/club_vitalo

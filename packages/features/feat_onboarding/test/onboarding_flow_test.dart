@@ -1,6 +1,7 @@
 import 'package:core_auth/core_auth.dart';
 import 'package:feat_onboarding/src/screens/onboarding_screen.dart';
 import 'package:feat_onboarding/src/screens/splash_screen.dart';
+import 'package:feat_onboarding/src/screens/supporter_phone_auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -78,6 +79,10 @@ GoRouter _buildRouter(String initialLocation) {
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: '/auth/phone',
+        builder: (context, state) => const SupporterPhoneAuthScreen(),
       ),
       GoRoute(
         path: '/home',
@@ -192,6 +197,28 @@ void main() {
       },
     );
 
+    testWidgets('onboarding exposes the OTP entry route on the final slide', (
+      tester,
+    ) async {
+      final repository = FakeAuthRepository(restoreResult: null);
+
+      await _pumpApp(
+        tester,
+        initialLocation: '/onboarding',
+        repository: repository,
+      );
+
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('NEXT'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('NEXT'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('USE PHONE / WHATSAPP OTP'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SupporterPhoneAuthScreen), findsOneWidget);
+    });
+
     testWidgets('splash routes unauthenticated users to onboarding', (
       tester,
     ) async {
@@ -269,20 +296,19 @@ void main() {
     );
   });
 
-  testWidgets(
-    'onboarding stays usable on compact-height viewports',
-    (tester) async {
-      _setCompactSurface(tester);
+  testWidgets('onboarding stays usable on compact-height viewports', (
+    tester,
+  ) async {
+    _setCompactSurface(tester);
 
-      await tester.pumpWidget(
-        const ProviderScope(child: MaterialApp(home: OnboardingScreen())),
-      );
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(
+      const ProviderScope(child: MaterialApp(home: OnboardingScreen())),
+    );
+    await tester.pumpAndSettle();
 
-      expect(find.text('NEXT'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    },
-  );
+    expect(find.text('NEXT'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }
 
 void _setMobileSurface(WidgetTester tester) {

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
-/// Radial XP progress arc with massive center number.
+/// Radial FET progress arc with massive center number.
 class XpArc extends StatelessWidget {
   final int currentXp;
   final int maxXp;
@@ -56,7 +56,7 @@ class XpArc extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                'XP',
+                'FET',
                 style: TypographyTokens.monolithFont(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,

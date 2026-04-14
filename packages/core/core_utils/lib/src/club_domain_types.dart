@@ -134,7 +134,7 @@ extension ProductCategoryX on ProductCategory {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// XP Event Types — Gamification engine
+// FET Event Types — Gamification engine
 // ═══════════════════════════════════════════════════════════════
 
 enum XpEventType {
@@ -218,7 +218,7 @@ extension XpEventTypeX on XpEventType {
   }
 }
 
-/// A single XP event log entry.
+/// A single FET event log entry.
 class XpEvent extends Equatable {
   const XpEvent({
     required this.id,
@@ -301,5 +301,34 @@ extension GroupPrivacyX on GroupPrivacy {
     GroupPrivacy.public => 'public',
     GroupPrivacy.friends => 'friends',
     GroupPrivacy.private_ => 'private',
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Payment Status — RB-4 Verification Integrity
+// ═══════════════════════════════════════════════════════════════
+
+enum PaymentStatus { pendingVerification, verified, failed }
+
+extension PaymentStatusX on PaymentStatus {
+  static PaymentStatus fromValue(String? value) {
+    return switch ((value ?? '').toLowerCase()) {
+      'verified' => PaymentStatus.verified,
+      'failed' => PaymentStatus.failed,
+      'pending_verification' => PaymentStatus.pendingVerification,
+      _ => PaymentStatus.verified, // Default backward compatibility
+    };
+  }
+
+  String get value => switch (this) {
+    PaymentStatus.pendingVerification => 'pending_verification',
+    PaymentStatus.verified => 'verified',
+    PaymentStatus.failed => 'failed',
+  };
+
+  String get label => switch (this) {
+    PaymentStatus.pendingVerification => 'Pending Verification',
+    PaymentStatus.verified => 'Verified',
+    PaymentStatus.failed => 'Failed',
   };
 }

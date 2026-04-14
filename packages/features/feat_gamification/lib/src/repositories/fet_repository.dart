@@ -1,0 +1,444 @@
+import 'package:core_network/core_network.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../models/fet_models.dart';
+
+class FetRepository {
+  FetRepository({required SupabaseClient client}) : _client = client;
+
+  final SupabaseClient _client;
+  late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
+    client: _client,
+  );
+
+  Future<List<FetCatalogItem>> loadCatalog() async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const <FetCatalogItem>[];
+    }
+
+    final rows = List<Map<String, dynamic>>.from(
+      await _client.rpc(
+        'fet_get_catalog',
+        params: <String, dynamic>{
+          'p_club_id': scope.clubId,
+          'p_include_inactive': false,
+        },
+      ),
+    );
+
+    return rows
+        .map(FetCatalogItem.fromJson)
+        .where((item) => item.isActive)
+        .toList(growable: false);
+  }
+
+  Future<List<FetLeaderboardRow>> loadLeaderboard({int limit = 25}) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const <FetLeaderboardRow>[];
+    }
+
+    final rows = List<Map<String, dynamic>>.from(
+      await _client.rpc(
+        'fet_get_leaderboard',
+        params: <String, dynamic>{'p_club_id': scope.clubId, 'p_limit': limit},
+      ),
+    );
+
+    return rows.map(FetLeaderboardRow.fromJson).toList(growable: false);
+  }
+
+  Future<FetExperienceContext> loadExperienceContext({
+    int leaderboardLimit = 25,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    final userId = _client.auth.currentUser?.id;
+
+    final results = await Future.wait<Object?>([
+      loadCatalog(),
+      loadLeaderboard(limit: leaderboardLimit),
+      if (userId != null)
+        _loadMembership(userId, scope)
+      else
+        Future.value(null),
+      if (userId != null)
+        _loadEventRows(userId)
+      else
+        Future.value(<Map<String, dynamic>>[]),
+      if (userId != null) _loadProfile(userId) else Future.value(null),
+      if (userId != null)
+        _safeMaybeSingle(
+          _client
+              .from('user_private_contacts')
+              .select('momo_number')
+              .eq('user_id', userId)
+              .maybeSingle(),
+        )
+      else
+        Future.value(null),
+      if (userId != null)
+        _safeList(
+          _client
+              .from('fan_club_members')
+              .select('id')
+              .eq('user_id', userId)
+              .limit(1),
+        )
+      else
+        Future.value(<Map<String, dynamic>>[]),
+      if (userId != null)
+        _safeList(
+          _client
+              .from('group_members')
+              .select('id')
+              .eq('user_id', userId)
+              .limit(1),
+        )
+      else
+        Future.value(<Map<String, dynamic>>[]),
+      if (userId != null)
+        _safeList(
+          _client.from('tickets').select('id').eq('user_id', userId).limit(5),
+        )
+      else
+        Future.value(<Map<String, dynamic>>[]),
+    ]);
+
+    final catalog = results[0]! as List<FetCatalogItem>;
+    final leaderboard = results[1]! as List<FetLeaderboardRow>;
+    final membership = results.length > 2
+        ? results[2] as Map<String, dynamic>?
+        : null;
+    final eventRows = results.length > 3
+        ? List<Map<String, dynamic>>.from(results[3]! as List)
+        : const <Map<String, dynamic>>[];
+    final profile = results.length > 4
+        ? results[4] as Map<String, dynamic>?
+        : null;
+    final privateContact = results.length > 5
+        ? results[5] as Map<String, dynamic>?
+        : null;
+    final fanClubs = results.length > 6
+        ? List<Map<String, dynamic>>.from(results[6]! as List)
+        : const <Map<String, dynamic>>[];
+    final groups = results.length > 7
+        ? List<Map<String, dynamic>>.from(results[7]! as List)
+        : const <Map<String, dynamic>>[];
+    final tickets = results.length > 8
+        ? List<Map<String, dynamic>>.from(results[8]! as List)
+        : const <Map<String, dynamic>>[];
+
+    final currentFet = (membership?['points'] as num?)?.toInt() ?? 0;
+    final weeklyFet = _sumWeeklyFet(eventRows);
+    final tier = _normalizeTier(
+      membership?['tier']?.toString(),
+      fallbackPoints: currentFet,
+    );
+    final nextTier = _nextTierFromFet(currentFet);
+    final fanRank =
+        leaderboard
+            .cast<FetLeaderboardRow?>()
+            .firstWhere(
+              (entry) => entry?.isCurrentUser == true,
+              orElse: () => null,
+            )
+            ?.rank ??
+        0;
+
+    return FetExperienceContext(
+      catalog: catalog,
+      leaderboard: leaderboard,
+      earnedCodes: _deriveEarnedCodes(
+        userId: userId,
+        profile: profile,
+        privateContact: privateContact,
+        fanClubs: fanClubs,
+        groups: groups,
+        tickets: tickets,
+        eventRows: eventRows,
+      ),
+      currentFet: currentFet,
+      weeklyFet: weeklyFet,
+      fanRank: fanRank,
+      tier: tier,
+      nextTier: nextTier,
+    );
+  }
+
+  Future<FetWalletSummary?> loadWallet() async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return null;
+    }
+
+    final rows = List<Map<String, dynamic>>.from(
+      await _client.rpc(
+        'fet_get_wallet',
+        params: <String, dynamic>{'p_club_id': scope.clubId},
+      ),
+    );
+
+    if (rows.isEmpty) {
+      return null;
+    }
+
+    return FetWalletSummary.fromJson(rows.first);
+  }
+
+  Future<List<FetWalletTransaction>> loadWalletTransactions({
+    int limit = 50,
+    int offset = 0,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const <FetWalletTransaction>[];
+    }
+
+    final rows = List<Map<String, dynamic>>.from(
+      await _client.rpc(
+        'fet_get_wallet_transactions',
+        params: <String, dynamic>{
+          'p_club_id': scope.clubId,
+          'p_limit': limit,
+          'p_offset': offset,
+        },
+      ),
+    );
+
+    return rows.map(FetWalletTransaction.fromJson).toList(growable: false);
+  }
+
+  Future<List<FetWalletSupporter>> findSupporters(
+    String query, {
+    int limit = 8,
+  }) async {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) {
+      return const <FetWalletSupporter>[];
+    }
+
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const <FetWalletSupporter>[];
+    }
+
+    final rows = List<Map<String, dynamic>>.from(
+      await _client.rpc(
+        'fet_find_supporters',
+        params: <String, dynamic>{
+          'p_query': trimmed,
+          'p_club_id': scope.clubId,
+          'p_limit': limit,
+        },
+      ),
+    );
+
+    return rows.map(FetWalletSupporter.fromJson).toList(growable: false);
+  }
+
+  Future<FetWalletOperationResult> transferFet({
+    required String recipientUserId,
+    required int amount,
+    String? note,
+    String? idempotencyKey,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      throw Exception('Club context is required for wallet transfers.');
+    }
+
+    final response = await _client.rpc(
+      'fet_transfer',
+      params: <String, dynamic>{
+        'p_recipient_user_id': recipientUserId,
+        'p_amount': amount,
+        'p_note': note,
+        'p_idempotency_key': idempotencyKey,
+        'p_club_id': scope.clubId,
+      },
+    );
+
+    return FetWalletOperationResult.fromJson(
+      Map<String, dynamic>.from(response as Map),
+    );
+  }
+
+  Future<FetWalletOperationResult> redeemFet({
+    required int amount,
+    String? note,
+    String? idempotencyKey,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      throw Exception('Club context is required for wallet redemption.');
+    }
+
+    final response = await _client.rpc(
+      'fet_redeem',
+      params: <String, dynamic>{
+        'p_amount': amount,
+        'p_note': note,
+        'p_idempotency_key': idempotencyKey,
+        'p_club_id': scope.clubId,
+      },
+    );
+
+    return FetWalletOperationResult.fromJson(
+      Map<String, dynamic>.from(response as Map),
+    );
+  }
+
+  Future<Map<String, dynamic>?> _loadMembership(
+    String userId,
+    ClubScope scope,
+  ) async {
+    var query = _client
+        .from('fan_memberships')
+        .select('points, tier')
+        .eq('user_id', userId)
+        .limit(1);
+    query = _scopeResolver.apply(query, scope);
+    return _safeMaybeSingle(query.maybeSingle());
+  }
+
+  Future<Map<String, dynamic>?> _loadProfile(String userId) {
+    return _safeMaybeSingle(
+      _client
+          .from('profiles')
+          .select('full_name, public_user_id, display_name')
+          .eq('id', userId)
+          .maybeSingle(),
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> _loadEventRows(String userId) async {
+    try {
+      return List<Map<String, dynamic>>.from(
+        await _client
+            .from('cool_events')
+            .select('event_type, xp_awarded, event_at')
+            .eq('user_id', userId)
+            .order('event_at', ascending: false)
+            .limit(250),
+      );
+    } catch (_) {
+      return List<Map<String, dynamic>>.from(
+        await _client
+            .from('xp_events')
+            .select('event_type, xp_awarded, event_at')
+            .eq('user_id', userId)
+            .order('event_at', ascending: false)
+            .limit(250),
+      );
+    }
+  }
+
+  int _sumWeeklyFet(List<Map<String, dynamic>> eventRows) {
+    final lowerBound = DateTime.now().toUtc().subtract(const Duration(days: 7));
+    return eventRows.fold<int>(0, (sum, row) {
+      final eventAt = DateTime.tryParse(row['event_at']?.toString() ?? '');
+      if (eventAt == null || eventAt.isBefore(lowerBound)) {
+        return sum;
+      }
+      return sum + ((row['xp_awarded'] as num?)?.toInt() ?? 0);
+    });
+  }
+
+  Set<String> _deriveEarnedCodes({
+    required String? userId,
+    required Map<String, dynamic>? profile,
+    required Map<String, dynamic>? privateContact,
+    required List<Map<String, dynamic>> fanClubs,
+    required List<Map<String, dynamic>> groups,
+    required List<Map<String, dynamic>> tickets,
+    required List<Map<String, dynamic>> eventRows,
+  }) {
+    if (userId == null || userId.isEmpty) {
+      return const <String>{};
+    }
+
+    final eventKeys = eventRows
+        .map((row) => row['event_type']?.toString() ?? '')
+        .where((value) => value.isNotEmpty)
+        .toSet();
+    final hasProfileName =
+        (profile?['full_name']?.toString().trim().isNotEmpty ?? false) ||
+        (profile?['display_name']?.toString().trim().isNotEmpty ?? false);
+    final hasAlias =
+        profile?['public_user_id']?.toString().trim().isNotEmpty ?? false;
+    final hasPrivateContact =
+        privateContact?['momo_number']?.toString().trim().isNotEmpty ?? false;
+
+    final earnedCodes = <String>{};
+    if ((hasProfileName && hasAlias) || hasPrivateContact) {
+      earnedCodes.add('G001');
+    }
+    if (fanClubs.isNotEmpty) {
+      earnedCodes.add('G002');
+    }
+    if (eventKeys.contains('match_attendance')) {
+      earnedCodes.addAll(const <String>{'G006'});
+    }
+    if (eventKeys.contains('invite_friends')) {
+      earnedCodes.add('G021');
+    }
+    if (groups.isNotEmpty || eventKeys.contains('create_group')) {
+      earnedCodes.add('G022');
+    }
+    if (eventKeys.contains('week_streak')) {
+      earnedCodes.add('G016');
+    }
+    if (eventKeys.contains('shop_purchase')) {
+      earnedCodes.addAll(const <String>{'G058', 'G071'});
+    }
+    if (tickets.isNotEmpty) {
+      earnedCodes.add('G035');
+    }
+
+    return earnedCodes;
+  }
+
+  String _normalizeTier(String? tier, {required int fallbackPoints}) {
+    final normalized = tier?.trim().toLowerCase() ?? '';
+    if (normalized == 'bronze' ||
+        normalized == 'gold' ||
+        normalized == 'platinum') {
+      return normalized.toUpperCase();
+    }
+    if (normalized == 'fan') {
+      return 'FAN';
+    }
+    if (fallbackPoints >= 5000) return 'PLATINUM';
+    if (fallbackPoints >= 2000) return 'GOLD';
+    if (fallbackPoints >= 1000) return 'BRONZE';
+    return 'FAN';
+  }
+
+  String _nextTierFromFet(int currentFet) {
+    if (currentFet >= 5000) return 'PLATINUM';
+    if (currentFet >= 2000) return 'PLATINUM';
+    if (currentFet >= 1000) return 'GOLD';
+    return 'BRONZE';
+  }
+
+  Future<Map<String, dynamic>?> _safeMaybeSingle(
+    Future<Map<String, dynamic>?> future,
+  ) async {
+    try {
+      return await future;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _safeList(
+    Future<List<dynamic>> future,
+  ) async {
+    try {
+      return List<Map<String, dynamic>>.from(await future);
+    } catch (_) {
+      return const <Map<String, dynamic>>[];
+    }
+  }
+}

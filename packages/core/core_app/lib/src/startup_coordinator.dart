@@ -3,44 +3,46 @@ import 'dart:async';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
-import 'package:feat_biopay/feat_biopay.dart';
-import 'package:feat_sms_ledger/feat_sms_ledger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'deferred_feature_initializer.dart';
 
 class AppStartupOptions {
   const AppStartupOptions({
     this.configureDeviceChrome = true,
     this.initializePersistence = true,
     this.initializeBackend = true,
-    this.initializeSmsAutoread = true,
     this.deferNonCriticalBackendInitialization = true,
     this.firebaseOptions,
     this.criticalBackendOverride,
     this.deferredBackendOverride,
+    this.featureInitializer = const DeferredFeatureInitializer(),
   });
 
   const AppStartupOptions.integrationTest()
     : configureDeviceChrome = false,
       initializePersistence = false,
       initializeBackend = false,
-      initializeSmsAutoread = false,
       deferNonCriticalBackendInitialization = false,
       firebaseOptions = null,
       criticalBackendOverride = null,
-      deferredBackendOverride = null;
+      deferredBackendOverride = null,
+      featureInitializer = const DeferredFeatureInitializer();
 
   final bool configureDeviceChrome;
   final bool initializePersistence;
   final bool initializeBackend;
-  final bool initializeSmsAutoread;
   final bool deferNonCriticalBackendInitialization;
   final FirebaseOptions? firebaseOptions;
   final Future<void> Function(ClubConfig config)? criticalBackendOverride;
   final Future<void> Function(ClubConfig config)? deferredBackendOverride;
+
+  /// Feature-specific initialization callbacks injected by the app entry point.
+  /// This decouples core_app from feature packages (biopay, sms_ledger, etc.).
+  final DeferredFeatureInitializer featureInitializer;
 }
 
 /// Centralizes startup side effects so app bootstrap stays declarative.
@@ -48,8 +50,6 @@ class AppStartupCoordinator {
   AppStartupCoordinator({this.options = const AppStartupOptions()});
 
   final AppStartupOptions options;
-  static StreamSubscription<AuthState>? _authLifecycleSubscription;
-  static StreamSubscription<AuthState>? _smsAutoreadAuthSubscription;
   Future<void>? _deferredInitializationTask;
   Future<void>? _scheduledDeferredInitialization;
 
@@ -61,9 +61,8 @@ class AppStartupCoordinator {
     }
     if (options.initializePersistence) {
       await _initializePersistence();
-      if (config.hasBiopay) {
-        await _purgeLegacyBiopayCache();
-      }
+      // Delegate legacy cache purge to feature initializer.
+      await options.featureInitializer.onPurgeLegacyCache?.call();
     }
     if (options.initializeBackend) {
       await _initializeCriticalBackend(config);
@@ -149,16 +148,16 @@ class AppStartupCoordinator {
       return;
     }
 
-    await _registerAuthLifecycleObservers(config);
+    // Delegate auth lifecycle observer registration to feature initializer.
+    await options.featureInitializer.onRegisterAuthLifecycleObservers?.call();
+
     await PushNotificationService.initialize(clubId: config.clubId);
-    await _syncFantasyTopics();
 
     final countryRepo = CountryRepository(client: SupabaseClientFactory.client);
     await countryRepo.loadAndInject();
 
-    if (options.initializeSmsAutoread) {
-      await _initializeSmsAutoread(config);
-    }
+    // Delegate SMS autoread initialization to feature initializer.
+    await options.featureInitializer.onInitializeSmsAutoread?.call();
   }
 
   Future<void> _ensureDeferredBackendInitialized(ClubConfig config) {
@@ -178,133 +177,4 @@ class AppStartupCoordinator {
     }
   }
 
-  Future<void> _purgeLegacyBiopayCache() async {
-    final cacheService = BiopayCacheService(
-      openBox: <T>(String name) async => Hive.openBox<T>(name),
-      deleteBox: Hive.deleteBoxFromDisk,
-    );
-    await cacheService.purgeLegacyPersistentCache();
-  }
-
-  Future<void> _registerAuthLifecycleObservers(ClubConfig config) async {
-    await _authLifecycleSubscription?.cancel();
-    final cacheService = BiopayCacheService();
-    _authLifecycleSubscription = SupabaseClientFactory.authStateChanges.listen((
-      auth,
-    ) {
-      if (config.hasBiopay && auth.event == AuthChangeEvent.signedOut) {
-        unawaited(cacheService.clear());
-      }
-      if (auth.event == AuthChangeEvent.signedIn ||
-          auth.event == AuthChangeEvent.signedOut ||
-          auth.event == AuthChangeEvent.tokenRefreshed ||
-          auth.event == AuthChangeEvent.userUpdated) {
-        unawaited(_syncFantasyTopics());
-      }
-    });
-  }
-
-  Future<void> _syncFantasyTopics() async {
-    try {
-      final result = await SupabaseClientFactory.client.rpc(
-        'fantasy_get_notification_topics',
-      );
-      final rows = (result as List<dynamic>)
-          .map((row) => Map<String, dynamic>.from(row))
-          .toList(growable: false);
-
-      if (rows.isNotEmpty) {
-        for (final row in rows) {
-          final topic = row['topic']?.toString().trim() ?? '';
-          if (topic.isEmpty) {
-            continue;
-          }
-          final enabled = row['enabled'] == null || row['enabled'] == true;
-          if (enabled) {
-            await PushNotificationService.subscribeToTopic(topic);
-          } else {
-            await PushNotificationService.unsubscribeFromTopic(topic);
-          }
-        }
-        return;
-      }
-    } catch (error, stackTrace) {
-      AfriLogger.warn(
-        'Bootstrap',
-        'Fantasy topic sync fallback engaged: $error',
-      );
-      if (kDebugMode) {
-        AfriLogger.error(
-          'Bootstrap',
-          'Fantasy topic sync stack trace.',
-          error,
-          stackTrace,
-        );
-      }
-    }
-  }
-
-  Future<void> _initializeSmsAutoread(ClubConfig config) async {
-    try {
-      if (!EnvConfig.enableAndroidMomoSmsAutoread) {
-        AfriLogger.info('Bootstrap', 'SMS autoread disabled for this build.');
-        return;
-      }
-
-      final client = SupabaseClientFactory.client;
-      final smsService = MomoSmsAutoreadService(
-        client: client,
-        appAccessService: AppAccessService(openBox: openHiveBox<bool>),
-        countryCode: config.countryCode,
-      );
-      final reconciliationService = LedgerReconciliationService(client: client);
-
-      await _smsAutoreadAuthSubscription?.cancel();
-      _smsAutoreadAuthSubscription = client.auth.onAuthStateChange.listen((
-        event,
-      ) {
-        if (event.event == AuthChangeEvent.signedIn ||
-            event.event == AuthChangeEvent.tokenRefreshed) {
-          unawaited(() async {
-            await smsService.syncConsentFromServer();
-            await smsService.refresh();
-          }());
-          _runReconciliation(reconciliationService);
-        } else if (event.event == AuthChangeEvent.signedOut) {
-          smsService.stop(resetPermissionPromptState: true);
-        }
-      });
-
-      if (client.auth.currentSession != null) {
-        await smsService.syncConsentFromServer();
-        await smsService.refresh();
-        _runReconciliation(reconciliationService);
-      }
-    } catch (error, stackTrace) {
-      AfriLogger.error(
-        'Bootstrap',
-        'SMS autoread init failed (non-fatal).',
-        error,
-        stackTrace,
-      );
-    }
-  }
-
-  void _runReconciliation(LedgerReconciliationService service) {
-    Future<void>.delayed(const Duration(seconds: 5), () async {
-      try {
-        final count = await service.reconcilePending();
-        if (count > 0) {
-          AfriLogger.info('Bootstrap', 'Reconciled $count contributions.');
-        }
-      } catch (error, stackTrace) {
-        AfriLogger.error(
-          'Bootstrap',
-          'Reconciliation failed (non-fatal).',
-          error,
-          stackTrace,
-        );
-      }
-    });
-  }
 }

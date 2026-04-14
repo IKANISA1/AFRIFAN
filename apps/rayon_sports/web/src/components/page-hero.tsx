@@ -34,22 +34,30 @@ export function PageHero({
   return (
     <section
       className={cn(
-        `${ui.panelElevated} relative overflow-hidden rounded-[38px] p-6 sm:p-8`,
+        `${ui.panelElevated} relative overflow-hidden rounded-[38px] border-[1.2px] p-6 sm:p-8 lg:p-10`,
         className,
       )}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(181,155,255,0.24),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(239,231,255,0.14),transparent_36%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,var(--site-glow-primary),transparent_34%),radial-gradient(circle_at_bottom_right,var(--site-glow-accent),transparent_36%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-club-primary-light to-transparent opacity-70" />
       <p className={`${ui.monolithBleed} pointer-events-none absolute left-5 top-4 sm:left-8 sm:top-6`}>
         {title}
       </p>
       <AnimatedWatermark className="left-1/2 top-1/2 h-[150%] w-[150%] -translate-x-1/2 -translate-y-1/2" />
-      <div className="relative grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+      <div className="relative grid gap-8 lg:grid-cols-[1.16fr_0.84fr] lg:items-end">
         <div className="space-y-5">
           {showBack ? <BackButton className="mb-3" /> : null}
-          <p className={ui.kicker}>
-            {eyebrow}
-          </p>
-          <h1 className="fluid-display max-w-4xl font-display font-bold uppercase tracking-[-0.05em] text-balance">
+          <div className="flex flex-wrap items-center gap-3">
+            <p className={ui.kicker}>
+              {eyebrow}
+            </p>
+            {stats.length > 0 ? (
+              <span className={`${ui.chip} ${ui.chipMuted} text-[10px]`}>
+                {stats.length} live metrics
+              </span>
+            ) : null}
+          </div>
+          <h1 className="fluid-display max-w-4xl font-display font-bold uppercase tracking-[-0.055em] text-balance text-white">
             {title}
           </h1>
           <p className="max-w-3xl text-base leading-8 text-slate-200 sm:text-lg">
@@ -61,7 +69,7 @@ export function PageHero({
               {stats.map((stat) => (
                 <article
                   key={stat.label}
-                  className={ui.statCard}
+                  className={`${ui.statCard} border-[1.2px] bg-[linear-gradient(180deg,rgba(7,13,24,0.72),rgba(12,19,34,0.56))]`}
                 >
                   <p className={ui.meta}>
                     {stat.label}
@@ -74,7 +82,13 @@ export function PageHero({
             </div>
           ) : null}
         </div>
-        {media ? <div className="relative">{media}</div> : null}
+        {media ? (
+          <div className="relative rounded-[28px] border border-white/10 bg-black/15 p-2 backdrop-blur-sm">
+            <div className="overflow-hidden rounded-[24px] border border-white/10 bg-[var(--site-surface-strong)]">
+              {media}
+            </div>
+          </div>
+        ) : null}
       </div>
     </section>
   );

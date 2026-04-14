@@ -150,11 +150,11 @@ export function ScorePrediction({
         </button>
       )}
 
-      {/* FAT reward hint */}
+      {/* FET reward hint */}
       <p className="mt-3 text-center text-[10px] uppercase tracking-[0.22em] text-slate-500">
         {submitted
-          ? "Exact match = 50 FAT · Correct result = 20 FAT"
-          : "Earn FAT for correct predictions"}
+          ? "Exact match = 50 FET · Correct result = 20 FET"
+          : "Earn FET for correct predictions"}
       </p>
     </div>
   );

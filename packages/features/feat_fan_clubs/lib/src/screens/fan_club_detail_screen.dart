@@ -19,6 +19,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
   Map<String, dynamic>? _club;
   Map<String, dynamic>? _upcomingMatch;
   bool _joined = false;
+  bool _isJoinMutationPending = false;
   bool _isLoading = true;
   String? _error;
 
@@ -106,7 +107,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
   Future<void> _toggleJoin() async {
     final club = _club;
     final userId = ref.read(supabaseClientProvider).auth.currentUser?.id;
-    if (club == null) return;
+    if (club == null || _isJoinMutationPending) return;
 
     if (userId == null) {
       context.go('/onboarding');
@@ -119,6 +120,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     }
 
     HapticFeedback.mediumImpact();
+    setState(() => _isJoinMutationPending = true);
     try {
       if (_joined) {
         await ref
@@ -157,6 +159,10 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
           backgroundColor: ColorTokens.error,
         ),
       );
+    } finally {
+      if (mounted) {
+        setState(() => _isJoinMutationPending = false);
+      }
     }
   }
 
@@ -450,8 +456,14 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                     children: [
                       Expanded(
                         child: ClaymorphicButton(
-                          label: _joined ? 'JOINED' : 'JOIN CLUB',
-                          onPressed: _toggleJoin,
+                          label: _isJoinMutationPending
+                              ? 'UPDATING...'
+                              : _joined
+                              ? 'JOINED'
+                              : 'JOIN CLUB',
+                          onPressed: _isJoinMutationPending
+                              ? null
+                              : _toggleJoin,
                         ),
                       ),
                       const SizedBox(width: SpacingTokens.spacing3),

@@ -21,6 +21,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
 
   GroupPrivacy _privacy = GroupPrivacy.private_;
   ContributionGroupType _groupType = ContributionGroupType.fanCircle;
+  PaymentRecipientType _recipientType = PaymentRecipientType.phoneNumber;
   DateTime? _deadline;
   bool _isRecurring = false;
   bool _submitting = false;
@@ -46,6 +47,56 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
     return int.tryParse(digits) ?? 0;
   }
 
+  AfriCountry? get _collectionCountry {
+    final countries = AfriCountryCatalog.all;
+    if (countries.isEmpty) {
+      return null;
+    }
+
+    return AfriCountryCatalog.byIsoCode(RuntimeBranding.displayCountryCode) ??
+        countries.first;
+  }
+
+  bool get _supportsMerchantCode =>
+      _collectionCountry?.supportsMomoCode ?? false;
+
+  String get _recipientLabel =>
+      _recipientType == PaymentRecipientType.code ? 'MOMO CODE' : 'MOMO NUMBER';
+
+  String get _recipientHint {
+    final country = _collectionCountry;
+    if (_recipientType == PaymentRecipientType.code) {
+      return country?.momoCodeExample ?? '123456';
+    }
+
+    return country?.mobileExampleE164 ??
+        country?.mobileExampleNational ??
+        '+250 7XX XXX XXX';
+  }
+
+  String get _recipientHelperText {
+    final country = _collectionCountry;
+    if (_recipientType == PaymentRecipientType.code) {
+      final codeKind = country?.momoCodeKind?.trim();
+      final codeLabel = switch (codeKind?.toLowerCase()) {
+        'agent' => 'agent code',
+        'merchant' => 'merchant code',
+        _ => 'collection code',
+      };
+      return 'Supporters will pay this circle using the club $codeLabel.';
+    }
+
+    return 'Supporters will pay this circle to the selected mobile money number.';
+  }
+
+  void _setRecipientType(PaymentRecipientType value) {
+    if (_recipientType == value) {
+      return;
+    }
+
+    setState(() => _recipientType = value);
+  }
+
   Future<void> _pickDeadline() async {
     final picked = await showDatePicker(
       context: context,
@@ -63,16 +114,6 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
     final user = ref.read(currentUserProvider);
     if (user == null) {
       context.go('/onboarding');
-      return;
-    }
-
-    if (!user.hasMomo) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Link your MOMO number before creating a circle.'),
-        ),
-      );
-      context.push('/profile_setup');
       return;
     }
 
@@ -109,18 +150,31 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
         privacy: _privacy,
         targetAmount: _targetAmount,
         paymentRecipient: _recipientController.text.trim(),
-        paymentRecipientType: PaymentRecipientType.phoneNumber,
+        paymentRecipientType: _recipientType,
         deadline: _deadline,
         isRecurring: _isRecurring,
         createdAt: DateTime.now(),
       );
 
       final created = await repo.createContributionGroup(group);
-      await repo.recordXpEvent(
-        userId: user.id,
-        eventType: XpEventType.createGroup,
-        metadata: <String, Object?>{'group_id': created.id},
-      );
+      try {
+        await repo.recordXpEvent(
+          userId: user.id,
+          eventType: XpEventType.createGroup,
+          metadata: <String, Object?>{'group_id': created.id},
+        );
+      } catch (error, stackTrace) {
+        AfriLogger.warn(
+          'CreateGroupScreen',
+          'Circle FET logging failed after successful creation: $error',
+        );
+        AfriLogger.error(
+          'CreateGroupScreen',
+          'Create group FET logging stack trace: $stackTrace',
+          error,
+          stackTrace,
+        );
+      }
 
       if (!mounted) return;
 
@@ -158,6 +212,10 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
     final previewTarget = _targetAmount > 0
         ? currency.format(_targetAmount)
         : currency.format(0);
+    final previewRecipient = _recipientController.text.trim();
+    final recipientPreviewLabel = _recipientType == PaymentRecipientType.code
+        ? 'Code'
+        : 'Number';
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -203,11 +261,115 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-            _ContributionInput(
-              label: 'COLLECTION MOMO',
-              controller: _recipientController,
-              hint: '+250 7XX XXX XXX',
-              keyboardType: TextInputType.phone,
+            GlassCard(
+              animate: false,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'COLLECTION ROUTE',
+                    style: TypographyTokens.labelSmall(),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing2),
+                  Text(
+                    'Show the circle collection destination up front.',
+                    style: TypographyTokens.bodySmall(),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing3),
+                  Wrap(
+                    spacing: SpacingTokens.spacing2,
+                    runSpacing: SpacingTokens.spacing2,
+                    children: [
+                      ChoiceChip(
+                        selected:
+                            _recipientType == PaymentRecipientType.phoneNumber,
+                        label: const Text('MOMO NUMBER'),
+                        onSelected: (_) =>
+                            _setRecipientType(PaymentRecipientType.phoneNumber),
+                      ),
+                      if (_supportsMerchantCode)
+                        ChoiceChip(
+                          selected: _recipientType == PaymentRecipientType.code,
+                          label: const Text('MOMO CODE'),
+                          onSelected: (_) =>
+                              _setRecipientType(PaymentRecipientType.code),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing3),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(SpacingTokens.spacing4),
+                    decoration: BoxDecoration(
+                      color: ColorTokens.surfaceContainerLow,
+                      borderRadius: BorderRadius.circular(20),
+                      border: BorderTokens.all(
+                        color: ColorTokens.ghostBorder.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primary.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Icon(
+                                _recipientType == PaymentRecipientType.code
+                                    ? Icons.dialpad_rounded
+                                    : Icons.smartphone_rounded,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            const SizedBox(width: SpacingTokens.spacing3),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _recipientLabel,
+                                    style: TypographyTokens.monolithFont(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: ColorTokens.onSurface,
+                                      letterSpacing: 1.2,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    _recipientHelperText,
+                                    style: TypographyTokens.bodySmall(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing4),
+                        TextField(
+                          controller: _recipientController,
+                          keyboardType:
+                              _recipientType == PaymentRecipientType.code
+                              ? TextInputType.number
+                              : TextInputType.phone,
+                          onChanged: (_) => setState(() {}),
+                          decoration: InputDecoration(
+                            labelText: _recipientLabel,
+                            hintText: _recipientHint,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             GlassCard(
@@ -317,6 +479,13 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                   const SizedBox(height: SpacingTokens.spacing1),
                   Text(
                     'Target: $previewTarget',
+                    style: TypographyTokens.bodySmall(),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing1),
+                  Text(
+                    previewRecipient.isEmpty
+                        ? 'Collection $recipientPreviewLabel not set yet'
+                        : 'Collection $recipientPreviewLabel: $previewRecipient',
                     style: TypographyTokens.bodySmall(),
                   ),
                 ],

@@ -21,6 +21,7 @@ type UserContactRecord = {
 type RsTicketRecord = {
   id: string;
   user_id: string;
+  club_id: number | null;
   referral_invite_id: string | null;
   seat_type: string | null;
   amount_paid: number;
@@ -36,6 +37,8 @@ type RsTicketRecord = {
 type RsShopOrderRecord = {
   id: string;
   user_id: string;
+  club_id: number | null;
+  partner_id: string | null;
   referral_invite_id: string | null;
   total: number;
   delivery_address: string | null;
@@ -46,6 +49,7 @@ type RsShopOrderRecord = {
 type RsInitiativeContributionRecord = {
   id: string;
   user_id: string;
+  club_id: number | null;
   referral_invite_id: string | null;
   initiative_id: string | null;
   amount: number;
@@ -81,6 +85,15 @@ export type RayonPaymentConfirmationContext = {
   sender?: string | null;
   country?: string | null;
   extraPayload?: Record<string, unknown>;
+};
+
+type PaymentBranding = {
+  clubLabel: string;
+  currencyCode: string;
+  fallbackPartnerNames: string[];
+  resolvedClubId: number | null;
+  resolvedPartnerId: string | null;
+  routeCountry: string | null;
 };
 
 function asString(value: unknown): string | null {
@@ -198,10 +211,74 @@ async function resolveUserContact(
   };
 }
 
-async function resolveRayonPartnerId(
+type PartnerPaymentRouteRecord = {
+  club_id: number | null;
+  partner_id: string | null;
+  partner_name: string | null;
+  country: string | null;
+};
+
+async function resolvePaymentRouteRecord(
   adminClient: AdminClient,
+  codeOrNumber: string | null | undefined,
+): Promise<PartnerPaymentRouteRecord | null> {
+  const routeCode = asString(codeOrNumber);
+  if (!routeCode) {
+    return null;
+  }
+
+  const activeResult = await adminClient
+    .from("partner_payment_routes")
+    .select("club_id, partner_id, partner_name, country")
+    .eq("recipient_code", routeCode)
+    .eq("status", "active")
+    .maybeSingle();
+
+  if (activeResult.error) {
+    throw activeResult.error;
+  }
+
+  const activeRow = asRecord(activeResult.data);
+  if (activeRow) {
+    return {
+      club_id: asNullableInt(activeRow.club_id),
+      partner_id: asString(activeRow.partner_id),
+      partner_name: asString(activeRow.partner_name),
+      country: asString(activeRow.country),
+    };
+  }
+
+  const fallbackResult = await adminClient
+    .from("partner_payment_routes")
+    .select("club_id, partner_id, partner_name, country")
+    .eq("recipient_code", routeCode)
+    .maybeSingle();
+
+  if (fallbackResult.error) {
+    throw fallbackResult.error;
+  }
+
+  const fallbackRow = asRecord(fallbackResult.data);
+  if (!fallbackRow) {
+    return null;
+  }
+
+  return {
+    club_id: asNullableInt(fallbackRow.club_id),
+    partner_id: asString(fallbackRow.partner_id),
+    partner_name: asString(fallbackRow.partner_name),
+    country: asString(fallbackRow.country),
+  };
+}
+
+async function resolvePartnerIdByNames(
+  adminClient: AdminClient,
+  lookupNames: string[],
 ): Promise<string | null> {
-  const lookupNames = ["Rayon Sports FC", "Rayon Sports"];
+  if (lookupNames.length === 0) {
+    return null;
+  }
+
   const exactResult = await adminClient
     .from("partners")
     .select("id, name")
@@ -228,7 +305,7 @@ async function resolveRayonPartnerId(
   const fallbackResult = await adminClient
     .from("partners")
     .select("id")
-    .ilike("name", "Rayon Sports%")
+    .ilike("name", `${lookupNames[0]?.replaceAll("%", "").trim() ?? ""}%`)
     .maybeSingle();
 
   if (fallbackResult.error) {
@@ -238,6 +315,118 @@ async function resolveRayonPartnerId(
   return asString(fallbackResult.data?.id);
 }
 
+async function resolvePaymentBranding(
+  adminClient: AdminClient,
+  options: {
+    clubId?: number | null;
+    partnerId?: string | null;
+    routeCodeOrNumber?: string | null;
+    fallbackClubName?: string | null;
+  },
+): Promise<PaymentBranding> {
+  const fallbackNames = new Set<string>();
+  const fallbackClubName = asString(options.fallbackClubName);
+  if (fallbackClubName) {
+    fallbackNames.add(fallbackClubName);
+  }
+
+  let clubLabel = fallbackClubName ?? "Club";
+  let currencyCode = "";
+  let resolvedClubId: number | null = null;
+  let resolvedPartnerId: string | null = null;
+  let routeCountry: string | null = null;
+
+  const routeRecord = await resolvePaymentRouteRecord(
+    adminClient,
+    options.routeCodeOrNumber,
+  );
+  if (routeRecord?.partner_name) {
+    fallbackNames.add(routeRecord.partner_name);
+    if (clubLabel === "Club") {
+      clubLabel = routeRecord.partner_name;
+    }
+  }
+
+  routeCountry = routeRecord?.country ?? null;
+  resolvedClubId = routeRecord?.club_id ?? null;
+  resolvedPartnerId = routeRecord?.partner_id ?? null;
+
+  const clubId = options.clubId ?? resolvedClubId;
+  if (typeof clubId === "number" && Number.isFinite(clubId) && clubId > 0) {
+    const clubResult = await adminClient
+      .from("african_football_clubs")
+      .select("club_name, nickname_brand_identity, currency_code")
+      .eq("id", clubId)
+      .maybeSingle();
+
+    if (clubResult.error) {
+      throw clubResult.error;
+    }
+
+    const clubRow = asRecord(clubResult.data);
+    const clubName = asString(clubRow?.club_name);
+    const nickname = asString(clubRow?.nickname_brand_identity);
+    clubLabel = nickname ?? clubName ?? clubLabel;
+    currencyCode = asString(clubRow?.currency_code) ?? currencyCode;
+    if (clubName) {
+      fallbackNames.add(clubName);
+    }
+    if (nickname) {
+      fallbackNames.add(nickname);
+    }
+
+    resolvedClubId = clubId;
+  }
+
+  const partnerId = asString(options.partnerId) ?? resolvedPartnerId;
+  if (partnerId) {
+    const partnerResult = await adminClient
+      .from("partners")
+      .select("name, country")
+      .eq("id", partnerId)
+      .maybeSingle();
+
+    if (partnerResult.error) {
+      throw partnerResult.error;
+    }
+
+    const partnerName = asString(partnerResult.data?.name);
+    const partnerCountry = asString(partnerResult.data?.country);
+    if (partnerName) {
+      clubLabel = clubLabel === "Club" ? partnerName : clubLabel;
+      fallbackNames.add(partnerName);
+    }
+
+    resolvedPartnerId = partnerId;
+    routeCountry = routeCountry ?? partnerCountry;
+
+    if (!currencyCode && routeCountry) {
+      const countryResult = await adminClient
+        .from("countries")
+        .select("currency")
+        .eq("id", routeCountry)
+        .maybeSingle();
+
+      if (countryResult.error) {
+        throw countryResult.error;
+      }
+
+      currencyCode = asString(countryResult.data?.currency) ?? currencyCode;
+    }
+  }
+
+  return {
+    clubLabel,
+    currencyCode,
+    fallbackPartnerNames: [...fallbackNames].filter((value) =>
+      value.length > 0
+    ),
+    resolvedClubId,
+    resolvedPartnerId,
+    routeCountry,
+  };
+}
+
 async function resolveRayonTickets(
   adminClient: AdminClient,
   referenceMatch: RayonReferenceMatch,
@@ -245,7 +434,7 @@ async function resolveRayonTickets(
   const result = await adminClient
     .from("rs_tickets")
     .select(
-      "id, user_id, referral_invite_id, match_id, seat_type, amount_paid, qr_code, momo_reference, status, rs_matches(home_team, away_team, competition, venue, match_date, kickoff_time, partner_id)",
+      "id, user_id, club_id, referral_invite_id, match_id, seat_type, amount_paid, qr_code, momo_reference, status, rs_matches(home_team, away_team, competition, venue, match_date, kickoff_time, partner_id)",
     )
     .eq("momo_reference", referenceMatch.reference)
     .order("purchased_at", { ascending: false });
@@ -258,12 +447,13 @@ async function resolveRayonTickets(
   return rows.map((value) => {
     const row = value as Record<string, unknown>;
     const match = asRecord(row.rs_matches);
-    const homeTeam = asString(match?.home_team) ?? "Rayon Sports FC";
+    const homeTeam = asString(match?.home_team) ?? "Home Club";
     const awayTeam = asString(match?.away_team) ?? "Opponent";
 
     return {
       id: asString(row.id) ?? "",
       user_id: asString(row.user_id) ?? "",
+      club_id: asNullableInt(row.club_id),
       referral_invite_id: asString(row.referral_invite_id),
       seat_type: asString(row.seat_type),
       amount_paid: asNullableInt(row.amount_paid) ?? 0,
@@ -285,7 +475,7 @@ async function resolveRayonShopOrder(
   const result = await adminClient
     .from("rs_shop_orders")
     .select(
-      "id, user_id, referral_invite_id, total, delivery_address, momo_reference, status",
+      "id, user_id, club_id, partner_id, referral_invite_id, total, delivery_address, momo_reference, status",
     )
     .eq("momo_reference", referenceMatch.reference)
     .order("created_at", { ascending: false })
@@ -303,6 +493,8 @@ async function resolveRayonShopOrder(
   return {
     id: asString(result.data.id) ?? "",
     user_id: asString(result.data.user_id) ?? "",
+    club_id: asNullableInt(result.data.club_id),
+    partner_id: asString(result.data.partner_id),
     referral_invite_id: asString(result.data.referral_invite_id),
     total: asNullableInt(result.data.total) ?? 0,
     delivery_address: asString(result.data.delivery_address),
@@ -318,7 +510,7 @@ async function resolveRayonInitiativeContribution(
   const result = await adminClient
     .from("rs_initiative_contributions")
     .select(
-      "id, user_id, referral_invite_id, initiative_id, amount, momo_reference, status, rs_initiatives(title, partner_id)",
+      "id, user_id, club_id, referral_invite_id, initiative_id, amount, momo_reference, status, rs_initiatives(title, partner_id)",
     )
     .eq("momo_reference", referenceMatch.reference)
     .order("created_at", { ascending: false })
@@ -337,21 +529,24 @@ async function resolveRayonInitiativeContribution(
   return {
     id: asString(result.data.id) ?? "",
     user_id: asString(result.data.user_id) ?? "",
+    club_id: asNullableInt(result.data.club_id),
     referral_invite_id: asString(result.data.referral_invite_id),
     initiative_id: asString(result.data.initiative_id),
     amount: asNullableInt(result.data.amount) ?? 0,
     momo_reference: asString(result.data.momo_reference),
     status: asString(result.data.status),
-    initiative_title: asString(initiative?.title) ?? "Rayon Sports Initiative",
+    initiative_title: asString(initiative?.title) ?? "Club Initiative",
     partner_id: asString(initiative?.partner_id),
   };
 }
 
-function formatRwf(amount: number): string {
-  return `RWF ${amount}`;
+function formatAmount(branding: PaymentBranding, amount: number): string {
+  return branding.currencyCode
+    ? `${branding.currencyCode} ${amount}`
+    : `${amount}`;
 }
 
-async function maybeAwardRayonMembershipPoints(
+async function maybeAwardMembershipPoints(
   adminClient: AdminClient,
   userId: string,
   partnerId: string | null,
@@ -368,7 +563,7 @@ async function maybeAwardRayonMembershipPoints(
   });
 
   if (result.error) {
-    console.error("Failed to award Rayon Sports points", result.error);
+    console.error("Failed to award membership points", result.error);
     return false;
   }
 
@@ -424,17 +619,21 @@ async function maybeSendWhatsAppConfirmation(
 
 function buildRayonTicketConfirmationMessage(
   tickets: RsTicketRecord[],
+  branding: PaymentBranding,
 ): string {
   const ticket = tickets[0];
   if (!ticket) {
-    return "✅ Gikundiro ticket confirmed";
+    return `✅ ${branding.clubLabel} ticket confirmed`;
   }
 
   const totalAmount = tickets.reduce(
     (sum, entry) => sum + entry.amount_paid,
     0,
   );
-  const lines = ["✅ Gikundiro ticket confirmed", ticket.match_title];
+  const lines = [
+    `✅ ${branding.clubLabel} ticket confirmed`,
+    ticket.match_title,
+  ];
   const matchMeta = [ticket.venue, ticket.match_date, ticket.kickoff_time]
     .filter((value) => value && value.length > 0)
     .join(" · ");
@@ -445,12 +644,14 @@ function buildRayonTicketConfirmationMessage(
 
   if (tickets.length > 1) {
     lines.push(
-      `${tickets.length} tickets · ${formatRwf(totalAmount)}`,
+      `${tickets.length} tickets · ${formatAmount(branding, totalAmount)}`,
       `Reference: ${ticket.momo_reference ?? ticket.id}`,
     );
   } else {
     lines.push(
-      `${ticket.seat_type ?? "General"} · ${formatRwf(ticket.amount_paid)}`,
+      `${ticket.seat_type ?? "General"} · ${
+        formatAmount(branding, ticket.amount_paid)
+      }`,
       `Reference: ${ticket.momo_reference ?? ticket.id}`,
     );
   }
@@ -458,10 +659,13 @@ function buildRayonTicketConfirmationMessage(
   return lines.join("\n");
 }
 
-function buildRayonShopConfirmationMessage(order: RsShopOrderRecord): string {
+function buildRayonShopConfirmationMessage(
+  order: RsShopOrderRecord,
+  branding: PaymentBranding,
+): string {
   const lines = [
-    "✅ Gikundiro shop order confirmed",
-    `${formatRwf(order.total)} · Official club merchandise`,
+    `✅ ${branding.clubLabel} shop order confirmed`,
+    `${formatAmount(branding, order.total)} · Official club merchandise`,
   ];
 
   if (order.delivery_address) {
@@ -474,11 +678,12 @@ function buildRayonShopConfirmationMessage(order: RsShopOrderRecord): string {
 
 function buildRayonSupportConfirmationMessage(
   contribution: RsInitiativeContributionRecord,
+  branding: PaymentBranding,
 ): string {
   return [
-    "✅ Gikundiro support confirmed",
+    `✅ ${branding.clubLabel} support confirmed`,
     contribution.initiative_title,
-    `${formatRwf(contribution.amount)} contributed`,
+    `${formatAmount(branding, contribution.amount)} contributed`,
     `Reference: ${contribution.momo_reference ?? contribution.id}`,
   ].join("\n");
 }
@@ -523,10 +728,15 @@ async function confirmRayonTickets(
     (sum, entry) => sum + entry.confirmation.pointsToAward,
     0,
   );
-  const pointsAwarded = await maybeAwardRayonMembershipPoints(
+  const branding = await resolvePaymentBranding(adminClient, {
+    clubId: ticket.club_id,
+    partnerId: ticket.partner_id,
+    routeCodeOrNumber: context.payeeNumberOrCode ?? context.merchantCode,
+  });
+  const pointsAwarded = await maybeAwardMembershipPoints(
     adminClient,
     ticket.user_id,
-    ticket.partner_id,
+    ticket.partner_id ?? branding.resolvedPartnerId,
     pointsToAward,
   );
   const referralActivated = await maybeActivateReferralInvite(
@@ -546,7 +756,7 @@ async function confirmRayonTickets(
     : null;
   const whatsappSent = await maybeSendWhatsAppConfirmation(
     contact?.whatsapp_number ?? contact?.phone ?? null,
-    buildRayonTicketConfirmationMessage(tickets),
+    buildRayonTicketConfirmationMessage(tickets, branding),
   );
 
   return {
@@ -556,12 +766,14 @@ async function confirmRayonTickets(
     targetTable: "rs_tickets",
     targetRecordId: ticket.id,
     matchedReference: referenceMatch.reference,
-    notes: "Rayon Sports ticket payment confirmed.",
+    notes: "Club ticket payment confirmed.",
     metadata: {
       auto_match: true,
       candidate_score: context.candidateScore ?? null,
       provider: normalizeProviderId(context.provider),
       partner_id: ticket.partner_id,
+      club_label: branding.clubLabel,
+      currency_code: branding.currencyCode,
       ticket_count: tickets.length,
       ticket_ids: tickets.map((entry) => entry.id),
       points_awarded: pointsAwarded ? pointsToAward : 0,
@@ -595,8 +807,15 @@ async function confirmRayonShopOrder(
     throw updateResult.error;
   }
 
-  const partnerId = await resolveRayonPartnerId(adminClient);
-  const pointsAwarded = await maybeAwardRayonMembershipPoints(
+  const branding = await resolvePaymentBranding(adminClient, {
+    clubId: order.club_id,
+    partnerId: order.partner_id,
+    routeCodeOrNumber: context.payeeNumberOrCode ?? context.merchantCode,
+  });
+  const partnerId = order.partner_id ??
+    branding.resolvedPartnerId ??
+    await resolvePartnerIdByNames(adminClient, branding.fallbackPartnerNames);
+  const pointsAwarded = await maybeAwardMembershipPoints(
     adminClient,
     order.user_id,
     partnerId,
@@ -616,7 +835,7 @@ async function confirmRayonShopOrder(
     : null;
   const whatsappSent = await maybeSendWhatsAppConfirmation(
     contact?.whatsapp_number ?? contact?.phone ?? null,
-    buildRayonShopConfirmationMessage(order),
+    buildRayonShopConfirmationMessage(order, branding),
   );
 
   return {
@@ -626,12 +845,14 @@ async function confirmRayonShopOrder(
     targetTable: "rs_shop_orders",
     targetRecordId: order.id,
     matchedReference: referenceMatch.reference,
-    notes: "Rayon Sports shop order payment confirmed.",
+    notes: "Club shop order payment confirmed.",
     metadata: {
       auto_match: true,
       candidate_score: context.candidateScore ?? null,
       provider: normalizeProviderId(context.provider),
       partner_id: partnerId,
+      club_label: branding.clubLabel,
+      currency_code: branding.currencyCode,
       points_awarded: pointsAwarded ? confirmation.pointsToAward : 0,
       referral_activated: referralActivated,
       whatsapp_sent: whatsappSent,
@@ -696,10 +917,15 @@ async function confirmRayonInitiativeContribution(
     }
   }
 
-  const pointsAwarded = await maybeAwardRayonMembershipPoints(
+  const branding = await resolvePaymentBranding(adminClient, {
+    clubId: contribution.club_id,
+    partnerId: contribution.partner_id,
+    routeCodeOrNumber: context.payeeNumberOrCode ?? context.merchantCode,
+  });
+  const pointsAwarded = await maybeAwardMembershipPoints(
     adminClient,
     contribution.user_id,
-    contribution.partner_id,
+    contribution.partner_id ?? branding.resolvedPartnerId,
     confirmation.pointsToAward,
   );
   const referralActivated = await maybeActivateReferralInvite(
@@ -716,7 +942,7 @@ async function confirmRayonInitiativeContribution(
     : null;
   const whatsappSent = await maybeSendWhatsAppConfirmation(
     contact?.whatsapp_number ?? contact?.phone ?? null,
-    buildRayonSupportConfirmationMessage(contribution),
+    buildRayonSupportConfirmationMessage(contribution, branding),
   );
 
   return {
@@ -726,12 +952,14 @@ async function confirmRayonInitiativeContribution(
     targetTable: "rs_initiative_contributions",
     targetRecordId: contribution.id,
     matchedReference: referenceMatch.reference,
-    notes: "Rayon Sports initiative contribution confirmed.",
+    notes: "Club initiative contribution confirmed.",
     metadata: {
       auto_match: true,
       candidate_score: context.candidateScore ?? null,
       provider: normalizeProviderId(context.provider),
       partner_id: contribution.partner_id,
+      club_label: branding.clubLabel,
+      currency_code: branding.currencyCode,
       points_awarded: pointsAwarded ? confirmation.pointsToAward : 0,
       referral_activated: referralActivated,
       whatsapp_sent: whatsappSent,
@@ -749,7 +977,7 @@ export async function confirmRayonReferenceMatch(
     const tickets = await resolveRayonTickets(adminClient, referenceMatch);
     if (tickets.length === 0) {
       return buildManualReviewResult(
-        "No Rayon Sports ticket rows matched the payment reference.",
+        "No ticket rows matched the payment reference.",
         {
           reason: "missing_rayon_ticket_rows",
           matched_reference: referenceMatch.reference,
@@ -772,7 +1000,7 @@ export async function confirmRayonReferenceMatch(
     );
     if (!contribution) {
       return buildManualReviewResult(
-        "No Rayon Sports initiative contribution matched the payment reference.",
+        "No initiative contribution matched the payment reference.",
         {
           reason: "missing_rayon_support_row",
           matched_reference: referenceMatch.reference,
@@ -792,7 +1020,7 @@ export async function confirmRayonReferenceMatch(
     const order = await resolveRayonShopOrder(adminClient, referenceMatch);
     if (!order) {
       return buildManualReviewResult(
-        "No Rayon Sports shop order matched the payment reference.",
+        "No shop order matched the payment reference.",
         {
           reason: "missing_rayon_shop_order",
           matched_reference: referenceMatch.reference,
@@ -809,7 +1037,7 @@ export async function confirmRayonReferenceMatch(
   }
 
   return buildManualReviewResult(
-    "Payment reference is not a supported Rayon Sports payment.",
+    "Payment reference is not a supported club payment.",
     {
       reason: "unsupported_rayon_reference",
       matched_reference: referenceMatch.reference,

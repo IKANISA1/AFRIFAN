@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
@@ -17,6 +18,7 @@ export default function AdminNotificationsPage() {
   const [context, setContext] = useState(emptyContext);
   const [form, setForm] = useState<NotificationFormType>(emptyForm);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const loadContext = useCallback(async () => {
@@ -27,11 +29,15 @@ export default function AdminNotificationsPage() {
     setLoading(true);
     try {
       setContext(await getAdminNotificationContext(client, access));
+      setLoadError(null);
     } catch (caught) {
-      showAdminToast(
+      const message =
         caught instanceof Error
           ? caught.message
-          : "Could not load notification context.",
+          : "Could not load notification context.";
+      setLoadError(message);
+      showAdminToast(
+        message,
         "error",
       );
     } finally {
@@ -155,11 +161,21 @@ export default function AdminNotificationsPage() {
           }}
         />
 
-        <NotificationList
-          context={context}
-          loading={loading}
-          onRefresh={() => loadContext().catch(() => {})}
-        />
+        {loadError && !loading ? (
+          <AdminErrorState
+            title="Notification history could not be loaded"
+            description={loadError}
+            onRetry={() => {
+              loadContext().catch(() => {});
+            }}
+          />
+        ) : (
+          <NotificationList
+            context={context}
+            loading={loading}
+            onRefresh={() => loadContext().catch(() => {})}
+          />
+        )}
       </div>
     </div>
   );

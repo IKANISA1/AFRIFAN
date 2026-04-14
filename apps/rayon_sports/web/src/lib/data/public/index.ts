@@ -28,12 +28,9 @@ export {
   getConfigValue,
 } from "./cms";
 export {
-  getFantasyCompetitions,
-  getFeaturedFantasyCompetition,
-  getFantasyCompetitionBySlug,
-  getFantasyLeaderboard,
-  getFantasyBracket,
-} from "./fantasy";
+  getFanEngagementTokens,
+  getFanEngagementLeaderboard,
+} from "./gamification";
 export {
   getMembershipPackages,
   getFanClubs,
@@ -47,7 +44,7 @@ import { getClubProfile } from "./club";
 import { getMatches } from "./matches";
 import { getNewsArticles } from "./news";
 import { getProducts } from "./shop";
-import { getFantasyCompetitions } from "./fantasy";
+import { getFanEngagementLeaderboard } from "./gamification";
 import {
   getMembershipPackages,
   getFanClubs,
@@ -89,12 +86,12 @@ export const getHomePageData = cache(async function getHomePageData() {
 });
 
 export const getSiteSearchIndex = cache(async function getSiteSearchIndex(): Promise<SearchIndexItem[]> {
-  const [matches, news, products, groups, fantasyCompetitions] = await Promise.all([
+  const [matches, news, products, groups, fetLeaderboard] = await Promise.all([
     getMatches(),
     getNewsArticles(),
     getProducts(),
     getContributionGroups(),
-    getFantasyCompetitions(),
+    getFanEngagementLeaderboard(5),
   ]);
 
   return [
@@ -133,13 +130,13 @@ export const getSiteSearchIndex = cache(async function getSiteSearchIndex(): Pro
       category: "Community" as const,
       meta: group.groupType,
     })),
-    ...fantasyCompetitions.slice(0, 6).map((competition) => ({
-      id: `fantasy-${competition.id}`,
-      title: competition.name,
-      description: competition.description,
-      href: `/fantasy/${competition.slug}`,
-      category: "Fantasy" as const,
-      meta: competition.season,
+    ...fetLeaderboard.slice(0, 3).map((entry) => ({
+      id: `fet-leaderboard-${entry.userId}`,
+      title: `#${entry.rank} ${entry.supporterAlias}`,
+      description: `${entry.totalFet.toLocaleString()} FET • ${entry.tier}`,
+      href: "/supporters",
+      category: "Community" as const,
+      meta: "Fan leaderboard",
     })),
   ];
 });

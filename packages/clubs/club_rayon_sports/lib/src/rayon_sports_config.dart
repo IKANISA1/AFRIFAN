@@ -51,18 +51,33 @@ class RayonSportsConfig implements ClubConfig {
   @override
   String get crestAsset => 'assets/crest/rayon_sports_crest.png';
 
+  /// Supabase URL — MUST be provided via `--dart-define=SUPABASE_URL=...`.
+  /// Never commit default values for backend credentials.
   @override
-  String get supabaseUrl => const String.fromEnvironment(
-    'SUPABASE_URL',
-    defaultValue: 'https://mmpbzcdhfvplxplnfucy.supabase.co',
-  );
+  String get supabaseUrl {
+    const url = String.fromEnvironment('SUPABASE_URL');
+    if (url.isEmpty) {
+      throw StateError(
+        'SUPABASE_URL must be provided via --dart-define. '
+        'See the release checklist for build instructions.',
+      );
+    }
+    return url;
+  }
 
+  /// Supabase anon key — MUST be provided via `--dart-define=SUPABASE_ANON_KEY=...`.
+  /// Never commit default values for backend credentials.
   @override
-  String get supabaseAnonKey => const String.fromEnvironment(
-    'SUPABASE_ANON_KEY',
-    defaultValue:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tcGJ6Y2RoZnZwbHhwbG5mdWN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDM2MTYsImV4cCI6MjA4ODcxOTYxNn0.Ojw-vQ6aEJjyuZU4nReP4ynxJ2XjD5L6n6TxhLlzeeQ',
-  );
+  String get supabaseAnonKey {
+    const key = String.fromEnvironment('SUPABASE_ANON_KEY');
+    if (key.isEmpty) {
+      throw StateError(
+        'SUPABASE_ANON_KEY must be provided via --dart-define. '
+        'See the release checklist for build instructions.',
+      );
+    }
+    return key;
+  }
 
   @override
   List<String> get supportedLanguages => const ['rw', 'fr', 'en'];
@@ -91,6 +106,9 @@ class RayonSportsConfig implements ClubConfig {
     senderName: 'MTN MoMo',
     countryCode: 'RW',
   );
+
+  @override
+  String get environment => const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
 
   @override
   Map<String, bool> get features => {

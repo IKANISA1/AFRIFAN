@@ -2,10 +2,7 @@ import 'package:core_router/core_router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'screens/about_screen.dart';
 import 'screens/edit_profile_screen.dart';
-import 'screens/help_support_screen.dart';
-import 'screens/language_region_screen.dart';
 import 'screens/notification_preferences_screen.dart';
 import 'screens/privacy_settings_screen.dart';
 import 'screens/profile_setup_screen.dart';
@@ -13,8 +10,8 @@ import 'screens/settings_screen.dart';
 
 /// Settings feature module — provides the 3rd or 4th tab based on config.
 ///
-/// Also contributes the standalone /profile_setup route for just-in-time
-/// MOMO linking per §2.2 (not part of onboarding, accessible from any feature).
+/// Also contributes the standalone /profile_setup compatibility route so old
+/// deep links can redirect users into Face ID route setup.
 class SettingsModule extends FeatureModule {
   @override
   String get featureKey => 'settings';
@@ -39,23 +36,17 @@ class SettingsModule extends FeatureModule {
       builder: (context, state) => const NotificationPreferencesScreen(),
     ),
     GoRoute(
-      path: 'language',
-      builder: (context, state) => const LanguageRegionScreen(),
-    ),
-    GoRoute(
       path: 'privacy',
       builder: (context, state) => const PrivacySettingsScreen(),
     ),
-    GoRoute(path: 'about', builder: (context, state) => const AboutScreen()),
-    GoRoute(
-      path: 'help',
-      builder: (context, state) => const HelpSupportScreen(),
-    ),
   ];
 
-  /// §2.2 LOCKED — /profile_setup is the just-in-time MOMO linking screen.
-  /// It is NOT part of onboarding. It is reachable from BioPay, Ticketing,
-  /// Shop, Contributions, and Settings via context.push('/profile_setup').
+  /// Legacy compatibility route.
+  ///
+  /// This route is NOT a general-purpose MoMo linking step and must never be
+  /// used as a hard gate for shop, ticketing, membership, or contribution
+  /// flows. It only explains that saved payment routes now belong to Face ID
+  /// enrollment.
   @override
   List<RouteBase> get standaloneRoutes => [
     GoRoute(

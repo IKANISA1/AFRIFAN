@@ -1,13 +1,13 @@
-import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../fet_providers.dart';
 import '../widgets/badge_grid.dart';
 import '../widgets/xp_arc.dart';
 
-/// XP Dashboard — the gamification hub.
+/// FET Dashboard — the FANZONE rewards hub.
 class XpDashboardScreen extends ConsumerStatefulWidget {
   const XpDashboardScreen({super.key});
 
@@ -33,98 +33,35 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
   }
 
   Future<void> _loadData() async {
-    final userId = ref.read(supabaseClientProvider).auth.currentUser?.id;
-
     try {
-      final client = ref.read(supabaseClientProvider);
-      final resolver = ClubScopeResolver(client: client);
-      final scope = await resolver.requireResolved();
-      var membershipsQuery = client
-          .from('fan_memberships')
-          .select('user_id, points');
-      membershipsQuery = resolver.apply(membershipsQuery, scope);
-      final memberships = await membershipsQuery
-          .order('points', ascending: false)
-          .limit(10);
-      final events = userId == null
-          ? const <Map<String, dynamic>>[]
-          : List<Map<String, dynamic>>.from(
-              await client
-                  .from('cool_events')
-                  .select('xp_awarded, event_at')
-                  .eq('user_id', userId)
-                  .gte(
-                    'event_at',
-                    DateTime.now()
-                        .subtract(const Duration(days: 7))
-                        .toIso8601String(),
-                  )
-                  .order('event_at', ascending: false),
-            );
-
-      final membershipRows = List<Map<String, dynamic>>.from(memberships);
-      final currentIndex = membershipRows.indexWhere(
-        (row) => row['user_id']?.toString() == userId,
-      );
-      final currentXp = currentIndex == -1
-          ? 0
-          : (membershipRows[currentIndex]['points'] as num?)?.toInt() ?? 0;
-      final weeklyXp = events.fold<int>(
-        0,
-        (sum, event) => sum + ((event['xp_awarded'] as num?)?.toInt() ?? 0),
-      );
-      final fanRank = currentIndex == -1 ? 0 : currentIndex + 1;
-      final tier = _tierLabelFromXp(currentXp);
-      final nextTier = _nextTierFromXp(currentXp);
-
-      final aliases = <String, String>{};
-      final ids = membershipRows
-          .map((row) => row['user_id']?.toString())
-          .whereType<String>()
-          .where((id) => id.isNotEmpty)
-          .toSet()
+      final context = await ref
+          .read(fetRepositoryProvider)
+          .loadExperienceContext(leaderboardLimit: 10);
+      final achievements = context.catalog
+          .map(
+            (item) => <String, dynamic>{
+              'title': item.itemName,
+              'icon_key': item.iconKey,
+              'is_earned': context.earnedCodes.contains(item.code),
+            },
+          )
           .toList(growable: false);
-      if (ids.isNotEmpty) {
-        try {
-          final profiles = await client
-              .from('profiles')
-              .select('id, public_user_id')
-              .inFilter('id', ids);
-          for (final profile in profiles) {
-            final id = profile['id']?.toString();
-            final alias = profile['public_user_id']?.toString();
-            if (id != null && alias != null && alias.isNotEmpty) {
-              aliases[id] = alias;
-            }
-          }
-        } catch (_) {
-          // Alias lookup is best-effort.
-        }
-      }
-
-      final leaderboard = membershipRows
-          .map((row) {
-            final memberId = row['user_id']?.toString() ?? '';
-            return <String, dynamic>{
-              'alias': aliases[memberId] ?? _aliasFromUserId(memberId),
-              'points': (row['points'] as num?)?.toInt() ?? 0,
-            };
-          })
+      final leaderboard = context.leaderboard
+          .map(
+            (entry) => <String, dynamic>{
+              'alias': entry.supporterAlias,
+              'points': entry.totalFet,
+            },
+          )
           .toList(growable: false);
-
-      final achievements = _derivedAchievements(
-        currentXp: currentXp,
-        weeklyXp: weeklyXp,
-        hasLeaderboard: leaderboard.isNotEmpty,
-      );
 
       if (!mounted) return;
       setState(() {
-        _currentXp = currentXp;
-        _weeklyXp = weeklyXp;
-        _fanRank = fanRank;
-        _tier = tier;
-        _nextTier = nextTier;
+        _currentXp = context.currentFet;
+        _weeklyXp = context.weeklyFet;
+        _fanRank = context.fanRank;
+        _tier = context.tier;
+        _nextTier = context.nextTier;
         _leaderboard = leaderboard;
         _achievements = achievements;
         _isLoading = false;
@@ -134,29 +71,9 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _error = 'Gamification stats are temporarily unavailable.';
+        _error = 'FET stats are temporarily unavailable.';
       });
     }
-  }
-
-  String _aliasFromUserId(String userId) {
-    if (userId.isEmpty) return '000000';
-    final hash = userId.hashCode.abs();
-    return (100000 + hash % 900000).toString();
-  }
-
-  String _tierLabelFromXp(int xp) {
-    if (xp >= 5000) return 'PLATINUM';
-    if (xp >= 2000) return 'GOLD';
-    if (xp >= 1000) return 'BRONZE';
-    return 'FAN';
-  }
-
-  String _nextTierFromXp(int xp) {
-    if (xp >= 5000) return 'PLATINUM';
-    if (xp >= 2000) return 'PLATINUM';
-    if (xp >= 1000) return 'GOLD';
-    return 'BRONZE';
   }
 
   int _nextTierThreshold(int xp) {
@@ -164,45 +81,6 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
     if (xp >= 2000) return 5000;
     if (xp >= 1000) return 2000;
     return 1000;
-  }
-
-  List<Map<String, dynamic>> _derivedAchievements({
-    required int currentXp,
-    required int weeklyXp,
-    required bool hasLeaderboard,
-  }) {
-    return <Map<String, dynamic>>[
-      {
-        'title': 'Fan Pulse',
-        'icon_key': 'match',
-        'is_earned': currentXp >= 500,
-      },
-      {
-        'title': 'Weekly Run',
-        'icon_key': 'streak',
-        'is_earned': weeklyXp >= 250,
-      },
-      {
-        'title': 'Leaderboard',
-        'icon_key': 'mvp',
-        'is_earned': hasLeaderboard && _fanRank > 0,
-      },
-      {
-        'title': 'Bronze Rise',
-        'icon_key': 'legend',
-        'is_earned': currentXp >= 1000,
-      },
-      {
-        'title': 'Gold Faithful',
-        'icon_key': 'contributor',
-        'is_earned': currentXp >= 2000,
-      },
-      {
-        'title': 'Platinum Circle',
-        'icon_key': 'fan_club',
-        'is_earned': currentXp >= 5000,
-      },
-    ];
   }
 
   @override
@@ -309,20 +187,44 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
                       runSpacing: SpacingTokens.spacing2,
                       children: [
                         _RouteChip(
+                          label: 'PREDICT',
+                          onTap: () => context.push('/fanzone/fixtures'),
+                        ),
+                        _RouteChip(
                           label: 'CHALLENGES',
-                          onTap: () => context.push('/xp/challenges'),
+                          onTap: () => context.push('/fanzone/challenges'),
                         ),
                         _RouteChip(
                           label: 'LEADERBOARD',
-                          onTap: () => context.push('/xp/leaderboard'),
+                          onTap: () => context.push('/fanzone/leaderboard'),
+                        ),
+                        _RouteChip(
+                          label: 'WALLET',
+                          onTap: () => context.push('/fanzone/wallet'),
+                        ),
+                        _RouteChip(
+                          label: 'STORE',
+                          onTap: () => context.push('/fanzone/rewards'),
+                        ),
+                        _RouteChip(
+                          label: 'HISTORY',
+                          onTap: () => context.push('/fanzone/history'),
                         ),
                         _RouteChip(
                           label: 'BADGES',
-                          onTap: () => context.push('/xp/badges'),
+                          onTap: () => context.push('/fanzone/badges'),
                         ),
                         _RouteChip(
                           label: 'STREAK',
-                          onTap: () => context.push('/xp/streak'),
+                          onTap: () => context.push('/fanzone/streak'),
+                        ),
+                        _RouteChip(
+                          label: 'JACKPOT',
+                          onTap: () => context.push('/fanzone/jackpot'),
+                        ),
+                        _RouteChip(
+                          label: 'FRIENDS',
+                          onTap: () => context.push('/fanzone/friends'),
                         ),
                       ],
                     ),
@@ -445,7 +347,7 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
                                 ),
                               ),
                               Text(
-                                '${entry['points']} XP',
+                                '${entry['points']} FET',
                                 style: TypographyTokens.monolithFont(
                                   fontSize: 22,
                                   fontWeight: FontWeight.w800,

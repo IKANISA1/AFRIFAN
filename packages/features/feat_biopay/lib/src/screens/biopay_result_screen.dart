@@ -1,6 +1,8 @@
+import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../biopay_tokens.dart';
 import '../models/biopay_task_result.dart';
 import '../widgets/biopay_reference_ui.dart';
 
@@ -19,10 +21,10 @@ class BiopayResultScreen extends StatelessWidget {
       BiopayTaskResultTone.pending => biopayReferenceBlue,
     };
     final panelColor = switch (args.tone) {
-      BiopayTaskResultTone.success => const Color(0xFFD7F8DE),
-      BiopayTaskResultTone.error => const Color(0xFFFBE3E3),
-      BiopayTaskResultTone.blocked => const Color(0xFFFFF0D8),
-      BiopayTaskResultTone.pending => const Color(0xFFDCE7FF),
+      BiopayTaskResultTone.success => BiopayTokens.successPanel,
+      BiopayTaskResultTone.error => BiopayTokens.errorPanel,
+      BiopayTaskResultTone.blocked => BiopayTokens.blockedPanel,
+      BiopayTaskResultTone.pending => BiopayTokens.pendingPanel,
     };
     final icon = switch (args.tone) {
       BiopayTaskResultTone.success => Icons.check_rounded,
@@ -33,89 +35,91 @@ class BiopayResultScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: biopayReferenceBackground,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(28, 8, 28, 28),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 52,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: BiopayReferenceLightBackButton(
-                    onTap: () => context.go(args.primaryRoute),
+      body: GradientBackground(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(28, 8, 28, 28),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 52,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: BiopayReferenceLightBackButton(
+                      onTap: () => context.go(args.primaryRoute),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 132,
-                      height: 132,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: panelColor,
-                      ),
-                      child: Icon(icon, color: accent, size: 70),
-                    ),
-                    const SizedBox(height: 34),
-                    if (isSuccess)
-                      Text(
-                        'ENROLLMENT SUCCESS',
-                        style: biopayReferenceText(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
-                          color: biopayReferenceMuted,
-                          letterSpacing: 2.2,
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 132,
+                        height: 132,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: panelColor,
                         ),
+                        child: Icon(icon, color: accent, size: 70),
                       ),
-                    if (isSuccess) const SizedBox(height: 14),
-                    Text(
-                      args.title,
-                      style: biopayReferenceText(
-                        fontSize: 34,
-                        fontWeight: FontWeight.w900,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    if (args.message.isNotEmpty) ...[
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 34),
+                      if (isSuccess)
+                        Text(
+                          'ENROLLMENT SUCCESS',
+                          style: biopayReferenceText(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: biopayReferenceMuted,
+                            letterSpacing: 2.2,
+                          ),
+                        ),
+                      if (isSuccess) const SizedBox(height: 14),
                       Text(
-                        args.message,
+                        args.title,
                         style: biopayReferenceText(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w800,
-                          color: const Color(0xFF667A9E),
+                          fontSize: 34,
+                          fontWeight: FontWeight.w900,
                         ),
                         textAlign: TextAlign.center,
                       ),
-                    ],
-                    const SizedBox(height: 42),
-                    BiopayReferencePrimaryButton(
-                      label: args.primaryLabel,
-                      onTap: () => context.go(args.primaryRoute),
-                    ),
-                    if (args.secondaryLabel != null &&
-                        args.secondaryRoute != null) ...[
-                      const SizedBox(height: 18),
-                      TextButton(
-                        onPressed: () => context.go(args.secondaryRoute!),
-                        child: Text(
-                          args.secondaryLabel!,
+                      if (args.message.isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        Text(
+                          args.message,
                           style: biopayReferenceText(
-                            fontSize: 17,
+                            fontSize: 22,
                             fontWeight: FontWeight.w800,
-                            color: biopayReferenceMuted,
+                            color: BiopayTokens.mutedDark,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                      const SizedBox(height: 42),
+                      BiopayReferencePrimaryButton(
+                        label: args.primaryLabel,
+                        onTap: () => context.go(args.primaryRoute),
+                      ),
+                      if (args.secondaryLabel != null &&
+                          args.secondaryRoute != null) ...[
+                        const SizedBox(height: 18),
+                        TextButton(
+                          onPressed: () => context.go(args.secondaryRoute!),
+                          child: Text(
+                            args.secondaryLabel!,
+                            style: biopayReferenceText(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w800,
+                              color: biopayReferenceMuted,
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -1,7 +1,7 @@
 export function normalizeAdminPhone(input: string) {
   const trimmed = input.trim();
   if (!trimmed) {
-    throw new Error("Enter the admin WhatsApp number.");
+    throw new Error("Enter the admin phone number.");
   }
 
   let normalized = trimmed.replace(/[^\d+]/g, "");
@@ -21,7 +21,7 @@ export function normalizeAdminPhone(input: string) {
 
   normalized = normalized.replace(/(?!^)\+/g, "");
   if (!/^\+[1-9]\d{7,14}$/.test(normalized)) {
-    throw new Error("Use a valid WhatsApp number in international format.");
+    throw new Error("Use a valid phone number in international format.");
   }
 
   return normalized;
@@ -44,5 +44,5 @@ export function normalizeAdminPhoneDigits(input: string) {
 }
 
 export function adminPhoneAccessDeniedMessage() {
-  return "This WhatsApp number is not approved for admin access.";
+  return "This phone number is not approved for admin access.";
 }

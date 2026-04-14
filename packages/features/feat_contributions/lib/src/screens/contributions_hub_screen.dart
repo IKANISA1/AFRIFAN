@@ -99,9 +99,13 @@ class _ContributionsHubScreenState
       );
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error.toString())));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not enable SMS sync. Check your permissions and try again.',
+          ),
+        ),
+      );
     } finally {
       if (mounted) {
         setState(() => _isUpdatingSmsSync = false);
@@ -141,9 +145,13 @@ class _ContributionsHubScreenState
       );
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error.toString())));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'SMS sync failed. Check your connection and try again.',
+          ),
+        ),
+      );
     } finally {
       if (mounted) {
         setState(() => _isUpdatingSmsSync = false);
@@ -185,7 +193,13 @@ class _ContributionsHubScreenState
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
-                    onPressed: () => context.pop(),
+                    onPressed: () {
+                      if (context.canPop()) {
+                        context.pop();
+                      } else {
+                        context.go('/home');
+                      }
+                    },
                     icon: Icon(
                       Icons.arrow_back_rounded,
                       color: ColorTokens.onSurface,
@@ -388,6 +402,19 @@ class _ContributionsHubScreenState
                           ),
                         );
                       }),
+                    if (_groups.length > 3)
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () => context.push('/contribute/groups'),
+                          child: Text(
+                            'See all ${_groups.length} circles',
+                            style: TypographyTokens.labelMedium(
+                              ColorTokens.primaryContainer,
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -396,6 +423,18 @@ class _ContributionsHubScreenState
                 label: 'START A CIRCLE',
                 width: double.infinity,
                 onPressed: () => context.push('/contribute/create'),
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              OutlinedButton.icon(
+                onPressed: () => context.push('/contribute/join'),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 56),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                ),
+                icon: const Icon(Icons.group_add_rounded),
+                label: const Text('JOIN A CIRCLE'),
               ),
             ],
           ),

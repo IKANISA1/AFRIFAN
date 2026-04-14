@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Plus, Trash2, Edit3, Eye, EyeOff } from "lucide-react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { SectionHeading } from "@/components/section-heading";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   getAdminBanners,
   saveAdminBanner,
@@ -29,14 +31,18 @@ export default function AdminBannersPage() {
   const [banners, setBanners] = useState<HomeBanner[]>([]);
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!client) return;
     setLoading(true);
     try {
       setBanners(await getAdminBanners(client, access));
+      setLoadError(null);
     } catch (e) {
-      showAdminToast(e instanceof Error ? e.message : "Failed to load banners.", "error");
+      const message = e instanceof Error ? e.message : "Failed to load banners.";
+      setLoadError(message);
+      showAdminToast(message, "error");
     } finally {
       setLoading(false);
     }
@@ -71,6 +77,13 @@ export default function AdminBannersPage() {
 
   async function remove(id: string) {
     if (!client) return;
+    if (
+      !confirmAdminDestructiveAction({
+        subject: "this banner",
+      })
+    ) {
+      return;
+    }
     try {
       await deleteAdminBanner(client, access, id);
       await load();
@@ -82,7 +95,11 @@ export default function AdminBannersPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading eyebrow="CMS" title="Manage home banners." />
+      <AdminPageHeader
+        eyebrow="CMS"
+        title="Home banners"
+        description="Control hero banners, CTA routes, and campaign order for the active club."
+      />
 
       <form onSubmit={submit} className="glass-panel rounded-[28px] p-6 grid gap-4">
         <div className="grid gap-4 sm:grid-cols-2">
@@ -134,6 +151,14 @@ export default function AdminBannersPage() {
       <div className="glass-panel rounded-[28px] p-6">
         {loading ? (
           <p className="text-sm text-slate-400">Loading…</p>
+        ) : loadError ? (
+          <AdminErrorState
+            title="Banners could not be loaded"
+            description={loadError}
+            onRetry={() => {
+              load().catch(() => {});
+            }}
+          />
         ) : banners.length === 0 ? (
           <p className="text-sm text-slate-400">No banners yet. Add one above.</p>
         ) : (

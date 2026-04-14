@@ -3,7 +3,7 @@
  *
  * Delegates to focused reconciler modules:
  * - group_reconciler.ts: group contribution + payee route matching
- * - rayon_reconciler.ts: Rayon Sports reference matching
+ * - rayon_reconciler.ts: club payment reference matching
  * - reconciliation_utils.ts: shared types, utilities, and scoring
  *
  * Re-exports public API consumed by index.ts.
@@ -50,12 +50,15 @@ export async function reconcileParsedSms(
   // 0) Look up receiver account
   const receiverResult = await adminClient
     .from("payment_receiver_accounts")
-    .select("receiver_type, owner_id")
-    .eq("code_or_number", parsed.payee_number_or_code ?? "")
+    .select("purpose, owner_user_id")
+    .eq("payee_number_or_code", parsed.payee_number_or_code ?? "")
     .maybeSingle();
 
-  const receiverType = receiverResult.data?.receiver_type;
-  const isDedicated = receiverType === "bank_custody" || receiverType === "rayon_shop" || receiverType === "agent_till";
+  const receiverType = receiverResult.data?.purpose;
+  const isDedicated = receiverType === "bank_custody" ||
+    receiverType === "rayon_shop" ||
+    receiverType === "club_shop" ||
+    receiverType === "agent_till";
 
   // 0.5) Try matching generic pending payment_intents first
   const intentResult = await adminClient

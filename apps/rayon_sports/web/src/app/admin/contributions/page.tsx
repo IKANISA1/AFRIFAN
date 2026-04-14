@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { CircleDollarSign, Coins, Users } from "lucide-react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   deleteAdminContributionGroup,
   downloadContributionExcel,
@@ -25,12 +27,13 @@ const emptySnapshot: AdminContributionSnapshot = {
 };
 
 export default function AdminContributionsPage() {
-  const { access, client } = useAdminPortal();
+  const { access, activeClub, client } = useAdminPortal();
   const [snapshot, setSnapshot] = useState(emptySnapshot);
   const [form, setForm] = useState(emptyGroupForm);
   const [filter, setFilter] = useState("ALL");
   const [sortMode, setSortMode] = useState("RECENT");
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const loadMonitor = useCallback(async () => {
     if (client == null) {
@@ -40,9 +43,15 @@ export default function AdminContributionsPage() {
     setLoading(true);
     try {
       setSnapshot(await getAdminContributionSnapshot(client, access));
+      setLoadError(null);
     } catch (caught) {
+      const message =
+        caught instanceof Error
+          ? caught.message
+          : "Could not load contributions monitor.";
+      setLoadError(message);
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not load contributions monitor.",
+        message,
         "error",
       );
     } finally {
@@ -64,6 +73,14 @@ export default function AdminContributionsPage() {
 
   async function removeGroup(group: AdminContributionGroup) {
     if (client == null) {
+      return;
+    }
+    if (
+      !confirmAdminDestructiveAction({
+        subject: group.name,
+        detail: "The contribution group and its operational definition will be removed.",
+      })
+    ) {
       return;
     }
 
@@ -99,7 +116,7 @@ export default function AdminContributionsPage() {
       <div className="grid gap-5 md:grid-cols-4">
         <AdminStateCard
           label="Raised this month"
-          value={loading ? "..." : formatCurrency(snapshot.monthlyTotal)}
+          value={loading ? "..." : formatCurrency(snapshot.monthlyTotal, activeClub?.currencyCode)}
           helper="This month (UTC)."
           icon={Coins}
         />
@@ -133,25 +150,37 @@ export default function AdminContributionsPage() {
           form={form}
           setForm={setForm}
           emptyForm={emptyGroupForm}
+          defaultCurrencyCode={activeClub?.currencyCode ?? "USD"}
           client={client}
           access={access}
           onSaved={loadMonitor}
         />
-        <ContributionGroupList
-          snapshot={snapshot}
-          filter={filter}
-          setFilter={setFilter}
-          sortMode={sortMode}
-          setSortMode={setSortMode}
-          loading={loading}
-          onEdit={beginEdit}
-          onDelete={(group) => {
-            removeGroup(group).catch(() => {});
-          }}
-          onExportExcel={() => {
-            exportExcel().catch(() => {});
-          }}
-        />
+        {loadError && !loading ? (
+          <AdminErrorState
+            title="Contribution monitoring could not be loaded"
+            description={loadError}
+            onRetry={() => {
+              loadMonitor().catch(() => {});
+            }}
+          />
+        ) : (
+          <ContributionGroupList
+            snapshot={snapshot}
+            currencyCode={activeClub?.currencyCode ?? "USD"}
+            filter={filter}
+            setFilter={setFilter}
+            sortMode={sortMode}
+            setSortMode={setSortMode}
+            loading={loading}
+            onEdit={beginEdit}
+            onDelete={(group) => {
+              removeGroup(group).catch(() => {});
+            }}
+            onExportExcel={() => {
+              exportExcel().catch(() => {});
+            }}
+          />
+        )}
       </div>
     </div>
   );

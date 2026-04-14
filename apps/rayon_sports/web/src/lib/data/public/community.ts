@@ -70,13 +70,14 @@ function mapMembershipRow(row: Record<string, unknown>): MembershipPackage {
     perks:
       benefits.length > 0
         ? benefits
-        : description.split(/[.;]/).filter((item) => item.trim().length > 2).length > 0
-        ? description
-            .split(/[.;]/)
-            .map((item) => item.trim())
-            .filter((item) => item.length > 2)
-            .slice(0, 4)
-        : ["Priority access", "Supporter identity", "Club communications"],
+        : description.split(/[.;]/).filter((item) => item.trim().length > 2)
+              .length > 0
+          ? description
+              .split(/[.;]/)
+              .map((item) => item.trim())
+              .filter((item) => item.length > 2)
+              .slice(0, 4)
+          : ["Priority access", "Supporter identity", "Club communications"],
   };
 }
 
@@ -85,18 +86,20 @@ function mapFanClubRow(row: Record<string, unknown>): FanClubItem {
     id: toIdString(row.id, crypto.randomUUID()),
     name: safeString(row.name, "Supporter chapter"),
     region: safeString(row.region, "Official"),
-    description: safeString(
-      row.description,
-      "An official supporter chapter.",
-    ),
+    description: safeString(row.description, "An official supporter chapter."),
     memberCount: safeNumber(row.member_count, 0),
     eventCount: safeNumber(row.event_count, 0),
     rating: safeNumber(row.rating, 0),
-    bannerImageUrl: sanitizeMediaUrl(row.banner_image_url, "/media/stadium-hero.jpg"),
+    bannerImageUrl: sanitizeMediaUrl(
+      row.banner_image_url,
+      "/media/stadium-hero.jpg",
+    ),
   };
 }
 
-function mapContributionGroupRow(row: Record<string, unknown>): ContributionGroup {
+function mapContributionGroupRow(
+  row: Record<string, unknown>,
+): ContributionGroup {
   return {
     id: toIdString(row.id, crypto.randomUUID()),
     name: safeString(row.name, "Support circle"),
@@ -130,7 +133,10 @@ function mapStandingRow(
     safeString(row.club, safeString(row.team_name, `Club ${index + 1}`)),
   );
   const form = Array.isArray(row.form)
-    ? row.form.map((entry) => safeString(entry)).filter(Boolean).slice(0, 5)
+    ? row.form
+        .map((entry) => safeString(entry))
+        .filter(Boolean)
+        .slice(0, 5)
     : [];
 
   return {
@@ -169,29 +175,32 @@ function mapSquadRow(row: Record<string, unknown>): SquadPlayer {
 
 // ─── Fetchers ────────────────────────────────────────────
 
-export const getMembershipPackages = cache(async function getMembershipPackages() {
-  const client = getReadOnlySupabase();
-  const activeClub = await getActiveClubReference();
-  if (client == null) return fallbackMembershipPackages;
+export const getMembershipPackages = cache(
+  async function getMembershipPackages() {
+    const client = getReadOnlySupabase();
+    const activeClub = await getActiveClubReference();
+    if (client == null) return fallbackMembershipPackages;
 
-  try {
-    const { data } = await client
-      .from("membership_packages")
-      .select("*")
-      .eq("club_id", activeClub.numericId)
-      .eq("is_active", true)
-      .order("sort_order", { ascending: true })
-      .limit(6);
+    try {
+      const { data } = await client
+        .from("membership_packages")
+        .select("*")
+        .eq("club_id", activeClub.numericId)
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true })
+        .limit(6);
 
-    if (!data || data.length == 0) {
-      return fallbackMembershipPackages;
+      if (!data || data.length == 0) {
+        return [];
+      }
+
+      return data.map((row) => mapMembershipRow(row));
+    } catch (error) {
+      console.error("getMembershipPackages failed", error);
+      return [];
     }
-
-    return data.map((row) => mapMembershipRow(row));
-  } catch {
-    return fallbackMembershipPackages;
-  }
-});
+  },
+);
 
 export const getFanClubs = cache(async function getFanClubs() {
   const client = getReadOnlySupabase();
@@ -207,40 +216,46 @@ export const getFanClubs = cache(async function getFanClubs() {
       .limit(12);
 
     if (!data || data.length == 0) {
-      return fallbackFanClubs;
+      return [];
     }
 
     return data.map((row) => mapFanClubRow(row));
-  } catch {
-    return fallbackFanClubs;
+  } catch (error) {
+    console.error("getFanClubs failed", error);
+    return [];
   }
 });
 
-export const getContributionGroups = cache(async function getContributionGroups() {
-  const client = getReadOnlySupabase();
-  const activeClub = await getActiveClubReference();
-  if (client == null) return fallbackContributionGroups;
+export const getContributionGroups = cache(
+  async function getContributionGroups() {
+    const client = getReadOnlySupabase();
+    const activeClub = await getActiveClubReference();
+    if (client == null) return fallbackContributionGroups;
 
-  try {
-    const { data } = await client
-      .from("contribution_groups")
-      .select("*")
-      .eq("club_id", activeClub.numericId)
-      .eq("is_active", true)
-      .order("created_at", { ascending: false })
-      .limit(8);
+    try {
+      const { data } = await client
+        .from("contribution_groups")
+        .select("*")
+        .eq("club_id", activeClub.numericId)
+        .eq("is_active", true)
+        .order("created_at", { ascending: false })
+        .limit(8);
 
-    if (!data || data.length == 0) {
-      return fallbackContributionGroups;
+      if (!data || data.length == 0) {
+        return [];
+      }
+
+      return data.map((row) => mapContributionGroupRow(row));
+    } catch (error) {
+      console.error("getContributionGroups failed", error);
+      return [];
     }
+  },
+);
 
-    return data.map((row) => mapContributionGroupRow(row));
-  } catch {
-    return fallbackContributionGroups;
-  }
-});
-
-export const getStandings = cache(async function getStandings(): Promise<StandingRow[]> {
+export const getStandings = cache(async function getStandings(): Promise<
+  StandingRow[]
+> {
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) {
@@ -248,7 +263,10 @@ export const getStandings = cache(async function getStandings(): Promise<Standin
   }
 
   try {
-    const table = await resolveAccessibleTable(client, standingsTableCandidates);
+    const table = await resolveAccessibleTable(
+      client,
+      standingsTableCandidates,
+    );
     const scopedQuery = await client
       .from(table)
       .select("*")
@@ -266,7 +284,9 @@ export const getStandings = cache(async function getStandings(): Promise<Standin
   return fallbackStandings;
 });
 
-export const getSquad = cache(async function getSquad(): Promise<SquadPlayer[]> {
+export const getSquad = cache(async function getSquad(): Promise<
+  SquadPlayer[]
+> {
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) {

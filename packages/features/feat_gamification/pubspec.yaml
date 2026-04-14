@@ -1,5 +1,5 @@
 name: feat_gamification
-description: XP system, achievements, badges, and leaderboard
+description: Consolidated FANZONE predictions, wallet, badges, challenges, and leaderboard
 publish_to: none
 version: 0.1.0
 
@@ -23,6 +23,7 @@ dependencies:
   supabase_flutter: ^2.12.2
   google_fonts: ^6.2.1
   flutter_animate: ^4.5.2
+  share_plus: ^11.1.0
 
 resolution: workspace
 
@@ -30,3 +31,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  mocktail: ^1.0.4
+  test_support:
+    path: ../test_support

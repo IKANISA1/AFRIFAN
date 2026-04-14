@@ -13,11 +13,16 @@ function mapClubRow(
   row: Record<string, unknown>,
   fallback: ClubProfile,
 ): ClubProfile {
+  const resolvedShortName = safeString(
+    row.club_name,
+    safeString(row.nickname_brand_identity, fallback.shortName),
+  );
+
   return {
     id: safeNumber(row.id, fallback.id),
     clubName: safeString(row.club_name, fallback.clubName),
     clubSlug: safeString(row.club_slug, fallback.clubSlug),
-    shortName: safeString(row.short_name, fallback.shortName),
+    shortName: resolvedShortName,
     nickname: safeString(
       row.nickname_brand_identity,
       fallback.nickname,

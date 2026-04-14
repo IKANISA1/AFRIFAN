@@ -1,11 +1,17 @@
 import Link from "next/link";
+import { getClubProfile, getSiteSearchIndex } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
-import { getSiteSearchIndex } from "@/lib/data/public";
+import { getSiteCopy } from "@/lib/site-copy";
 
-export const metadata = buildPageMetadata({
-  title: "Search",
-  description: "Search fixtures, tickets, membership, circles, shop, and club news.",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  const copy = getSiteCopy(club.defaultLanguage);
+  return buildPageMetadata({
+    title: copy.pages.searchPage.metaTitle,
+    description: copy.pages.searchPage.metaDescription,
+    path: "/search",
+  });
+}
 
 interface SearchPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -22,7 +28,8 @@ function normalizeQueryValue(value: string | string[] | undefined) {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   const query = normalizeQueryValue(params.q);
-  const items = await getSiteSearchIndex();
+  const [club, items] = await Promise.all([getClubProfile(), getSiteSearchIndex()]);
+  const copy = getSiteCopy(club.defaultLanguage);
   const term = query.toLowerCase();
 
   const results = term
@@ -37,13 +44,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     <section className="page-shell section-grid pb-20 pt-8">
       <div className="glass-panel-elevated rounded-[34px] p-6 sm:p-8">
         <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-          Search
+          {copy.search}
         </p>
         <h1 className="mt-4 font-display text-5xl font-bold uppercase leading-none text-white">
-          Find it fast.
+          {copy.common.findItFast}
         </h1>
         <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300 sm:text-base">
-          Fixtures, matchday details, supporter products, membership tiers, and club news.
+          {copy.common.searchIntro}
         </p>
 
         <form action="/search" className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -51,14 +58,14 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             type="search"
             name="q"
             defaultValue={query}
-            placeholder="Search fixtures, news, circles, or shop"
+            placeholder={copy.common.searchPlaceholder}
             className="min-h-12 flex-1 rounded-full border border-border-soft bg-white/5 px-5 text-base text-white outline-none placeholder:text-slate-500"
           />
           <button
             type="submit"
             className="min-h-12 rounded-full bg-club-primary px-6 text-sm font-semibold text-white transition hover:bg-club-primary-light"
           >
-            Search
+            {copy.search}
           </button>
         </form>
       </div>
@@ -88,10 +95,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         ) : (
           <div className="glass-panel rounded-[24px] px-5 py-10 text-center">
             <p className="font-display text-3xl font-bold uppercase text-white">
-              No results
+              {copy.common.noResults}
             </p>
             <p className="mt-3 text-sm leading-7 text-slate-300">
-              Try fixtures, tickets, membership, circles, or shop.
+              {copy.common.trySearchHint}
             </p>
           </div>
         )}

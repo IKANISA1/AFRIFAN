@@ -5,7 +5,6 @@ packages:
   - apps/**
   - packages/core/**
   - packages/features/**
-  - packages/africlub_fantasy
   - packages/clubs/**
 
 command:
@@ -46,6 +45,18 @@ scripts:
       flutter build apk \
         --dart-define-from-file=assets/flavors/production.json
     description: Build Android APK for local validation (run from apps/{club}/)
+
+  build_club_staging:
+    run: |
+      flutter build appbundle \
+        --dart-define-from-file=assets/flavors/staging.json
+    description: Build Play-ready Android App Bundle for a specific club (Staging, run from apps/{club}/)
+
+  build_club_apk_staging:
+    run: |
+      flutter build apk \
+        --dart-define-from-file=assets/flavors/staging.json
+    description: Build Android APK for local validation (Staging, run from apps/{club}/)
 
   clean:
     run: melos exec -- flutter clean

@@ -177,10 +177,21 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                   ? Center(
                       child: Padding(
                         padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                        child: Text(
-                          'Could not load privacy settings.',
-                          style: TypographyTokens.bodyMedium(),
-                          textAlign: TextAlign.center,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Could not load privacy settings.',
+                              style: TypographyTokens.bodyMedium(),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: SpacingTokens.spacing4),
+                            ClaymorphicButton(
+                              label: 'RETRY',
+                              onPressed: () =>
+                                  ref.invalidate(privacySettingsProvider),
+                            ),
+                          ],
                         ),
                       ),
                     )

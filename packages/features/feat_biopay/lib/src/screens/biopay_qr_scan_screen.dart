@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../biopay_tokens.dart';
 import '../models/biopay_handoff_resolution.dart';
 import '../models/biopay_payment_review_args.dart';
 import '../providers/biopay_providers.dart';
@@ -108,7 +109,7 @@ class _BiopayQrScanScreenState extends ConsumerState<BiopayQrScanScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(24),
                         border: BorderTokens.all(
-                          color: const Color(0xFFFFCD08),
+                          color: BiopayTokens.scannerCorner,
                           width: 3,
                         ),
                       ),
@@ -160,19 +161,19 @@ class _QrCorner extends StatelessWidget {
           ),
           border: Border(
             top: BorderTokens.side(
-              color: isTop ? const Color(0xFFFFCD08) : Colors.transparent,
+              color: isTop ? BiopayTokens.scannerCorner : Colors.transparent,
               width: 4,
             ),
             bottom: BorderTokens.side(
-              color: !isTop ? const Color(0xFFFFCD08) : Colors.transparent,
+              color: !isTop ? BiopayTokens.scannerCorner : Colors.transparent,
               width: 4,
             ),
             left: BorderTokens.side(
-              color: isLeft ? const Color(0xFFFFCD08) : Colors.transparent,
+              color: isLeft ? BiopayTokens.scannerCorner : Colors.transparent,
               width: 4,
             ),
             right: BorderTokens.side(
-              color: !isLeft ? const Color(0xFFFFCD08) : Colors.transparent,
+              color: !isLeft ? BiopayTokens.scannerCorner : Colors.transparent,
               width: 4,
             ),
           ),

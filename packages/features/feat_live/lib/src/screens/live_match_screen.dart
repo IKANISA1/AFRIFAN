@@ -300,10 +300,11 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
               children: [
                 Row(
                   children: [
-                    IconButton(
-                      onPressed: () => context.pop(),
-                      icon: const Icon(Icons.arrow_back_rounded),
-                    ),
+                    if (context.canPop())
+                      IconButton(
+                        onPressed: () => context.pop(),
+                        icon: const Icon(Icons.arrow_back_rounded),
+                      ),
                   ],
                 ),
                 const Spacer(),
@@ -374,9 +375,15 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                   padding: const EdgeInsets.all(SpacingTokens.spacing6),
                   child: Row(
                     children: [
+                      if (context.canPop())
+                        IconButton(
+                          onPressed: () => context.pop(),
+                          icon: const Icon(Icons.arrow_back_rounded),
+                        ),
                       IconButton(
-                        onPressed: () => context.pop(),
-                        icon: const Icon(Icons.arrow_back_rounded),
+                        onPressed: () => context.push('/fanzone/my'),
+                        icon: const Icon(Icons.history_rounded),
+                        tooltip: 'My Predictions',
                       ),
                       const Spacer(),
                       Container(
@@ -508,24 +515,36 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                  child: ClaymorphicButton(
-                    label: 'SHARE MATCH',
-                    width: double.infinity,
-                    onPressed: () async {
-                      await Clipboard.setData(
-                        ClipboardData(
-                          text:
-                              '${RuntimeBranding.displayAppName}: $homeTeam $homeScore-$awayScore $awayTeam ($statusLabel)',
-                        ),
-                      );
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Match update copied to clipboard.'),
-                          ),
-                        );
-                      }
-                    },
+                  child: Column(
+                    children: [
+                      ClaymorphicButton(
+                        label: 'BROWSE PREDICTIONS',
+                        width: double.infinity,
+                        onPressed: () => context.go('/fanzone/fixtures'),
+                      ),
+                      const SizedBox(height: SpacingTokens.spacing3),
+                      ClaymorphicButton(
+                        label: 'SHARE MATCH',
+                        width: double.infinity,
+                        onPressed: () async {
+                          await Clipboard.setData(
+                            ClipboardData(
+                              text:
+                                  '${RuntimeBranding.displayAppName}: $homeTeam $homeScore-$awayScore $awayTeam ($statusLabel)',
+                            ),
+                          );
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Match update copied to clipboard.',
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),

@@ -3,21 +3,27 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { fallbackClubProfile } from "@/lib/content";
-import type { AdminAccess, ClubProfile } from "@/lib/types";
+import type { AdminAccess, AdminClubScopeOption, ClubProfile } from "@/lib/types";
 import { safeNumber, safeString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import {
+  adminClubIdOrNull,
   clubTable,
   mutateRecordWithVariants,
   requireAdminClubId,
 } from "./helpers";
 
 function mapAdminClubProfile(row: Record<string, unknown>): ClubProfile {
+  const resolvedShortName = safeString(
+    row.club_name,
+    safeString(row.nickname_brand_identity, fallbackClubProfile.shortName),
+  );
+
   return {
     id: safeNumber(row.id, fallbackClubProfile.id),
     clubName: safeString(row.club_name, fallbackClubProfile.clubName),
     clubSlug: safeString(row.club_slug, fallbackClubProfile.clubSlug),
-    shortName: safeString(row.short_name, fallbackClubProfile.shortName),
+    shortName: resolvedShortName,
     nickname: safeString(row.nickname_brand_identity, fallbackClubProfile.nickname),
     countryCode: safeString(row.country_iso_code, fallbackClubProfile.countryCode),
     league: safeString(row.league, fallbackClubProfile.league),
@@ -42,6 +48,80 @@ function mapAdminClubProfile(row: Record<string, unknown>): ClubProfile {
         ? (row.feature_flags as Record<string, boolean>)
         : fallbackClubProfile.featureFlags,
   };
+}
+
+function mapAdminClubScopeOption(
+  row: Record<string, unknown>,
+): AdminClubScopeOption {
+  const resolvedShortName = safeString(
+    row.club_name,
+    safeString(row.nickname_brand_identity, fallbackClubProfile.shortName),
+  );
+
+  return {
+    id: safeNumber(row.id, fallbackClubProfile.id).toString(),
+    clubName: safeString(row.club_name, fallbackClubProfile.clubName),
+    shortName: resolvedShortName,
+    clubSlug: safeString(row.club_slug, fallbackClubProfile.clubSlug),
+    currencyCode: safeString(row.currency_code, fallbackClubProfile.currencyCode),
+    currencySymbol: safeString(
+      row.currency_symbol,
+      fallbackClubProfile.currencySymbol,
+    ),
+  };
+}
+
+export async function getAdminClubScopeOptions(
+  client: SupabaseClient,
+  access: AdminAccess,
+): Promise<AdminClubScopeOption[]> {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<AdminClubScopeOption[]>("club-scope");
+  }
+
+  let query = client
+    .from(clubTable)
+    .select(
+      "id, club_name, nickname_brand_identity, club_slug, currency_code, currency_symbol",
+    )
+    .order("club_name", { ascending: true });
+
+  if (!access.isSuperAdmin && access.availableClubIds.length > 0) {
+    const allowedIds = access.availableClubIds
+      .map((value) => safeNumber(value, Number.NaN))
+      .filter(Number.isFinite);
+    query = query.in("id", allowedIds);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const options = (data ?? []).map((row) =>
+    mapAdminClubScopeOption(row as Record<string, unknown>),
+  );
+
+  if (options.length > 0) {
+    return options;
+  }
+
+  const currentClubId = adminClubIdOrNull(access);
+  if (currentClubId == null) {
+    return [];
+  }
+
+  return [
+    {
+      id: currentClubId.toString(),
+      clubName: fallbackClubProfile.clubName,
+      shortName: fallbackClubProfile.shortName,
+      clubSlug: fallbackClubProfile.clubSlug,
+      currencyCode: fallbackClubProfile.currencyCode,
+      currencySymbol: fallbackClubProfile.currencySymbol,
+    },
+  ];
 }
 
 export async function getAdminClubProfile(

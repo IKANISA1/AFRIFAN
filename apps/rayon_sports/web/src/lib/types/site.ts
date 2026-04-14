@@ -68,8 +68,7 @@ export interface SearchIndexItem {
     | "News"
     | "Shop"
     | "Community"
-    | "Membership"
-    | "Fantasy";
+    | "Membership";
   meta?: string;
 }
 
@@ -132,6 +131,33 @@ export interface ContributionGroup {
   isActive: boolean;
 }
 
+export interface FanEngagementTokenItem {
+  id: string;
+  clubId: number;
+  code: string;
+  templateScope: "generic" | "club_specific";
+  category: string;
+  itemName: string;
+  fetValue: number;
+  triggerCondition: string;
+  activationTiming: string;
+  description: string;
+  badgeName?: string | null;
+  implementationNotes?: string | null;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+export interface FanEngagementLeaderboardEntry {
+  rank: number;
+  userId: string;
+  supporterAlias: string;
+  displayName: string;
+  totalFet: number;
+  tier: string;
+  isCurrentUser: boolean;
+}
+
 export interface SquadPlayer {
   id: string;
   name: string;
@@ -184,59 +210,4 @@ export interface AppConfigEntry {
   value: string;
   description: string;
   country: string;
-}
-
-export type FantasyCompetitionMode = "season_long" | "tournament";
-export type FantasyCompetitionStatus =
-  | "planned"
-  | "preview"
-  | "playable"
-  | "archived";
-
-export interface FantasyCompetition {
-  id: string;
-  slug: string;
-  name: string;
-  shortName: string;
-  season: string;
-  description: string;
-  mode: FantasyCompetitionMode;
-  status: FantasyCompetitionStatus;
-  primaryColor: string;
-  logoUrl: string | null;
-  countryCode: string | null;
-  provider: string | null;
-  promoTitle: string | null;
-  promoBody: string | null;
-  badgeLabel: string | null;
-  ctaLabel: string | null;
-  heroImageUrl: string | null;
-  sortOrder: number;
-  isVisible: boolean;
-  isFeatured: boolean;
-  isPlayable: boolean;
-  startAt: string | null;
-  endAt: string | null;
-  entryWindowOpensAt: string | null;
-  entryWindowClosesAt: string | null;
-}
-
-export interface FantasyLeaderboardEntry {
-  rank: number;
-  teamName: string;
-  managerName: string;
-  points: number;
-  isCurrentUser: boolean;
-}
-
-export interface FantasyBracketMatch {
-  stage: string;
-  stageOrder: number;
-  label: string;
-  homeTeamName: string;
-  awayTeamName: string;
-  homeGoals: number | null;
-  awayGoals: number | null;
-  statusShort: string | null;
-  kickoffAt: string | null;
 }

@@ -408,6 +408,16 @@ Deno.test("reconcileParsedSms confirms matched Rayon shop order references", asy
         created_at: "2026-03-11T14:58:00.000Z",
       },
     ],
+    partner_payment_routes: [
+      {
+        id: "route-1",
+        partner_id: "partner-rayon-1",
+        recipient_code: "250788111222",
+        partner_name: "Rayon Sports FC",
+        country: "RW",
+        status: "active",
+      },
+    ],
     partners: [
       {
         id: "partner-rayon-1",

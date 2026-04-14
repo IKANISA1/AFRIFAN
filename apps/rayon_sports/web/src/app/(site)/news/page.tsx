@@ -5,13 +5,15 @@ import { NewsCard } from "@/components/news-card";
 import { PageHero } from "@/components/page-hero";
 import { getClubProfile, getNewsArticles } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
+import { getSiteCopy } from "@/lib/site-copy";
 import { formatDate, getReadingTime } from "@/lib/utils";
 
 export async function generateMetadata() {
   const club = await getClubProfile();
+  const copy = getSiteCopy(club.defaultLanguage);
   return buildPageMetadata({
-    title: `${club.shortName} news`,
-    description: `Official ${club.shortName} news, matchday updates, supporter features, and club announcements.`,
+    title: copy.pages.news.metaTitle(club),
+    description: copy.pages.news.metaDescription(club),
     path: "/news",
   });
 }
@@ -21,14 +23,15 @@ export default async function NewsPage() {
     getClubProfile(),
     getNewsArticles(),
   ]);
+  const copy = getSiteCopy(club.defaultLanguage);
   const [featuredArticle, ...secondaryArticles] = articles;
 
   return (
     <div className="page-shell section-grid py-12">
       <PageHero
-        eyebrow="Newsroom"
-        title="Club news, matchday, and supporter stories."
-        description={`Latest updates from ${club.shortName}, with direct paths into fixtures, tickets, membership, and supporter campaigns.`}
+        eyebrow={copy.pages.news.eyebrow}
+        title={copy.pages.news.title}
+        description={copy.pages.news.description(club)}
         actions={
           <>
             <Link
@@ -36,26 +39,26 @@ export default async function NewsPage() {
               prefetch={false}
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Matchday schedule
+              {copy.common.matchdaySchedule}
             </Link>
             <Link
               href="/membership"
               prefetch={false}
               className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
-              Membership stories
+              {copy.common.membershipStories}
             </Link>
           </>
         }
         stats={[
-          { label: "Stories", value: articles.length.toString() },
+          { label: copy.common.stories, value: articles.length.toString() },
           {
-            label: "Categories",
+            label: copy.common.categories,
             value: new Set(articles.map((article) => article.category)).size.toString(),
           },
           {
-            label: "Featured",
-            value: featuredArticle ? `${getReadingTime(featuredArticle.content)} min` : "0",
+            label: copy.common.featured,
+            value: featuredArticle ? `${getReadingTime(featuredArticle.content)} ${copy.common.minuteRead}` : "0",
           },
         ]}
       />
@@ -69,7 +72,7 @@ export default async function NewsPage() {
           >
             <div className="p-6 sm:p-8">
               <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-                Featured story
+                {copy.common.featuredStory}
               </p>
               <h2 className="mt-4 font-display text-5xl font-bold uppercase leading-none text-white text-balance">
                 {featuredArticle.title}
@@ -85,11 +88,11 @@ export default async function NewsPage() {
                   {formatDate(featuredArticle.publishedAt)}
                 </span>
                 <span className="rounded-full border border-border-soft px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                  {getReadingTime(featuredArticle.content)} min read
+                  {getReadingTime(featuredArticle.content)} {copy.common.minuteRead}
                 </span>
               </div>
               <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-white">
-                Open story <ArrowRight size={18} />
+                {copy.common.openStory} <ArrowRight size={18} />
               </div>
             </div>
             <div className="img-zoom relative min-h-[18rem]">
@@ -108,17 +111,13 @@ export default async function NewsPage() {
 
           <div className="glass-panel rounded-[34px] p-6">
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              Newsroom standards
+              {copy.pages.news.newsroomStandards}
             </p>
             <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              Every story earns the click
+              {copy.pages.news.newsroomStandardsTitle}
             </h2>
             <div className="mt-5 grid gap-4">
-              {[
-                "Every card carries a real excerpt for search and sharing.",
-                "Matchday, supporter culture, and club updates lead the coverage.",
-                "Stories connect cleanly to fixtures, tickets, membership, and shop drops.",
-              ].map((point) => (
+              {copy.pages.news.standardsPoints.map((point) => (
                 <div
                   key={point}
                   className="rounded-[24px] border border-border-soft bg-white/5 p-4 text-sm leading-7 text-slate-300"
@@ -135,10 +134,10 @@ export default async function NewsPage() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              Latest stories
+              {copy.pages.news.latestStories}
             </p>
             <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              Across the club
+              {copy.pages.news.acrossTheClub}
             </h2>
           </div>
           <div className="flex flex-wrap gap-2">

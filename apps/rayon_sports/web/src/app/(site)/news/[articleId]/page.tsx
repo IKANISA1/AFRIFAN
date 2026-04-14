@@ -10,6 +10,7 @@ import {
   buildPageMetadata,
   renderJsonLdScriptContent,
 } from "@/lib/metadata";
+import { getSiteCopy } from "@/lib/site-copy";
 import { formatDate, getReadingTime } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -22,11 +23,12 @@ export async function generateMetadata({
     getClubProfile(),
     getNewsArticleById(articleId),
   ]);
+  const copy = getSiteCopy(club.defaultLanguage);
 
   if (article == null) {
     return buildPageMetadata({
-      title: `${club.shortName} article`,
-      description: `Official ${club.shortName} news and matchday coverage.`,
+      title: copy.pages.news.metaTitle(club),
+      description: copy.pages.news.metaDescription(club),
       path: `/news/${articleId}`,
       type: "article",
     });
@@ -47,10 +49,12 @@ export default async function ArticlePage({
   params: Promise<{ articleId: string }>;
 }) {
   const { articleId } = await params;
-  const [article, articles] = await Promise.all([
+  const [club, article, articles] = await Promise.all([
+    getClubProfile(),
     getNewsArticleById(articleId),
     getNewsArticles(),
   ]);
+  const copy = getSiteCopy(club.defaultLanguage);
 
   if (article == null) {
     notFound();
@@ -96,10 +100,10 @@ export default async function ArticlePage({
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               <span className="rounded-full border border-border-soft bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                By {article.author}
+                {article.author}
               </span>
               <span className="rounded-full border border-border-soft bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                {getReadingTime(article.content)} min read
+                {getReadingTime(article.content)} {copy.common.minuteRead}
               </span>
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
@@ -107,13 +111,13 @@ export default async function ArticlePage({
                 href="/news"
                 className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
               >
-                Back to newsroom
+                {copy.common.clubNewsroom}
               </Link>
               <Link
                 href="/fixtures"
                 className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
               >
-                Matchday context
+                {copy.common.matchdayCoverage}
               </Link>
               <ShareActionButton
                 title={article.title}
@@ -129,7 +133,7 @@ export default async function ArticlePage({
       <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="glass-panel rounded-[32px] p-6">
           <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
-            Full story
+            {copy.details}
           </p>
           <div className="mt-5 space-y-5 text-base leading-8 text-slate-200">
             {paragraphs.map((paragraph, index) => (
@@ -141,17 +145,13 @@ export default async function ArticlePage({
         <div className="space-y-6">
           <div className="glass-panel rounded-[32px] p-6">
             <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
-              Editorial links
+              {copy.pages.news.newsroomStandards}
             </p>
             <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              Keep the supporter moving
+              {copy.pages.news.newsroomStandardsTitle}
             </h2>
             <div className="mt-5 grid gap-4">
-              {[
-                "Matchday coverage links back to fixtures and ticketing.",
-                "Membership coverage makes plan value easy to understand.",
-                "Retail coverage supports launches without replacing the shop.",
-              ].map((point) => (
+              {copy.pages.news.standardsPoints.map((point) => (
                 <div
                   key={point}
                   className="rounded-[24px] border border-border-soft bg-white/5 p-4 text-sm leading-7 text-slate-300"
@@ -166,10 +166,10 @@ export default async function ArticlePage({
             <section className="section-grid">
               <div>
                 <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
-                  More stories
+                  {copy.pages.news.latestStories}
                 </p>
                 <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-                  Related coverage
+                  {copy.pages.news.acrossTheClub}
                 </h2>
               </div>
               <div className="grid gap-5">

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ProgressBar } from "@/components/progress-bar";
 import { SectionHeading } from "@/components/section-heading";
-import { fallbackContributionGroups } from "@/lib/content";
 import {
   getClubProfile,
   getContributionGroups,
@@ -14,18 +13,21 @@ import {
 import { formatCompactNumber, formatCurrency } from "@/lib/utils";
 
 export async function CirclesAndMatchdayBlock() {
-  const [club, matches, contributionGroups, fanClubs, membershipPackages, news] =
-    await Promise.all([
-      getClubProfile(),
-      getMatches(),
-      getContributionGroups(),
-      getFanClubs(),
-      getMembershipPackages(),
-      getNewsArticles(),
-    ]);
-
-  const activeCircles =
-    contributionGroups.length > 0 ? contributionGroups : fallbackContributionGroups;
+  const [
+    club,
+    matches,
+    contributionGroups,
+    fanClubs,
+    membershipPackages,
+    news,
+  ] = await Promise.all([
+    getClubProfile(),
+    getMatches(),
+    getContributionGroups(),
+    getFanClubs(),
+    getMembershipPackages(),
+    getNewsArticles(),
+  ]);
 
   const featuredMatch =
     matches.find((m) => m.matchStatus === "live") ??
@@ -42,7 +44,7 @@ export async function CirclesAndMatchdayBlock() {
           title="Back the movement. Fund the next tifo."
         />
         <div className="mt-6 grid gap-4">
-          {activeCircles.map((group) => (
+          {contributionGroups.map((group) => (
             <article
               key={group.id}
               className="py-5 first:pt-0 last:pb-0 border-b border-border-soft last:border-0"
@@ -95,6 +97,11 @@ export async function CirclesAndMatchdayBlock() {
               </div>
             </article>
           ))}
+          {contributionGroups.length === 0 ? (
+            <div className="rounded-[24px] border border-border-soft bg-white/5 p-5 text-sm leading-7 text-slate-300">
+              No support circles are currently published for this club.
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -111,7 +118,9 @@ export async function CirclesAndMatchdayBlock() {
               </p>
               <p className="mt-3 font-display text-4xl font-bold uppercase leading-none text-white">
                 {featuredMatch?.homeTeam}
-                <span className="block text-white/65">vs {featuredMatch?.awayTeam}</span>
+                <span className="block text-white/65">
+                  vs {featuredMatch?.awayTeam}
+                </span>
               </p>
               <p className="mt-4 text-sm leading-7 text-slate-300">
                 {featuredMatch?.matchSummary ?? "Live updates & ticketing."}
@@ -121,11 +130,18 @@ export async function CirclesAndMatchdayBlock() {
                   {featuredMatch?.competition ?? club.league}
                 </span>
                 <span className="rounded-full border border-border-soft px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                  {featuredMatch ? formatCurrency(featuredMatch.generalPrice, club.currencyCode) : "Tickets"}
+                  {featuredMatch
+                    ? formatCurrency(
+                        featuredMatch.generalPrice,
+                        club.currencyCode,
+                      )
+                    : "Tickets"}
                 </span>
               </div>
               <Link
-                href={featuredMatch ? `/fixtures/${featuredMatch.id}` : "/fixtures"}
+                href={
+                  featuredMatch ? `/fixtures/${featuredMatch.id}` : "/fixtures"
+                }
                 prefetch={false}
                 className="mt-5 inline-flex items-center gap-2 rounded-full bg-club-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-club-primary-light"
               >
@@ -175,25 +191,19 @@ export async function CirclesAndMatchdayBlock() {
                   <p className="font-score text-5xl font-bold text-white">
                     {fanClubs.length}
                   </p>
-                  <p className="mt-2 text-xs text-slate-300">
-                    Chapters
-                  </p>
+                  <p className="mt-2 text-xs text-slate-300">Chapters</p>
                 </div>
                 <div className="px-4 text-center">
                   <p className="font-score text-5xl font-bold text-white">
                     {matches.filter((m) => m.isOnSale).length}
                   </p>
-                  <p className="mt-2 text-xs text-slate-300">
-                    On sale
-                  </p>
+                  <p className="mt-2 text-xs text-slate-300">On sale</p>
                 </div>
                 <div className="px-4 text-center">
                   <p className="font-score text-5xl font-bold text-white">
                     {news.length}
                   </p>
-                  <p className="mt-2 text-xs text-slate-300">
-                    Stories
-                  </p>
+                  <p className="mt-2 text-xs text-slate-300">Stories</p>
                 </div>
               </div>
             </div>

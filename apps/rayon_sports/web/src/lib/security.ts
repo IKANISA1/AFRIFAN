@@ -64,7 +64,15 @@ function isAllowedFetchSite(request: NextRequest) {
   );
 }
 
+function hasCsrfMutationHeader(request: NextRequest) {
+  return request.headers.get("x-africlub-csrf") === "1";
+}
+
 export function isSameOriginMutation(request: NextRequest) {
+  if (hasCsrfMutationHeader(request) && isAllowedFetchSite(request)) {
+    return true;
+  }
+
   const requestOrigin = request.nextUrl.origin;
   const origin = request.headers.get("origin");
   if (origin) {

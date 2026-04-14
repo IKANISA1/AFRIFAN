@@ -1,0 +1,322 @@
+import 'package:core_auth/core_auth.dart';
+import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class SupporterPhoneAuthScreen extends ConsumerStatefulWidget {
+  const SupporterPhoneAuthScreen({super.key});
+
+  @override
+  ConsumerState<SupporterPhoneAuthScreen> createState() =>
+      _SupporterPhoneAuthScreenState();
+}
+
+class _SupporterPhoneAuthScreenState
+    extends ConsumerState<SupporterPhoneAuthScreen> {
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
+
+  bool _isLoading = false;
+  static const OtpChannel _deliveryChannel = OtpChannel.whatsapp;
+  String? _pendingPhone;
+
+  String get _phoneValue => _phoneController.text.trim();
+  String get _otpValue => _otpController.text.trim();
+  bool get _canSubmitPhone => _phoneValue.isNotEmpty;
+  bool get _canSubmitOtp =>
+      (_pendingPhone?.isNotEmpty ?? false) && _otpValue.length >= 6;
+
+  @override
+  void initState() {
+    super.initState();
+    _phoneController.addListener(_onChanged);
+    _otpController.addListener(_onChanged);
+  }
+
+  @override
+  void dispose() {
+    _phoneController
+      ..removeListener(_onChanged)
+      ..dispose();
+    _otpController
+      ..removeListener(_onChanged)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _sendCode() async {
+    if (_isLoading || !_canSubmitPhone) return;
+
+    final normalizedPhone = _normalizePhone(_phoneValue);
+    if (normalizedPhone == null) return;
+
+    setState(() => _isLoading = true);
+    final error = await ref
+        .read(authStateProvider.notifier)
+        .requestPhoneSignInOtp(
+          phone: normalizedPhone,
+          channel: _deliveryChannel,
+        );
+
+    if (!mounted) return;
+    setState(() {
+      _isLoading = false;
+      if (error == null) {
+        _pendingPhone = normalizedPhone;
+        _otpController.clear();
+      }
+    });
+
+    final message =
+        error ?? 'Verification code sent to WhatsApp for $normalizedPhone.';
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _verifyCode() async {
+    if (_isLoading || !_canSubmitOtp) return;
+
+    final pendingPhone = _pendingPhone;
+    if (pendingPhone == null) return;
+
+    setState(() => _isLoading = true);
+    final error = await ref
+        .read(authStateProvider.notifier)
+        .verifyPhoneSignInOtp(phone: pendingPhone, token: _otpValue);
+
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+
+    if (error == null) {
+      context.go(_postAuthDestination());
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+  }
+
+  String? _normalizePhone(String value) {
+    final compact = value.replaceAll(RegExp(r'\s+'), '');
+    if (RegExp(r'^\+\d{8,15}$').hasMatch(compact)) {
+      return compact;
+    }
+
+    final config = ClubConfigScope.maybeOf(context);
+
+    try {
+      final country = AfriCountryCatalog.resolve(
+        country: config?.countryCode ?? config?.country,
+      );
+      return country.buildE164Phone(value);
+    } on FormatException catch (error) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.message)));
+      return null;
+    } on StateError {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Country metadata is unavailable for this build.'),
+        ),
+      );
+      return null;
+    }
+  }
+
+  String _postAuthDestination() {
+    final raw = GoRouterState.of(context).uri.queryParameters['from']?.trim();
+    if (raw == null || raw.isEmpty) {
+      return '/home';
+    }
+
+    final uri = Uri.tryParse(raw);
+    final path = uri?.path;
+    if (path == null ||
+        path.isEmpty ||
+        !path.startsWith('/') ||
+        path == '/splash' ||
+        path == '/onboarding' ||
+        path == '/auth/phone') {
+      return '/home';
+    }
+
+    return uri.toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/onboarding');
+            }
+          },
+        ),
+      ),
+      body: GradientBackground(
+        child: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(
+              SpacingTokens.spacing6,
+              SpacingTokens.spacing2,
+              SpacingTokens.spacing6,
+              SpacingTokens.spacing8,
+            ),
+            children: [
+              Text('SIGN IN WITH OTP', style: TypographyTokens.headlineLarge()),
+              const SizedBox(height: SpacingTokens.spacing3),
+              Text(
+                'Use your phone number to sign in securely. We will send a 6-digit verification code to your WhatsApp number.',
+                style: TypographyTokens.bodyLarge().copyWith(
+                  color: ColorTokens.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: SpacingTokens.spacing6),
+              GlassCard(
+                animate: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'DELIVERY CHANNEL',
+                      style: TypographyTokens.labelMedium(),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(SpacingTokens.spacing4),
+                      decoration: BoxDecoration(
+                        color: ColorTokens.surfaceContainerLow,
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: ColorTokens.ghostBorder),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.chat_bubble_rounded),
+                          const SizedBox(width: SpacingTokens.spacing3),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'WhatsApp verification',
+                                  style: TypographyTokens.labelLarge(),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Codes are currently delivered through the verified WhatsApp channel for this app.',
+                                  style: TypographyTokens.bodySmall(
+                                    ColorTokens.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing5),
+                    TextField(
+                      key: const ValueKey<String>('supporter-phone-input'),
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      enabled: !_isLoading,
+                      decoration: const InputDecoration(
+                        labelText: 'Phone number',
+                        hintText: '+2507...',
+                        prefixIcon: Icon(Icons.phone_android_rounded),
+                      ),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    FilledButton(
+                      key: const ValueKey<String>('supporter-send-otp-button'),
+                      onPressed: _isLoading || !_canSubmitPhone
+                          ? null
+                          : _sendCode,
+                      child: Text(
+                        _pendingPhone == null ? 'SEND CODE' : 'RESEND CODE',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: SpacingTokens.spacing6),
+              GlassCard(
+                animate: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('ENTER OTP', style: TypographyTokens.labelMedium()),
+                    const SizedBox(height: SpacingTokens.spacing2),
+                    Text(
+                      _pendingPhone == null
+                          ? 'Request a code first.'
+                          : 'Code sent to $_pendingPhone.',
+                      style: TypographyTokens.bodyMedium().copyWith(
+                        color: ColorTokens.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    TextField(
+                      key: const ValueKey<String>('supporter-phone-otp-input'),
+                      controller: _otpController,
+                      keyboardType: TextInputType.number,
+                      maxLength: 6,
+                      enabled:
+                          (_pendingPhone?.isNotEmpty ?? false) && !_isLoading,
+                      decoration: const InputDecoration(
+                        labelText: '6-digit OTP',
+                        hintText: '123456',
+                        prefixIcon: Icon(Icons.password_rounded),
+                        counterText: '',
+                      ),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    FilledButton(
+                      key: const ValueKey<String>(
+                        'supporter-verify-otp-button',
+                      ),
+                      onPressed: _isLoading || !_canSubmitOtp
+                          ? null
+                          : _verifyCode,
+                      child: _isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('VERIFY & CONTINUE'),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: SpacingTokens.spacing4),
+              TextButton(
+                onPressed: _isLoading ? null : () => context.go('/onboarding'),
+                child: const Text('Use guest mode instead'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

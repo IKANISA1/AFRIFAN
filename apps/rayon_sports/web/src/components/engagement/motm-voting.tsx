@@ -123,9 +123,9 @@ export function MotmVoting({
         </button>
       )}
 
-      {/* FAT reward */}
+      {/* FET reward */}
       <p className="mt-3 text-center text-[10px] uppercase tracking-[0.22em] text-slate-500">
-        {voted ? "10 FAT earned for voting" : "Vote to earn 10 FAT"}
+        {voted ? "10 FET earned for voting" : "Vote to earn 10 FET"}
       </p>
     </div>
   );

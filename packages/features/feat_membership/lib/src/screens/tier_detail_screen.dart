@@ -17,10 +17,10 @@ class TierDetailScreen extends StatelessWidget {
       _ => 'FAN MEMBERSHIP',
     };
     final xpBand = switch (normalizedTier) {
-      'platinum' => '5,000+ XP',
-      'gold' => '2,000 - 4,999 XP',
-      'bronze' || 'silver' => '1,000 - 1,999 XP',
-      _ => '0 - 999 XP',
+      'platinum' => '5,000+ FET',
+      'gold' => '2,000 - 4,999 FET',
+      'bronze' || 'silver' => '1,000 - 1,999 FET',
+      _ => '0 - 999 FET',
     };
     final tierPerks = switch (normalizedTier) {
       'platinum' => const <String>[
@@ -106,7 +106,7 @@ class TierDetailScreen extends StatelessWidget {
             _PerkCard(title: 'Tier perks', items: tierPerks),
             const SizedBox(height: SpacingTokens.spacing4),
             const _PerkCard(
-              title: 'How to earn XP faster',
+              title: 'How to earn FET faster',
               items: [
                 'Attend matchdays and scan tickets',
                 'Contribute to club projects',

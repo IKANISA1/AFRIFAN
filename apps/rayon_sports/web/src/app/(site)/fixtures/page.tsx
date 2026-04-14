@@ -4,19 +4,22 @@ import { MatchCard } from "@/components/match-card";
 import { PageHero } from "@/components/page-hero";
 import { getClubProfile, getMatches } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
+import { getSiteCopy } from "@/lib/site-copy";
 import { isLiveMatch, isResultMatch } from "@/lib/utils";
 
 export async function generateMetadata() {
   const club = await getClubProfile();
+  const copy = getSiteCopy(club.defaultLanguage);
   return buildPageMetadata({
-    title: `${club.shortName} fixtures`,
-    description: `Official ${club.shortName} fixture list with live matches, upcoming kickoffs, ticket links, and recent results.`,
+    title: copy.pages.fixtures.metaTitle(club),
+    description: copy.pages.fixtures.metaDescription(club),
     path: "/fixtures",
   });
 }
 
 export default async function FixturesPage() {
   const [club, matches] = await Promise.all([getClubProfile(), getMatches()]);
+  const copy = getSiteCopy(club.defaultLanguage);
   const liveMatches = matches.filter((match) => isLiveMatch(match.matchStatus));
   const upcomingMatches = matches.filter(
     (match) => !isLiveMatch(match.matchStatus) && !isResultMatch(match.matchStatus),
@@ -26,32 +29,32 @@ export default async function FixturesPage() {
   return (
     <div className="page-shell section-grid py-12">
       <PageHero
-        eyebrow="Fixtures"
-        title="Live, next, and recent fixtures."
-        description={`Track the current ${club.shortName} match, see the next kickoff, and move straight into ticketing when a fixture is on sale.`}
+        eyebrow={copy.pages.fixtures.eyebrow}
+        title={copy.pages.fixtures.title}
+        description={copy.pages.fixtures.description(club)}
         actions={
           <>
             <Link
               href="/tickets"
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Buy tickets
+              {copy.buyTickets}
             </Link>
             <Link
               href="/results"
               className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
-              Recent results
+              {copy.common.recentResults}
             </Link>
           </>
         }
         stats={[
-          { label: "Live now", value: liveMatches.length.toString() },
+          { label: copy.common.live, value: liveMatches.length.toString() },
           {
-            label: "On sale",
+            label: copy.common.onSale,
             value: matches.filter((match) => match.isOnSale).length.toString(),
           },
-          { label: "Listed", value: matches.length.toString() },
+          { label: copy.common.listed, value: matches.length.toString() },
         ]}
       />
 
@@ -60,10 +63,10 @@ export default async function FixturesPage() {
           <div className="flex items-end justify-between gap-4">
             <div>
               <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-                Live now
+                {copy.common.live}
               </p>
               <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-                Matchday at full speed
+                {copy.pages.fixtures.liveNowTitle}
               </h2>
             </div>
           </div>
@@ -84,17 +87,17 @@ export default async function FixturesPage() {
         <div className="flex items-end justify-between gap-4">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              Upcoming
+              {copy.next}
             </p>
             <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              Ticket-ready fixtures
+              {copy.pages.fixtures.upcomingTitle}
             </h2>
           </div>
           <Link
             href="/tickets"
             className="inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
           >
-            Open ticket hub <ArrowRight size={16} />
+            {copy.buyTickets} <ArrowRight size={16} />
           </Link>
         </div>
         <div className="grid gap-5 lg:grid-cols-3">
@@ -113,10 +116,10 @@ export default async function FixturesPage() {
         <section className="section-grid">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              Results
+              {copy.pages.results.eyebrow}
             </p>
             <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              Recent scorelines
+              {copy.common.recentScorelines}
             </h2>
           </div>
           <div className="grid gap-5 lg:grid-cols-3">

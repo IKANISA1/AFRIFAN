@@ -19,7 +19,7 @@ void main() {
       expect(module.tabRoute, isNull);
     });
 
-    test('registers 3 top-level routes', () {
+    test('registers membership routes', () {
       final paths = module.routes
           .whereType<GoRoute>()
           .map((r) => r.path)
@@ -27,30 +27,30 @@ void main() {
 
       expect(paths, hasLength(3));
       expect(paths, contains('/membership'));
-      expect(paths, contains('/profile'));
+      expect(paths, contains('/membership/fans'));
       expect(paths, contains('/membership/tier/:tierId'));
     });
 
     test('/membership route has name membership', () {
-      final route = module.routes
-          .whereType<GoRoute>()
-          .firstWhere((r) => r.path == '/membership');
+      final route = module.routes.whereType<GoRoute>().firstWhere(
+        (r) => r.path == '/membership',
+      );
 
       expect(route.name, 'membership');
     });
 
-    test('/profile route has name profile', () {
-      final route = module.routes
-          .whereType<GoRoute>()
-          .firstWhere((r) => r.path == '/profile');
+    test('/membership/fans route has name membership-fans', () {
+      final route = module.routes.whereType<GoRoute>().firstWhere(
+        (r) => r.path == '/membership/fans',
+      );
 
-      expect(route.name, 'profile');
+      expect(route.name, 'membership-fans');
     });
 
     test('tier detail route supports :tierId parameter', () {
-      final tierRoute = module.routes
-          .whereType<GoRoute>()
-          .firstWhere((r) => r.path == '/membership/tier/:tierId');
+      final tierRoute = module.routes.whereType<GoRoute>().firstWhere(
+        (r) => r.path == '/membership/tier/:tierId',
+      );
 
       // Route exists and accepts tierId param
       expect(tierRoute.path, '/membership/tier/:tierId');

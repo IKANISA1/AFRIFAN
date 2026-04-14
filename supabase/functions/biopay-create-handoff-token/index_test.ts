@@ -6,7 +6,7 @@ import {
   createBiopayCreateHandoffTokenHandler,
 } from "./index.ts";
 
-function buildRequest() {
+function buildRequest(overrides: Record<string, unknown> = {}) {
   return new Request(
     "https://example.com/functions/v1/biopay-create-handoff-token",
     {
@@ -20,12 +20,16 @@ function buildRequest() {
         channel: "qr",
         amount: 2500,
         reference: "matchday",
+        ...overrides,
       }),
     },
   );
 }
 
-function buildDependencies(): {
+function buildDependencies(options: {
+  profile?: Record<string, unknown> | null;
+  identity?: Record<string, unknown> | null;
+} = {}): {
   deps: BiopayCreateHandoffTokenDependencies;
   state: {
     signedPayload: Record<string, unknown> | null;
@@ -35,64 +39,58 @@ function buildDependencies(): {
     signedPayload: null as Record<string, unknown> | null,
   };
 
+  const profile = options.profile === undefined
+    ? {
+      id: "profile-1",
+      club_id: 24,
+      public_id: "public-1",
+      display_name: "Marie",
+      route_type: "phone_number",
+      recipient_value: "0781234567",
+      country_code: "RW",
+    }
+    : options.profile;
+  const identity = options.identity === undefined
+    ? {
+      id: "user-1",
+      club_id: 24,
+      public_user_id: "public-1",
+      display_name: "Marie",
+      country_code: "RW",
+    }
+    : options.identity;
+
   const deps: BiopayCreateHandoffTokenDependencies = {
     createAdminClient: () =>
       ({
-        rpc: async (fn: string) => {
-          if (fn == "normalize_club_id") {
-            return {
-              data: 24,
-              error: null,
-            };
-          }
-          throw new Error(`Unexpected RPC call in handoff test: ${fn}`);
-        },
         from: (table: string) => {
-          if (table != "biopay_profiles") {
+          const data = table == "biopay_profiles"
+            ? profile
+            : table == "profiles"
+            ? identity
+            : null;
+          if (
+            data === null && table != "biopay_profiles" && table != "profiles"
+          ) {
             throw new Error(`Unexpected table in handoff test: ${table}`);
           }
+          const query = {
+            eq: (_column: string, _value: unknown) => query,
+            maybeSingle: async () => ({ data, error: null }),
+          };
           return {
-            select: () => ({
-              eq: (_column: string, _value: unknown) => ({
-                eq: (_clubColumn: string, _clubValue: unknown) => ({
-                  eq: () => ({
-                    maybeSingle: async () => ({
-                      data: {
-                        id: "profile-1",
-                        club_id: 24,
-                        public_id: "public-1",
-                        display_name: "Marie",
-                        route_type: "phone_number",
-                        recipient_value: "0781234567",
-                        country_code: "RW",
-                      },
-                      error: null,
-                    }),
-                  }),
-                }),
-              }),
-            }),
+            select: () => query,
           };
         },
       }) as unknown as ReturnType<
         BiopayCreateHandoffTokenDependencies["createAdminClient"]
       >,
-    createUserClient: () =>
+    validateRequest: async () =>
       ({
-        auth: {
-          getUser: async () => ({
-            data: {
-              user: {
-                id: "user-1",
-                app_metadata: { club_id: "rayon_sports_rw" },
-              },
-            },
-            error: null,
-          }),
-        },
-      }) as unknown as ReturnType<
-        BiopayCreateHandoffTokenDependencies["createUserClient"]
-      >,
+        userId: "user-1",
+        clubId: "24",
+        supabase: {},
+      }) as never,
     requireAppCheckToken: async () => "fresh-token",
     signBiopayToken: async (payload) => {
       state.signedPayload = payload;
@@ -128,7 +126,7 @@ Deno.test("biopay-create-handoff-token rejects requests without valid App Check 
   const payload = await response.json();
 
   assertEquals(response.status, 401);
-  assertEquals(payload.message, "Device attestation required.");
+  assertEquals(payload.error, "Device attestation required.");
 });
 
 Deno.test("biopay-create-handoff-token creates a signed QR handoff token", async () => {
@@ -151,4 +149,33 @@ Deno.test("biopay-create-handoff-token creates a signed QR handoff token", async
   assertEquals(state.signedPayload?.["public_id"], "public-1");
   assertEquals(payload.data.currency_code, "RWF");
   assertEquals(payload.data.currency_symbol, "FRw");
+});
+
+Deno.test("biopay-create-handoff-token accepts a manual route when no enrollment exists", async () => {
+  const { deps, state } = buildDependencies({
+    profile: null,
+    identity: {
+      id: "user-1",
+      club_id: 24,
+      public_user_id: "fan-24",
+      display_name: "Manual Fan",
+      country_code: "RW",
+    },
+  });
+  const handler = createBiopayCreateHandoffTokenHandler(deps);
+
+  const response = await handler(buildRequest({
+    route_type: "code",
+    recipient_value: "123456",
+    country_code: "RW",
+  }));
+  const payload = await response.json();
+
+  assertEquals(response.status, 200);
+  assertEquals(payload.success, true);
+  assertEquals(state.signedPayload?.["profile_id"], null);
+  assertEquals(state.signedPayload?.["route_type"], "code");
+  assertEquals(state.signedPayload?.["recipient_value"], "123456");
+  assertEquals(state.signedPayload?.["public_id"], "fan-24");
+  assertEquals(payload.data.public_id, "fan-24");
 });

@@ -1,3 +1,4 @@
+import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -133,66 +134,68 @@ class _BiopayPaymentReviewScreenState
 
     return Scaffold(
       backgroundColor: biopayReferenceBackground,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(28, 8, 28, 28),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 52,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: BiopayReferenceLightBackButton(
-                    onTap: () => context.go('/biopay'),
+      body: GradientBackground(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(28, 8, 28, 28),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 52,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: BiopayReferenceLightBackButton(
+                      onTap: () => context.go('/biopay'),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      displayValue,
-                      style: biopayReferenceText(
-                        fontSize: 26,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    const SizedBox(height: 36),
-                    BiopayReferencePrimaryButton(
-                      label: _isSubmitting ? 'Opening Dialer' : 'Tap to Dial',
-                      onTap: _isSubmitting ? null : _submit,
-                    ),
-                    const SizedBox(height: 18),
-                    TextButton(
-                      onPressed: _isSubmitting
-                          ? null
-                          : () => context.go('/biopay'),
-                      child: Text(
-                        'Cancel',
-                        style: biopayReferenceText(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                          color: biopayReferenceMuted,
-                        ),
-                      ),
-                    ),
-                    if (_error != null) ...[
-                      const SizedBox(height: 12),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                       Text(
-                        _error!,
+                        displayValue,
                         style: biopayReferenceText(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.red.shade600,
+                          fontSize: 26,
+                          fontWeight: FontWeight.w900,
                         ),
-                        textAlign: TextAlign.center,
                       ),
+                      const SizedBox(height: 36),
+                      BiopayReferencePrimaryButton(
+                        label: _isSubmitting ? 'Opening Dialer' : 'Tap to Dial',
+                        onTap: _isSubmitting ? null : _submit,
+                      ),
+                      const SizedBox(height: 18),
+                      TextButton(
+                        onPressed: _isSubmitting
+                            ? null
+                            : () => context.go('/biopay'),
+                        child: Text(
+                          'Cancel',
+                          style: biopayReferenceText(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: biopayReferenceMuted,
+                          ),
+                        ),
+                      ),
+                      if (_error != null) ...[
+                        const SizedBox(height: 12),
+                        Text(
+                          _error!,
+                          style: biopayReferenceText(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.red.shade600,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

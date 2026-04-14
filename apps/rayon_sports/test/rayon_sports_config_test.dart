@@ -35,7 +35,18 @@ void main() {
       expect(colors.gradient.length, greaterThanOrEqualTo(2));
     });
 
-    test('has valid Supabase configuration', () {
+    test('has valid Supabase configuration when build defines are present', () {
+      final hasSupabaseUrl = const String.fromEnvironment('SUPABASE_URL')
+          .isNotEmpty;
+      final hasSupabaseAnonKey =
+          const String.fromEnvironment('SUPABASE_ANON_KEY').isNotEmpty;
+
+      if (!hasSupabaseUrl || !hasSupabaseAnonKey) {
+        expect(() => config.supabaseUrl, throwsStateError);
+        expect(() => config.supabaseAnonKey, throwsStateError);
+        return;
+      }
+
       expect(config.supabaseUrl, startsWith('https://'));
       expect(config.supabaseUrl, contains('.supabase.co'));
       expect(config.supabaseAnonKey, isNotEmpty);

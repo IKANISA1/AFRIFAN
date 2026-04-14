@@ -29,7 +29,7 @@ class StatsRow extends StatelessWidget {
       children: [
         Expanded(
           child: AfriMetricTile(
-            label: 'XP',
+            label: 'FET',
             value: _formatXp(globalXp),
             meta: 'Supporter total',
             icon: Icons.auto_graph_rounded,

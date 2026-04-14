@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   deleteAdminArticle,
   getAdminArticles,
@@ -19,6 +21,7 @@ export default function AdminCmsPage() {
   const [articles, setArticles] = useState<AdminNewsArticle[]>([]);
   const [form, setForm] = useState(emptyArticleForm);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const loadArticles = useCallback(async () => {
     if (client == null) {
@@ -28,9 +31,13 @@ export default function AdminCmsPage() {
     setLoading(true);
     try {
       setArticles(await getAdminArticles(client, access));
+      setLoadError(null);
     } catch (caught) {
+      const message =
+        caught instanceof Error ? caught.message : "Could not load articles.";
+      setLoadError(message);
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not load articles.",
+        message,
         "error",
       );
     } finally {
@@ -128,6 +135,14 @@ export default function AdminCmsPage() {
     if (client == null) {
       return;
     }
+    if (
+      !confirmAdminDestructiveAction({
+        subject: article.title,
+        detail: "The article will be removed from this club scope.",
+      })
+    ) {
+      return;
+    }
 
     try {
       await deleteAdminArticle(client, access, article.id);
@@ -158,14 +173,24 @@ export default function AdminCmsPage() {
           onSubmit={submitForm}
         />
 
-        <CMSContentList
-          articles={articles}
-          loading={loading}
-          onRefresh={() => loadArticles().catch(() => {})}
-          onBeginEdit={beginEdit}
-          onToggleField={(article, field) => toggleArticle(article, field).catch(() => {})}
-          onRemove={(article) => removeArticle(article).catch(() => {})}
-        />
+        {loadError && !loading ? (
+          <AdminErrorState
+            title="Articles could not be loaded"
+            description={loadError}
+            onRetry={() => {
+              loadArticles().catch(() => {});
+            }}
+          />
+        ) : (
+          <CMSContentList
+            articles={articles}
+            loading={loading}
+            onRefresh={() => loadArticles().catch(() => {})}
+            onBeginEdit={beginEdit}
+            onToggleField={(article, field) => toggleArticle(article, field).catch(() => {})}
+            onRemove={(article) => removeArticle(article).catch(() => {})}
+          />
+        )}
       </div>
     </div>
   );

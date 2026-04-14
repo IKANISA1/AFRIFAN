@@ -127,6 +127,7 @@ class FanClubListItem extends StatelessWidget {
     super.key,
     required this.club,
     required this.isJoined,
+    required this.isPending,
     required this.isOfficial,
     required this.onTap,
     required this.onJoinToggled,
@@ -134,6 +135,7 @@ class FanClubListItem extends StatelessWidget {
 
   final Map<String, dynamic> club;
   final bool isJoined;
+  final bool isPending;
   final bool isOfficial;
   final VoidCallback onTap;
   final VoidCallback onJoinToggled;
@@ -222,9 +224,13 @@ class FanClubListItem extends StatelessWidget {
           Column(
             children: [
               ClaymorphicButton(
-                label: isJoined ? 'JOINED' : 'JOIN CLUB',
+                label: isPending
+                    ? 'UPDATING...'
+                    : isJoined
+                    ? 'JOINED'
+                    : 'JOIN CLUB',
                 width: double.infinity,
-                onPressed: onJoinToggled,
+                onPressed: isPending ? null : onJoinToggled,
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               OutlinedButton(

@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Users } from "lucide-react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   deleteAdminFanClub,
   getAdminFanClubs,
@@ -21,6 +23,7 @@ export default function AdminCommunityPage() {
   const [clubs, setClubs] = useState<AdminFanClub[]>([]);
   const [form, setForm] = useState<CommunityForm>(emptyForm);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (client == null) return;
@@ -28,9 +31,13 @@ export default function AdminCommunityPage() {
     setLoading(true);
     try {
       setClubs(await getAdminFanClubs(client, access));
+      setLoadError(null);
     } catch (caught) {
+      const message =
+        caught instanceof Error ? caught.message : "Could not load fan clubs.";
+      setLoadError(message);
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not load fan clubs.",
+        message,
         "error",
       );
     } finally {
@@ -87,6 +94,14 @@ export default function AdminCommunityPage() {
 
   async function removeClub(club: AdminFanClub) {
     if (client == null) return;
+    if (
+      !confirmAdminDestructiveAction({
+        subject: club.name,
+        detail: "The supporter chapter will be removed from this club scope.",
+      })
+    ) {
+      return;
+    }
 
     try {
       await deleteAdminFanClub(client, access, club.id);
@@ -144,12 +159,22 @@ export default function AdminCommunityPage() {
           onSubmit={submitForm}
         />
 
-        <CommunityContentList
-          clubs={clubs}
-          loading={loading}
-          onBeginEdit={beginEdit}
-          onRemove={(club) => removeClub(club).catch(() => {})}
-        />
+        {loadError && !loading ? (
+          <AdminErrorState
+            title="Supporter chapters could not be loaded"
+            description={loadError}
+            onRetry={() => {
+              load().catch(() => {});
+            }}
+          />
+        ) : (
+          <CommunityContentList
+            clubs={clubs}
+            loading={loading}
+            onBeginEdit={beginEdit}
+            onRemove={(club) => removeClub(club).catch(() => {})}
+          />
+        )}
       </div>
     </div>
   );

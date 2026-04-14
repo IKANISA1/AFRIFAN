@@ -1,8 +1,10 @@
-import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../fet_providers.dart';
+import '../models/fet_models.dart';
 
 class ChallengesScreen extends ConsumerStatefulWidget {
   const ChallengesScreen({super.key});
@@ -37,125 +39,41 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   }
 
   Future<void> _loadChallenges() async {
-    final userId = ref.read(supabaseClientProvider).auth.currentUser?.id;
-    if (userId == null) {
-      if (!mounted) return;
-      setState(() {
-        _daily = const <_ChallengeData>[];
-        _weekly = const <_ChallengeData>[];
-        _seasonal = const <_ChallengeData>[];
-        _isLoading = false;
-        _error = null;
-      });
-      return;
-    }
-
     try {
-      final client = ref.read(supabaseClientProvider);
-      final resolver = ClubScopeResolver(client: client);
-      final scope = await resolver.requireResolved();
+      final context = await ref
+          .read(fetRepositoryProvider)
+          .loadExperienceContext();
+      final daily = <_ChallengeData>[];
+      final weekly = <_ChallengeData>[];
+      final seasonal = <_ChallengeData>[];
 
-      final profileFuture = client
-          .from('user_private_contacts')
-          .select('momo_number')
-          .eq('user_id', userId)
-          .maybeSingle();
-      var membershipFuture = client
-          .from('fan_memberships')
-          .select('points')
-          .eq('user_id', userId)
-          .limit(1);
-      membershipFuture = resolver.apply(membershipFuture, scope);
-      final clubsFuture = client
-          .from('fan_club_members')
-          .select('club_id')
-          .eq('user_id', userId)
-          .limit(10);
-      var groupsFuture = client
-          .from('contribution_groups')
-          .select('id')
-          .eq('creator_id', userId)
-          .limit(10);
-      groupsFuture = resolver.apply(groupsFuture, scope);
-      var ticketsFuture = client
-          .from('tickets')
-          .select('id')
-          .eq('user_id', userId)
-          .limit(10);
-      ticketsFuture = resolver.apply(ticketsFuture, scope);
-
-      final results = await Future.wait([
-        profileFuture,
-        membershipFuture.maybeSingle(),
-        clubsFuture,
-        groupsFuture,
-        ticketsFuture,
-      ]);
-
-      final privateContact = results[0] as Map<String, dynamic>?;
-      final membership = results[1] as Map<String, dynamic>?;
-      final clubs = List<Map<String, dynamic>>.from(results[2] as List);
-      final groups = List<Map<String, dynamic>>.from(results[3] as List);
-      final tickets = List<Map<String, dynamic>>.from(results[4] as List);
-
-      final xp = (membership?['points'] as num?)?.toInt() ?? 0;
-      final hasMomo =
-          (privateContact?['momo_number']?.toString().trim().isNotEmpty ??
-          false);
-      final joinedClubCount = clubs.length;
-      final createdGroupCount = groups.length;
-      final ticketCount = tickets.length;
+      for (final item in context.catalog) {
+        final challenge = _ChallengeData(
+          title: item.itemName,
+          reward: '+${item.fetValue} FET',
+          progress: context.earnedCodes.contains(item.code) ? 1 : 0,
+          progressLabel: context.earnedCodes.contains(item.code)
+              ? 'Completed'
+              : item.triggerCondition,
+        );
+        switch (item.challengeBucket) {
+          case FetChallengeBucket.daily:
+            daily.add(challenge);
+            break;
+          case FetChallengeBucket.weekly:
+            weekly.add(challenge);
+            break;
+          case FetChallengeBucket.seasonal:
+            seasonal.add(challenge);
+            break;
+        }
+      }
 
       if (!mounted) return;
       setState(() {
-        _daily = <_ChallengeData>[
-          _ChallengeData(
-            title: 'Link your MOMO profile',
-            reward: '+150 XP',
-            progress: hasMomo ? 1 : 0,
-            progressLabel: hasMomo ? 'Completed' : 'Profile setup pending',
-          ),
-          _ChallengeData(
-            title: 'Join your first fan club',
-            reward: '+200 XP',
-            progress: joinedClubCount > 0 ? 1 : 0,
-            progressLabel: joinedClubCount > 0
-                ? '$joinedClubCount club joined'
-                : 'No fan club joined yet',
-          ),
-        ];
-        _weekly = <_ChallengeData>[
-          _ChallengeData(
-            title: 'Create a supporter circle',
-            reward: '+350 XP',
-            progress: createdGroupCount > 0 ? 1 : 0,
-            progressLabel: createdGroupCount > 0
-                ? '$createdGroupCount circles created'
-                : 'No circles created yet',
-          ),
-          _ChallengeData(
-            title: 'Buy your first live ticket',
-            reward: '+500 XP',
-            progress: ticketCount > 0 ? 1 : 0,
-            progressLabel: ticketCount > 0
-                ? '$ticketCount tickets issued'
-                : 'No ticket issued yet',
-          ),
-        ];
-        _seasonal = <_ChallengeData>[
-          _ChallengeData(
-            title: 'Reach 5,000 supporter XP',
-            reward: '+1,000 XP',
-            progress: (xp / 5000).clamp(0.0, 1.0),
-            progressLabel: '$xp / 5,000 XP',
-          ),
-          _ChallengeData(
-            title: 'Reach 15,000 supporter XP',
-            reward: '+2,500 XP',
-            progress: (xp / 15000).clamp(0.0, 1.0),
-            progressLabel: '$xp / 15,000 XP',
-          ),
-        ];
+        _daily = daily;
+        _weekly = weekly;
+        _seasonal = seasonal;
         _isLoading = false;
         _error = null;
       });

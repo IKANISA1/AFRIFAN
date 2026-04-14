@@ -1,6 +1,8 @@
+import 'dart:typed_data';
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart';
+import 'package:core_utils/core_utils.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/services.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
@@ -40,7 +42,7 @@ class BiopayEmbeddingService {
       final contractIssue = _contract!.validateStaticExpectations();
       if (contractIssue != null) {
         _modelIssue = contractIssue;
-        debugPrint('[BiopayEmbeddingService] Contract issue: $contractIssue');
+        AfriLogger.warn('BiopayEmbeddingService', 'Contract issue: $contractIssue');
         return;
       }
 
@@ -54,7 +56,7 @@ class BiopayEmbeddingService {
       final bytesIssue = _contract!.validateModelBytes(bytesData);
       if (bytesIssue != null) {
         _modelIssue = bytesIssue;
-        debugPrint('[BiopayEmbeddingService] Model issue: $bytesIssue');
+        AfriLogger.warn('BiopayEmbeddingService', 'Model issue: $bytesIssue');
         return;
       }
 
@@ -75,17 +77,17 @@ class BiopayEmbeddingService {
       );
       if (tensorIssue != null) {
         _modelIssue = tensorIssue;
-        debugPrint('[BiopayEmbeddingService] Tensor issue: $tensorIssue');
+        AfriLogger.warn('BiopayEmbeddingService', 'Tensor issue: $tensorIssue');
         _interpreter?.close();
         _interpreter = null;
         return;
       }
 
       _modelIssue = null;
-      debugPrint('[BiopayEmbeddingService] Model loaded successfully.');
+      AfriLogger.info('BiopayEmbeddingService', 'Model loaded successfully.');
     } catch (error, stack) {
       _modelIssue = 'Failed to load BioPay model: $error';
-      debugPrint('[BiopayEmbeddingService] Load error: $error\n$stack');
+      AfriLogger.error('BiopayEmbeddingService', 'Load error', error, stack);
     }
   }
 
@@ -162,14 +164,14 @@ class BiopayEmbeddingService {
       if (defaultTargetPlatform == TargetPlatform.iOS) {
         try {
           options.addDelegate(CoreMlDelegate());
-          debugPrint('[BiopayEmbeddingService] Using CoreML delegate (iOS).');
+          AfriLogger.info('BiopayEmbeddingService', 'Using CoreML delegate (iOS).');
           return;
         } catch (_) {
-          debugPrint('[BiopayEmbeddingService] CoreML unavailable, using CPU.');
+          AfriLogger.info('BiopayEmbeddingService', 'CoreML unavailable, using CPU.');
         }
       }
     } catch (_) {
-      debugPrint('[BiopayEmbeddingService] Delegate setup failed, using CPU.');
+      AfriLogger.info('BiopayEmbeddingService', 'Delegate setup failed, using CPU.');
     }
   }
 

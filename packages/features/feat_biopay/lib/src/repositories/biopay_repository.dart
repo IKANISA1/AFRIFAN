@@ -1,5 +1,5 @@
 import 'package:core_network/core_network.dart';
-import 'package:flutter/foundation.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/biopay_enrollment_draft.dart';
@@ -234,6 +234,9 @@ class BiopayRepository {
     required String channel,
     int? amount,
     String? reference,
+    PaymentRecipientType? routeType,
+    String? recipientValue,
+    String? countryCode,
   }) async {
     final userId = _client.auth.currentUser?.id;
     if (userId == null || userId.isEmpty) {
@@ -251,6 +254,11 @@ class BiopayRepository {
           if (amount != null) 'amount': amount,
           if (reference != null && reference.trim().isNotEmpty)
             'reference': reference.trim(),
+          if (routeType != null) 'route_type': _serializeRouteType(routeType),
+          if (recipientValue != null && recipientValue.trim().isNotEmpty)
+            'recipient_value': recipientValue.trim(),
+          if (countryCode != null && countryCode.trim().isNotEmpty)
+            'country_code': countryCode.trim().toUpperCase(),
         },
         headers: headers,
       );
@@ -346,6 +354,13 @@ class BiopayRepository {
     throw StateError('BioPay $fn returned unexpected data type.');
   }
 
+  String _serializeRouteType(PaymentRecipientType value) {
+    return switch (value) {
+      PaymentRecipientType.phoneNumber => 'phone_number',
+      PaymentRecipientType.code => 'code',
+    };
+  }
+
   Future<void> _recordFailure(
     String operation,
     Object error, {
@@ -364,7 +379,7 @@ class BiopayRepository {
         },
       );
     } catch (_) {
-      debugPrint('[BiopayRepository] Failed to record health event.');
+      AfriLogger.warn('BiopayRepository', 'Failed to record health event.');
     }
   }
 }

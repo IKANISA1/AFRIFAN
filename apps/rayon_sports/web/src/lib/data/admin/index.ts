@@ -28,6 +28,13 @@ export {
   resolveAdminAccess,
 } from "./access";
 
+export {
+  getAdminRoleAssignments,
+  findAdminUserCandidate,
+  assignAdminRole,
+  revokeAdminRole,
+} from "./access-management";
+
 // CMS
 export {
   getAdminArticles,
@@ -53,6 +60,7 @@ export {
 
 // Settings
 export {
+  getAdminClubScopeOptions,
   getAdminClubProfile,
   saveAdminClubProfile,
 } from "./settings";
@@ -101,7 +109,12 @@ export {
 } from "./notifications";
 
 // SMS
-export { getAdminSmsSnapshot } from "./sms";
+export {
+  getAdminSmsSnapshot,
+  getAdminSmsManualReviewWorkspace,
+  allocateAdminSmsManualReview,
+  rejectAdminSmsManualReview,
+} from "./sms";
 
 // Squad
 export {
@@ -119,14 +132,7 @@ export {
   deleteAdminFanEngagementToken,
 } from "./gamification";
 
-// Fantasy
 export {
-  getAdminFantasyCompetitions,
-  getAdminFantasyOperations,
-  saveAdminFantasyCompetition,
-  saveAdminFantasyGameweek,
-  saveAdminFantasyPlayer,
-  deleteAdminFantasyCompetition,
-  deleteAdminFantasyGameweek,
-  deleteAdminFantasyPlayer,
-} from "./fantasy";
+  getAdminFetWalletSnapshot,
+  adjustAdminFetWalletBalance,
+} from "./fet-wallet";

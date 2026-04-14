@@ -2703,6 +2703,222 @@ $$;
 -- Name: enforce_user_momo_fields(); Type: FUNCTION; Schema: public; Owner: -
 --
 
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_type t
+    JOIN pg_namespace n ON n.oid = t.typnamespace
+    WHERE n.nspname = 'public'
+      AND t.typname = 'supported_countries'
+  ) THEN
+    CREATE TYPE public.supported_countries AS (
+      iso_code text,
+      country_name text,
+      dial_code text,
+      momo_provider_id text,
+      momo_code_ussd_template text,
+      mobile_national_number_pattern text,
+      mobile_possible_lengths integer[],
+      mobile_example_e164 text,
+      momo_number_local_pattern text,
+      momo_number_e164_pattern text,
+      momo_code_pattern text,
+      momo_code_min_length integer,
+      momo_code_max_length integer
+    );
+  END IF;
+END;
+$$;
+
+
+--
+-- Name: get_supported_country_momo_config(text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.get_supported_country_momo_config(p_country text) RETURNS public.supported_countries
+    LANGUAGE plpgsql STABLE
+    SET search_path TO 'public'
+    AS $$
+declare
+  v_country_code text := public.normalize_country_code(p_country);
+  v_config public.supported_countries;
+begin
+  with curated_catalog as (
+    select *
+    from (
+      values
+        (
+          'RW',
+          'Rwanda',
+          '+250',
+          'momo_rw',
+          '*182*8*1*{CODE}#',
+          '^0?7[23589]\d{7}$',
+          array[9, 10]::integer[],
+          '+250781234567',
+          '^0?7[23589]\d{7}$',
+          '^\+2507[23589]\d{7}$',
+          '^\d{4,9}$',
+          4,
+          9
+        ),
+        (
+          'UG',
+          'Uganda',
+          '+256',
+          'momo_ug',
+          null,
+          '^0?7[0-9]\d{7}$',
+          array[9, 10]::integer[],
+          '+256771234567',
+          '^0?7[0-9]\d{7}$',
+          '^\+2567[0-9]\d{7}$',
+          null,
+          null,
+          null
+        ),
+        (
+          'KE',
+          'Kenya',
+          '+254',
+          'momo_ke',
+          '*247*{recipient}*{amount}#',
+          '^0?7[0-9]\d{7}$',
+          array[9, 10]::integer[],
+          '+254712345678',
+          '^0?7[0-9]\d{7}$',
+          '^\+2547[0-9]\d{7}$',
+          '^\d{4,10}$',
+          4,
+          10
+        ),
+        (
+          'TZ',
+          'Tanzania',
+          '+255',
+          'momo_tz',
+          null,
+          '^0?[67][0-9]\d{7}$',
+          array[9, 10]::integer[],
+          '+255712345678',
+          '^0?[67][0-9]\d{7}$',
+          '^\+255[67][0-9]\d{7}$',
+          null,
+          null,
+          null
+        ),
+        (
+          'GH',
+          'Ghana',
+          '+233',
+          'momo_gh',
+          null,
+          '^0?[235][0-9]\d{7}$',
+          array[9, 10]::integer[],
+          '+233241234567',
+          '^0?[235][0-9]\d{7}$',
+          '^\+233[235][0-9]\d{7}$',
+          null,
+          null,
+          null
+        )
+    ) as catalog (
+      iso_code,
+      country_name,
+      dial_code,
+      momo_provider_id,
+      momo_code_ussd_template,
+      mobile_national_number_pattern,
+      mobile_possible_lengths,
+      mobile_example_e164,
+      momo_number_local_pattern,
+      momo_number_e164_pattern,
+      momo_code_pattern,
+      momo_code_min_length,
+      momo_code_max_length
+    )
+  ),
+  current_countries as (
+    select
+      c.id::text as iso_code,
+      c.name::text as country_name,
+      c.dialing_code::text as dial_code,
+      'momo_' || lower(c.id::text) as momo_provider_id,
+      nullif(c.ussd_code_format, '')::text as momo_code_ussd_template,
+      '^[0-9]{8,12}$'::text as mobile_national_number_pattern,
+      array[8, 9, 10, 11, 12]::integer[] as mobile_possible_lengths,
+      case
+        when c.dialing_code is null or btrim(c.dialing_code) = '' then null
+        else c.dialing_code || '000000000'
+      end as mobile_example_e164,
+      '^[0-9]{8,12}$'::text as momo_number_local_pattern,
+      case
+        when c.dialing_code is null or btrim(c.dialing_code) = '' then null
+        else '^\+' || replace(c.dialing_code, '+', '') || '[0-9]{6,12}$'
+      end as momo_number_e164_pattern,
+      case
+        when nullif(c.ussd_code_format, '') is null then null
+        else '^\d{4,12}$'
+      end as momo_code_pattern,
+      case
+        when nullif(c.ussd_code_format, '') is null then null
+        else 4
+      end as momo_code_min_length,
+      case
+        when nullif(c.ussd_code_format, '') is null then null
+        else 12
+      end as momo_code_max_length
+    from public.countries c
+    where c.id = v_country_code
+      and coalesce(c.is_active, true) = true
+  ),
+  resolved_catalog as (
+    select
+      coalesce(cur.iso_code, cat.iso_code) as iso_code,
+      coalesce(cur.country_name, cat.country_name) as country_name,
+      coalesce(cur.dial_code, cat.dial_code) as dial_code,
+      coalesce(cat.momo_provider_id, cur.momo_provider_id) as momo_provider_id,
+      coalesce(cat.momo_code_ussd_template, cur.momo_code_ussd_template) as momo_code_ussd_template,
+      coalesce(cat.mobile_national_number_pattern, cur.mobile_national_number_pattern) as mobile_national_number_pattern,
+      coalesce(cat.mobile_possible_lengths, cur.mobile_possible_lengths) as mobile_possible_lengths,
+      coalesce(cat.mobile_example_e164, cur.mobile_example_e164) as mobile_example_e164,
+      coalesce(cat.momo_number_local_pattern, cur.momo_number_local_pattern) as momo_number_local_pattern,
+      coalesce(cat.momo_number_e164_pattern, cur.momo_number_e164_pattern) as momo_number_e164_pattern,
+      coalesce(cat.momo_code_pattern, cur.momo_code_pattern) as momo_code_pattern,
+      coalesce(cat.momo_code_min_length, cur.momo_code_min_length) as momo_code_min_length,
+      coalesce(cat.momo_code_max_length, cur.momo_code_max_length) as momo_code_max_length
+    from curated_catalog cat
+    full outer join current_countries cur on cur.iso_code = cat.iso_code
+    where coalesce(cur.iso_code, cat.iso_code) = v_country_code
+  )
+  select
+    iso_code,
+    country_name,
+    dial_code,
+    momo_provider_id,
+    momo_code_ussd_template,
+    mobile_national_number_pattern,
+    mobile_possible_lengths,
+    mobile_example_e164,
+    momo_number_local_pattern,
+    momo_number_e164_pattern,
+    momo_code_pattern,
+    momo_code_min_length,
+    momo_code_max_length
+  into v_config
+  from resolved_catalog
+  limit 1;
+
+  return v_config;
+end;
+$$;
+
+
+--
+-- Name: enforce_user_momo_fields(); Type: FUNCTION; Schema: public; Owner: -
+--
+
 CREATE FUNCTION public.enforce_user_momo_fields() RETURNS trigger
     LANGUAGE plpgsql
     SET search_path TO 'public'
@@ -2770,6 +2986,2930 @@ $$;
 
 
 --
+-- Enable required extensions
+create extension if not exists "uuid-ossp";
+create extension if not exists "pgcrypto";
+
+-- Create schema
+create schema if not exists fantasy;
+
+-- ─────────────────────────────────────────────
+-- ENUMS
+-- ─────────────────────────────────────────────
+create type fantasy.competition_type as enum ('season_long', 'tournament');
+create type fantasy.competition_status as enum ('draft', 'active', 'finished');
+create type fantasy.gameweek_status as enum ('upcoming', 'live', 'scoring', 'finished');
+create type fantasy.player_position as enum ('GK', 'DEF', 'MID', 'FWD');
+create type fantasy.league_type as enum ('classic', 'head_to_head');
+
+-- ─────────────────────────────────────────────
+-- COMPETITIONS
+-- ─────────────────────────────────────────────
+create table fantasy.competitions (
+  id                 uuid primary key default uuid_generate_v4(),
+  slug               text unique not null,
+  name               text not null,
+  short_name         text not null,
+  competition_type   fantasy.competition_type not null default 'season_long',
+  season             text not null,
+  description        text not null default '',
+  logo_url           text,
+  primary_color      text not null default '#1A7A4E',
+  country_code       text,
+  provider           text,
+  scoring_rules      jsonb not null default '{}'::jsonb,
+  squad_config       jsonb not null default '{}'::jsonb,
+  chip_config        jsonb not null default '{}'::jsonb,
+  transfer_config    jsonb not null default '{}'::jsonb,
+  status             fantasy.competition_status not null default 'draft',
+  start_date         timestamptz not null,
+  end_date           timestamptz not null,
+  external_league_id integer,
+  created_at         timestamptz not null default now(),
+  updated_at         timestamptz not null default now()
+);
+
+-- ─────────────────────────────────────────────
+-- GAMEWEEKS
+-- ─────────────────────────────────────────────
+create table fantasy.gameweeks (
+  id                         uuid primary key default uuid_generate_v4(),
+  competition_id             uuid not null references fantasy.competitions(id) on delete cascade,
+  number                     integer not null,
+  name                       text not null,
+  deadline_at                timestamptz not null,
+  start_at                   timestamptz not null,
+  end_at                     timestamptz not null,
+  status                     fantasy.gameweek_status not null default 'upcoming',
+  is_double_gw               boolean not null default false,
+  average_score              integer,
+  highest_score              integer,
+  most_captained_player_id   integer,
+  created_at                 timestamptz not null default now(),
+  unique (competition_id, number)
+);
+
+-- ─────────────────────────────────────────────
+-- FANTASY PLAYERS (cached from sports API)
+-- ─────────────────────────────────────────────
+create table fantasy.players (
+  id             serial primary key,
+  external_id    integer unique not null,
+  name           text not null,
+  short_name     text not null,
+  photo_url      text,
+  position       fantasy.player_position not null,
+  team_id        integer not null,
+  team_name      text not null,
+  team_short     text not null,
+  team_logo_url  text,
+  nationality    text,
+  last_synced_at timestamptz not null default now()
+);
+
+-- ─────────────────────────────────────────────
+-- PLAYER PRICES PER COMPETITION
+-- ─────────────────────────────────────────────
+create table fantasy.player_competition_prices (
+  id                uuid primary key default uuid_generate_v4(),
+  player_id         integer not null references fantasy.players(external_id),
+  competition_id    uuid not null references fantasy.competitions(id) on delete cascade,
+  price             integer not null,
+  price_change      integer not null default 0,
+  ownership_percent numeric(5,2) not null default 0,
+  updated_at        timestamptz not null default now(),
+  unique (player_id, competition_id)
+);
+
+-- ─────────────────────────────────────────────
+-- FANTASY ENTRIES
+-- ─────────────────────────────────────────────
+create table fantasy.fantasy_entries (
+  id               uuid primary key default uuid_generate_v4(),
+  user_id          uuid not null references auth.users(id) on delete cascade,
+  competition_id   uuid not null references fantasy.competitions(id) on delete cascade,
+  team_name        text not null default 'My Team',
+  overall_points   integer not null default 0,
+  overall_rank     integer,
+  total_transfers  integer not null default 0,
+  chips_used       jsonb not null default '[]'::jsonb,
+  bank_balance     integer not null default 0,
+  team_value       integer not null default 0,
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now(),
+  unique (user_id, competition_id)
+);
+
+-- ─────────────────────────────────────────────
+-- SQUAD SELECTIONS
+-- ─────────────────────────────────────────────
+create table fantasy.squad_selections (
+  id               uuid primary key default uuid_generate_v4(),
+  entry_id         uuid not null references fantasy.fantasy_entries(id) on delete cascade,
+  gameweek_id      uuid not null references fantasy.gameweeks(id) on delete cascade,
+  player_id        integer not null references fantasy.players(external_id),
+  position         fantasy.player_position not null,
+  is_starter       boolean not null default true,
+  bench_order      integer,
+  is_captain       boolean not null default false,
+  is_vice_captain  boolean not null default false,
+  purchase_price   integer not null,
+  multiplier       integer not null default 1,
+  unique (entry_id, gameweek_id, player_id),
+  constraint valid_bench_order check (
+    (is_starter = true and bench_order is null) or
+    (is_starter = false and bench_order between 1 and 4)
+  ),
+  constraint single_captain check (not (is_captain and is_vice_captain)),
+  constraint valid_multiplier check (multiplier between 1 and 3)
+);
+
+-- ─────────────────────────────────────────────
+-- PLAYER GAMEWEEK STATS
+-- ─────────────────────────────────────────────
+create table fantasy.player_gameweek_stats (
+  id                        uuid primary key default uuid_generate_v4(),
+  player_id                 integer not null references fantasy.players(external_id),
+  gameweek_id               uuid not null references fantasy.gameweeks(id) on delete cascade,
+  minutes_played            integer not null default 0,
+  goals                     integer not null default 0,
+  assists                   integer not null default 0,
+  clean_sheet               boolean not null default false,
+  goals_conceded            integer not null default 0,
+  yellow_cards              integer not null default 0,
+  red_cards                 integer not null default 0,
+  penalties_saved           integer not null default 0,
+  penalties_missed          integer not null default 0,
+  own_goals                 integer not null default 0,
+  saves                     integer not null default 0,
+  bps_score                 integer not null default 0,
+  bonus_points              integer not null default 0,
+  defensive_contributions   integer not null default 0,
+  raw_points                integer not null default 0,
+  last_synced_at            timestamptz not null default now(),
+  unique (player_id, gameweek_id)
+);
+
+-- ─────────────────────────────────────────────
+-- ENTRY GAMEWEEK SCORES
+-- ─────────────────────────────────────────────
+create table fantasy.entry_gameweek_scores (
+  id                uuid primary key default uuid_generate_v4(),
+  entry_id          uuid not null references fantasy.fantasy_entries(id) on delete cascade,
+  gameweek_id       uuid not null references fantasy.gameweeks(id) on delete cascade,
+  points            integer not null default 0,
+  transfers_made    integer not null default 0,
+  transfer_cost     integer not null default 0,
+  chip_played       text,
+  rank              integer,
+  percentile        numeric(5,2),
+  calculated_at     timestamptz,
+  unique (entry_id, gameweek_id)
+);
+
+-- ─────────────────────────────────────────────
+-- LEAGUES
+-- ─────────────────────────────────────────────
+create table fantasy.leagues (
+  id              uuid primary key default uuid_generate_v4(),
+  competition_id  uuid not null references fantasy.competitions(id) on delete cascade,
+  name            text not null,
+  code            text unique not null,
+  type            fantasy.league_type not null default 'classic',
+  created_by      uuid not null references auth.users(id),
+  max_entries     integer not null default 50,
+  is_public       boolean not null default false,
+  created_at      timestamptz not null default now()
+);
+
+create table fantasy.league_memberships (
+  id         uuid primary key default uuid_generate_v4(),
+  league_id  uuid not null references fantasy.leagues(id) on delete cascade,
+  entry_id   uuid not null references fantasy.fantasy_entries(id) on delete cascade,
+  joined_at  timestamptz not null default now(),
+  unique (league_id, entry_id)
+);
+
+-- ─────────────────────────────────────────────
+-- TRANSFER HISTORY
+-- ─────────────────────────────────────────────
+create table fantasy.transfer_history (
+  id             uuid primary key default uuid_generate_v4(),
+  entry_id       uuid not null references fantasy.fantasy_entries(id) on delete cascade,
+  gameweek_id    uuid not null references fantasy.gameweeks(id),
+  player_out_id  integer not null references fantasy.players(external_id),
+  player_in_id   integer not null references fantasy.players(external_id),
+  sell_price     integer not null,
+  buy_price      integer not null,
+  created_at     timestamptz not null default now()
+);
+
+-- ─────────────────────────────────────────────
+-- INDEXES
+-- ─────────────────────────────────────────────
+create index idx_gameweeks_competition on fantasy.gameweeks(competition_id, status);
+create index idx_squad_entry_gw on fantasy.squad_selections(entry_id, gameweek_id);
+create index idx_stats_player_gw on fantasy.player_gameweek_stats(player_id, gameweek_id);
+create index idx_scores_entry_gw on fantasy.entry_gameweek_scores(entry_id, gameweek_id);
+create index idx_scores_rank on fantasy.entry_gameweek_scores(gameweek_id, rank);
+create index idx_entries_competition on fantasy.fantasy_entries(competition_id, overall_rank);
+create index idx_players_team on fantasy.players(team_id, position);
+create index idx_prices_competition on fantasy.player_competition_prices(competition_id, price);
+create unique index idx_squad_single_captain on fantasy.squad_selections(entry_id, gameweek_id) where is_captain;
+create unique index idx_squad_single_vice on fantasy.squad_selections(entry_id, gameweek_id) where is_vice_captain;
+create unique index idx_squad_bench_order on fantasy.squad_selections(entry_id, gameweek_id, bench_order) where bench_order is not null;
+
+-- ─────────────────────────────────────────────
+-- UTILITY FUNCTIONS
+-- ─────────────────────────────────────────────
+create or replace function fantasy.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+create or replace function fantasy.generate_short_code(p_length integer default 6)
+returns text
+language plpgsql
+as $$
+declare
+  v_code text;
+begin
+  if p_length < 4 then
+    raise exception 'Short code length must be at least 4.';
+  end if;
+
+  v_code := upper(substr(encode(gen_random_bytes(greatest(p_length, 6)), 'hex'), 1, p_length));
+  return v_code;
+end;
+$$;
+
+create or replace function fantasy.ensure_league_code()
+returns trigger
+language plpgsql
+as $$
+declare
+  v_attempt integer := 0;
+begin
+  if new.code is not null and btrim(new.code) <> '' then
+    new.code := upper(btrim(new.code));
+    return new;
+  end if;
+
+  loop
+    new.code := fantasy.generate_short_code(6);
+    exit when not exists (
+      select 1
+      from fantasy.leagues
+      where code = new.code
+    );
+
+    v_attempt := v_attempt + 1;
+    if v_attempt > 8 then
+      raise exception 'Unable to generate a unique fantasy league code.';
+    end if;
+  end loop;
+
+  return new;
+end;
+$$;
+
+create or replace function fantasy.assert_entry_owner(p_entry_id uuid)
+returns void
+language plpgsql
+as $$
+declare
+  v_owner uuid;
+begin
+  if auth.role() = 'service_role' then
+    return;
+  end if;
+
+  select user_id
+  into v_owner
+  from fantasy.fantasy_entries
+  where id = p_entry_id;
+
+  if v_owner is null then
+    raise exception 'Fantasy entry not found.';
+  end if;
+
+  if auth.uid() is distinct from v_owner then
+    raise exception 'You do not own this fantasy entry.';
+  end if;
+end;
+$$;
+
+create or replace function fantasy.assert_gameweek_open(p_gameweek_id uuid)
+returns void
+language plpgsql
+as $$
+declare
+  v_deadline timestamptz;
+begin
+  if auth.role() = 'service_role' then
+    return;
+  end if;
+
+  select deadline_at
+  into v_deadline
+  from fantasy.gameweeks
+  where id = p_gameweek_id;
+
+  if v_deadline is null then
+    raise exception 'Gameweek not found.';
+  end if;
+
+  if now() > v_deadline then
+    raise exception 'This gameweek is locked because the deadline has passed.';
+  end if;
+end;
+$$;
+
+create or replace function fantasy.validate_squad_selection_row()
+returns trigger
+language plpgsql
+as $$
+declare
+  v_player_position fantasy.player_position;
+  v_team_id integer;
+  v_max_per_club integer := 3;
+  v_existing_from_team integer := 0;
+begin
+  perform fantasy.assert_entry_owner(new.entry_id);
+  perform fantasy.assert_gameweek_open(new.gameweek_id);
+
+  select position, team_id
+  into v_player_position, v_team_id
+  from fantasy.players
+  where external_id = new.player_id;
+
+  if v_player_position is null then
+    raise exception 'Player % does not exist.', new.player_id;
+  end if;
+
+  if new.position is distinct from v_player_position then
+    raise exception 'Selected position % does not match player position %.', new.position, v_player_position;
+  end if;
+
+  select coalesce((c.squad_config ->> 'max_per_club')::integer, 3)
+  into v_max_per_club
+  from fantasy.fantasy_entries fe
+  join fantasy.competitions c
+    on c.id = fe.competition_id
+  where fe.id = new.entry_id;
+
+  select count(*)
+  into v_existing_from_team
+  from fantasy.squad_selections ss
+  join fantasy.players p
+    on p.external_id = ss.player_id
+  where ss.entry_id = new.entry_id
+    and ss.gameweek_id = new.gameweek_id
+    and p.team_id = v_team_id
+    and (tg_op <> 'UPDATE' or ss.id <> new.id);
+
+  if v_existing_from_team >= v_max_per_club then
+    raise exception 'Maximum % players from the same club is allowed.', v_max_per_club;
+  end if;
+
+  return new;
+end;
+$$;
+
+create or replace function fantasy.guard_transfer_history_row()
+returns trigger
+language plpgsql
+as $$
+begin
+  perform fantasy.assert_entry_owner(new.entry_id);
+  perform fantasy.assert_gameweek_open(new.gameweek_id);
+  return new;
+end;
+$$;
+
+create or replace function fantasy.guard_score_owner_mutation()
+returns trigger
+language plpgsql
+as $$
+begin
+  if auth.role() = 'service_role' then
+    return new;
+  end if;
+
+  perform fantasy.assert_entry_owner(new.entry_id);
+  perform fantasy.assert_gameweek_open(new.gameweek_id);
+
+  if tg_op = 'UPDATE' then
+    if new.points is distinct from old.points
+      or new.rank is distinct from old.rank
+      or new.percentile is distinct from old.percentile
+      or new.calculated_at is distinct from old.calculated_at then
+      raise exception 'Only fantasy scoring automation can update protected score fields.';
+    end if;
+  end if;
+
+  return new;
+end;
+$$;
+
+-- ─────────────────────────────────────────────
+-- TRIGGERS
+-- ─────────────────────────────────────────────
+create trigger competitions_updated_at
+before update on fantasy.competitions
+for each row execute function fantasy.set_updated_at();
+
+create trigger entries_updated_at
+before update on fantasy.fantasy_entries
+for each row execute function fantasy.set_updated_at();
+
+create trigger prices_updated_at
+before update on fantasy.player_competition_prices
+for each row execute function fantasy.set_updated_at();
+
+create trigger leagues_generate_code
+before insert on fantasy.leagues
+for each row execute function fantasy.ensure_league_code();
+
+create trigger squad_validate_row
+before insert or update on fantasy.squad_selections
+for each row execute function fantasy.validate_squad_selection_row();
+
+create trigger transfer_history_guard_row
+before insert or update on fantasy.transfer_history
+for each row execute function fantasy.guard_transfer_history_row();
+
+create trigger entry_scores_guard_row
+before insert or update on fantasy.entry_gameweek_scores
+for each row execute function fantasy.guard_score_owner_mutation();
+
+-- ─────────────────────────────────────────────
+-- CORE SCORING FUNCTION
+-- Computes raw_points for a player in a gameweek
+-- based on the competition's scoring_rules JSONB
+-- ─────────────────────────────────────────────
+create or replace function fantasy.compute_player_points(
+  p_stats_id uuid,
+  p_position fantasy.player_position,
+  p_rules jsonb
+) returns integer
+language plpgsql
+stable
+as $$
+declare
+  s fantasy.player_gameweek_stats;
+  pts integer := 0;
+  goals_pts integer := 0;
+  cs_pts integer := 0;
+  dc_threshold integer := 0;
+  conceded_penalty integer := coalesce((p_rules ->> 'goals_conceded_per_2')::integer, -1);
+  save_bonus integer := coalesce((p_rules ->> 'saves_per_3')::integer, 1);
+begin
+  select *
+  into s
+  from fantasy.player_gameweek_stats
+  where id = p_stats_id;
+
+  if not found then
+    return 0;
+  end if;
+
+  if s.minutes_played > 0 and s.minutes_played < 60 then
+    pts := pts + coalesce((p_rules ->> 'points_sub_60')::integer, 1);
+  elsif s.minutes_played >= 60 then
+    pts := pts + coalesce((p_rules ->> 'points_60_plus')::integer, 2);
+  end if;
+
+  case p_position
+    when 'GK', 'DEF' then goals_pts := coalesce((p_rules -> 'goals' ->> 'GK_DEF')::integer, 10);
+    when 'MID' then goals_pts := coalesce((p_rules -> 'goals' ->> 'MID')::integer, 6);
+    when 'FWD' then goals_pts := coalesce((p_rules -> 'goals' ->> 'FWD')::integer, 4);
+  end case;
+  pts := pts + (s.goals * goals_pts);
+
+  pts := pts + (s.assists * coalesce((p_rules ->> 'assists_all')::integer, 3));
+
+  if s.clean_sheet and s.minutes_played >= 60 then
+    case p_position
+      when 'GK', 'DEF' then cs_pts := coalesce((p_rules -> 'clean_sheet' ->> 'GK_DEF')::integer, 6);
+      when 'MID' then cs_pts := coalesce((p_rules -> 'clean_sheet' ->> 'MID')::integer, 1);
+      else cs_pts := 0;
+    end case;
+    pts := pts + cs_pts;
+  end if;
+
+  if p_position in ('GK', 'DEF') and s.goals_conceded > 0 then
+    pts := pts + ((floor(s.goals_conceded::numeric / 2) * conceded_penalty)::integer);
+  end if;
+
+  if p_position = 'GK' and s.saves >= 3 then
+    pts := pts + (floor(s.saves::numeric / 3)::integer * save_bonus);
+  end if;
+
+  pts := pts + (s.penalties_saved * coalesce((p_rules ->> 'penalty_save')::integer, 5));
+  pts := pts + (s.penalties_missed * coalesce((p_rules ->> 'penalty_miss')::integer, -2));
+  pts := pts + (s.yellow_cards * coalesce((p_rules ->> 'yellow_card')::integer, -1));
+  pts := pts + (s.red_cards * coalesce((p_rules ->> 'red_card')::integer, -3));
+  pts := pts + (s.own_goals * coalesce((p_rules ->> 'own_goal')::integer, -2));
+  pts := pts + s.bonus_points;
+
+  case p_position
+    when 'DEF', 'GK' then
+      dc_threshold := coalesce((p_rules -> 'defensive_contributions' ->> 'DEF_threshold')::integer, 10);
+    else
+      dc_threshold := coalesce((p_rules -> 'defensive_contributions' ->> 'MID_FWD_threshold')::integer, 12);
+  end case;
+
+  if s.defensive_contributions >= dc_threshold then
+    pts := pts + coalesce((p_rules -> 'defensive_contributions' ->> 'points')::integer, 2);
+  end if;
+
+  return pts;
+end;
+$$;
+
+create or replace function fantasy.save_squad_selections(
+  p_entry_id uuid,
+  p_gameweek_id uuid,
+  p_selections jsonb
+) returns integer
+language plpgsql
+as $$
+declare
+  v_competition_id uuid;
+  v_squad_config jsonb;
+  v_budget integer;
+  v_squad_size integer;
+  v_starters_required integer;
+  v_total integer;
+  v_distinct_players integer;
+  v_starters integer;
+  v_captains integer;
+  v_vice_captains integer;
+  v_purchase_total integer;
+begin
+  perform fantasy.assert_entry_owner(p_entry_id);
+  perform fantasy.assert_gameweek_open(p_gameweek_id);
+
+  if jsonb_typeof(p_selections) is distinct from 'array' then
+    raise exception 'Selections payload must be a JSON array.';
+  end if;
+
+  select fe.competition_id, c.squad_config
+  into v_competition_id, v_squad_config
+  from fantasy.fantasy_entries fe
+  join fantasy.competitions c
+    on c.id = fe.competition_id
+  where fe.id = p_entry_id;
+
+  if v_competition_id is null then
+    raise exception 'Fantasy entry not found.';
+  end if;
+
+  select
+    count(*)::integer,
+    count(distinct player_id)::integer,
+    count(*) filter (where is_starter)::integer,
+    count(*) filter (where is_captain)::integer,
+    count(*) filter (where is_vice_captain)::integer,
+    coalesce(sum(purchase_price), 0)::integer
+  into
+    v_total,
+    v_distinct_players,
+    v_starters,
+    v_captains,
+    v_vice_captains,
+    v_purchase_total
+  from jsonb_to_recordset(p_selections) as payload(
+    player_id integer,
+    position fantasy.player_position,
+    is_starter boolean,
+    bench_order integer,
+    is_captain boolean,
+    is_vice_captain boolean,
+    purchase_price integer,
+    multiplier integer
+  );
+
+  v_squad_size := coalesce((v_squad_config ->> 'squad_size')::integer, 15);
+  v_starters_required := coalesce((v_squad_config ->> 'starters')::integer, 11);
+  v_budget := coalesce((v_squad_config ->> 'budget')::integer, 1000);
+
+  if v_total <> v_squad_size then
+    raise exception 'Expected % squad members, received %.', v_squad_size, v_total;
+  end if;
+
+  if v_distinct_players <> v_total then
+    raise exception 'Duplicate players are not allowed in a fantasy squad.';
+  end if;
+
+  if v_starters <> v_starters_required then
+    raise exception 'Expected % starters, received %.', v_starters_required, v_starters;
+  end if;
+
+  if v_captains <> 1 or v_vice_captains <> 1 then
+    raise exception 'Exactly one captain and one vice-captain are required.';
+  end if;
+
+  if v_purchase_total > v_budget then
+    raise exception 'Squad budget exceeded.';
+  end if;
+
+  if exists (
+    select 1
+    from (
+      select bench_order, count(*) as occurrences
+      from jsonb_to_recordset(p_selections) as payload(
+        player_id integer,
+        position fantasy.player_position,
+        is_starter boolean,
+        bench_order integer,
+        is_captain boolean,
+        is_vice_captain boolean,
+        purchase_price integer,
+        multiplier integer
+      )
+      where bench_order is not null
+      group by bench_order
+      having count(*) > 1
+    ) duplicate_orders
+  ) then
+    raise exception 'Bench order values must be unique.';
+  end if;
+
+  if exists (
+    with payload as (
+      select *
+      from jsonb_to_recordset(p_selections) as payload(
+        player_id integer,
+        position fantasy.player_position,
+        is_starter boolean,
+        bench_order integer,
+        is_captain boolean,
+        is_vice_captain boolean,
+        purchase_price integer,
+        multiplier integer
+      )
+    )
+    select 1
+    from payload
+    left join fantasy.players p
+      on p.external_id = payload.player_id
+    where p.external_id is null or p.position is distinct from payload.position
+  ) then
+    raise exception 'Every selection must map to a valid player with a matching position.';
+  end if;
+
+  if exists (
+    with payload as (
+      select *
+      from jsonb_to_recordset(p_selections) as payload(
+        player_id integer,
+        position fantasy.player_position,
+        is_starter boolean,
+        bench_order integer,
+        is_captain boolean,
+        is_vice_captain boolean,
+        purchase_price integer,
+        multiplier integer
+      )
+    ),
+    club_counts as (
+      select p.team_id, count(*) as club_count
+      from payload
+      join fantasy.players p
+        on p.external_id = payload.player_id
+      group by p.team_id
+    )
+    select 1
+    from club_counts
+    where club_count > coalesce((v_squad_config ->> 'max_per_club')::integer, 3)
+  ) then
+    raise exception 'Maximum players per club exceeded for this competition.';
+  end if;
+
+  if exists (
+    with payload as (
+      select *
+      from jsonb_to_recordset(p_selections) as payload(
+        player_id integer,
+        position fantasy.player_position,
+        is_starter boolean,
+        bench_order integer,
+        is_captain boolean,
+        is_vice_captain boolean,
+        purchase_price integer,
+        multiplier integer
+      )
+      where is_starter = true
+    )
+    select 1
+    from (
+      select
+        count(*) filter (where position = 'GK') as gk_count,
+        count(*) filter (where position = 'DEF') as def_count,
+        count(*) filter (where position = 'MID') as mid_count,
+        count(*) filter (where position = 'FWD') as fwd_count
+      from payload
+    ) counts
+    where gk_count <> 1
+      or def_count < coalesce((v_squad_config ->> 'min_def')::integer, 3)
+      or def_count > coalesce((v_squad_config ->> 'max_def')::integer, 5)
+      or mid_count < coalesce((v_squad_config ->> 'min_mid')::integer, 2)
+      or mid_count > coalesce((v_squad_config ->> 'max_mid')::integer, 5)
+      or fwd_count < coalesce((v_squad_config ->> 'min_fwd')::integer, 1)
+      or fwd_count > coalesce((v_squad_config ->> 'max_fwd')::integer, 3)
+  ) then
+    raise exception 'Selected starting formation is invalid.';
+  end if;
+
+  delete from fantasy.squad_selections
+  where entry_id = p_entry_id
+    and gameweek_id = p_gameweek_id;
+
+  insert into fantasy.squad_selections (
+    entry_id,
+    gameweek_id,
+    player_id,
+    position,
+    is_starter,
+    bench_order,
+    is_captain,
+    is_vice_captain,
+    purchase_price,
+    multiplier
+  )
+  select
+    p_entry_id,
+    p_gameweek_id,
+    payload.player_id,
+    payload.position,
+    coalesce(payload.is_starter, true),
+    payload.bench_order,
+    coalesce(payload.is_captain, false),
+    coalesce(payload.is_vice_captain, false),
+    payload.purchase_price,
+    case
+      when coalesce(payload.is_captain, false) then greatest(coalesce(payload.multiplier, 2), 2)
+      else coalesce(payload.multiplier, 1)
+    end
+  from jsonb_to_recordset(p_selections) as payload(
+    player_id integer,
+    position fantasy.player_position,
+    is_starter boolean,
+    bench_order integer,
+    is_captain boolean,
+    is_vice_captain boolean,
+    purchase_price integer,
+    multiplier integer
+  );
+
+  update fantasy.fantasy_entries
+  set
+    team_value = v_purchase_total,
+    bank_balance = greatest(v_budget - v_purchase_total, 0),
+    updated_at = now()
+  where id = p_entry_id;
+
+  return v_total;
+end;
+$$;
+
+-- ─────────────────────────────────────────────
+-- AGGREGATE ENTRY POINTS FOR A GAMEWEEK
+-- Includes vice-captain fallback and automatic substitution.
+-- ─────────────────────────────────────────────
+create or replace function fantasy.aggregate_entry_score(
+  p_entry_id uuid,
+  p_gameweek_id uuid
+) returns integer
+language plpgsql
+as $$
+declare
+  rules jsonb;
+  squad_config jsonb;
+  total_pts integer := 0;
+  transfer_cost integer := 0;
+  chip text;
+  captain_mult integer;
+  min_def integer;
+  min_mid integer;
+  min_fwd integer;
+  starter_gk_count integer := 0;
+  starter_def_count integer := 0;
+  starter_mid_count integer := 0;
+  starter_fwd_count integer := 0;
+  missing_gk integer := 0;
+  missing_outfield integer := 0;
+  gk_bench_points integer := 0;
+  gk_bench_available boolean := false;
+  gk_bench_used boolean := false;
+  captain_player_id integer := 0;
+  vice_player_id integer := 0;
+  captain_played boolean := false;
+  vice_played boolean := false;
+  captain_points integer := 0;
+  vice_points integer := 0;
+  bench_orders integer[] := '{}';
+  bench_positions fantasy.player_position[] := '{}';
+  bench_points integer[] := '{}';
+  bench_played boolean[] := '{}';
+  bench_player_ids integer[] := '{}';
+  bench_count integer := 0;
+  best_mask integer := 0;
+  best_size integer := -1;
+  best_orders integer[] := '{}';
+  current_size integer;
+  current_orders integer[] := '{}';
+  current_def integer;
+  current_mid integer;
+  current_fwd integer;
+  mask integer;
+  idx integer;
+  include_player boolean;
+  rec record;
+begin
+  select
+    c.scoring_rules,
+    c.squad_config
+  into
+    rules,
+    squad_config
+  from fantasy.competitions c
+  join fantasy.gameweeks gw
+    on gw.competition_id = c.id
+  where gw.id = p_gameweek_id;
+
+  if rules is null then
+    raise exception 'Scoring rules not found for gameweek %.', p_gameweek_id;
+  end if;
+
+  captain_mult := coalesce((rules ->> 'captain_multiplier')::integer, 2);
+  min_def := coalesce((squad_config ->> 'min_def')::integer, 3);
+  min_mid := coalesce((squad_config ->> 'min_mid')::integer, 2);
+  min_fwd := coalesce((squad_config ->> 'min_fwd')::integer, 1);
+
+  select chip_played, coalesce(transfer_cost, 0)
+  into chip, transfer_cost
+  from fantasy.entry_gameweek_scores
+  where entry_id = p_entry_id
+    and gameweek_id = p_gameweek_id;
+
+  if chip = 'triple_captain' then
+    captain_mult := coalesce((rules ->> 'triple_captain_multiplier')::integer, 3);
+  end if;
+
+  if chip = 'bench_boost' then
+    for rec in
+      select
+        ss.player_id,
+        ss.is_captain,
+        ss.is_vice_captain,
+        p.position,
+        coalesce(pgs.id, null) as stats_id,
+        coalesce(pgs.minutes_played, 0) as minutes_played
+      from fantasy.squad_selections ss
+      join fantasy.players p
+        on p.external_id = ss.player_id
+      left join fantasy.player_gameweek_stats pgs
+        on pgs.player_id = ss.player_id
+       and pgs.gameweek_id = p_gameweek_id
+      where ss.entry_id = p_entry_id
+        and ss.gameweek_id = p_gameweek_id
+    loop
+      if rec.stats_id is not null then
+        total_pts := total_pts + fantasy.compute_player_points(rec.stats_id, rec.position, rules);
+      end if;
+
+      if rec.is_captain then
+        captain_player_id := rec.player_id;
+        captain_played := rec.minutes_played > 0;
+        if rec.stats_id is not null then
+          captain_points := fantasy.compute_player_points(rec.stats_id, rec.position, rules);
+        end if;
+      elsif rec.is_vice_captain then
+        vice_player_id := rec.player_id;
+        vice_played := rec.minutes_played > 0;
+        if rec.stats_id is not null then
+          vice_points := fantasy.compute_player_points(rec.stats_id, rec.position, rules);
+        end if;
+      end if;
+    end loop;
+  else
+    for rec in
+      select
+        ss.player_id,
+        ss.is_starter,
+        ss.is_captain,
+        ss.is_vice_captain,
+        ss.bench_order,
+        p.position,
+        pgs.id as stats_id,
+        coalesce(pgs.minutes_played, 0) as minutes_played
+      from fantasy.squad_selections ss
+      join fantasy.players p
+        on p.external_id = ss.player_id
+      left join fantasy.player_gameweek_stats pgs
+        on pgs.player_id = ss.player_id
+       and pgs.gameweek_id = p_gameweek_id
+      where ss.entry_id = p_entry_id
+        and ss.gameweek_id = p_gameweek_id
+      order by ss.is_starter desc, ss.bench_order nulls last
+    loop
+      include_player := rec.stats_id is not null and rec.minutes_played > 0;
+
+      if rec.is_captain then
+        captain_player_id := rec.player_id;
+        captain_played := include_player;
+        if rec.stats_id is not null then
+          captain_points := fantasy.compute_player_points(rec.stats_id, rec.position, rules);
+        end if;
+      elsif rec.is_vice_captain then
+        vice_player_id := rec.player_id;
+        vice_played := include_player;
+        if rec.stats_id is not null then
+          vice_points := fantasy.compute_player_points(rec.stats_id, rec.position, rules);
+        end if;
+      end if;
+
+      if rec.is_starter then
+        if include_player then
+          total_pts := total_pts + fantasy.compute_player_points(rec.stats_id, rec.position, rules);
+          case rec.position
+            when 'GK' then starter_gk_count := starter_gk_count + 1;
+            when 'DEF' then starter_def_count := starter_def_count + 1;
+            when 'MID' then starter_mid_count := starter_mid_count + 1;
+            when 'FWD' then starter_fwd_count := starter_fwd_count + 1;
+          end case;
+        else
+          if rec.position = 'GK' then
+            missing_gk := missing_gk + 1;
+          else
+            missing_outfield := missing_outfield + 1;
+          end if;
+        end if;
+      else
+        bench_count := bench_count + 1;
+        bench_orders := array_append(bench_orders, coalesce(rec.bench_order, bench_count));
+        bench_positions := array_append(bench_positions, rec.position);
+        bench_player_ids := array_append(bench_player_ids, rec.player_id);
+        bench_played := array_append(bench_played, include_player);
+        if include_player and rec.stats_id is not null then
+          bench_points := array_append(bench_points, fantasy.compute_player_points(rec.stats_id, rec.position, rules));
+        else
+          bench_points := array_append(bench_points, 0);
+        end if;
+
+        if rec.position = 'GK' and include_player then
+          gk_bench_available := true;
+          gk_bench_points := case
+            when rec.stats_id is not null then fantasy.compute_player_points(rec.stats_id, rec.position, rules)
+            else 0
+          end;
+        end if;
+      end if;
+    end loop;
+
+    if missing_gk > 0 and gk_bench_available then
+      total_pts := total_pts + gk_bench_points;
+      gk_bench_used := true;
+    end if;
+
+    if missing_outfield > 0 and bench_count > 0 then
+      for mask in 0..(power(2::numeric, bench_count)::integer - 1) loop
+        current_size := 0;
+        current_orders := '{}';
+        current_def := starter_def_count;
+        current_mid := starter_mid_count;
+        current_fwd := starter_fwd_count;
+
+        for idx in 1..bench_count loop
+          if bench_positions[idx] = 'GK' then
+            continue;
+          end if;
+
+          if ((mask >> (idx - 1)) & 1) = 1 then
+            if not bench_played[idx] then
+              current_size := -1;
+              exit;
+            end if;
+
+            current_size := current_size + 1;
+            current_orders := array_append(current_orders, bench_orders[idx]);
+
+            case bench_positions[idx]
+              when 'DEF' then current_def := current_def + 1;
+              when 'MID' then current_mid := current_mid + 1;
+              when 'FWD' then current_fwd := current_fwd + 1;
+              else null;
+            end case;
+          end if;
+        end loop;
+
+        if current_size < 0 or current_size > missing_outfield then
+          continue;
+        end if;
+
+        if current_def < min_def or current_mid < min_mid or current_fwd < min_fwd then
+          continue;
+        end if;
+
+        if current_size > best_size
+          or (current_size = best_size and (best_orders = '{}' or current_orders < best_orders)) then
+          best_mask := mask;
+          best_size := current_size;
+          best_orders := current_orders;
+        end if;
+      end loop;
+
+      if best_size > 0 then
+        for idx in 1..bench_count loop
+          if ((best_mask >> (idx - 1)) & 1) = 1 and bench_positions[idx] <> 'GK' then
+            total_pts := total_pts + bench_points[idx];
+          end if;
+        end loop;
+      end if;
+    end if;
+
+    if not captain_played and vice_player_id <> 0 then
+      vice_played := false;
+      if best_size > 0 or gk_bench_used or starter_gk_count > 0 or starter_def_count > 0 or starter_mid_count > 0 or starter_fwd_count > 0 then
+        for idx in 1..bench_count loop
+          if bench_player_ids[idx] = vice_player_id then
+            if bench_positions[idx] = 'GK' then
+              vice_played := gk_bench_used and bench_played[idx];
+            else
+              vice_played := ((best_mask >> (idx - 1)) & 1) = 1 and bench_played[idx];
+            end if;
+          end if;
+        end loop;
+      end if;
+    end if;
+  end if;
+
+  if captain_player_id <> 0 and captain_played then
+    total_pts := total_pts + (captain_points * greatest(captain_mult - 1, 0));
+  elsif vice_player_id <> 0 and vice_played then
+    total_pts := total_pts + (vice_points * greatest(captain_mult - 1, 0));
+  end if;
+
+  total_pts := total_pts + transfer_cost;
+
+  insert into fantasy.entry_gameweek_scores (
+    entry_id,
+    gameweek_id,
+    points,
+    calculated_at
+  )
+  values (
+    p_entry_id,
+    p_gameweek_id,
+    total_pts,
+    now()
+  )
+  on conflict (entry_id, gameweek_id)
+  do update set
+    points = excluded.points,
+    calculated_at = now();
+
+  update fantasy.fantasy_entries
+  set
+    overall_points = (
+      select coalesce(sum(points), 0)
+      from fantasy.entry_gameweek_scores
+      where entry_id = p_entry_id
+    ),
+    updated_at = now()
+  where id = p_entry_id;
+
+  return total_pts;
+end;
+$$;
+
+-- ─────────────────────────────────────────────
+-- RANK ENTRIES FOR A GAMEWEEK
+-- ─────────────────────────────────────────────
+create or replace function fantasy.rank_gameweek_entries(p_gameweek_id uuid)
+returns void
+language plpgsql
+as $$
+begin
+  with ranked as (
+    select
+      id,
+      rank() over (order by points desc, calculated_at asc nulls last, entry_id asc) as rnk,
+      percent_rank() over (order by points desc, calculated_at asc nulls last, entry_id asc) * 100 as pctile
+    from fantasy.entry_gameweek_scores
+    where gameweek_id = p_gameweek_id
+  )
+  update fantasy.entry_gameweek_scores egs
+  set
+    rank = ranked.rnk,
+    percentile = ranked.pctile
+  from ranked
+  where egs.id = ranked.id;
+
+  with overall_ranked as (
+    select
+      egs.entry_id,
+      rank() over (
+        order by sum(egs.points) desc, max(egs.calculated_at) asc nulls last, egs.entry_id asc
+      ) as rnk
+    from fantasy.entry_gameweek_scores egs
+    join fantasy.fantasy_entries fe
+      on fe.id = egs.entry_id
+    where fe.competition_id = (
+      select competition_id
+      from fantasy.gameweeks
+      where id = p_gameweek_id
+    )
+    group by egs.entry_id
+  )
+  update fantasy.fantasy_entries fe
+  set overall_rank = overall_ranked.rnk
+  from overall_ranked
+  where fe.id = overall_ranked.entry_id;
+end;
+$$;
+
+-- Authoritative fantasy runtime fixes:
+-- - server-side budget and transfer enforcement
+-- - club-scoped competition visibility/playability enforcement
+-- - chip availability and free-transfer state
+-- - fixture-level stat persistence for DGW-safe scoring
+-- - public manager-name privacy hardening
+
+create table if not exists fantasy.fantasy_fixtures (
+  id                  uuid primary key default uuid_generate_v4(),
+  external_fixture_id bigint not null unique,
+  competition_id      uuid not null references fantasy.competitions(id) on delete cascade,
+  gameweek_id         uuid not null references fantasy.gameweeks(id) on delete cascade,
+  provider            text,
+  external_league_id  integer,
+  external_season     integer,
+  status_short        text not null,
+  elapsed_minutes     integer,
+  last_synced_at      timestamptz not null default now()
+);
+
+create index if not exists idx_fantasy_fixtures_gameweek
+  on fantasy.fantasy_fixtures(gameweek_id, status_short);
+
+create table if not exists fantasy.player_fixture_stats (
+  id                        uuid primary key default uuid_generate_v4(),
+  fixture_id                uuid not null references fantasy.fantasy_fixtures(id) on delete cascade,
+  player_id                 integer not null references fantasy.players(external_id),
+  gameweek_id               uuid not null references fantasy.gameweeks(id) on delete cascade,
+  minutes_played            integer not null default 0,
+  goals                     integer not null default 0,
+  assists                   integer not null default 0,
+  clean_sheet               boolean not null default false,
+  goals_conceded            integer not null default 0,
+  yellow_cards              integer not null default 0,
+  red_cards                 integer not null default 0,
+  penalties_saved           integer not null default 0,
+  penalties_missed          integer not null default 0,
+  own_goals                 integer not null default 0,
+  saves                     integer not null default 0,
+  bonus_points              integer not null default 0,
+  bps_score                 integer not null default 0,
+  defensive_contributions   integer not null default 0,
+  stage_advanced            boolean not null default false,
+  raw_points                integer not null default 0,
+  last_synced_at            timestamptz not null default now(),
+  unique (fixture_id, player_id)
+);
+
+create index if not exists idx_player_fixture_stats_gameweek
+  on fantasy.player_fixture_stats(gameweek_id, player_id);
+
+grant select on fantasy.fantasy_fixtures to anon, authenticated, service_role;
+grant select on fantasy.player_fixture_stats to anon, authenticated, service_role;
+
+alter table fantasy.fantasy_fixtures enable row level security;
+alter table fantasy.player_fixture_stats enable row level security;
+
+drop policy if exists "fixtures_public_read" on fantasy.fantasy_fixtures;
+create policy "fixtures_public_read"
+on fantasy.fantasy_fixtures
+for select
+using (true);
+
+drop policy if exists "player_fixture_stats_public_read" on fantasy.player_fixture_stats;
+create policy "player_fixture_stats_public_read"
+on fantasy.player_fixture_stats
+for select
+using (true);
+
+drop policy if exists "fixtures_service_write" on fantasy.fantasy_fixtures;
+create policy "fixtures_service_write"
+on fantasy.fantasy_fixtures
+for all
+using (auth.role() = 'service_role')
+with check (auth.role() = 'service_role');
+
+drop policy if exists "player_fixture_stats_service_write" on fantasy.player_fixture_stats;
+create policy "player_fixture_stats_service_write"
+on fantasy.player_fixture_stats
+for all
+using (auth.role() = 'service_role')
+with check (auth.role() = 'service_role');
+
+create or replace function fantasy.assert_entry_gameweek_matches_competition(
+  p_entry_id uuid,
+  p_gameweek_id uuid
+) returns uuid
+language plpgsql
+as $$
+declare
+  v_competition_id uuid;
+  v_gameweek_competition_id uuid;
+begin
+  select competition_id
+  into v_competition_id
+  from fantasy.fantasy_entries
+  where id = p_entry_id;
+
+  if v_competition_id is null then
+    raise exception 'Fantasy entry not found.';
+  end if;
+
+  select competition_id
+  into v_gameweek_competition_id
+  from fantasy.gameweeks
+  where id = p_gameweek_id;
+
+  if v_gameweek_competition_id is null then
+    raise exception 'Gameweek not found.';
+  end if;
+
+  if v_gameweek_competition_id <> v_competition_id then
+    raise exception 'Gameweek does not belong to the same competition as the fantasy entry.';
+  end if;
+
+  return v_competition_id;
+end;
+$$;
+
+create or replace function fantasy.assert_competition_access(
+  p_competition_id uuid,
+  p_require_playable boolean default false,
+  p_require_entry_window boolean default false
+) returns void
+language plpgsql
+as $$
+declare
+  v_club_id bigint;
+  v_visible boolean;
+  v_playable boolean;
+  v_open_at timestamptz;
+  v_close_at timestamptz;
+  v_status fantasy.competition_status;
+begin
+  if auth.role() = 'service_role' then
+    return;
+  end if;
+
+  v_club_id := nullif(public.requesting_club_id(), '')::bigint;
+  if v_club_id is null then
+    raise exception 'Club context required for fantasy competition access.';
+  end if;
+
+  select
+    c.status,
+    e.is_visible,
+    e.is_playable,
+    e.entry_window_opens_at,
+    e.entry_window_closes_at
+  into
+    v_status,
+    v_visible,
+    v_playable,
+    v_open_at,
+    v_close_at
+  from fantasy.competitions c
+  left join public.fantasy_competition_enablements e
+    on e.competition_id = c.id
+   and e.club_id = v_club_id
+  where c.id = p_competition_id;
+
+  if v_status is null then
+    raise exception 'Fantasy competition not found.';
+  end if;
+
+  if coalesce(v_visible, false) = false then
+    raise exception 'Fantasy competition is not enabled for this club.';
+  end if;
+
+  if p_require_playable and (v_status <> 'active' or coalesce(v_playable, false) = false) then
+    raise exception 'Fantasy competition is not currently playable.';
+  end if;
+
+  if p_require_entry_window then
+    if v_open_at is not null and now() < v_open_at then
+      raise exception 'Fantasy entry window is not open yet.';
+    end if;
+
+    if v_close_at is not null and now() > v_close_at then
+      raise exception 'Fantasy entry window has closed.';
+    end if;
+  end if;
+end;
+$$;
+
+create or replace function fantasy.resolve_chip_window(
+  p_competition_id uuid,
+  p_gameweek_id uuid
+) returns text
+language plpgsql
+stable
+as $$
+declare
+  v_gameweek_number integer;
+  v_max_gameweek_number integer;
+  v_boundary integer;
+begin
+  select gw.number
+  into v_gameweek_number
+  from fantasy.gameweeks gw
+  where gw.id = p_gameweek_id
+    and gw.competition_id = p_competition_id;
+
+  if v_gameweek_number is null then
+    raise exception 'Gameweek not found for competition.';
+  end if;
+
+  select coalesce(max(number), 1)
+  into v_max_gameweek_number
+  from fantasy.gameweeks
+  where competition_id = p_competition_id;
+
+  v_boundary := greatest(ceil(v_max_gameweek_number::numeric / 2.0)::integer, 1);
+
+  if v_gameweek_number <= v_boundary then
+    return 'H1';
+  end if;
+
+  return 'H2';
+end;
+$$;
+
+create or replace function fantasy.resolve_effective_squad_gameweek(
+  p_entry_id uuid,
+  p_gameweek_id uuid
+) returns uuid
+language sql
+stable
+as $$
+  with target as (
+    select gw.id, gw.number, gw.competition_id
+    from fantasy.gameweeks gw
+    join fantasy.fantasy_entries fe
+      on fe.competition_id = gw.competition_id
+    where fe.id = p_entry_id
+      and gw.id = p_gameweek_id
+  )
+  select gw.id
+  from fantasy.gameweeks gw
+  join target t
+    on t.competition_id = gw.competition_id
+   and gw.number <= t.number
+  where exists (
+      select 1
+      from fantasy.squad_selections ss
+      where ss.entry_id = p_entry_id
+        and ss.gameweek_id = gw.id
+    )
+    and (
+      gw.id = p_gameweek_id
+      or not exists (
+        select 1
+        from fantasy.entry_gameweek_scores egs
+        where egs.entry_id = p_entry_id
+          and egs.gameweek_id = gw.id
+          and egs.chip_played = 'free_hit'
+      )
+    )
+  order by gw.number desc
+  limit 1;
+$$;
+
+create or replace function fantasy.materialize_squad_for_gameweek(
+  p_entry_id uuid,
+  p_gameweek_id uuid
+) returns integer
+language plpgsql
+as $$
+declare
+  v_existing_count integer := 0;
+  v_source_gameweek_id uuid;
+begin
+  select count(*)
+  into v_existing_count
+  from fantasy.squad_selections
+  where entry_id = p_entry_id
+    and gameweek_id = p_gameweek_id;
+
+  if v_existing_count > 0 then
+    return v_existing_count;
+  end if;
+
+  v_source_gameweek_id := fantasy.resolve_effective_squad_gameweek(p_entry_id, p_gameweek_id);
+  if v_source_gameweek_id is null or v_source_gameweek_id = p_gameweek_id then
+    return 0;
+  end if;
+
+  insert into fantasy.squad_selections (
+    entry_id,
+    gameweek_id,
+    player_id,
+    position,
+    is_starter,
+    bench_order,
+    is_captain,
+    is_vice_captain,
+    purchase_price,
+    multiplier
+  )
+  select
+    entry_id,
+    p_gameweek_id,
+    player_id,
+    position,
+    is_starter,
+    bench_order,
+    is_captain,
+    is_vice_captain,
+    purchase_price,
+    multiplier
+  from fantasy.squad_selections
+  where entry_id = p_entry_id
+    and gameweek_id = v_source_gameweek_id;
+
+  get diagnostics v_existing_count = row_count;
+  return v_existing_count;
+end;
+$$;
+
+create or replace function fantasy.ensure_entry_gameweek_score_row(
+  p_entry_id uuid,
+  p_gameweek_id uuid
+) returns fantasy.entry_gameweek_scores
+language plpgsql
+as $$
+declare
+  v_row fantasy.entry_gameweek_scores;
+begin
+  insert into fantasy.entry_gameweek_scores (
+    entry_id,
+    gameweek_id
+  )
+  values (
+    p_entry_id,
+    p_gameweek_id
+  )
+  on conflict (entry_id, gameweek_id)
+  do update set
+    entry_id = excluded.entry_id
+  returning * into v_row;
+
+  return v_row;
+end;
+$$;
+
+create or replace function fantasy.get_base_free_transfers(
+  p_entry_id uuid,
+  p_gameweek_id uuid
+) returns integer
+language plpgsql
+stable
+as $$
+declare
+  v_competition_id uuid;
+  v_target_number integer;
+  v_free_transfers integer := 1;
+  v_max_banked integer := 5;
+  v_available integer := 1;
+  rec record;
+begin
+  select
+    fe.competition_id,
+    gw.number,
+    coalesce((c.transfer_config ->> 'free_transfers')::integer, 1),
+    coalesce((c.transfer_config ->> 'max_banked_transfers')::integer, 5)
+  into
+    v_competition_id,
+    v_target_number,
+    v_free_transfers,
+    v_max_banked
+  from fantasy.fantasy_entries fe
+  join fantasy.competitions c
+    on c.id = fe.competition_id
+  join fantasy.gameweeks gw
+    on gw.id = p_gameweek_id
+   and gw.competition_id = c.id
+  where fe.id = p_entry_id;
+
+  if v_target_number is null then
+    raise exception 'Unable to resolve fantasy transfer state.';
+  end if;
+
+  v_available := greatest(v_free_transfers, 1);
+
+  for rec in
+    select
+      gw.number,
+      coalesce(egs.transfers_made, 0) as transfers_made,
+      coalesce(egs.chip_played, '') as chip_played
+    from fantasy.gameweeks gw
+    left join fantasy.entry_gameweek_scores egs
+      on egs.gameweek_id = gw.id
+     and egs.entry_id = p_entry_id
+    where gw.competition_id = v_competition_id
+      and gw.number < v_target_number
+    order by gw.number asc
+  loop
+    if rec.chip_played in ('wildcard', 'free_hit') then
+      v_available := least(v_available + v_free_transfers, v_max_banked);
+    else
+      v_available := least(
+        greatest(v_available - rec.transfers_made, 0) + v_free_transfers,
+        v_max_banked
+      );
+    end if;
+  end loop;
+
+  return greatest(v_available, 1);
+end;
+$$;
+
+create or replace function fantasy.compute_player_fixture_points(
+  p_fixture_stats_id uuid,
+  p_position fantasy.player_position,
+  p_rules jsonb
+) returns integer
+language plpgsql
+stable
+as $$
+declare
+  s fantasy.player_fixture_stats;
+  pts integer := 0;
+  goals_pts integer := 0;
+  cs_pts integer := 0;
+  dc_threshold integer := 0;
+  conceded_penalty integer := coalesce((p_rules ->> 'goals_conceded_per_2')::integer, -1);
+  save_bonus integer := coalesce((p_rules ->> 'saves_per_3')::integer, 1);
+begin
+  select *
+  into s
+  from fantasy.player_fixture_stats
+  where id = p_fixture_stats_id;
+
+  if not found then
+    return 0;
+  end if;
+
+  if s.minutes_played > 0 and s.minutes_played < 60 then
+    pts := pts + coalesce((p_rules ->> 'points_sub_60')::integer, 1);
+  elsif s.minutes_played >= 60 then
+    pts := pts + coalesce((p_rules ->> 'points_60_plus')::integer, 2);
+  end if;
+
+  case p_position
+    when 'GK', 'DEF' then goals_pts := coalesce((p_rules -> 'goals' ->> 'GK_DEF')::integer, 6);
+    when 'MID' then goals_pts := coalesce((p_rules -> 'goals' ->> 'MID')::integer, 5);
+    when 'FWD' then goals_pts := coalesce((p_rules -> 'goals' ->> 'FWD')::integer, 4);
+  end case;
+  pts := pts + (s.goals * goals_pts);
+
+  pts := pts + (s.assists * coalesce((p_rules ->> 'assists_all')::integer, 3));
+
+  if s.clean_sheet and s.minutes_played >= 60 then
+    case p_position
+      when 'GK', 'DEF' then cs_pts := coalesce((p_rules -> 'clean_sheet' ->> 'GK_DEF')::integer, 4);
+      when 'MID' then cs_pts := coalesce((p_rules -> 'clean_sheet' ->> 'MID')::integer, 1);
+      else cs_pts := 0;
+    end case;
+    pts := pts + cs_pts;
+  end if;
+
+  if p_position in ('GK', 'DEF') and s.goals_conceded > 0 then
+    pts := pts + ((floor(s.goals_conceded::numeric / 2) * conceded_penalty)::integer);
+  end if;
+
+  if p_position = 'GK' and s.saves >= 3 then
+    pts := pts + (floor(s.saves::numeric / 3)::integer * save_bonus);
+  end if;
+
+  pts := pts + (s.penalties_saved * coalesce((p_rules ->> 'penalty_save')::integer, 5));
+  pts := pts + (s.penalties_missed * coalesce((p_rules ->> 'penalty_miss')::integer, -2));
+  pts := pts + (s.yellow_cards * coalesce((p_rules ->> 'yellow_card')::integer, -1));
+  pts := pts + (s.red_cards * coalesce((p_rules ->> 'red_card')::integer, -3));
+  pts := pts + (s.own_goals * coalesce((p_rules ->> 'own_goal')::integer, -2));
+  pts := pts + s.bonus_points;
+
+  case p_position
+    when 'DEF', 'GK' then
+      dc_threshold := coalesce((p_rules -> 'defensive_contributions' ->> 'DEF_threshold')::integer, 10);
+    else
+      dc_threshold := coalesce((p_rules -> 'defensive_contributions' ->> 'MID_FWD_threshold')::integer, 12);
+  end case;
+
+  if s.defensive_contributions >= dc_threshold then
+    pts := pts + coalesce((p_rules -> 'defensive_contributions' ->> 'points')::integer, 2);
+  end if;
+
+  if s.stage_advanced then
+    pts := pts + coalesce((p_rules ->> 'stage_advance')::integer, 0);
+  end if;
+
+  return pts;
+end;
+$$;
+
+create or replace function fantasy.refresh_player_gameweek_stats(
+  p_gameweek_id uuid
+) returns integer
+language plpgsql
+as $$
+declare
+  v_rules jsonb;
+  v_upserted integer := 0;
+begin
+  select c.scoring_rules
+  into v_rules
+  from fantasy.gameweeks gw
+  join fantasy.competitions c
+    on c.id = gw.competition_id
+  where gw.id = p_gameweek_id;
+
+  if v_rules is null then
+    raise exception 'Scoring rules not found for gameweek %.', p_gameweek_id;
+  end if;
+
+  update fantasy.player_fixture_stats pfs
+  set raw_points = fantasy.compute_player_fixture_points(pfs.id, p.position, v_rules)
+  from fantasy.players p
+  where p.external_id = pfs.player_id
+    and pfs.gameweek_id = p_gameweek_id;
+
+  insert into fantasy.player_gameweek_stats (
+    player_id,
+    gameweek_id,
+    minutes_played,
+    goals,
+    assists,
+    clean_sheet,
+    goals_conceded,
+    yellow_cards,
+    red_cards,
+    penalties_saved,
+    penalties_missed,
+    own_goals,
+    saves,
+    bps_score,
+    bonus_points,
+    defensive_contributions,
+    raw_points,
+    stage_advanced,
+    last_synced_at
+  )
+  select
+    pfs.player_id,
+    p_gameweek_id,
+    coalesce(sum(pfs.minutes_played), 0)::integer,
+    coalesce(sum(pfs.goals), 0)::integer,
+    coalesce(sum(pfs.assists), 0)::integer,
+    bool_or(pfs.clean_sheet),
+    coalesce(sum(pfs.goals_conceded), 0)::integer,
+    coalesce(sum(pfs.yellow_cards), 0)::integer,
+    coalesce(sum(pfs.red_cards), 0)::integer,
+    coalesce(sum(pfs.penalties_saved), 0)::integer,
+    coalesce(sum(pfs.penalties_missed), 0)::integer,
+    coalesce(sum(pfs.own_goals), 0)::integer,
+    coalesce(sum(pfs.saves), 0)::integer,
+    coalesce(sum(pfs.bps_score), 0)::integer,
+    coalesce(sum(pfs.bonus_points), 0)::integer,
+    coalesce(sum(pfs.defensive_contributions), 0)::integer,
+    coalesce(sum(pfs.raw_points), 0)::integer,
+    bool_or(pfs.stage_advanced),
+    now()
+  from fantasy.player_fixture_stats pfs
+  where pfs.gameweek_id = p_gameweek_id
+  group by pfs.player_id
+  on conflict (player_id, gameweek_id)
+  do update set
+    minutes_played = excluded.minutes_played,
+    goals = excluded.goals,
+    assists = excluded.assists,
+    clean_sheet = excluded.clean_sheet,
+    goals_conceded = excluded.goals_conceded,
+    yellow_cards = excluded.yellow_cards,
+    red_cards = excluded.red_cards,
+    penalties_saved = excluded.penalties_saved,
+    penalties_missed = excluded.penalties_missed,
+    own_goals = excluded.own_goals,
+    saves = excluded.saves,
+    bps_score = excluded.bps_score,
+    bonus_points = excluded.bonus_points,
+    defensive_contributions = excluded.defensive_contributions,
+    raw_points = excluded.raw_points,
+    stage_advanced = excluded.stage_advanced,
+    last_synced_at = now();
+
+  get diagnostics v_upserted = row_count;
+  return v_upserted;
+end;
+$$;
+
+create or replace function fantasy.player_gameweek_points(
+  p_stats_id uuid,
+  p_position fantasy.player_position,
+  p_rules jsonb
+) returns integer
+language plpgsql
+stable
+as $$
+declare
+  v_points integer := 0;
+begin
+  select raw_points
+  into v_points
+  from fantasy.player_gameweek_stats
+  where id = p_stats_id;
+
+  if v_points is null then
+    return fantasy.compute_player_points(p_stats_id, p_position, p_rules);
+  end if;
+
+  return v_points;
+end;
+$$;
+
+create or replace function fantasy.compute_player_points(
+  p_stats_id uuid,
+  p_position fantasy.player_position,
+  p_rules jsonb
+) returns integer
+language plpgsql
+stable
+as $$
+declare
+  s fantasy.player_gameweek_stats;
+  pts integer := 0;
+  goals_pts integer := 0;
+  cs_pts integer := 0;
+  dc_threshold integer := 0;
+  conceded_penalty integer := coalesce((p_rules ->> 'goals_conceded_per_2')::integer, -1);
+  save_bonus integer := coalesce((p_rules ->> 'saves_per_3')::integer, 1);
+begin
+  select *
+  into s
+  from fantasy.player_gameweek_stats
+  where id = p_stats_id;
+
+  if not found then
+    return 0;
+  end if;
+
+  if s.raw_points > 0 then
+    return s.raw_points;
+  end if;
+
+  if s.minutes_played > 0 and s.minutes_played < 60 then
+    pts := pts + coalesce((p_rules ->> 'points_sub_60')::integer, 1);
+  elsif s.minutes_played >= 60 then
+    pts := pts + coalesce((p_rules ->> 'points_60_plus')::integer, 2);
+  end if;
+
+  case p_position
+    when 'GK', 'DEF' then goals_pts := coalesce((p_rules -> 'goals' ->> 'GK_DEF')::integer, 6);
+    when 'MID' then goals_pts := coalesce((p_rules -> 'goals' ->> 'MID')::integer, 5);
+    when 'FWD' then goals_pts := coalesce((p_rules -> 'goals' ->> 'FWD')::integer, 4);
+  end case;
+  pts := pts + (s.goals * goals_pts);
+
+  pts := pts + (s.assists * coalesce((p_rules ->> 'assists_all')::integer, 3));
+
+  if s.clean_sheet and s.minutes_played >= 60 then
+    case p_position
+      when 'GK', 'DEF' then cs_pts := coalesce((p_rules -> 'clean_sheet' ->> 'GK_DEF')::integer, 4);
+      when 'MID' then cs_pts := coalesce((p_rules -> 'clean_sheet' ->> 'MID')::integer, 1);
+      else cs_pts := 0;
+    end case;
+    pts := pts + cs_pts;
+  end if;
+
+  if p_position in ('GK', 'DEF') and s.goals_conceded > 0 then
+    pts := pts + ((floor(s.goals_conceded::numeric / 2) * conceded_penalty)::integer);
+  end if;
+
+  if p_position = 'GK' and s.saves >= 3 then
+    pts := pts + (floor(s.saves::numeric / 3)::integer * save_bonus);
+  end if;
+
+  pts := pts + (s.penalties_saved * coalesce((p_rules ->> 'penalty_save')::integer, 5));
+  pts := pts + (s.penalties_missed * coalesce((p_rules ->> 'penalty_miss')::integer, -2));
+  pts := pts + (s.yellow_cards * coalesce((p_rules ->> 'yellow_card')::integer, -1));
+  pts := pts + (s.red_cards * coalesce((p_rules ->> 'red_card')::integer, -3));
+  pts := pts + (s.own_goals * coalesce((p_rules ->> 'own_goal')::integer, -2));
+  pts := pts + s.bonus_points;
+
+  case p_position
+    when 'DEF', 'GK' then
+      dc_threshold := coalesce((p_rules -> 'defensive_contributions' ->> 'DEF_threshold')::integer, 10);
+    else
+      dc_threshold := coalesce((p_rules -> 'defensive_contributions' ->> 'MID_FWD_threshold')::integer, 12);
+  end case;
+
+  if s.defensive_contributions >= dc_threshold then
+    pts := pts + coalesce((p_rules -> 'defensive_contributions' ->> 'points')::integer, 2);
+  end if;
+
+  if s.stage_advanced then
+    pts := pts + coalesce((p_rules ->> 'stage_advance')::integer, 0);
+  end if;
+
+  return pts;
+end;
+$$;
+
+create or replace function fantasy.save_squad_selections(
+  p_entry_id uuid,
+  p_gameweek_id uuid,
+  p_selections jsonb
+) returns integer
+language plpgsql
+as $$
+declare
+  v_competition_id uuid;
+  v_squad_config jsonb;
+  v_total integer;
+  v_distinct_players integer;
+  v_starters integer;
+  v_captains integer;
+  v_vice_captains integer;
+  v_purchase_total integer;
+  v_squad_size integer;
+  v_starters_required integer;
+  v_budget integer;
+  v_source_gameweek_id uuid;
+begin
+  perform fantasy.assert_entry_owner(p_entry_id);
+  perform fantasy.assert_gameweek_open(p_gameweek_id);
+  v_competition_id := fantasy.assert_entry_gameweek_matches_competition(p_entry_id, p_gameweek_id);
+  perform fantasy.assert_competition_access(v_competition_id, true, false);
+
+  select c.squad_config
+  into v_squad_config
+  from fantasy.fantasy_entries fe
+  join fantasy.competitions c
+    on c.id = fe.competition_id
+  where fe.id = p_entry_id;
+
+  if v_competition_id is null then
+    raise exception 'Fantasy entry not found.';
+  end if;
+
+  v_source_gameweek_id := fantasy.resolve_effective_squad_gameweek(p_entry_id, p_gameweek_id);
+
+  with payload as (
+    select *
+    from jsonb_to_recordset(p_selections) as payload(
+      player_id integer,
+      position fantasy.player_position,
+      is_starter boolean,
+      bench_order integer,
+      is_captain boolean,
+      is_vice_captain boolean,
+      purchase_price integer,
+      multiplier integer
+    )
+  ),
+  resolved_prices as (
+    select
+      payload.player_id,
+      coalesce(existing.purchase_price, prices.price) as resolved_purchase_price
+    from payload
+    join fantasy.player_competition_prices prices
+      on prices.player_id = payload.player_id
+     and prices.competition_id = v_competition_id
+    left join fantasy.squad_selections existing
+      on existing.entry_id = p_entry_id
+     and existing.gameweek_id = v_source_gameweek_id
+     and existing.player_id = payload.player_id
+  )
+  select
+    count(*)::integer,
+    count(distinct payload.player_id)::integer,
+    count(*) filter (where payload.is_starter)::integer,
+    count(*) filter (where payload.is_captain)::integer,
+    count(*) filter (where payload.is_vice_captain)::integer,
+    coalesce(sum(resolved_prices.resolved_purchase_price), 0)::integer
+  into
+    v_total,
+    v_distinct_players,
+    v_starters,
+    v_captains,
+    v_vice_captains,
+    v_purchase_total
+  from payload
+  join resolved_prices
+    on resolved_prices.player_id = payload.player_id;
+
+  v_squad_size := coalesce((v_squad_config ->> 'squad_size')::integer, 15);
+  v_starters_required := coalesce((v_squad_config ->> 'starters')::integer, 11);
+  v_budget := coalesce((v_squad_config ->> 'budget')::integer, 1000);
+
+  if v_total <> v_squad_size then
+    raise exception 'Expected % squad members, received %.', v_squad_size, v_total;
+  end if;
+
+  if v_distinct_players <> v_total then
+    raise exception 'Duplicate players are not allowed in a fantasy squad.';
+  end if;
+
+  if v_starters <> v_starters_required then
+    raise exception 'Expected % starters, received %.', v_starters_required, v_starters;
+  end if;
+
+  if v_captains <> 1 or v_vice_captains <> 1 then
+    raise exception 'Exactly one captain and one vice-captain are required.';
+  end if;
+
+  if v_purchase_total > v_budget then
+    raise exception 'Squad budget exceeded.';
+  end if;
+
+  if exists (
+    select 1
+    from (
+      select bench_order, count(*) as occurrences
+      from jsonb_to_recordset(p_selections) as payload(
+        player_id integer,
+        position fantasy.player_position,
+        is_starter boolean,
+        bench_order integer,
+        is_captain boolean,
+        is_vice_captain boolean,
+        purchase_price integer,
+        multiplier integer
+      )
+      where bench_order is not null
+      group by bench_order
+      having count(*) > 1
+    ) duplicate_orders
+  ) then
+    raise exception 'Bench order values must be unique.';
+  end if;
+
+  if exists (
+    with payload as (
+      select *
+      from jsonb_to_recordset(p_selections) as payload(
+        player_id integer,
+        position fantasy.player_position,
+        is_starter boolean,
+        bench_order integer,
+        is_captain boolean,
+        is_vice_captain boolean,
+        purchase_price integer,
+        multiplier integer
+      )
+    )
+    select 1
+    from payload
+    left join fantasy.players p
+      on p.external_id = payload.player_id
+    left join fantasy.player_competition_prices prices
+      on prices.player_id = payload.player_id
+     and prices.competition_id = v_competition_id
+    where p.external_id is null
+      or p.position is distinct from payload.position
+      or prices.player_id is null
+  ) then
+    raise exception 'Every selection must map to a valid priced player with a matching position.';
+  end if;
+
+  if exists (
+    with payload as (
+      select *
+      from jsonb_to_recordset(p_selections) as payload(
+        player_id integer,
+        position fantasy.player_position,
+        is_starter boolean,
+        bench_order integer,
+        is_captain boolean,
+        is_vice_captain boolean,
+        purchase_price integer,
+        multiplier integer
+      )
+    ),
+    club_counts as (
+      select p.team_id, count(*) as club_count
+      from payload
+      join fantasy.players p
+        on p.external_id = payload.player_id
+      group by p.team_id
+    )
+    select 1
+    from club_counts
+    where club_count > coalesce((v_squad_config ->> 'max_per_club')::integer, 3)
+  ) then
+    raise exception 'Maximum players per club exceeded for this competition.';
+  end if;
+
+  if exists (
+    with payload as (
+      select *
+      from jsonb_to_recordset(p_selections) as payload(
+        player_id integer,
+        position fantasy.player_position,
+        is_starter boolean,
+        bench_order integer,
+        is_captain boolean,
+        is_vice_captain boolean,
+        purchase_price integer,
+        multiplier integer
+      )
+      where is_starter = true
+    )
+    select 1
+    from (
+      select
+        count(*) filter (where position = 'GK') as gk_count,
+        count(*) filter (where position = 'DEF') as def_count,
+        count(*) filter (where position = 'MID') as mid_count,
+        count(*) filter (where position = 'FWD') as fwd_count
+      from payload
+    ) counts
+    where gk_count <> 1
+      or def_count < coalesce((v_squad_config ->> 'min_def')::integer, 3)
+      or def_count > coalesce((v_squad_config ->> 'max_def')::integer, 5)
+      or mid_count < coalesce((v_squad_config ->> 'min_mid')::integer, 2)
+      or mid_count > coalesce((v_squad_config ->> 'max_mid')::integer, 5)
+      or fwd_count < coalesce((v_squad_config ->> 'min_fwd')::integer, 1)
+      or fwd_count > coalesce((v_squad_config ->> 'max_fwd')::integer, 3)
+  ) then
+    raise exception 'Selected starting formation is invalid.';
+  end if;
+
+  delete from fantasy.squad_selections
+  where entry_id = p_entry_id
+    and gameweek_id = p_gameweek_id;
+
+  insert into fantasy.squad_selections (
+    entry_id,
+    gameweek_id,
+    player_id,
+    position,
+    is_starter,
+    bench_order,
+    is_captain,
+    is_vice_captain,
+    purchase_price,
+    multiplier
+  )
+  with payload as (
+    select *
+    from jsonb_to_recordset(p_selections) as payload(
+      player_id integer,
+      position fantasy.player_position,
+      is_starter boolean,
+      bench_order integer,
+      is_captain boolean,
+      is_vice_captain boolean,
+      purchase_price integer,
+      multiplier integer
+    )
+  ),
+  resolved_prices as (
+    select
+      payload.player_id,
+      coalesce(existing.purchase_price, prices.price) as resolved_purchase_price
+    from payload
+    join fantasy.player_competition_prices prices
+      on prices.player_id = payload.player_id
+     and prices.competition_id = v_competition_id
+    left join fantasy.squad_selections existing
+      on existing.entry_id = p_entry_id
+     and existing.gameweek_id = v_source_gameweek_id
+     and existing.player_id = payload.player_id
+  )
+  select
+    p_entry_id,
+    p_gameweek_id,
+    payload.player_id,
+    payload.position,
+    coalesce(payload.is_starter, true),
+    payload.bench_order,
+    coalesce(payload.is_captain, false),
+    coalesce(payload.is_vice_captain, false),
+    resolved_prices.resolved_purchase_price,
+    case
+      when coalesce(payload.is_captain, false) then greatest(coalesce(payload.multiplier, 2), 2)
+      else coalesce(payload.multiplier, 1)
+    end
+  from payload
+  join resolved_prices
+    on resolved_prices.player_id = payload.player_id;
+
+  update fantasy.fantasy_entries
+  set
+    team_value = v_purchase_total,
+    bank_balance = greatest(v_budget - v_purchase_total, 0),
+    updated_at = now()
+  where id = p_entry_id;
+
+  return v_total;
+end;
+$$;
+
+create or replace function fantasy.aggregate_entry_score(
+  p_entry_id uuid,
+  p_gameweek_id uuid
+) returns integer
+language plpgsql
+as $$
+declare
+  rules jsonb;
+  squad_config jsonb;
+  total_pts integer := 0;
+  transfer_cost integer := 0;
+  chip text;
+  captain_mult integer;
+  min_def integer;
+  min_mid integer;
+  min_fwd integer;
+  starter_gk_count integer := 0;
+  starter_def_count integer := 0;
+  starter_mid_count integer := 0;
+  starter_fwd_count integer := 0;
+  missing_gk integer := 0;
+  missing_outfield integer := 0;
+  gk_bench_points integer := 0;
+  gk_bench_available boolean := false;
+  gk_bench_used boolean := false;
+  captain_player_id integer := 0;
+  vice_player_id integer := 0;
+  captain_played boolean := false;
+  vice_played boolean := false;
+  captain_points integer := 0;
+  vice_points integer := 0;
+  bench_orders integer[] := '{}';
+  bench_positions fantasy.player_position[] := '{}';
+  bench_points integer[] := '{}';
+  bench_played boolean[] := '{}';
+  bench_player_ids integer[] := '{}';
+  bench_count integer := 0;
+  best_mask integer := 0;
+  best_size integer := -1;
+  best_orders integer[] := '{}';
+  current_size integer;
+  current_orders integer[] := '{}';
+  current_def integer;
+  current_mid integer;
+  current_fwd integer;
+  mask integer;
+  idx integer;
+  include_player boolean;
+  rec record;
+begin
+  select
+    c.scoring_rules,
+    c.squad_config
+  into
+    rules,
+    squad_config
+  from fantasy.competitions c
+  join fantasy.gameweeks gw
+    on gw.competition_id = c.id
+  where gw.id = p_gameweek_id;
+
+  if rules is null then
+    raise exception 'Scoring rules not found for gameweek %.', p_gameweek_id;
+  end if;
+
+  captain_mult := coalesce((rules ->> 'captain_multiplier')::integer, 2);
+  min_def := coalesce((squad_config ->> 'min_def')::integer, 3);
+  min_mid := coalesce((squad_config ->> 'min_mid')::integer, 2);
+  min_fwd := coalesce((squad_config ->> 'min_fwd')::integer, 1);
+
+  select chip_played, coalesce(transfer_cost, 0)
+  into chip, transfer_cost
+  from fantasy.entry_gameweek_scores
+  where entry_id = p_entry_id
+    and gameweek_id = p_gameweek_id;
+
+  if chip = 'triple_captain' then
+    captain_mult := coalesce((rules ->> 'triple_captain_multiplier')::integer, 3);
+  end if;
+
+  if chip = 'bench_boost' then
+    for rec in
+      select
+        ss.player_id,
+        ss.is_captain,
+        ss.is_vice_captain,
+        p.position,
+        coalesce(pgs.id, null) as stats_id,
+        coalesce(pgs.minutes_played, 0) as minutes_played,
+        coalesce(pgs.raw_points, 0) as raw_points
+      from fantasy.squad_selections ss
+      join fantasy.players p
+        on p.external_id = ss.player_id
+      left join fantasy.player_gameweek_stats pgs
+        on pgs.player_id = ss.player_id
+       and pgs.gameweek_id = p_gameweek_id
+      where ss.entry_id = p_entry_id
+        and ss.gameweek_id = p_gameweek_id
+    loop
+      if rec.stats_id is not null then
+        total_pts := total_pts + rec.raw_points;
+      end if;
+
+      if rec.is_captain then
+        captain_player_id := rec.player_id;
+        captain_played := rec.minutes_played > 0;
+        captain_points := rec.raw_points;
+      elsif rec.is_vice_captain then
+        vice_player_id := rec.player_id;
+        vice_played := rec.minutes_played > 0;
+        vice_points := rec.raw_points;
+      end if;
+    end loop;
+  else
+    for rec in
+      select
+        ss.player_id,
+        ss.is_starter,
+        ss.is_captain,
+        ss.is_vice_captain,
+        ss.bench_order,
+        p.position,
+        pgs.id as stats_id,
+        coalesce(pgs.minutes_played, 0) as minutes_played,
+        coalesce(pgs.raw_points, 0) as raw_points
+      from fantasy.squad_selections ss
+      join fantasy.players p
+        on p.external_id = ss.player_id
+      left join fantasy.player_gameweek_stats pgs
+        on pgs.player_id = ss.player_id
+       and pgs.gameweek_id = p_gameweek_id
+      where ss.entry_id = p_entry_id
+        and ss.gameweek_id = p_gameweek_id
+      order by ss.is_starter desc, ss.bench_order nulls last
+    loop
+      include_player := rec.stats_id is not null and rec.minutes_played > 0;
+
+      if rec.is_captain then
+        captain_player_id := rec.player_id;
+        captain_played := include_player;
+        captain_points := rec.raw_points;
+      elsif rec.is_vice_captain then
+        vice_player_id := rec.player_id;
+        vice_played := include_player;
+        vice_points := rec.raw_points;
+      end if;
+
+      if rec.is_starter then
+        if include_player then
+          total_pts := total_pts + rec.raw_points;
+          case rec.position
+            when 'GK' then starter_gk_count := starter_gk_count + 1;
+            when 'DEF' then starter_def_count := starter_def_count + 1;
+            when 'MID' then starter_mid_count := starter_mid_count + 1;
+            when 'FWD' then starter_fwd_count := starter_fwd_count + 1;
+          end case;
+        else
+          if rec.position = 'GK' then
+            missing_gk := missing_gk + 1;
+          else
+            missing_outfield := missing_outfield + 1;
+          end if;
+        end if;
+      else
+        bench_count := bench_count + 1;
+        bench_orders := array_append(bench_orders, coalesce(rec.bench_order, bench_count));
+        bench_positions := array_append(bench_positions, rec.position);
+        bench_player_ids := array_append(bench_player_ids, rec.player_id);
+        bench_played := array_append(bench_played, include_player);
+        bench_points := array_append(bench_points, case when include_player then rec.raw_points else 0 end);
+
+        if rec.position = 'GK' and include_player then
+          gk_bench_available := true;
+          gk_bench_points := rec.raw_points;
+        end if;
+      end if;
+    end loop;
+
+    if missing_gk > 0 and gk_bench_available then
+      total_pts := total_pts + gk_bench_points;
+      gk_bench_used := true;
+    end if;
+
+    if missing_outfield > 0 and bench_count > 0 then
+      for mask in 0..(power(2::numeric, bench_count)::integer - 1) loop
+        current_size := 0;
+        current_orders := '{}';
+        current_def := starter_def_count;
+        current_mid := starter_mid_count;
+        current_fwd := starter_fwd_count;
+
+        for idx in 1..bench_count loop
+          if bench_positions[idx] = 'GK' then
+            continue;
+          end if;
+
+          if ((mask >> (idx - 1)) & 1) = 1 then
+            if not bench_played[idx] then
+              current_size := -1;
+              exit;
+            end if;
+
+            current_size := current_size + 1;
+            current_orders := array_append(current_orders, bench_orders[idx]);
+
+            case bench_positions[idx]
+              when 'DEF' then current_def := current_def + 1;
+              when 'MID' then current_mid := current_mid + 1;
+              when 'FWD' then current_fwd := current_fwd + 1;
+              else null;
+            end case;
+          end if;
+        end loop;
+
+        if current_size < 0 or current_size > missing_outfield then
+          continue;
+        end if;
+
+        if current_def < min_def or current_mid < min_mid or current_fwd < min_fwd then
+          continue;
+        end if;
+
+        if current_size > best_size
+          or (current_size = best_size and (best_orders = '{}' or current_orders < best_orders)) then
+          best_mask := mask;
+          best_size := current_size;
+          best_orders := current_orders;
+        end if;
+      end loop;
+
+      if best_size > 0 then
+        for idx in 1..bench_count loop
+          if ((best_mask >> (idx - 1)) & 1) = 1 and bench_positions[idx] <> 'GK' then
+            total_pts := total_pts + bench_points[idx];
+          end if;
+        end loop;
+      end if;
+    end if;
+
+    if not captain_played and vice_player_id <> 0 then
+      vice_played := false;
+      if best_size > 0 or gk_bench_used or starter_gk_count > 0 or starter_def_count > 0 or starter_mid_count > 0 or starter_fwd_count > 0 then
+        for idx in 1..bench_count loop
+          if bench_player_ids[idx] = vice_player_id then
+            if bench_positions[idx] = 'GK' then
+              vice_played := gk_bench_used and bench_played[idx];
+            else
+              vice_played := ((best_mask >> (idx - 1)) & 1) = 1 and bench_played[idx];
+            end if;
+          end if;
+        end loop;
+      end if;
+    end if;
+  end if;
+
+  if captain_player_id <> 0 and captain_played then
+    total_pts := total_pts + (captain_points * greatest(captain_mult - 1, 0));
+  elsif vice_player_id <> 0 and vice_played then
+    total_pts := total_pts + (vice_points * greatest(captain_mult - 1, 0));
+  end if;
+
+  total_pts := total_pts + transfer_cost;
+
+  insert into fantasy.entry_gameweek_scores (
+    entry_id,
+    gameweek_id,
+    points,
+    calculated_at
+  )
+  values (
+    p_entry_id,
+    p_gameweek_id,
+    total_pts,
+    now()
+  )
+  on conflict (entry_id, gameweek_id)
+  do update set
+    points = excluded.points,
+    calculated_at = now();
+
+  update fantasy.fantasy_entries
+  set
+    overall_points = (
+      select coalesce(sum(points), 0)
+      from fantasy.entry_gameweek_scores
+      where entry_id = p_entry_id
+    ),
+    updated_at = now()
+  where id = p_entry_id;
+
+  return total_pts;
+end;
+$$;
+
+
+-- Fantasy gap-closure runtime:
+-- - league lifecycle RPCs and head-to-head fixtures
+-- - richer fixture payloads for World Cup bracket rendering
+-- - notification topic preferences
+-- - transfer audit logging with best-effort client IP hashing
+-- - worker discovery RPC for multi-competition ingestion
+
+alter table fantasy.fantasy_fixtures
+  add column if not exists kickoff_at timestamptz,
+  add column if not exists round_label text,
+  add column if not exists home_team_id integer,
+  add column if not exists home_team_name text,
+  add column if not exists home_team_short text,
+  add column if not exists home_logo_url text,
+  add column if not exists away_team_id integer,
+  add column if not exists away_team_name text,
+  add column if not exists away_team_short text,
+  add column if not exists away_logo_url text,
+  add column if not exists home_goals integer,
+  add column if not exists away_goals integer,
+  add column if not exists metadata jsonb not null default '{}'::jsonb;
+
+create table if not exists fantasy.fixture_injuries (
+  id             uuid primary key default uuid_generate_v4(),
+  competition_id uuid not null references fantasy.competitions(id) on delete cascade,
+  player_id      integer not null,
+  player_name    text not null,
+  team_id        integer,
+  team_name      text,
+  status         text not null default 'unknown',
+  reason         text,
+  source         text,
+  last_synced_at timestamptz not null default now(),
+  unique (competition_id, player_id)
+);
+
+create index if not exists idx_fixture_injuries_competition
+  on fantasy.fixture_injuries (competition_id, status);
+
+grant select on fantasy.fixture_injuries to anon, authenticated, service_role;
+grant insert, update, delete on fantasy.fixture_injuries to service_role;
+
+alter table fantasy.fixture_injuries enable row level security;
+
+drop policy if exists "fixture_injuries_public_read" on fantasy.fixture_injuries;
+create policy "fixture_injuries_public_read"
+on fantasy.fixture_injuries
+for select
+using (true);
+
+drop policy if exists "fixture_injuries_service_write" on fantasy.fixture_injuries;
+create policy "fixture_injuries_service_write"
+on fantasy.fixture_injuries
+for all
+using (auth.role() = 'service_role')
+with check (auth.role() = 'service_role');
+
+create table if not exists fantasy.transfer_audit_log (
+  id             uuid primary key default uuid_generate_v4(),
+  entry_id       uuid not null references fantasy.fantasy_entries(id) on delete cascade,
+  gameweek_id    uuid not null references fantasy.gameweeks(id) on delete cascade,
+  player_out_id  integer not null,
+  player_in_id   integer not null,
+  actor_user_id  uuid,
+  client_ip_hash text,
+  metadata       jsonb not null default '{}'::jsonb,
+  created_at     timestamptz not null default now()
+);
+
+create index if not exists idx_transfer_audit_log_entry_gameweek
+  on fantasy.transfer_audit_log (entry_id, gameweek_id, created_at desc);
+
+grant select on fantasy.transfer_audit_log to authenticated, service_role;
+grant insert on fantasy.transfer_audit_log to service_role;
+
+alter table fantasy.transfer_audit_log enable row level security;
+
+drop policy if exists "transfer_audit_owner_read" on fantasy.transfer_audit_log;
+create policy "transfer_audit_owner_read"
+on fantasy.transfer_audit_log
+for select
+using (
+  exists (
+    select 1
+    from fantasy.fantasy_entries fe
+    where fe.id = transfer_audit_log.entry_id
+      and fe.user_id = auth.uid()
+  )
+);
+
+drop policy if exists "transfer_audit_service_write" on fantasy.transfer_audit_log;
+create policy "transfer_audit_service_write"
+on fantasy.transfer_audit_log
+for all
+using (auth.role() = 'service_role')
+with check (auth.role() = 'service_role');
+
+create table if not exists fantasy.fantasy_notification_preferences (
+  user_id          uuid not null references auth.users(id) on delete cascade,
+  competition_id   uuid not null references fantasy.competitions(id) on delete cascade,
+  topic_enabled    boolean not null default true,
+  deadline_alerts  boolean not null default true,
+  gameplay_alerts  boolean not null default true,
+  league_alerts    boolean not null default true,
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now(),
+  primary key (user_id, competition_id)
+);
+
+grant select, insert, update, delete
+on fantasy.fantasy_notification_preferences
+to authenticated, service_role;
+
+alter table fantasy.fantasy_notification_preferences enable row level security;
+
+drop policy if exists "fantasy_notification_preferences_owner_read" on fantasy.fantasy_notification_preferences;
+create policy "fantasy_notification_preferences_owner_read"
+on fantasy.fantasy_notification_preferences
+for select
+using (user_id = auth.uid());
+
+drop policy if exists "fantasy_notification_preferences_owner_write" on fantasy.fantasy_notification_preferences;
+create policy "fantasy_notification_preferences_owner_write"
+on fantasy.fantasy_notification_preferences
+for insert
+with check (user_id = auth.uid());
+
+drop policy if exists "fantasy_notification_preferences_owner_update" on fantasy.fantasy_notification_preferences;
+create policy "fantasy_notification_preferences_owner_update"
+on fantasy.fantasy_notification_preferences
+for update
+using (user_id = auth.uid())
+with check (user_id = auth.uid());
+
+drop policy if exists "fantasy_notification_preferences_owner_delete" on fantasy.fantasy_notification_preferences;
+create policy "fantasy_notification_preferences_owner_delete"
+on fantasy.fantasy_notification_preferences
+for delete
+using (user_id = auth.uid());
+
+drop trigger if exists fantasy_notification_preferences_updated_at
+on fantasy.fantasy_notification_preferences;
+create trigger fantasy_notification_preferences_updated_at
+before update on fantasy.fantasy_notification_preferences
+for each row execute function fantasy.set_updated_at();
+
+create table if not exists fantasy.league_h2h_fixtures (
+  id              uuid primary key default uuid_generate_v4(),
+  league_id       uuid not null references fantasy.leagues(id) on delete cascade,
+  gameweek_id     uuid not null references fantasy.gameweeks(id) on delete cascade,
+  round_number    integer not null,
+  home_entry_id   uuid not null references fantasy.fantasy_entries(id) on delete cascade,
+  away_entry_id   uuid not null references fantasy.fantasy_entries(id) on delete cascade,
+  home_points     integer,
+  away_points     integer,
+  winner_entry_id uuid references fantasy.fantasy_entries(id) on delete set null,
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz not null default now(),
+  unique (league_id, gameweek_id, home_entry_id, away_entry_id)
+);
+
+create index if not exists idx_league_h2h_fixtures_league_gameweek
+  on fantasy.league_h2h_fixtures (league_id, gameweek_id, round_number);
+
+grant select on fantasy.league_h2h_fixtures to authenticated, service_role;
+grant insert, update, delete on fantasy.league_h2h_fixtures to service_role;
+
+alter table fantasy.league_h2h_fixtures enable row level security;
+
+drop policy if exists "league_h2h_fixture_member_read" on fantasy.league_h2h_fixtures;
+create policy "league_h2h_fixture_member_read"
+on fantasy.league_h2h_fixtures
+for select
+using (
+  exists (
+    select 1
+    from fantasy.league_memberships lm
+    join fantasy.fantasy_entries fe
+      on fe.id = lm.entry_id
+    where lm.league_id = league_h2h_fixtures.league_id
+      and fe.user_id = auth.uid()
+  )
+);
+
+drop policy if exists "league_h2h_fixture_service_write" on fantasy.league_h2h_fixtures;
+create policy "league_h2h_fixture_service_write"
+on fantasy.league_h2h_fixtures
+for all
+using (auth.role() = 'service_role')
+with check (auth.role() = 'service_role');
+
+drop trigger if exists league_h2h_fixtures_updated_at
+on fantasy.league_h2h_fixtures;
+create trigger league_h2h_fixtures_updated_at
+before update on fantasy.league_h2h_fixtures
+for each row execute function fantasy.set_updated_at();
+
+create or replace function fantasy.request_ip_hash()
+returns text
+language plpgsql
+stable
+as $$
+declare
+  v_headers jsonb;
+  v_ip text;
+begin
+  begin
+    v_headers := nullif(current_setting('request.headers', true), '')::jsonb;
+  exception
+    when others then
+      v_headers := null;
+  end;
+
+  if v_headers is null then
+    return null;
+  end if;
+
+  v_ip := coalesce(
+    v_headers ->> 'cf-connecting-ip',
+    v_headers ->> 'x-real-ip',
+    split_part(coalesce(v_headers ->> 'x-forwarded-for', ''), ',', 1)
+  );
+
+  if nullif(btrim(v_ip), '') is null then
+    return null;
+  end if;
+
+  return encode(digest(btrim(v_ip), 'sha256'), 'hex');
+end;
+$$;
+
+create or replace function fantasy.topic_for_competition(
+  p_competition_id uuid
+) returns text
+language sql
+stable
+as $$
+  select 'fantasy_' || replace(slug, '-', '_')
+  from fantasy.competitions
+  where id = p_competition_id;
+$$;
+
+create or replace function fantasy.audit_transfer_history()
+returns trigger
+language plpgsql
+security definer
+set search_path = public, fantasy
+as $$
+begin
+  insert into fantasy.transfer_audit_log (
+    entry_id,
+    gameweek_id,
+    player_out_id,
+    player_in_id,
+    actor_user_id,
+    client_ip_hash,
+    metadata
+  )
+  values (
+    new.entry_id,
+    new.gameweek_id,
+    new.player_out_id,
+    new.player_in_id,
+    auth.uid(),
+    fantasy.request_ip_hash(),
+    jsonb_build_object(
+      'sell_price', new.sell_price,
+      'buy_price', new.buy_price
+    )
+  );
+
+  return new;
+end;
+$$;
+
+drop trigger if exists transfer_history_audit_row
+on fantasy.transfer_history;
+create trigger transfer_history_audit_row
+after insert on fantasy.transfer_history
+for each row execute function fantasy.audit_transfer_history();
+
+create or replace function fantasy.league_member_count(
+  p_league_id uuid
+) returns integer
+language sql
+stable
+as $$
+  select count(*)::integer
+  from fantasy.league_memberships
+  where league_id = p_league_id;
+$$;
+
+create or replace function fantasy.stage_from_round(
+  p_round_label text,
+  p_gameweek_name text,
+  p_gameweek_number integer
+) returns text
+language plpgsql
+stable
+as $$
+declare
+  v_round text := lower(coalesce(p_round_label, ''));
+  v_name text := lower(coalesce(p_gameweek_name, ''));
+begin
+  if v_round like '%group%' or v_name like '%group%' then
+    return 'Groups';
+  elsif v_round like '%round of 32%' or v_round like '%r32%' or v_name like '%opening%' then
+    return 'R32';
+  elsif v_round like '%round of 16%' or v_round like '%r16%' or v_round like '%1/8%' then
+    return 'R16';
+  elsif v_round like '%quarter%' or v_round like '%qf%' then
+    return 'QF';
+  elsif v_round like '%semi%' or v_round like '%sf%' then
+    return 'SF';
+  elsif v_round like '%final%' or v_name like '%final%' then
+    return 'Final';
+  end if;
+
+  return case
+    when p_gameweek_number <= 3 then 'Groups'
+    when p_gameweek_number = 4 then 'R32'
+    when p_gameweek_number = 5 then 'R16'
+    when p_gameweek_number = 6 then 'QF'
+    when p_gameweek_number = 7 then 'SF'
+    else 'Final'
+  end;
+end;
+$$;
+
+create or replace function fantasy.stage_order(
+  p_stage text
+) returns integer
+language sql
+stable
+as $$
+  select case p_stage
+    when 'Groups' then 1
+    when 'R32' then 2
+    when 'R16' then 3
+    when 'QF' then 4
+    when 'SF' then 5
+    when 'Final' then 6
+    else 99
+  end;
+$$;
+
+create or replace function fantasy.rebuild_h2h_schedule(
+  p_league_id uuid
+) returns integer
+language plpgsql
+security definer
+set search_path = public, fantasy
+as $$
+declare
+  v_type fantasy.league_type;
+  v_competition_id uuid;
+  v_started boolean := false;
+  v_original uuid[];
+  v_working uuid[];
+  v_gameweeks uuid[];
+  v_count integer := 0;
+  v_rounds integer := 0;
+  v_half integer := 0;
+  v_round integer;
+  v_cycle integer;
+  v_gameweek_index integer;
+  v_match integer;
+  v_home uuid;
+  v_away uuid;
+  v_tmp uuid;
+  v_inserted integer := 0;
+begin
+  select type, competition_id
+  into v_type, v_competition_id
+  from fantasy.leagues
+  where id = p_league_id;
+
+  if v_type is null then
+    raise exception 'Fantasy league not found.';
+  end if;
+
+  if v_type <> 'head_to_head' then
+    delete from fantasy.league_h2h_fixtures
+    where league_id = p_league_id;
+    return 0;
+  end if;
+
+  select exists (
+    select 1
+    from fantasy.gameweeks
+    where competition_id = v_competition_id
+      and deadline_at <= now()
+  )
+  into v_started;
+
+  if v_started then
+    raise exception 'Head-to-head schedules cannot change after the competition deadline has passed.';
+  end if;
+
+  select array_agg(lm.entry_id order by fe.created_at asc, lm.joined_at asc, lm.entry_id asc)
+  into v_original
+  from fantasy.league_memberships lm
+  join fantasy.fantasy_entries fe
+    on fe.id = lm.entry_id
+  where lm.league_id = p_league_id;
+
+  if coalesce(array_length(v_original, 1), 0) < 2 then
+    delete from fantasy.league_h2h_fixtures
+    where league_id = p_league_id;
+    return 0;
+  end if;
+
+  if mod(array_length(v_original, 1), 2) = 1 then
+    v_original := v_original || null::uuid;
+  end if;
+
+  select array_agg(id order by number asc)
+  into v_gameweeks
+  from fantasy.gameweeks
+  where competition_id = v_competition_id;
+
+  if coalesce(array_length(v_gameweeks, 1), 0) = 0 then
+    return 0;
+  end if;
+
+  delete from fantasy.league_h2h_fixtures
+  where league_id = p_league_id;
+
+  v_count := array_length(v_original, 1);
+  v_rounds := greatest(v_count - 1, 1);
+  v_half := v_count / 2;
+  v_gameweek_index := 1;
+
+  for v_cycle in 1..2 loop
+    v_working := v_original;
+
+    for v_round in 1..v_rounds loop
+      exit when v_gameweek_index > array_length(v_gameweeks, 1);
+
+      for v_match in 1..v_half loop
+        v_home := v_working[v_match];
+        v_away := v_working[v_count - v_match + 1];
+
+        if v_home is not null and v_away is not null then
+          if v_cycle = 2 then
+            v_tmp := v_home;
+            v_home := v_away;
+            v_away := v_tmp;
+          end if;
+
+          insert into fantasy.league_h2h_fixtures (
+            league_id,
+            gameweek_id,
+            round_number,
+            home_entry_id,
+            away_entry_id
+          )
+          values (
+            p_league_id,
+            v_gameweeks[v_gameweek_index],
+            ((v_cycle - 1) * v_rounds) + v_round,
+            v_home,
+            v_away
+          );
+
+          v_inserted := v_inserted + 1;
+        end if;
+      end loop;
+
+      v_gameweek_index := v_gameweek_index + 1;
+      exit when v_gameweek_index > array_length(v_gameweeks, 1);
+
+      v_working := array_cat(
+        array[v_working[1], v_working[v_count]],
+        v_working[2:v_count - 1]
+      );
+    end loop;
+  end loop;
+
+  return v_inserted;
+end;
+$$;
+
+
+
 -- Name: fantasy_activate_chip(uuid, uuid, text); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -9112,7 +12252,9 @@ BEGIN
   END IF;
 
   IF NEW.partner_id IS NULL AND NEW.club_id IS NOT NULL THEN
-    NEW.partner_id := NEW.club_id::text;
+    IF pg_typeof(NEW.partner_id)::text = 'text' THEN
+      NEW.partner_id := NEW.club_id::text;
+    END IF;
   END IF;
 
   RETURN NEW;
@@ -19061,4 +22203,3 @@ CREATE POLICY xp_events_select_own ON public.xp_events FOR SELECT USING ((((club
 --
 
 \unrestrict 6UcGSvQ5xSJTJpWQOthudHTiI0rAqtzfxWKry1AkVoIF8AXN5DmhleRmYCVDyOV
-

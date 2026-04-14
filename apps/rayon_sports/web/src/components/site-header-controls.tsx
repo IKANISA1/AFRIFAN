@@ -6,6 +6,7 @@ import { Menu, Search, User } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
+import type { SiteChromeCopy } from "@/lib/site-copy";
 import { ui } from "@/design-system";
 
 const MobileNavDrawer = dynamic(
@@ -20,9 +21,10 @@ const SearchDialog = dynamic(
 
 interface SiteHeaderControlsProps {
   club: ClubProfile;
+  copy: SiteChromeCopy;
 }
 
-export function SiteHeaderControls({ club }: SiteHeaderControlsProps) {
+export function SiteHeaderControls({ club, copy }: SiteHeaderControlsProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -48,11 +50,11 @@ export function SiteHeaderControls({ club }: SiteHeaderControlsProps) {
           type="button"
           onClick={() => setIsSearchOpen(true)}
           className={`${ui.iconButton} min-w-11 px-3 text-slate-200 focus-ring`}
-          aria-label="Search"
+          aria-label={copy.search}
         >
           <Search size={18} />
           <span className={`ml-2 hidden ${ui.meta} xl:inline`}>
-            Search
+            {copy.search}
           </span>
         </button>
         <Link
@@ -60,7 +62,7 @@ export function SiteHeaderControls({ club }: SiteHeaderControlsProps) {
           className={`${ui.buttonPrimary} cta-glow hidden px-4 py-2.5 focus-ring md:inline-flex`}
         >
           <User size={15} />
-          Fan app
+          {copy.fanApp}
         </Link>
         <button
           type="button"

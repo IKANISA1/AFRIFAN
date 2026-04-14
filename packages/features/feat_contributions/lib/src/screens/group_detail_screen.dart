@@ -140,7 +140,13 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           ),
         ),
         leading: IconButton(
-          onPressed: () => context.pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/contribute/groups');
+            }
+          },
           icon: const Icon(Icons.arrow_back_rounded),
         ),
         actions: [
@@ -165,167 +171,141 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
               body: 'Try returning to your circles and opening it again.',
               onPressed: () => context.go('/contribute/groups'),
             )
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
-              child: Column(
-                children: [
-                  GlassCard(
-                    animate: false,
-                    child: Column(
-                      children: [
-                        Text(
-                          currency.format(currentTotal),
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 44,
-                            fontWeight: FontWeight.w900,
-                            color: ColorTokens.clubAccent,
-                          ),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing1),
-                        Text(
-                          'Target ${currency.format(targetAmount)}  •  ${(progress * 100).round()}%',
-                          style: TypographyTokens.bodyMedium(),
-                        ),
-                        if (description != null && description.isNotEmpty) ...[
-                          const SizedBox(height: SpacingTokens.spacing3),
+          : RefreshIndicator(
+              onRefresh: _loadGroup,
+              color: Theme.of(context).primaryColor,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                child: Column(
+                  children: [
+                    GlassCard(
+                      animate: false,
+                      child: Column(
+                        children: [
                           Text(
-                            description,
-                            textAlign: TextAlign.center,
+                            currency.format(currentTotal),
+                            style: TypographyTokens.monolithFont(
+                              fontSize: 44,
+                              fontWeight: FontWeight.w900,
+                              color: ColorTokens.clubAccent,
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing1),
+                          Text(
+                            'Target ${currency.format(targetAmount)}  •  ${(progress * 100).round()}%',
                             style: TypographyTokens.bodyMedium(),
                           ),
-                        ],
-                        const SizedBox(height: SpacingTokens.spacing4),
-                        LinearProgressIndicator(
-                          value: progress,
-                          minHeight: 10,
-                          borderRadius: BorderRadius.circular(999),
-                          color: Theme.of(context).colorScheme.primary,
-                          backgroundColor: ColorTokens.surfaceContainerHighest,
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing4),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _GroupMetaStat(
-                              label: 'PRIVACY',
-                              value: privacy.toUpperCase(),
-                            ),
-                            _GroupMetaStat(
-                              label: 'MEMBERS',
-                              value: '$memberCount',
+                          if (description != null && description.isNotEmpty) ...[
+                            const SizedBox(height: SpacingTokens.spacing3),
+                            Text(
+                              description,
+                              textAlign: TextAlign.center,
+                              style: TypographyTokens.bodyMedium(),
                             ),
                           ],
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          LinearProgressIndicator(
+                            value: progress,
+                            minHeight: 10,
+                            borderRadius: BorderRadius.circular(999),
+                            color: Theme.of(context).colorScheme.primary,
+                            backgroundColor: ColorTokens.surfaceContainerHighest,
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _GroupMetaStat(
+                                label: 'PRIVACY',
+                                value: privacy.toUpperCase(),
+                              ),
+                              _GroupMetaStat(
+                                label: 'MEMBERS',
+                                value: '$memberCount',
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing5),
+                          ClaymorphicButton(
+                            label: 'CONTRIBUTE NOW',
+                            width: double.infinity,
+                            onPressed: () => showMomoAmountEntrySheet(
+                              context,
+                              title: title,
+                              groupId: widget.groupId,
+                              recipientMomo:
+                                  group['momo_recipient_code']?.toString() ??
+                                  group['receiving_momo_code']?.toString(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => context.push(
+                              '/contribute/group/${widget.groupId}/chat',
+                            ),
+                            child: const Text('CHAT'),
+                          ),
                         ),
-                        const SizedBox(height: SpacingTokens.spacing5),
-                        ClaymorphicButton(
-                          label: 'CONTRIBUTE NOW',
-                          width: double.infinity,
-                          onPressed: () => showMomoAmountEntrySheet(
-                            context,
-                            title: title,
-                            groupId: widget.groupId,
-                            recipientMomo:
-                                group['momo_recipient_code']?.toString() ??
-                                group['receiving_momo_code']?.toString(),
+                        const SizedBox(width: SpacingTokens.spacing3),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => context.push(
+                              '/contribute/group/${widget.groupId}/settings',
+                            ),
+                            child: const Text('SETTINGS'),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => context.push(
-                            '/contribute/group/${widget.groupId}/chat',
-                          ),
-                          child: const Text('CHAT'),
-                        ),
-                      ),
-                      const SizedBox(width: SpacingTokens.spacing3),
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => context.push(
-                            '/contribute/group/${widget.groupId}/settings',
-                          ),
-                          child: const Text('SETTINGS'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing6),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'LEDGER',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: ColorTokens.onSurface,
-                            letterSpacing: 1.2,
+                    const SizedBox(height: SpacingTokens.spacing6),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'LEDGER',
+                            style: TypographyTokens.monolithFont(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: ColorTokens.onSurface,
+                              letterSpacing: 1.2,
+                            ),
                           ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () => showAfriFilterSortSheet(
-                          context: context,
-                          title: 'Ledger Filters',
-                          sortOptions: const [
-                            AfriFilterOption(value: 'newest', label: 'Newest'),
-                            AfriFilterOption(value: 'oldest', label: 'Oldest'),
-                            AfriFilterOption(
-                              value: 'amount_high',
-                              label: 'Amount High',
-                            ),
-                            AfriFilterOption(
-                              value: 'amount_low',
-                              label: 'Amount Low',
-                            ),
-                          ],
-                          typeOptions: const [
-                            AfriFilterOption(
-                              value: 'contributions',
-                              label: 'Contributions',
-                            ),
-                            AfriFilterOption(
-                              value: 'receipts',
-                              label: 'Receipts',
-                            ),
-                          ],
-                          showDateRange: true,
-                          showAmountRange: true,
-                        ),
-                        icon: const Icon(Icons.tune_rounded),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing3),
-                  if (_ledger.isEmpty)
-                    GlassCard(
-                      animate: false,
-                      child: Text(
-                        'No contributions have been recorded for this circle yet.',
-                        style: TypographyTokens.bodyMedium(),
-                      ),
+                      ],
                     ),
-                  ..._ledger.map((entry) {
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: SpacingTokens.spacing3,
-                      ),
-                      child: _LedgerRow(
-                        alias: entry['alias']?.toString() ?? '#------',
-                        amount: currency.format(
-                          (entry['amount'] as num?)?.toInt() ?? 0,
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    if (_ledger.isEmpty)
+                      GlassCard(
+                        animate: false,
+                        child: Text(
+                          'No contributions have been recorded for this circle yet.',
+                          style: TypographyTokens.bodyMedium(),
                         ),
-                        time:
-                            '${entry['time']?.toString() ?? 'just now'}  •  ${(entry['status']?.toString() ?? 'pending').toUpperCase()}',
                       ),
-                    );
-                  }),
-                ],
+                    ..._ledger.map((entry) {
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: SpacingTokens.spacing3,
+                        ),
+                        child: _LedgerRow(
+                          alias: entry['alias']?.toString() ?? '#------',
+                          amount: currency.format(
+                            (entry['amount'] as num?)?.toInt() ?? 0,
+                          ),
+                          time:
+                              '${entry['time']?.toString() ?? 'just now'}  •  ${(entry['status']?.toString() ?? 'pending').toUpperCase()}',
+                        ),
+                      );
+                    }),
+                  ],
+                ),
               ),
             ),
     );

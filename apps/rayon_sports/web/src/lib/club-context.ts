@@ -33,6 +33,13 @@ function normalizeCandidate(value: string) {
   return trimmed.replace(/-/g, "_");
 }
 
+function resolveClubShortName(row: ClubLookupRow | null | undefined) {
+  return safeString(
+    row?.club_name,
+    safeString(row?.nickname_brand_identity, rayonClub.shortName),
+  );
+}
+
 function getHostOverride(hostname: string) {
   if (!hostname) {
     return null;
@@ -96,7 +103,7 @@ function mapClubRow(row: ClubLookupRow | null | undefined) {
     numericId: safeNumber(row.id, rayonClub.numericId),
     slug: safeString(row.club_slug, rayonClub.slug),
     name: safeString(row.club_name, rayonClub.name),
-    shortName: safeString(row.short_name, rayonClub.shortName),
+    shortName: resolveClubShortName(row),
   } satisfies ActiveClubReference;
 }
 
@@ -109,7 +116,7 @@ async function fetchClubById(id: number) {
   try {
     const { data } = await client
       .from("african_football_clubs")
-      .select("id, club_slug, club_name, short_name")
+      .select("id, club_slug, club_name, nickname_brand_identity")
       .eq("id", id)
       .maybeSingle();
 
@@ -128,7 +135,7 @@ async function fetchClubBySlug(slug: string) {
   try {
     const { data } = await client
       .from("african_football_clubs")
-      .select("id, club_slug, club_name, short_name")
+      .select("id, club_slug, club_name, nickname_brand_identity")
       .eq("club_slug", slug)
       .maybeSingle();
 

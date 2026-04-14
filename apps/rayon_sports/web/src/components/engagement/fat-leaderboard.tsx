@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 interface LeaderboardEntry {
   rank: number;
   name: string;
-  fat: number;
+  score: number;
   level: string;
   isCurrentUser?: boolean;
 }
@@ -14,12 +14,13 @@ interface FatLeaderboardProps {
   entries: LeaderboardEntry[];
   currentUserRank?: number;
   currentUserName?: string;
-  currentUserFat?: number;
+  currentUserScore?: number;
   currentUserLevel?: string;
+  scoreLabel?: string;
 }
 
 /**
- * FAT Leaderboard — top 10 fans ranked by Fan Achievement Tokens.
+ * FET leaderboard — top 10 fans ranked by Fan Engagement Tokens.
  * Shows a podium-style top 3, then a list for 4–10, plus the current
  * user's position if they're outside the top 10.
  */
@@ -27,8 +28,9 @@ export function FatLeaderboard({
   entries,
   currentUserRank,
   currentUserName,
-  currentUserFat,
+  currentUserScore,
   currentUserLevel,
+  scoreLabel = "FET",
 }: FatLeaderboardProps) {
   const top3 = entries.slice(0, 3);
   const rest = entries.slice(3);
@@ -49,15 +51,31 @@ export function FatLeaderboard({
         <div className="mt-5 flex items-end justify-center gap-3">
           {/* 2nd place */}
           {top3[1] && (
-            <PodiumCard entry={top3[1]} medal="🥈" height="h-24" />
+            <PodiumCard
+              entry={top3[1]}
+              medal="🥈"
+              height="h-24"
+              scoreLabel={scoreLabel}
+            />
           )}
           {/* 1st place */}
           {top3[0] && (
-            <PodiumCard entry={top3[0]} medal="🥇" height="h-32" highlight />
+            <PodiumCard
+              entry={top3[0]}
+              medal="🥇"
+              height="h-32"
+              highlight
+              scoreLabel={scoreLabel}
+            />
           )}
           {/* 3rd place */}
           {top3[2] && (
-            <PodiumCard entry={top3[2]} medal="🥉" height="h-20" />
+            <PodiumCard
+              entry={top3[2]}
+              medal="🥉"
+              height="h-20"
+              scoreLabel={scoreLabel}
+            />
           )}
         </div>
       </div>
@@ -90,7 +108,7 @@ export function FatLeaderboard({
                   </div>
                 </div>
                 <span className="shrink-0 rounded-full bg-club-accent/15 px-3 py-1 text-[11px] font-bold tabular-nums text-club-accent">
-                  {entry.fat.toLocaleString()} FAT
+                  {entry.score.toLocaleString()} {scoreLabel}
                 </span>
               </div>
             ))}
@@ -119,7 +137,7 @@ export function FatLeaderboard({
               </div>
             </div>
             <span className="shrink-0 rounded-full bg-club-accent/15 px-3 py-1 text-[11px] font-bold tabular-nums text-club-accent">
-              {currentUserFat?.toLocaleString()} FAT
+              {currentUserScore?.toLocaleString()} {scoreLabel}
             </span>
           </div>
         </div>
@@ -133,11 +151,13 @@ function PodiumCard({
   medal,
   height,
   highlight = false,
+  scoreLabel,
 }: {
   entry: LeaderboardEntry;
   medal: string;
   height: string;
   highlight?: boolean;
+  scoreLabel: string;
 }) {
   return (
     <div
@@ -154,7 +174,7 @@ function PodiumCard({
         {entry.name}
       </p>
       <p className="mt-0.5 text-[9px] font-bold tabular-nums text-club-accent">
-        {entry.fat.toLocaleString()} FAT
+        {entry.score.toLocaleString()} {scoreLabel}
       </p>
     </div>
   );

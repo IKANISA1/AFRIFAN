@@ -306,7 +306,7 @@ export default async function FixtureDetailPage({
               Get involved
             </h2>
             <p className="mt-3 text-sm leading-7 text-slate-300">
-              Predict scores, vote for your man of the match, and share your opinion. Earn FAT for every interaction.
+              Predict scores, vote for your man of the match, and share your opinion. Earn FET for every interaction.
             </p>
 
             <div className="mt-6 grid gap-5">

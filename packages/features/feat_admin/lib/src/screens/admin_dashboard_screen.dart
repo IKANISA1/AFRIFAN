@@ -221,6 +221,13 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
+          title: 'Settle Fixtures',
+          subtitle: 'Enter results and grade prediction markets',
+          icon: Icons.scoreboard_rounded,
+          onTap: () => context.push('/admin/settle'),
+        ),
+        const SizedBox(height: SpacingTokens.spacing3),
+        _AdminActionTile(
           title: 'SMS Sync Monitor',
           subtitle: 'MoMo SMS ingestion pipeline health',
           icon: Icons.sms_rounded,

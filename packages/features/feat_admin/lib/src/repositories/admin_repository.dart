@@ -1,5 +1,5 @@
 import 'package:core_network/core_network.dart';
-import 'package:flutter/foundation.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -44,7 +44,7 @@ class AdminRepository {
         return true;
       }
     } catch (e) {
-      debugPrint('[Admin] Admin role check failed: $e');
+      AfriLogger.warn('AdminRepository', 'Admin role check failed: $e');
     }
 
     final role =
@@ -77,7 +77,7 @@ class AdminRepository {
       final result = await _client.rpc('is_super_admin');
       return result == true;
     } catch (e) {
-      debugPrint('[Admin] Super admin check failed: $e');
+      AfriLogger.warn('AdminRepository', 'Super admin check failed: $e');
       return false;
     }
   }
@@ -113,7 +113,7 @@ class AdminRepository {
         ticketsSold: ticketsCount,
       );
     } catch (e) {
-      debugPrint('[Admin] Dashboard metrics failed: $e');
+      AfriLogger.error('AdminRepository', 'Dashboard metrics failed', e);
       return const AdminDashboardMetrics();
     }
   }
@@ -322,7 +322,7 @@ class AdminRepository {
           .limit(limit);
       return List<Map<String, dynamic>>.from(data as List);
     } catch (e) {
-      debugPrint('[Admin] Audit log query failed: $e');
+      AfriLogger.warn('AdminRepository', 'Audit log query failed: $e');
       return [];
     }
   }

@@ -941,27 +941,124 @@ textarea:focus-visible,
   margin-inline: auto;
 }
 
+.club-site {
+  background:
+    radial-gradient(circle at 14% 10%, var(--site-glow-primary), transparent 28%),
+    radial-gradient(circle at 86% 10%, var(--site-glow-secondary), transparent 30%),
+    radial-gradient(circle at 50% 100%, var(--site-glow-accent), transparent 28%),
+    linear-gradient(180deg, var(--site-bg-start) 0%, var(--site-bg-mid) 48%, var(--site-bg-end) 100%);
+}
+
+.club-site-atmosphere {
+  position: fixed;
+  inset: -12%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 12% 14%, var(--site-glow-primary), transparent 26%),
+    radial-gradient(circle at 84% 12%, var(--site-glow-secondary), transparent 30%),
+    radial-gradient(circle at 50% 88%, var(--site-glow-accent), transparent 26%);
+  filter: blur(38px);
+  opacity: 0.95;
+}
+
+.club-site-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 140px 140px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.32), transparent 65%);
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.32), transparent 65%);
+  opacity: 0.22;
+}
+
+.club-site .ui-glass-header {
+  background: linear-gradient(180deg, rgba(4, 8, 16, 0.72), rgba(5, 10, 19, 0.46));
+  border-bottom: 1px solid var(--site-shell-border);
+  box-shadow: 0 22px 40px -28px rgba(3, 5, 10, 0.82);
+}
+
+.club-site .ui-panel,
+.club-site .glass-panel {
+  border-color: var(--site-shell-border);
+  background:
+    linear-gradient(180deg, var(--site-surface), var(--site-surface-strong)),
+    linear-gradient(135deg, var(--site-glow-primary), transparent 48%);
+  box-shadow:
+    0 24px 56px -34px rgba(2, 4, 10, 0.96),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.club-site .ui-panel-elevated,
+.club-site .glass-panel-elevated {
+  border-color: color-mix(in srgb, var(--site-shell-border) 130%, white);
+  background:
+    linear-gradient(135deg, rgba(9, 15, 27, 0.94), rgba(7, 12, 22, 0.92), rgba(3, 7, 16, 0.94)),
+    radial-gradient(circle at top left, var(--site-glow-primary), transparent 34%);
+  box-shadow:
+    0 28px 64px -36px rgba(2, 4, 10, 0.98),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.club-site .ui-panel-inset,
+.club-site .clay-card {
+  border-color: rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(145deg, rgba(3, 7, 16, 0.92), rgba(8, 12, 22, 0.84)),
+    radial-gradient(circle at top left, var(--site-glow-secondary), transparent 36%);
+  box-shadow:
+    inset 10px 12px 18px rgba(2, 4, 10, 0.54),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.club-site .ui-button-secondary {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--foreground);
+}
+
+.club-site .ui-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.club-site .ui-shell-bar {
+  border-color: var(--site-shell-border);
+  background: linear-gradient(180deg, rgba(5, 9, 18, 0.94), rgba(3, 7, 15, 0.84));
+  box-shadow: 0 -18px 40px -32px rgba(2, 4, 10, 0.98);
+}
+
+.club-site .ui-chip,
+.club-site .dashboard-chip {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(248, 251, 255, 0.82);
+}
+
 .admin-workspace {
-  --admin-bg-top: #0f1623;
-  --admin-bg-bottom: #0a111b;
-  --admin-surface: rgba(14, 21, 33, 0.94);
-  --admin-surface-muted: rgba(10, 16, 28, 0.9);
-  --admin-surface-hover: rgba(18, 28, 42, 0.98);
-  --admin-border: rgba(148, 163, 184, 0.16);
-  --admin-border-strong: rgba(148, 163, 184, 0.28);
-  --admin-text-strong: #f8fafc;
-  --admin-text: #e2e8f0;
-  --admin-text-muted: #94a3b8;
-  --admin-accent: var(--club-primary-light);
-  --admin-accent-soft: rgba(123, 91, 255, 0.14);
+  --admin-bg-top: #0d0a27;
+  --admin-bg-bottom: #141133;
+  --admin-surface: rgba(28, 24, 66, 0.94);
+  --admin-surface-muted: rgba(20, 17, 51, 0.92);
+  --admin-surface-hover: rgba(42, 36, 89, 0.98);
+  --admin-border: rgba(196, 192, 255, 0.14);
+  --admin-border-strong: rgba(196, 192, 255, 0.24);
+  --admin-text-strong: #ffffff;
+  --admin-text: rgba(248, 244, 255, 0.92);
+  --admin-text-muted: rgba(201, 192, 232, 0.68);
+  --admin-accent: #c4c0ff;
+  --admin-accent-soft: rgba(108, 99, 255, 0.16);
   --admin-success: #22c55e;
   --admin-warning: #f59e0b;
   --admin-danger: #f43f5e;
   --admin-info: #38bdf8;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(123, 91, 255, 0.08), transparent 26%),
-    radial-gradient(circle at top right, rgba(56, 189, 248, 0.06), transparent 28%),
+    radial-gradient(circle at top left, rgba(108, 99, 255, 0.18), transparent 26%),
+    radial-gradient(circle at top right, rgba(196, 192, 255, 0.08), transparent 28%),
     linear-gradient(180deg, var(--admin-bg-top) 0%, var(--admin-bg-bottom) 100%);
 }
 
@@ -973,77 +1070,79 @@ textarea:focus-visible,
 .admin-workspace .ui-panel {
   border-color: var(--admin-border);
   background:
-    linear-gradient(180deg, rgba(17, 24, 39, 0.96), rgba(12, 18, 29, 0.98)),
-    linear-gradient(135deg, rgba(123, 91, 255, 0.05), transparent 48%);
+    linear-gradient(180deg, rgba(28, 24, 66, 0.96), rgba(20, 17, 51, 0.98)),
+    linear-gradient(135deg, rgba(108, 99, 255, 0.08), transparent 48%);
   box-shadow:
-    0 22px 44px -34px rgba(2, 6, 23, 0.95),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 22px 44px -34px rgba(5, 4, 16, 0.96),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .admin-workspace .glass-panel-elevated,
 .admin-workspace .ui-panel-elevated {
   border-color: var(--admin-border-strong);
   background:
-    linear-gradient(180deg, rgba(18, 28, 42, 0.98), rgba(13, 20, 30, 1)),
-    radial-gradient(circle at top left, rgba(123, 91, 255, 0.08), transparent 38%);
+    linear-gradient(180deg, rgba(42, 36, 89, 0.98), rgba(20, 17, 51, 1)),
+    radial-gradient(circle at top left, rgba(108, 99, 255, 0.12), transparent 38%);
   box-shadow:
-    0 28px 52px -34px rgba(2, 6, 23, 0.98),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 28px 52px -34px rgba(5, 4, 16, 0.98),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .admin-workspace .ui-panel-inset,
 .admin-workspace .clay-card {
-  border-color: rgba(148, 163, 184, 0.12);
-  background: linear-gradient(180deg, rgba(10, 16, 28, 0.96), rgba(8, 13, 23, 0.92));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border-color: rgba(196, 192, 255, 0.1);
+  background: linear-gradient(180deg, rgba(13, 10, 39, 0.96), rgba(20, 17, 51, 0.92));
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.06),
+    inset -2px -2px 8px rgba(0, 0, 0, 0.28);
 }
 
 .admin-workspace .ui-card-interactive:hover,
 .admin-workspace .card-interactive:hover {
   transform: translateY(-2px);
-  box-shadow: 0 18px 36px -28px rgba(2, 6, 23, 0.95);
+  box-shadow: 0 18px 36px -28px rgba(5, 4, 16, 0.98);
   border-color: var(--admin-border-strong);
   background:
-    linear-gradient(180deg, rgba(20, 30, 44, 0.98), rgba(13, 20, 30, 1)),
-    linear-gradient(135deg, rgba(123, 91, 255, 0.05), transparent 48%);
+    linear-gradient(180deg, rgba(42, 36, 89, 0.98), rgba(20, 17, 51, 1)),
+    linear-gradient(135deg, rgba(108, 99, 255, 0.08), transparent 48%);
 }
 
 .admin-workspace .ui-button-primary {
   border-color: rgba(255, 255, 255, 0.08);
-  background: linear-gradient(135deg, var(--club-primary), var(--club-primary-light));
+  background: linear-gradient(135deg, #6c63ff, #8781ff);
   box-shadow:
-    0 18px 34px -28px rgba(123, 91, 255, 0.85),
+    0 18px 34px -28px rgba(108, 99, 255, 0.92),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .admin-workspace .ui-button-primary:hover {
-  background: linear-gradient(135deg, var(--club-primary-light), #c7b8ff);
+  background: linear-gradient(135deg, #8781ff, #c4c0ff);
   box-shadow:
-    0 20px 36px -28px rgba(123, 91, 255, 0.92),
+    0 20px 36px -28px rgba(108, 99, 255, 0.96),
     inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 
 .admin-workspace .ui-button-secondary {
   border-color: var(--admin-border);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(58, 51, 117, 0.22);
   color: var(--admin-text);
   box-shadow: none;
 }
 
 .admin-workspace .ui-button-secondary:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(58, 51, 117, 0.34);
   border-color: var(--admin-border-strong);
 }
 
 .admin-workspace .ui-icon-button {
   border-color: var(--admin-border);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(58, 51, 117, 0.18);
   color: var(--admin-text-muted);
   box-shadow: none;
 }
 
 .admin-workspace .ui-icon-button:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(58, 51, 117, 0.3);
   color: var(--admin-text);
   border-color: var(--admin-border-strong);
 }
@@ -1051,28 +1150,28 @@ textarea:focus-visible,
 .admin-workspace .ui-chip,
 .admin-workspace .dashboard-chip {
   border-color: var(--admin-border);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(58, 51, 117, 0.18);
   color: var(--admin-text-muted);
   letter-spacing: 0.16em;
 }
 
 .admin-workspace .dashboard-chip[data-active="true"] {
-  background: rgba(123, 91, 255, 0.16);
-  border-color: rgba(123, 91, 255, 0.38);
+  background: rgba(108, 99, 255, 0.18);
+  border-color: rgba(108, 99, 255, 0.42);
   color: var(--admin-text-strong);
 }
 
 .admin-workspace .ui-input,
 .admin-workspace .dashboard-input {
   border-color: var(--admin-border);
-  background: rgba(6, 11, 20, 0.86);
+  background: rgba(13, 10, 39, 0.86);
   box-shadow: none;
 }
 
 .admin-workspace .ui-input:focus,
 .admin-workspace .dashboard-input:focus {
-  border-color: rgba(123, 91, 255, 0.44);
-  box-shadow: 0 0 0 3px rgba(123, 91, 255, 0.12);
+  border-color: rgba(108, 99, 255, 0.48);
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.14);
 }
 
 .admin-workspace .progress-track {
@@ -1091,12 +1190,12 @@ textarea:focus-visible,
 
 .admin-workspace .ui-shell-bar {
   border-color: var(--admin-border);
-  background: rgba(9, 14, 23, 0.94);
-  box-shadow: 0 -10px 34px -28px rgba(2, 6, 23, 0.98);
+  background: rgba(20, 17, 51, 0.96);
+  box-shadow: 0 -10px 34px -28px rgba(5, 4, 16, 0.98);
 }
 
 .admin-workspace .ui-nav-tab-active {
-  background: rgba(123, 91, 255, 0.14);
+  background: rgba(108, 99, 255, 0.18);
   color: var(--admin-text-strong);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }

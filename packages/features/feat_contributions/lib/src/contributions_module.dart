@@ -8,6 +8,7 @@ import 'screens/group_chat_screen.dart';
 import 'screens/group_detail_screen.dart';
 import 'screens/group_settings_screen.dart';
 import 'screens/groups_screen.dart';
+import 'screens/join_group_screen.dart';
 import 'screens/statement_download_screen.dart';
 
 /// Contributions feature module — group contributions.
@@ -36,6 +37,11 @@ class ContributionsModule extends FeatureModule {
         GoRoute(
           path: 'create',
           builder: (context, state) => const CreateGroupScreen(),
+        ),
+        GoRoute(
+          path: 'join',
+          builder: (context, state) =>
+              JoinGroupScreen(initialCode: state.uri.queryParameters['code']),
         ),
         GoRoute(
           path: 'group/:groupId',

@@ -13,12 +13,6 @@ export default defineConfig({
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
-  webServer: {
-    command: `npm run build && npx next start --hostname 127.0.0.1 --port ${port}`,
-    reuseExistingServer: true,
-    timeout: 300_000,
-    url: baseURL,
-  },
   projects: [
     {
       name: "mobile-chromium",

@@ -20,6 +20,8 @@ dependencies:
     path: ../../core/core_network
   core_utils:
     path: ../../core/core_utils
+  feat_club:
+    path: ../feat_club
   go_router: ^14.8.1
   supabase_flutter: ^2.12.2
   google_fonts: ^6.2.1

@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { ShoppingBag, Trash2 } from "lucide-react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { Skeleton } from "@/components/skeleton";
-import { SectionHeading } from "@/components/section-heading";
-import { fallbackClubProfile } from "@/lib/content";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import { cn, formatCurrency } from "@/lib/utils";
 import {
   getAdminProducts,
@@ -31,19 +32,24 @@ const emptyForm = {
 };
 
 export default function AdminShopPage() {
-  const { access, client } = useAdminPortal();
+  const { access, activeClub, client } = useAdminPortal();
   const [products, setProducts] = useState<AdminShopProduct[]>([]);
   const [form, setForm] = useState(emptyForm);
   const [filter, setFilter] = useState("ALL");
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (client == null) return;
     setLoading(true);
     try {
       setProducts(await getAdminProducts(client, access));
+      setLoadError(null);
     } catch (caught) {
-      showAdminToast(caught instanceof Error ? caught.message : "Could not load products.", "error");
+      const message =
+        caught instanceof Error ? caught.message : "Could not load products.";
+      setLoadError(message);
+      showAdminToast(message, "error");
     } finally {
       setLoading(false);
     }
@@ -98,6 +104,14 @@ export default function AdminShopPage() {
 
   async function removeProduct(product: AdminShopProduct) {
     if (client == null) return;
+    if (
+      !confirmAdminDestructiveAction({
+        subject: product.name,
+        detail: "The product will be removed from the club catalogue.",
+      })
+    ) {
+      return;
+    }
     try {
       await deleteAdminProduct(client, access, product.id);
       await load();
@@ -112,9 +126,10 @@ export default function AdminShopPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading
-        eyebrow="Shop"
-        title="Manage products and catalogue."
+      <AdminPageHeader
+        eyebrow="Retail"
+        title="Shop"
+        description="Manage product availability, catalogue order, and branded pricing for the active club scope."
       />
       <div className="grid gap-5 md:grid-cols-3">
         <AdminStateCard label="Products" value={loading ? "..." : products.length.toString()} helper="In catalogue." icon={ShoppingBag} />
@@ -132,9 +147,9 @@ export default function AdminShopPage() {
             <label className="grid gap-2 text-sm">Category<input name="category" value={form.category} onChange={(e) => setForm((c) => ({ ...c, category: e.target.value }))} className="dashboard-input" /></label>
           </div>
           <label className="grid gap-2 text-sm">Subtitle<input name="subtitle" value={form.subtitle} onChange={(e) => setForm((c) => ({ ...c, subtitle: e.target.value }))} className="dashboard-input" /></label>
-          <label className="grid gap-2 text-sm">Description<textarea name="description" rows={3} value={form.description} onChange={(e) => setForm((c) => ({ ...c, description: e.target.value }))} className="dashboard-input min-h-20 resize-y" /></label>
+            <label className="grid gap-2 text-sm">Description<textarea name="description" rows={3} value={form.description} onChange={(e) => setForm((c) => ({ ...c, description: e.target.value }))} className="dashboard-input min-h-20 resize-y" /></label>
           <div className="grid gap-4 sm:grid-cols-3">
-            <label className="grid gap-2 text-sm">Price ({fallbackClubProfile.currencyCode})<input type="number" name="price" value={form.price} onChange={(e) => setForm((c) => ({ ...c, price: e.target.value }))} className="dashboard-input" /></label>
+            <label className="grid gap-2 text-sm">Price ({activeClub?.currencyCode ?? "USD"})<input type="number" name="price" value={form.price} onChange={(e) => setForm((c) => ({ ...c, price: e.target.value }))} className="dashboard-input" /></label>
             <label className="grid gap-2 text-sm">Sort order<input type="number" name="sortOrder" value={form.sortOrder} onChange={(e) => setForm((c) => ({ ...c, sortOrder: e.target.value }))} className="dashboard-input" /></label>
             <label className="grid gap-2 text-sm">Collection<input name="collection" value={form.collection} onChange={(e) => setForm((c) => ({ ...c, collection: e.target.value }))} className="dashboard-input" /></label>
           </div>
@@ -158,8 +173,17 @@ export default function AdminShopPage() {
           </div>
           <div className="mt-5 space-y-3">
             {loading ? Array.from({ length: 3 }).map((_, i) => <div key={i} className="rounded-[26px] border border-border-soft bg-white/5 p-5"><Skeleton className="skeleton-text h-5 w-2/5" /><Skeleton className="skeleton-text mt-2 h-3 w-full" /></div>) : null}
-            {!loading && filtered.length === 0 ? <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">No products found.</p> : null}
-            {!loading && filtered.map((product) => (
+            {!loading && loadError ? (
+              <AdminErrorState
+                title="Catalogue could not be loaded"
+                description={loadError}
+                onRetry={() => {
+                  load().catch(() => {});
+                }}
+              />
+            ) : null}
+            {!loading && !loadError && filtered.length === 0 ? <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">No products found.</p> : null}
+            {!loading && !loadError && filtered.map((product) => (
               <article key={product.id} className={cn("card-interactive flex items-start gap-4 rounded-[26px] border border-border-soft p-5 transition", product.isActive ? "bg-white/5" : "bg-white/[0.02] opacity-60")}>
                 {product.imageUrl ? (
                   <div className="hidden sm:block h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-border-soft">
@@ -171,7 +195,7 @@ export default function AdminShopPage() {
                   <p className="font-display text-2xl font-bold uppercase leading-none">{product.name}</p>
                   <p className="mt-1 truncate text-sm text-slate-300">{product.subtitle}</p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-club-primary px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white">{formatCurrency(product.price)}</span>
+                    <span className="rounded-full bg-club-primary px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white">{formatCurrency(product.price, activeClub?.currencyCode)}</span>
                     <span className="rounded-full border border-border-soft px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-slate-300">{product.category}</span>
                     {product.sizes.map((s) => <span key={s} className="rounded-full border border-border-soft px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-slate-400">{s}</span>)}
                   </div>

@@ -38,8 +38,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       );
 
   void _ensurePaymentRouteState(UserProfile? user) {
-    final lookupKey =
-        user == null ? 'guest' : '${user.id}:${user.clubId}:${user.hasMomo}';
+    final lookupKey = user == null ? 'guest' : '${user.id}:${user.clubId}';
     if (_paymentRouteLookupKey == lookupKey) {
       return;
     }
@@ -52,7 +51,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
 
   Future<void> _refreshPaymentRouteState(UserProfile? user) async {
     final lookupKey = _paymentRouteLookupKey;
-    if (user == null || !user.hasMomo) {
+    if (user == null) {
       if (!mounted || lookupKey != _paymentRouteLookupKey) return;
       setState(() {
         _paymentRoute = null;
@@ -80,16 +79,6 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
         const SnackBar(content: Text('Sign in first to buy tickets.')),
       );
       context.go('/onboarding');
-      return;
-    }
-
-    if (!user.hasMomo) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Link your MOMO number before buying tickets.'),
-        ),
-      );
-      context.push('/profile_setup');
       return;
     }
 

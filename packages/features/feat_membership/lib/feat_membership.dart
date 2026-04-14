@@ -2,5 +2,6 @@
 library;
 
 export 'src/membership_module.dart';
+export 'src/screens/fan_registry_screen.dart';
 export 'src/screens/membership_screen.dart';
 export 'src/screens/profile_screen.dart';

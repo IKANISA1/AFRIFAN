@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Award } from "lucide-react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { SectionHeading } from "@/components/section-heading";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   deleteAdminFanEngagementToken,
   getAdminFanEngagementTokens,
@@ -25,6 +27,7 @@ export default function AdminGamificationPage() {
   const [tokens, setTokens] = useState<AdminFanEngagementToken[]>([]);
   const [form, setForm] = useState<FetForm>(emptyFetForm);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (client == null) return;
@@ -32,11 +35,13 @@ export default function AdminGamificationPage() {
     setLoading(true);
     try {
       setTokens(await getAdminFanEngagementTokens(client, access));
+      setLoadError(null);
     } catch (caught) {
+      const message =
+        caught instanceof Error ? caught.message : "Could not load FET catalog.";
+      setLoadError(message);
       showAdminToast(
-        caught instanceof Error
-          ? caught.message
-          : "Could not load FET catalog.",
+        message,
         "error",
       );
     } finally {
@@ -56,6 +61,14 @@ export default function AdminGamificationPage() {
 
   async function removeToken(token: AdminFanEngagementToken) {
     if (client == null) return;
+    if (
+      !confirmAdminDestructiveAction({
+        subject: token.code,
+        detail: "The FET catalog entry will be removed from this club scope.",
+      })
+    ) {
+      return;
+    }
 
     showAdminToast(`Removing ${token.code}...`, "info");
     try {
@@ -115,9 +128,10 @@ export default function AdminGamificationPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading
+      <AdminPageHeader
         eyebrow="Gamification"
-        title="Manage Fan Engagement Token rewards, templates, and activation state."
+        title="Fan Engagement Tokens"
+        description="Manage reward definitions, activation state, and generic versus club-specific catalog entries."
       />
 
       <div className="grid gap-5 md:grid-cols-4">
@@ -168,13 +182,23 @@ export default function AdminGamificationPage() {
           access={access}
           onSaved={load}
         />
-        <FetList
-          tokens={tokens}
-          loading={loading}
-          onEdit={beginEdit}
-          onDelete={removeToken}
-          onToggleActive={toggleActive}
-        />
+        {loadError && !loading ? (
+          <AdminErrorState
+            title="FET catalogue could not be loaded"
+            description={loadError}
+            onRetry={() => {
+              load().catch(() => {});
+            }}
+          />
+        ) : (
+          <FetList
+            tokens={tokens}
+            loading={loading}
+            onEdit={beginEdit}
+            onDelete={removeToken}
+            onToggleActive={toggleActive}
+          />
+        )}
       </div>
     </div>
   );

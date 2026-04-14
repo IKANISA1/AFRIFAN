@@ -43,10 +43,10 @@ void main() {
       );
     }
 
-    testWidgets('renders XP label', (tester) async {
+    testWidgets('renders FET label', (tester) async {
       await tester.pumpWidget(buildTestApp());
       await tester.pumpAndSettle();
-      expect(find.text('XP'), findsOneWidget);
+      expect(find.text('FET'), findsOneWidget);
     });
 
     testWidgets('renders rank label', (tester) async {
@@ -55,7 +55,7 @@ void main() {
       expect(find.text('Rank'), findsOneWidget);
     });
 
-    testWidgets('renders formatted XP number with commas', (tester) async {
+    testWidgets('renders formatted FET number with commas', (tester) async {
       await tester.pumpWidget(buildTestApp(globalXp: 42880));
       await tester.pumpAndSettle();
       expect(find.text('42,880'), findsOneWidget);
@@ -84,12 +84,25 @@ void main() {
             ),
           ),
           // Stub routes for navigation
+          GoRoute(
+            path: '/fanzone/fixtures',
+            builder: (_, __) => const SizedBox(),
+          ),
+          GoRoute(path: '/fanzone/my', builder: (_, __) => const SizedBox()),
+          GoRoute(
+            path: '/fanzone/notifications',
+            builder: (_, __) => const SizedBox(),
+          ),
+          GoRoute(path: '/live', builder: (_, __) => const SizedBox()),
+          GoRoute(
+            path: '/fanzone/leaderboard',
+            builder: (_, __) => const SizedBox(),
+          ),
+          GoRoute(
+            path: '/fanzone/wallet',
+            builder: (_, __) => const SizedBox(),
+          ),
           GoRoute(path: '/tickets', builder: (_, __) => const SizedBox()),
-          GoRoute(path: '/shop', builder: (_, __) => const SizedBox()),
-          GoRoute(path: '/fan-clubs', builder: (_, __) => const SizedBox()),
-          GoRoute(path: '/xp', builder: (_, __) => const SizedBox()),
-          GoRoute(path: '/fantasy', builder: (_, __) => const SizedBox()),
-          GoRoute(path: '/membership', builder: (_, __) => const SizedBox()),
           GoRoute(path: '/contribute', builder: (_, __) => const SizedBox()),
         ],
       );
@@ -111,12 +124,12 @@ void main() {
       await tester.pumpWidget(buildTestApp());
       await tester.pumpAndSettle();
 
+      expect(find.text('Predict'), findsOneWidget);
+      expect(find.text('My Picks'), findsOneWidget);
+      expect(find.text('Live'), findsOneWidget);
+      expect(find.text('Leaderboard'), findsOneWidget);
+      expect(find.text('Wallet'), findsOneWidget);
       expect(find.text('Tickets'), findsOneWidget);
-      expect(find.text('Shop'), findsOneWidget);
-      expect(find.text('Fans'), findsOneWidget);
-      expect(find.text('Games'), findsOneWidget);
-      expect(find.text('Fantasy'), findsOneWidget);
-      expect(find.text('Members'), findsOneWidget);
     });
 
     testWidgets('renders support button', (tester) async {

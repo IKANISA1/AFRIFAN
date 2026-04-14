@@ -19,7 +19,7 @@ interface MatchQuizProps {
 
 /**
  * Match-day quiz — 3 quick knowledge questions about the upcoming match.
- * Awards FAT tokens for correct answers. Results shown after completion.
+ * Awards FET tokens for correct answers. Results shown after completion.
  */
 export function MatchQuiz({
   matchTitle,
@@ -75,7 +75,7 @@ export function MatchQuiz({
         </p>
         {totalFat > 0 && (
           <div className="mt-4 inline-flex rounded-full bg-club-accent/15 px-4 py-2 text-sm font-bold text-club-accent">
-            +{totalFat} FAT earned
+            +{totalFat} FET earned
           </div>
         )}
       </div>

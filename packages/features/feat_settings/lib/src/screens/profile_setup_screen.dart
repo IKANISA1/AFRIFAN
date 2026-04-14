@@ -1,121 +1,13 @@
-import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
-import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class ProfileSetupScreen extends ConsumerStatefulWidget {
+class ProfileSetupScreen extends StatelessWidget {
   const ProfileSetupScreen({super.key});
 
   @override
-  ConsumerState<ProfileSetupScreen> createState() => _ProfileSetupScreenState();
-}
-
-class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
-  final TextEditingController _momoController = TextEditingController();
-  bool _isLoading = false;
-
-  String get _momoValue => _momoController.text.trim();
-
-  @override
-  void initState() {
-    super.initState();
-    _momoController.addListener(_onMomoChanged);
-  }
-
-  @override
-  void dispose() {
-    _momoController
-      ..removeListener(_onMomoChanged)
-      ..dispose();
-    super.dispose();
-  }
-
-  void _onMomoChanged() {
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  Future<void> _linkMomoAndContinue() async {
-    if (_momoValue.isEmpty) {
-      return;
-    }
-
-    setState(() => _isLoading = true);
-
-    var authState = ref.read(authStateProvider);
-    final authNotifier = ref.read(authStateProvider.notifier);
-
-    if (authState is! AuthAuthenticated) {
-      await authNotifier.signInAnonymously();
-      authState = ref.read(authStateProvider);
-    }
-
-    if (authState is! AuthAuthenticated) {
-      if (!mounted) return;
-      setState(() => _isLoading = false);
-      final message = switch (authState) {
-        AuthError() => authState.message,
-        _ => 'Could not prepare your anonymous profile.',
-      };
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
-      return;
-    }
-
-    final country = AfriCountryCatalog.resolve(
-      country: authState.profile.country,
-      phone: authState.profile.momoNumber ?? authState.profile.phone,
-    );
-
-    late final String normalizedMomo;
-    try {
-      normalizedMomo = country.buildE164Phone(_momoValue);
-    } on FormatException catch (error) {
-      if (!mounted) return;
-      setState(() => _isLoading = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error.message)));
-      return;
-    }
-
-    final profile = authState.profile.copyWith(
-      phone: normalizedMomo,
-      momoNumber: normalizedMomo,
-      momoProvider: country.providerId,
-      country: country.isoCode,
-    );
-
-    final error = await authNotifier.updateProfile(profile);
-    if (!mounted) return;
-
-    final updatedState = ref.read(authStateProvider);
-    setState(() => _isLoading = false);
-
-    if (error == null && updatedState is AuthAuthenticated) {
-      if (context.canPop()) {
-        context.pop();
-      } else {
-        context.go('/home');
-      }
-      return;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(error ?? 'Could not save your MOMO details.')),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(currentUserProvider);
-    final alias = profile?.publicUserId == null
-        ? '000 000'
-        : AliasGenerator.format(profile!.publicUserId!).replaceAll('-', ' ');
+    final hasBiopay = ClubConfigScope.maybeOf(context)?.hasBiopay ?? false;
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -128,7 +20,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
             if (context.canPop()) {
               context.pop();
             } else {
-              context.go('/onboarding');
+              context.go('/settings');
             }
           },
         ),
@@ -140,14 +32,21 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'LINK MOBILE MONEY',
+                'FACE ID PAYMENT ROUTE',
                 style: TypographyTokens.headlineLarge(),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
-                'Link your MoMo number to create your profile.',
+                'Mobile money numbers and merchant codes are not linked at the account level anymore. Save a payment route only while enrolling Face ID.',
                 style: TypographyTokens.bodyLarge().copyWith(
                   color: ColorTokens.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: SpacingTokens.spacing4),
+              Text(
+                'QR codes and NFC taps now ask for the MoMo number or code manually each time you generate them.',
+                style: TypographyTokens.bodyMedium(
+                  ColorTokens.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing8),
@@ -162,67 +61,39 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'YOUR PUBLIC IDENTITY',
-                      style: TypographyTokens.labelMedium(),
+                      'Use Face ID enrollment when you want one saved route tied to your face.',
+                      style: TypographyTokens.labelLarge(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     Text(
-                      alias,
-                      style: TypographyTokens.numericAlias(
-                        fontSize: 36,
-                        color: ColorTokens.clubAccent,
+                      'That saved route is used only for Face ID payments. It is not required for tickets, membership, QR, NFC, or other app features.',
+                      style: TypographyTokens.bodyMedium(
+                        ColorTokens.onSurfaceVariant,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: SpacingTokens.spacing10),
-              TextField(
-                controller: _momoController,
-                keyboardType: TextInputType.phone,
-                style: TypographyTokens.headlineMedium(),
-                decoration: InputDecoration(
-                  hintText: 'e.g. 078...',
-                  hintStyle: TypographyTokens.headlineMedium().copyWith(
-                    color: ColorTokens.outlineVariant,
-                  ),
-                  prefixIcon: Icon(
-                    Icons.phone_android,
-                    color: ColorTokens.clubPrimary,
+              const SizedBox(height: SpacingTokens.spacing8),
+              ClaymorphicButton(
+                label: hasBiopay ? 'Open Face ID setup' : 'Back to Settings',
+                preserveCase: true,
+                width: double.infinity,
+                onPressed: () =>
+                    context.go(hasBiopay ? '/biopay/register' : '/settings'),
+              ),
+              if (hasBiopay) ...[
+                const SizedBox(height: SpacingTokens.spacing4),
+                TextButton(
+                  onPressed: () => context.go('/settings'),
+                  child: Text(
+                    'Back to Settings',
+                    style: TypographyTokens.labelLarge().copyWith(
+                      color: ColorTokens.onSurfaceVariant,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing10),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: ColorTokens.clubPrimary,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: SpacingTokens.spacing6,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: ShapeTokens.buttonRadius,
-                  ),
-                ),
-                onPressed: _isLoading || _momoValue.isEmpty
-                    ? null
-                    : _linkMomoAndContinue,
-                child: _isLoading
-                    ? SizedBox(
-                        height: 24,
-                        width: 24,
-                        child: CircularProgressIndicator(
-                          color: ColorTokens.onSurface,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : Text(
-                        'CONFIRM & ENTER',
-                        style: TypographyTokens.labelLarge().copyWith(
-                          color: ColorTokens.onSurface,
-                        ),
-                      ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing6),
+              ],
             ],
           ),
         ),

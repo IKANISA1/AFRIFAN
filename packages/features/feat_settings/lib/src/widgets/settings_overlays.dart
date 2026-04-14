@@ -49,7 +49,7 @@ Future<bool> showDeleteAccountConfirmDialog(BuildContext context) async {
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
                   Text(
-                    'Permanently deletes your profile, XP, badges, and history. Cannot be undone.',
+                    'Permanently deletes your profile, FET, badges, and history. Cannot be undone.',
                     style: TypographyTokens.bodyMedium(),
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
@@ -126,14 +126,14 @@ Future<bool> showNotificationPermissionModal(BuildContext context) async {
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               Text(
-                'Get notified for matches, contributions, XP milestones, and club news.',
+                'Get notified for matches, contributions, FET milestones, and club news.',
                 textAlign: TextAlign.center,
                 style: TypographyTokens.bodyMedium(),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               const _BenefitRow(label: 'Match alerts before kickoff'),
               const _BenefitRow(label: 'Contribution and ticket updates'),
-              const _BenefitRow(label: 'XP milestones and challenge drops'),
+              const _BenefitRow(label: 'FET milestones and challenge drops'),
               const SizedBox(height: SpacingTokens.spacing5),
               ClaymorphicButton(
                 label: 'ENABLE NOTIFICATIONS',
@@ -183,7 +183,7 @@ Future<bool> showSignOutConfirmationSheet(BuildContext context) async {
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           Text(
-            'Your profile and XP are saved. Sign back in anytime.',
+            'Your profile and FET are saved. Sign back in anytime.',
             textAlign: TextAlign.center,
             style: TypographyTokens.bodyMedium(),
           ),

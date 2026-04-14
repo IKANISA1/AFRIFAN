@@ -4,13 +4,15 @@ import { PageHero } from "@/components/page-hero";
 import { ProgressBar } from "@/components/progress-bar";
 import { getClubProfile, getContributionGroups, getFanClubs } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
+import { getSiteCopy } from "@/lib/site-copy";
 import { formatCompactNumber, formatCurrency } from "@/lib/utils";
 
 export async function generateMetadata() {
   const club = await getClubProfile();
+  const copy = getSiteCopy(club.defaultLanguage);
   return buildPageMetadata({
-    title: `${club.shortName} supporter circles`,
-    description: `Official ${club.shortName} supporter circles for tifos, away travel, club campaigns, and community fundraising.`,
+    title: copy.pages.circles.metaTitle(club),
+    description: copy.pages.circles.metaDescription(club),
     path: "/circles",
   });
 }
@@ -21,6 +23,7 @@ export default async function CirclesPage() {
     getContributionGroups(),
     getFanClubs(),
   ]);
+  const copy = getSiteCopy(club.defaultLanguage);
 
   const fundedTotal = groups.reduce((total, group) => total + group.currentTotal, 0);
   const totalMembers = groups.reduce((total, group) => total + group.memberCount, 0);
@@ -28,29 +31,29 @@ export default async function CirclesPage() {
   return (
     <div className="page-shell section-grid py-12">
       <PageHero
-        eyebrow="Support Circles"
-        title="Supporter circles and live campaigns."
-        description={`Back tifos, away travel, and club projects through official ${club.shortName} supporter circles.`}
+        eyebrow={copy.pages.circles.eyebrow}
+        title={copy.pages.circles.title}
+        description={copy.pages.circles.description(club)}
         actions={
           <>
             <Link
               href="/supporters"
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Join in fan app
+              {copy.common.joinInFanApp}
             </Link>
             <Link
               href="/fan-clubs"
               className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
-              Fan clubs
+              {copy.common.fanClubs}
             </Link>
           </>
         }
         stats={[
-          { label: "Circles", value: groups.length.toString() },
-          { label: "Members", value: formatCompactNumber(totalMembers) },
-          { label: "Raised", value: formatCurrency(fundedTotal) },
+          { label: copy.common.circles, value: groups.length.toString() },
+          { label: copy.common.members, value: formatCompactNumber(totalMembers) },
+          { label: copy.common.raised, value: formatCurrency(fundedTotal) },
         ]}
       />
 
@@ -80,7 +83,7 @@ export default async function CirclesPage() {
                 </div>
                 <div className="rounded-[24px] border border-border-soft bg-black/20 px-5 py-4">
                   <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                    Members
+                    {copy.common.members}
                   </p>
                   <p className="mt-2 font-score text-5xl text-white">
                     {group.memberCount}
@@ -91,7 +94,7 @@ export default async function CirclesPage() {
               <div className="mt-5 grid gap-3 sm:grid-cols-3">
                 <div className="rounded-[22px] bg-white/5 p-4">
                   <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                    Current
+                    {copy.common.current}
                   </p>
                   <p className="mt-2 text-sm font-semibold text-white">
                     {formatCurrency(group.currentTotal, group.currency)}
@@ -99,7 +102,7 @@ export default async function CirclesPage() {
                 </div>
                 <div className="rounded-[22px] bg-white/5 p-4">
                   <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                    Target
+                    {copy.common.target}
                   </p>
                   <p className="mt-2 text-sm font-semibold text-white">
                     {formatCurrency(group.targetAmount, group.currency)}
@@ -107,10 +110,10 @@ export default async function CirclesPage() {
                 </div>
                 <div className="rounded-[22px] bg-white/5 p-4">
                   <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                    Invite
+                    {copy.common.invite}
                   </p>
                   <p className="mt-2 text-sm font-semibold text-white">
-                    {group.inviteCode ?? "Fan app"}
+                    {group.inviteCode ?? copy.fanApp}
                   </p>
                 </div>
               </div>
@@ -119,7 +122,7 @@ export default async function CirclesPage() {
                 <ProgressBar
                   value={group.currentTotal}
                   max={group.targetAmount}
-                  label="Campaign progress"
+                  label={copy.pages.circles.campaignProgress}
                 />
               </div>
             </article>
@@ -129,10 +132,10 @@ export default async function CirclesPage() {
         <div className="grid gap-6">
           <div className="glass-panel rounded-[32px] p-6">
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              Why circles matter
+              {copy.pages.circles.whyEyebrow}
             </p>
             <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              Back the campaign together
+              {copy.pages.circles.whyTitle}
             </h2>
             <div className="mt-5 grid gap-4">
               {[
@@ -152,16 +155,16 @@ export default async function CirclesPage() {
               href="/supporters"
               className="mt-6 inline-flex items-center gap-2 rounded-full bg-club-accent px-5 py-3 font-semibold text-slate-950 transition hover:brightness-110"
             >
-              Contribute now <ArrowRight size={18} />
+              {copy.common.supportACircle} <ArrowRight size={18} />
             </Link>
           </div>
 
           <div className="glass-panel rounded-[32px] p-6">
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              Community bridge
+              {copy.pages.circles.bridgeEyebrow}
             </p>
             <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              Chapters that amplify every campaign
+              {copy.pages.circles.bridgeTitle}
             </h2>
             <div className="mt-5 grid gap-3">
               {fanClubs.slice(0, 3).map((club) => (
@@ -187,7 +190,7 @@ export default async function CirclesPage() {
               href="/fan-clubs"
               className="mt-6 inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
             >
-              See fan clubs <ShieldCheck size={18} />
+              {copy.common.seeFanClubs} <ShieldCheck size={18} />
             </Link>
           </div>
         </div>

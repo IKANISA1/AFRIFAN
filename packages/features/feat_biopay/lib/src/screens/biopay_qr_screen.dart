@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +8,8 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../biopay_display_resolver.dart';
+import '../biopay_tokens.dart';
 import '../models/biopay_handoff_token.dart';
-import '../models/biopay_profile.dart';
 import '../providers/biopay_providers.dart';
 import '../widgets/biopay_reference_ui.dart';
 
@@ -25,14 +22,18 @@ class BiopayQrScreen extends ConsumerStatefulWidget {
 
 class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
   final _amountController = TextEditingController();
+  final _recipientController = TextEditingController();
   PaymentRecipientType? _selectedRouteType;
   BiopayHandoffToken? _handoffToken;
   bool _isLoading = false;
   String? _error;
 
+  AfriCountry get _country => AfriCountryCatalog.defaultCountry;
+
   @override
   void dispose() {
     _amountController.dispose();
+    _recipientController.dispose();
     super.dispose();
   }
 
@@ -42,16 +43,47 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
     return int.tryParse(raw);
   }
 
+  void _switchRouteType(PaymentRecipientType routeType) {
+    setState(() {
+      _selectedRouteType = routeType;
+      _error = null;
+      _recipientController.clear();
+    });
+  }
+
   Future<void> _generateQr() async {
+    final selectedRouteType =
+        _selectedRouteType ?? PaymentRecipientType.phoneNumber;
+    final validationError = validateBiopayRecipient(
+      routeType: selectedRouteType,
+      value: _recipientController.text,
+      country: _country,
+    );
+    if (validationError != null) {
+      setState(() => _error = validationError);
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
+      final normalizedRecipient = normalizeBiopayRecipient(
+        routeType: selectedRouteType,
+        value: _recipientController.text,
+        country: _country,
+      );
       final token = await ref
           .read(biopayRepositoryProvider)
-          .createHandoffToken(channel: 'qr', amount: _amount);
+          .createHandoffToken(
+            channel: 'qr',
+            amount: _amount,
+            routeType: selectedRouteType,
+            recipientValue: normalizedRecipient,
+            countryCode: _country.isoCode,
+          );
       if (!mounted) return;
       setState(() {
         _handoffToken = token;
@@ -87,7 +119,6 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
   @override
   Widget build(BuildContext context) {
     final profile = ref.watch(biopayProfileProvider).valueOrNull;
-    final user = ref.watch(currentUserProvider);
     final selectedRouteType =
         _selectedRouteType ??
         profile?.routeType ??
@@ -111,13 +142,19 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
                 children: [
                   BiopayReferenceSegmentedControl(
                     selected: selectedRouteType,
-                    onChanged: (value) =>
-                        setState(() => _selectedRouteType = value),
+                    onChanged: _switchRouteType,
                   ),
                   const SizedBox(height: 22),
                   BiopayReferenceValueCard(
                     label: _labelForRoute(selectedRouteType),
-                    value: _valueForRoute(selectedRouteType, profile, user),
+                    controller: _recipientController,
+                    hintText: biopayRecipientHint(selectedRouteType, _country),
+                    keyboardType: TextInputType.number,
+                    onChanged: (_) {
+                      if (_error != null) {
+                        setState(() => _error = null);
+                      }
+                    },
                   ),
                   const SizedBox(height: 22),
                   BiopayReferenceValueCard(
@@ -148,7 +185,7 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
                         ? 'Generating QR Code'
                         : 'Generate QR Code',
                     icon: Icons.qr_code_2_rounded,
-                    color: const Color(0xFF0E1630),
+                    color: BiopayTokens.qrCardBackground,
                     onTap: _isLoading ? null : _generateQr,
                   ),
                 ],
@@ -180,12 +217,14 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
                     child: Container(
                       height: 86,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: BiopayTokens.panel,
                         borderRadius: BorderRadius.circular(30),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.07),
-                            blurRadius: 28,
+                            color: ColorTokens.ambientShadow.withValues(
+                              alpha: 0.22,
+                            ),
+                            blurRadius: 24,
                             offset: const Offset(0, 14),
                           ),
                         ],
@@ -193,7 +232,7 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.bolt_rounded,
                             color: biopayReferenceBlue,
                             size: 24,
@@ -204,7 +243,7 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
                             style: biopayReferenceText(
                               fontSize: 20,
                               fontWeight: FontWeight.w800,
-                              color: const Color(0xFF586C92),
+                              color: BiopayTokens.qrSecondaryText,
                             ),
                           ),
                         ],
@@ -221,14 +260,5 @@ class _BiopayQrScreenState extends ConsumerState<BiopayQrScreen> {
     return routeType == PaymentRecipientType.code
         ? 'Merchant Code'
         : 'MoMo Number';
-  }
-
-  String _valueForRoute(
-    PaymentRecipientType routeType,
-    BiopayProfile? profile,
-    UserProfile? user,
-  ) {
-    return resolveBiopayRouteValue(routeType, profile, user) ??
-        kBiopayUnlinkedLabel;
   }
 }

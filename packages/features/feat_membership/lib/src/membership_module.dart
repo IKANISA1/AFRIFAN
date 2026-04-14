@@ -1,6 +1,7 @@
 import 'package:core_router/core_router.dart';
 import 'package:go_router/go_router.dart';
 
+import 'screens/fan_registry_screen.dart';
 import 'screens/membership_screen.dart';
 import 'screens/tier_detail_screen.dart';
 
@@ -20,9 +21,9 @@ class MembershipModule extends FeatureModule {
       builder: (context, state) => const MembershipScreen(),
     ),
     GoRoute(
-      path: '/profile',
-      name: 'profile',
-      builder: (context, state) => const MembershipScreen(),
+      path: '/membership/fans',
+      name: 'membership-fans',
+      builder: (context, state) => const FanRegistryScreen(),
     ),
     GoRoute(
       path: '/membership/tier/:tierId',

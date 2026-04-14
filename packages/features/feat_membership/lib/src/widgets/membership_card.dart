@@ -8,10 +8,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Glassmorphic digital membership card — the fan's identity.
 class MembershipCard extends ConsumerWidget {
-  const MembershipCard({super.key, this.tierLabel, this.xp});
+  const MembershipCard({
+    super.key,
+    this.tierLabel,
+    this.xp,
+    this.paymentStatus,
+  });
 
   final String? tierLabel;
   final int? xp;
+  final PaymentStatus? paymentStatus;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,16 +68,38 @@ class MembershipCard extends ConsumerWidget {
                         letterSpacing: 2.0,
                       ),
                     ),
-                    const Spacer(),
-                    Text(
-                      'FAN CARD',
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: ColorTokens.onSurface.withValues(alpha: 0.5),
-                        letterSpacing: 1.0,
+                    if (paymentStatus == PaymentStatus.pendingVerification)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.amber.withValues(alpha: 0.9),
+                          borderRadius: ShapeTokens.chipRadius,
+                        ),
+                        child: Text(
+                          'PENDING VERIFICATION',
+                          style: TypographyTokens.editorialFont(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      )
+                    else ...[
+                      const Spacer(),
+                      Text(
+                        'FAN CARD',
+                        style: TypographyTokens.editorialFont(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: ColorTokens.onSurface.withValues(alpha: 0.5),
+                          letterSpacing: 1.0,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
 
@@ -113,7 +141,7 @@ class MembershipCard extends ConsumerWidget {
                     ),
                     const Spacer(),
                     Text(
-                      '$resolvedXp XP',
+                      '$resolvedXp FET',
                       style: TypographyTokens.monolithFont(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,

@@ -3,12 +3,14 @@ import { ArrowRight, Trophy } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { getClubProfile, getStandings } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
+import { getSiteCopy } from "@/lib/site-copy";
 
 export async function generateMetadata() {
   const club = await getClubProfile();
+  const copy = getSiteCopy(club.defaultLanguage);
   return buildPageMetadata({
-    title: `${club.league} standings`,
-    description: `Official league table with ${club.shortName} position, points, goal difference, and recent form.`,
+    title: copy.pages.standings.metaTitle(club),
+    description: copy.pages.standings.metaDescription(club),
     path: "/standings",
   });
 }
@@ -18,34 +20,35 @@ export default async function StandingsPage() {
     getClubProfile(),
     getStandings(),
   ]);
+  const copy = getSiteCopy(club.defaultLanguage);
   const highlighted = standings.find((row) => row.highlight) ?? standings[0] ?? null;
 
   return (
     <div className="page-shell section-grid py-12">
       <PageHero
-        eyebrow="League table"
-        title="League table and form."
-        description={`Track ${club.shortName} in the table with full context around the clubs above and below.`}
+        eyebrow={copy.pages.standings.eyebrow}
+        title={copy.pages.standings.title}
+        description={copy.pages.standings.description(club)}
         actions={
           <>
             <Link
               href="/fixtures"
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Fixture hub
+              {copy.common.fixtureHub}
             </Link>
             <Link
               href="/results"
               className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
-              Recent results
+              {copy.common.recentResults}
             </Link>
           </>
         }
         stats={[
-          { label: "Clubs shown", value: standings.length.toString() },
-          { label: `${club.shortName} position`, value: highlighted ? `#${highlighted.position}` : "-" },
-          { label: "Points", value: highlighted ? highlighted.points.toString() : "-" },
+          { label: copy.common.clubsShown, value: standings.length.toString() },
+          { label: copy.pages.standings.clubPosition(club), value: highlighted ? `#${highlighted.position}` : "-" },
+          { label: copy.common.points, value: highlighted ? highlighted.points.toString() : "-" },
         ]}
       />
 
@@ -54,12 +57,12 @@ export default async function StandingsPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-white/8 text-xs uppercase tracking-[0.24em] text-slate-300">
               <tr>
-                <th className="px-3 py-4 text-center sm:px-4">Pos</th>
-                <th className="px-3 py-4 sm:px-4">Club</th>
-                <th className="hidden px-4 py-4 text-center sm:table-cell">Played</th>
-                <th className="hidden px-4 py-4 text-center sm:table-cell">GD</th>
-                <th className="px-3 py-4 text-center sm:px-4">Pts</th>
-                <th className="hidden px-4 py-4 sm:table-cell">Form</th>
+                <th className="px-3 py-4 text-center sm:px-4">{copy.common.position}</th>
+                <th className="px-3 py-4 sm:px-4">{copy.common.club}</th>
+                <th className="hidden px-4 py-4 text-center sm:table-cell">{copy.common.played}</th>
+                <th className="hidden px-4 py-4 text-center sm:table-cell">{copy.common.goalDifference}</th>
+                <th className="px-3 py-4 text-center sm:px-4">{copy.common.points}</th>
+                <th className="hidden px-4 py-4 sm:table-cell">{copy.common.form}</th>
               </tr>
             </thead>
             <tbody>
@@ -108,12 +111,12 @@ export default async function StandingsPage() {
             {club.shortName}
           </p>
           <h2 className="mt-3 font-display text-4xl font-bold text-white">
-            Position in the race
+            {copy.pages.standings.positionInRace}
           </h2>
           {highlighted ? (
             <div className="mt-5 rounded-[26px] border border-border-soft bg-white/5 p-5">
               <p className="text-[11px] uppercase tracking-[0.22em] text-slate-300">
-                Highlighted club
+                {copy.pages.standings.highlightedClub}
               </p>
               <p className="mt-3 font-display text-4xl font-bold uppercase text-white">
                 {highlighted.club}
@@ -121,19 +124,19 @@ export default async function StandingsPage() {
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
                 <div className="rounded-[20px] bg-black/20 p-4">
                   <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                    Position
+                    {copy.common.position}
                   </p>
                   <p className="mt-2 font-score text-4xl text-white">#{highlighted.position}</p>
                 </div>
                 <div className="rounded-[20px] bg-black/20 p-4">
                   <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                    Points
+                    {copy.common.points}
                   </p>
                   <p className="mt-2 font-score text-4xl text-white">{highlighted.points}</p>
                 </div>
                 <div className="rounded-[20px] bg-black/20 p-4">
                   <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                    GD
+                    {copy.common.goalDifference}
                   </p>
                   <p className="mt-2 font-score text-4xl text-white">{highlighted.goalDifference}</p>
                 </div>
@@ -141,11 +144,7 @@ export default async function StandingsPage() {
             </div>
           ) : null}
           <div className="mt-5 grid gap-4">
-            {[
-              "The full table keeps the race readable.",
-              `${club.shortName} stays highlighted in every standings view.`,
-              "Recent form shows momentum without sending the supporter elsewhere.",
-            ].map((point) => (
+            {copy.pages.standings.summaryPoints.map((point) => (
               <div
                 key={point}
                 className="rounded-[24px] border border-border-soft bg-white/5 p-4 text-sm leading-7 text-slate-300"
@@ -158,13 +157,13 @@ export default async function StandingsPage() {
             href="/results"
             className="mt-6 inline-flex items-center gap-2 rounded-full bg-club-accent px-5 py-3 font-semibold text-slate-950 transition hover:brightness-110"
           >
-            Recent scorelines <Trophy size={18} />
+            {copy.common.recentScorelines} <Trophy size={18} />
           </Link>
           <Link
             href="/fixtures"
             className="mt-3 inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
           >
-            Upcoming matches <ArrowRight size={18} />
+            {copy.common.upcomingMatches} <ArrowRight size={18} />
           </Link>
         </div>
       </section>

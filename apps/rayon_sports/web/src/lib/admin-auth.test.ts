@@ -17,7 +17,7 @@ describe("normalizeAdminPhone", () => {
 
   it("rejects invalid numbers", () => {
     expect(() => normalizeAdminPhone("123")).toThrow(
-      "Use a valid WhatsApp number in international format.",
+      "Use a valid phone number in international format.",
     );
   });
 });

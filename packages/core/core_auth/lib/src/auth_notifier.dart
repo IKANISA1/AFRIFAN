@@ -1,7 +1,8 @@
+import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
+import 'auth_providers.dart';
 import 'auth_repository.dart';
 import 'auth_state.dart';
 import 'models/user_profile.dart';
@@ -11,14 +12,20 @@ import 'models/user_profile.dart';
 /// State machine:
 ///   AuthInitial → AuthLoading → AuthAuthenticated / AuthUnauthenticated / AuthError
 ///
-/// Ported from cool's `AuthNotifier` and adapted for multi-tenant use.
-class AuthNotifier extends StateNotifier<AuthState> {
-  AuthNotifier({required AuthRepository repository})
-    : _repository = repository,
-      super(const AuthInitial());
-
-  final AuthRepository _repository;
+/// Uses Riverpod v2 `Notifier` (replaces deprecated `StateNotifier`).
+class AuthNotifier extends Notifier<AuthState> {
+  late AuthRepository _repository;
   String? _hydratingSessionUserId;
+
+  @override
+  AuthState build() {
+    _repository = ref.watch(authRepositoryProvider);
+    final subscription = _repository.authStateChanges.listen(
+      syncWithAuthChange,
+    );
+    ref.onDispose(subscription.cancel);
+    return const AuthInitial();
+  }
 
   /// Restore the current session on app start.
   ///
@@ -31,9 +38,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       final profile = await _repository.restoreCurrentUser();
       if (profile != null) {
+        FirebaseAnalyticsService.setUserId(profile.id);
         final adminAccess = await _repository.resolveAdminAccess(profile.id);
         state = AuthAuthenticated(profile: profile, workspace: adminAccess);
       } else {
+        FirebaseAnalyticsService.setUserId(null);
         state = const AuthUnauthenticated();
       }
     } catch (e) {
@@ -53,6 +62,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> syncWithAuthChange(supabase.AuthState change) async {
     final session = change.session;
     if (change.event == supabase.AuthChangeEvent.signedOut || session == null) {
+      FirebaseAnalyticsService.setUserId(null);
       state = const AuthUnauthenticated();
       return;
     }
@@ -74,9 +84,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       final profile = await _repository.restoreCurrentUser();
       if (profile == null) {
+        FirebaseAnalyticsService.setUserId(null);
         state = const AuthUnauthenticated();
         return;
       }
+      FirebaseAnalyticsService.setUserId(profile.id);
       final adminAccess = await _repository.resolveAdminAccess(profile.id);
       state = AuthAuthenticated(profile: profile, workspace: adminAccess);
     } catch (error) {
@@ -98,10 +110,96 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
     try {
       final profile = await _repository.signInAnonymously();
+      FirebaseAnalyticsService.setUserId(profile.id);
       final adminAccess = await _repository.resolveAdminAccess(profile.id);
       state = AuthAuthenticated(profile: profile, workspace: adminAccess);
     } catch (e) {
       state = AuthError('Sign-in failed', e);
+    }
+  }
+
+  /// Send a one-time code for supporter phone sign-in.
+  Future<String?> requestPhoneSignInOtp({
+    required String phone,
+    supabase.OtpChannel channel = supabase.OtpChannel.whatsapp,
+  }) async {
+    try {
+      await _repository.requestPhoneSignInOtp(phone: phone, channel: channel);
+      return null;
+    } catch (e) {
+      return _describeError(e, 'Could not send the verification code.');
+    }
+  }
+
+  /// Confirm a supporter phone sign-in code and complete session hydration.
+  Future<String?> verifyPhoneSignInOtp({
+    required String phone,
+    required String token,
+  }) async {
+    final previous = state;
+    state = const AuthLoading();
+
+    try {
+      final profile = await _repository.verifyPhoneSignInOtp(
+        phone: phone,
+        token: token,
+      );
+      FirebaseAnalyticsService.setUserId(profile.id);
+      final adminAccess = await _repository.resolveAdminAccess(profile.id);
+      state = AuthAuthenticated(profile: profile, workspace: adminAccess);
+      return null;
+    } catch (e) {
+      state = _recoverState(previous);
+      return _describeError(e, 'Could not verify the code.');
+    }
+  }
+
+  /// Send a phone verification code for the current authenticated user.
+  Future<String?> requestPhoneVerificationOtp({required String phone}) async {
+    final current = state;
+    if (current is! AuthAuthenticated) {
+      return 'You must be signed in to verify a phone number.';
+    }
+
+    try {
+      await _repository.requestPhoneVerificationOtp(phone: phone);
+      state = AuthAuthenticated(
+        profile: current.profile,
+        workspace: current.workspace,
+      );
+      return null;
+    } catch (e) {
+      state = AuthAuthenticated(
+        profile: current.profile,
+        workspace: current.workspace,
+      );
+      return _describeError(e, 'Could not send the verification code.');
+    }
+  }
+
+  /// Confirm a phone verification code for the current authenticated user.
+  Future<String?> verifyPhoneVerificationOtp({
+    required String phone,
+    required String token,
+  }) async {
+    final previous = state;
+    if (previous is! AuthAuthenticated) {
+      return 'You must be signed in to verify a phone number.';
+    }
+
+    state = const AuthLoading();
+    try {
+      final profile = await _repository.verifyPhoneVerificationOtp(
+        phone: phone,
+        token: token,
+      );
+      FirebaseAnalyticsService.setUserId(profile.id);
+      final adminAccess = await _repository.resolveAdminAccess(profile.id);
+      state = AuthAuthenticated(profile: profile, workspace: adminAccess);
+      return null;
+    } catch (e) {
+      state = previous;
+      return _describeError(e, 'Could not confirm the verification code.');
     }
   }
 
@@ -150,6 +248,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (_) {
       // Best-effort sign-out.
     }
+    FirebaseAnalyticsService.setUserId(null);
     state = const AuthUnauthenticated();
   }
 
@@ -187,6 +286,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
     try {
       await _repository.deleteAccount(current.profile.id);
+      FirebaseAnalyticsService.setUserId(null);
       state = const AuthUnauthenticated();
       return null;
     } catch (e) {
@@ -212,5 +312,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
       return fallback;
     }
     return message;
+  }
+
+  AuthState _recoverState(AuthState previous) {
+    if (previous is AuthLoading || previous is AuthInitial) {
+      return const AuthUnauthenticated();
+    }
+    return previous;
   }
 }

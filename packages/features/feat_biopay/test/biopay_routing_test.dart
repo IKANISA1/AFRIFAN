@@ -182,5 +182,65 @@ void main() {
 
       expect(find.text('Scan Route'), findsOneWidget);
     });
+
+    testWidgets(
+      'shows a back affordance when the hub is pushed from another screen',
+      (tester) async {
+        final router = GoRouter(
+          initialLocation: '/settings',
+          routes: [
+            GoRoute(
+              path: '/settings',
+              builder: (context, state) => Scaffold(
+                body: Center(
+                  child: FilledButton(
+                    onPressed: () => context.push('/biopay'),
+                    child: const Text('Open BioPay'),
+                  ),
+                ),
+              ),
+            ),
+            GoRoute(
+              path: '/biopay',
+              builder: (context, state) => const BioPayScreen(),
+            ),
+          ],
+        );
+
+        tester.view.physicalSize = const Size(1080, 2400);
+        tester.view.devicePixelRatio = 2.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              biopayProfileProvider.overrideWith((ref) => null),
+              biopayEnabledProvider.overrideWith((ref) => true),
+              currentUserProvider.overrideWith(
+                (ref) => const UserProfile(
+                  id: 'user-1',
+                  clubId: 'rayon_sports_rw',
+                  publicUserId: '483912',
+                  phone: '0788123456',
+                  momoNumber: '0788123456',
+                  momoProvider: 'MoMo',
+                ),
+              ),
+            ],
+            child: MaterialApp.router(routerConfig: router),
+          ),
+        );
+
+        await tester.tap(find.text('Open BioPay'));
+        await tester.pumpAndSettle();
+
+        expect(find.byIcon(Icons.chevron_left_rounded), findsOneWidget);
+
+        await tester.tap(find.byIcon(Icons.chevron_left_rounded));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Open BioPay'), findsOneWidget);
+      },
+    );
   });
 }

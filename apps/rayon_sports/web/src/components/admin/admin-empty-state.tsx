@@ -8,7 +8,7 @@ export function AdminEmptyState({
   description,
 }: AdminEmptyStateProps) {
   return (
-    <div className="admin-empty-state">
+    <div className="admin-empty-state rounded-[26px] border border-[var(--admin-border)] bg-white/[0.03]">
       <p className="admin-empty-title">{title}</p>
       {description ? (
         <p className="admin-empty-copy">{description}</p>

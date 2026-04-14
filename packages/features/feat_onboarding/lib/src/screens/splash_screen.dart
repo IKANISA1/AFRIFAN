@@ -28,9 +28,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     final authNotifier = ref.read(authStateProvider.notifier);
     final currentState = ref.read(authStateProvider);
 
-    // Try restoring existing session first
+    // Try restoring existing session first — timeout after 10s to avoid
+    // hanging on splash with a slow or unreachable backend.
     if (currentState is AuthInitial) {
-      await authNotifier.restore();
+      try {
+        await authNotifier.restore().timeout(
+          const Duration(seconds: 10),
+        );
+      } catch (_) {
+        // Timeout or restore failure — proceed to navigation logic below
+      }
     }
 
     if (!mounted || _hasNavigated) return;

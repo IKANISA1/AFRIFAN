@@ -58,8 +58,8 @@ jobs:
       - name: Analyze (fatal infos + warnings)
         run: melos exec -- dart analyze --fatal-infos --fatal-warnings
 
-      - name: Run unit & widget tests
-        run: melos run test_all
+      - name: Run unit & widget tests with coverage
+        run: melos exec --dir-exists="test" -- flutter test --coverage
 
       - name: Run white-label app shell smoke tests
         run: |
@@ -185,8 +185,11 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Build and run E2E
-        run: npm run test:e2e
+      - name: Build
+        run: npm run build
+
+      - name: Run E2E
+        run: npm run test:e2e:ci
 
   # ──────────────────────────────────────────────
   # Android: Release Build (on main only)
@@ -242,3 +245,33 @@ jobs:
           name: rayon-sports-release-aab
           path: apps/rayon_sports/build/app/outputs/bundle/release/app-release.aab
           retention-days: 30
+
+  # ──────────────────────────────────────────────
+  # iOS: Release Build (on main only)
+  # ──────────────────────────────────────────────
+  ios-build:
+    name: iOS Release Build
+    runs-on: macos-latest
+    timeout-minutes: 60
+    if: github.ref == 'refs/heads/main'
+    needs: [flutter-ci]
+    defaults:
+      run:
+        working-directory: apps/rayon_sports
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.9'
+          channel: stable
+          cache: true
+
+      - name: Install Melos & Bootstrap
+        run: |
+          dart pub global activate melos
+          cd ../..
+          melos bootstrap
+
+      - name: Build iOS Framework
+        run: flutter build ios --release --no-codesign --dart-define-from-file=assets/flavors/production.json

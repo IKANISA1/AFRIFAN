@@ -1,5 +1,4 @@
 import 'package:core_theme/core_theme.dart';
-import 'package:feat_fantasy/feat_fantasy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -110,13 +109,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ),
 
-                  SliverToBoxAdapter(
-                    child: _buildAnimatedSection(
-                      context,
-                      const FantasyLaunchStrip(),
-                      delayMs: 150,
-                    ),
-                  ),
 
                   // ── Stats row ──
                   if (_snapshot.hasStats) ...[

@@ -4,12 +4,14 @@ import { PageHero } from "@/components/page-hero";
 import { resolveFanAppHref } from "@/lib/config";
 import { getClubProfile, getCmsContent } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
+import { getSiteCopy } from "@/lib/site-copy";
 
 export async function generateMetadata() {
   const club = await getClubProfile();
+  const copy = getSiteCopy(club.defaultLanguage);
   return buildPageMetadata({
-    title: `${club.shortName} contact`,
-    description: `Official ${club.shortName} contact details, digital support routes, and club social channels.`,
+    title: copy.pages.contact.metaTitle(club),
+    description: copy.pages.contact.metaDescription(club),
     path: "/contact",
   });
 }
@@ -30,6 +32,7 @@ export default async function ContactPage() {
     getClubProfile(),
     getCmsContent("contact_support"),
   ]);
+  const copy = getSiteCopy(club.defaultLanguage);
 
   const socialLinks = [
     { label: "Facebook", href: club.facebookUrl },
@@ -49,48 +52,48 @@ export default async function ContactPage() {
 
   const digitalSupportTitle =
     cmsBlocks.length > 0
-      ? cmsBlocks[0]?.subtitle || "Digital support"
-      : "Digital support";
+      ? cmsBlocks[0]?.subtitle || copy.pages.contact.digitalSupport
+      : copy.pages.contact.digitalSupport;
 
   const digitalSupportDescription =
     cmsBlocks.length > 0
       ? cmsBlocks[0]?.rationale ||
-        "Use the fan app for profile, membership, shop, and ticketing requests. Public club updates and campaign announcements remain on the public site."
-      : "Use the fan app for profile, membership, shop, and ticketing requests. Public club updates and campaign announcements remain on the public site.";
+        copy.pages.contact.digitalSupportDescription
+      : copy.pages.contact.digitalSupportDescription;
 
   return (
     <div className="page-shell section-grid py-12">
       <PageHero
-        eyebrow="Contact"
-        title="Official club contact and digital support in one place."
-        description="Find official club channels, supporter help, and the right path into membership, ticketing, and fan app support."
+        eyebrow={copy.pages.contact.eyebrow}
+        title={copy.pages.contact.title}
+        description={copy.pages.contact.description}
         actions={
           <>
             <Link
               href={resolveFanAppHref()}
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Open fan app
+              {copy.openFanApp}
             </Link>
             <Link
               href="/membership"
               className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
-              Membership support
+              {copy.pages.contact.membershipSupport}
             </Link>
           </>
         }
         stats={[
-          { label: "Languages", value: club.supportedLanguages.length.toString() },
-          { label: "Channels", value: (socialLinks.length + 1).toString() },
-          { label: "Club", value: club.shortName },
+          { label: copy.common.languages, value: club.supportedLanguages.length.toString() },
+          { label: copy.common.channels, value: (socialLinks.length + 1).toString() },
+          { label: copy.common.club, value: club.shortName },
         ]}
       />
 
       <div className="grid gap-5 lg:grid-cols-[1fr_1fr]">
         <article className="glass-panel rounded-[30px] p-6">
           <p className="font-display text-4xl font-bold uppercase leading-none text-white">
-            Club contact
+            {copy.pages.contact.contactCardTitle}
           </p>
           <p className="mt-4 text-sm leading-7 text-slate-300">
             {club.officialContact}
@@ -133,7 +136,7 @@ export default async function ContactPage() {
 
       <section className="glass-panel rounded-[34px] p-6">
         <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-          Social channels
+          {copy.pages.contact.socialChannels}
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           {socialLinks.map((entry) => (
@@ -151,7 +154,7 @@ export default async function ContactPage() {
             href="/news"
             className="inline-flex items-center gap-2 rounded-full border border-border-soft bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
           >
-            Club newsroom
+            {copy.common.clubNewsroom}
           </Link>
         </div>
       </section>

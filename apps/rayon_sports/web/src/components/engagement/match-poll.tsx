@@ -140,8 +140,8 @@ export function MatchPoll({
 
       <p className="mt-3 text-center text-[10px] uppercase tracking-[0.22em] text-slate-500">
         {voted
-          ? `${totalVotes.toLocaleString()} total votes · 5 FAT earned`
-          : `${totalVotes.toLocaleString()} votes · Vote to earn 5 FAT`}
+          ? `${totalVotes.toLocaleString()} total votes · 5 FET earned`
+          : `${totalVotes.toLocaleString()} votes · Vote to earn 5 FET`}
       </p>
     </div>
   );

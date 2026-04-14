@@ -1,7 +1,6 @@
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/club_models.dart';
@@ -21,6 +20,15 @@ class ClubRepository {
   late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
     client: _client,
   );
+  static const Map<XpEventType, String> _fetCodeByXpEventType =
+      <XpEventType, String>{
+    XpEventType.matchAttendance: 'G006',
+    XpEventType.createGroup: 'G022',
+    XpEventType.inviteFriends: 'G021',
+    XpEventType.shopPurchase: 'G058',
+    XpEventType.completeProfile: 'G001',
+    XpEventType.weekStreak: 'G016',
+  };
 
   String? get _userId => _client.auth.currentUser?.id;
 
@@ -61,7 +69,7 @@ class ClubRepository {
       if (row == null) return null;
       return FanMembership.fromJson(row);
     } catch (e) {
-      debugPrint('[ClubRepository] getFanMembership error: $e');
+      AfriLogger.warn('ClubRepository', 'getFanMembership error: $e');
       return null;
     }
   }
@@ -168,7 +176,7 @@ class ClubRepository {
     return membership;
   }
 
-  /// Add XP points and potentially tier-up.
+  /// Add FET points and potentially tier-up.
   Future<FanMembership> addPoints(
     String userId,
     String partnerId,
@@ -285,8 +293,9 @@ class ClubRepository {
       if (!_isMissingPurchaseRpc(error)) {
         rethrow;
       }
-      debugPrint(
-        '[ClubRepository] purchase_club_tickets RPC missing, using direct ticket issuance fallback.',
+      AfriLogger.warn(
+        'ClubRepository',
+        'purchase_club_tickets RPC missing, using direct ticket issuance fallback.',
       );
       return _createTicketsDirect(
         matchId: matchId,
@@ -410,50 +419,16 @@ class ClubRepository {
     ContributionGroup group,
   ) async {
     final scope = await _scopeResolver.requireResolved();
-    final countryCode = RuntimeBranding.displayCountryCode;
-    if (countryCode.isEmpty) {
-      throw StateError(
-        'Country code must be configured before creating contribution groups.',
-      );
-    }
-    // Prefer the atomic RPC that also adds creator as admin member
-    try {
-      final rpcResult = await _client.rpc('create_group_atomic', params: {
-        'p_name': group.name,
-        'p_description': group.description,
-        'p_privacy': group.privacy.value,
-        'p_group_type': group.groupType.value,
-        'p_target_amount': group.targetAmount,
-        'p_currency': RuntimeBranding.displayCurrencyCode,
-        'p_cycle_days': 30,
-        'p_country_code': countryCode,
-      });
-
-      final result = rpcResult is Map<String, dynamic>
-          ? rpcResult
-          : (rpcResult as List).first as Map<String, dynamic>;
-
-      // Fetch the full group record
-      final row = await _client
-          .from('contribution_groups')
-          .select()
-          .eq('id', result['id'] as String)
-          .single();
-      return ContributionGroup.fromJson(row);
-    } catch (e) {
-      debugPrint('[ClubRepository] create_group_atomic RPC failed: $e');
-      // Fallback to direct insert
-      final row = await _client
-          .from('contribution_groups')
-          .insert({
-            ...group.toInsertJson(),
-            ..._scopeResolver.payload(scope),
-            'creator_id': _userId,
-          })
-          .select()
-          .single();
-      return ContributionGroup.fromJson(row);
-    }
+    final row = await _client
+        .from('contribution_groups')
+        .insert({
+          ...group.toInsertJson(),
+          ..._scopeResolver.payload(scope),
+          'creator_id': _userId,
+        })
+        .select()
+        .single();
+    return ContributionGroup.fromJson(row);
   }
 
   /// Record a contribution against the ledger-backed group contributions table.
@@ -494,7 +469,7 @@ class ClubRepository {
       if (data['found'] == true) return data;
       return null;
     } catch (e) {
-      debugPrint('[ClubRepository] previewInvite error: $e');
+      AfriLogger.warn('ClubRepository', 'previewInvite error: $e');
       return null;
     }
   }
@@ -648,7 +623,7 @@ class ClubRepository {
   }
 
   // ═══════════════════════════════════════════════════════════
-  // Gamification / XP
+  // Gamification / FET
   // ═══════════════════════════════════════════════════════════
 
   Future<void> recordXpEvent({
@@ -656,10 +631,11 @@ class ClubRepository {
     required XpEventType eventType,
     Map<String, Object?>? metadata,
   }) async {
+    final xpAwarded = await _resolveConfiguredXpAward(eventType);
     final payload = {
       'user_id': userId,
       'event_type': eventType.eventKey,
-      'xp_awarded': eventType.xpReward,
+      'xp_awarded': xpAwarded,
       'metadata': metadata,
     };
 
@@ -690,6 +666,31 @@ class ClubRepository {
           .order('event_at', ascending: false)
           .limit(limit);
       return rows.map((r) => XpEvent.fromJson(r)).toList();
+    }
+  }
+
+  Future<int> _resolveConfiguredXpAward(XpEventType eventType) async {
+    final configuredCode = _fetCodeByXpEventType[eventType];
+    if (configuredCode == null) {
+      return eventType.xpReward;
+    }
+
+    try {
+      final scope = await _scopeResolver.requireResolved();
+      if (scope.clubId == null) {
+        return eventType.xpReward;
+      }
+
+      final row = await _client
+          .from('fan_engagement_token_catalog')
+          .select('fet_value')
+          .eq('club_id', scope.clubId!)
+          .eq('code', configuredCode)
+          .eq('is_active', true)
+          .maybeSingle();
+      return (row?['fet_value'] as num?)?.toInt() ?? eventType.xpReward;
+    } catch (_) {
+      return eventType.xpReward;
     }
   }
 

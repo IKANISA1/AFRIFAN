@@ -152,6 +152,21 @@ void main() {
       expect(insert.containsKey('id'), isFalse);
       expect(insert.containsKey('creator_id'), isFalse);
     });
+
+    test('serializes momo route type for merchant codes', () {
+      final group = ContributionGroup(
+        id: 'g-2',
+        creatorId: 'u-2',
+        name: 'Code Circle',
+        paymentRecipient: '123456',
+        paymentRecipientType: PaymentRecipientType.code,
+        createdAt: DateTime(2026),
+      );
+
+      final insert = group.toInsertJson();
+      expect(insert['receiving_momo_code'], '123456');
+      expect(insert['momo_route_type'], 'code');
+    });
   });
 
   // ═══════════════════════════════════════════════════════════

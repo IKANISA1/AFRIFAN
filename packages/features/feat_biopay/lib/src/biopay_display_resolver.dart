@@ -24,7 +24,7 @@ String? resolveBiopayId(BiopayProfile? profile, UserProfile? user) {
 String? resolveBiopayRouteValue(
   PaymentRecipientType routeType,
   BiopayProfile? profile,
-  UserProfile? user,
+  UserProfile? _,
 ) {
   final profileValue = profile?.recipientValue.trim();
   if (profile?.routeType == routeType &&
@@ -33,21 +33,20 @@ String? resolveBiopayRouteValue(
     return profileValue;
   }
 
-  if (routeType == PaymentRecipientType.phoneNumber) {
-    final momo = user?.momoNumber?.trim();
-    if (momo != null && momo.isNotEmpty) {
-      return momo;
-    }
-  }
-
   return null;
 }
 
 String initialBiopayRecipientValue(
   PaymentRecipientType routeType,
+  BiopayProfile? profile,
   UserProfile? user,
   AfriCountry country,
 ) {
+  final profileValue = resolveBiopayRouteValue(routeType, profile, user);
+  if (profileValue != null) {
+    return _normalizeRecipientForDisplay(routeType, profileValue, country);
+  }
+
   if (routeType != PaymentRecipientType.phoneNumber) {
     return '';
   }
@@ -62,6 +61,45 @@ String initialBiopayRecipientValue(
   } catch (_) {
     return rawMomo;
   }
+}
+
+String? validateBiopayRecipient({
+  required PaymentRecipientType routeType,
+  required String value,
+  required AfriCountry country,
+}) {
+  final trimmed = value.trim();
+  if (trimmed.isEmpty) {
+    return routeType == PaymentRecipientType.phoneNumber
+        ? 'Enter your mobile money number.'
+        : 'Enter your merchant code.';
+  }
+
+  try {
+    normalizeBiopayRecipient(
+      routeType: routeType,
+      value: trimmed,
+      country: country,
+    );
+    return null;
+  } catch (error) {
+    return error
+        .toString()
+        .replaceFirst('FormatException: ', '')
+        .replaceFirst('Unsupported operation: ', '');
+  }
+}
+
+String normalizeBiopayRecipient({
+  required PaymentRecipientType routeType,
+  required String value,
+  required AfriCountry country,
+}) {
+  final trimmed = value.trim();
+  return switch (routeType) {
+    PaymentRecipientType.phoneNumber => country.normalizeNationalPhone(trimmed),
+    PaymentRecipientType.code => country.normalizeMerchantCode(trimmed),
+  };
 }
 
 String biopayRecipientHint(
@@ -84,4 +122,20 @@ String biopayEnrollmentAlias(UserProfile? user) {
     }
   }
   return 'Supporter';
+}
+
+String _normalizeRecipientForDisplay(
+  PaymentRecipientType routeType,
+  String rawValue,
+  AfriCountry country,
+) {
+  try {
+    return normalizeBiopayRecipient(
+      routeType: routeType,
+      value: rawValue,
+      country: country,
+    );
+  } catch (_) {
+    return rawValue.trim();
+  }
 }

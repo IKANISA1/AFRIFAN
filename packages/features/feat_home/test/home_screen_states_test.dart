@@ -1,5 +1,4 @@
 import 'package:core_theme/core_theme.dart';
-import 'package:feat_fantasy/src/providers/fantasy_providers.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:feat_home/src/screens/home_screen.dart';
 import 'package:feat_home/src/widgets/contributor_leaderboard.dart';
@@ -194,7 +193,6 @@ Widget _buildApp({
     overrides: [
       homeFeedRepositoryProvider.overrideWithValue(homeRepository),
       latestIntelRepositoryProvider.overrideWithValue(latestIntelRepository),
-      fantasyFeaturedCompetitionProvider.overrideWith((ref) async => null),
     ],
     child: MaterialApp(
       builder: (context, child) {

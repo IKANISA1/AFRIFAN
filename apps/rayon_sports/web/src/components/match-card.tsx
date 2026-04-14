@@ -94,7 +94,7 @@ export function MatchCard({
       href={href}
       prefetch={false}
       className={cn(
-        "glass-panel card-interactive flex h-full flex-col gap-4 rounded-[30px] border p-5",
+        "group glass-panel card-interactive flex h-full flex-col gap-5 rounded-[32px] border-[1.2px] p-5",
         borderClass,
         upcoming && "kit-stripe",
       )}
@@ -114,7 +114,7 @@ export function MatchCard({
       </div>
 
       {/* Teams + score panel */}
-      <div className="grid gap-3 rounded-[26px] border border-white/8 bg-black/20 p-4">
+      <div className="grid gap-3 rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(3,8,18,0.52),rgba(7,12,22,0.72))] p-4">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <TeamBadge
@@ -130,7 +130,7 @@ export function MatchCard({
             </div>
           </div>
           {/* Score or price */}
-          <div className="rounded-[18px] border border-white/8 bg-white/6 px-3 py-2 text-center shrink-0">
+          <div className="shrink-0 rounded-[18px] border border-white/10 bg-white/8 px-3 py-2 text-center">
             {(live || result) ? (
               <p className="font-score text-3xl font-bold uppercase text-white sm:text-4xl">
                 {match.homeScore}
@@ -161,7 +161,7 @@ export function MatchCard({
             </div>
           </div>
           {(live || result) ? (
-            <div className="rounded-[18px] border border-white/8 bg-white/6 px-3 py-2 text-center shrink-0">
+            <div className="shrink-0 rounded-[18px] border border-white/10 bg-white/8 px-3 py-2 text-center">
               <p className="font-score text-3xl font-bold uppercase text-white sm:text-4xl">
                 {match.awayScore}
               </p>
@@ -225,12 +225,12 @@ export function MatchCard({
       ) : null}
 
       {/* CTA footer */}
-      <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/8 pt-4">
-        <div className="flex items-center gap-2 text-sm font-semibold text-white">
+      <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/10 pt-4">
+        <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-white">
           {live ? <Radio size={16} className="text-red-300" /> : result ? <Trophy size={16} className="text-club-accent" /> : <Ticket size={16} className="text-club-accent" />}
           {ctaLabel}
         </div>
-        <ArrowRight size={18} className="text-slate-300" />
+        <ArrowRight size={18} className="text-slate-300 transition-transform duration-300 group-hover:translate-x-1" />
       </div>
     </Link>
   );

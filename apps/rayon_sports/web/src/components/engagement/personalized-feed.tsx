@@ -10,21 +10,21 @@ interface PersonalizedFeedProps {
 }
 
 /**
- * Personalized "For You" feed
- * Uses fan data (tier, previous activity) to recommend content.
- * (Currently using deterministic mock logic for audit satisfaction)
+ * Lightweight editorial recommendations with a small amount of tier-aware copy.
  */
-export function PersonalizedFeed({ supporterName, tier }: PersonalizedFeedProps) {
-  // Mock personalization algorithm
+export function PersonalizedFeed({
+  supporterName,
+  tier,
+}: PersonalizedFeedProps) {
   const isVip = tier === "platinum" || tier === "gold";
-  
+
   const recommendations = [
     {
       id: "rec-1",
       type: "news",
       icon: Newspaper,
       title: "Tactical breakdown: The 4-3-3 shift",
-      description: "Based on your interest in match highlights.",
+      description: "A featured editorial analysis from the club desk.",
       href: "/news/tactical-breakdown",
       accent: "text-blue-400",
       bg: "bg-blue-400/10",
@@ -34,7 +34,7 @@ export function PersonalizedFeed({ supporterName, tier }: PersonalizedFeedProps)
       type: "ticket",
       icon: Ticket,
       title: isVip ? "VIP hospitality available" : "Secure your derbey seat",
-      description: isVip 
+      description: isVip
         ? "Your Gold tier unlocks priority lounge access for the next match."
         : "Matches like this sell out fast. Grab your general admission ticket now.",
       href: "/tickets",
@@ -46,11 +46,12 @@ export function PersonalizedFeed({ supporterName, tier }: PersonalizedFeedProps)
       type: "shop",
       icon: Shirt,
       title: "New arrivals: Away kit 2026",
-      description: "You browsed the home kit, check out the new away colors.",
+      description:
+        "Fresh club merchandise selected for this week’s storefront.",
       href: "/shop",
       accent: "text-club-accent",
       bg: "bg-club-accent/10",
-    }
+    },
   ];
 
   return (
@@ -58,13 +59,13 @@ export function PersonalizedFeed({ supporterName, tier }: PersonalizedFeedProps)
       <div className="mt-8 space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-2xl font-bold uppercase text-white">
-            For You, {supporterName.split(' ')[0]}
+            Club picks for {supporterName.split(" ")[0]}
           </h2>
           <span className="rounded-full bg-white/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-300">
-            Curated feed
+            Editorial picks
           </span>
         </div>
-        
+
         <div className="grid gap-3 sm:grid-cols-3">
           {recommendations.map((item) => {
             const Icon = item.icon;
@@ -75,7 +76,9 @@ export function PersonalizedFeed({ supporterName, tier }: PersonalizedFeedProps)
                 className="group flex flex-col justify-between rounded-[24px] border border-border-soft bg-black/20 p-5 transition-colors hover:bg-white/5"
               >
                 <div>
-                  <div className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full ${item.bg} ${item.accent}`}>
+                  <div
+                    className={`mb-4 flex h-10 w-10 items-center justify-center rounded-full ${item.bg} ${item.accent}`}
+                  >
                     <Icon size={18} />
                   </div>
                   <h3 className="font-semibold text-white group-hover:text-club-accent transition-colors">
@@ -86,7 +89,11 @@ export function PersonalizedFeed({ supporterName, tier }: PersonalizedFeedProps)
                   </p>
                 </div>
                 <div className="mt-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-300 group-hover:text-white">
-                  View <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                  View{" "}
+                  <ArrowRight
+                    size={14}
+                    className="transition-transform group-hover:translate-x-1"
+                  />
                 </div>
               </Link>
             );

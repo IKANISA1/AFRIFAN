@@ -1,12 +1,14 @@
 import { buildPageMetadata } from "@/lib/metadata";
 import { SectionHeading } from "@/components/section-heading";
 import { getClubProfile, getCmsContentBlock } from "@/lib/data/public";
+import { getSiteCopy } from "@/lib/site-copy";
 
 export async function generateMetadata() {
   const club = await getClubProfile();
+  const copy = getSiteCopy(club.defaultLanguage);
   return buildPageMetadata({
-    title: "Terms and conditions",
-    description: `Terms for tickets, memberships, shop orders, and supporter activity across the ${club.shortName} website and fan app.`,
+    title: copy.pages.terms.metaTitle,
+    description: copy.pages.terms.metaDescription(club),
     path: "/terms",
   });
 }
@@ -16,15 +18,16 @@ export default async function TermsPage() {
     getClubProfile(),
     getCmsContentBlock("terms"),
   ]);
+  const copy = getSiteCopy(club.defaultLanguage);
   const fallbackTerms =
-    `Ticketing, shop orders, memberships, and contribution records created through the website are part of the same ${club.shortName} supporter platform used by the mobile app. Availability, pricing, and supporter eligibility remain subject to club policy and live operational status.`;
+    `${club.shortName}: ${copy.pages.terms.fallbackBody}`;
   const content = cmsBlock?.body || fallbackTerms;
-  const title = cmsBlock?.title || "One supporter platform across web and mobile.";
+  const title = cmsBlock?.title || copy.pages.terms.fallbackTitle;
 
   return (
     <div className="page-shell section-grid py-12">
       <SectionHeading
-        eyebrow="Terms"
+        eyebrow={copy.pages.terms.eyebrow}
         title={title}
       />
       <div className="glass-panel rounded-[30px] p-6 text-sm leading-7 text-slate-300">

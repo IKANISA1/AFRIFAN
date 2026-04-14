@@ -4,6 +4,7 @@ library;
 export 'src/alias_generator.dart';
 export 'src/club_domain_types.dart';
 export 'src/country_catalog.dart';
+export 'src/country_data.dart';
 export 'src/currency_formatter.dart';
 export 'src/date_formatter.dart';
 export 'src/json_helpers.dart';

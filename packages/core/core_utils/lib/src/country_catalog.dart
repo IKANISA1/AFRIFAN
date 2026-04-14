@@ -356,8 +356,8 @@ class AfriCountry {
 /// Use [AfriCountryCatalog.withCountries] to inject club-specific entries,
 /// or load from Supabase `countries` table.
 abstract final class AfriCountryCatalog {
-  /// Built-in catalog entries. Extend via [withCountries].
-  static List<AfriCountry> _entries = List<AfriCountry>.of(builtInCountries);
+  /// Built-in catalog entries loaded at runtime.
+  static List<AfriCountry> _entries = <AfriCountry>[];
 
   /// Inject club-specific countries (replaces built-in).
   static void withCountries(List<AfriCountry> countries) {
@@ -366,7 +366,11 @@ abstract final class AfriCountryCatalog {
 
   /// Append additional countries to the built-in list.
   static void addCountries(List<AfriCountry> countries) {
-    _entries = [..._entries, ...countries];
+    if (_entries.isEmpty) {
+      _entries = countries;
+    } else {
+      _entries = <AfriCountry>[..._entries, ...countries];
+    }
   }
 
   /// All registered countries.

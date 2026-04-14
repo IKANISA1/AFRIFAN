@@ -57,10 +57,7 @@ void main() {
       });
 
       test('handles minimal/null fields gracefully', () {
-        final profile = UserProfile.fromJson({
-          'id': 'user-3',
-          'club_id': '1',
-        });
+        final profile = UserProfile.fromJson({'id': 'user-3', 'club_id': '1'});
 
         expect(profile.id, 'user-3');
         expect(profile.momoNumber, isNull);
@@ -94,20 +91,33 @@ void main() {
     });
 
     group('derived helpers', () {
-      test('isProfileComplete requires non-empty momoNumber', () {
+      test('isProfileComplete requires alias or display name, not MoMo', () {
         const complete = UserProfile(
           id: 'u1',
           clubId: '1',
-          momoNumber: '+250788111111',
+          publicUserId: '483912',
         );
         expect(complete.isProfileComplete, isTrue);
-        expect(complete.hasMomo, isTrue);
+        expect(complete.hasMomo, isFalse);
 
-        const incomplete = UserProfile(id: 'u2', clubId: '1');
+        const named = UserProfile(
+          id: 'u2',
+          clubId: '1',
+          displayName: 'Blue Army',
+        );
+        expect(named.isProfileComplete, isTrue);
+
+        const incomplete = UserProfile(id: 'u3', clubId: '1');
         expect(incomplete.isProfileComplete, isFalse);
         expect(incomplete.hasMomo, isFalse);
 
-        const empty = UserProfile(id: 'u3', clubId: '1', momoNumber: '  ');
+        const empty = UserProfile(
+          id: 'u4',
+          clubId: '1',
+          publicUserId: '  ',
+          displayName: '  ',
+          momoNumber: '  ',
+        );
         expect(empty.isProfileComplete, isFalse);
       });
     });
@@ -318,9 +328,7 @@ void main() {
     });
 
     test('canAccessBankId requires matching bankId', () {
-      const access = AdminWorkspaceAccess(
-        bankAdminIds: {'bank-1', 'bank-2'},
-      );
+      const access = AdminWorkspaceAccess(bankAdminIds: {'bank-1', 'bank-2'});
       expect(access.canAccessBankId('bank-1'), isTrue);
       expect(access.canAccessBankId('bank-3'), isFalse);
       expect(access.canAccessBankId(''), isFalse);
@@ -371,16 +379,12 @@ void main() {
 
     group('fromAppMetadata', () {
       test('parses admin flag from JWT metadata', () {
-        final access = AdminWorkspaceAccess.fromAppMetadata({
-          'is_admin': true,
-        });
+        final access = AdminWorkspaceAccess.fromAppMetadata({'is_admin': true});
         expect(access.hasPlatformAccess, isTrue);
       });
 
       test('parses legacy admin key', () {
-        final access = AdminWorkspaceAccess.fromAppMetadata({
-          'admin': true,
-        });
+        final access = AdminWorkspaceAccess.fromAppMetadata({'admin': true});
         expect(access.hasPlatformAccess, isTrue);
       });
 
@@ -420,10 +424,7 @@ void main() {
     test('AuthAuthenticated exposes profile and workspace', () {
       const profile = UserProfile(id: 'u1', clubId: '1');
       const workspace = AdminWorkspaceAccess(hasPlatformAccess: true);
-      const state = AuthAuthenticated(
-        profile: profile,
-        workspace: workspace,
-      );
+      const state = AuthAuthenticated(profile: profile, workspace: workspace);
 
       expect(state.user, profile);
       expect(state.isAuthenticated, isTrue);
@@ -462,11 +463,7 @@ void main() {
     });
 
     test('copyWith overrides specified fields', () {
-      const session = UserSession(
-        userId: 'u1',
-        clubId: '42',
-        alias: '123-456',
-      );
+      const session = UserSession(userId: 'u1', clubId: '42', alias: '123-456');
       final updated = session.copyWith(
         xpTotal: 500,
         tier: 'gold',

@@ -23,12 +23,14 @@ import {
   adminClubScopeCookieName,
   getRequestedAdminClubId,
   readCookieValue,
+  writeAdminClubScopeCookie,
 } from "@/lib/admin-club-scope";
 import { emptyAdminAccess, resolveAdminAccess } from "@/lib/data/admin/access";
+import { getAdminClubScopeOptions } from "@/lib/data/admin/settings";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
-import type { AdminAccess } from "@/lib/types";
+import type { AdminAccess, AdminClubScopeOption } from "@/lib/types";
 
-const pendingPhoneStorageKey = "gikundiro.admin.pending-whatsapp";
+const pendingPhoneStorageKey = "gikundiro.admin.pending-phone";
 
 function getRequestedClubIdFromLocation() {
   if (typeof window === "undefined") {
@@ -47,13 +49,17 @@ interface AdminPortalContextValue {
   session: Session | null;
   user: User | null;
   access: AdminAccess;
+  clubOptions: AdminClubScopeOption[];
+  activeClub: AdminClubScopeOption | null;
+  switchingClub: boolean;
   loading: boolean;
   error: string | null;
   notice: string | null;
   pendingPhone: string | null;
   refresh: () => Promise<void>;
-  requestWhatsAppCode: (phone: string) => Promise<void>;
-  verifyWhatsAppCode: (code: string) => Promise<void>;
+  setClubScope: (clubId: string) => Promise<void>;
+  requestPhoneCode: (phone: string) => Promise<void>;
+  verifyPhoneCode: (code: string) => Promise<void>;
   resetPendingPhone: () => void;
   signOut: () => Promise<void>;
 }
@@ -117,6 +123,8 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [access, setAccess] = useState<AdminAccess>(emptyAdminAccess);
+  const [clubOptions, setClubOptions] = useState<AdminClubScopeOption[]>([]);
+  const [switchingClub, setSwitchingClub] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -142,6 +150,7 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
       setLoading(false);
       setError("Supabase browser configuration is missing.");
       setAccess(emptyAdminAccess);
+      setClubOptions([]);
       return;
     }
 
@@ -154,17 +163,26 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
       const nextUser = nextSession?.user ?? null;
       setSession(nextSession);
       setUser(nextUser);
-      setAccess(
-        await resolveAdminAccess(client, nextUser, {
-          requestedClubId: getRequestedClubIdFromLocation(),
-        }),
-      );
+      const nextAccess = await resolveAdminAccess(client, nextUser, {
+        requestedClubId: getRequestedClubIdFromLocation(),
+      });
+      setAccess(nextAccess);
+      if (nextAccess.hasAccess) {
+        try {
+          setClubOptions(await getAdminClubScopeOptions(client, nextAccess));
+        } catch {
+          setClubOptions([]);
+        }
+      } else {
+        setClubOptions([]);
+      }
       if (nextUser != null) {
         syncPendingPhone(null);
       }
       setError(nextUser == null ? urlError : null);
     } catch (caught) {
       setAccess(emptyAdminAccess);
+      setClubOptions([]);
       setError(
         caught instanceof Error
           ? caught.message
@@ -175,7 +193,7 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
     }
   }, [client, syncPendingPhone]);
 
-  const requestWhatsAppCode = useCallback(
+  const requestPhoneCode = useCallback(
     async (phone: string) => {
       if (client == null) {
         throw new Error("Supabase browser configuration is missing.");
@@ -218,25 +236,25 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
 
       syncPendingPhone(normalizedPhone);
       setNotice(
-        `Verification code sent to ${formatAdminPhoneForDisplay(normalizedPhone)} on WhatsApp.`,
+        `Verification code sent to ${formatAdminPhoneForDisplay(normalizedPhone)}.`,
       );
     },
     [client, syncPendingPhone],
   );
 
-  const verifyWhatsAppCode = useCallback(
+  const verifyPhoneCode = useCallback(
     async (code: string) => {
       if (client == null) {
         throw new Error("Supabase browser configuration is missing.");
       }
 
       if (!pendingPhone) {
-        throw new Error("Request a WhatsApp code first.");
+        throw new Error("Request a verification code first.");
       }
 
       const token = code.trim();
       if (!/^\d{6}$/.test(token)) {
-        throw new Error("Enter the 6-digit code sent on WhatsApp.");
+        throw new Error("Enter the 6-digit code sent to your phone.");
       }
 
       setError(null);
@@ -257,6 +275,34 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
       await refresh();
     },
     [client, pendingPhone, refresh, syncPendingPhone],
+  );
+
+  const setClubScope = useCallback(
+    async (clubId: string) => {
+      if (typeof window === "undefined") {
+        return;
+      }
+
+      const nextClubId = clubId.trim();
+      if (!nextClubId || nextClubId === access.clubId) {
+        return;
+      }
+
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set("club", nextClubId);
+      window.history.replaceState({}, document.title, currentUrl.toString());
+      writeAdminClubScopeCookie(nextClubId);
+      setNotice("Switching club scope...");
+      setSwitchingClub(true);
+
+      try {
+        await refresh();
+        setNotice("Club scope updated.");
+      } finally {
+        setSwitchingClub(false);
+      }
+    },
+    [access.clubId, refresh],
   );
 
   const signOut = useCallback(async () => {
@@ -302,6 +348,9 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
     };
   }, [client, refresh, syncPendingPhone]);
 
+  const activeClub =
+    clubOptions.find((club) => club.id === access.clubId) ?? null;
+
   return (
     <AdminPortalContext.Provider
       value={{
@@ -309,13 +358,17 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
         session,
         user,
         access,
+        clubOptions,
+        activeClub,
+        switchingClub,
         loading,
         error,
         notice,
         pendingPhone,
         refresh,
-        requestWhatsAppCode,
-        verifyWhatsAppCode,
+        setClubScope,
+        requestPhoneCode,
+        verifyPhoneCode,
         resetPendingPhone: () => syncPendingPhone(null),
         signOut,
       }}

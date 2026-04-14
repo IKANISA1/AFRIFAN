@@ -12,6 +12,7 @@ class AppRouter {
   final GoRouterRedirect? redirect;
   final Listenable? refreshListenable;
   final GoRouterWidgetBuilder? errorBuilder;
+  final List<NavigatorObserver> observers;
 
   AppRouter({
     required this.modules,
@@ -20,6 +21,7 @@ class AppRouter {
     this.redirect,
     this.refreshListenable,
     this.errorBuilder,
+    this.observers = const <NavigatorObserver>[],
   }) : _explicitInitialLocation = initialLocation;
 
   String get initialLocation =>
@@ -29,6 +31,7 @@ class AppRouter {
     initialLocation: initialLocation,
     redirect: redirect,
     refreshListenable: refreshListenable,
+    observers: observers,
     errorBuilder:
         errorBuilder ??
         (context, state) => _RouterErrorScreen(error: state.error),
@@ -112,7 +115,6 @@ class _RouterErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final message = error?.toString().trim();
     return Scaffold(
       body: Center(
         child: Padding(
@@ -122,10 +124,8 @@ class _RouterErrorScreen extends StatelessWidget {
             children: [
               const Icon(Icons.error_outline_rounded, size: 48),
               const SizedBox(height: 16),
-              Text(
-                message == null || message.isEmpty
-                    ? 'We could not open that page.'
-                    : message,
+              const Text(
+                'We could not open that page.',
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),

@@ -4,9 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Landmark, ShieldCheck, Ticket } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { SiteChromeCopy } from "@/lib/site-copy";
 import { ui } from "@/design-system";
 
-const tabs = [
+const baseTabs = [
   {
     id: "home",
     href: "/",
@@ -31,7 +32,6 @@ function resolveActiveTab(pathname: string): string {
   if (
     pathname === "/" ||
     pathname === "/home" ||
-    pathname.startsWith("/fantasy") ||
     pathname.startsWith("/fixtures") ||
     pathname.startsWith("/results") ||
     pathname.startsWith("/standings") ||
@@ -60,9 +60,14 @@ function resolveActiveTab(pathname: string): string {
   return "home";
 }
 
-export function AppBottomNav() {
+export function AppBottomNav({ copy }: { copy: SiteChromeCopy }) {
   const pathname = usePathname();
   const activeTab = resolveActiveTab(pathname);
+  const tabs = [
+    { ...baseTabs[0], label: copy.home },
+    { ...baseTabs[1], label: copy.tickets },
+    { ...baseTabs[2], label: copy.membership },
+  ] as const;
 
   return (
     <nav

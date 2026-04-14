@@ -1,8 +1,10 @@
-import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../models/prediction_models.dart';
+import '../prediction_providers.dart';
 
 class StreakCalendarScreen extends ConsumerStatefulWidget {
   const StreakCalendarScreen({super.key});
@@ -25,32 +27,18 @@ class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
   }
 
   Future<void> _loadStreak() async {
-    final userId = ref.read(supabaseClientProvider).auth.currentUser?.id;
-    if (userId == null) {
-      if (!mounted) return;
-      setState(() {
-        _heat = List<int>.filled(35, 0);
-        _isLoading = false;
-      });
-      return;
-    }
-
     try {
-      final since = DateTime.now()
-          .subtract(const Duration(days: 34))
-          .toIso8601String();
-      final events = await ref
-          .read(supabaseClientProvider)
-          .from('cool_events')
-          .select('event_at')
-          .eq('user_id', userId)
-          .gte('event_at', since)
-          .order('event_at', ascending: false);
-
+      final repository = ref.read(predictionRepositoryProvider);
+      final results = await Future.wait<Object?>([
+        repository.loadUserStats(),
+        repository.loadPredictionHistory(limit: 250),
+      ]);
+      final dashboard = results[0]! as PredictionDashboard;
+      final history = results[1]! as List<UserPrediction>;
       final countsByDay = <String, int>{};
-      for (final event in events) {
-        final raw = event['event_at']?.toString();
-        final when = raw == null ? null : DateTime.tryParse(raw)?.toLocal();
+      for (final prediction in history.where((item) => item.isWon)) {
+        final when =
+            prediction.settledAt?.toLocal() ?? prediction.placedAt?.toLocal();
         if (when == null) continue;
         final key = DateTime(
           when.year,
@@ -95,7 +83,9 @@ class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
       if (!mounted) return;
       setState(() {
         _heat = heat;
-        _currentStreak = current;
+        _currentStreak = dashboard.currentStreak > 0
+            ? dashboard.currentStreak
+            : current;
         _bestStreak = best;
         _isLoading = false;
       });

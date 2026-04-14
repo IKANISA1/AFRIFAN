@@ -1,7 +1,5 @@
 import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
-import 'package:feat_settings/src/screens/about_screen.dart';
-import 'package:feat_settings/src/screens/help_support_screen.dart';
 import 'package:feat_settings/src/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,69 +14,64 @@ void main() {
   GoogleFonts.config.allowRuntimeFetching = false;
   setUpAll(loadDesignFonts);
 
-  testWidgets('about screen shows actionable policy and support actions', (
-    tester,
-  ) async {
-    await tester.pumpWidget(const MaterialApp(home: AboutScreen()));
+  testWidgets('settings shows streamlined menu items', (tester) async {
+    await tester.pumpWidget(_buildSettingsApp());
     await tester.pumpAndSettle();
 
-    expect(find.text('Open Source Licenses'), findsOneWidget);
-    expect(find.text('CONTACT SUPPORT'), findsOneWidget);
-    expect(find.text('RATE THIS APP'), findsOneWidget);
-  });
+    // Account section
+    expect(find.text('Edit profile'), findsOneWidget);
+    expect(find.text('Notifications'), findsOneWidget);
 
-  testWidgets(
-    'help screen remains usable without configured support channels',
-    (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: HelpSupportScreen()));
-      await tester.pumpAndSettle();
+    // Privacy section
+    expect(find.text('Privacy controls'), findsOneWidget);
 
-      expect(
-        find.text('Support channels are not configured for this build yet.'),
-        findsOneWidget,
-      );
-
-      final returnButton = find.text('RETURN TO SETTINGS');
-      await tester.scrollUntilVisible(returnButton, 200);
-      expect(returnButton, findsOneWidget);
-    },
-  );
-
-  testWidgets('settings shows BioPay entries when the feature is enabled', (
-    tester,
-  ) async {
-    const config = _FakeClubConfig(hasBiopay: true);
-
-    await tester.pumpWidget(_buildSettingsApp(config: config));
+    // Scroll to reveal Support section
+    await tester.scrollUntilVisible(find.text('Sign out'), 200);
     await tester.pumpAndSettle();
 
-    expect(find.text('BioPay & Privacy'), findsOneWidget);
-    expect(find.text('BioPay home'), findsOneWidget);
-    expect(find.text('Face ID & enrollment'), findsOneWidget);
-    expect(find.text('QR receive & pay'), findsOneWidget);
-    expect(find.text('NFC receive & pay'), findsOneWidget);
+    // Support section
+    expect(find.text('Help & Support'), findsOneWidget);
+    expect(find.text('Open-source licenses'), findsOneWidget);
+    expect(find.text('Sign out'), findsOneWidget);
   });
 
-  testWidgets('settings hides BioPay entries when feature flag is disabled', (
-    tester,
-  ) async {
-    const config = _FakeClubConfig(hasBiopay: false);
-
-    await tester.pumpWidget(_buildSettingsApp(config: config));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Privacy'), findsOneWidget);
-    expect(find.text('BioPay & Privacy'), findsNothing);
-    expect(find.text('BioPay home'), findsNothing);
-    expect(find.text('Face ID & enrollment'), findsNothing);
-  });
-
-  testWidgets('matches the shared settings glass layout', (tester) async {
-    _setMobileSurface(tester);
-
+  testWidgets('settings does not show removed items', (tester) async {
     await tester.pumpWidget(
       _buildSettingsApp(config: const _FakeClubConfig(hasBiopay: true)),
     );
+    await tester.pumpAndSettle();
+
+    // Deleted screens
+    expect(find.text('Language & region'), findsNothing);
+    expect(find.text('About Gikundiro'), findsNothing);
+    expect(find.text('Rate Gikundiro'), findsNothing);
+
+    // BioPay shortcuts removed from settings
+    expect(find.text('BioPay home'), findsNothing);
+    expect(find.text('BioPay & Privacy'), findsNothing);
+    expect(find.text('QR receive & pay'), findsNothing);
+    expect(find.text('NFC receive & pay'), findsNothing);
+    expect(find.text('Face ID & enrollment'), findsNothing);
+
+    // Report a problem merged into Help
+    expect(find.text('Report a problem'), findsNothing);
+  });
+
+  testWidgets('settings no longer shows account-level MOMO linking', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_buildSettingsApp());
+    await tester.pumpAndSettle();
+
+    expect(find.text('MOMO linked'), findsNothing);
+    expect(find.text('MOMO (optional)'), findsNothing);
+    expect(find.text('Link MoMo number'), findsNothing);
+  });
+
+  testWidgets('matches the streamlined settings layout', (tester) async {
+    _setMobileSurface(tester);
+
+    await tester.pumpWidget(_buildSettingsApp());
     await tester.pumpAndSettle();
 
     await expectLater(
@@ -88,7 +81,8 @@ void main() {
   });
 }
 
-Widget _buildSettingsApp({required _FakeClubConfig config}) {
+Widget _buildSettingsApp({_FakeClubConfig? config}) {
+  final effectiveConfig = config ?? const _FakeClubConfig(hasBiopay: false);
   final router = GoRouter(
     initialLocation: '/settings',
     routes: <RouteBase>[
@@ -102,9 +96,9 @@ Widget _buildSettingsApp({required _FakeClubConfig config}) {
   return ProviderScope(
     overrides: [currentUserProvider.overrideWith((ref) => null)],
     child: ClubConfigScope(
-      config: config,
+      config: effectiveConfig,
       child: MaterialApp.router(
-        theme: ClubTheme.from(config),
+        theme: ClubTheme.from(effectiveConfig),
         routerConfig: router,
       ),
     ),
@@ -195,6 +189,9 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const <String>['rw', 'fr', 'en'];
+
+  @override
+  String get environment => 'test';
 }
 
 void _setMobileSurface(WidgetTester tester) {

@@ -1,4 +1,6 @@
+import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 import 'auth_notifier.dart';
 import 'auth_repository.dart';
@@ -16,14 +18,8 @@ final authRepositoryProvider = Provider<AuthRepository>(
 );
 
 /// Core auth state — drives the entire app's auth flow.
-final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  final repository = ref.watch(authRepositoryProvider);
-  final notifier = AuthNotifier(repository: repository);
-  final subscription = repository.authStateChanges.listen(
-    notifier.syncWithAuthChange,
-  );
-  ref.onDispose(subscription.cancel);
-  return notifier;
+final authStateProvider = NotifierProvider<AuthNotifier, AuthState>(() {
+  return AuthNotifier();
 });
 
 /// Current authenticated user profile, or null.
@@ -53,4 +49,22 @@ final adminAccessProvider = Provider<AdminWorkspaceAccess>((ref) {
 /// Whether the current user has any admin access.
 final hasAdminAccessProvider = Provider<bool>((ref) {
   return ref.watch(adminAccessProvider).hasAnyAdminAccess;
+});
+
+/// Raw Supabase auth user for phone verification state and identity checks.
+final authUserProvider = Provider<supabase.User?>((ref) {
+  ref.watch(authStateProvider);
+  return SupabaseClientFactory.client.auth.currentUser;
+});
+
+/// Whether the current session has a confirmed phone identity.
+final isPhoneVerifiedProvider = Provider<bool>((ref) {
+  final user = ref.watch(authUserProvider);
+  return user?.phoneConfirmedAt?.trim().isNotEmpty ?? false;
+});
+
+/// Whether the current session is still anonymous.
+final isAnonymousAuthProvider = Provider<bool>((ref) {
+  final user = ref.watch(authUserProvider);
+  return user?.isAnonymous ?? false;
 });

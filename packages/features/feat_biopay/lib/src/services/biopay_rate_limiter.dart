@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:flutter/foundation.dart';
+import 'package:core_utils/core_utils.dart';
 
 /// Client-side rate limiter for BioPay operations.
 ///
@@ -86,7 +86,7 @@ class BiopayRateLimiter {
     _enrollAttempts.clear();
     _matchAttempts.clear();
     _paymentIntentAttempts.clear();
-    debugPrint('[BiopayRateLimiter] Counters reset.');
+    AfriLogger.info('BiopayRateLimiter', 'Counters reset.');
   }
 
   /// Remove entries older than the given duration from the queue.

@@ -48,7 +48,7 @@ export function getLevelForFat(totalFat: number): { current: FatLevel; next: Fat
 }
 
 /**
- * FAT level progress ring — circular SVG showing current level and progress to next.
+ * FET level progress ring — circular SVG showing current level and progress to next.
  */
 function FatProgressRing({
   current,
@@ -102,7 +102,7 @@ function FatProgressRing({
         <p className="font-score text-3xl font-bold text-white sm:text-4xl" aria-live="polite">
           {totalFat.toLocaleString()}
         </p>
-        <p className="text-[9px] uppercase tracking-[0.22em] text-slate-400">FAT</p>
+        <p className="text-[9px] uppercase tracking-[0.22em] text-slate-400">FET</p>
       </div>
     </div>
   );
@@ -126,14 +126,14 @@ function BadgeChip({ badge }: { badge: FatBadge }) {
         {badge.name}
       </p>
       <p className="text-[8px] uppercase tracking-[0.18em] text-slate-400">
-        +{badge.fatReward} FAT
+        +{badge.fatReward} FET
       </p>
     </div>
   );
 }
 
 /**
- * Full FAT dashboard — level ring, badge grid, activity log.
+ * Full FET dashboard — level ring, badge grid, activity log.
  */
 export function FatDashboard({
   totalFat,
@@ -159,7 +159,7 @@ export function FatDashboard({
             </h2>
             {nextLevel && (
               <p className="mt-3 text-sm leading-7 text-slate-300">
-                {nextLevel.minFat - totalFat} FAT to reach{" "}
+                {nextLevel.minFat - totalFat} FET to reach{" "}
                 <span className="font-semibold text-club-accent">
                   Level {nextLevel.level}: {nextLevel.title}
                 </span>
@@ -170,7 +170,7 @@ export function FatDashboard({
                 {earnedCount}/{badges.length} badges
               </span>
               <span className="rounded-full border border-border-soft bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.2em] text-slate-200">
-                {totalFat.toLocaleString()} total FAT
+                {totalFat.toLocaleString()} total FET
               </span>
             </div>
           </div>
@@ -192,7 +192,7 @@ export function FatDashboard({
         </div>
       </div>
 
-      {/* Recent FAT activity */}
+      {/* Recent FET activity */}
       {recentActivity.length > 0 && (
         <div className="glass-panel rounded-[34px] p-5 sm:p-6">
           <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-club-accent">
@@ -212,7 +212,7 @@ export function FatDashboard({
                   <p className="text-[10px] text-slate-400">{activity.date}</p>
                 </div>
                 <span className="shrink-0 rounded-full bg-club-accent/15 px-3 py-1 text-[11px] font-bold tabular-nums text-club-accent">
-                  +{activity.fat} FAT
+                  +{activity.fat} FET
                 </span>
               </div>
             ))}

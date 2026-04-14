@@ -4,12 +4,14 @@ import { PageHero } from "@/components/page-hero";
 import { clubHistoryMoments } from "@/lib/content";
 import { getClubProfile, getCmsContent } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
+import { getSiteCopy } from "@/lib/site-copy";
 
 export async function generateMetadata() {
   const club = await getClubProfile();
+  const copy = getSiteCopy(club.defaultLanguage);
   return buildPageMetadata({
-    title: `${club.shortName} history`,
-    description: `The story of ${club.shortName}, club identity, supporter culture, and the history behind ${club.clubName}.`,
+    title: copy.pages.history.metaTitle(club),
+    description: copy.pages.history.metaDescription(club),
     path: "/history",
   });
 }
@@ -19,6 +21,7 @@ export default async function HistoryPage() {
     getClubProfile(),
     getCmsContent("club_history"),
   ]);
+  const copy = getSiteCopy(club.defaultLanguage);
 
   // Use DB content if available, otherwise fall back to hardcoded
   const moments =
@@ -29,29 +32,29 @@ export default async function HistoryPage() {
   return (
     <div className="page-shell section-grid py-12">
       <PageHero
-        eyebrow="History"
-        title={`The story of ${club.nickname || club.shortName}.`}
-        description={`Club identity, supporter culture, and the history that gives ${club.shortName} its voice.`}
+        eyebrow={copy.pages.history.eyebrow}
+        title={copy.pages.history.title(club)}
+        description={copy.pages.history.description(club)}
         actions={
           <>
             <Link
               href="/news"
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Club newsroom
+              {copy.common.clubNewsroom}
             </Link>
             <Link
               href="/fan-clubs"
               className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
-              Supporter chapters
+              {copy.common.supporterChapters}
             </Link>
           </>
         }
         stats={[
-          { label: "Moments", value: moments.length.toString() },
-          { label: "Identity", value: club.nickname || club.shortName },
-          { label: "Surface", value: "Club-first" },
+          { label: copy.common.moments, value: moments.length.toString() },
+          { label: copy.common.identity, value: club.nickname || club.shortName },
+          { label: copy.common.surface, value: copy.pages.history.surfaceValue },
         ]}
       />
 
@@ -66,7 +69,7 @@ export default async function HistoryPage() {
                 <Flag size={18} />
               </span>
               <span className="font-mono text-xs uppercase tracking-[0.24em] text-slate-300">
-                Chapter {index + 1}
+                {copy.pages.history.chapter} {index + 1}
               </span>
             </div>
             <p className="mt-4 font-display text-4xl font-bold uppercase leading-none text-white">
@@ -81,21 +84,19 @@ export default async function HistoryPage() {
 
       <section className="glass-panel rounded-[34px] p-6">
         <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-          Club identity
+          {copy.pages.history.clubIdentity}
         </p>
         <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-          History across the club
+          {copy.pages.history.historyAcrossClub}
         </h2>
         <p className="mt-4 max-w-3xl text-sm leading-8 text-slate-300 sm:text-base">
-          History belongs across matchday, membership, supporter campaigns, and
-          club storytelling. This page holds the source material for that wider
-          voice.
+          {copy.pages.history.identityParagraph}
         </p>
         <Link
           href="/membership"
           className="mt-6 inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
         >
-          See membership identity <ArrowRight size={18} />
+          {copy.pages.history.seeMembershipIdentity} <ArrowRight size={18} />
         </Link>
       </section>
     </div>

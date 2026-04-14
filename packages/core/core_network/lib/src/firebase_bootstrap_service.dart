@@ -1,5 +1,6 @@
 import 'package:core_utils/core_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/foundation.dart';
 
 /// Best-effort Firebase bootstrap for features that depend on Firebase-backed
@@ -30,6 +31,9 @@ class FirebaseBootstrapService {
         await Firebase.initializeApp(options: options);
       } else {
         await Firebase.initializeApp();
+      }
+      if (!kIsWeb) {
+        await FirebasePerformance.instance.setPerformanceCollectionEnabled(!kDebugMode);
       }
       AfriLogger.info('Firebase', 'Initialized default app.');
     } catch (error, stackTrace) {

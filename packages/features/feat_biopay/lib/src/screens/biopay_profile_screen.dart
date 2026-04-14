@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../biopay_display_resolver.dart';
+import '../biopay_tokens.dart';
 import '../providers/biopay_providers.dart';
 import '../widgets/biopay_reference_ui.dart';
 
@@ -32,8 +33,8 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
         resolveBiopayRouteValue(selectedRouteType, profile, user) ??
         kBiopayUnlinkedLabel;
     final displayedLabel = selectedRouteType == PaymentRecipientType.code
-        ? 'Merchant Code'
-        : 'MoMo Number';
+        ? 'Saved Face ID Code'
+        : 'Saved Face ID Number';
 
     return BiopayReferencePage(
       title: 'Profile',
@@ -52,10 +53,10 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
               width: 96,
               height: 96,
               decoration: biopayReferencePanelDecoration(radius: 30),
-              child: const Icon(
+              child: Icon(
                 Icons.person_outline_rounded,
                 size: 48,
-                color: Color(0xFF94A4BF),
+                color: BiopayTokens.iconMuted,
               ),
             ),
           ),
@@ -125,7 +126,7 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
                       ],
                     ),
                   ),
-                  const Icon(
+                  Icon(
                     Icons.qr_code_scanner_rounded,
                     color: biopayReferenceInk,
                     size: 28,

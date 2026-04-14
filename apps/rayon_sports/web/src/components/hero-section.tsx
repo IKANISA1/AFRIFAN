@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ShieldCheck, Ticket } from "lucide-react";
-import { DynamicHeroImage } from "@/components/dynamic-hero-image";
+import { PageHero } from "@/components/page-hero";
 import { ProgressBar } from "@/components/progress-bar";
-import { ScrollParallax } from "@/components/scroll-parallax";
 import type {
   ClubProfile,
   ContributionGroup,
@@ -19,6 +18,7 @@ import {
   isResultMatch,
 } from "@/lib/utils";
 import { resolveFanAppHref } from "@/lib/config";
+import { getSiteCopy } from "@/lib/site-copy";
 import { ui } from "@/design-system";
 
 interface HeroSectionProps {
@@ -42,27 +42,17 @@ export function HeroSection({
   heroHeadline,
   heroDescription,
 }: HeroSectionProps) {
-  // Build image rotation list: match-specific → time-of-day variants
-  const heroImages: string[] = [];
-  if (featuredMatch?.imageUrl) heroImages.push(featuredMatch.imageUrl);
-  
-  const hour = new Date().getHours();
-  if (hour < 12) {
-    heroImages.push("/media/stadium-morning.jpg", "/media/stadium-hero.jpg");
-  } else if (hour >= 18) {
-    heroImages.push("/media/stadium-night.jpg", "/media/stadium-hero-2.jpg");
-  } else {
-    heroImages.push("/media/stadium-hero.jpg", "/media/stadium-hero-2.jpg");
-  }
+  const copy = getSiteCopy(club.defaultLanguage);
   const heroCircle = contributionGroups[0] ?? null;
   const premiumTier =
     membershipPackages.find((entry) => entry.tier === "platinum") ??
     membershipPackages[membershipPackages.length - 1] ??
     null;
-  const statusLabel = featuredMatch
+
+  const matchLabel = featuredMatch
     ? formatMatchStatusLabel(featuredMatch.matchStatus)
-    : "Club"
-  const statusSummary = featuredMatch
+    : club.league;
+  const matchSummary = featuredMatch
     ? isLiveMatch(featuredMatch.matchStatus)
       ? `${featuredMatch.homeScore} - ${featuredMatch.awayScore}${
           featuredMatch.liveMinute != null ? ` • ${featuredMatch.liveMinute}'` : ""
@@ -70,114 +60,50 @@ export function HeroSection({
       : isResultMatch(featuredMatch.matchStatus)
         ? `${featuredMatch.homeScore} - ${featuredMatch.awayScore} final score`
         : `${formatDateTime(featuredMatch.matchDate)} • ${featuredMatch.venue}`
-    : club.league;
+    : `${club.shortName} supporters hub`;
 
   return (
-    <section className="page-shell">
-      <div className={`${ui.panelElevated} relative overflow-hidden rounded-[34px] shadow-[0_24px_80px_rgba(1,8,24,0.45)] sm:rounded-[40px]`}>
-        <div className="absolute inset-0">
-          <ScrollParallax speed={0.4} className="h-full w-full">
-            <DynamicHeroImage images={heroImages} intervalMs={7000} />
-          </ScrollParallax>
-          <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(8,5,16,0.96)_10%,rgba(14,9,28,0.8)_40%,rgba(14,8,25,0.44)_72%,rgba(8,5,16,0.88)_100%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(181,155,255,0.34),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(239,231,255,0.16),transparent_28%)]" />
-        </div>
-        <p className={`${ui.monolithBleed} pointer-events-none absolute left-4 top-2 z-[1] sm:left-8 sm:top-4`}>
-          {club.nickname || club.shortName}
-        </p>
-
-        <div className="relative grid gap-6 px-5 py-7 sm:gap-8 sm:px-8 sm:py-10 lg:min-h-[580px] lg:grid-cols-[1.2fr_0.8fr] lg:px-10 lg:py-12">
-          {/* ── Left column: Headline + CTAs ── */}
-          <div className="flex flex-col justify-between gap-6">
-            <div className="space-y-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className={`${ui.chip} ${ui.chipSignal} px-3 py-1 text-[10px] sm:px-4 sm:py-1.5 sm:text-[11px]`}>
-                  {statusLabel}
-                </span>
-                <span className={`${ui.chip} ${ui.chipMuted} px-3 py-1 text-[10px] sm:px-4 sm:py-1.5 sm:text-[11px]`}>
-                  {club.shortName} • {club.league}
-                </span>
-              </div>
-
-              <div className="space-y-3">
-                <p className={`${ui.meta} text-[10px] sm:text-xs`}>
-                  {heroTagline || `${club.nickname || club.shortName}, live in the browser`}
-                </p>
-                <h1 className="fluid-hero max-w-4xl font-display font-bold uppercase tracking-[-0.06em] text-white text-balance">
-                  {heroHeadline || `This is ${club.nickname || club.shortName}.`}
-                </h1>
-                <p className="max-w-2xl text-sm leading-7 text-slate-200 sm:text-base sm:leading-8">
-                  {heroDescription ||
-                    `Get tickets, follow live matches, back supporter circles, and join the ${club.shortName} family — all from your browser.`}
-                </p>
-              </div>
-
-              {/* CTAs — stack on mobile, row on desktop */}
-              <div className="flex flex-wrap gap-2 sm:gap-3">
-                <Link
-                  href="/tickets"
-                  prefetch={false}
-                  className={`${ui.buttonPrimary} cta-glow sm:px-6 sm:py-3`}
-                >
-                  Get tickets <Ticket size={16} />
-                </Link>
-                <Link
-                  href="/membership"
-                  prefetch={false}
-                  className={`${ui.buttonSecondary} sm:px-6 sm:py-3`}
-                >
-                  Membership <ShieldCheck size={16} />
-                </Link>
-                <Link
-                  href={resolveFanAppHref()}
-                  prefetch={false}
-                  className={`${ui.buttonSecondary} sm:px-6 sm:py-3`}
-                >
-                  Fan app <ArrowRight size={16} />
-                </Link>
-              </div>
-            </div>
-
-            {/* Stat chips — compact horizontal row on mobile, grid on desktop */}
-            <div className="flex gap-2 overflow-x-auto sm:grid sm:grid-cols-3 sm:gap-3 sm:overflow-visible">
-              <div className={`${ui.statCard} shrink-0 sm:rounded-[26px] sm:px-4 sm:py-4`}>
-                <p className={`${ui.meta} text-[9px] sm:text-[11px]`}>
-                  Languages
-                </p>
-                <p className="mt-1 font-score text-2xl font-bold uppercase tracking-[-0.04em] text-white sm:mt-3 sm:text-3xl">
-                  {club.supportedLanguages.length}
-                </p>
-                <p className="mt-0.5 text-xs text-slate-400 sm:mt-1 sm:text-sm sm:text-slate-300">
-                  {club.supportedLanguages.join(" / ")}
-                </p>
-              </div>
-              <div className={`${ui.statCard} shrink-0 sm:rounded-[26px] sm:px-4 sm:py-4`}>
-                <p className={`${ui.meta} text-[9px] sm:text-[11px]`}>
-                  Fan clubs
-                </p>
-                <p className="mt-1 font-score text-2xl font-bold uppercase tracking-[-0.04em] text-white sm:mt-3 sm:text-3xl">
-                  {formatCompactNumber(fanClubs.length)}
-                </p>
-                <p className="mt-0.5 text-xs text-slate-400 sm:mt-1 sm:text-sm sm:text-slate-300">
-                  Chapters and diaspora
-                </p>
-              </div>
-              <div className={`${ui.statCard} shrink-0 sm:rounded-[26px] sm:px-4 sm:py-4`}>
-                <p className={`${ui.meta} text-[9px] sm:text-[11px]`}>
-                  Match state
-                </p>
-                <p className="mt-1 font-score text-2xl font-bold uppercase tracking-[-0.04em] text-white sm:mt-3 sm:text-3xl">
-                  {featuredMatch ? statusLabel : "Club"}
-                </p>
-                <p className="mt-0.5 text-xs text-slate-400 sm:mt-1 sm:text-sm sm:text-slate-300">{statusSummary}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* ── Right column: Featured match + Support circle — HIDDEN on small mobile, visible from sm: up ── */}
-          <div className="hidden gap-4 self-end sm:grid lg:-mt-12">
-            {/* Featured match card */}
-            <article className={`${ui.panel} rounded-[28px] p-5 sm:rounded-[30px]`}>
+    <section className="page-shell section-grid">
+      <PageHero
+        eyebrow={heroTagline || `${club.nickname || club.shortName} live in the browser`}
+        title={heroHeadline || `This is ${club.nickname || club.shortName}.`}
+        description={
+          heroDescription ||
+          "Tickets, membership, supporter circles, and live matchday coverage in one club-branded experience."
+        }
+        actions={
+          <>
+            <Link
+              href="/tickets"
+              prefetch={false}
+              className={`${ui.buttonPrimary} cta-glow sm:px-6 sm:py-3`}
+            >
+              {copy.buyTickets} <Ticket size={16} />
+            </Link>
+            <Link
+              href="/membership"
+              prefetch={false}
+              className={`${ui.buttonSecondary} sm:px-6 sm:py-3`}
+            >
+              {copy.membership} <ShieldCheck size={16} />
+            </Link>
+            <Link
+              href={resolveFanAppHref()}
+              prefetch={false}
+              className={`${ui.buttonSecondary} sm:px-6 sm:py-3`}
+            >
+              {copy.fanApp} <ArrowRight size={16} />
+            </Link>
+          </>
+        }
+        stats={[
+          { label: "Languages", value: club.supportedLanguages.length.toString() },
+          { label: "Fan clubs", value: formatCompactNumber(fanClubs.length) },
+          { label: "Match state", value: matchLabel },
+        ]}
+        media={
+          <div className="grid gap-3 p-3 sm:p-4">
+            <div className={`${ui.panelInset} rounded-[24px] p-4 sm:p-5`}>
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className={ui.kicker}>
@@ -189,161 +115,94 @@ export function HeroSection({
                           : "Next fixture"
                       : "Club focus"}
                   </p>
-                  {featuredMatch ? (
-                    <>
-                      <h2 className="mt-3 font-display text-3xl font-bold uppercase leading-none tracking-[-0.05em] text-white lg:text-4xl">
-                        {featuredMatch.homeTeam}
-                        <span className="block text-white/65">vs {featuredMatch.awayTeam}</span>
-                      </h2>
-                      <p className="mt-3 text-sm leading-7 text-slate-300">
-                        {featuredMatch.matchSummary ?? "Match context coming soon."}
-                      </p>
-                    </>
-                  ) : (
-                    <h2 className="mt-3 font-display text-4xl font-bold uppercase leading-none tracking-[-0.05em] text-white">
-                      {club.shortName}
-                    </h2>
-                  )}
+                  <h2 className="mt-3 font-display text-3xl font-bold uppercase leading-none tracking-[-0.05em] text-white">
+                    {featuredMatch
+                      ? `${featuredMatch.homeTeam} vs ${featuredMatch.awayTeam}`
+                      : `${club.shortName} matchday`}
+                  </h2>
                 </div>
-                {featuredMatch ? (
-                  <div className={`${ui.panelInset} rounded-[22px] px-4 py-3 text-right`}>
-                    <p className={ui.meta}>
-                      Status
-                    </p>
-                    <p className="mt-2 font-score text-3xl font-bold uppercase tracking-[-0.05em] text-white lg:text-4xl" aria-live="polite">
-                      {isLiveMatch(featuredMatch.matchStatus) ||
-                      isResultMatch(featuredMatch.matchStatus)
-                        ? `${featuredMatch.homeScore}-${featuredMatch.awayScore}`
-                        : formatCurrency(featuredMatch.generalPrice, club.currencyCode)}
-                    </p>
-                  </div>
-                ) : null}
+                <span className={`${ui.chip} ${ui.chipSignal} text-[10px]`}>
+                  {matchLabel}
+                </span>
               </div>
+              <p className="mt-4 text-sm leading-7 text-slate-300">{matchSummary}</p>
               {featuredMatch ? (
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <span className={`${ui.chip} ${ui.chipMuted} text-xs`}>
-                    {statusSummary}
-                  </span>
-                  <span className={`${ui.chip} ${ui.chipMuted} text-xs`}>
+                  <span className={`${ui.chip} ${ui.chipMuted} text-[10px]`}>
                     {featuredMatch.competition}
+                  </span>
+                  <span className={`${ui.chip} ${ui.chipMuted} text-[10px]`}>
+                    {formatCurrency(featuredMatch.generalPrice, club.currencyCode)}
                   </span>
                 </div>
               ) : null}
-            </article>
+            </div>
 
-            {/* Support circles card */}
-            <article className={`${ui.panel} rounded-[28px] p-5 sm:rounded-[30px]`}>
+            <div className={`${ui.panelInset} rounded-[24px] p-4 sm:p-5`}>
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className={ui.kicker}>
-                    Support circles
-                  </p>
-                  <h2 className="mt-3 font-display text-2xl font-bold uppercase leading-none tracking-[-0.05em] text-white lg:text-3xl">
+                  <p className={ui.kicker}>Support circles</p>
+                  <h2 className="mt-3 font-display text-2xl font-bold uppercase leading-none tracking-[-0.05em] text-white">
                     {heroCircle?.name ?? "Back the next tifo push"}
                   </h2>
                 </div>
                 {premiumTier ? (
-                  <span className={`${ui.chip} ${ui.chipSignal} text-[11px]`}>
+                  <span className={`${ui.chip} ${ui.chipSignal} text-[10px]`}>
                     {premiumTier.title}
                   </span>
                 ) : null}
               </div>
-              <p className="mt-3 text-sm leading-7 text-slate-300">
+              <p className="mt-4 text-sm leading-7 text-slate-300">
                 {heroCircle?.description ??
-                  "Supporters pool money for away travel, stadium tifos, and community projects."}
+                  "Supporters pool money for tifos, away travel, and community projects across the club ecosystem."}
               </p>
               {heroCircle ? (
-                <>
-                  <div className="mt-4 grid grid-cols-3 gap-2">
-                    <div className="rounded-xl bg-black/20 p-3">
-                      <p className="text-[9px] uppercase tracking-[0.22em] text-slate-400">
-                        Current
-                      </p>
-                      <p className="mt-1 text-sm font-semibold text-white">
+                <div className="mt-4 space-y-3">
+                  <div className="grid grid-cols-3 gap-2 text-sm text-white">
+                    <div className="rounded-2xl border border-white/8 bg-black/15 p-3">
+                      <p className={ui.meta}>Current</p>
+                      <p className="mt-2 font-semibold">
                         {formatCurrency(heroCircle.currentTotal, heroCircle.currency)}
                       </p>
                     </div>
-                    <div className="rounded-xl bg-black/20 p-3">
-                      <p className="text-[9px] uppercase tracking-[0.22em] text-slate-400">
-                        Target
-                      </p>
-                      <p className="mt-1 text-sm font-semibold text-white">
+                    <div className="rounded-2xl border border-white/8 bg-black/15 p-3">
+                      <p className={ui.meta}>Target</p>
+                      <p className="mt-2 font-semibold">
                         {formatCurrency(heroCircle.targetAmount, heroCircle.currency)}
                       </p>
                     </div>
-                    <div className="rounded-xl bg-black/20 p-3">
-                      <p className="text-[9px] uppercase tracking-[0.22em] text-slate-400">
-                        Members
-                      </p>
-                      <p className="mt-1 text-sm font-semibold text-white">
-                        {heroCircle.memberCount}
-                      </p>
+                    <div className="rounded-2xl border border-white/8 bg-black/15 p-3">
+                      <p className={ui.meta}>Members</p>
+                      <p className="mt-2 font-semibold">{heroCircle.memberCount}</p>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <ProgressBar
-                      value={heroCircle.currentTotal}
-                      max={heroCircle.targetAmount}
-                      label="Circle progress"
-                    />
-                  </div>
-                </>
+                  <ProgressBar
+                    value={heroCircle.currentTotal}
+                    max={heroCircle.targetAmount}
+                    label="Circle progress"
+                  />
+                </div>
               ) : null}
               <div className="mt-4 flex flex-wrap gap-2">
                 <Link
                   href="/circles"
                   prefetch={false}
-                  className="inline-flex min-h-10 items-center gap-2 rounded-full bg-club-accent px-4 py-2 text-sm font-semibold text-slate-950 transition hover:brightness-110"
+                  className={`${ui.buttonSecondary} min-h-10 px-4 py-2 text-sm`}
                 >
-                  Explore circles <ArrowRight size={14} />
+                  {copy.supportCircles} <ArrowRight size={14} />
                 </Link>
                 <Link
                   href="/fan-clubs"
                   prefetch={false}
-                  className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/12 bg-white/6 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/12"
+                  className={`${ui.buttonSecondary} min-h-10 px-4 py-2 text-sm`}
                 >
                   Meet the chapters
                 </Link>
               </div>
-            </article>
+            </div>
           </div>
-
-          {/* ── Mobile-only: Compact featured match card (visible only on small screens) ── */}
-          <div className="sm:hidden">
-            {featuredMatch ? (
-              <Link
-                href="/tickets"
-                className="block rounded-2xl border border-white/10 bg-[#0a1628]/78 p-4 backdrop-blur-xl"
-              >
-                <p className="text-[10px] uppercase tracking-[0.24em] text-club-accent">
-                  {isLiveMatch(featuredMatch.matchStatus)
-                    ? "Live now"
-                    : isResultMatch(featuredMatch.matchStatus)
-                      ? "Last result"
-                      : "Next fixture"}
-                </p>
-                <div className="mt-2 flex items-center justify-between gap-3">
-                  <h2 className="font-display text-xl font-bold uppercase leading-tight text-white">
-                    {featuredMatch.homeTeam} <span className="text-white/60">vs</span> {featuredMatch.awayTeam}
-                  </h2>
-                  <div className="shrink-0 rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-center">
-                    <p className="font-score text-xl font-bold text-white" aria-live="polite">
-                      {isLiveMatch(featuredMatch.matchStatus) || isResultMatch(featuredMatch.matchStatus)
-                        ? `${featuredMatch.homeScore}-${featuredMatch.awayScore}`
-                        : formatCurrency(featuredMatch.generalPrice, club.currencyCode)}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-2 flex items-center gap-2 text-xs text-slate-400">
-                  <span>{featuredMatch.competition}</span>
-                  <span>•</span>
-                  <span>{statusSummary}</span>
-                </div>
-              </Link>
-            ) : null}
-          </div>
-        </div>
-      </div>
+        }
+      />
     </section>
   );
 }

@@ -26,8 +26,7 @@ function loadLocalEnv() {
 
 function createAdminServiceClient() {
   const env = loadLocalEnv();
-  const supabaseUrl =
-    env.SUPABASE_URL ?? env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  const supabaseUrl = env.SUPABASE_URL ?? env.NEXT_PUBLIC_SUPABASE_URL ?? "";
   const serviceRoleKey = env.SUPABASE_SERVICE_ROLE_KEY ?? "";
 
   if (!supabaseUrl || !serviceRoleKey) {
@@ -53,18 +52,22 @@ test("public home renders on a phone viewport", async ({ page }) => {
     page.getByRole("heading", { name: /this is gikundiro/i }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: /open fan app|open supporter app/i }),
+    page.getByRole("link", {
+      name: /app y'abafana|open fan app|open supporter app/i,
+    }),
   ).toBeVisible();
 });
 
-test("supporters handoff page renders on tablet", async ({
-  page,
-}) => {
+test("supporters handoff page renders on tablet", async ({ page }) => {
   await page.goto("/supporters", { waitUntil: "domcontentloaded" });
   await expect(
-    page.getByRole("heading", { name: /supporter app/i }),
+    page.getByRole("heading", {
+      name: /urugendo rw'umufana rukomereza kuri mobile/i,
+    }),
   ).toBeVisible();
-  await expect(page.getByText(/native flutter experience/i)).toBeVisible();
+  await expect(
+    page.getByText(/catalogue imwe ya Fan Engagement Token icungwa na admin/i),
+  ).toBeVisible();
 });
 
 /* ────────────────────────────────────────────────────────── */
@@ -84,10 +87,8 @@ test("admin route renders the phone OTP sign-in surface", async ({
     waitUntil: browserName === "webkit" ? "networkidle" : "domcontentloaded",
   });
 
-  // Admin workspace heading
-  await expect(
-    page.getByText(/admin workspace/i),
-  ).toBeVisible();
+  // Admin auth heading
+  await expect(page.getByText(/secure sign in/i)).toBeVisible();
 
   // Phone number input (OTP flow)
   const phoneInput = page.locator('input[type="tel"]');
@@ -136,7 +137,7 @@ test("pwa manifest and offline route are reachable", async ({
 /*  Offline synthetic test                                    */
 /* ────────────────────────────────────────────────────────── */
 
-test("admin renders offline fallback when network is disabled", async ({
+test("admin surfaces an offline indicator when network is disabled", async ({
   page,
   context,
   browserName,
@@ -146,39 +147,17 @@ test("admin renders offline fallback when network is disabled", async ({
     "Playwright WebKit is unreliable for admin service worker control checks.",
   );
 
-  // First visit admin to register SW and cache the offline page
-  await page.goto("/admin", { waitUntil: "networkidle" });
-
-  await page.waitForFunction(async () => {
-    if (!("serviceWorker" in navigator)) {
-      return true;
-    }
-
-    await navigator.serviceWorker.ready;
-    return true;
-  });
-
-  if ((await page.evaluate(() => navigator.serviceWorker?.controller == null)) === true) {
-    await page.reload({ waitUntil: "networkidle" });
-  }
+  // First visit the admin shell so the page has a mounted offline listener.
+  await page.goto("/admin", { waitUntil: "domcontentloaded" });
+  await expect(page.getByText(/secure sign in/i)).toBeVisible();
 
   // Go offline
   await context.setOffline(true);
-
-  // Navigate to a different admin route — should get the offline fallback
-  await page.goto("/admin/settings", {
-    waitUntil: "domcontentloaded",
-    timeout: 10_000,
-  }).catch(() => null);
-
-  // Either the offline page is served from SW or we get the admin-offline
-  const content = await page.textContent("body");
-  const hasOfflineIndicator =
-    content?.includes("offline") ||
-    content?.includes("live connection") ||
-    content?.includes("network");
-
-  expect(hasOfflineIndicator).toBeTruthy();
+  await expect(
+    page.getByText(
+      /admin shell stays available|live admin data and writes require the network/i,
+    ),
+  ).toBeVisible({ timeout: 5_000 });
 
   // Restore network
   await context.setOffline(false);
@@ -219,13 +198,15 @@ test("admin auth with assignment-backed session reaches dashboard", async ({
     }
     userId = created.data.user.id;
 
-    const assignment = await serviceClient.from("admin_role_assignments").insert({
-      user_id: userId,
-      role: "rayon_sport",
-      is_active: true,
-      club_id: CLUB_ID,
-      notes: "temporary playwright verification user",
-    });
+    const assignment = await serviceClient
+      .from("admin_role_assignments")
+      .insert({
+        user_id: userId,
+        role: "rayon_sport",
+        is_active: true,
+        club_id: CLUB_ID,
+        notes: "temporary playwright verification user",
+      });
     if (assignment.error) {
       throw assignment.error;
     }
@@ -250,19 +231,20 @@ test("admin auth with assignment-backed session reaches dashboard", async ({
       timeout: 120_000,
     });
 
-    // After sign-in, we should see the admin dashboard
+    // After sign-in, we should see the operations dashboard
+    await expect(page.getByText(/operations dashboard/i)).toBeVisible({
+      timeout: 20_000,
+    });
     await expect(
-      page.getByText(/admin dashboard/i),
-    ).toBeVisible({ timeout: 20_000 });
-    await expect(
-      page.getByRole("heading", {
-        name: /operate matchdays, content, and supporter activity from one place/i,
-      }),
+      page.getByText(/signal first\. actions stay one click away\./i),
     ).toBeVisible();
-    await expect(page.getByRole("button", { name: /sign out|exit/i })).toBeVisible();
+    await expect(page.getByText(/secure session/i)).toBeVisible();
   } finally {
     if (userId) {
-      await serviceClient.from("admin_role_assignments").delete().eq("user_id", userId);
+      await serviceClient
+        .from("admin_role_assignments")
+        .delete()
+        .eq("user_id", userId);
       await serviceClient.auth.admin.deleteUser(userId);
     }
   }

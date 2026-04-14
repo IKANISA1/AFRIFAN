@@ -5,6 +5,33 @@ function normalizeClubScope(value: string | null | undefined) {
   return trimmed ? trimmed : null;
 }
 
+export function writeAdminClubScopeCookie(clubId: string | null) {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  if (clubId == null) {
+    document.cookie = `${adminClubScopeCookieName}=; Max-Age=0; Path=/; SameSite=Lax`;
+    return;
+  }
+
+  document.cookie = `${adminClubScopeCookieName}=${encodeURIComponent(clubId)}; Max-Age=${60 * 60 * 24 * 365}; Path=/; SameSite=Lax`;
+}
+
+export function withAdminClubScope(
+  href: string,
+  clubId: string | null | undefined,
+) {
+  const normalizedClubId = normalizeClubScope(clubId);
+  if (normalizedClubId == null) {
+    return href;
+  }
+
+  const url = new URL(href, "https://admin.africlub.local");
+  url.searchParams.set("club", normalizedClubId);
+  return `${url.pathname}${url.search}${url.hash}`;
+}
+
 export function getRequestedAdminClubId(
   searchParams:
     | Pick<URLSearchParams, "get">

@@ -24,8 +24,6 @@ dependencies:
     path: ../../packages/core/core_network
   core_router:
     path: ../../packages/core/core_router
-  core_di:
-    path: ../../packages/core/core_di
   core_utils:
     path: ../../packages/core/core_utils
 
@@ -66,7 +64,6 @@ dependencies:
   supabase_flutter: ^2.12.2
   google_fonts: ^6.2.1
   flutter_animate: ^4.5.2
-  get_it: ^8.0.3
   url_launcher: ^6.3.1
   intl: ^0.20.2
   flutter_riverpod: ^2.6.1

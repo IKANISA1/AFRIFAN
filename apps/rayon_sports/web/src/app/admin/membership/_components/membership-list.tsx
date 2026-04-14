@@ -8,6 +8,7 @@ import type { AdminMembershipPackage } from "@/lib/types";
 
 interface MembershipListProps {
   packages: AdminMembershipPackage[];
+  currencyCode: string;
   loading: boolean;
   onEdit: (pkg: AdminMembershipPackage) => void;
   onDelete: (pkg: AdminMembershipPackage) => Promise<void>;
@@ -21,6 +22,7 @@ function tierTone(tier: string) {
 
 export function MembershipList({
   packages,
+  currencyCode,
   loading,
   onEdit,
   onDelete,
@@ -76,7 +78,7 @@ export function MembershipList({
                   </td>
                   <td>
                     <p className="text-sm font-medium text-white">
-                      {formatCurrency(pkg.annualPrice)}
+                      {formatCurrency(pkg.annualPrice, currencyCode)}
                     </p>
                     <p className="admin-row-meta">
                       {pkg.annualPrice > 0 ? "annual plan" : "free tier"}

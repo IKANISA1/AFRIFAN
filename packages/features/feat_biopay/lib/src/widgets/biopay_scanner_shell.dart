@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
+import '../biopay_tokens.dart';
 import 'biopay_reference_ui.dart';
 
 enum BiopayScannerTone { searching, ready, blocked, error }
@@ -32,7 +33,7 @@ class BiopayScannerShell extends StatelessWidget {
 
   Color _frameColor() {
     return switch (tone) {
-      BiopayScannerTone.ready => const Color(0xFFFFCD08),
+      BiopayScannerTone.ready => BiopayTokens.scannerReady,
       BiopayScannerTone.error => Colors.red.shade400,
       _ => Colors.white.withValues(alpha: 0.32),
     };

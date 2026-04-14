@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Plus, Trash2, Edit3, Eye, EyeOff } from "lucide-react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { SectionHeading } from "@/components/section-heading";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   getAdminContentBlocks,
   saveAdminContentBlock,
@@ -43,14 +45,18 @@ export default function AdminContentBlocksPage() {
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState("");
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!client) return;
     setLoading(true);
     try {
       setBlocks(await getAdminContentBlocks(client, access));
+      setLoadError(null);
     } catch (e) {
-      showAdminToast(e instanceof Error ? e.message : "Failed to load.", "error");
+      const message = e instanceof Error ? e.message : "Failed to load.";
+      setLoadError(message);
+      showAdminToast(message, "error");
     } finally {
       setLoading(false);
     }
@@ -87,6 +93,13 @@ export default function AdminContentBlocksPage() {
 
   async function remove(id: string) {
     if (!client) return;
+    if (
+      !confirmAdminDestructiveAction({
+        subject: "this content block",
+      })
+    ) {
+      return;
+    }
     try {
       await deleteAdminContentBlock(client, access, id);
       await load();
@@ -100,7 +113,11 @@ export default function AdminContentBlocksPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading eyebrow="CMS" title="Manage content blocks." />
+      <AdminPageHeader
+        eyebrow="CMS"
+        title="Content blocks"
+        description="Maintain reusable content sections, legal copy, and call-to-action blocks for the active club."
+      />
 
       <form onSubmit={submit} className="glass-panel rounded-[28px] p-6 grid gap-4">
         <div className="grid gap-4 sm:grid-cols-2">
@@ -165,6 +182,14 @@ export default function AdminContentBlocksPage() {
 
         {loading ? (
           <p className="text-sm text-slate-400">Loading…</p>
+        ) : loadError ? (
+          <AdminErrorState
+            title="Content blocks could not be loaded"
+            description={loadError}
+            onRetry={() => {
+              load().catch(() => {});
+            }}
+          />
         ) : filtered.length === 0 ? (
           <p className="text-sm text-slate-400">No content blocks. Add one above.</p>
         ) : (

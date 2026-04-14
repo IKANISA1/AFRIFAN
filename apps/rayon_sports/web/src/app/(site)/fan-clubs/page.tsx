@@ -4,13 +4,15 @@ import { PageHero } from "@/components/page-hero";
 import { ProgressBar } from "@/components/progress-bar";
 import { getClubProfile, getContributionGroups, getFanClubs } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
+import { getSiteCopy } from "@/lib/site-copy";
 import { formatCompactNumber } from "@/lib/utils";
 
 export async function generateMetadata() {
   const club = await getClubProfile();
+  const copy = getSiteCopy(club.defaultLanguage);
   return buildPageMetadata({
-    title: `${club.shortName} fan clubs`,
-    description: `Official ${club.shortName} fan clubs, supporter chapters, and community activity across the local community and diaspora.`,
+    title: copy.pages.fanClubs.metaTitle(club),
+    description: copy.pages.fanClubs.metaDescription(club),
     path: "/fan-clubs",
   });
 }
@@ -21,34 +23,35 @@ export default async function FanClubsPage() {
     getFanClubs(),
     getContributionGroups(),
   ]);
+  const copy = getSiteCopy(club.defaultLanguage);
   const totalMembers = fanClubs.reduce((total, club) => total + club.memberCount, 0);
 
   return (
     <div className="page-shell section-grid py-12">
       <PageHero
-        eyebrow="Community"
-        title="Supporter chapters across Rwanda and beyond."
-        description={`Discover official fan clubs, chapter activity, and the supporter network behind every ${club.shortName} matchday.`}
+        eyebrow={copy.pages.fanClubs.eyebrow}
+        title={copy.pages.fanClubs.title}
+        description={copy.pages.fanClubs.description(club)}
         actions={
           <>
             <Link
               href="/circles"
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Explore circles
+              {copy.common.exploreCircles}
             </Link>
             <Link
               href="/supporters"
               className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
-              Join in fan app
+              {copy.common.joinInFanApp}
             </Link>
           </>
         }
         stats={[
-          { label: "Chapters", value: fanClubs.length.toString() },
-          { label: "Members", value: formatCompactNumber(totalMembers) },
-          { label: "Circles", value: groups.length.toString() },
+          { label: copy.common.chapters, value: fanClubs.length.toString() },
+          { label: copy.common.members, value: formatCompactNumber(totalMembers) },
+          { label: copy.common.circles, value: groups.length.toString() },
         ]}
       />
 
@@ -78,7 +81,7 @@ export default async function FanClubsPage() {
                     {club.memberCount}
                   </p>
                   <p className="text-xs uppercase tracking-[0.22em] text-slate-300">
-                    members
+                    {copy.common.members}
                   </p>
                 </div>
               </div>
@@ -87,10 +90,10 @@ export default async function FanClubsPage() {
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <span className="rounded-full border border-border-soft bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                  {club.eventCount} events
+                  {club.eventCount} {copy.pages.fanClubs.events}
                 </span>
                 <span className="rounded-full border border-border-soft bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                  {club.rating.toFixed(1)} rating
+                  {club.rating.toFixed(1)} {copy.pages.fanClubs.rating}
                 </span>
               </div>
             </article>
@@ -98,7 +101,7 @@ export default async function FanClubsPage() {
         </div>
         <div className="glass-panel rounded-[30px] p-6">
           <p className="font-display text-4xl font-bold uppercase leading-none">
-            Active support circles
+            {copy.pages.fanClubs.activeSupportCircles}
           </p>
           <div className="mt-5 grid gap-4">
             {groups.map((group) => (
@@ -130,13 +133,13 @@ export default async function FanClubsPage() {
             href="/circles"
             className="mt-6 inline-flex rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
           >
-            Support a circle
+            {copy.common.supportACircle}
           </Link>
           <Link
             href="/supporters"
             className="mt-3 inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
           >
-            Join from fan app <ArrowRight size={18} />
+            {copy.common.joinFromFanApp} <ArrowRight size={18} />
           </Link>
         </div>
       </div>

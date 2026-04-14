@@ -34,6 +34,7 @@ function statusLabel(status: string) {
 
 interface MatchListProps {
   matches: AdminMatchItem[];
+  currencyCode: string;
   filter: string;
   setFilter: (filter: string) => void;
   loading: boolean;
@@ -43,6 +44,7 @@ interface MatchListProps {
 
 export function MatchList({
   matches,
+  currencyCode,
   filter,
   setFilter,
   loading,
@@ -155,7 +157,7 @@ export function MatchList({
                         label={match.isOnSale ? "On sale" : "Closed"}
                         tone={match.isOnSale ? "success" : "neutral"}
                       />
-                      <p className="admin-row-meta">{formatCurrency(match.generalPrice)}</p>
+                      <p className="admin-row-meta">{formatCurrency(match.generalPrice, currencyCode)}</p>
                     </td>
                     <td>
                       <p className="text-sm font-semibold text-white">

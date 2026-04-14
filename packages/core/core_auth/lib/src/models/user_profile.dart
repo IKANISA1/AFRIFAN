@@ -37,9 +37,18 @@ class UserProfile extends Equatable {
 
   // ─── Derived helpers ──────────────────────────────────────────
 
-  /// Whether the profile has minimum required information (needs MoMo or Name).
-  bool get isProfileComplete =>
-      momoNumber != null && momoNumber!.trim().isNotEmpty;
+  /// Whether the profile has a stable supporter-facing identity.
+  ///
+  /// Mobile money is optional at the account level, so completeness should
+  /// depend on alias or display information rather than a saved payment route.
+  bool get isProfileComplete {
+    final alias = publicUserId?.trim();
+    if (alias != null && alias.isNotEmpty) {
+      return true;
+    }
+    final name = displayName?.trim();
+    return name != null && name.isNotEmpty;
+  }
 
   /// Whether the user has MoMo configured.
   bool get hasMomo => momoNumber != null && momoNumber!.trim().isNotEmpty;

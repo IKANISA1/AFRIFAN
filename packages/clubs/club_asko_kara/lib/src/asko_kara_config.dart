@@ -87,6 +87,9 @@ class AskoKaraConfig implements ClubConfig {
   );
 
   @override
+  String get environment => const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
+
+  @override
   Map<String, bool> get features => {
     'biopay': hasBiopay,
     'fan_clubs': hasFanClubs,

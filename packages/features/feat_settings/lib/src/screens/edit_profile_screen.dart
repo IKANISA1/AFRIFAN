@@ -16,7 +16,6 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
-  late final TextEditingController _momoController;
   late final TextEditingController _nicknameController;
   bool _isSaving = false;
 
@@ -24,7 +23,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   void initState() {
     super.initState();
     final profile = ref.read(currentUserProvider);
-    _momoController = TextEditingController(text: _initialMomoValue(profile));
     _nicknameController = TextEditingController(
       text: profile?.displayName ?? '',
     );
@@ -32,7 +30,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   void dispose() {
-    _momoController.dispose();
     _nicknameController.dispose();
     super.dispose();
   }
@@ -41,33 +38,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final profile = ref.read(currentUserProvider);
     if (profile == null) return;
 
-    final rawMomo = _momoController.text.trim();
-    if (rawMomo.isEmpty) {
-      _showMessage('Mobile money number is required.');
-      return;
-    }
-
-    final country = _resolveCountry(profile);
-    late final String normalizedMomo;
-    try {
-      normalizedMomo = country.buildE164Phone(rawMomo);
-    } on FormatException catch (error) {
-      _showMessage(error.message);
-      return;
-    }
-
     setState(() => _isSaving = true);
 
     final error = await ref
         .read(authStateProvider.notifier)
         .updateProfile(
-          profile.copyWith(
-            phone: normalizedMomo,
-            momoNumber: normalizedMomo,
-            momoProvider: country.providerId,
-            country: country.isoCode,
-            fullName: _nicknameController.text.trim(),
-          ),
+          profile.copyWith(fullName: _nicknameController.text.trim()),
         );
 
     if (!mounted) return;
@@ -80,26 +56,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
     _showMessage('Profile updated.');
     context.go('/settings');
-  }
-
-  AfriCountry _resolveCountry(UserProfile profile) {
-    return AfriCountryCatalog.resolve(
-      country: profile.country,
-      phone: profile.momoNumber ?? profile.phone,
-    );
-  }
-
-  String _initialMomoValue(UserProfile? profile) {
-    final rawValue = profile?.momoNumber ?? profile?.phone;
-    if (profile == null || rawValue == null || rawValue.trim().isEmpty) {
-      return '';
-    }
-
-    try {
-      return _resolveCountry(profile).normalizeNationalPhone(rawValue);
-    } catch (_) {
-      return rawValue;
-    }
   }
 
   void _showMessage(String message) {
@@ -173,12 +129,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 label: 'Nickname',
                 hint: 'Optional supporter nickname',
                 controller: _nicknameController,
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              _SettingsInput(
-                label: 'Linked MOMO number',
-                hint: '+250 7XX XXX XXX',
-                controller: _momoController,
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               GlassCard(

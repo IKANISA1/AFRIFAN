@@ -152,16 +152,16 @@ void main() {
   });
 
   // ═══════════════════════════════════════════════════════════
-  // XP EVENT TYPE — Gamification
+  // FET EVENT TYPE — Gamification
   // ═══════════════════════════════════════════════════════════
 
   group('XpEventType', () {
-    test('all event types have positive XP rewards', () {
+    test('all event types have positive FET rewards', () {
       for (final type in XpEventType.values) {
         expect(
           type.xpReward,
           greaterThan(0),
-          reason: '${type.name} should award positive XP',
+          reason: '${type.name} should award positive FET',
         );
       }
     });
@@ -199,7 +199,7 @@ void main() {
   });
 
   // ═══════════════════════════════════════════════════════════
-  // XP EVENT MODEL
+  // FET EVENT MODEL
   // ═══════════════════════════════════════════════════════════
 
   group('XpEvent.fromJson', () {

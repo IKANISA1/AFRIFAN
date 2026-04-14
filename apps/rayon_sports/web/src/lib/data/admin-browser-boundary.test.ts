@@ -1,7 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess } from "@/lib/types";
 import {
+  adjustAdminFetWalletBalance,
   deleteAdminStandingRow,
+  getAdminFetWalletSnapshot,
   getAdminContributionSnapshot,
   getAdminProducts,
   getAdminSmsSnapshot,
@@ -96,11 +98,7 @@ describe("admin browser API boundary", () => {
       .mockResolvedValue(jsonResponse(expected) as Response);
 
     await expect(getAdminProducts(client, access)).resolves.toEqual(expected);
-    expectFetchCall(
-      fetchMock,
-      `${origin}/api/admin/shop`,
-      "GET",
-    );
+    expectFetchCall(fetchMock, `${origin}/api/admin/shop`, "GET");
   });
 
   it("saves fan clubs through the scoped admin API in the browser", async () => {
@@ -118,9 +116,9 @@ describe("admin browser API boundary", () => {
       .spyOn(globalThis, "fetch")
       .mockResolvedValue(jsonResponse("fan-club-1") as Response);
 
-    await expect(
-      saveAdminFanClub(client, access, payload),
-    ).resolves.toBe("fan-club-1");
+    await expect(saveAdminFanClub(client, access, payload)).resolves.toBe(
+      "fan-club-1",
+    );
     expectFetchCall(
       fetchMock,
       `${origin}/api/admin/fan-clubs`,
@@ -157,14 +155,10 @@ describe("admin browser API boundary", () => {
       .spyOn(globalThis, "fetch")
       .mockResolvedValue(jsonResponse(expected) as Response);
 
-    await expect(
-      getAdminContributionSnapshot(client, access),
-    ).resolves.toEqual(expected);
-    expectFetchCall(
-      fetchMock,
-      `${origin}/api/admin/contributions`,
-      "GET",
+    await expect(getAdminContributionSnapshot(client, access)).resolves.toEqual(
+      expected,
     );
+    expectFetchCall(fetchMock, `${origin}/api/admin/contributions`, "GET");
   });
 
   it("sends notifications through the scoped admin API in the browser", async () => {
@@ -201,11 +195,67 @@ describe("admin browser API boundary", () => {
       .spyOn(globalThis, "fetch")
       .mockResolvedValue(jsonResponse(expected) as Response);
 
-    await expect(getAdminSmsSnapshot(client, access)).resolves.toEqual(expected);
+    await expect(getAdminSmsSnapshot(client, access)).resolves.toEqual(
+      expected,
+    );
+    expectFetchCall(fetchMock, `${origin}/api/admin/sms`, "GET");
+  });
+
+  it("loads wallet operations through the scoped admin API in the browser", async () => {
+    const origin = window.location.origin;
+    const expected = {
+      overview: [
+        {
+          userId: "supporter-1",
+          displayName: "UAT Supporter Alpha",
+          balance: 1250,
+        },
+      ],
+      ledger: [],
+    };
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(jsonResponse(expected) as Response);
+
+    await expect(
+      getAdminFetWalletSnapshot(client, access, {
+        search: "Alpha",
+        userId: "supporter-1",
+      }),
+    ).resolves.toEqual(expected);
     expectFetchCall(
       fetchMock,
-      `${origin}/api/admin/sms`,
+      `${origin}/api/admin/gamification-wallet?search=Alpha&user_id=supporter-1`,
       "GET",
+    );
+  });
+
+  it("saves wallet adjustments through the scoped admin API in the browser", async () => {
+    const origin = window.location.origin;
+    const payload = {
+      userId: "supporter-1",
+      amount: 125,
+      reason: "Manual reconciliation",
+      idempotencyKey: "wallet-adjustment-1",
+    };
+    const expected = {
+      status: "success",
+      amount: 125,
+      balance: 625,
+      referenceId: "wallet-adjustment-ref",
+    };
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(jsonResponse(expected) as Response);
+
+    await expect(
+      adjustAdminFetWalletBalance(client, access, payload),
+    ).resolves.toEqual(expected);
+    expectFetchCall(
+      fetchMock,
+      `${origin}/api/admin/gamification-wallet`,
+      "POST",
+      JSON.stringify(payload),
     );
   });
 

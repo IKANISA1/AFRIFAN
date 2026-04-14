@@ -1,4 +1,5 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:feat_biopay/feat_biopay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,6 +44,9 @@ void main() {
     expect(find.text('NFC Tap'), findsOneWidget);
     expect(find.text('Get QR'), findsOneWidget);
     expect(find.text('Scan QR'), findsOneWidget);
+
+    final scaffold = tester.widget<Scaffold>(find.byType(Scaffold).first);
+    expect(scaffold.backgroundColor, equals(ColorTokens.background));
   });
 
   testWidgets('matches the approved BioPay command grid', (tester) async {

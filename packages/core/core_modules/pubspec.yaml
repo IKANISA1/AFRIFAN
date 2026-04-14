@@ -38,10 +38,10 @@ dependencies:
     path: ../../features/feat_fan_clubs
   feat_live:
     path: ../../features/feat_live
+  feat_prediction:
+    path: ../../features/feat_prediction
   feat_admin:
     path: ../../features/feat_admin
-  africlub_fantasy:
-    path: ../../africlub_fantasy
 
 dev_dependencies:
   flutter_test:

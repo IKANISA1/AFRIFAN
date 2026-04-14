@@ -11,6 +11,7 @@ import type { AdminContributionGroup, AdminContributionSnapshot } from "@/lib/ty
 
 interface GroupListProps {
   snapshot: AdminContributionSnapshot;
+  currencyCode: string;
   filter: string;
   setFilter: (filter: string) => void;
   sortMode: string;
@@ -23,6 +24,7 @@ interface GroupListProps {
 
 export function ContributionGroupList({
   snapshot,
+  currencyCode,
   filter,
   setFilter,
   sortMode,
@@ -160,10 +162,10 @@ export function ContributionGroupList({
                     </td>
                     <td>
                       <p className="text-sm font-medium text-white">
-                        {formatCurrency(group.currentTotal)}
+                        {formatCurrency(group.currentTotal, currencyCode)}
                       </p>
                       <p className="admin-row-meta">
-                        Target {formatCurrency(group.targetAmount)}
+                        Target {formatCurrency(group.targetAmount, currencyCode)}
                       </p>
                     </td>
                     <td className="min-w-[180px]">

@@ -15,8 +15,8 @@ import {
   Settings,
   ShoppingBag,
   Crown,
-  Sparkles,
 } from "lucide-react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { AdminSurface } from "@/components/admin/admin-surface";
@@ -24,6 +24,7 @@ import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { Skeleton } from "@/components/skeleton";
+import { withAdminClubScope } from "@/lib/admin-club-scope";
 import { getAdminDashboardSnapshot } from "@/lib/data/admin/dashboard";
 import type { AdminDashboardSnapshot } from "@/lib/types";
 
@@ -42,11 +43,6 @@ const quickActions = [
     href: "/admin/settings",
     title: "Tune club settings",
     icon: Settings,
-  },
-  {
-    href: "/admin/fantasy",
-    title: "Launch fantasy",
-    icon: Sparkles,
   },
   {
     href: "/admin/cms",
@@ -86,9 +82,10 @@ const quickActions = [
 ];
 
 export default function AdminDashboardPage() {
-  const { client, access } = useAdminPortal();
+  const { client, access, activeClub } = useAdminPortal();
   const [snapshot, setSnapshot] = useState(emptySnapshot);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const loadDashboard = useCallback(async () => {
     if (client == null) {
@@ -98,11 +95,15 @@ export default function AdminDashboardPage() {
     setLoading(true);
     try {
       setSnapshot(await getAdminDashboardSnapshot(client, access));
+      setLoadError(null);
     } catch (caught) {
-      showAdminToast(
+      const message =
         caught instanceof Error
           ? caught.message
-          : "Could not load admin dashboard.",
+          : "Could not load admin dashboard.";
+      setLoadError(message);
+      showAdminToast(
+        message,
         "error",
       );
     } finally {
@@ -163,6 +164,17 @@ export default function AdminDashboardPage() {
         />
       </div>
 
+      {loadError && !loading ? (
+        <AdminErrorState
+          title="Dashboard metrics could not be loaded"
+          description={loadError}
+          onRetry={() => {
+            loadDashboard().catch(() => {});
+          }}
+        />
+      ) : null}
+
+      {!loadError ? (
       <section className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
         <AdminSurface
           title="Operational lanes"
@@ -175,7 +187,7 @@ export default function AdminDashboardPage() {
               return (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  href={withAdminClubScope(item.href, activeClub?.id ?? access.clubId)}
                   className="admin-quick-link group"
                 >
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-border-soft bg-white/5 text-slate-400 transition group-hover:text-white group-hover:border-border-hover">
@@ -237,6 +249,7 @@ export default function AdminDashboardPage() {
           </div>
         </AdminSurface>
       </section>
+      ) : null}
     </div>
   );
 }

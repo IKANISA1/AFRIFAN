@@ -2,8 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Camera, Globe, LucideIcon, Music2, Send } from "lucide-react";
 import { footerNavigationGroups } from "@/lib/content";
-import { getClubProfile } from "@/lib/data/public";
 import { resolveFanAppHref } from "@/lib/config";
+import type { ClubProfile } from "@/lib/types";
+import type { SiteChromeCopy } from "@/lib/site-copy";
 import { ui } from "@/design-system";
 
 const socialIconMap: Record<string, LucideIcon> = {
@@ -13,8 +14,12 @@ const socialIconMap: Record<string, LucideIcon> = {
   tiktok: Music2,
 };
 
-export async function SiteFooter() {
-  const club = await getClubProfile();
+interface SiteFooterProps {
+  club: ClubProfile;
+  copy: SiteChromeCopy;
+}
+
+export function SiteFooter({ club, copy }: SiteFooterProps) {
   const socialLinks = [
     { key: "facebook", href: club.facebookUrl },
     { key: "instagram", href: club.instagramUrl },
@@ -23,13 +28,13 @@ export async function SiteFooter() {
   ].filter((entry) => entry.href);
 
   return (
-    <footer className="relative mt-20 overflow-hidden bg-[rgba(10,6,20,0.82)]">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-club-primary-light to-transparent opacity-50" />
-      <div className="pointer-events-none absolute left-[10%] top-12 h-56 w-56 rounded-full bg-club-primary/18 blur-[100px]" />
-      <div className="pointer-events-none absolute right-[10%] top-16 h-48 w-48 rounded-full bg-club-accent/12 blur-[96px]" />
+    <footer className="relative mt-24 overflow-hidden pb-[env(safe-area-inset-bottom)]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-club-primary-light to-transparent opacity-65" />
+      <div className="pointer-events-none absolute left-[8%] top-10 h-64 w-64 rounded-full bg-[var(--site-glow-primary)] blur-[120px]" />
+      <div className="pointer-events-none absolute right-[8%] top-16 h-56 w-56 rounded-full bg-[var(--site-glow-accent)] blur-[112px]" />
 
       <div className="page-shell relative py-14">
-        <div className={`${ui.panel} grid gap-10 rounded-[40px] px-6 py-8 sm:px-8 sm:py-10 lg:grid-cols-[1.1fr_1.9fr]`}>
+        <div className={`${ui.panel} grid gap-10 rounded-[40px] border-[1.2px] px-6 py-8 sm:px-8 sm:py-10 lg:grid-cols-[1.05fr_1.95fr]`}>
           <div className="space-y-6">
             <div className="flex items-center gap-4">
               <Image
@@ -45,7 +50,7 @@ export async function SiteFooter() {
                   {club.shortName}
                 </p>
                 <p className={ui.kicker}>
-                  {club.nickname || club.clubName}
+                  {club.nickname || copy.officialWebsite}
                 </p>
               </div>
             </div>
@@ -55,27 +60,27 @@ export async function SiteFooter() {
               membership, club news, supporter circles, and matchday access.
             </p>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-4">
               <Link
                 href={resolveFanAppHref()}
                 prefetch={false}
-                className={ui.buttonPrimary}
+                className={`${ui.buttonPrimary} min-h-12 px-5 py-3`}
               >
-                Open fan app
+                {copy.openFanApp}
               </Link>
               <Link
                 href="/tickets"
                 prefetch={false}
-                className={ui.buttonSecondary}
+                className={`${ui.buttonSecondary} min-h-12 px-5 py-3`}
               >
-                Buy tickets
+                {copy.buyTickets}
               </Link>
               <Link
                 href="/circles"
                 prefetch={false}
-                className={ui.buttonSecondary}
+                className={`${ui.buttonSecondary} min-h-12 px-5 py-3`}
               >
-                Support circles
+                {copy.supportCircles}
               </Link>
             </div>
 

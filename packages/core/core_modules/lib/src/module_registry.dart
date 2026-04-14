@@ -1,4 +1,3 @@
-import 'package:africlub_fantasy/africlub_fantasy.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_admin/feat_admin.dart';
@@ -24,16 +23,15 @@ abstract final class AppModuleRegistry {
 
   static List<FeatureModule> get _allModules => <FeatureModule>[
     HomeModule(),
+    LiveModule(),
+    FanzoneModule(),
     BioPayModule(),
     SettingsModule(),
     OnboardingModule(),
     MembershipModule(),
-    GamificationModule(),
     ContributionsModule(),
     TicketingModule(),
     FanClubsModule(),
-    AfriclubFantasyModule(),
-    LiveModule(),
     AdminModule(),
     ShopModule(),
   ];

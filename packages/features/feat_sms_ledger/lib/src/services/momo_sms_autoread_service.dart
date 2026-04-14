@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:another_telephony/telephony.dart';
-import 'package:flutter/foundation.dart';
+import 'package:core_utils/core_utils.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/widgets.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -270,7 +271,7 @@ class MomoSmsAutoreadService {
         maxQueue: momoSmsRetryQueueMaxSize,
       );
     } catch (error) {
-      debugPrint('[MoMo SMS] retry queue drain failed: $error');
+      AfriLogger.warn('MoMoSMS', 'Retry queue drain failed: $error');
       await recordSmsIngestOperationalEvent(
         _operationalHealthService,
         status: OperationalHealthStatus.error,

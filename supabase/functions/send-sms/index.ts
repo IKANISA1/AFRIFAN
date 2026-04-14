@@ -1,9 +1,9 @@
 /**
- * Supabase Auth Send SMS Hook
+ * Supabase Auth phone OTP delivery hook.
  *
- * This edge function replaces Twilio (or any third-party SMS provider) and
- * delivers OTP codes via the WhatsApp Cloud API using the existing
- * "gikundiro" authentication template.
+ * The current delivery path uses the WhatsApp Cloud API with the existing
+ * "gikundiro" authentication template. The hook must stay generic so both
+ * supporter and admin verification flows can receive phone OTPs.
  *
  * Supabase Auth POSTs to this hook whenever it needs to send an SMS/OTP.
  * The payload shape is:
@@ -17,7 +17,6 @@
  */
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { hasActiveAdminAssignmentForAuthUser } from "../_shared/admin_access.ts";
 import { sendOtpTemplate } from "../_shared/whatsapp.ts";
 import { jsonOk, jsonError } from "../_shared/response.ts";
 
@@ -49,18 +48,9 @@ async function handleRequest(req: Request) {
       return jsonError("Missing phone or otp", 400);
     }
 
-    const isEligibleAdmin = await hasActiveAdminAssignmentForAuthUser({
-      userId: payload.user?.id ?? null,
-      phone,
-    });
-    if (!isEligibleAdmin) {
-      console.warn(`send-sms: blocked OTP delivery for non-admin phone ${phone.slice(0, 6)}***`);
-      return jsonError("Admin WhatsApp OTP is only available for approved admin numbers.", 403);
-    }
-
     console.log(`send-sms: delivering OTP to ${phone.slice(0, 6)}***`);
 
-    // Send via WhatsApp Cloud API using the "gikundiro" template
+    // Deliver via the active WhatsApp OTP template.
     await sendOtpTemplate({
       phone,
       code: otp,

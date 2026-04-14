@@ -39,8 +39,8 @@ enum LatestIntelStatus { ready, empty, error }
 @visibleForTesting
 String homeHeroRouteForStatus(String status) {
   return switch (status.trim().toUpperCase()) {
-    'LIVE' || 'HALF-TIME' || 'FULL-TIME' => '/live-match',
-    _ => '/tickets',
+    'LIVE' || 'HALF-TIME' || 'FULL-TIME' => '/live',
+    _ => '/fanzone/fixtures',
   };
 }
 

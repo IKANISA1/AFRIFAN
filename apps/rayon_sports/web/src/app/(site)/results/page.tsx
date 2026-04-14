@@ -4,13 +4,15 @@ import { MatchCard } from "@/components/match-card";
 import { PageHero } from "@/components/page-hero";
 import { getClubProfile, getMatches } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
+import { getSiteCopy } from "@/lib/site-copy";
 import { isResultMatch } from "@/lib/utils";
 
 export async function generateMetadata() {
   const club = await getClubProfile();
+  const copy = getSiteCopy(club.defaultLanguage);
   return buildPageMetadata({
-    title: `${club.shortName} results`,
-    description: `Official ${club.shortName} results with recent scorelines, match context, and links into the next fixture.`,
+    title: copy.pages.results.metaTitle(club),
+    description: copy.pages.results.metaDescription(club),
     path: "/results",
   });
 }
@@ -28,6 +30,7 @@ function getClubScoreline(
 
 export default async function ResultsPage() {
   const [club, matches] = await Promise.all([getClubProfile(), getMatches()]);
+  const copy = getSiteCopy(club.defaultLanguage);
   const results = matches.filter((match) => isResultMatch(match.matchStatus));
   const wins = results.filter((match) => {
     const scoreline = getClubScoreline(match, club.shortName);
@@ -41,29 +44,29 @@ export default async function ResultsPage() {
   return (
     <div className="page-shell section-grid py-12">
       <PageHero
-        eyebrow="Results"
-        title="Recent results and match momentum."
-        description={`See final scores, match summaries, and the direct route into the next ${club.shortName} fixture.`}
+        eyebrow={copy.pages.results.eyebrow}
+        title={copy.pages.results.title}
+        description={copy.pages.results.description(club)}
         actions={
           <>
             <Link
               href="/fixtures"
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              Back to fixtures
+              {copy.common.backToFixtures}
             </Link>
             <Link
               href="/tickets"
               className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
             >
-              Buy next tickets
+              {copy.common.buyNextTickets}
             </Link>
           </>
         }
         stats={[
-          { label: "Completed", value: results.length.toString() },
-          { label: "Wins", value: wins.toString() },
-          { label: "Goals for", value: goalsFor.toString() },
+          { label: copy.common.completed, value: results.length.toString() },
+          { label: copy.common.wins, value: wins.toString() },
+          { label: copy.common.goalsFor, value: goalsFor.toString() },
         ]}
       />
 
@@ -81,17 +84,13 @@ export default async function ResultsPage() {
 
         <div className="glass-panel rounded-[34px] p-6">
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-            Recent form
+            {copy.pages.results.recentForm}
           </p>
           <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-            Results with context
+            {copy.pages.results.resultsWithContext}
           </h2>
           <div className="mt-5 grid gap-4">
-            {[
-              "Final score, venue, and competition stay visible at a glance.",
-              "Key moments stay attached to the match instead of disappearing into a feed.",
-              "Every completed fixture points toward the next action.",
-            ].map((point) => (
+            {copy.pages.results.contextPoints.map((point) => (
               <div
                 key={point}
                 className="rounded-[24px] border border-border-soft bg-white/5 p-4 text-sm leading-7 text-slate-300"
@@ -104,13 +103,13 @@ export default async function ResultsPage() {
             href="/standings"
             className="mt-6 inline-flex items-center gap-2 rounded-full bg-club-accent px-5 py-3 font-semibold text-slate-950 transition hover:brightness-110"
           >
-            League table <Trophy size={18} />
+            {copy.common.leagueTable} <Trophy size={18} />
           </Link>
           <Link
             href="/news"
             className="mt-3 inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
           >
-            Matchday coverage <ArrowRight size={18} />
+            {copy.common.matchdayCoverage} <ArrowRight size={18} />
           </Link>
         </div>
       </section>

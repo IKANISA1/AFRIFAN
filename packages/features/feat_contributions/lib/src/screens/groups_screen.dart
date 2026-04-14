@@ -19,6 +19,7 @@ class GroupsScreen extends ConsumerStatefulWidget {
 class _GroupsScreenState extends ConsumerState<GroupsScreen> {
   List<Map<String, dynamic>> _groups = [];
   bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -50,13 +51,39 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
               )
               .toList();
           _isLoading = false;
+          _error = null;
         });
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _isLoading = false);
+        setState(() {
+          _isLoading = false;
+          _error = 'Could not load your circles right now.';
+        });
       }
     }
+  }
+
+  void _openCreateGroup() {
+    final profile = ProviderScope.containerOf(
+      context,
+    ).read(currentUserProvider);
+    if (profile == null) {
+      context.go('/onboarding');
+      return;
+    }
+    context.push('/contribute/create');
+  }
+
+  void _openJoinGroup() {
+    final profile = ProviderScope.containerOf(
+      context,
+    ).read(currentUserProvider);
+    if (profile == null) {
+      context.go('/onboarding');
+      return;
+    }
+    context.push('/contribute/join');
   }
 
   @override
@@ -103,19 +130,20 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                       ),
                     ),
                     const Spacer(),
-                    ClaymorphicButton(
-                      label: 'New',
-                      icon: Icons.add,
-                      onPressed: () {
-                        final profile = ProviderScope.containerOf(
-                          context,
-                        ).read(currentUserProvider);
-                        if (profile == null || !profile.hasMomo) {
-                          context.push('/profile_setup');
-                          return;
-                        }
-                        context.push('/contribute/create');
-                      },
+                    Wrap(
+                      spacing: SpacingTokens.spacing3,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: _openJoinGroup,
+                          icon: const Icon(Icons.group_add_rounded),
+                          label: const Text('Join'),
+                        ),
+                        ClaymorphicButton(
+                          label: 'New',
+                          icon: Icons.add,
+                          onPressed: _openCreateGroup,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -182,8 +210,24 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                 ),
               ),
 
+            if (!_isLoading && _error != null)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: SpacingTokens.spacing6,
+                  ),
+                  child: AfriStateView.offline(
+                    title: 'Circles unavailable',
+                    message: _error!,
+                    actionLabel: 'Retry',
+                    onAction: _loadGroups,
+                    compact: true,
+                  ),
+                ),
+              ),
+
             // Group list
-            if (!_isLoading && _groups.isNotEmpty)
+            if (!_isLoading && _error == null && _groups.isNotEmpty)
               SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final group = _groups[index];
@@ -206,7 +250,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
               ),
 
             // Empty state
-            if (!_isLoading && _groups.isEmpty)
+            if (!_isLoading && _error == null && _groups.isEmpty)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(SpacingTokens.spacing10),
@@ -233,16 +277,13 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                         ClaymorphicButton(
                           label: 'Create Group',
                           icon: Icons.add,
-                          onPressed: () {
-                            final profile = ProviderScope.containerOf(
-                              context,
-                            ).read(currentUserProvider);
-                            if (profile == null || !profile.hasMomo) {
-                              context.push('/profile_setup');
-                              return;
-                            }
-                            context.push('/contribute/create');
-                          },
+                          onPressed: _openCreateGroup,
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing3),
+                        OutlinedButton.icon(
+                          onPressed: _openJoinGroup,
+                          icon: const Icon(Icons.group_add_rounded),
+                          label: const Text('JOIN GROUP'),
                         ),
                       ],
                     ),

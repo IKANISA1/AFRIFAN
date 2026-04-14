@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Trophy } from "lucide-react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { SectionHeading } from "@/components/section-heading";
-import { siteConfig } from "@/lib/config";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   deleteAdminStandingRow,
   getAdminStandings,
@@ -17,10 +18,11 @@ import { StandingEditorForm } from "./_components/standing-editor-form";
 import { StandingList } from "./_components/standing-list";
 
 export default function AdminStandingsPage() {
-  const { access, client } = useAdminPortal();
+  const { access, activeClub, client } = useAdminPortal();
   const [rows, setRows] = useState<AdminStandingRow[]>([]);
   const [form, setForm] = useState<StandingForm>(emptyForm);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (client == null) return;
@@ -28,9 +30,13 @@ export default function AdminStandingsPage() {
     setLoading(true);
     try {
       setRows(await getAdminStandings(client, access));
+      setLoadError(null);
     } catch (caught) {
+      const message =
+        caught instanceof Error ? caught.message : "Could not load standings.";
+      setLoadError(message);
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not load standings.",
+        message,
         "error",
       );
     } finally {
@@ -59,6 +65,14 @@ export default function AdminStandingsPage() {
 
   async function removeRow(row: AdminStandingRow) {
     if (client == null) return;
+    if (
+      !confirmAdminDestructiveAction({
+        subject: row.club,
+        detail: "The selected league table row will be permanently removed.",
+      })
+    ) {
+      return;
+    }
 
     try {
       await deleteAdminStandingRow(client, access, row.id);
@@ -73,14 +87,17 @@ export default function AdminStandingsPage() {
   }
 
   const focusRow = rows.find(
-    (row) => row.clubSlug === siteConfig.defaultClubSlug,
+    (row) =>
+      (row.clubId != null && access.clubId != null && String(row.clubId) === access.clubId) ||
+      (activeClub != null && row.clubSlug === activeClub.clubSlug),
   );
 
   return (
     <div className="section-grid">
-      <SectionHeading
-        eyebrow="Standings"
-        title="Maintain the league table."
+      <AdminPageHeader
+        eyebrow="Competition"
+        title="Standings"
+        description="Maintain the league table and keep the active club's position in view."
       />
 
       <div className="grid gap-5 md:grid-cols-3">
@@ -110,12 +127,24 @@ export default function AdminStandingsPage() {
           access={access}
           onSaved={load}
         />
-        <StandingList
-          rows={rows}
-          loading={loading}
-          onEdit={beginEdit}
-          onDelete={removeRow}
-        />
+        {loadError && !loading ? (
+          <AdminErrorState
+            title="Standings could not be loaded"
+            description={loadError}
+            onRetry={() => {
+              load().catch(() => {});
+            }}
+          />
+        ) : (
+          <StandingList
+            rows={rows}
+            loading={loading}
+            highlightedClubId={access.clubId}
+            highlightedClubSlug={activeClub?.clubSlug ?? null}
+            onEdit={beginEdit}
+            onDelete={removeRow}
+          />
+        )}
       </div>
     </div>
   );

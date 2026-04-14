@@ -1,8 +1,13 @@
 /**
  * Admin panel types.
  */
-import type { ContributionGroup, FanClubItem, MatchItem, MembershipPackage, ShopProduct } from "./site";
-import type { FantasyCompetitionMode } from "./site";
+import type {
+  ContributionGroup,
+  FanClubItem,
+  MatchItem,
+  MembershipPackage,
+  ShopProduct,
+} from "./site";
 
 export type AdminRole =
   | "super_admin"
@@ -10,6 +15,8 @@ export type AdminRole =
   | "club_admin"
   | "club_moderator"
   | "fan";
+
+export type AdminAssignableRole = Exclude<AdminRole, "fan">;
 
 export interface AdminAccess {
   hasAccess: boolean;
@@ -20,6 +27,45 @@ export interface AdminAccess {
   availableClubIds: string[];
   canSelectClub: boolean;
   assignmentCount: number;
+}
+
+export interface AdminRoleAssignment {
+  id: string;
+  userId: string;
+  userName: string;
+  userPhone: string | null;
+  userEmail: string | null;
+  publicUserId: string | null;
+  role: AdminAssignableRole;
+  clubId: string | null;
+  clubName: string | null;
+  partnerScopeId: string | null;
+  partnerName: string | null;
+  grantedBy: string | null;
+  grantedByName: string | null;
+  grantedAt: string;
+  revokedAt: string | null;
+  isActive: boolean;
+  notes: string | null;
+}
+
+export interface AdminUserCandidate {
+  userId: string;
+  fullName: string;
+  phone: string | null;
+  email: string | null;
+  publicUserId: string | null;
+  isPlatformAdmin: boolean;
+  hasProfile: boolean;
+}
+
+export interface AdminClubScopeOption {
+  id: string;
+  clubName: string;
+  shortName: string;
+  clubSlug: string;
+  currencyCode: string;
+  currencySymbol: string;
 }
 
 export interface AdminDashboardMetrics {
@@ -155,6 +201,50 @@ export interface AdminSmsSnapshot {
   syncRuns: AdminSmsSyncRun[];
 }
 
+export interface AdminSmsManualReview {
+  reviewId: string;
+  rawSmsId: string | null;
+  parsedSmsId: string | null;
+  userId: string | null;
+  sender: string;
+  txType: string;
+  txCategory: string;
+  cashflowBucket: string;
+  amount: number;
+  currency: string;
+  momoTxId: string | null;
+  payerName: string | null;
+  payeeName: string | null;
+  payeeNumberOrCode: string | null;
+  merchantCode: string | null;
+  smsReceivedAt: string | null;
+  reviewCreatedAt: string | null;
+  updatedAt: string | null;
+  reviewKind: string;
+  reason: string;
+  notes: string | null;
+  smsPreview: string;
+}
+
+export interface AdminPendingPaymentIntent {
+  id: string;
+  userId: string;
+  userName: string;
+  expectedAmount: number;
+  currency: string;
+  status: string;
+  targetTable: string;
+  targetRecordId: string;
+  createdAt: string;
+  expiresAt: string | null;
+  summaryLabel: string;
+}
+
+export interface AdminSmsManualReviewWorkspace {
+  reviews: AdminSmsManualReview[];
+  pendingIntents: AdminPendingPaymentIntent[];
+}
+
 export type AdminFanEngagementTemplateScope = "generic" | "club_specific";
 
 export interface AdminFanEngagementToken {
@@ -176,84 +266,45 @@ export interface AdminFanEngagementToken {
   updatedAt: string;
 }
 
-export interface AdminFantasyCompetition {
-  id: string;
-  clubId: number | null;
-  slug: string;
-  name: string;
-  shortName: string;
-  season: string;
-  description: string;
-  mode: FantasyCompetitionMode;
-  backendStatus: "draft" | "active" | "finished";
-  primaryColor: string;
-  logoUrl: string | null;
-  countryCode: string | null;
-  provider: string | null;
-  externalLeagueId: number | null;
-  promoTitle: string | null;
-  promoBody: string | null;
-  badgeLabel: string | null;
-  ctaLabel: string | null;
-  heroImageUrl: string | null;
-  sortOrder: number;
-  isVisible: boolean;
-  isFeatured: boolean;
-  isPlayable: boolean;
-  activeEntries: number;
-  startAt: string;
-  endAt: string;
-  entryWindowOpensAt: string | null;
-  entryWindowClosesAt: string | null;
+export interface AdminFetWalletOverviewRow {
+  userId: string;
+  publicUserId: string | null;
+  displayName: string;
+  tier: string;
+  balance: number;
+  transactionCount: number;
+  lastTransactionAt: string | null;
+  lifetimeEarned: number;
+  lifetimeSpent: number;
 }
 
-export type AdminFantasyPlayerPosition = "GK" | "DEF" | "MID" | "FWD";
-export type AdminFantasyGameweekStatus =
-  | "upcoming"
-  | "live"
-  | "scoring"
-  | "finished";
-
-export interface AdminFantasyPlayer {
+export interface AdminFetWalletLedgerRow {
   id: string;
-  competitionId: string;
-  externalId: number;
-  name: string;
-  shortName: string;
-  position: AdminFantasyPlayerPosition;
-  teamId: number;
-  teamName: string;
-  teamShort: string;
-  nationality: string | null;
-  photoUrl: string | null;
-  teamLogoUrl: string | null;
-  price: number;
-  priceChange: number;
-  ownershipPercent: number;
-  updatedAt: string;
+  userId: string;
+  publicUserId: string | null;
+  displayName: string;
+  entryType: string;
+  direction: "credit" | "debit";
+  amount: number;
+  balanceAfter: number;
+  counterpartyUserId: string | null;
+  counterpartyDisplayName: string | null;
+  counterpartyPublicUserId: string | null;
+  note: string | null;
+  referenceType: string | null;
+  referenceId: string | null;
+  createdAt: string;
 }
 
-export interface AdminFantasyGameweek {
-  id: string;
-  competitionId: string;
-  number: number;
-  name: string;
-  status: AdminFantasyGameweekStatus;
-  deadlineAt: string;
-  startAt: string;
-  endAt: string;
-  isDoubleGameweek: boolean;
-  averageScore: number | null;
-  highestScore: number | null;
+export interface AdminFetWalletSnapshot {
+  overview: AdminFetWalletOverviewRow[];
+  ledger: AdminFetWalletLedgerRow[];
 }
 
-export interface AdminFantasyOperationsSnapshot {
-  competitionId: string;
-  players: AdminFantasyPlayer[];
-  gameweeks: AdminFantasyGameweek[];
-  leagueCount: number;
-  headToHeadFixtureCount: number;
-  injuryCount: number;
-  notificationTopic: string | null;
-  nextDeadlineAt: string | null;
+export interface AdminFetWalletAdjustmentResult {
+  status: "success";
+  amount: number;
+  balance: number;
+  referenceId: string | null;
+  alreadyProcessed?: boolean;
 }

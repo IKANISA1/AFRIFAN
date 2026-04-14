@@ -42,7 +42,6 @@ void main() {
           options: AppStartupOptions(
             configureDeviceChrome: false,
             initializePersistence: false,
-            initializeSmsAutoread: false,
             criticalBackendOverride: (_) async => steps.add('critical'),
             deferredBackendOverride: (_) async {
               steps.add('deferred');
@@ -80,7 +79,6 @@ void main() {
           options: AppStartupOptions(
             configureDeviceChrome: false,
             initializePersistence: false,
-            initializeSmsAutoread: false,
             criticalBackendOverride: (_) async => steps.add('critical'),
             deferredBackendOverride: (_) async {
               steps.add('deferred');
@@ -120,7 +118,6 @@ void main() {
         options: AppStartupOptions(
           configureDeviceChrome: false,
           initializePersistence: false,
-          initializeSmsAutoread: false,
           deferNonCriticalBackendInitialization: false,
           criticalBackendOverride: (_) async => steps.add('critical'),
           deferredBackendOverride: (_) async => steps.add('deferred'),
@@ -231,6 +228,9 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const <String>['en'];
+
+  @override
+  String get environment => 'test';
 }
 
 class _HomeModule extends FeatureModule {

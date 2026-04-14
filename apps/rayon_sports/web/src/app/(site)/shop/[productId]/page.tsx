@@ -10,6 +10,7 @@ import {
   buildProductJsonLd,
   renderJsonLdScriptContent,
 } from "@/lib/metadata";
+import { getSiteCopy } from "@/lib/site-copy";
 import { formatCurrency } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -22,10 +23,11 @@ export async function generateMetadata({
     getClubProfile(),
     getProductById(productId),
   ]);
+  const copy = getSiteCopy(club.defaultLanguage);
 
   return buildPageMetadata({
-    title: product?.name ?? "Shop product",
-    description: product?.subtitle ?? `Official ${club.shortName} merchandise.`,
+    title: product?.name ?? copy.pages.shop.metaTitle(club),
+    description: product?.subtitle ?? copy.pages.shop.metaDescription(club),
     path: `/shop/${productId}`,
     imagePath: product?.imageUrl ?? "/media/stadium-hero.jpg",
   });
@@ -37,10 +39,12 @@ export default async function ProductPage({
   params: Promise<{ productId: string }>;
 }) {
   const { productId } = await params;
-  const [product, products] = await Promise.all([
+  const [club, product, products] = await Promise.all([
+    getClubProfile(),
     getProductById(productId),
     getProducts(),
   ]);
+  const copy = getSiteCopy(club.defaultLanguage);
 
   if (product == null) {
     notFound();
@@ -94,13 +98,13 @@ export default async function ProductPage({
                 href="/supporters"
                 className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
               >
-                Order in fan app
+                {copy.common.shopInFanApp}
               </Link>
               <Link
                 href="/membership"
                 className="rounded-full border border-border-soft px-5 py-3 font-semibold text-white transition hover:bg-white/8"
               >
-                Unlock member perks
+                {copy.pages.shop.unlockMemberDiscounts}
               </Link>
               <ShareActionButton
                 title={product.name}
@@ -116,17 +120,13 @@ export default async function ProductPage({
       <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
         <div className="glass-panel rounded-[32px] p-6">
           <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
-            Product detail
+            {copy.details}
           </p>
           <p className="mt-4 text-base leading-8 text-slate-200">
             {product.description}
           </p>
           <div className="mt-5 grid gap-4">
-            {[
-              "Collection context keeps every drop feeling like a launch.",
-              "Size visibility and price clarity stay prominent before checkout.",
-              "Membership and fan app actions support trust instead of blocking discovery.",
-            ].map((point) => (
+            {copy.pages.shop.standardsPoints.map((point) => (
               <div
                 key={point}
                 className="rounded-[24px] border border-border-soft bg-white/5 p-4 text-sm leading-7 text-slate-300"
@@ -141,10 +141,10 @@ export default async function ProductPage({
           <section className="section-grid">
             <div>
               <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
-                More merch
+                {copy.common.products}
               </p>
               <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-                Related products
+                {copy.common.products}
               </h2>
             </div>
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

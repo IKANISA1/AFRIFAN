@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
+import 'package:core_utils/core_utils.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'momo_sms_deps.dart';
@@ -72,7 +73,7 @@ class MomoSmsSyncStateStore {
 
       return MomoSmsSyncState.fromJson(Map<String, dynamic>.from(decoded));
     } catch (error) {
-      debugPrint('[MoMo SMS] could not read sync state: $error');
+      AfriLogger.warn('MoMoSMS', 'Could not read sync state: $error');
       return const MomoSmsSyncState();
     }
   }
@@ -82,7 +83,7 @@ class MomoSmsSyncStateStore {
       final box = await _openBox(boxName);
       await box.put(keyForUser(userId), jsonEncode(state.toJson()));
     } catch (error) {
-      debugPrint('[MoMo SMS] could not persist sync state: $error');
+      AfriLogger.warn('MoMoSMS', 'Could not persist sync state: $error');
     }
   }
 }
@@ -207,7 +208,7 @@ class MomoSmsSyncRunAuditWriter {
     try {
       await _insert(run.toInsertRow());
     } catch (error, stackTrace) {
-      debugPrint('[MoMo SMS] could not record sync run: $error');
+      AfriLogger.warn('MoMoSMS', 'Could not record sync run: $error');
       await _crashlytics?.recordError(
         error,
         stackTrace: stackTrace,

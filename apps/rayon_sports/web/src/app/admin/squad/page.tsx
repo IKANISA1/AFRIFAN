@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Users, Shield } from "lucide-react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { SectionHeading } from "@/components/section-heading";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import { getAdminSquad, deleteAdminSquadPlayer } from "@/lib/data/admin/squad";
 import type { AdminSquadPlayer } from "@/lib/data/admin/squad";
 import { emptySquadForm } from "./_components/squad-form-state";
@@ -18,15 +20,20 @@ export default function AdminSquadPage() {
   const [form, setForm] = useState(emptySquadForm);
   const [filter, setFilter] = useState("ALL");
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const loadSquad = useCallback(async () => {
     if (client == null) return;
     setLoading(true);
     try {
       setPlayers(await getAdminSquad(client, access));
+      setLoadError(null);
     } catch (caught) {
+      const message =
+        caught instanceof Error ? caught.message : "Could not load squad.";
+      setLoadError(message);
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not load squad.",
+        message,
         "error",
       );
     } finally {
@@ -55,6 +62,14 @@ export default function AdminSquadPage() {
 
   async function removePlayer(player: AdminSquadPlayer) {
     if (client == null) return;
+    if (
+      !confirmAdminDestructiveAction({
+        subject: player.name,
+        detail: "The player profile will be removed from the squad list.",
+      })
+    ) {
+      return;
+    }
     showAdminToast(`Removing ${player.name}...`, "info");
     try {
       await deleteAdminSquadPlayer(client, access, player.id);
@@ -77,9 +92,10 @@ export default function AdminSquadPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading
-        eyebrow="Squad"
-        title="Manage player profiles."
+      <AdminPageHeader
+        eyebrow="Roster"
+        title="Squad"
+        description="Manage player profiles, roles, and first-team visibility for the active club."
       />
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
@@ -91,7 +107,17 @@ export default function AdminSquadPage() {
 
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
         <SquadEditorForm form={form} setForm={setForm} client={client} access={access} onSaved={loadSquad} />
-        <SquadList players={players} filter={filter} setFilter={setFilter} loading={loading} onEdit={beginEdit} onDelete={(p) => { removePlayer(p).catch(() => {}); }} />
+        {loadError && !loading ? (
+          <AdminErrorState
+            title="Squad could not be loaded"
+            description={loadError}
+            onRetry={() => {
+              loadSquad().catch(() => {});
+            }}
+          />
+        ) : (
+          <SquadList players={players} filter={filter} setFilter={setFilter} loading={loading} onEdit={beginEdit} onDelete={(p) => { removePlayer(p).catch(() => {}); }} />
+        )}
       </div>
     </div>
   );

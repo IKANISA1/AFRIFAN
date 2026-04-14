@@ -1,5 +1,5 @@
 import 'package:core_network/core_network.dart';
-import 'package:flutter/foundation.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -34,7 +34,7 @@ class LedgerReconciliationService {
       final pendingList = pendingState.rows;
 
       if (pendingList.isEmpty) {
-        debugPrint('[Reconciliation] No pending contributions to reconcile.');
+        AfriLogger.info('Reconciliation', 'No pending contributions to reconcile.');
         return 0;
       }
 
@@ -121,23 +121,26 @@ class LedgerReconciliationService {
           }
 
           reconciled++;
-          debugPrint(
-            '[Reconciliation] Matched contribution ${contribution['id']} '
+          AfriLogger.info(
+            'Reconciliation',
+            'Matched contribution ${contribution['id']} '
             '→ ledger $ledgerId (tx: $txId)',
           );
         } catch (e) {
-          debugPrint(
-            '[Reconciliation] Failed to reconcile ${contribution['id']}: $e',
+          AfriLogger.warn(
+            'Reconciliation',
+            'Failed to reconcile ${contribution['id']}: $e',
           );
         }
       }
 
-      debugPrint(
-        '[Reconciliation] Pass complete: $reconciled of '
+      AfriLogger.info(
+        'Reconciliation',
+        'Pass complete: $reconciled of '
         '${pendingList.length} contributions reconciled.',
       );
     } catch (e) {
-      debugPrint('[Reconciliation] Service error: $e');
+      AfriLogger.error('Reconciliation', 'Service error', e);
     }
 
     return reconciled;

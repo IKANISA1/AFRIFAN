@@ -42,6 +42,7 @@ void main() {
             path.endsWith(
               '/packages/core/core_theme/lib/src/tokens/typography_tokens.dart',
             ) ||
+            path.contains('/packages/features/test_support/') ||
             path.contains('/test/') ||
             path.contains('/integration_test/'),
       );

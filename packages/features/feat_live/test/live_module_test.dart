@@ -20,20 +20,25 @@ void main() {
       expect(module.featureKey, 'live');
     });
 
-    test('has no tab route', () {
-      expect(module.tabRoute, isNull);
+    test('registers live as a bottom-nav tab', () {
+      final tab = module.tabRoute;
+
+      expect(tab.path, '/live');
+      expect(tab.label, 'LIVE');
     });
 
-    test('registers live alias, live-match, and news routes', () {
-      final paths = module.routes
+    test('registers nested news route and standalone live-match alias', () {
+      final routePaths = module.routes
           .whereType<GoRoute>()
-          .map((r) => r.path)
+          .map((route) => route.path)
+          .toList();
+      final standalonePaths = module.standaloneRoutes
+          .whereType<GoRoute>()
+          .map((route) => route.path)
           .toList();
 
-      expect(paths, contains('/live'));
-      expect(paths, contains('/live-match'));
-      expect(paths, contains('/news/:articleId'));
-      expect(paths, hasLength(3));
+      expect(routePaths, orderedEquals(<String>['news/:articleId']));
+      expect(standalonePaths, orderedEquals(<String>['/live-match']));
     });
 
     test('isEnabled returns true when live feature is in config', () {

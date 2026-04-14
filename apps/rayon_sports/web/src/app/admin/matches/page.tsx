@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { CalendarDays, Radio, Ticket } from "lucide-react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   deleteAdminMatch,
   getAdminMatches,
@@ -16,11 +18,12 @@ import { MatchForm } from "./_components/match-form";
 import { MatchList } from "./_components/match-list";
 
 export default function AdminMatchesPage() {
-  const { access, client } = useAdminPortal();
+  const { access, activeClub, client } = useAdminPortal();
   const [matches, setMatches] = useState<AdminMatchItem[]>([]);
   const [form, setForm] = useState(emptyMatchForm);
   const [filter, setFilter] = useState("ALL");
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const loadMatches = useCallback(async () => {
     if (client == null) {
@@ -30,9 +33,13 @@ export default function AdminMatchesPage() {
     setLoading(true);
     try {
       setMatches(await getAdminMatches(client, access));
+      setLoadError(null);
     } catch (caught) {
+      const message =
+        caught instanceof Error ? caught.message : "Could not load matches.";
+      setLoadError(message);
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not load matches.",
+        message,
         "error",
       );
     } finally {
@@ -54,6 +61,14 @@ export default function AdminMatchesPage() {
 
   async function removeMatch(match: AdminMatchItem) {
     if (client == null) {
+      return;
+    }
+    if (
+      !confirmAdminDestructiveAction({
+        subject: `${match.homeTeam} vs ${match.awayTeam}`,
+        detail: "The selected fixture and its admin configuration will be removed.",
+      })
+    ) {
       return;
     }
 
@@ -110,16 +125,27 @@ export default function AdminMatchesPage() {
           access={access}
           onSaved={loadMatches}
         />
-        <MatchList
-          matches={matches}
-          filter={filter}
-          setFilter={setFilter}
-          loading={loading}
-          onEdit={beginEdit}
-          onDelete={(match) => {
-            removeMatch(match).catch(() => {});
-          }}
-        />
+        {loadError && !loading ? (
+          <AdminErrorState
+            title="Fixtures could not be loaded"
+            description={loadError}
+            onRetry={() => {
+              loadMatches().catch(() => {});
+            }}
+          />
+        ) : (
+          <MatchList
+            matches={matches}
+            currencyCode={activeClub?.currencyCode ?? "USD"}
+            filter={filter}
+            setFilter={setFilter}
+            loading={loading}
+            onEdit={beginEdit}
+            onDelete={(match) => {
+              removeMatch(match).catch(() => {});
+            }}
+          />
+        )}
       </div>
     </div>
   );

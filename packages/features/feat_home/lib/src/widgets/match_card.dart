@@ -72,7 +72,7 @@ class _MatchScoreCardState extends State<MatchScoreCard> {
   Timer? _autoSlideTimer;
   int _currentPage = 0;
 
-  static const Color _heroAccent = Color(0xFF1565C0);
+  static Color get _heroAccent => ColorTokens.clubPrimary;
 
   @override
   void initState() {

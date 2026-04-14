@@ -4,21 +4,19 @@ import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../settings_actions.dart';
 import '../widgets/settings_overlays.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
+  static const _supportWhatsApp = '+250795588248';
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(currentUserProvider);
-    final config = ClubConfigScope.maybeOf(context);
-    final appName = config?.appName ?? RuntimeBranding.displayAppName;
-    // Feature composition owns route registration for BioPay-enabled builds.
-    // The settings surface should reflect feature availability rather than
-    // probing shell-internal router state at runtime.
-    final showBiopayEntries = config?.hasBiopay ?? false;
     final alias = profile?.publicUserId == null
         ? '#------'
         : '#${AliasGenerator.format(profile!.publicUserId!)}';
@@ -67,14 +65,6 @@ class SettingsScreen extends ConsumerWidget {
                             runSpacing: SpacingTokens.spacing2,
                             children: [
                               AfriStatusChip(
-                                label: profile?.hasMomo == true
-                                    ? 'MOMO linked'
-                                    : 'MOMO pending',
-                                tone: profile?.hasMomo == true
-                                    ? AfriStatusTone.success
-                                    : AfriStatusTone.warning,
-                              ),
-                              AfriStatusChip(
                                 label: profile?.isAdmin == true
                                     ? 'Admin'
                                     : 'Supporter',
@@ -88,6 +78,8 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing6),
+
+              // ── Account ──
               _Section(
                 title: 'Account',
                 children: [
@@ -97,50 +89,18 @@ class SettingsScreen extends ConsumerWidget {
                     onTap: () => context.push('/settings/edit-profile'),
                   ),
                   AfriListRow(
-                    icon: Icons.phone_android_outlined,
-                    title: 'Linked mobile money',
-                    onTap: () => context.push('/profile_setup'),
-                  ),
-                  AfriListRow(
                     icon: Icons.notifications_none_outlined,
                     title: 'Notifications',
                     onTap: () => context.push('/settings/notifications'),
                   ),
-                  AfriListRow(
-                    icon: Icons.language_outlined,
-                    title: 'Language & region',
-                    onTap: () => context.push('/settings/language'),
-                  ),
                 ],
               ),
               const SizedBox(height: SpacingTokens.spacing6),
+
+              // ── Privacy ──
               _Section(
-                title: showBiopayEntries ? 'BioPay & Privacy' : 'Privacy',
+                title: 'Privacy',
                 children: [
-                  if (showBiopayEntries)
-                    AfriListRow(
-                      icon: Icons.payments_outlined,
-                      title: 'BioPay home',
-                      onTap: () => context.push('/biopay'),
-                    ),
-                  if (showBiopayEntries)
-                    AfriListRow(
-                      icon: Icons.face_retouching_natural_rounded,
-                      title: 'Face ID & enrollment',
-                      onTap: () => context.push('/biopay/profile'),
-                    ),
-                  if (showBiopayEntries)
-                    AfriListRow(
-                      icon: Icons.qr_code_rounded,
-                      title: 'QR receive & pay',
-                      onTap: () => context.push('/biopay/qr'),
-                    ),
-                  if (showBiopayEntries)
-                    AfriListRow(
-                      icon: Icons.nfc_rounded,
-                      title: 'NFC receive & pay',
-                      onTap: () => context.push('/biopay/nfc'),
-                    ),
                   AfriListRow(
                     icon: Icons.lock_outline,
                     title: 'Privacy controls',
@@ -149,28 +109,43 @@ class SettingsScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: SpacingTokens.spacing6),
+
+              // ── Support ──
               _Section(
-                title: 'Support & About',
+                title: 'Support',
                 children: [
                   AfriListRow(
-                    icon: Icons.help_outline,
-                    title: 'Help center',
-                    onTap: () => context.push('/settings/help'),
+                    icon: Icons.chat_outlined,
+                    title: 'Help & Support',
+                    subtitle: 'Chat with us on WhatsApp',
+                    onTap: () => _openWhatsApp(context),
                   ),
-                  AfriListRow(
-                    icon: Icons.bug_report_outlined,
-                    title: 'Report bug',
-                    onTap: () => context.push('/settings/help'),
-                  ),
-                  AfriListRow(
-                    icon: Icons.star_outline_rounded,
-                    title: 'Rate app',
-                    onTap: () => context.push('/settings/about'),
-                  ),
+                  if (AppLinks.hasTerms || AppLinks.hasPrivacyPolicy)
+                    AfriListRow(
+                      icon: Icons.description_outlined,
+                      title: 'Terms & Privacy',
+                      onTap: () {
+                        final uri =
+                            AppLinks.termsUri ?? AppLinks.privacyPolicyUri;
+                        if (uri != null) {
+                          launchExternalUri(
+                            context,
+                            uri,
+                            failureMessage:
+                                'Could not open the legal document.',
+                          );
+                        }
+                      },
+                    ),
                   AfriListRow(
                     icon: Icons.info_outline,
-                    title: 'About $appName',
-                    onTap: () => context.push('/settings/about'),
+                    title: 'Open-source licenses',
+                    onTap: () => showLicensePage(
+                      context: context,
+                      applicationName:
+                          ClubConfigScope.maybeOf(context)?.appName ??
+                          RuntimeBranding.displayAppName,
+                    ),
                   ),
                   AfriListRow(
                     icon: Icons.logout_rounded,
@@ -198,6 +173,19 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _openWhatsApp(BuildContext context) async {
+    final phone = _supportWhatsApp.replaceAll('+', '');
+    final uri = Uri.parse(
+      'https://wa.me/$phone?text=${Uri.encodeComponent('Hi, I need help with ${ClubConfigScope.maybeOf(context)?.appName ?? RuntimeBranding.displayAppName}.')}',
+    );
+    final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!launched && context.mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Could not open WhatsApp.')));
+    }
   }
 }
 

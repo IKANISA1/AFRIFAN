@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminClubScopeCookieName, getRequestedAdminClubId } from "@/lib/admin-club-scope";
 import {
-  deleteAdminFantasyCompetition,
-  deleteAdminFantasyGameweek,
-  deleteAdminFantasyPlayer,
+  adminClubScopeCookieName,
+  getRequestedAdminClubId,
+} from "@/lib/admin-club-scope";
+import {
+  adjustAdminFetWalletBalance,
+  assignAdminRole,
+  allocateAdminSmsManualReview,
   deleteAdminFanEngagementToken,
   deleteAdminArticle,
   deleteAdminConfigEntry,
@@ -16,29 +19,31 @@ import {
   deleteAdminStandingRow,
   getAdminArticles,
   getAdminAppConfig,
+  getAdminClubScopeOptions,
   getAdminClubProfile,
   getAdminContributionSnapshot,
   getAdminDashboardSnapshot,
-  getAdminFantasyCompetitions,
-  getAdminFantasyOperations,
+  getAdminFetWalletSnapshot,
   getAdminFanEngagementTokens,
   getAdminFanClubs,
   getAdminMatches,
   getAdminMembershipPackages,
   getAdminNotificationContext,
   getAdminProducts,
+  getAdminRoleAssignments,
   getAdminSmsSnapshot,
+  getAdminSmsManualReviewWorkspace,
   getAdminSquad,
   getAdminStandings,
+  findAdminUserCandidate,
+  rejectAdminSmsManualReview,
   resolveAdminAccess,
+  revokeAdminRole,
   saveAdminArticle,
   saveAdminConfigEntry,
   saveAdminContributionGroup,
   saveAdminFanClub,
   saveAdminFanEngagementToken,
-  saveAdminFantasyCompetition,
-  saveAdminFantasyGameweek,
-  saveAdminFantasyPlayer,
   saveAdminClubProfile,
   saveAdminMatch,
   saveAdminMembershipPackage,
@@ -47,7 +52,10 @@ import {
   saveAdminStandingRow,
   sendAdminNotification,
 } from "@/lib/data/admin";
-import { rejectInsecureMutation, rejectRateLimitedRequest } from "@/lib/security";
+import {
+  rejectInsecureMutation,
+  rejectRateLimitedRequest,
+} from "@/lib/security";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { getServerSupabase } from "@/lib/supabase/server";
 
@@ -109,14 +117,21 @@ async function getAdminRequestContext(request: NextRequest) {
   return { access, adminClient, serverClient };
 }
 
+function requiresPlatformAdmin(resource: string) {
+  return resource === "access" || resource === "access-users";
+}
+
 async function parseJsonBody(request: NextRequest) {
   return (await request.json().catch(() => ({}))) as Record<string, unknown>;
 }
 
 function missingIdResponse() {
-  return NextResponse.json({ error: "An id query parameter is required." }, {
-    status: 400,
-  });
+  return NextResponse.json(
+    { error: "An id query parameter is required." },
+    {
+      status: 400,
+    },
+  );
 }
 
 export async function GET(
@@ -129,10 +144,36 @@ export async function GET(
       return requestContext.response;
     }
 
-    const { access, adminClient } = requestContext;
+    const { access, adminClient, serverClient } = requestContext;
     const { resource } = await context.params;
 
+    if (requiresPlatformAdmin(resource) && !access.isSuperAdmin) {
+      return NextResponse.json(
+        { error: "Platform admin access is required." },
+        { status: 403 },
+      );
+    }
+
     switch (resource) {
+      case "access":
+        return NextResponse.json({
+          data: await getAdminRoleAssignments(adminClient, access, {
+            activeOnly:
+              request.nextUrl.searchParams.get("active_only") !== "false",
+          }),
+        });
+      case "access-users": {
+        const identifier = request.nextUrl.searchParams.get("q");
+        if (!identifier) {
+          return NextResponse.json(
+            { error: "A q query parameter is required." },
+            { status: 400 },
+          );
+        }
+        return NextResponse.json({
+          data: await findAdminUserCandidate(adminClient, access, identifier),
+        });
+      }
       case "dashboard":
         return NextResponse.json({
           data: await getAdminDashboardSnapshot(adminClient, access),
@@ -153,6 +194,10 @@ export async function GET(
         return NextResponse.json({
           data: await getAdminClubProfile(adminClient, access),
         });
+      case "club-scope":
+        return NextResponse.json({
+          data: await getAdminClubScopeOptions(adminClient, access),
+        });
       case "membership":
         return NextResponse.json({
           data: await getAdminMembershipPackages(adminClient, access),
@@ -165,22 +210,6 @@ export async function GET(
         return NextResponse.json({
           data: await getAdminFanClubs(adminClient, access),
         });
-      case "fantasy":
-        return NextResponse.json({
-          data: await getAdminFantasyCompetitions(adminClient, access),
-        });
-      case "fantasy-operations": {
-        const competitionId = request.nextUrl.searchParams.get("competition_id");
-        if (!competitionId) {
-          return NextResponse.json(
-            { error: "A competition_id query parameter is required." },
-            { status: 400 },
-          );
-        }
-        return NextResponse.json({
-          data: await getAdminFantasyOperations(adminClient, access, competitionId),
-        });
-      }
       case "standings":
         return NextResponse.json({
           data: await getAdminStandings(adminClient, access),
@@ -197,6 +226,10 @@ export async function GET(
         return NextResponse.json({
           data: await getAdminSmsSnapshot(adminClient, access),
         });
+      case "sms-manual-reviews":
+        return NextResponse.json({
+          data: await getAdminSmsManualReviewWorkspace(serverClient, access),
+        });
       case "squad":
         return NextResponse.json({
           data: await getAdminSquad(adminClient, access),
@@ -205,16 +238,25 @@ export async function GET(
         return NextResponse.json({
           data: await getAdminFanEngagementTokens(adminClient, access),
         });
-      default:
-        return NextResponse.json({ error: "Unknown admin resource." }, {
-          status: 404,
+      case "gamification-wallet":
+        return NextResponse.json({
+          data: await getAdminFetWalletSnapshot(serverClient, access, {
+            search: request.nextUrl.searchParams.get("search"),
+            userId: request.nextUrl.searchParams.get("user_id"),
+          }),
         });
+      default:
+        return NextResponse.json(
+          { error: "Unknown admin resource." },
+          {
+            status: 404,
+          },
+        );
     }
   } catch (error) {
     return NextResponse.json(
       {
-        error:
-          error instanceof Error ? error.message : "Admin request failed.",
+        error: error instanceof Error ? error.message : "Admin request failed.",
       },
       { status: 500 },
     );
@@ -250,7 +292,40 @@ export async function POST(
     const { resource } = await context.params;
     const body = await parseJsonBody(request);
 
+    if (requiresPlatformAdmin(resource) && !access.isSuperAdmin) {
+      return NextResponse.json(
+        { error: "Platform admin access is required." },
+        { status: 403 },
+      );
+    }
+
     switch (resource) {
+      case "access":
+        return NextResponse.json({
+          data: await assignAdminRole(serverClient, access, body as never),
+        });
+      case "sms-manual-reviews": {
+        const action = typeof body.action === "string" ? body.action : "";
+        if (action === "allocate") {
+          await allocateAdminSmsManualReview(serverClient, access, {
+            reviewId: String(body.reviewId ?? ""),
+            intentId: String(body.intentId ?? ""),
+            note: typeof body.note === "string" ? body.note : null,
+          });
+          return NextResponse.json({ data: { success: true } });
+        }
+        if (action === "reject") {
+          await rejectAdminSmsManualReview(serverClient, access, {
+            reviewId: String(body.reviewId ?? ""),
+            note: typeof body.note === "string" ? body.note : null,
+          });
+          return NextResponse.json({ data: { success: true } });
+        }
+        return NextResponse.json(
+          { error: "A valid SMS manual review action is required." },
+          { status: 400 },
+        );
+      }
       case "matches":
         return NextResponse.json({
           data: await saveAdminMatch(adminClient, access, body as never),
@@ -269,7 +344,11 @@ export async function POST(
         });
       case "membership":
         return NextResponse.json({
-          data: await saveAdminMembershipPackage(adminClient, access, body as never),
+          data: await saveAdminMembershipPackage(
+            adminClient,
+            access,
+            body as never,
+          ),
         });
       case "shop":
         return NextResponse.json({
@@ -279,29 +358,25 @@ export async function POST(
         return NextResponse.json({
           data: await saveAdminFanClub(adminClient, access, body as never),
         });
-      case "fantasy":
-        return NextResponse.json({
-          data: await saveAdminFantasyCompetition(adminClient, access, body as never),
-        });
-      case "fantasy-players":
-        return NextResponse.json({
-          data: await saveAdminFantasyPlayer(adminClient, access, body as never),
-        });
-      case "fantasy-gameweeks":
-        return NextResponse.json({
-          data: await saveAdminFantasyGameweek(adminClient, access, body as never),
-        });
       case "standings":
         return NextResponse.json({
           data: await saveAdminStandingRow(adminClient, access, body as never),
         });
       case "contributions":
         return NextResponse.json({
-          data: await saveAdminContributionGroup(adminClient, access, body as never),
+          data: await saveAdminContributionGroup(
+            adminClient,
+            access,
+            body as never,
+          ),
         });
       case "notifications":
         return NextResponse.json({
-          data: await sendAdminNotification(serverClient, body as never, access),
+          data: await sendAdminNotification(
+            serverClient,
+            body as never,
+            access,
+          ),
         });
       case "squad":
         await saveAdminSquadPlayer(adminClient, access, body as never);
@@ -314,16 +389,30 @@ export async function POST(
             body as never,
           ),
         });
-      default:
-        return NextResponse.json({ error: "Unknown admin resource." }, {
-          status: 404,
+      case "gamification-wallet":
+        return NextResponse.json({
+          data: await adjustAdminFetWalletBalance(serverClient, access, {
+            userId: String(body.userId ?? ""),
+            amount: Number(body.amount ?? 0),
+            reason: String(body.reason ?? ""),
+            idempotencyKey:
+              typeof body.idempotencyKey === "string"
+                ? body.idempotencyKey
+                : null,
+          }),
         });
+      default:
+        return NextResponse.json(
+          { error: "Unknown admin resource." },
+          {
+            status: 404,
+          },
+        );
     }
   } catch (error) {
     return NextResponse.json(
       {
-        error:
-          error instanceof Error ? error.message : "Admin request failed.",
+        error: error instanceof Error ? error.message : "Admin request failed.",
       },
       { status: 500 },
     );
@@ -359,11 +448,21 @@ export async function DELETE(
     const { resource } = await context.params;
     const id = request.nextUrl.searchParams.get("id");
 
+    if (requiresPlatformAdmin(resource) && !access.isSuperAdmin) {
+      return NextResponse.json(
+        { error: "Platform admin access is required." },
+        { status: 403 },
+      );
+    }
+
     if (!id) {
       return missingIdResponse();
     }
 
     switch (resource) {
+      case "access":
+        await revokeAdminRole(requestContext.serverClient, access, id);
+        break;
       case "matches":
         await deleteAdminMatch(adminClient, access, id);
         break;
@@ -382,28 +481,6 @@ export async function DELETE(
       case "fan-clubs":
         await deleteAdminFanClub(adminClient, access, id);
         break;
-      case "fantasy":
-        await deleteAdminFantasyCompetition(adminClient, access, id);
-        break;
-      case "fantasy-players": {
-        const competitionId = request.nextUrl.searchParams.get("competition_id");
-        if (!competitionId) {
-          return NextResponse.json(
-            { error: "A competition_id query parameter is required." },
-            { status: 400 },
-          );
-        }
-        await deleteAdminFantasyPlayer(
-          adminClient,
-          access,
-          competitionId,
-          Number(id),
-        );
-        break;
-      }
-      case "fantasy-gameweeks":
-        await deleteAdminFantasyGameweek(adminClient, access, id);
-        break;
       case "standings":
         await deleteAdminStandingRow(adminClient, access, id);
         break;
@@ -417,17 +494,19 @@ export async function DELETE(
         await deleteAdminFanEngagementToken(adminClient, access, id);
         break;
       default:
-        return NextResponse.json({ error: "Unknown admin resource." }, {
-          status: 404,
-        });
+        return NextResponse.json(
+          { error: "Unknown admin resource." },
+          {
+            status: 404,
+          },
+        );
     }
 
     return NextResponse.json({ data: { success: true } });
   } catch (error) {
     return NextResponse.json(
       {
-        error:
-          error instanceof Error ? error.message : "Admin request failed.",
+        error: error instanceof Error ? error.message : "Admin request failed.",
       },
       { status: 500 },
     );

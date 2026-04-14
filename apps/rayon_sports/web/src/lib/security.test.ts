@@ -1,6 +1,11 @@
 import { NextRequest } from "next/server";
 import { describe, expect, it, vi } from "vitest";
-import { getClientIp, rejectRateLimitedRequest } from "@/lib/security";
+import {
+  getClientIp,
+  isSameOriginMutation,
+  rejectInsecureMutation,
+  rejectRateLimitedRequest,
+} from "@/lib/security";
 
 function makeRequest(headers: Record<string, string> = {}) {
   return new NextRequest("https://gikundiro.com/api/test", {
@@ -71,5 +76,28 @@ describe("security helpers", () => {
     expect(first).toBeNull();
     expect(second?.status).toBe(429);
     expect(second?.headers.get("Retry-After")).toBeTruthy();
+  });
+
+  it("accepts same-site mutations with the Africlub CSRF header even after cross-origin auth redirects", () => {
+    const request = makeRequest({
+      "x-africlub-csrf": "1",
+      "sec-fetch-site": "same-origin",
+      referer:
+        "https://mmpbzcdhfvplxplnfucy.supabase.co/auth/v1/verify?token=test",
+    });
+
+    expect(isSameOriginMutation(request)).toBe(true);
+    expect(rejectInsecureMutation(request)).toBeNull();
+  });
+
+  it("still blocks cross-site mutations even when the Africlub CSRF header is present", () => {
+    const request = makeRequest({
+      "x-africlub-csrf": "1",
+      "sec-fetch-site": "cross-site",
+      origin: "https://evil.example",
+    });
+
+    expect(isSameOriginMutation(request)).toBe(false);
+    expect(rejectInsecureMutation(request)?.status).toBe(403);
   });
 });

@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Plus, Trash2, Edit3, Settings2 } from "lucide-react";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { SectionHeading } from "@/components/section-heading";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   getAdminAppConfig,
   saveAdminConfigEntry,
@@ -25,14 +27,18 @@ export default function AdminConfigPage() {
   const [entries, setEntries] = useState<AppConfigEntry[]>([]);
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!client) return;
     setLoading(true);
     try {
       setEntries(await getAdminAppConfig(client, access));
+      setLoadError(null);
     } catch (e) {
-      showAdminToast(e instanceof Error ? e.message : "Failed to load config.", "error");
+      const message = e instanceof Error ? e.message : "Failed to load config.";
+      setLoadError(message);
+      showAdminToast(message, "error");
     } finally {
       setLoading(false);
     }
@@ -62,6 +68,14 @@ export default function AdminConfigPage() {
 
   async function remove(key: string) {
     if (!client) return;
+    if (
+      !confirmAdminDestructiveAction({
+        subject: key,
+        detail: "The configuration entry will be removed from the active club scope.",
+      })
+    ) {
+      return;
+    }
     try {
       await deleteAdminConfigEntry(client, access, key);
       await load();
@@ -73,7 +87,11 @@ export default function AdminConfigPage() {
 
   return (
     <div className="section-grid">
-      <SectionHeading eyebrow="CMS" title="App configuration." />
+      <AdminPageHeader
+        eyebrow="CMS"
+        title="App configuration"
+        description="Manage feature and experience flags that apply to the active club scope."
+      />
 
       <form onSubmit={submit} className="glass-panel rounded-[28px] p-6 grid gap-4">
         <div className="grid gap-4 sm:grid-cols-2">
@@ -109,6 +127,14 @@ export default function AdminConfigPage() {
       <div className="glass-panel rounded-[28px] p-6">
         {loading ? (
           <p className="text-sm text-slate-400">Loading…</p>
+        ) : loadError ? (
+          <AdminErrorState
+            title="Configuration could not be loaded"
+            description={loadError}
+            onRetry={() => {
+              load().catch(() => {});
+            }}
+          />
         ) : entries.length === 0 ? (
           <p className="text-sm text-slate-400">No config entries. Add one above.</p>
         ) : (

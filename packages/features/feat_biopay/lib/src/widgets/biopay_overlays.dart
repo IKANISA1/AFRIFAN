@@ -1,6 +1,8 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
+import '../biopay_tokens.dart';
+
 Future<void> showNfcPairingSheet(BuildContext context) {
   return showAfriBottomSheet<void>(
     context: context,
@@ -32,7 +34,7 @@ Future<void> showNfcPairingSheet(BuildContext context) {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: BorderTokens.all(
-                      color: const Color(0xFF57D0FF),
+                      color: BiopayTokens.infoAccent,
                       opacity: 0.38 - (index * 0.1),
                     ),
                   ),

@@ -4,14 +4,14 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('homeHeroRouteForStatus', () {
     test('routes live statuses to the live match screen', () {
-      expect(homeHeroRouteForStatus('LIVE'), '/live-match');
-      expect(homeHeroRouteForStatus('HALF-TIME'), '/live-match');
-      expect(homeHeroRouteForStatus('FULL-TIME'), '/live-match');
+      expect(homeHeroRouteForStatus('LIVE'), '/live');
+      expect(homeHeroRouteForStatus('HALF-TIME'), '/live');
+      expect(homeHeroRouteForStatus('FULL-TIME'), '/live');
     });
 
-    test('routes non-live statuses to tickets', () {
-      expect(homeHeroRouteForStatus('UPCOMING'), '/tickets');
-      expect(homeHeroRouteForStatus('SCHEDULED'), '/tickets');
+    test('routes non-live statuses to predictions', () {
+      expect(homeHeroRouteForStatus('UPCOMING'), '/fanzone/fixtures');
+      expect(homeHeroRouteForStatus('SCHEDULED'), '/fanzone/fixtures');
     });
   });
 }

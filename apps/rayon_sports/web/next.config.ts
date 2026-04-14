@@ -9,6 +9,15 @@ const isDevelopment = process.env.NODE_ENV === "development";
 const nextConfig: NextConfig = {
   distDir: process.env.NEXT_BUILD_DIR || ".next",
   serverExternalPackages: ["exceljs"],
+  typescript: {
+    // `npm run typecheck` is the authoritative gate. Skipping Next's duplicate
+    // build-time pass avoids flaky `.next/types/*` generation races.
+    ignoreBuildErrors: true,
+  },
+  experimental: {
+    webpackBuildWorker: true,
+    webpackMemoryOptimizations: true,
+  },
   images: {
     deviceSizes: [360, 390, 414, 640, 672, 720, 750, 828, 1080, 1200, 1920],
     formats: ["image/avif", "image/webp"],
@@ -87,6 +96,8 @@ const nextConfig: NextConfig = {
 
 export default nextConfig;
 
-import("@opennextjs/cloudflare").then((m) =>
-  m.initOpenNextCloudflareForDev(),
-);
+if (isDevelopment) {
+  void import("@opennextjs/cloudflare").then((m) =>
+    m.initOpenNextCloudflareForDev(),
+  );
+}

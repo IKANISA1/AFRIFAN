@@ -97,12 +97,6 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       return;
     }
 
-    if (!user.hasMomo) {
-      _showMessage('Link your MOMO number before activating membership.');
-      context.push('/profile_setup');
-      return;
-    }
-
     final tierValue = (pkg['tier'] ?? 'fan').toString().toLowerCase();
     final tierLabel = _membershipPackageLabel(tierValue);
     final amount = _packagePrice(pkg);
@@ -307,6 +301,9 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       _membership?['tier']?.toString(),
       currentXp,
     );
+    final paymentStatus = PaymentStatusX.fromValue(
+      _membership?['payment_status']?.toString(),
+    );
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -335,7 +332,11 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
-              child: MembershipCard(tierLabel: currentTier, xp: currentXp),
+              child: MembershipCard(
+                tierLabel: currentTier,
+                xp: currentXp,
+                paymentStatus: paymentStatus,
+              ),
             ),
           ),
 
@@ -444,8 +445,8 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                             const SizedBox(height: SpacingTokens.spacing2),
                             Text(
                               currentXp == 0
-                                  ? 'Earn XP from tickets, fan clubs & contributions.'
-                                  : '$currentXp XP earned.',
+                                  ? 'Earn FET from tickets, fan clubs & contributions.'
+                                  : '$currentXp FET earned.',
                               style: theme.textTheme.bodyMedium,
                             ),
                             if (_membership?['expires_at'] != null) ...[
@@ -463,6 +464,68 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                 ),
               ),
             ),
+
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                SpacingTokens.spacing6,
+                0,
+                SpacingTokens.spacing6,
+                SpacingTokens.spacing4,
+              ),
+              child: GlassCard(
+                onTap: () => context.push('/membership/fans'),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: primary.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(
+                          ShapeTokens.radiusMd,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.groups_rounded,
+                        color: primary,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing4),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'FAN REGISTRY',
+                            style: TypographyTokens.monolithFont(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: ColorTokens.onSurface,
+                              letterSpacing: 1.1,
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing1),
+                          Text(
+                            'Open the full supporter list and browse every registered fan.',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: ColorTokens.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing3),
+                    Icon(
+                      Icons.arrow_forward_rounded,
+                      color: ColorTokens.onSurfaceVariant,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
 
           if (!_isLoading && _packages.isNotEmpty)
             SliverList(

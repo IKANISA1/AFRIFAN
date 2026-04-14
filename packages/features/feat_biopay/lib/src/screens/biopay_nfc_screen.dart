@@ -1,4 +1,3 @@
-import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../biopay_display_resolver.dart';
-import '../models/biopay_profile.dart';
 import '../providers/biopay_providers.dart';
 import '../services/biopay_nfc_service.dart';
 import '../widgets/biopay_reference_ui.dart';
@@ -21,10 +19,13 @@ class BiopayNfcScreen extends ConsumerStatefulWidget {
 
 class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
   final _amountController = TextEditingController();
+  final _recipientController = TextEditingController();
   PaymentRecipientType? _selectedRouteType;
   bool _supportsHce = false;
   bool _isBusy = false;
   String? _error;
+
+  AfriCountry get _country => AfriCountryCatalog.defaultCountry;
 
   int? get _amount {
     final raw = _amountController.text.replaceAll(',', '').trim();
@@ -41,6 +42,7 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
   @override
   void dispose() {
     _amountController.dispose();
+    _recipientController.dispose();
     super.dispose();
   }
 
@@ -52,16 +54,47 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
     setState(() => _supportsHce = supportsHce);
   }
 
+  void _switchRouteType(PaymentRecipientType routeType) {
+    setState(() {
+      _selectedRouteType = routeType;
+      _error = null;
+      _recipientController.clear();
+    });
+  }
+
   Future<void> _activateNfc() async {
+    final selectedRouteType =
+        _selectedRouteType ?? PaymentRecipientType.phoneNumber;
+    final validationError = validateBiopayRecipient(
+      routeType: selectedRouteType,
+      value: _recipientController.text,
+      country: _country,
+    );
+    if (validationError != null) {
+      setState(() => _error = validationError);
+      return;
+    }
+
     setState(() {
       _isBusy = true;
       _error = null;
     });
 
     try {
+      final normalizedRecipient = normalizeBiopayRecipient(
+        routeType: selectedRouteType,
+        value: _recipientController.text,
+        country: _country,
+      );
       final token = await ref
           .read(biopayRepositoryProvider)
-          .createHandoffToken(channel: 'nfc', amount: _amount);
+          .createHandoffToken(
+            channel: 'nfc',
+            amount: _amount,
+            routeType: selectedRouteType,
+            recipientValue: normalizedRecipient,
+            countryCode: _country.isoCode,
+          );
 
       if (_supportsHce) {
         await ref
@@ -99,7 +132,6 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
   @override
   Widget build(BuildContext context) {
     final profile = ref.watch(biopayProfileProvider).valueOrNull;
-    final user = ref.watch(currentUserProvider);
     final selectedRouteType =
         _selectedRouteType ??
         profile?.routeType ??
@@ -119,12 +151,19 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
         children: [
           BiopayReferenceSegmentedControl(
             selected: selectedRouteType,
-            onChanged: (value) => setState(() => _selectedRouteType = value),
+            onChanged: _switchRouteType,
           ),
           const SizedBox(height: 22),
           BiopayReferenceValueCard(
             label: _labelForRoute(selectedRouteType),
-            value: _valueForRoute(selectedRouteType, profile, user),
+            controller: _recipientController,
+            hintText: biopayRecipientHint(selectedRouteType, _country),
+            keyboardType: TextInputType.number,
+            onChanged: (_) {
+              if (_error != null) {
+                setState(() => _error = null);
+              }
+            },
           ),
           const SizedBox(height: 22),
           BiopayReferenceValueCard(
@@ -164,14 +203,5 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
     return routeType == PaymentRecipientType.code
         ? 'Merchant Code'
         : 'MoMo Number';
-  }
-
-  String _valueForRoute(
-    PaymentRecipientType routeType,
-    BiopayProfile? profile,
-    UserProfile? user,
-  ) {
-    return resolveBiopayRouteValue(routeType, profile, user) ??
-        kBiopayUnlinkedLabel;
   }
 }
