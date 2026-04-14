@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// Unit tests for AfriClub domain types, enums, and validation logic.
 ///
 /// Covers: FanTier, TicketStatus, SeatType, OrderStatus, ProductCategory,
-/// XpEventType, ContributionGroupType, GroupPrivacy.
+/// FetEventType, ContributionGroupType, GroupPrivacy.
 void main() {
   // ═══════════════════════════════════════════════════════════
   // FAN TIER — Gamification Levels
@@ -155,11 +155,11 @@ void main() {
   // FET EVENT TYPE — Gamification
   // ═══════════════════════════════════════════════════════════
 
-  group('XpEventType', () {
+  group('FetEventType', () {
     test('all event types have positive FET rewards', () {
-      for (final type in XpEventType.values) {
+      for (final type in FetEventType.values) {
         expect(
-          type.xpReward,
+          type.fetReward,
           greaterThan(0),
           reason: '${type.name} should award positive FET',
         );
@@ -167,28 +167,28 @@ void main() {
     });
 
     test('fromKey round-trips for all types', () {
-      for (final type in XpEventType.values) {
-        expect(XpEventTypeX.fromKey(type.eventKey), type);
+      for (final type in FetEventType.values) {
+        expect(FetEventTypeX.fromKey(type.eventKey), type);
       }
     });
 
     test('fromKey returns null for unknown keys', () {
-      expect(XpEventTypeX.fromKey('nonexistent'), isNull);
+      expect(FetEventTypeX.fromKey('nonexistent'), isNull);
     });
 
     test('streak rewards are higher than daily', () {
       expect(
-        XpEventType.weekStreak.xpReward,
-        greaterThan(XpEventType.dailyOpen.xpReward),
+        FetEventType.weekStreak.fetReward,
+        greaterThan(FetEventType.dailyOpen.fetReward),
       );
       expect(
-        XpEventType.monthStreak.xpReward,
-        greaterThan(XpEventType.weekStreak.xpReward),
+        FetEventType.monthStreak.fetReward,
+        greaterThan(FetEventType.weekStreak.fetReward),
       );
     });
 
     test('eventKey format is snake_case', () {
-      for (final type in XpEventType.values) {
+      for (final type in FetEventType.values) {
         expect(
           type.eventKey,
           matches(RegExp(r'^[a-z_]+$')),
@@ -202,31 +202,31 @@ void main() {
   // FET EVENT MODEL
   // ═══════════════════════════════════════════════════════════
 
-  group('XpEvent.fromJson', () {
+  group('FetEvent.fromJson', () {
     test('parses valid JSON', () {
-      final event = XpEvent.fromJson({
+      final event = FetEvent.fromJson({
         'id': 'event-1',
         'user_id': 'user-1',
         'event_type': 'daily_open',
-        'xp_awarded': 10,
+        'fet_awarded': 10,
         'event_at': '2025-01-01T00:00:00Z',
       });
       expect(event.id, 'event-1');
       expect(event.userId, 'user-1');
-      expect(event.eventType, XpEventType.dailyOpen);
-      expect(event.xpAwarded, 10);
+      expect(event.eventType, FetEventType.dailyOpen);
+      expect(event.fetAwarded, 10);
     });
 
     test('handles null/missing fields gracefully', () {
-      final event = XpEvent.fromJson({
+      final event = FetEvent.fromJson({
         'id': null,
         'user_id': null,
         'event_type': null,
-        'xp_awarded': 0,
+        'fet_awarded': 0,
         'event_at': null,
       });
       expect(event.id, '');
-      expect(event.eventType, XpEventType.dailyOpen);
+      expect(event.eventType, FetEventType.dailyOpen);
     });
   });
 

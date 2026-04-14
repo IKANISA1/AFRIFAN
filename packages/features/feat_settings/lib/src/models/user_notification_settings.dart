@@ -6,7 +6,7 @@ class UserNotificationSettings {
     required this.allowAll,
     required this.matchAlerts,
     required this.contributionReceipts,
-    required this.xpMilestones,
+    required this.fetMilestones,
     required this.teamNews,
     required this.challenges,
     required this.groupChat,
@@ -18,7 +18,7 @@ class UserNotificationSettings {
   final bool allowAll;
   final bool matchAlerts;
   final bool contributionReceipts;
-  final bool xpMilestones;
+  final bool fetMilestones;
   final bool teamNews;
   final bool challenges;
   final bool groupChat;
@@ -34,7 +34,7 @@ class UserNotificationSettings {
       allowAll: false,
       matchAlerts: true,
       contributionReceipts: true,
-      xpMilestones: true,
+      fetMilestones: true,
       teamNews: false,
       challenges: true,
       groupChat: false,
@@ -52,7 +52,7 @@ class UserNotificationSettings {
         json['contribution_receipts'],
         fallback: true,
       ),
-      xpMilestones: _asBool(json['xp_milestones'], fallback: true),
+      fetMilestones: _asBool(json['fet_milestones'], fallback: true),
       teamNews: _asBool(json['team_news']),
       challenges: _asBool(json['challenges'], fallback: true),
       groupChat: _asBool(json['group_chat']),
@@ -68,7 +68,7 @@ class UserNotificationSettings {
       'allow_all': allowAll,
       'match_alerts': matchAlerts,
       'contribution_receipts': contributionReceipts,
-      'xp_milestones': xpMilestones,
+      'fet_milestones': fetMilestones,
       'team_news': teamNews,
       'challenges': challenges,
       'group_chat': groupChat,
@@ -82,7 +82,7 @@ class UserNotificationSettings {
     bool? allowAll,
     bool? matchAlerts,
     bool? contributionReceipts,
-    bool? xpMilestones,
+    bool? fetMilestones,
     bool? teamNews,
     bool? challenges,
     bool? groupChat,
@@ -94,7 +94,7 @@ class UserNotificationSettings {
       allowAll: allowAll ?? this.allowAll,
       matchAlerts: matchAlerts ?? this.matchAlerts,
       contributionReceipts: contributionReceipts ?? this.contributionReceipts,
-      xpMilestones: xpMilestones ?? this.xpMilestones,
+      fetMilestones: fetMilestones ?? this.fetMilestones,
       teamNews: teamNews ?? this.teamNews,
       challenges: challenges ?? this.challenges,
       groupChat: groupChat ?? this.groupChat,

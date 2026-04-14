@@ -1109,7 +1109,7 @@ CREATE POLICY group_messages_insert_members
 GRANT SELECT, INSERT ON public.group_messages TO authenticated;
 
 -- -----------------------------------------------------------------------------
--- XP event tables
+-- FET event tables
 -- -----------------------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS public.cool_events (

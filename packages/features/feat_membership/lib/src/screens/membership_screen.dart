@@ -296,10 +296,10 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
     final user = ref.watch(currentUserProvider);
-    final currentXp = (_membership?['points'] as num?)?.toInt() ?? 0;
+    final currentFet = (_membership?['points'] as num?)?.toInt() ?? 0;
     final currentTier = _currentTierLabel(
       _membership?['tier']?.toString(),
-      currentXp,
+      currentFet,
     );
     final paymentStatus = PaymentStatusX.fromValue(
       _membership?['payment_status']?.toString(),
@@ -334,7 +334,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
               child: MembershipCard(
                 tierLabel: currentTier,
-                xp: currentXp,
+                fet: currentFet,
                 paymentStatus: paymentStatus,
               ),
             ),
@@ -346,7 +346,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
               padding: const EdgeInsets.symmetric(
                 horizontal: SpacingTokens.spacing6,
               ),
-              child: TierProgress(currentXp: currentXp),
+              child: TierProgress(currentFet: currentFet),
             ),
           ),
 
@@ -444,9 +444,9 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                             ),
                             const SizedBox(height: SpacingTokens.spacing2),
                             Text(
-                              currentXp == 0
+                              currentFet == 0
                                   ? 'Earn FET from tickets, fan clubs & contributions.'
-                                  : '$currentXp FET earned.',
+                                  : '$currentFet FET earned.',
                               style: theme.textTheme.bodyMedium,
                             ),
                             if (_membership?['expires_at'] != null) ...[
@@ -635,19 +635,19 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     );
   }
 
-  String _tierLabelFromXp(int xp) {
-    if (xp >= 5000) return 'Platinum';
-    if (xp >= 2000) return 'Gold';
-    if (xp >= 1000) return 'Bronze';
+  String _tierLabelFromFet(int fet) {
+    if (fet >= 5000) return 'Platinum';
+    if (fet >= 2000) return 'Gold';
+    if (fet >= 1000) return 'Bronze';
     return 'Fan';
   }
 
-  String _currentTierLabel(String? tierValue, int xp) {
+  String _currentTierLabel(String? tierValue, int fet) {
     final trimmed = tierValue?.trim().toLowerCase();
     if (trimmed != null && trimmed.isNotEmpty) {
       return _membershipPackageLabel(trimmed);
     }
-    return _tierLabelFromXp(xp);
+    return _tierLabelFromFet(fet);
   }
 
   String _formatMembershipDate(String? rawValue) {

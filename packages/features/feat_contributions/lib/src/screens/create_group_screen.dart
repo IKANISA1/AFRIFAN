@@ -158,9 +158,9 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
 
       final created = await repo.createContributionGroup(group);
       try {
-        await repo.recordXpEvent(
+        await repo.recordFetEvent(
           userId: user.id,
-          eventType: XpEventType.createGroup,
+          eventType: FetEventType.createGroup,
           metadata: <String, Object?>{'group_id': created.id},
         );
       } catch (error, stackTrace) {

@@ -96,7 +96,7 @@ if (data.isEmpty || data == null) {
 * Home screen Zone 1 (Live/Next Match) — hide entirely if no upcoming or live match exists  
 * Home screen Zone 3 (Admin Banner Carousel) — hide if no active banners in CMS  
 * Home screen Zone 4 (My Active Circles) — hide if user has no active groups  
-* Home screen Zone 5 (Gamification Teaser) — hide if user XP is 0 and no events recorded  
+* Home screen Zone 5 (Gamification Teaser) — hide if user FET is 0 and no events recorded  
 * Home screen Zone 6 (Club News Feed) — hide if no published news articles  
 * Leaderboard — hide "Top Supporters" section if fewer than 3 ranked users exist  
 * Any list screen — never show an empty-state card that mimics a populated card  
@@ -145,7 +145,7 @@ This includes but is not limited to:
 * Match schedules, scores, player names  
 * Promotional text, banner copy, news headlines  
 * Membership tier perks descriptions  
-* Challenge names, XP values, badge names  
+* Challenge names, FET values, badge names  
 * MOMO numbers (club or personal)  
 * Contribution group descriptions
 
@@ -644,7 +644,7 @@ Scope: the package or feature name (e.g. feat_home, core_theme, supabase)
 Examples:
 feat(feat_contributions): add group statement download as CSV
 fix(core_theme): correct GlassCard border radius on Android 
-refactor(feat_gamification): extract XPProgressArc to shared widget
+refactor(feat_gamification): extract FETProgressArc to shared widget
 chore(melos): add build_club_ios script
 ```
 

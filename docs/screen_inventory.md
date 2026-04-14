@@ -59,7 +59,7 @@ Mobile onboarding screen 1 of 3. Full-bleed dark navy gradient background with a
 <details><summary>1.3 Onboarding — Slide 2</summary>
 
 ```
-Mobile onboarding screen 2 of 3. Dark navy background. Top area shows three glassmorphic cards floating: one shows XP badge, one shows a ticket QR code, one shows a MOMO contribution circle. Headline: "Fan membership. Tickets. Contributions." in Space Grotesk 36sp white. Subtext: "Earn XP, buy match tickets, and contribute to club projects — all in one place." Pagination dots ○ ● ○. Red "Next" button.
+Mobile onboarding screen 2 of 3. Dark navy background. Top area shows three glassmorphic cards floating: one shows FET badge, one shows a ticket QR code, one shows a MOMO contribution circle. Headline: "Fan membership. Tickets. Contributions." in Space Grotesk 36sp white. Subtext: "Earn FET, buy match tickets, and contribute to club projects — all in one place." Pagination dots ○ ● ○. Red "Next" button.
 ```
 </details>
 
@@ -88,7 +88,7 @@ Mobile profile setup screen. Dark navy background. Top: large progress bar "Step
 <details><summary>2.1 Home Screen</summary>
 
 ```
-Mobile football club homescreen. Dark navy gradient. Scrollable feed. TOP ZONE: full-width glassmorphic hero card — Rayon Sports crest left, opponent crest right, match countdown "2d 14h" in Space Grotesk 40sp gold, "NEXT MATCH" chip, status PRE-MATCH mint. ZONE 2: horizontal quick actions rail — 6 claymorphic icon chips (red pill-shaped): Tickets · Shop · Contribute · Games · Membership · Fan Clubs. ZONE 3: admin banner carousel with dots. ZONE 4: "My Active Circles" horizontal scroll — 2 partial glass cards with progress rings. ZONE 5: Gamification teaser — alias "483912" XP arc, "Bronze · 2,340 XP", mini leaderboard. ZONE 6: Club news feed — 2 image-first cards. Bottom: 3-tab nav bar (Home active red, BioPay, Settings).
+Mobile football club homescreen. Dark navy gradient. Scrollable feed. TOP ZONE: full-width glassmorphic hero card — Rayon Sports crest left, opponent crest right, match countdown "2d 14h" in Space Grotesk 40sp gold, "NEXT MATCH" chip, status PRE-MATCH mint. ZONE 2: horizontal quick actions rail — 6 claymorphic icon chips (red pill-shaped): Tickets · Shop · Contribute · Games · Membership · Fan Clubs. ZONE 3: admin banner carousel with dots. ZONE 4: "My Active Circles" horizontal scroll — 2 partial glass cards with progress rings. ZONE 5: Gamification teaser — alias "483912" FET arc, "Bronze · 2,340 FET", mini leaderboard. ZONE 6: Club news feed — 2 image-first cards. Bottom: 3-tab nav bar (Home active red, BioPay, Settings).
 ```
 </details>
 
@@ -176,7 +176,7 @@ Mobile shopping cart. Dark navy. Header "Your Cart" + count. Cart items: thumbna
 
 | # | Screen | Tag | Module | File | Status | DB Tables |
 |---|--------|-----|--------|------|--------|-----------|
-| 2.4a | Gamification Hub | games | `feat_gamification` | `xp_dashboard_screen.dart` | ✅ | `gamification_events`, `users` |
+| 2.4a | Gamification Hub | games | `feat_gamification` | `fet_dashboard_screen.dart` | ✅ | `gamification_events`, `users` |
 | 2.4b | Challenges Screen | games | `feat_gamification` | `challenges_screen.dart` | ✅ | `gamification_events` |
 | 2.4c | Leaderboard | games | `feat_gamification` | `leaderboard_screen.dart` | ✅ | `gamification_events`, `users` |
 | 2.4d | Badges Screen | games | `feat_gamification` | `badges_screen.dart` | ✅ | `badges`, `user_badges` |
@@ -185,21 +185,21 @@ Mobile shopping cart. Dark navy. Header "Your Cart" + count. Cart items: thumbna
 <details><summary>2.4a Gamification Hub</summary>
 
 ```
-Mobile gamification screen. Dark navy. Large header: stadium arc, alias "483912" JetBrains Mono, rank "#47 of 12,400 fans". XP arc progress circle red arc 2340/5000 XP. Tier badge: BRONZE chip. Quick nav: XP HISTORY · CHALLENGES · LEADERBOARD · BADGES · STREAKS. Featured challenge card. Recent activity feed.
+Mobile gamification screen. Dark navy. Large header: stadium arc, alias "483912" JetBrains Mono, rank "#47 of 12,400 fans". FET arc progress circle red arc 2340/5000 FET. Tier badge: BRONZE chip. Quick nav: FET HISTORY · CHALLENGES · LEADERBOARD · BADGES · STREAKS. Featured challenge card. Recent activity feed.
 ```
 </details>
 
 <details><summary>2.4b Challenges Screen</summary>
 
 ```
-Mobile challenges screen. Dark navy. Header "Challenges". Tabs: DAILY · WEEKLY · SEASONAL. Challenge cards glassmorphic: icon, title, XP reward gold, progress bar red fill, time remaining chip orange. Countdown clock on daily. COMPLETED state: green check, dimmed, red "Claim XP" button.
+Mobile challenges screen. Dark navy. Header "Challenges". Tabs: DAILY · WEEKLY · SEASONAL. Challenge cards glassmorphic: icon, title, FET reward gold, progress bar red fill, time remaining chip orange. Countdown clock on daily. COMPLETED state: green check, dimmed, red "Claim FET" button.
 ```
 </details>
 
 <details><summary>2.4c Leaderboard</summary>
 
 ```
-Mobile fan leaderboard. Dark navy. Top 3 podium: #2 silver glass left, #1 gold glass center red glow largest, #3 bronze right. Each: alias JetBrains Mono, XP Space Grotesk. Below: scrollable list — rank | alias | tier badge | XP. Current user row highlighted red tint. "Your rank: #47" sticky bottom bar.
+Mobile fan leaderboard. Dark navy. Top 3 podium: #2 silver glass left, #1 gold glass center red glow largest, #3 bronze right. Each: alias JetBrains Mono, FET Space Grotesk. Below: scrollable list — rank | alias | tier badge | FET. Current user row highlighted red tint. "Your rank: #47" sticky bottom bar.
 ```
 </details>
 
@@ -213,7 +213,7 @@ Mobile badges collection. Dark navy. Header "Your Badges". Stats "8/34 earned". 
 <details><summary>2.4e Streak Calendar</summary>
 
 ```
-Mobile activity streak screen. Dark navy. Large "14 days" Space Grotesk 56sp gold. GitHub-style heatmap calendar 7-column: cells dark navy to bright red by activity. Streak goal arc. "Current: 14 · Best: 21". XP milestone markers: 7-day · 30-day · 60-day.
+Mobile activity streak screen. Dark navy. Large "14 days" Space Grotesk 56sp gold. GitHub-style heatmap calendar 7-column: cells dark navy to bright red by activity. Streak goal arc. "Current: 14 · Best: 21". FET milestone markers: 7-day · 30-day · 60-day.
 ```
 </details>
 
@@ -300,14 +300,14 @@ Mobile statement download screen. Dark navy. Date range FROM / TO glass inputs. 
 <details><summary>2.6a Membership Screen</summary>
 
 ```
-Mobile fan membership screen. Dark navy. Top: digital membership card glassmorphic horizontal: crest left, BRONZE SUPPORTER bronze gradient, alias "483912" JetBrains Mono center, barcode stripe bottom. Below: tier cards — FAN gray, BRONZE bronze glass, SILVER silver glass, GOLD gold glass, LEGEND red glass. Current tier glows. Each: XP range, perks, progress.
+Mobile fan membership screen. Dark navy. Top: digital membership card glassmorphic horizontal: crest left, BRONZE SUPPORTER bronze gradient, alias "483912" JetBrains Mono center, barcode stripe bottom. Below: tier cards — FAN gray, BRONZE bronze glass, SILVER silver glass, GOLD gold glass, LEGEND red glass. Current tier glows. Each: FET range, perks, progress.
 ```
 </details>
 
 <details><summary>2.6b Tier Detail</summary>
 
 ```
-Mobile tier detail. Dark navy. Header "GOLD FAITHFUL" gold Space Grotesk 36sp. Large tier badge glassmorphic circular trophy. XP range "15,000–40,000 XP". Perks with checkmarks: 15% shop discount · VIP events · Priority support · Early tickets. Progress to next tier bar. "How to earn XP faster" collapsible.
+Mobile tier detail. Dark navy. Header "GOLD FAITHFUL" gold Space Grotesk 36sp. Large tier badge glassmorphic circular trophy. FET range "15,000–40,000 FET". Perks with checkmarks: 15% shop discount · VIP events · Priority support · Early tickets. Progress to next tier bar. "How to earn FET faster" collapsible.
 ```
 </details>
 
@@ -482,7 +482,7 @@ Mobile edit profile. Dark navy. Avatar: circular glass frame, silhouette, "+ Pho
 <details><summary>4.3 Notifications</summary>
 
 ```
-Mobile notification preferences. Dark navy. Toggles list glass: MATCH ALERTS ON, CONTRIBUTION ON, XP MILESTONES ON, TEAM NEWS OFF, CHALLENGES ON, GROUP MESSAGES OFF. Master "Allow All" toggle top. Save button. Each row: icon, label, subtitle, toggle.
+Mobile notification preferences. Dark navy. Toggles list glass: MATCH ALERTS ON, CONTRIBUTION ON, FET MILESTONES ON, TEAM NEWS OFF, CHALLENGES ON, GROUP MESSAGES OFF. Master "Allow All" toggle top. Save button. Each row: icon, label, subtitle, toggle.
 ```
 </details>
 
@@ -563,7 +563,7 @@ Mobile notification composer admin. Dark navy. Audience: ALL / BY TIER chips / B
 | 6.1 | MOMO Amount Entry | popup · contribute | `feat_contributions` | `contribution_overlays.dart` | ✅ | — |
 | 6.2 | MOMO USSD Confirm | popup · payment | `feat_contributions` | `contribution_overlays.dart` | ✅ | — |
 | 6.3 | Contribution Success | modal · success | `feat_contributions` | `contribution_overlays.dart` | ✅ | — |
-| 6.4 | XP Level Up | modal · celebration | `feat_gamification` | `gamification_overlays.dart` | ✅ | — |
+| 6.4 | FET Level Up | modal · celebration | `feat_gamification` | `gamification_overlays.dart` | ✅ | — |
 | 6.5 | Badge Earned | modal · celebration | `feat_gamification` | `gamification_overlays.dart` | ✅ | — |
 | 6.6 | Group Invite Code | sheet · share | `feat_contributions` | `contribution_overlays.dart` | ✅ | `contribution_groups` |
 | 6.7 | Ticket Purchase Confirm | sheet · tickets | `feat_ticketing` | `ticketing_overlays.dart` | ✅ | `tickets` |
@@ -593,14 +593,14 @@ Mobile MOMO USSD confirmation sheet 35% height. Dark navy. Title "Launching MOMO
 <details><summary>6.3 Contribution Success</summary>
 
 ```
-Mobile contribution success modal. Dark navy center. Animated mint green circle + white checkmark bounce. "Contribution Sent!" Space Grotesk 36sp. Amount gold. Group name. "+50 XP earned" red claymorphic badge. "View Ledger" outlined + "Done" red buttons. Red/gold confetti particles.
+Mobile contribution success modal. Dark navy center. Animated mint green circle + white checkmark bounce. "Contribution Sent!" Space Grotesk 36sp. Amount gold. Group name. "+50 FET earned" red claymorphic badge. "View Ledger" outlined + "Done" red buttons. Red/gold confetti particles.
 ```
 </details>
 
-<details><summary>6.4 XP Level Up</summary>
+<details><summary>6.4 FET Level Up</summary>
 
 ```
-Mobile XP level-up celebration full-screen overlay. Dark navy red/gold radial burst. Center: tier badge bouncing in (SILVER ULTRAS silver gradient glow). "LEVEL UP!" Space Grotesk ExtraBold 52sp. New tier name. XP total gold. Perks unlocked list. "Awesome!" red large button.
+Mobile FET level-up celebration full-screen overlay. Dark navy red/gold radial burst. Center: tier badge bouncing in (SILVER ULTRAS silver gradient glow). "LEVEL UP!" Space Grotesk ExtraBold 52sp. New tier name. FET total gold. Perks unlocked list. "Awesome!" red large button.
 ```
 </details>
 
@@ -670,7 +670,7 @@ Mobile notification permission request. Dark navy center card. Bell icon red bad
 <details><summary>6.14 Sign Out Confirm</summary>
 
 ```
-Mobile sign out confirmation sheet 35% height. Dark navy. "Sign out?" Space Grotesk 24sp. Note: "Your profile and XP are saved." "Sign Out" red outlined full-width | "Stay" red filled full-width stacked.
+Mobile sign out confirmation sheet 35% height. Dark navy. "Sign out?" Space Grotesk 24sp. Note: "Your profile and FET are saved." "Sign Out" red outlined full-width | "Stay" red filled full-width stacked.
 ```
 </details>
 

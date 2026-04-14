@@ -317,7 +317,7 @@ class FetRepository {
       return List<Map<String, dynamic>>.from(
         await _client
             .from('cool_events')
-            .select('event_type, xp_awarded, event_at')
+            .select('event_type, fet_awarded, event_at')
             .eq('user_id', userId)
             .order('event_at', ascending: false)
             .limit(250),
@@ -325,8 +325,8 @@ class FetRepository {
     } catch (_) {
       return List<Map<String, dynamic>>.from(
         await _client
-            .from('xp_events')
-            .select('event_type, xp_awarded, event_at')
+            .from('fet_events')
+            .select('event_type, fet_awarded, event_at')
             .eq('user_id', userId)
             .order('event_at', ascending: false)
             .limit(250),
@@ -341,7 +341,7 @@ class FetRepository {
       if (eventAt == null || eventAt.isBefore(lowerBound)) {
         return sum;
       }
-      return sum + ((row['xp_awarded'] as num?)?.toInt() ?? 0);
+      return sum + ((row['fet_awarded'] as num?)?.toInt() ?? 0);
     });
   }
 

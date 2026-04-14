@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 /// Tier progress — shows all tiers with current position.
 class TierProgress extends StatelessWidget {
-  const TierProgress({super.key, required this.currentXp});
+  const TierProgress({super.key, required this.currentFet});
 
-  final int currentXp;
+  final int currentFet;
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +28,10 @@ class TierProgress extends StatelessWidget {
           final nextThreshold = index == tiers.length - 1
               ? null
               : tiers[index + 1].$2;
-          final isReached = currentXp >= threshold;
+          final isReached = currentFet >= threshold;
           final isCurrent = nextThreshold == null
-              ? currentXp >= threshold
-              : currentXp >= threshold && currentXp < nextThreshold;
+              ? currentFet >= threshold
+              : currentFet >= threshold && currentFet < nextThreshold;
           final isLast = index == tiers.length - 1;
 
           return Expanded(

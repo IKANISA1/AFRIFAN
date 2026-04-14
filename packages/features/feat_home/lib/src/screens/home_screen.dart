@@ -109,7 +109,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ),
 
-
                   // ── Stats row ──
                   if (_snapshot.hasStats) ...[
                     const SliverToBoxAdapter(
@@ -123,7 +122,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         child: _buildAnimatedSection(
                           context,
                           StatsRow(
-                            globalXp: _snapshot.globalXp,
+                            globalFet: _snapshot.globalXp,
                             fanRank: _snapshot.fanRank,
                           ),
                           delayMs: 200,

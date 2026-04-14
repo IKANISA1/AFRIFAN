@@ -55,7 +55,7 @@ class _NotificationPreferencesScreenState
       allowAll: enabled,
       matchAlerts: enabled,
       contributionReceipts: enabled,
-      xpMilestones: enabled,
+      fetMilestones: enabled,
       teamNews: enabled,
       challenges: enabled,
       groupChat: enabled,

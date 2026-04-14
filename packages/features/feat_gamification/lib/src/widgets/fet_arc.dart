@@ -4,16 +4,16 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
 /// Radial FET progress arc with massive center number.
-class XpArc extends StatelessWidget {
-  final int currentXp;
-  final int maxXp;
+class FetArc extends StatelessWidget {
+  final int currentFet;
+  final int maxFet;
   final String tier;
   final String nextTier;
 
-  const XpArc({
+  const FetArc({
     super.key,
-    required this.currentXp,
-    required this.maxXp,
+    required this.currentFet,
+    required this.maxFet,
     required this.tier,
     required this.nextTier,
   });
@@ -21,7 +21,7 @@ class XpArc extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final progress = (currentXp / maxXp).clamp(0.0, 1.0);
+    final progress = (currentFet / maxFet).clamp(0.0, 1.0);
 
     return SizedBox(
       width: 200,
@@ -45,7 +45,7 @@ class XpArc extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                currentXp.toString(),
+                currentFet.toString(),
                 style: TypographyTokens.monolithFont(
                   fontSize: 48,
                   fontWeight: FontWeight.w800,

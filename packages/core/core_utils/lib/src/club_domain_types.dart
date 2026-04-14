@@ -137,7 +137,7 @@ extension ProductCategoryX on ProductCategory {
 // FET Event Types — Gamification engine
 // ═══════════════════════════════════════════════════════════════
 
-enum XpEventType {
+enum FetEventType {
   dailyOpen,
   matchAttendance,
   contribution,
@@ -149,69 +149,69 @@ enum XpEventType {
   monthStreak,
 }
 
-extension XpEventTypeX on XpEventType {
-  int get xpReward => switch (this) {
-    XpEventType.dailyOpen => 10,
-    XpEventType.matchAttendance => 500,
-    XpEventType.contribution => 50,
-    XpEventType.createGroup => 200,
-    XpEventType.inviteFriends => 150,
-    XpEventType.shopPurchase => 100,
-    XpEventType.completeProfile => 300,
-    XpEventType.weekStreak => 250,
-    XpEventType.monthStreak => 1000,
+extension FetEventTypeX on FetEventType {
+  int get fetReward => switch (this) {
+    FetEventType.dailyOpen => 10,
+    FetEventType.matchAttendance => 500,
+    FetEventType.contribution => 50,
+    FetEventType.createGroup => 200,
+    FetEventType.inviteFriends => 150,
+    FetEventType.shopPurchase => 100,
+    FetEventType.completeProfile => 300,
+    FetEventType.weekStreak => 250,
+    FetEventType.monthStreak => 1000,
   };
 
   String get label => switch (this) {
-    XpEventType.dailyOpen => 'Daily Check-In',
-    XpEventType.matchAttendance => 'Match Attendance',
-    XpEventType.contribution => 'Make Contribution',
-    XpEventType.createGroup => 'Create Circle',
-    XpEventType.inviteFriends => 'Invite 3 Friends',
-    XpEventType.shopPurchase => 'Shop Purchase',
-    XpEventType.completeProfile => 'Complete Profile',
-    XpEventType.weekStreak => '7-Day Streak',
-    XpEventType.monthStreak => '30-Day Streak',
+    FetEventType.dailyOpen => 'Daily Check-In',
+    FetEventType.matchAttendance => 'Match Attendance',
+    FetEventType.contribution => 'Make Contribution',
+    FetEventType.createGroup => 'Create Circle',
+    FetEventType.inviteFriends => 'Invite 3 Friends',
+    FetEventType.shopPurchase => 'Shop Purchase',
+    FetEventType.completeProfile => 'Complete Profile',
+    FetEventType.weekStreak => '7-Day Streak',
+    FetEventType.monthStreak => '30-Day Streak',
   };
 
   IconData get icon => switch (this) {
-    XpEventType.dailyOpen => Icons.today_rounded,
-    XpEventType.matchAttendance => Icons.stadium_rounded,
-    XpEventType.contribution => Icons.volunteer_activism_rounded,
-    XpEventType.createGroup => Icons.groups_rounded,
-    XpEventType.inviteFriends => Icons.campaign_rounded,
-    XpEventType.shopPurchase => Icons.shopping_bag_rounded,
-    XpEventType.completeProfile => Icons.check_circle_rounded,
-    XpEventType.weekStreak => Icons.local_fire_department_rounded,
-    XpEventType.monthStreak => Icons.diamond_rounded,
+    FetEventType.dailyOpen => Icons.today_rounded,
+    FetEventType.matchAttendance => Icons.stadium_rounded,
+    FetEventType.contribution => Icons.volunteer_activism_rounded,
+    FetEventType.createGroup => Icons.groups_rounded,
+    FetEventType.inviteFriends => Icons.campaign_rounded,
+    FetEventType.shopPurchase => Icons.shopping_bag_rounded,
+    FetEventType.completeProfile => Icons.check_circle_rounded,
+    FetEventType.weekStreak => Icons.local_fire_department_rounded,
+    FetEventType.monthStreak => Icons.diamond_rounded,
   };
 
   String get frequency => switch (this) {
-    XpEventType.dailyOpen => 'Once per day',
-    XpEventType.matchAttendance => 'Per match',
-    XpEventType.contribution => 'Per transaction',
-    XpEventType.createGroup => 'Per creation',
-    XpEventType.inviteFriends => 'Per 3 invites',
-    XpEventType.shopPurchase => 'Per purchase',
-    XpEventType.completeProfile => 'One-time',
-    XpEventType.weekStreak => 'Per week',
-    XpEventType.monthStreak => 'Per month',
+    FetEventType.dailyOpen => 'Once per day',
+    FetEventType.matchAttendance => 'Per match',
+    FetEventType.contribution => 'Per transaction',
+    FetEventType.createGroup => 'Per creation',
+    FetEventType.inviteFriends => 'Per 3 invites',
+    FetEventType.shopPurchase => 'Per purchase',
+    FetEventType.completeProfile => 'One-time',
+    FetEventType.weekStreak => 'Per week',
+    FetEventType.monthStreak => 'Per month',
   };
 
   String get eventKey => switch (this) {
-    XpEventType.dailyOpen => 'daily_open',
-    XpEventType.matchAttendance => 'match_attendance',
-    XpEventType.contribution => 'contribution',
-    XpEventType.createGroup => 'create_group',
-    XpEventType.inviteFriends => 'invite_friends',
-    XpEventType.shopPurchase => 'shop_purchase',
-    XpEventType.completeProfile => 'complete_profile',
-    XpEventType.weekStreak => 'week_streak',
-    XpEventType.monthStreak => 'month_streak',
+    FetEventType.dailyOpen => 'daily_open',
+    FetEventType.matchAttendance => 'match_attendance',
+    FetEventType.contribution => 'contribution',
+    FetEventType.createGroup => 'create_group',
+    FetEventType.inviteFriends => 'invite_friends',
+    FetEventType.shopPurchase => 'shop_purchase',
+    FetEventType.completeProfile => 'complete_profile',
+    FetEventType.weekStreak => 'week_streak',
+    FetEventType.monthStreak => 'month_streak',
   };
 
-  static XpEventType? fromKey(String key) {
-    for (final type in XpEventType.values) {
+  static FetEventType? fromKey(String key) {
+    for (final type in FetEventType.values) {
       if (type.eventKey == key) return type;
     }
     return null;
@@ -219,38 +219,38 @@ extension XpEventTypeX on XpEventType {
 }
 
 /// A single FET event log entry.
-class XpEvent extends Equatable {
-  const XpEvent({
+class FetEvent extends Equatable {
+  const FetEvent({
     required this.id,
     required this.userId,
     required this.eventType,
-    required this.xpAwarded,
+    required this.fetAwarded,
     required this.eventAt,
     this.metadata,
   });
 
   final String id;
   final String userId;
-  final XpEventType eventType;
-  final int xpAwarded;
+  final FetEventType eventType;
+  final int fetAwarded;
   final DateTime eventAt;
   final Map<String, Object?>? metadata;
 
-  factory XpEvent.fromJson(Map<String, dynamic> json) {
-    return XpEvent(
+  factory FetEvent.fromJson(Map<String, dynamic> json) {
+    return FetEvent(
       id: jh.asStringOrNull(json['id']) ?? '',
       userId: jh.asStringOrNull(json['user_id']) ?? '',
       eventType:
-          XpEventTypeX.fromKey(jh.asStringOrNull(json['event_type']) ?? '') ??
-          XpEventType.dailyOpen,
-      xpAwarded: jh.asInt(json['xp_awarded']),
+          FetEventTypeX.fromKey(jh.asStringOrNull(json['event_type']) ?? '') ??
+          FetEventType.dailyOpen,
+      fetAwarded: jh.asInt(json['fet_awarded']),
       eventAt: jh.parseDateTime(json['event_at']) ?? DateTime.now(),
       metadata: jh.asMapOrNull(json['metadata']),
     );
   }
 
   @override
-  List<Object?> get props => [id, userId, eventType, xpAwarded, eventAt];
+  List<Object?> get props => [id, userId, eventType, fetAwarded, eventAt];
 }
 
 // ═══════════════════════════════════════════════════════════════

@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 /// Home summary metrics.
 class StatsRow extends StatelessWidget {
-  final int globalXp;
+  final int globalFet;
   final int fanRank;
 
-  const StatsRow({super.key, this.globalXp = 42880, this.fanRank = 12});
+  const StatsRow({super.key, this.globalFet = 42880, this.fanRank = 12});
 
-  String _formatXp(int xp) {
-    if (xp >= 1000) {
-      final formatted = xp.toString();
+  String _formatFet(int fet) {
+    if (fet >= 1000) {
+      final formatted = fet.toString();
       final buffer = StringBuffer();
       for (var i = 0; i < formatted.length; i++) {
         if (i > 0 && (formatted.length - i) % 3 == 0) {
@@ -20,7 +20,7 @@ class StatsRow extends StatelessWidget {
       }
       return buffer.toString();
     }
-    return xp.toString();
+    return fet.toString();
   }
 
   @override
@@ -30,7 +30,7 @@ class StatsRow extends StatelessWidget {
         Expanded(
           child: AfriMetricTile(
             label: 'FET',
-            value: _formatXp(globalXp),
+            value: _formatFet(globalFet),
             meta: 'Supporter total',
             icon: Icons.auto_graph_rounded,
           ),

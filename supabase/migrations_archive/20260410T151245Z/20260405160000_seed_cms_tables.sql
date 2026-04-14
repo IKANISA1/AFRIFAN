@@ -49,7 +49,7 @@ VALUES
     'club_history',
     'One supporter account',
     'Unified identity',
-    'The web and mobile products share a single supporter account — membership, XP, ticket history, and contribution records follow the user across devices. The web is not a secondary product.',
+    'The web and mobile products share a single supporter account — membership, FET, ticket history, and contribution records follow the user across devices. The web is not a secondary product.',
     3, true, 'approved'
   )
 ON CONFLICT DO NOTHING;

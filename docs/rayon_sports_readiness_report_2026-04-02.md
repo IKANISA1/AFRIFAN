@@ -411,7 +411,7 @@ Recommendation:
 | Domain | World-class bar | Current Rayon state | Status |
 |---|---|---|---|
 | Brand fidelity | No generic placeholders, every club fully branded | Runtime branding contract is incomplete; crest path mismatch exists | Partial |
-| Home experience | Real club data, resilient empty/error states, real-time cues | Strong visuals, but uses mock fallback for leaderboard/XP/news | Partial |
+| Home experience | Real club data, resilient empty/error states, real-time cues | Strong visuals, but uses mock fallback for leaderboard/FET/news | Partial |
 | Live match | Real-time event stream, stateful match context, sharing, notifications | Current live screen is static mock content | Blocked |
 | Membership | Identity, benefits, lifecycle, support, recovery | Structure exists, but full operational audit not completed in this pass | Partial |
 | Ticketing | Purchase, wallet, scan, support, refund states | Feature presence exists; production readiness not fully proven here | Partial |

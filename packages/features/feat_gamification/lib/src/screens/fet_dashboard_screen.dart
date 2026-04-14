@@ -5,23 +5,23 @@ import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
 import '../widgets/badge_grid.dart';
-import '../widgets/xp_arc.dart';
+import '../widgets/fet_arc.dart';
 
 /// FET Dashboard — the FANZONE rewards hub.
-class XpDashboardScreen extends ConsumerStatefulWidget {
-  const XpDashboardScreen({super.key});
+class FetDashboardScreen extends ConsumerStatefulWidget {
+  const FetDashboardScreen({super.key});
 
   @override
-  ConsumerState<XpDashboardScreen> createState() => _XpDashboardScreenState();
+  ConsumerState<FetDashboardScreen> createState() => _FetDashboardScreenState();
 }
 
-class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
+class _FetDashboardScreenState extends ConsumerState<FetDashboardScreen> {
   List<Map<String, dynamic>> _achievements = const <Map<String, dynamic>>[];
   List<Map<String, dynamic>> _leaderboard = const <Map<String, dynamic>>[];
   bool _isLoading = true;
-  int _currentXp = 0;
+  int _currentFet = 0;
   int _fanRank = 0;
-  int _weeklyXp = 0;
+  int _weeklyFet = 0;
   String _tier = 'FAN';
   String _nextTier = 'BRONZE';
   String? _error;
@@ -57,8 +57,8 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
 
       if (!mounted) return;
       setState(() {
-        _currentXp = context.currentFet;
-        _weeklyXp = context.weeklyFet;
+        _currentFet = context.currentFet;
+        _weeklyFet = context.weeklyFet;
         _fanRank = context.fanRank;
         _tier = context.tier;
         _nextTier = context.nextTier;
@@ -76,10 +76,10 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
     }
   }
 
-  int _nextTierThreshold(int xp) {
-    if (xp >= 5000) return 5000;
-    if (xp >= 2000) return 5000;
-    if (xp >= 1000) return 2000;
+  int _nextTierThreshold(int fet) {
+    if (fet >= 5000) return 5000;
+    if (fet >= 2000) return 5000;
+    if (fet >= 1000) return 2000;
     return 1000;
   }
 
@@ -140,9 +140,9 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
                       child: Column(
                         children: [
                           const SizedBox(height: SpacingTokens.spacing4),
-                          XpArc(
-                            currentXp: _currentXp,
-                            maxXp: _nextTierThreshold(_currentXp),
+                          FetArc(
+                            currentFet: _currentFet,
+                            maxFet: _nextTierThreshold(_currentFet),
                             tier: _tier,
                             nextTier: _nextTier,
                           ),
@@ -151,7 +151,7 @@ class _XpDashboardScreenState extends ConsumerState<XpDashboardScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               _StatColumn(
-                                value: '+$_weeklyXp',
+                                value: '+$_weeklyFet',
                                 label: 'THIS WEEK',
                                 color: ColorTokens.success,
                               ),

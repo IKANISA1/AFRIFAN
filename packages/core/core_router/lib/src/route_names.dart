@@ -9,7 +9,7 @@ class RouteNames {
   static const String home = 'home';
   static const String membership = 'membership';
   static const String contribute = 'contribute';
-  static const String xp = 'xp';
+  static const String fet = 'fet';
   static const String profile = 'profile';
 
   // Features

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'screens/badges_screen.dart';
 import 'screens/challenges_screen.dart';
 import 'screens/club_fan_zone_screen.dart';
+import 'screens/fet_dashboard_screen.dart';
 import 'screens/fet_wallet_screen.dart';
 import 'screens/friend_challenge_screen.dart';
 import 'screens/friends_list_screen.dart';
@@ -13,7 +14,6 @@ import 'screens/rewards_store_screen.dart';
 import 'screens/share_card_generator_screen.dart';
 import 'screens/streak_calendar_screen.dart';
 import 'screens/token_history_screen.dart';
-import 'screens/xp_dashboard_screen.dart';
 
 /// Gamification module — FET, wallet, rewards progress, and challenge surfaces.
 ///
@@ -41,7 +41,7 @@ class GamificationModule extends FeatureModule {
     GoRoute(
       path: '/fet',
       name: 'fet-dashboard',
-      builder: (context, state) => const XpDashboardScreen(),
+      builder: (context, state) => const FetDashboardScreen(),
       routes: <RouteBase>[
         GoRoute(
           path: 'leaderboard',

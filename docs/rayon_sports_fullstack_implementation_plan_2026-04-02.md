@@ -260,7 +260,7 @@ This workstream is split into product domains.
 
 #### Tasks
 
-- Remove mock leaderboard, XP, and article fallbacks from production logic.
+- Remove mock leaderboard, FET, and article fallbacks from production logic.
 - Replace them with:
   - explicit empty state
   - cached real data state

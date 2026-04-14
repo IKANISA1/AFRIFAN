@@ -19,14 +19,14 @@ void main() {
   // ═══════════════════════════════════════════════════════════
 
   group('StatsRow', () {
-    Widget buildTestApp({int globalXp = 42880, int fanRank = 12}) {
+    Widget buildTestApp({int globalFet = 42880, int fanRank = 12}) {
       final router = GoRouter(
         initialLocation: '/',
         routes: [
           GoRoute(
             path: '/',
             builder: (_, __) => Scaffold(
-              body: StatsRow(globalXp: globalXp, fanRank: fanRank),
+              body: StatsRow(globalFet: globalFet, fanRank: fanRank),
             ),
           ),
         ],
@@ -56,7 +56,7 @@ void main() {
     });
 
     testWidgets('renders formatted FET number with commas', (tester) async {
-      await tester.pumpWidget(buildTestApp(globalXp: 42880));
+      await tester.pumpWidget(buildTestApp(globalFet: 42880));
       await tester.pumpAndSettle();
       expect(find.text('42,880'), findsOneWidget);
     });

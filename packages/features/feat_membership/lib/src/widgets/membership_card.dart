@@ -11,12 +11,12 @@ class MembershipCard extends ConsumerWidget {
   const MembershipCard({
     super.key,
     this.tierLabel,
-    this.xp,
+    this.fet,
     this.paymentStatus,
   });
 
   final String? tierLabel;
-  final int? xp;
+  final int? fet;
   final PaymentStatus? paymentStatus;
 
   @override
@@ -25,7 +25,7 @@ class MembershipCard extends ConsumerWidget {
     final profile = ref.watch(currentUserProvider);
     final alias = AliasGenerator.format(profile?.publicUserId ?? '000000');
     final resolvedTier = (tierLabel ?? 'Fan').toUpperCase();
-    final resolvedXp = xp ?? 0;
+    final resolvedFet = fet ?? 0;
 
     return Container(
       height: 200,
@@ -141,7 +141,7 @@ class MembershipCard extends ConsumerWidget {
                     ),
                     const Spacer(),
                     Text(
-                      '$resolvedXp FET',
+                      '$resolvedFet FET',
                       style: TypographyTokens.monolithFont(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,

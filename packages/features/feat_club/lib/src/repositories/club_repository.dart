@@ -19,14 +19,14 @@ class ClubRepository {
   late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
     client: _client,
   );
-  static const Map<XpEventType, String> _fetCodeByXpEventType =
-      <XpEventType, String>{
-    XpEventType.matchAttendance: 'G006',
-    XpEventType.createGroup: 'G022',
-    XpEventType.inviteFriends: 'G021',
-    XpEventType.shopPurchase: 'G058',
-    XpEventType.completeProfile: 'G001',
-    XpEventType.weekStreak: 'G016',
+  static const Map<FetEventType, String> _fetCodeByEventType =
+      <FetEventType, String>{
+    FetEventType.matchAttendance: 'G006',
+    FetEventType.createGroup: 'G022',
+    FetEventType.inviteFriends: 'G021',
+    FetEventType.shopPurchase: 'G058',
+    FetEventType.completeProfile: 'G001',
+    FetEventType.weekStreak: 'G016',
   };
 
   String? get _userId => _client.auth.currentUser?.id;
@@ -625,27 +625,27 @@ class ClubRepository {
   // Gamification / FET
   // ═══════════════════════════════════════════════════════════
 
-  Future<void> recordXpEvent({
+  Future<void> recordFetEvent({
     required String userId,
-    required XpEventType eventType,
+    required FetEventType eventType,
     Map<String, Object?>? metadata,
   }) async {
-    final xpAwarded = await _resolveConfiguredXpAward(eventType);
+    final fetAwarded = await _resolveConfiguredFetAward(eventType);
     final payload = {
       'user_id': userId,
       'event_type': eventType.eventKey,
-      'xp_awarded': xpAwarded,
+      'fet_awarded': fetAwarded,
       'metadata': metadata,
     };
 
     try {
       await _client.from('cool_events').insert(payload);
     } catch (_) {
-      await _client.from('xp_events').insert(payload);
+      await _client.from('fet_events').insert(payload);
     }
   }
 
-  Future<List<XpEvent>> getXpHistory(
+  Future<List<FetEvent>> getFetHistory(
     String userId, {
     int limit = 50,
   }) async {
@@ -656,28 +656,28 @@ class ClubRepository {
           .eq('user_id', userId)
           .order('event_at', ascending: false)
           .limit(limit);
-      return rows.map((r) => XpEvent.fromJson(r)).toList();
+      return rows.map((r) => FetEvent.fromJson(r)).toList();
     } catch (_) {
       final rows = await _client
-          .from('xp_events')
+          .from('fet_events')
           .select()
           .eq('user_id', userId)
           .order('event_at', ascending: false)
           .limit(limit);
-      return rows.map((r) => XpEvent.fromJson(r)).toList();
+      return rows.map((r) => FetEvent.fromJson(r)).toList();
     }
   }
 
-  Future<int> _resolveConfiguredXpAward(XpEventType eventType) async {
-    final configuredCode = _fetCodeByXpEventType[eventType];
+  Future<int> _resolveConfiguredFetAward(FetEventType eventType) async {
+    final configuredCode = _fetCodeByEventType[eventType];
     if (configuredCode == null) {
-      return eventType.xpReward;
+      return eventType.fetReward;
     }
 
     try {
       final scope = await _scopeResolver.requireResolved();
       if (scope.clubId == null) {
-        return eventType.xpReward;
+        return eventType.fetReward;
       }
 
       final row = await _client
@@ -687,9 +687,9 @@ class ClubRepository {
           .eq('code', configuredCode)
           .eq('is_active', true)
           .maybeSingle();
-      return (row?['fet_value'] as num?)?.toInt() ?? eventType.xpReward;
+      return (row?['fet_value'] as num?)?.toInt() ?? eventType.fetReward;
     } catch (_) {
-      return eventType.xpReward;
+      return eventType.fetReward;
     }
   }
 
