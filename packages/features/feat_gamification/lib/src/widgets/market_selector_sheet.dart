@@ -122,10 +122,7 @@ class _MarketSelectorContentState
               prefixIcon: const Icon(Icons.search_rounded),
               filled: true,
               fillColor: ColorTokens.surfaceContainerHigh,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide.none,
-              ),
+              border: InputBorder.none,
             ),
           ),
         ),
@@ -160,7 +157,7 @@ class _MarketSelectorContentState
                         : ColorTokens.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(999),
                     border: isSelected
-                        ? Border.all(color: ColorTokens.clubAccent)
+                        ? BorderTokens.all(color: ColorTokens.clubAccent)
                         : BorderTokens.ghost(),
                   ),
                   child: Text(

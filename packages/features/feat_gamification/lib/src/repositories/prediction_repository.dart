@@ -15,6 +15,11 @@ class PredictionRepository {
   final SupabaseClient _client;
 
   static const _tag = 'PredictionRepo';
+  static const _fixturesCacheTtl = Duration(minutes: 5);
+  static const _detailCacheTtl = Duration(minutes: 5);
+  static const _catalogCacheTtl = Duration(hours: 6);
+  static const _userCacheTtl = Duration(minutes: 2);
+  static const _communityCacheTtl = Duration(minutes: 5);
 
   // ── Fixtures ──────────────────────────────────────────────────────────
 
@@ -24,8 +29,17 @@ class PredictionRepository {
     int limit = 50,
     int offset = 0,
   }) async {
-    final result = await SafeRpc.query(
-      () async {
+    final cacheKey = _cacheKey('fixtures', <Object?>[
+      competitionSlug,
+      status,
+      limit,
+      offset,
+    ]);
+    return _cachedListQuery(
+      cacheKey: cacheKey,
+      ttl: _fixturesCacheTtl,
+      description: 'loadFixtures(status=$status)',
+      request: () async {
         var filter = _client.from('football_fixtures_catalog').select();
 
         if (status != null && status.trim().isNotEmpty) {
@@ -43,149 +57,153 @@ class PredictionRepository {
           query = query.limit(limit);
         }
 
-        final rows = List<Map<String, dynamic>>.from(await query);
-        return rows.map(FixtureSummary.fromJson).toList(growable: false);
+        return List<Map<String, dynamic>>.from(await query);
       },
-      tag: _tag,
-      description: 'loadFixtures(status=$status)',
+      decoder: FixtureSummary.fromJson,
     );
-
-    return result.isSuccess
-        ? result.requireData
-        : const <FixtureSummary>[];
   }
 
   Future<FixtureSummary?> loadFixture(String fixtureId) async {
-    final result = await SafeRpc.query(
-      () async {
+    return _cachedObjectQuery(
+      cacheKey: _cacheKey('fixture', <Object?>[fixtureId]),
+      ttl: _detailCacheTtl,
+      description: 'loadFixture($fixtureId)',
+      request: () async {
         final row = await _client
             .from('football_fixtures_catalog')
             .select()
             .eq('id', fixtureId)
             .maybeSingle();
 
-        if (row == null) return null;
-        return FixtureSummary.fromJson(row);
+        return row == null ? null : Map<String, dynamic>.from(row);
       },
-      tag: _tag,
-      description: 'loadFixture($fixtureId)',
+      decoder: FixtureSummary.fromJson,
     );
-
-    return result.isSuccess ? result.data : null;
   }
 
   // ── Markets ───────────────────────────────────────────────────────────
 
   Future<List<FixtureMarket>> loadFixtureMarkets(String fixtureId) async {
+    final cacheKey = _cacheKey('fixture_markets', <Object?>[fixtureId]);
     final result = await SafeRpc.call(
       'prediction_get_fixture_markets',
       params: <String, dynamic>{'p_fixture_id': fixtureId},
       tag: _tag,
     );
 
-    if (!result.isSuccess) return const <FixtureMarket>[];
+    if (!result.isSuccess) {
+      return _readCachedList(cacheKey, FixtureMarket.fromJson);
+    }
 
     final data = result.data;
     if (data is List) {
-      return data
+      final rows = data
           .whereType<Map>()
-          .map(
-            (row) =>
-                FixtureMarket.fromJson(Map<String, dynamic>.from(row)),
-          )
+          .map((row) => Map<String, dynamic>.from(row))
           .toList(growable: false);
+      await HiveCacheService.putJson(cacheKey, rows, ttl: _detailCacheTtl);
+      return rows.map(FixtureMarket.fromJson).toList(growable: false);
     }
 
-    return const <FixtureMarket>[];
+    return _readCachedList(cacheKey, FixtureMarket.fromJson);
   }
 
   Future<List<PredictionMarket>> loadMarketCatalog() async {
-    final result = await SafeRpc.query(
-      () async {
+    return _cachedListQuery(
+      cacheKey: _cacheKey('market_catalog'),
+      ttl: _catalogCacheTtl,
+      description: 'loadMarketCatalog',
+      request: () async {
         final rows = List<Map<String, dynamic>>.from(
           await _client
               .from('prediction_markets_catalog')
               .select()
               .order('sort_order', ascending: true),
         );
-        return rows.map(PredictionMarket.fromJson).toList(growable: false);
+        return rows;
       },
-      tag: _tag,
-      description: 'loadMarketCatalog',
+      decoder: PredictionMarket.fromJson,
     );
-
-    return result.isSuccess
-        ? result.requireData
-        : const <PredictionMarket>[];
   }
 
   Future<PredictionDetail?> loadPredictionDetail(String predictionId) async {
+    final cacheKey = _cacheKey('prediction_detail', <Object?>[predictionId]);
     final result = await SafeRpc.call(
       'prediction_get_detail',
       params: <String, dynamic>{'p_prediction_id': predictionId},
       tag: _tag,
     );
 
-    if (!result.isSuccess) return null;
+    if (!result.isSuccess) {
+      return _readCachedObject(cacheKey, PredictionDetail.fromJson);
+    }
 
     final data = result.data;
     if (data is! Map) return null;
     if (data.isEmpty) return null;
 
-    return PredictionDetail.fromJson(Map<String, dynamic>.from(data));
+    final row = Map<String, dynamic>.from(data);
+    await HiveCacheService.putJson(cacheKey, row, ttl: _detailCacheTtl);
+    return PredictionDetail.fromJson(row);
   }
 
   Future<PredictionDashboard> loadUserStats() async {
-    final result = await SafeRpc.call(
-      'prediction_get_user_stats',
-      tag: _tag,
-    );
+    final cacheKey = _cacheKey('user_stats', <Object?>[
+      _client.auth.currentUser?.id ?? 'anonymous',
+    ]);
+    final result = await SafeRpc.call('prediction_get_user_stats', tag: _tag);
 
     if (!result.isSuccess || result.data is! Map) {
-      return const PredictionDashboard(
-        totalPredictions: 0,
-        settledCount: 0,
-        wonCount: 0,
-        lostCount: 0,
-        activeCount: 0,
-        totalFetEarned: 0,
-        currentStreak: 0,
-        winRate: 0,
-      );
+      return _readCachedObject(cacheKey, PredictionDashboard.fromJson) ??
+          const PredictionDashboard(
+            totalPredictions: 0,
+            settledCount: 0,
+            wonCount: 0,
+            lostCount: 0,
+            activeCount: 0,
+            totalFetEarned: 0,
+            currentStreak: 0,
+            winRate: 0,
+          );
     }
 
-    return PredictionDashboard.fromJson(
-      Map<String, dynamic>.from(result.data as Map),
-    );
+    final row = Map<String, dynamic>.from(result.data as Map);
+    await HiveCacheService.putJson(cacheKey, row, ttl: _userCacheTtl);
+    return PredictionDashboard.fromJson(row);
   }
 
   Future<List<PredictionLeaderboardEntry>> loadLeaderboard({
     int limit = 20,
   }) async {
-    final result = await SafeRpc.query(
-      () async {
-        final rows = List<Map<String, dynamic>>.from(
-          await _client.from('prediction_leaderboard').select().limit(limit),
-        );
-
-        return rows
-            .asMap()
-            .entries
-            .map(
-              (entry) => PredictionLeaderboardEntry.fromJson(
-                entry.value,
-                rank: entry.key + 1,
-              ),
-            )
-            .toList(growable: false);
-      },
+    final cacheKey = _cacheKey('leaderboard', <Object?>[limit]);
+    final result = await SafeRpc.query<List<Map<String, dynamic>>>(
+      () async => List<Map<String, dynamic>>.from(
+        await _client.from('prediction_leaderboard').select().limit(limit),
+      ),
       tag: _tag,
       description: 'loadLeaderboard',
+      maxAttempts: 3,
     );
 
-    return result.isSuccess
+    final rows = result.isSuccess
         ? result.requireData
-        : const <PredictionLeaderboardEntry>[];
+        : _readCachedRawList(cacheKey);
+    if (rows.isEmpty) {
+      return const <PredictionLeaderboardEntry>[];
+    }
+    if (result.isSuccess) {
+      await HiveCacheService.putJson(cacheKey, rows, ttl: _userCacheTtl);
+    }
+    return rows
+        .asMap()
+        .entries
+        .map(
+          (entry) => PredictionLeaderboardEntry.fromJson(
+            entry.value,
+            rank: entry.key + 1,
+          ),
+        )
+        .toList(growable: false);
   }
 
   // ── Predictions ───────────────────────────────────────────────────────
@@ -211,6 +229,8 @@ class PredictionRepository {
       );
     }
 
+    await _clearUserCaches();
+
     return PredictionPlaceResult.fromJson(
       Map<String, dynamic>.from(result.data as Map),
     );
@@ -235,9 +255,8 @@ class PredictionRepository {
 
     final data = result.data;
     if (data is Map) {
-      return PredictionPlaceResult.fromJson(
-        Map<String, dynamic>.from(data),
-      );
+      await _clearUserCaches();
+      return PredictionPlaceResult.fromJson(Map<String, dynamic>.from(data));
     }
 
     return const PredictionPlaceResult(
@@ -261,6 +280,8 @@ class PredictionRepository {
       );
     }
 
+    await _clearUserCaches();
+
     return PredictionPlaceResult.fromJson(
       Map<String, dynamic>.from(result.data as Map),
     );
@@ -270,59 +291,74 @@ class PredictionRepository {
     int limit = 50,
     int offset = 0,
   }) async {
+    final cacheKey = _cacheKey('active_predictions', <Object?>[
+      _client.auth.currentUser?.id ?? 'anonymous',
+      limit,
+      offset,
+    ]);
     final result = await SafeRpc.call(
       'prediction_get_active',
       params: <String, dynamic>{'p_limit': limit, 'p_offset': offset},
       tag: _tag,
     );
 
-    if (!result.isSuccess) return const <UserPrediction>[];
+    if (!result.isSuccess) {
+      return _readCachedList(cacheKey, UserPrediction.fromJson);
+    }
 
     final data = result.data;
     if (data is List) {
-      return data
+      final rows = data
           .whereType<Map>()
-          .map(
-            (row) =>
-                UserPrediction.fromJson(Map<String, dynamic>.from(row)),
-          )
+          .map((row) => Map<String, dynamic>.from(row))
           .toList(growable: false);
+      await HiveCacheService.putJson(cacheKey, rows, ttl: _userCacheTtl);
+      return rows.map(UserPrediction.fromJson).toList(growable: false);
     }
 
-    return const <UserPrediction>[];
+    return _readCachedList(cacheKey, UserPrediction.fromJson);
   }
 
   Future<List<UserPrediction>> loadPredictionHistory({
     int limit = 50,
     int offset = 0,
   }) async {
+    final cacheKey = _cacheKey('prediction_history', <Object?>[
+      _client.auth.currentUser?.id ?? 'anonymous',
+      limit,
+      offset,
+    ]);
     final result = await SafeRpc.call(
       'prediction_get_history',
       params: <String, dynamic>{'p_limit': limit, 'p_offset': offset},
       tag: _tag,
     );
 
-    if (!result.isSuccess) return const <UserPrediction>[];
+    if (!result.isSuccess) {
+      return _readCachedList(cacheKey, UserPrediction.fromJson);
+    }
 
     final data = result.data;
     if (data is List) {
-      return data
+      final rows = data
           .whereType<Map>()
-          .map(
-            (row) =>
-                UserPrediction.fromJson(Map<String, dynamic>.from(row)),
-          )
+          .map((row) => Map<String, dynamic>.from(row))
           .toList(growable: false);
+      await HiveCacheService.putJson(cacheKey, rows, ttl: _userCacheTtl);
+      return rows.map(UserPrediction.fromJson).toList(growable: false);
     }
 
-    return const <UserPrediction>[];
+    return _readCachedList(cacheKey, UserPrediction.fromJson);
   }
 
   // ── Competitions ──────────────────────────────────────────────────────
 
   Future<List<Map<String, dynamic>>> loadCompetitions() async {
-    final result = await SafeRpc.query(
-      () async {
+    return _cachedRawListQuery(
+      cacheKey: _cacheKey('competitions'),
+      ttl: _catalogCacheTtl,
+      description: 'loadCompetitions',
+      request: () async {
         return List<Map<String, dynamic>>.from(
           await _client
               .from('football_competitions_catalog')
@@ -331,18 +367,15 @@ class PredictionRepository {
               .order('name', ascending: true),
         );
       },
-      tag: _tag,
-      description: 'loadCompetitions',
     );
-
-    return result.isSuccess
-        ? result.requireData
-        : const <Map<String, dynamic>>[];
   }
 
   Future<List<CompetitionCatalogItem>> loadCompetitionCatalog() async {
-    final result = await SafeRpc.query(
-      () async {
+    return _cachedListQuery(
+      cacheKey: _cacheKey('competition_catalog'),
+      ttl: _catalogCacheTtl,
+      description: 'loadCompetitionCatalog',
+      request: () async {
         final rows = List<Map<String, dynamic>>.from(
           await _client
               .from('football_competitions_catalog')
@@ -351,46 +384,41 @@ class PredictionRepository {
               .order('name', ascending: true),
         );
 
-        return rows
-            .map(CompetitionCatalogItem.fromJson)
-            .toList(growable: false);
+        return rows;
       },
-      tag: _tag,
-      description: 'loadCompetitionCatalog',
+      decoder: CompetitionCatalogItem.fromJson,
     );
-
-    return result.isSuccess
-        ? result.requireData
-        : const <CompetitionCatalogItem>[];
   }
 
   Future<CompetitionCatalogItem?> loadCompetition(
     String competitionSlug,
   ) async {
-    final result = await SafeRpc.query(
-      () async {
+    return _cachedObjectQuery(
+      cacheKey: _cacheKey('competition', <Object?>[competitionSlug]),
+      ttl: _catalogCacheTtl,
+      description: 'loadCompetition($competitionSlug)',
+      request: () async {
         final row = await _client
             .from('football_competitions_catalog')
             .select()
             .eq('slug', competitionSlug)
             .maybeSingle();
 
-        if (row == null) return null;
-        return CompetitionCatalogItem.fromJson(Map<String, dynamic>.from(row));
+        return row == null ? null : Map<String, dynamic>.from(row);
       },
-      tag: _tag,
-      description: 'loadCompetition($competitionSlug)',
+      decoder: CompetitionCatalogItem.fromJson,
     );
-
-    return result.isSuccess ? result.data : null;
   }
 
   Future<List<LeagueStandingEntry>> loadStandings({
     required String competitionSlug,
     int limit = 32,
   }) async {
-    final result = await SafeRpc.query(
-      () async {
+    return _cachedListQuery(
+      cacheKey: _cacheKey('standings', <Object?>[competitionSlug, limit]),
+      ttl: _detailCacheTtl,
+      description: 'loadStandings($competitionSlug)',
+      request: () async {
         final rows = List<Map<String, dynamic>>.from(
           await _client
               .from('football_standings_catalog')
@@ -400,44 +428,39 @@ class PredictionRepository {
               .limit(limit),
         );
 
-        return rows
-            .map(LeagueStandingEntry.fromJson)
-            .toList(growable: false);
+        return rows;
       },
-      tag: _tag,
-      description: 'loadStandings($competitionSlug)',
+      decoder: LeagueStandingEntry.fromJson,
     );
-
-    return result.isSuccess
-        ? result.requireData
-        : const <LeagueStandingEntry>[];
   }
 
   Future<TeamCatalogEntry?> loadTeam(String teamSlug) async {
-    final result = await SafeRpc.query(
-      () async {
+    return _cachedObjectQuery(
+      cacheKey: _cacheKey('team', <Object?>[teamSlug]),
+      ttl: _catalogCacheTtl,
+      description: 'loadTeam($teamSlug)',
+      request: () async {
         final row = await _client
             .from('football_teams_catalog')
             .select()
             .eq('slug', teamSlug)
             .maybeSingle();
 
-        if (row == null) return null;
-        return TeamCatalogEntry.fromJson(Map<String, dynamic>.from(row));
+        return row == null ? null : Map<String, dynamic>.from(row);
       },
-      tag: _tag,
-      description: 'loadTeam($teamSlug)',
+      decoder: TeamCatalogEntry.fromJson,
     );
-
-    return result.isSuccess ? result.data : null;
   }
 
   Future<List<TeamRosterPlayer>> loadTeamRoster(
     String teamSlug, {
     int limit = 40,
   }) async {
-    final result = await SafeRpc.query(
-      () async {
+    return _cachedListQuery(
+      cacheKey: _cacheKey('team_roster', <Object?>[teamSlug, limit]),
+      ttl: _catalogCacheTtl,
+      description: 'loadTeamRoster($teamSlug)',
+      request: () async {
         final rows = List<Map<String, dynamic>>.from(
           await _client
               .from('football_roster_catalog')
@@ -448,17 +471,10 @@ class PredictionRepository {
               .limit(limit),
         );
 
-        return rows
-            .map(TeamRosterPlayer.fromJson)
-            .toList(growable: false);
+        return rows;
       },
-      tag: _tag,
-      description: 'loadTeamRoster($teamSlug)',
+      decoder: TeamRosterPlayer.fromJson,
     );
-
-    return result.isSuccess
-        ? result.requireData
-        : const <TeamRosterPlayer>[];
   }
 
   Future<List<FixtureSummary>> loadTeamFixtures(
@@ -466,8 +482,11 @@ class PredictionRepository {
     String? status,
     int limit = 10,
   }) async {
-    final result = await SafeRpc.query(
-      () async {
+    return _cachedListQuery(
+      cacheKey: _cacheKey('team_fixtures', <Object?>[teamSlug, status, limit]),
+      ttl: _fixturesCacheTtl,
+      description: 'loadTeamFixtures($teamSlug)',
+      request: () async {
         var query = _client
             .from('football_fixtures_catalog')
             .select()
@@ -481,24 +500,20 @@ class PredictionRepository {
           await query.order('kickoff_at', ascending: true).limit(limit),
         );
 
-        return rows.map(FixtureSummary.fromJson).toList(growable: false);
+        return rows;
       },
-      tag: _tag,
-      description: 'loadTeamFixtures($teamSlug)',
+      decoder: FixtureSummary.fromJson,
     );
-
-    return result.isSuccess
-        ? result.requireData
-        : const <FixtureSummary>[];
   }
 
   // ── Community Picks ─────────────────────────────────────────────────
 
-  Future<List<CommunityPick>> loadCommunityPicks(
-    String fixtureMarketId,
-  ) async {
-    final result = await SafeRpc.query(
-      () async {
+  Future<List<CommunityPick>> loadCommunityPicks(String fixtureMarketId) async {
+    return _cachedListQuery(
+      cacheKey: _cacheKey('community_market', <Object?>[fixtureMarketId]),
+      ttl: _communityCacheTtl,
+      description: 'loadCommunityPicks($fixtureMarketId)',
+      request: () async {
         final rows = List<Map<String, dynamic>>.from(
           await _client
               .from('prediction_fixture_community')
@@ -507,22 +522,20 @@ class PredictionRepository {
               .order('pick_percentage', ascending: false),
         );
 
-        return rows.map(CommunityPick.fromJson).toList(growable: false);
+        return rows;
       },
-      tag: _tag,
-      description: 'loadCommunityPicks($fixtureMarketId)',
+      decoder: CommunityPick.fromJson,
     );
-
-    return result.isSuccess
-        ? result.requireData
-        : const <CommunityPick>[];
   }
 
   Future<List<CommunityPick>> loadFixtureCommunityPicks(
     String fixtureId,
   ) async {
-    final result = await SafeRpc.query(
-      () async {
+    return _cachedListQuery(
+      cacheKey: _cacheKey('community_fixture', <Object?>[fixtureId]),
+      ttl: _communityCacheTtl,
+      description: 'loadFixtureCommunityPicks($fixtureId)',
+      request: () async {
         final rows = List<Map<String, dynamic>>.from(
           await _client
               .from('prediction_fixture_community')
@@ -531,37 +544,36 @@ class PredictionRepository {
               .order('pick_percentage', ascending: false),
         );
 
-        return rows.map(CommunityPick.fromJson).toList(growable: false);
+        return rows;
       },
-      tag: _tag,
-      description: 'loadFixtureCommunityPicks($fixtureId)',
+      decoder: CommunityPick.fromJson,
     );
-
-    return result.isSuccess
-        ? result.requireData
-        : const <CommunityPick>[];
   }
 
   // ── Badges ──────────────────────────────────────────────────────────
 
   Future<List<PredictionBadge>> loadUserBadges() async {
-    final result = await SafeRpc.call(
-      'prediction_get_user_badges',
-      tag: _tag,
-    );
+    final cacheKey = _cacheKey('user_badges', <Object?>[
+      _client.auth.currentUser?.id ?? 'anonymous',
+    ]);
+    final result = await SafeRpc.call('prediction_get_user_badges', tag: _tag);
 
-    if (!result.isSuccess) return const <PredictionBadge>[];
+    if (!result.isSuccess) {
+      return _readCachedList(cacheKey, PredictionBadge.fromJson);
+    }
 
     final data = result.data;
-    if (data is! List) return const <PredictionBadge>[];
+    if (data is! List) {
+      return _readCachedList(cacheKey, PredictionBadge.fromJson);
+    }
 
-    return data
+    final rows = data
         .whereType<Map>()
-        .map(
-          (row) =>
-              PredictionBadge.fromJson(Map<String, dynamic>.from(row)),
-        )
+        .map((row) => Map<String, dynamic>.from(row))
         .toList(growable: false);
+    await HiveCacheService.putJson(cacheKey, rows, ttl: _userCacheTtl);
+
+    return rows.map(PredictionBadge.fromJson).toList(growable: false);
   }
 
   // ── Notifications ───────────────────────────────────────────────────
@@ -569,8 +581,14 @@ class PredictionRepository {
   Future<List<PredictionNotification>> loadNotifications({
     int limit = 50,
   }) async {
-    final result = await SafeRpc.query(
-      () async {
+    return _cachedListQuery(
+      cacheKey: _cacheKey('notifications', <Object?>[
+        _client.auth.currentUser?.id ?? 'anonymous',
+        limit,
+      ]),
+      ttl: _userCacheTtl,
+      description: 'loadNotifications',
+      request: () async {
         final rows = List<Map<String, dynamic>>.from(
           await _client
               .from('prediction_notifications_feed')
@@ -579,16 +597,157 @@ class PredictionRepository {
               .limit(limit),
         );
 
-        return rows
-            .map(PredictionNotification.fromJson)
-            .toList(growable: false);
+        return rows;
       },
-      tag: _tag,
-      description: 'loadNotifications',
+      decoder: PredictionNotification.fromJson,
     );
+  }
 
-    return result.isSuccess
-        ? result.requireData
-        : const <PredictionNotification>[];
+  Future<void> _clearUserCaches() async {
+    final userId = _client.auth.currentUser?.id ?? 'anonymous';
+    await Future.wait(<Future<void>>[
+      HiveCacheService.remove(_cacheKey('user_stats', <Object?>[userId])),
+      HiveCacheService.remove(
+        _cacheKey('active_predictions', <Object?>[userId, 50, 0]),
+      ),
+      HiveCacheService.remove(
+        _cacheKey('prediction_history', <Object?>[userId, 50, 0]),
+      ),
+      HiveCacheService.remove(_cacheKey('user_badges', <Object?>[userId])),
+      HiveCacheService.remove(
+        _cacheKey('notifications', <Object?>[userId, 50]),
+      ),
+    ]);
+  }
+
+  Future<List<T>> _cachedListQuery<T>({
+    required String cacheKey,
+    required Duration ttl,
+    required String description,
+    required Future<List<Map<String, dynamic>>> Function() request,
+    required T Function(Map<String, dynamic> row) decoder,
+  }) async {
+    final result = await SafeRpc.query<List<Map<String, dynamic>>>(
+      request,
+      tag: _tag,
+      description: description,
+      maxAttempts: 3,
+    );
+    if (result.isSuccess) {
+      final rows = result.requireData;
+      await HiveCacheService.putJson(cacheKey, rows, ttl: ttl);
+      return rows.map(decoder).toList(growable: false);
+    }
+    return _readCachedList(cacheKey, decoder);
+  }
+
+  Future<List<Map<String, dynamic>>> _cachedRawListQuery({
+    required String cacheKey,
+    required Duration ttl,
+    required String description,
+    required Future<List<Map<String, dynamic>>> Function() request,
+  }) async {
+    final result = await SafeRpc.query<List<Map<String, dynamic>>>(
+      request,
+      tag: _tag,
+      description: description,
+      maxAttempts: 3,
+    );
+    if (result.isSuccess) {
+      final rows = result.requireData;
+      await HiveCacheService.putJson(cacheKey, rows, ttl: ttl);
+      return rows;
+    }
+    return _readCachedRawList(cacheKey);
+  }
+
+  Future<T?> _cachedObjectQuery<T>({
+    required String cacheKey,
+    required Duration ttl,
+    required String description,
+    required Future<Map<String, dynamic>?> Function() request,
+    required T Function(Map<String, dynamic> row) decoder,
+  }) async {
+    final result = await SafeRpc.query<Map<String, dynamic>?>(
+      request,
+      tag: _tag,
+      description: description,
+      maxAttempts: 3,
+    );
+    if (result.isSuccess) {
+      final row = result.data;
+      if (row == null) {
+        await HiveCacheService.remove(cacheKey);
+        return null;
+      }
+      await HiveCacheService.putJson(cacheKey, row, ttl: ttl);
+      return decoder(row);
+    }
+    return _readCachedObject(cacheKey, decoder);
+  }
+
+  List<T> _readCachedList<T>(
+    String cacheKey,
+    T Function(Map<String, dynamic> row) decoder,
+  ) {
+    final cached = HiveCacheService.getJson<List<dynamic>>(
+      cacheKey,
+      allowExpired: true,
+    );
+    if (cached == null) {
+      return <T>[];
+    }
+    return cached
+        .whereType<Map>()
+        .map((row) => decoder(Map<String, dynamic>.from(row)))
+        .toList(growable: false);
+  }
+
+  List<Map<String, dynamic>> _readCachedRawList(String cacheKey) {
+    final cached = HiveCacheService.getJson<List<dynamic>>(
+      cacheKey,
+      allowExpired: true,
+    );
+    if (cached == null) {
+      return const <Map<String, dynamic>>[];
+    }
+    return cached
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
+  }
+
+  T? _readCachedObject<T>(
+    String cacheKey,
+    T Function(Map<String, dynamic> row) decoder,
+  ) {
+    final cached = HiveCacheService.getJson<dynamic>(
+      cacheKey,
+      allowExpired: true,
+    );
+    if (cached is! Map) {
+      return null;
+    }
+    return decoder(Map<String, dynamic>.from(cached));
+  }
+
+  String _cacheKey(
+    String section, [
+    Iterable<Object?> parts = const <Object?>[],
+  ]) {
+    final normalized = <String>[
+      'prediction',
+      section,
+      ...parts.map(_normalizeCachePart),
+    ];
+    return normalized.join(':');
+  }
+
+  String _normalizeCachePart(Object? value) {
+    final raw = value?.toString().trim();
+    if (raw == null || raw.isEmpty) {
+      return 'all';
+    }
+    return raw.replaceAll(RegExp(r'[^A-Za-z0-9._-]+'), '_');
   }
 }

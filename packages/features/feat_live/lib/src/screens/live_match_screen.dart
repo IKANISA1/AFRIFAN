@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../widgets/live_match_widgets.dart';
 
@@ -21,7 +20,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
   Map<String, dynamic>? _match;
   bool _isLoading = true;
   String? _error;
-  RealtimeChannel? _channel;
+  RealtimeService? _realtimeService;
 
   @override
   void initState() {
@@ -31,7 +30,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
 
   @override
   void dispose() {
-    unawaited(_channel?.unsubscribe());
+    unawaited(_realtimeService?.dispose());
     super.dispose();
   }
 
@@ -62,7 +61,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
       });
 
       if (selected != null) {
-        _subscribeToMatch(selected['id']?.toString());
+        unawaited(_subscribeToMatch(scope, selected['id']?.toString()));
       }
     } catch (error) {
       if (!mounted) return;
@@ -105,23 +104,21 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     return matches.first;
   }
 
-  void _subscribeToMatch(String? matchId) {
+  Future<void> _subscribeToMatch(ClubScope scope, String? matchId) async {
     if (matchId == null || matchId.isEmpty) {
       return;
     }
 
-    unawaited(_channel?.unsubscribe());
     final client = ref.read(supabaseClientProvider);
-    final channel = client.channel('live-match-$matchId');
-    channel.onPostgresChanges(
-      event: PostgresChangeEvent.all,
-      schema: 'public',
+    await _realtimeService?.dispose();
+    final realtimeService = RealtimeService(
+      clubId: _realtimeScopeId(scope),
+      client: client,
+    );
+    realtimeService.onTableChanges(
       table: 'matches',
-      filter: PostgresChangeFilter(
-        type: PostgresChangeFilterType.eq,
-        column: 'id',
-        value: matchId,
-      ),
+      filterColumn: 'id',
+      filterValue: matchId,
       callback: (payload) {
         final next = payload.newRecord;
         if (!mounted || next.isEmpty) return;
@@ -130,8 +127,16 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
         });
       },
     );
-    channel.subscribe();
-    _channel = channel;
+
+    if (!mounted) {
+      await realtimeService.dispose();
+      return;
+    }
+    _realtimeService = realtimeService;
+  }
+
+  String _realtimeScopeId(ClubScope scope) {
+    return scope.clubId?.toString() ?? scope.partnerId;
   }
 
   String _statusOf(Map<String, dynamic> match) {

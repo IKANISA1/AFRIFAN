@@ -35,6 +35,8 @@ class BiopayRepository {
            (() =>
                AppCheckService.requireLimitedUseToken(featureName: 'BioPay'));
 
+  static const _tag = 'BiopayRepository';
+
   final SupabaseClient _client;
   final OperationalHealthService _healthService;
   final BiopayRateLimiter _rateLimiter;
@@ -59,7 +61,7 @@ class BiopayRepository {
 
     try {
       final headers = await _buildAttestedHeaders();
-      final response = await _client.functions.invoke(
+      final response = await _invokeFunction(
         'biopay-create-liveness-challenge',
         body: <String, dynamic>{'mode': mode},
         headers: headers,
@@ -102,7 +104,7 @@ class BiopayRepository {
 
     try {
       final headers = await _buildAttestedHeaders();
-      final response = await _client.functions.invoke(
+      final response = await _invokeFunction(
         'biopay-enroll',
         body: <String, dynamic>{
           ...draft.toPayload(embedding, liveness: livenessMetadata),
@@ -142,7 +144,7 @@ class BiopayRepository {
 
     try {
       final headers = await _buildAttestedHeaders();
-      final response = await _client.functions.invoke(
+      final response = await _invokeFunction(
         'biopay-match',
         body: <String, dynamic>{
           'embedding': embedding,
@@ -173,7 +175,7 @@ class BiopayRepository {
 
     try {
       final headers = await _buildAttestedHeaders();
-      final response = await _client.functions.invoke(
+      final response = await _invokeFunction(
         'biopay-revoke',
         body: <String, dynamic>{if (reason != null) 'reason': reason},
         headers: headers,
@@ -208,7 +210,7 @@ class BiopayRepository {
 
     try {
       final headers = await _buildAttestedHeaders();
-      final response = await _client.functions.invoke(
+      final response = await _invokeFunction(
         'biopay-create-payment-intent',
         body: <String, dynamic>{
           'match_receipt': matchReceipt,
@@ -247,7 +249,7 @@ class BiopayRepository {
 
     try {
       final headers = await _buildAttestedHeaders();
-      final response = await _client.functions.invoke(
+      final response = await _invokeFunction(
         'biopay-create-handoff-token',
         body: <String, dynamic>{
           'channel': channel,
@@ -278,9 +280,10 @@ class BiopayRepository {
     required String token,
   }) async {
     try {
-      final response = await _client.functions.invoke(
+      final response = await _invokeFunction(
         'biopay-resolve-handoff',
         body: <String, dynamic>{'token': token},
+        maxAttempts: 3,
       );
       final data = _extractDataEnvelope(response, 'biopay-resolve-handoff');
       return BiopayHandoffResolution.fromApiResponse(data);
@@ -298,13 +301,22 @@ class BiopayRepository {
     if (userId == null || userId.isEmpty) return null;
 
     try {
-      final row = await _client
-          .from('biopay_profiles')
-          .select()
-          .eq('user_id', userId)
-          .eq('active', true)
-          .order('created_at', ascending: false)
-          .maybeSingle();
+      final result = await SafeRpc.query<dynamic>(
+        () => _client
+            .from('biopay_profiles')
+            .select()
+            .eq('user_id', userId)
+            .eq('active', true)
+            .order('created_at', ascending: false)
+            .maybeSingle(),
+        tag: _tag,
+        description: 'fetchCurrentUserProfile',
+        maxAttempts: 3,
+      );
+      if (!result.isSuccess) {
+        return null;
+      }
+      final row = result.data;
 
       if (row != null) {
         return BiopayProfile.fromJson(Map<String, dynamic>.from(row));
@@ -320,14 +332,26 @@ class BiopayRepository {
   /// Mark a payment intent as dialed (one-time use consumed).
   Future<void> markIntentDialed(String intentId) async {
     try {
-      await _client
-          .from('biopay_payment_intents')
-          .update(<String, dynamic>{
-            'status': 'dialed',
-            'dialed_at': DateTime.now().toUtc().toIso8601String(),
-          })
-          .eq('id', intentId)
-          .eq('status', 'pending');
+      final result = await SafeRpc.query<bool>(
+        () async {
+          await _client
+              .from('biopay_payment_intents')
+              .update(<String, dynamic>{
+                'status': 'dialed',
+                'dialed_at': DateTime.now().toUtc().toIso8601String(),
+              })
+              .eq('id', intentId)
+              .eq('status', 'pending');
+          return true;
+        },
+        tag: _tag,
+        description: 'markIntentDialed',
+      );
+      if (!result.isSuccess) {
+        throw StateError(
+          result.error ?? 'Could not mark the intent as dialed.',
+        );
+      }
     } catch (error) {
       await _recordFailure('mark_intent_dialed', error);
     }
@@ -359,6 +383,25 @@ class BiopayRepository {
       PaymentRecipientType.phoneNumber => 'phone_number',
       PaymentRecipientType.code => 'code',
     };
+  }
+
+  Future<FunctionResponse> _invokeFunction(
+    String functionName, {
+    required Map<String, dynamic> body,
+    Map<String, String>? headers,
+    int maxAttempts = 1,
+  }) async {
+    final result = await SafeRpc.query<FunctionResponse>(
+      () =>
+          _client.functions.invoke(functionName, body: body, headers: headers),
+      tag: _tag,
+      description: functionName,
+      maxAttempts: maxAttempts,
+    );
+    if (result.isSuccess) {
+      return result.requireData;
+    }
+    throw StateError(result.error ?? '$functionName failed.');
   }
 
   Future<void> _recordFailure(

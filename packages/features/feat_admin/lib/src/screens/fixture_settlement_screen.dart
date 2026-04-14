@@ -501,7 +501,7 @@ class _SettlementSheetState extends State<_SettlementSheet> {
                         ColorTokens.clubAccent,
                       ),
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(
+                        border: BorderTokens.input(
                           borderRadius: BorderRadius.circular(16),
                         ),
                         filled: true,
@@ -539,7 +539,7 @@ class _SettlementSheetState extends State<_SettlementSheet> {
                         ColorTokens.clubAccent,
                       ),
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(
+                        border: BorderTokens.input(
                           borderRadius: BorderRadius.circular(16),
                         ),
                         filled: true,
@@ -586,7 +586,7 @@ class _SettlementSheetState extends State<_SettlementSheet> {
                     style: TypographyTokens.titleLarge(),
                     decoration: InputDecoration(
                       hintText: 'HT',
-                      border: OutlineInputBorder(
+                      border: BorderTokens.input(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       filled: true,
@@ -616,7 +616,7 @@ class _SettlementSheetState extends State<_SettlementSheet> {
                     style: TypographyTokens.titleLarge(),
                     decoration: InputDecoration(
                       hintText: 'HT',
-                      border: OutlineInputBorder(
+                      border: BorderTokens.input(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       filled: true,

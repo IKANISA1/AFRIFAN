@@ -103,6 +103,16 @@ abstract class ClubConfig {
 
   /// Minimal shared fallback used in widget tests and empty-state previews.
   static ClubConfig fallback() => const _FallbackClubConfig();
+
+  /// Enforces required `--dart-define` / `--dart-define-from-file` values.
+  static String requireDefine(String value, String name) {
+    if (value.trim().isEmpty) {
+      throw StateError(
+        '$name must be provided via --dart-define or --dart-define-from-file.',
+      );
+    }
+    return value;
+  }
 }
 
 class _FallbackClubConfig extends ClubConfig {

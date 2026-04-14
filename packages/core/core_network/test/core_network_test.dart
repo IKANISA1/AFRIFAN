@@ -60,10 +60,7 @@ void main() {
 
     test('throws on client access before init', () {
       // Accessing client before initialization should throw.
-      expect(
-        () => SupabaseClientFactory.client,
-        throwsA(isA<Error>()),
-      );
+      expect(() => SupabaseClientFactory.client, throwsA(isA<Error>()));
     });
   });
 }

@@ -353,7 +353,7 @@ class _FilterChip extends StatelessWidget {
               : ColorTokens.surfaceContainerLow,
           borderRadius: BorderRadius.circular(999),
           border: isSelected
-              ? Border.all(color: ColorTokens.clubAccent, width: 1.5)
+              ? BorderTokens.all(color: ColorTokens.clubAccent, width: 1.5)
               : BorderTokens.ghost(),
         ),
         child: Text(

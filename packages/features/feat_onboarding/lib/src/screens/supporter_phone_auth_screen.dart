@@ -206,7 +206,7 @@ class _SupporterPhoneAuthScreenState
                       decoration: BoxDecoration(
                         color: ColorTokens.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: ColorTokens.ghostBorder),
+                        border: BorderTokens.all(color: ColorTokens.ghostBorder),
                       ),
                       child: Row(
                         children: [

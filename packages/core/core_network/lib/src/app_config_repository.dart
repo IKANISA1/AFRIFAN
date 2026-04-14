@@ -104,7 +104,11 @@ class AppConfigRepository {
 
     final clubValue = clubId == null
         ? null
-        : await _getConfigValueFromTable('club_app_config', key, clubId: clubId);
+        : await _getConfigValueFromTable(
+            'club_app_config',
+            key,
+            clubId: clubId,
+          );
     if (clubValue != null) {
       _cache[scopedCacheKey] = clubValue;
       return clubValue;
@@ -133,10 +137,9 @@ class AppConfigRepository {
       }
     }
 
-    final clubRows =
-        clubId == null
-            ? const <Map<String, dynamic>>[]
-            : await _getRowsFromTable('club_app_config', clubId: clubId);
+    final clubRows = clubId == null
+        ? const <Map<String, dynamic>>[]
+        : await _getRowsFromTable('club_app_config', clubId: clubId);
 
     for (final row in clubRows) {
       final key = row['key']?.toString();
@@ -149,7 +152,8 @@ class AppConfigRepository {
     _cache
       ..clear()
       ..addAll({
-        for (final entry in result.entries) _cacheKey(entry.key, clubId): entry.value,
+        for (final entry in result.entries)
+          _cacheKey(entry.key, clubId): entry.value,
       });
     return result;
   }

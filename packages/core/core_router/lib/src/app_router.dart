@@ -34,7 +34,10 @@ class AppRouter {
     observers: observers,
     errorBuilder:
         errorBuilder ??
-        (context, state) => _RouterErrorScreen(error: state.error),
+        (context, state) => _RouterErrorScreen(
+          error: state.error,
+          fallbackLocation: initialLocation,
+        ),
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => shellBuilder(context, shell),
@@ -109,9 +112,13 @@ class AppRouter {
 }
 
 class _RouterErrorScreen extends StatelessWidget {
-  const _RouterErrorScreen({required this.error});
+  const _RouterErrorScreen({
+    required this.error,
+    required this.fallbackLocation,
+  });
 
   final Exception? error;
+  final String fallbackLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +137,7 @@ class _RouterErrorScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               FilledButton(
-                onPressed: () => context.go('/home'),
+                onPressed: () => context.go(fallbackLocation),
                 child: const Text('Go Home'),
               ),
             ],

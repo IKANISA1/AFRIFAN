@@ -33,7 +33,9 @@ class FirebaseBootstrapService {
         await Firebase.initializeApp();
       }
       if (!kIsWeb) {
-        await FirebasePerformance.instance.setPerformanceCollectionEnabled(!kDebugMode);
+        await FirebasePerformance.instance.setPerformanceCollectionEnabled(
+          !kDebugMode,
+        );
       }
       AfriLogger.info('Firebase', 'Initialized default app.');
     } catch (error, stackTrace) {

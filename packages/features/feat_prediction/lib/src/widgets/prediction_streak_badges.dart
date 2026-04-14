@@ -129,7 +129,7 @@ class _BadgeTile extends StatelessWidget {
                   ? color.withValues(alpha: 0.15)
                   : ColorTokens.surfaceContainerHigh.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(
+              border: BorderTokens.all(
                 color: isEarned
                     ? color.withValues(alpha: 0.4)
                     : ColorTokens.glassFill,

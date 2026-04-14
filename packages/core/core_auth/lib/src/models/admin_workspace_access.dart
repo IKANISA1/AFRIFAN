@@ -17,7 +17,10 @@ enum AdminRole {
     return switch (value.trim().toLowerCase()) {
       'admin' || 'super_admin' => AdminRole.admin,
       'bank' => AdminRole.bank,
-      'partner' || 'rayon_sport' || 'rayon-sport' || 'club_admin' ||
+      'partner' ||
+      'rayon_sport' ||
+      'rayon-sport' ||
+      'club_admin' ||
       'club_moderator' => AdminRole.partner,
       _ => null,
     };
@@ -79,7 +82,9 @@ class AdminRoleAssignment {
       grantedBy: json['granted_by']?.toString(),
       grantedAt:
           DateTime.tryParse(
-            json['granted_at']?.toString() ?? json['created_at']?.toString() ?? '',
+            json['granted_at']?.toString() ??
+                json['created_at']?.toString() ??
+                '',
           ) ??
           DateTime.now(),
       revokedAt: json['revoked_at'] != null

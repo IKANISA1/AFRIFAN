@@ -1,0 +1,40 @@
+{
+  "reward_options": [
+    {
+      "reward": "Mobile Airtime",
+      "cost": "500 FET",
+      "category": "Utility",
+      "notes": "Via MoMo API integration"
+    },
+    {
+      "reward": "FANZONE Premium Badge",
+      "cost": "200 FET",
+      "category": "Cosmetic",
+      "notes": "Profile badge unlock"
+    },
+    {
+      "reward": "Jackpot Extra Entry",
+      "cost": "100 FET",
+      "category": "Gameplay",
+      "notes": "Second entry in the weekly round"
+    },
+    {
+      "reward": "Custom Avatar Frame",
+      "cost": "150 FET",
+      "category": "Cosmetic",
+      "notes": "Seasonal themed frame"
+    },
+    {
+      "reward": "Club Fan Kit Digital Item",
+      "cost": "300 FET",
+      "category": "Collectible",
+      "notes": "AFRICLUB-linked digital item"
+    },
+    {
+      "reward": "Partner Voucher",
+      "cost": "1000 FET",
+      "category": "Utility",
+      "notes": "Restaurant or retail partner reward"
+    }
+  ]
+}

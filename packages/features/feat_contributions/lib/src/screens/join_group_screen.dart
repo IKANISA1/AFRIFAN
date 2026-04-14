@@ -312,7 +312,7 @@ class _PreviewChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerLow,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: ColorTokens.ghostBorder),
+        border: BorderTokens.all(color: ColorTokens.ghostBorder),
       ),
       child: Text(
         label,

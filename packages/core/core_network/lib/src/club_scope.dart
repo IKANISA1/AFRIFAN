@@ -1,10 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ClubScope {
-  const ClubScope({
-    required this.partnerId,
-    required this.clubId,
-  });
+  const ClubScope({required this.partnerId, required this.clubId});
 
   final String partnerId;
   final int? clubId;
@@ -42,10 +39,7 @@ class ClubScopeResolver {
     final requestingClubId = currentClubId;
     final numericPartnerId = int.tryParse(normalized);
     if (numericPartnerId != null) {
-      return ClubScope(
-        partnerId: normalized,
-        clubId: numericPartnerId,
-      );
+      return ClubScope(partnerId: normalized, clubId: numericPartnerId);
     }
 
     if (normalized.isNotEmpty) {
@@ -57,10 +51,7 @@ class ClubScopeResolver {
             .maybeSingle();
         final resolvedClubId = int.tryParse(row?['id']?.toString() ?? '');
         if (resolvedClubId != null) {
-          return ClubScope(
-            partnerId: normalized,
-            clubId: resolvedClubId,
-          );
+          return ClubScope(partnerId: normalized, clubId: resolvedClubId);
         }
       } catch (_) {
         // This lookup is best-effort in tests and partial environments.

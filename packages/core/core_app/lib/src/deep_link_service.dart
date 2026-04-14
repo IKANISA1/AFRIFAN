@@ -1,0 +1,151 @@
+import 'dart:async';
+
+import 'package:app_links/app_links.dart';
+
+/// Normalizes inbound app/universal links into in-app router destinations.
+class DeepLinkParser {
+  DeepLinkParser({Uri? websiteUri, String? customScheme})
+    : websiteUri = websiteUri == null ? null : _normalizeWebsiteUri(websiteUri),
+      customScheme = customScheme?.trim().toLowerCase() ?? '';
+
+  factory DeepLinkParser.fromEnvironment() {
+    final website = Uri.tryParse(
+      const String.fromEnvironment('APP_WEBSITE_URL', defaultValue: '').trim(),
+    );
+    return DeepLinkParser(
+      websiteUri: website,
+      customScheme: const String.fromEnvironment(
+        'APP_DEEP_LINK_SCHEME',
+        defaultValue: '',
+      ),
+    );
+  }
+
+  final Uri? websiteUri;
+  final String customScheme;
+
+  bool get isEnabled =>
+      (websiteUri?.host.trim().isNotEmpty ?? false) || customScheme.isNotEmpty;
+
+  Uri? toInternalUri(Uri incoming) {
+    if (!isEnabled) {
+      return null;
+    }
+
+    final normalizedIncomingScheme = incoming.scheme.trim().toLowerCase();
+    if (_matchesWebsiteLink(incoming, normalizedIncomingScheme)) {
+      return _buildInternalUri(
+        path: _normalizePath(incoming.path),
+        query: incoming.hasQuery ? incoming.query : null,
+        fragment: incoming.hasFragment ? incoming.fragment : null,
+      );
+    }
+
+    if (customScheme.isNotEmpty && normalizedIncomingScheme == customScheme) {
+      final path = _customSchemePath(incoming);
+      if (path == null) {
+        return null;
+      }
+      return _buildInternalUri(
+        path: path,
+        query: incoming.hasQuery ? incoming.query : null,
+        fragment: incoming.hasFragment ? incoming.fragment : null,
+      );
+    }
+
+    return null;
+  }
+
+  bool _matchesWebsiteLink(Uri incoming, String normalizedIncomingScheme) {
+    final configuredHost = websiteUri?.host.trim().toLowerCase();
+    if (configuredHost == null || configuredHost.isEmpty) {
+      return false;
+    }
+    if (normalizedIncomingScheme != 'https' &&
+        normalizedIncomingScheme != 'http') {
+      return false;
+    }
+    return incoming.host.trim().toLowerCase() == configuredHost;
+  }
+
+  String? _customSchemePath(Uri incoming) {
+    final segments = <String>[
+      if (incoming.host.trim().isNotEmpty) incoming.host.trim(),
+      ...incoming.pathSegments.where((segment) => segment.trim().isNotEmpty),
+    ];
+    if (segments.isEmpty) {
+      return '/';
+    }
+    return '/${segments.join('/')}';
+  }
+
+  static Uri? _normalizeWebsiteUri(Uri raw) {
+    final host = raw.host.trim();
+    if (host.isEmpty) {
+      return null;
+    }
+    return raw;
+  }
+
+  static Uri _buildInternalUri({
+    required String path,
+    String? query,
+    String? fragment,
+  }) {
+    return Uri(
+      path: path,
+      query: query?.trim().isEmpty ?? true ? null : query,
+      fragment: fragment?.trim().isEmpty ?? true ? null : fragment,
+    );
+  }
+
+  static String _normalizePath(String rawPath) {
+    final trimmed = rawPath.trim();
+    if (trimmed.isEmpty || trimmed == '/') {
+      return '/';
+    }
+    return trimmed.startsWith('/') ? trimmed : '/$trimmed';
+  }
+}
+
+abstract class DeepLinkService {
+  const DeepLinkService();
+
+  Future<Uri?> getInitialUri();
+
+  Stream<Uri> get uriStream;
+}
+
+class PlatformDeepLinkService extends DeepLinkService {
+  PlatformDeepLinkService({AppLinks? appLinks})
+    : _appLinks = appLinks ?? AppLinks();
+
+  final AppLinks _appLinks;
+
+  @override
+  Future<Uri?> getInitialUri() async {
+    try {
+      return await _appLinks.getInitialLink();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Stream<Uri> get uriStream => _appLinks.uriLinkStream;
+}
+
+class FakeDeepLinkService extends DeepLinkService {
+  FakeDeepLinkService({Uri? initialUri, Stream<Uri>? stream})
+    : _initialUri = initialUri,
+      _stream = stream ?? const Stream<Uri>.empty();
+
+  final Uri? _initialUri;
+  final Stream<Uri> _stream;
+
+  @override
+  Future<Uri?> getInitialUri() async => _initialUri;
+
+  @override
+  Stream<Uri> get uriStream => _stream;
+}

@@ -46,7 +46,6 @@ workspace:
   - packages/core/core_network
   - packages/core/core_theme
   - packages/core/core_router
-  - packages/core/core_di
   - packages/core/core_utils
   # ── Feature packages ──
   - packages/features/feat_admin

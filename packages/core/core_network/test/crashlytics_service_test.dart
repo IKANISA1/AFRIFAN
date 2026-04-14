@@ -20,17 +20,11 @@ void main() {
     });
 
     test('setUserId does not throw when not initialized', () async {
-      await expectLater(
-        CrashlyticsService.setUserId('user123'),
-        completes,
-      );
+      await expectLater(CrashlyticsService.setUserId('user123'), completes);
     });
 
     test('log does not throw when not initialized', () async {
-      await expectLater(
-        CrashlyticsService.log('test message'),
-        completes,
-      );
+      await expectLater(CrashlyticsService.log('test message'), completes);
     });
   });
 }

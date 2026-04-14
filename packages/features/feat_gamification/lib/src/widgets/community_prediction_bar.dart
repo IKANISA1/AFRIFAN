@@ -130,7 +130,7 @@ class _CommunityPickRow extends StatelessWidget {
                         ),
                         borderRadius: BorderRadius.circular(10),
                         border: isUserPick
-                            ? Border.all(
+                            ? BorderTokens.all(
                                 color: ColorTokens.clubAccent.withValues(
                                   alpha: 0.4,
                                 ),

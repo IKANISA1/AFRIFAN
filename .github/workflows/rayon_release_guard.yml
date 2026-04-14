@@ -97,10 +97,25 @@ jobs:
           keyPassword=$ANDROID_KEY_PASSWORD
           EOF
 
+      - name: Generate production flavor overrides
+        if: env.HAS_ANDROID_RELEASE_SECRETS == 'true'
+        working-directory: apps/rayon_sports
+        env:
+          SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_ANON_KEY"
+          jq \
+            --arg supabase_url "$SUPABASE_URL" \
+            --arg supabase_anon_key "$SUPABASE_ANON_KEY" \
+            '.SUPABASE_URL = $supabase_url | .SUPABASE_ANON_KEY = $supabase_anon_key' \
+            assets/flavors/production.json > assets/flavors/production.local.json
+
       - name: Build Rayon Play bundle
         if: env.HAS_ANDROID_RELEASE_SECRETS == 'true'
         working-directory: apps/rayon_sports
-        run: flutter build appbundle --dart-define-from-file=assets/flavors/production.json
+        run: flutter build appbundle --dart-define-from-file=assets/flavors/production.local.json
 
       - name: Skip signed release bundle build
         if: env.HAS_ANDROID_RELEASE_SECRETS != 'true'

@@ -1,0 +1,20 @@
+{
+  "CLUB_ID": "24",
+  "CLUB_NAME": "Rayon Sports FC",
+  "APP_NAME": "Gikundiro",
+  "CREST_ASSET": "assets/crest/rayon_sports_crest.png",
+  "HOME_TEAM_NAME": "Rayon Sports FC",
+  "HOME_VENUE_NAME": "Amahoro Stadium",
+  "RIVAL_TEAM_NAME": "APR FC",
+  "PRIMARY_COMPETITION_NAME": "Rwanda Premier League",
+  "COUNTRY_CODE": "RW",
+  "ENABLE_ANDROID_MOMO_SMS_AUTOREAD": false,
+  "APP_SUPPORT_EMAIL": "support@example.com",
+  "APP_WEBSITE_URL": "https://example.com",
+  "APP_DEEP_LINK_SCHEME": "exampleapp",
+  "APP_PRIVACY_URL": "https://example.com/privacy",
+  "APP_TERMS_URL": "https://example.com/terms",
+  "SUPABASE_URL": "https://your-project.supabase.co",
+  "SUPABASE_ANON_KEY": "your-anon-key",
+  "ENVIRONMENT": "production"
+}

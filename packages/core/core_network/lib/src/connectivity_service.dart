@@ -60,10 +60,14 @@ class ConnectivityService {
     _subscription = null;
   }
 
+  @visibleForTesting
+  static void setOnlineForTest(bool value) {
+    _lastKnownOnline = value;
+    onlineNotifier.value = value;
+  }
+
   static void _update(List<ConnectivityResult> results) {
-    final online = results.any(
-      (r) => r != ConnectivityResult.none,
-    );
+    final online = results.any((r) => r != ConnectivityResult.none);
 
     if (online != _lastKnownOnline) {
       _lastKnownOnline = online;

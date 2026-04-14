@@ -110,6 +110,7 @@ class AppStartupCoordinator {
 
   Future<void> _initializePersistence() async {
     await Hive.initFlutter();
+    await HiveCacheService.initialize();
   }
 
   Future<void> _initializeCriticalBackend(ClubConfig config) async {
@@ -141,6 +142,11 @@ class AppStartupCoordinator {
     await SupabaseClientFactory.initialize(
       supabaseUrl: config.supabaseUrl,
       supabaseAnonKey: config.supabaseAnonKey,
+    );
+    await OfflineEventQueue.initialize(
+      OperationalHealthService(
+        client: SupabaseClientFactory.client,
+      ).recordPayloadOrThrow,
     );
   }
 
@@ -178,5 +184,4 @@ class AppStartupCoordinator {
       );
     }
   }
-
 }

@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app.dart';
+import 'deep_link_service.dart';
 import 'startup_coordinator.dart';
 
 bool _globalErrorHandlersInstalled = false;
@@ -23,6 +24,8 @@ class AfriClubBootstrapOptions {
     this.authRepository,
     this.providerOverrides = const <Override>[],
     this.initialLocation,
+    this.deepLinkParser,
+    this.deepLinkService,
   });
 
   final AppStartupOptions startupOptions;
@@ -30,6 +33,8 @@ class AfriClubBootstrapOptions {
   final AuthRepository? authRepository;
   final List<Override> providerOverrides;
   final String? initialLocation;
+  final DeepLinkParser? deepLinkParser;
+  final DeepLinkService? deepLinkService;
 }
 
 /// Bootstrap the AFRICLUB app with club config.
@@ -47,6 +52,29 @@ Future<void> bootstrap(
         debugPrint = (String? message, {int? wrapWidth}) {};
       }
       _installGlobalErrorHandlers();
+
+      const rawClubId = String.fromEnvironment('CLUB_ID');
+      const rawSupabaseUrl = String.fromEnvironment('SUPABASE_URL');
+      const rawSupabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
+
+      if (rawClubId.isEmpty) {
+        throw StateError(
+          'CLUB_ID must be provided via --dart-define or '
+          '--dart-define-from-file before bootstrapping the app.',
+        );
+      }
+      if (rawSupabaseUrl.isEmpty) {
+        throw StateError(
+          'SUPABASE_URL must be provided via --dart-define or '
+          '--dart-define-from-file before bootstrapping the app.',
+        );
+      }
+      if (rawSupabaseAnonKey.isEmpty) {
+        throw StateError(
+          'SUPABASE_ANON_KEY must be provided via --dart-define or '
+          '--dart-define-from-file before bootstrapping the app.',
+        );
+      }
 
       final normalizedClubId = int.tryParse(config.clubId);
       assert(
@@ -85,6 +113,11 @@ Future<void> bootstrap(
       await startupCoordinator.initialize(config);
       final modules =
           options.modulesOverride ?? AppModuleRegistry.build(config);
+      final deepLinkParser =
+          options.deepLinkParser ?? DeepLinkParser.fromEnvironment();
+      final deepLinkService = deepLinkParser.isEnabled
+          ? (options.deepLinkService ?? PlatformDeepLinkService())
+          : null;
 
       // Run the app
       runApp(
@@ -94,6 +127,8 @@ Future<void> bootstrap(
           authRepository: options.authRepository,
           providerOverrides: options.providerOverrides,
           initialLocation: options.initialLocation,
+          deepLinkParser: deepLinkService == null ? null : deepLinkParser,
+          deepLinkService: deepLinkService,
         ),
       );
       startupCoordinator.scheduleDeferredInitialization(config);
@@ -147,6 +182,8 @@ Future<void> _reportUnhandledError({
   required Object error,
   required StackTrace stackTrace,
 }) async {
+  final summarizedStackTrace = _summarizeStackTrace(stackTrace);
+
   AfriLogger.error(
     'Bootstrap',
     'Unhandled error in $component.',
@@ -168,7 +205,21 @@ Future<void> _reportUnhandledError({
     issueCode: 'unhandled_exception',
     metadata: <String, dynamic>{
       'error': error.toString(),
-      'stack_trace': stackTrace.toString(),
+      'stack_trace': summarizedStackTrace,
     },
   );
+}
+
+String _summarizeStackTrace(StackTrace stackTrace) {
+  final lines = stackTrace
+      .toString()
+      .split('\n')
+      .where((line) => line.trim().isNotEmpty)
+      .take(20)
+      .toList(growable: false);
+  final summary = lines.join('\n');
+  if (summary.length <= 4000) {
+    return summary;
+  }
+  return '${summary.substring(0, 4000)}...';
 }

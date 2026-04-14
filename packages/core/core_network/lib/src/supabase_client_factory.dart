@@ -1,5 +1,8 @@
 import 'package:core_utils/core_utils.dart';
+import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'timeout_http_client.dart';
 
 /// Factory for creating the Supabase client instance.
 ///
@@ -17,6 +20,7 @@ class SupabaseClientFactory {
 
   /// Base delay for exponential backoff.
   static const _baseDelay = Duration(seconds: 1);
+  static const _networkTimeout = Duration(seconds: 15);
 
   static bool get isInitialized => _initialized;
 
@@ -47,6 +51,13 @@ class SupabaseClientFactory {
         await Supabase.initialize(
           url: supabaseUrl,
           anonKey: supabaseAnonKey,
+          httpClient: TimeoutHttpClient(
+            http.Client(),
+            timeout: _networkTimeout,
+          ),
+          realtimeClientOptions: const RealtimeClientOptions(
+            timeout: _networkTimeout,
+          ),
           authOptions: const FlutterAuthClientOptions(
             authFlowType: AuthFlowType.pkce,
           ),
@@ -70,7 +81,7 @@ class SupabaseClientFactory {
           AfriLogger.warn(
             'SupabaseClientFactory',
             'Init attempt $attempt/$_maxRetries failed: $error. '
-            'Retrying in ${delay.inSeconds}s…',
+                'Retrying in ${delay.inSeconds}s…',
           );
           await Future<void>.delayed(delay);
         }

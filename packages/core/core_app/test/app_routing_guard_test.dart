@@ -143,6 +143,10 @@ class _FakeSplashScreenState extends ConsumerState<_FakeSplashScreen> {
       return null;
     }
 
+    if (GoRouter.of(context).configuration.findMatch(uri!).isError) {
+      return null;
+    }
+
     return uri.toString();
   }
 

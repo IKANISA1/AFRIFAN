@@ -16,6 +16,7 @@ import 'models/user_profile.dart';
 class AuthNotifier extends Notifier<AuthState> {
   late AuthRepository _repository;
   String? _hydratingSessionUserId;
+  int _authHydrationEpoch = 0;
 
   @override
   AuthState build() {
@@ -64,8 +65,10 @@ class AuthNotifier extends Notifier<AuthState> {
   Future<void> syncWithAuthChange(supabase.AuthState change) async {
     final session = change.session;
     if (change.event == supabase.AuthChangeEvent.signedOut || session == null) {
+      _authHydrationEpoch += 1;
+      _hydratingSessionUserId = null;
       FirebaseAnalyticsService.setUserId(null);
-        CrashlyticsService.setUserId(null);
+      CrashlyticsService.setUserId(null);
       state = const AuthUnauthenticated();
       return;
     }
@@ -83,9 +86,13 @@ class AuthNotifier extends Notifier<AuthState> {
       return;
     }
 
+    final hydrationEpoch = ++_authHydrationEpoch;
     _hydratingSessionUserId = sessionUserId;
     try {
       final profile = await _repository.restoreCurrentUser();
+      if (hydrationEpoch != _authHydrationEpoch) {
+        return;
+      }
       if (profile == null) {
         FirebaseAnalyticsService.setUserId(null);
         CrashlyticsService.setUserId(null);
@@ -93,17 +100,24 @@ class AuthNotifier extends Notifier<AuthState> {
         return;
       }
       FirebaseAnalyticsService.setUserId(profile.id);
-        CrashlyticsService.setUserId(profile.id);
+      CrashlyticsService.setUserId(profile.id);
       final adminAccess = await _repository.resolveAdminAccess(profile.id);
+      if (hydrationEpoch != _authHydrationEpoch) {
+        return;
+      }
       state = AuthAuthenticated(profile: profile, workspace: adminAccess);
     } catch (error) {
+      if (hydrationEpoch != _authHydrationEpoch) {
+        return;
+      }
       if (current is AuthAuthenticated && current.profile.id == sessionUserId) {
         state = current;
       } else {
         state = AuthError('Session refresh failed', error);
       }
     } finally {
-      if (_hydratingSessionUserId == sessionUserId) {
+      if (hydrationEpoch == _authHydrationEpoch &&
+          _hydratingSessionUserId == sessionUserId) {
         _hydratingSessionUserId = null;
       }
     }
@@ -116,7 +130,7 @@ class AuthNotifier extends Notifier<AuthState> {
     try {
       final profile = await _repository.signInAnonymously();
       FirebaseAnalyticsService.setUserId(profile.id);
-        CrashlyticsService.setUserId(profile.id);
+      CrashlyticsService.setUserId(profile.id);
       final adminAccess = await _repository.resolveAdminAccess(profile.id);
       state = AuthAuthenticated(profile: profile, workspace: adminAccess);
     } catch (e) {
@@ -151,7 +165,7 @@ class AuthNotifier extends Notifier<AuthState> {
         token: token,
       );
       FirebaseAnalyticsService.setUserId(profile.id);
-        CrashlyticsService.setUserId(profile.id);
+      CrashlyticsService.setUserId(profile.id);
       final adminAccess = await _repository.resolveAdminAccess(profile.id);
       state = AuthAuthenticated(profile: profile, workspace: adminAccess);
       return null;
@@ -201,7 +215,7 @@ class AuthNotifier extends Notifier<AuthState> {
         token: token,
       );
       FirebaseAnalyticsService.setUserId(profile.id);
-        CrashlyticsService.setUserId(profile.id);
+      CrashlyticsService.setUserId(profile.id);
       final adminAccess = await _repository.resolveAdminAccess(profile.id);
       state = AuthAuthenticated(profile: profile, workspace: adminAccess);
       return null;
@@ -257,7 +271,7 @@ class AuthNotifier extends Notifier<AuthState> {
       // Best-effort sign-out.
     }
     FirebaseAnalyticsService.setUserId(null);
-        CrashlyticsService.setUserId(null);
+    CrashlyticsService.setUserId(null);
     state = const AuthUnauthenticated();
   }
 
@@ -296,7 +310,7 @@ class AuthNotifier extends Notifier<AuthState> {
     try {
       await _repository.deleteAccount(current.profile.id);
       FirebaseAnalyticsService.setUserId(null);
-        CrashlyticsService.setUserId(null);
+      CrashlyticsService.setUserId(null);
       state = const AuthUnauthenticated();
       return null;
     } catch (e) {

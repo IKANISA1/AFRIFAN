@@ -33,7 +33,9 @@ void main() {
       );
     });
 
-    testWidgets('settings expose BioPay entries when the feature is enabled', (
+    testWidgets(
+      'settings stay streamlined while BioPay remains enabled in the release',
+      (
       tester,
     ) async {
       final router = AppRouter(
@@ -69,12 +71,14 @@ void main() {
 
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
-      await tester.scrollUntilVisible(find.text('BioPay & Privacy'), 240);
+      await tester.scrollUntilVisible(find.text('Help & Support'), 240);
 
-      expect(find.text('BioPay & Privacy'), findsOneWidget);
       expect(find.text('Privacy controls'), findsOneWidget);
-      expect(find.text('BioPay home'), findsOneWidget);
-      expect(find.text('Face ID & enrollment'), findsOneWidget);
-    });
+      expect(find.text('Help & Support'), findsOneWidget);
+      expect(find.text('BioPay & Privacy'), findsNothing);
+      expect(find.text('BioPay home'), findsNothing);
+      expect(find.text('Face ID & enrollment'), findsNothing);
+    },
+    );
   });
 }

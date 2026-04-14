@@ -15,14 +15,10 @@ class RpcResult<T> {
   const RpcResult({this.data, this.error, this.isSuccess = false});
 
   /// Successful result with data.
-  const RpcResult.success(T this.data)
-      : error = null,
-        isSuccess = true;
+  const RpcResult.success(T this.data) : error = null, isSuccess = true;
 
   /// Failed result with an error description.
-  const RpcResult.failure(String this.error)
-      : data = null,
-        isSuccess = false;
+  const RpcResult.failure(String this.error) : data = null, isSuccess = false;
 
   final T? data;
   final String? error;
@@ -31,9 +27,7 @@ class RpcResult<T> {
   /// Unwrap the data, throwing [StateError] if this is a failure.
   T get requireData {
     if (!isSuccess || data == null) {
-      throw StateError(
-        'RpcResult.requireData called on a failure: $error',
-      );
+      throw StateError('RpcResult.requireData called on a failure: $error');
     }
     return data as T;
   }
@@ -83,9 +77,11 @@ class SafeRpc {
     String tag = 'SafeRpc',
     Duration? timeout,
     int? maxAttempts,
+    Duration? backoffBase,
   }) async {
     final effectiveTimeout = timeout ?? _timeout;
     final effectiveMaxAttempts = maxAttempts ?? _maxAttempts;
+    final effectiveBackoffBase = backoffBase ?? _baseDelay;
 
     Object? lastError;
 
@@ -101,7 +97,10 @@ class SafeRpc {
           '$functionName timed out after ${effectiveTimeout.inSeconds}s',
         );
         if (attempt < effectiveMaxAttempts) {
-          final delay = _baseDelay * (1 << (attempt - 1));
+          final delay = _delayForAttempt(
+            attempt,
+            baseDelay: effectiveBackoffBase,
+          );
           AfriLogger.warn(
             tag,
             'RPC "$functionName" attempt $attempt/$effectiveMaxAttempts '
@@ -122,7 +121,10 @@ class SafeRpc {
       } catch (error, stackTrace) {
         lastError = error;
         if (_isTransient(error) && attempt < effectiveMaxAttempts) {
-          final delay = _baseDelay * (1 << (attempt - 1));
+          final delay = _delayForAttempt(
+            attempt,
+            baseDelay: effectiveBackoffBase,
+          );
           AfriLogger.warn(
             tag,
             'RPC "$functionName" attempt $attempt/$effectiveMaxAttempts '
@@ -141,9 +143,7 @@ class SafeRpc {
             stackTrace,
             reason: 'RPC $functionName attempt $attempt',
           );
-          return RpcResult<dynamic>.failure(
-            _normalizeError(error),
-          );
+          return RpcResult<dynamic>.failure(_normalizeError(error));
         }
       }
     }
@@ -177,30 +177,89 @@ class SafeRpc {
     String tag = 'SafeRpc',
     String description = 'query',
     Duration? timeout,
+    int maxAttempts = 1,
+    Duration? backoffBase,
   }) async {
     final effectiveTimeout = timeout ?? _timeout;
+    final effectiveBackoffBase = backoffBase ?? _baseDelay;
+    Object? lastError;
+    StackTrace? lastStackTrace;
 
-    try {
-      final result = await queryFn().timeout(effectiveTimeout);
-      return RpcResult<T>.success(result);
-    } on TimeoutException {
-      AfriLogger.warn(tag, '$description timed out.');
-      return RpcResult<T>.failure(
-        'Request timed out. Please check your connection and try again.',
-      );
-    } on PostgrestException catch (error) {
-      final userMessage = _normalizePostgrestError(error);
-      AfriLogger.error(tag, '$description failed: $userMessage');
-      return RpcResult<T>.failure(userMessage);
-    } catch (error, stackTrace) {
-      AfriLogger.error(tag, '$description failed.', error, stackTrace);
-      await CrashlyticsService.recordError(
-        error,
-        stackTrace,
-        reason: '$tag $description',
-      );
-      return RpcResult<T>.failure(_normalizeError(error));
+    for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        final result = await queryFn().timeout(effectiveTimeout);
+        return RpcResult<T>.success(result);
+      } on TimeoutException catch (error, stackTrace) {
+        lastError = error;
+        lastStackTrace = stackTrace;
+        if (attempt < maxAttempts) {
+          final delay = _delayForAttempt(
+            attempt,
+            baseDelay: effectiveBackoffBase,
+          );
+          AfriLogger.warn(
+            tag,
+            '$description timed out on attempt $attempt/$maxAttempts. '
+            'Retrying in ${delay.inSeconds}s…',
+          );
+          if (delay > Duration.zero) {
+            await Future<void>.delayed(delay);
+          }
+          continue;
+        }
+        AfriLogger.warn(tag, '$description timed out.');
+        return RpcResult<T>.failure(
+          'Request timed out. Please check your connection and try again.',
+        );
+      } on PostgrestException catch (error, stackTrace) {
+        lastError = error;
+        lastStackTrace = stackTrace;
+        final userMessage = _normalizePostgrestError(error);
+        AfriLogger.error(tag, '$description failed: $userMessage');
+        await CrashlyticsService.recordError(
+          error,
+          stackTrace,
+          reason: '$tag $description',
+        );
+        return RpcResult<T>.failure(userMessage);
+      } catch (error, stackTrace) {
+        lastError = error;
+        lastStackTrace = stackTrace;
+        if (_isTransient(error) && attempt < maxAttempts) {
+          final delay = _delayForAttempt(
+            attempt,
+            baseDelay: effectiveBackoffBase,
+          );
+          AfriLogger.warn(
+            tag,
+            '$description failed on attempt $attempt/$maxAttempts: $error. '
+            'Retrying in ${delay.inSeconds}s…',
+          );
+          if (delay > Duration.zero) {
+            await Future<void>.delayed(delay);
+          }
+          continue;
+        }
+        AfriLogger.error(tag, '$description failed.', error, stackTrace);
+        await CrashlyticsService.recordError(
+          error,
+          stackTrace,
+          reason: '$tag $description',
+        );
+        return RpcResult<T>.failure(_normalizeError(error));
+      }
     }
+
+    await CrashlyticsService.recordError(
+      lastError ?? StateError('$description failed unexpectedly.'),
+      lastStackTrace ?? StackTrace.current,
+      reason: '$tag $description exhausted retries',
+    );
+    return RpcResult<T>.failure(
+      _normalizeError(
+        lastError ?? StateError('$description failed unexpectedly.'),
+      ),
+    );
   }
 
   /// Whether the error is likely transient and worth retrying.
@@ -247,5 +306,12 @@ class SafeRpc {
       return 'Unable to connect. Please check your internet connection.';
     }
     return 'Something went wrong. Please try again.';
+  }
+
+  static Duration _delayForAttempt(int attempt, {required Duration baseDelay}) {
+    if (baseDelay <= Duration.zero) {
+      return Duration.zero;
+    }
+    return baseDelay * (1 << (attempt - 1));
   }
 }

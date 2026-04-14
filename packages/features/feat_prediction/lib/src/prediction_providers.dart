@@ -1,8 +1,2 @@
-import 'package:core_network/core_network.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'repositories/prediction_repository.dart';
-
-final predictionRepositoryProvider = Provider<PredictionRepository>(
-  (ref) => PredictionRepository(client: ref.watch(supabaseClientProvider)),
-);
+// Re-export from the single source of truth in feat_gamification.
+export 'package:feat_gamification/src/prediction_providers.dart';

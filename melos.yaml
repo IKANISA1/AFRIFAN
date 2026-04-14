@@ -36,26 +36,42 @@ scripts:
 
   build_club:
     run: |
+      FLAVOR_FILE="${AFRICLUB_FLAVOR_FILE:-assets/flavors/production.local.json}"
+      if [ ! -f "$FLAVOR_FILE" ]; then
+        FLAVOR_FILE="assets/flavors/production.json"
+      fi
       flutter build appbundle \
-        --dart-define-from-file=assets/flavors/production.json
+        --dart-define-from-file="$FLAVOR_FILE"
     description: Build Play-ready Android App Bundle for a specific club (run from apps/{club}/)
 
   build_club_apk:
     run: |
+      FLAVOR_FILE="${AFRICLUB_FLAVOR_FILE:-assets/flavors/production.local.json}"
+      if [ ! -f "$FLAVOR_FILE" ]; then
+        FLAVOR_FILE="assets/flavors/production.json"
+      fi
       flutter build apk \
-        --dart-define-from-file=assets/flavors/production.json
+        --dart-define-from-file="$FLAVOR_FILE"
     description: Build Android APK for local validation (run from apps/{club}/)
 
   build_club_staging:
     run: |
+      FLAVOR_FILE="${AFRICLUB_FLAVOR_FILE:-assets/flavors/staging.local.json}"
+      if [ ! -f "$FLAVOR_FILE" ]; then
+        FLAVOR_FILE="assets/flavors/staging.json"
+      fi
       flutter build appbundle \
-        --dart-define-from-file=assets/flavors/staging.json
+        --dart-define-from-file="$FLAVOR_FILE"
     description: Build Play-ready Android App Bundle for a specific club (Staging, run from apps/{club}/)
 
   build_club_apk_staging:
     run: |
+      FLAVOR_FILE="${AFRICLUB_FLAVOR_FILE:-assets/flavors/staging.local.json}"
+      if [ ! -f "$FLAVOR_FILE" ]; then
+        FLAVOR_FILE="assets/flavors/staging.json"
+      fi
       flutter build apk \
-        --dart-define-from-file=assets/flavors/staging.json
+        --dart-define-from-file="$FLAVOR_FILE"
     description: Build Android APK for local validation (Staging, run from apps/{club}/)
 
   clean:

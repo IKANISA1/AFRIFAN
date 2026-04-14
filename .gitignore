@@ -71,6 +71,7 @@ coverage/
 .env.*
 *.service-account.json
 *service-account*.json
+apps/*/assets/flavors/*.local.json
 
 # Additional ignores
 .dart_tool/
@@ -78,6 +79,9 @@ pubspec.lock
 output/
 flutter_01.log
 *.log
+screenshot_*.png
+1supabase.md
+firebase-debug.log
 fix_stateful_widgets.py
 .gemini/
 node_modules/

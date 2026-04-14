@@ -1,8 +1,9 @@
-import 'dart:typed_data';
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:core_utils/core_utils.dart';
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/services.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
@@ -42,7 +43,10 @@ class BiopayEmbeddingService {
       final contractIssue = _contract!.validateStaticExpectations();
       if (contractIssue != null) {
         _modelIssue = contractIssue;
-        AfriLogger.warn('BiopayEmbeddingService', 'Contract issue: $contractIssue');
+        AfriLogger.warn(
+          'BiopayEmbeddingService',
+          'Contract issue: $contractIssue',
+        );
         return;
       }
 
@@ -164,14 +168,23 @@ class BiopayEmbeddingService {
       if (defaultTargetPlatform == TargetPlatform.iOS) {
         try {
           options.addDelegate(CoreMlDelegate());
-          AfriLogger.info('BiopayEmbeddingService', 'Using CoreML delegate (iOS).');
+          AfriLogger.info(
+            'BiopayEmbeddingService',
+            'Using CoreML delegate (iOS).',
+          );
           return;
         } catch (_) {
-          AfriLogger.info('BiopayEmbeddingService', 'CoreML unavailable, using CPU.');
+          AfriLogger.info(
+            'BiopayEmbeddingService',
+            'CoreML unavailable, using CPU.',
+          );
         }
       }
     } catch (_) {
-      AfriLogger.info('BiopayEmbeddingService', 'Delegate setup failed, using CPU.');
+      AfriLogger.info(
+        'BiopayEmbeddingService',
+        'Delegate setup failed, using CPU.',
+      );
     }
   }
 

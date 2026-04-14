@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../fanzone_content.dart';
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
+import '../models/reward_store_content.dart';
 
 class RewardsStoreScreen extends ConsumerStatefulWidget {
   const RewardsStoreScreen({super.key});
@@ -16,6 +16,7 @@ class RewardsStoreScreen extends ConsumerStatefulWidget {
 
 class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
   FetWalletSummary? _wallet;
+  List<FetRewardOption> _rewardOptions = const <FetRewardOption>[];
   bool _isLoading = true;
   bool _isSubmitting = false;
   String? _error;
@@ -28,12 +29,18 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
 
   Future<void> _load() async {
     try {
-      final wallet = await ref.read(fetRepositoryProvider).loadWallet();
+      final results = await Future.wait<Object?>([
+        ref.read(fetRepositoryProvider).loadWallet(),
+        RewardStoreContent.loadOptions(),
+      ]);
+      final wallet = results[0] as FetWalletSummary?;
+      final rewardOptions = results[1]! as List<FetRewardOption>;
       if (!mounted) {
         return;
       }
       setState(() {
         _wallet = wallet;
+        _rewardOptions = rewardOptions;
         _isLoading = false;
         _error = null;
       });
@@ -109,6 +116,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
   @override
   Widget build(BuildContext context) {
     final wallet = _wallet;
+    final rewardOptions = _rewardOptions;
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -181,7 +189,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  ...fetRewardOptions.map((option) {
+                  ...rewardOptions.map((option) {
                     final cost = _costFor(option.cost);
                     final affordable = (wallet?.balance ?? 0) >= cost;
                     return Padding(

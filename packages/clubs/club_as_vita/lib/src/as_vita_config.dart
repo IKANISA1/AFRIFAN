@@ -8,7 +8,10 @@ class AsVitaConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: '6');
+      ClubConfig.requireDefine(
+        const String.fromEnvironment('CLUB_ID'),
+        'CLUB_ID',
+      );
 
   @override
   String get clubName => 'AS Vita Club';
@@ -46,16 +49,15 @@ class AsVitaConfig implements ClubConfig {
   String get crestAsset => 'assets/crest/as_vita_crest.png';
 
   @override
-  String get supabaseUrl => const String.fromEnvironment(
+  String get supabaseUrl => ClubConfig.requireDefine(
+    const String.fromEnvironment('SUPABASE_URL'),
     'SUPABASE_URL',
-    defaultValue: 'https://mmpbzcdhfvplxplnfucy.supabase.co',
   );
 
   @override
-  String get supabaseAnonKey => const String.fromEnvironment(
+  String get supabaseAnonKey => ClubConfig.requireDefine(
+    const String.fromEnvironment('SUPABASE_ANON_KEY'),
     'SUPABASE_ANON_KEY',
-    defaultValue:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tcGJ6Y2RoZnZwbHhwbG5mdWN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDM2MTYsImV4cCI6MjA4ODcxOTYxNn0.Ojw-vQ6aEJjyuZU4nReP4ynxJ2XjD5L6n6TxhLlzeeQ',
   );
 
   @override

@@ -126,7 +126,7 @@ class PredictionShareCard extends StatelessWidget {
           ],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
+        border: BorderTokens.all(
           color: color.withValues(alpha: 0.2),
           width: 1.5,
         ),

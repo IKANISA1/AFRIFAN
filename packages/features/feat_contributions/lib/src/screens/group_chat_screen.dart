@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class GroupChatScreen extends ConsumerStatefulWidget {
   const GroupChatScreen({required this.groupId, super.key});
@@ -24,18 +25,18 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
   String _groupName = 'GROUP CHAT';
   int _memberCount = 0;
   String? _error;
-  RealtimeChannel? _channel;
+  RealtimeService? _realtimeService;
 
   @override
   void initState() {
     super.initState();
     _loadMessages();
-    _subscribe();
+    unawaited(_subscribe());
   }
 
   @override
   void dispose() {
-    _channel?.unsubscribe();
+    unawaited(_realtimeService?.dispose());
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -122,22 +123,35 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
     }
   }
 
-  void _subscribe() {
-    _channel = ref
-        .read(supabaseClientProvider)
-        .channel('group-chat-${widget.groupId}')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.all,
-          schema: 'public',
-          table: 'group_messages',
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.eq,
-            column: 'group_id',
-            value: widget.groupId,
-          ),
-          callback: (_) => _loadMessages(),
-        )
-        .subscribe();
+  Future<void> _subscribe() async {
+    try {
+      final client = ref.read(supabaseClientProvider);
+      final scope = await ClubScopeResolver(client: client).requireResolved();
+      await _realtimeService?.dispose();
+
+      final realtimeService = RealtimeService(
+        clubId: _realtimeScopeId(scope),
+        client: client,
+      );
+      realtimeService.onTableChanges(
+        table: 'group_messages',
+        filterColumn: 'group_id',
+        filterValue: widget.groupId,
+        callback: (_) => _loadMessages(),
+      );
+
+      if (!mounted) {
+        await realtimeService.dispose();
+        return;
+      }
+      _realtimeService = realtimeService;
+    } catch (_) {
+      // Subscription is best-effort; initial load still drives the screen.
+    }
+  }
+
+  String _realtimeScopeId(ClubScope scope) {
+    return scope.clubId?.toString() ?? scope.partnerId;
   }
 
   Future<void> _sendMessage() async {

@@ -125,25 +125,26 @@ class _NavItem extends StatelessWidget {
                 ? ColorTokens.primaryContainer
                 : ColorTokens.onSurfaceVariant,
           ),
-          AnimatedSize(
-            duration: const Duration(milliseconds: 180),
-            curve: Curves.easeOut,
-            child: isActive
-                ? Padding(
-                    padding: const EdgeInsets.only(
-                      left: SpacingTokens.spacing2,
+          if (isActive)
+            Flexible(
+              child: AnimatedSize(
+                duration: const Duration(milliseconds: 180),
+                curve: Curves.easeOut,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: SpacingTokens.spacing2,
+                  ),
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TypographyTokens.labelSmall(
+                      ColorTokens.primaryContainer,
                     ),
-                    child: Text(
-                      label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TypographyTokens.labelSmall(
-                        ColorTokens.primaryContainer,
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

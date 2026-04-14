@@ -1,0 +1,137 @@
+import 'dart:convert';
+
+import 'package:core_utils/core_utils.dart';
+import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
+
+/// Generic key-value cache backed by Hive with TTL support.
+///
+/// Designed for offline-first scenarios on African mobile networks where
+/// connectivity is intermittent. Cached data enables graceful degradation
+/// (stale data > blank screen).
+///
+/// Usage:
+/// ```dart
+/// // Cache fixtures for 10 minutes
+/// await HiveCacheService.putJson(
+///   'fixtures_scheduled',
+///   fixtureListJson,
+///   ttl: const Duration(minutes: 10),
+/// );
+///
+/// // Retrieve (returns null if expired or missing)
+/// final cached = HiveCacheService.getJson('fixtures_scheduled');
+/// ```
+class HiveCacheService {
+  HiveCacheService._();
+
+  static const _tag = 'HiveCache';
+  static const _boxName = 'africlub_cache';
+  static const _metaPrefix = '__meta__';
+
+  static Box<String>? _box;
+  static bool _initialized = false;
+
+  /// Initialize the cache box. Must be called after [Hive.initFlutter()].
+  static Future<void> initialize() async {
+    if (_initialized) return;
+
+    try {
+      _box = await Hive.openBox<String>(_boxName);
+      _initialized = true;
+      AfriLogger.info(_tag, 'Cache initialized (${_box!.length} entries).');
+    } catch (error, stackTrace) {
+      AfriLogger.error(_tag, 'Failed to initialize cache.', error, stackTrace);
+      // Cache failure is non-fatal — the app works without it.
+    }
+  }
+
+  /// Store a JSON-serializable value with optional TTL.
+  ///
+  /// If [ttl] is null, the entry never expires.
+  static Future<void> putJson(String key, Object value, {Duration? ttl}) async {
+    final box = _box;
+    if (box == null) return;
+
+    try {
+      final encoded = jsonEncode(value);
+      await box.put(key, encoded);
+
+      if (ttl != null) {
+        final expiresAt = DateTime.now().toUtc().add(ttl).toIso8601String();
+        await box.put('$_metaPrefix$key', expiresAt);
+      } else {
+        await box.delete('$_metaPrefix$key');
+      }
+    } catch (error) {
+      AfriLogger.warn(_tag, 'Failed to cache "$key": $error');
+    }
+  }
+
+  /// Retrieve a cached JSON value.
+  ///
+  /// Returns `null` if the key doesn't exist or has expired.
+  /// Expired entries are cleaned up lazily on read.
+  static T? getJson<T>(String key, {bool allowExpired = false}) {
+    final box = _box;
+    if (box == null) return null;
+
+    try {
+      // Check TTL first.
+      final metaKey = '$_metaPrefix$key';
+      final expiresAtStr = box.get(metaKey);
+      if (expiresAtStr != null) {
+        final expiresAt = DateTime.tryParse(expiresAtStr);
+        if (expiresAt != null && DateTime.now().toUtc().isAfter(expiresAt)) {
+          if (!allowExpired) {
+            return null;
+          }
+        }
+      }
+
+      final raw = box.get(key);
+      if (raw == null) return null;
+      return jsonDecode(raw) as T;
+    } catch (error) {
+      AfriLogger.warn(_tag, 'Failed to read "$key": $error');
+      return null;
+    }
+  }
+
+  /// Check if a non-expired cache entry exists.
+  static bool has(String key) => getJson<Object>(key) != null;
+
+  /// Remove a specific cache entry.
+  static Future<void> remove(String key) async {
+    final box = _box;
+    if (box == null) return;
+
+    await box.delete(key);
+    await box.delete('$_metaPrefix$key');
+  }
+
+  /// Clear all cached entries.
+  static Future<void> clear() async {
+    final box = _box;
+    if (box == null) return;
+
+    await box.clear();
+    AfriLogger.info(_tag, 'Cache cleared.');
+  }
+
+  /// Number of entries (including metadata).
+  static int get length => _box?.length ?? 0;
+
+  @visibleForTesting
+  static Future<void> resetForTest({bool deleteBox = false}) async {
+    final box = _box;
+    _box = null;
+    _initialized = false;
+    if (box != null && box.isOpen) {
+      await box.close();
+    }
+    if (deleteBox) {
+      await Hive.deleteBoxFromDisk(_boxName);
+    }
+  }
+}

@@ -22,10 +22,7 @@ void main() {
 
     test('requireData throws on failure', () {
       const result = RpcResult<int>.failure('fail');
-      expect(
-        () => result.requireData,
-        throwsA(isA<StateError>()),
-      );
+      expect(() => result.requireData, throwsA(isA<StateError>()));
     });
 
     test('success with null data', () {
@@ -92,13 +89,33 @@ void main() {
       expect(result.isSuccess, isTrue);
       expect(result.data, isNull);
     });
+
+    test('retries transient failures before succeeding', () async {
+      var attempts = 0;
+      final result = await SafeRpc.query<int>(
+        () async {
+          attempts += 1;
+          if (attempts < 3) {
+            throw const SocketException('temporary outage');
+          }
+          return 42;
+        },
+        tag: 'Test',
+        description: 'retry query',
+        maxAttempts: 3,
+        backoffBase: Duration.zero,
+      );
+
+      expect(result.isSuccess, isTrue);
+      expect(result.requireData, equals(42));
+      expect(attempts, equals(3));
+    });
   });
 
   group('SafeRpc error normalization', () {
     test('normalizes SocketException to user-friendly message', () async {
       final result = await SafeRpc.query<int>(
-        () async =>
-            throw const SocketException('Connection refused'),
+        () async => throw const SocketException('Connection refused'),
         tag: 'Test',
         description: 'socket test',
       );

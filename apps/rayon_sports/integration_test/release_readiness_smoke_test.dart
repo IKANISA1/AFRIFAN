@@ -150,9 +150,9 @@ void main() {
     },
   );
 
-  testWidgets('current production release keeps BioPay entry points visible', (
-    tester,
-  ) async {
+  testWidgets(
+    'current production release keeps settings streamlined while BioPay stays enabled',
+    (tester) async {
     tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(
           accessibleNavigation: true,
@@ -190,14 +190,16 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text('BioPay & Privacy'), 240);
-    await _pumpUntilVisible(tester, find.text('BioPay & Privacy'));
+    await tester.scrollUntilVisible(find.text('Help & Support'), 240);
+    await _pumpUntilVisible(tester, find.text('Help & Support'));
 
-    expect(find.text('BioPay & Privacy'), findsOneWidget);
     expect(find.text('Privacy controls'), findsOneWidget);
-    expect(find.text('BioPay home'), findsOneWidget);
-    expect(find.text('Face ID & enrollment'), findsOneWidget);
-  });
+    expect(find.text('Help & Support'), findsOneWidget);
+    expect(find.text('BioPay & Privacy'), findsNothing);
+    expect(find.text('BioPay home'), findsNothing);
+    expect(find.text('Face ID & enrollment'), findsNothing);
+  },
+  );
 }
 
 class _FakeAuthRepository extends AuthRepository {

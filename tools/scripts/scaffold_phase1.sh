@@ -253,8 +253,6 @@ dependencies:
     path: ../../packages/core/core_network
   core_router:
     path: ../../packages/core/core_router
-  core_di:
-    path: ../../packages/core/core_di
   core_utils:
     path: ../../packages/core/core_utils
 

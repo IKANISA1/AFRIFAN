@@ -14,7 +14,10 @@ class RayonSportsConfig implements ClubConfig {
 
   @override
   String get clubId =>
-      const String.fromEnvironment('CLUB_ID', defaultValue: '24');
+      ClubConfig.requireDefine(
+        const String.fromEnvironment('CLUB_ID'),
+        'CLUB_ID',
+      );
 
   @override
   String get clubName => 'Rayon Sports FC';
@@ -55,28 +58,20 @@ class RayonSportsConfig implements ClubConfig {
   /// Never commit default values for backend credentials.
   @override
   String get supabaseUrl {
-    const url = String.fromEnvironment('SUPABASE_URL');
-    if (url.isEmpty) {
-      throw StateError(
-        'SUPABASE_URL must be provided via --dart-define. '
-        'See the release checklist for build instructions.',
-      );
-    }
-    return url;
+    return ClubConfig.requireDefine(
+      const String.fromEnvironment('SUPABASE_URL'),
+      'SUPABASE_URL',
+    );
   }
 
   /// Supabase anon key — MUST be provided via `--dart-define=SUPABASE_ANON_KEY=...`.
   /// Never commit default values for backend credentials.
   @override
   String get supabaseAnonKey {
-    const key = String.fromEnvironment('SUPABASE_ANON_KEY');
-    if (key.isEmpty) {
-      throw StateError(
-        'SUPABASE_ANON_KEY must be provided via --dart-define. '
-        'See the release checklist for build instructions.',
-      );
-    }
-    return key;
+    return ClubConfig.requireDefine(
+      const String.fromEnvironment('SUPABASE_ANON_KEY'),
+      'SUPABASE_ANON_KEY',
+    );
   }
 
   @override

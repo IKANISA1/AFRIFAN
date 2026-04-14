@@ -1,7 +1,6 @@
-import 'package:flutter/widgets.dart';
-
 import 'package:core_utils/core_utils.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/widgets.dart';
 
 import 'firebase_bootstrap_service.dart';
 
