@@ -9,10 +9,106 @@ import '../widgets/match_card.dart';
 
 enum HomeFeedStatus { success, degraded, empty, error }
 
+class HomeQuickAction {
+  const HomeQuickAction({
+    required this.actionKey,
+    required this.title,
+    required this.route,
+    required this.iconKey,
+    this.subtitle,
+    this.emoji,
+    this.countryCode,
+    this.sortOrder = 0,
+    this.isActive = true,
+  });
+
+  final String actionKey;
+  final String title;
+  final String route;
+  final String iconKey;
+  final String? subtitle;
+  final String? emoji;
+  final String? countryCode;
+  final int sortOrder;
+  final bool isActive;
+
+  factory HomeQuickAction.fromJson(Map<String, dynamic> json) {
+    return HomeQuickAction(
+      actionKey: json['action_key']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      route: json['route']?.toString() ?? '',
+      iconKey: json['icon_key']?.toString() ?? '',
+      subtitle: json['subtitle']?.toString(),
+      emoji: json['emoji']?.toString(),
+      countryCode: json['country']?.toString(),
+      sortOrder: (json['sort_order'] as num?)?.toInt() ?? 0,
+      isActive: json['is_active'] != false,
+    );
+  }
+
+  static const List<HomeQuickAction> fallbackItems = <HomeQuickAction>[
+    HomeQuickAction(
+      actionKey: 'predict',
+      title: 'Predict',
+      route: '/fanzone/fixtures',
+      iconKey: 'predict',
+      subtitle: 'Open fixtures',
+      emoji: '⚽',
+      sortOrder: 10,
+    ),
+    HomeQuickAction(
+      actionKey: 'my_picks',
+      title: 'My Picks',
+      route: '/fanzone/my',
+      iconKey: 'myPicks',
+      subtitle: 'Track slips',
+      emoji: '🧾',
+      sortOrder: 20,
+    ),
+    HomeQuickAction(
+      actionKey: 'live',
+      title: 'Live',
+      route: '/live',
+      iconKey: 'live',
+      subtitle: 'Watch matchday',
+      emoji: '📺',
+      sortOrder: 30,
+    ),
+    HomeQuickAction(
+      actionKey: 'leaderboard',
+      title: 'Leaderboard',
+      route: '/fanzone/leaderboard',
+      iconKey: 'leaderboard',
+      subtitle: 'Top supporters',
+      emoji: '🏆',
+      sortOrder: 40,
+    ),
+    HomeQuickAction(
+      actionKey: 'wallet',
+      title: 'Wallet',
+      route: '/fanzone/wallet',
+      iconKey: 'wallet',
+      subtitle: 'FET balance',
+      emoji: '💳',
+      sortOrder: 50,
+    ),
+    HomeQuickAction(
+      actionKey: 'tickets',
+      title: 'Tickets',
+      route: '/tickets',
+      iconKey: 'tickets',
+      subtitle: 'Club access',
+      emoji: '🎟️',
+      sortOrder: 60,
+    ),
+  ];
+}
+
 class HomeFeedSnapshot {
   const HomeFeedSnapshot({
     this.heroSlides = const <MatchSlide>[],
     this.leaderboard = const <ContributorEntry>[],
+    this.quickActions = HomeQuickAction.fallbackItems,
     this.globalXp = 0,
     this.fanRank = 0,
     this.status = HomeFeedStatus.empty,
@@ -22,6 +118,7 @@ class HomeFeedSnapshot {
 
   final List<MatchSlide> heroSlides;
   final List<ContributorEntry> leaderboard;
+  final List<HomeQuickAction> quickActions;
   final int globalXp;
   final int fanRank;
   final HomeFeedStatus status;
@@ -31,6 +128,7 @@ class HomeFeedSnapshot {
   bool get hasStats => globalXp > 0 || fanRank > 0;
   bool get hasLeaderboard => leaderboard.isNotEmpty;
   bool get hasHeroSlides => heroSlides.isNotEmpty;
+  bool get hasQuickActions => quickActions.isNotEmpty;
   bool get hasAnyContent => hasHeroSlides || hasStats || hasLeaderboard;
 }
 
@@ -95,8 +193,39 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
 
     List<Map<String, dynamic>> memberships = const <Map<String, dynamic>>[];
     List<Map<String, dynamic>> matches = const <Map<String, dynamic>>[];
+    List<HomeQuickAction> quickActions = HomeQuickAction.fallbackItems;
     Object? membershipsError;
     Object? matchesError;
+    Object? quickActionsError;
+
+    try {
+      final activeCountryCode = RuntimeBranding.displayCountryCode
+          .trim()
+          .toUpperCase();
+      final actionRows = List<Map<String, dynamic>>.from(
+        await client
+            .from('quick_actions')
+            .select()
+            .eq('is_active', true)
+            .order('sort_order', ascending: true)
+            .order('title', ascending: true),
+      );
+
+      quickActions = actionRows
+          .map(HomeQuickAction.fromJson)
+          .where((action) {
+            final countryCode = action.countryCode?.trim().toUpperCase();
+            return countryCode == null ||
+                countryCode.isEmpty ||
+                countryCode == activeCountryCode;
+          })
+          .toList(growable: false);
+      if (quickActions.isEmpty) {
+        quickActions = HomeQuickAction.fallbackItems;
+      }
+    } catch (error) {
+      quickActionsError = error;
+    }
 
     try {
       var membershipsQuery = client.from('fan_memberships').select();
@@ -123,9 +252,10 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     }
 
     if (membershipsError != null && matchesError != null) {
-      return const HomeFeedSnapshot(
+      return HomeFeedSnapshot(
         status: HomeFeedStatus.error,
         message: 'Live club data is temporarily unavailable. Pull to refresh.',
+        quickActions: quickActions,
       );
     }
 
@@ -179,11 +309,13 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
       return HomeFeedSnapshot(
         heroSlides: heroSlides,
         leaderboard: leaderboard,
+        quickActions: quickActions,
         globalXp: globalXp,
         fanRank: fanRank,
         status: HomeFeedStatus.degraded,
-        message:
-            'Some live club data is temporarily unavailable. Pull to refresh.',
+        message: quickActionsError == null
+            ? 'Some live club data is temporarily unavailable. Pull to refresh.'
+            : 'Some live club data is temporarily unavailable. Home shortcuts are using fallback data.',
         showFixturePlaceholder: matchesError == null && heroSlides.isEmpty,
       );
     }
@@ -202,6 +334,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     return HomeFeedSnapshot(
       heroSlides: heroSlides,
       leaderboard: leaderboard,
+      quickActions: quickActions,
       globalXp: globalXp,
       fanRank: fanRank,
       status: HomeFeedStatus.success,
@@ -371,7 +504,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     }
 
     if ((status == 'LIVE' || status == 'HALF-TIME') && liveMinute != null) {
-      return '$status • ${liveMinute.toString()}\'';
+      return '$status • $liveMinute\'';
     }
 
     final local = matchDate.toLocal();

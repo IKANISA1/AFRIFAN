@@ -215,7 +215,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.close_rounded, color: ColorTokens.onSurface),
+            icon: Icon(AfriIcons.close, color: ColorTokens.onSurface),
             onPressed: () => context.pop(),
           ),
         ),
@@ -295,7 +295,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         ),
                         child: IconButton(
                           icon: Icon(
-                            Icons.arrow_back_rounded,
+                            AfriIcons.back,
                             color: ColorTokens.onSurface,
                           ),
                           onPressed: () {

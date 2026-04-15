@@ -130,9 +130,10 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
               onPressed: () => Navigator.of(context).pop(false),
               child: const Text('Not now'),
             ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Continue'),
+            AfriButton(
+              label: 'Continue',
+              onTap: () => Navigator.of(context).pop(true),
+              fullWidth: false,
             ),
           ],
         );
@@ -169,7 +170,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
           ),
           leading: IconButton(
             onPressed: () => closeSettingsChild(context),
-            icon: const Icon(Icons.arrow_back_rounded),
+            icon: const Icon(AfriIcons.back),
           ),
         ),
         body: settings == null

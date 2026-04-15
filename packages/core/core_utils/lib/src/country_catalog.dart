@@ -356,6 +356,15 @@ class AfriCountry {
 abstract final class AfriCountryCatalog {
   /// Built-in catalog entries loaded at runtime.
   static List<AfriCountry> _entries = <AfriCountry>[];
+  static String? _preferredCountryCode;
+
+  /// Sets the active country code for runtime fallback resolution.
+  static void setPreferredCountryCode(String? countryCode) {
+    final normalized = countryCode?.trim().toUpperCase();
+    _preferredCountryCode = normalized == null || normalized.isEmpty
+        ? null
+        : normalized;
+  }
 
   /// Inject club-specific countries (replaces built-in).
   static void withCountries(List<AfriCountry> countries) {
@@ -374,8 +383,22 @@ abstract final class AfriCountryCatalog {
   /// All registered countries.
   static List<AfriCountry> get all => _entries;
 
-  /// Default country (first in catalog).
-  static AfriCountry get defaultCountry => _entries.first;
+  /// Default country for the active app runtime.
+  static AfriCountry get defaultCountry {
+    if (_entries.isEmpty) {
+      throw StateError('AfriCountryCatalog has no registered countries.');
+    }
+
+    final preferred = _preferredCountryCode;
+    if (preferred != null) {
+      final match = byIsoCode(preferred, source: _entries);
+      if (match != null) {
+        return match;
+      }
+    }
+
+    return _entries.first;
+  }
 
   /// Lookup by ISO code or alias.
   static AfriCountry? byIsoCode(

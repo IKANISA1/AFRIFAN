@@ -45,7 +45,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: ColorTokens.onSurface),
+          icon: Icon(AfriIcons.back, color: ColorTokens.onSurface),
           onPressed: () => context.pop(),
         ),
         title: Text('TICKETS', style: TypographyTokens.headlineLarge()),
@@ -70,7 +70,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
           ),
           IconButton(
             icon: Icon(
-              Icons.refresh_rounded,
+              AfriIcons.refresh,
               color: ColorTokens.onSurface,
             ),
             onPressed: () => ref.invalidate(ticketMatchesProvider),
@@ -268,21 +268,11 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                       ),
                     ],
                   );
-                  final actionButton = FilledButton(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: ColorTokens.clubPrimary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: ShapeTokens.buttonRadius,
-                      ),
-                    ),
-                    onPressed: () =>
+                  final actionButton = AfriButton(
+                    label: 'Buy ticket',
+                    fullWidth: false,
+                    onTap: () =>
                         context.push('/tickets/detail/${match.id}'),
-                    child: Text(
-                      'Buy Ticket',
-                      style: TypographyTokens.labelLarge().copyWith(
-                        color: ColorTokens.onSurface,
-                      ),
-                    ),
                   );
                   final isCompactActionRow =
                       onSale && constraints.maxWidth < 360;

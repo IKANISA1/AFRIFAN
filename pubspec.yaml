@@ -11,6 +11,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_riverpod: ^2.6.1
+  flutter_secure_storage: ^9.2.4
   equatable: ^2.0.7
   hive: ^2.2.3
   crypto: ^3.0.6
@@ -54,7 +55,6 @@ workspace:
   - packages/features/feat_home
   - packages/features/feat_fan_clubs
   - packages/features/feat_live
-  - packages/features/feat_prediction
   - packages/features/feat_membership
   - packages/features/feat_gamification
   - packages/features/feat_contributions

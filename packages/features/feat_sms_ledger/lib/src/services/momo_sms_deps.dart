@@ -118,9 +118,27 @@ typedef OperationalHealthService = core_network.OperationalHealthService;
 
 typedef OpenHiveBox<T> = Future<Box<T>> Function(String boxName);
 
+/// Opens a Hive box with encryption if available.
+///
+/// Boxes containing PII or financial data (e.g. MoMo SMS retry queue)
+/// are encrypted at rest using the key stored in the OS keychain.
+///
+/// On first launch after the encryption upgrade, existing unencrypted boxes
+/// are deleted and recreated — queued retries are lost as a one-time cost.
 Future<Box<T>> openHiveBox<T>(String boxName) async {
+  final cipher = core_network.HiveEncryptionService.cipher;
   if (!Hive.isBoxOpen(boxName)) {
-    return await Hive.openBox<T>(boxName);
+    try {
+      return await Hive.openBox<T>(boxName, encryptionCipher: cipher);
+    } catch (_) {
+      // Migration: existing unencrypted box → delete and re-open encrypted.
+      try {
+        await Hive.deleteBoxFromDisk(boxName);
+      } catch (_) {
+        // Best-effort cleanup.
+      }
+      return await Hive.openBox<T>(boxName, encryptionCipher: cipher);
+    }
   }
   return Hive.box<T>(boxName);
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,14 +26,14 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
   @override
   void initState() {
     super.initState();
-    _load();
+    unawaited(_load());
   }
 
   Future<void> _load() async {
     try {
       final results = await Future.wait<Object?>([
         ref.read(fetRepositoryProvider).loadWallet(),
-        RewardStoreContent.loadOptions(),
+        ref.read(fetRepositoryProvider).loadRewardStoreItems(),
       ]);
       final wallet = results[0] as FetWalletSummary?;
       final rewardOptions = results[1]! as List<FetRewardOption>;
@@ -55,12 +57,8 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
     }
   }
 
-  int _costFor(String costLabel) {
-    return int.tryParse(costLabel.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
-  }
-
   Future<void> _redeem(FetRewardOption option) async {
-    final cost = _costFor(option.cost);
+    final cost = option.costFet;
     if (cost <= 0 || _isSubmitting) {
       return;
     }
@@ -132,7 +130,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
       ),
       body: _isLoading
@@ -190,7 +188,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
                   ...rewardOptions.map((option) {
-                    final cost = _costFor(option.cost);
+                    final cost = option.costFet;
                     final affordable = (wallet?.balance ?? 0) >= cost;
                     return Padding(
                       padding: const EdgeInsets.only(

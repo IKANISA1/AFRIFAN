@@ -1,7 +1,7 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
-/// Home summary metrics.
+/// Home summary metrics — using shared AfriStatRow for consistency.
 class StatsRow extends StatelessWidget {
   final int globalFet;
   final int fanRank;
@@ -25,25 +25,18 @@ class StatsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: AfriMetricTile(
-            label: 'FET',
-            value: _formatFet(globalFet),
-            meta: 'Supporter total',
-            icon: Icons.auto_graph_rounded,
-          ),
+    return AfriStatRow(
+      stats: [
+        AfriStat(
+          label: 'FET',
+          value: _formatFet(globalFet),
+          icon: AfriIcons.earn,
         ),
-        const SizedBox(width: SpacingTokens.spacing3),
-        Expanded(
-          child: AfriMetricTile(
-            label: 'Rank',
-            value: '#${fanRank.toString().padLeft(3, '0')}',
-            meta: 'Club standing',
-            icon: Icons.leaderboard_outlined,
-            accentColor: ColorTokens.clubAccent,
-          ),
+        AfriStat(
+          label: 'Rank',
+          value: '#${fanRank.toString().padLeft(3, '0')}',
+          icon: AfriIcons.rank,
+          accentColor: ColorTokens.clubAccent,
         ),
       ],
     );

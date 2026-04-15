@@ -92,7 +92,7 @@ class _PredictionNotificationsScreenState
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
       ),
       body: _isLoading
@@ -125,7 +125,7 @@ class _PredictionNotificationsScreenState
                           title: 'No prediction alerts yet',
                           message:
                               'Settlement and result notifications will appear here as your predictions complete.',
-                          icon: Icons.notifications_none_rounded,
+                          icon: AfriIcons.notifications,
                         ),
                       ],
                     )

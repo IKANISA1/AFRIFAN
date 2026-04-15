@@ -20,6 +20,9 @@ class PredictionRepository {
   static const _catalogCacheTtl = Duration(hours: 6);
   static const _userCacheTtl = Duration(minutes: 2);
   static const _communityCacheTtl = Duration(minutes: 5);
+  static const _fixturesCatalog = 'prediction_supported_fixtures_catalog';
+  static const _competitionsCatalog =
+      'prediction_supported_competitions_catalog';
 
   // ── Fixtures ──────────────────────────────────────────────────────────
 
@@ -40,7 +43,7 @@ class PredictionRepository {
       ttl: _fixturesCacheTtl,
       description: 'loadFixtures(status=$status)',
       request: () async {
-        var filter = _client.from('football_fixtures_catalog').select();
+        var filter = _client.from(_fixturesCatalog).select();
 
         if (status != null && status.trim().isNotEmpty) {
           filter = filter.eq('status', status);
@@ -70,7 +73,7 @@ class PredictionRepository {
       description: 'loadFixture($fixtureId)',
       request: () async {
         final row = await _client
-            .from('football_fixtures_catalog')
+            .from(_fixturesCatalog)
             .select()
             .eq('id', fixtureId)
             .maybeSingle();
@@ -174,14 +177,20 @@ class PredictionRepository {
 
   Future<List<PredictionLeaderboardEntry>> loadLeaderboard({
     int limit = 20,
+    String? scope,
+    String? period,
   }) async {
-    final cacheKey = _cacheKey('leaderboard', <Object?>[limit]);
+    final cacheKey = _cacheKey('leaderboard', <Object?>[limit, scope, period]);
     final result = await SafeRpc.query<List<Map<String, dynamic>>>(
-      () async => List<Map<String, dynamic>>.from(
-        await _client.from('prediction_leaderboard').select().limit(limit),
-      ),
+      () async {
+        var query = _client.from('prediction_leaderboard').select();
+        if (scope != null && scope.isNotEmpty) {
+          query = query.eq('scope', scope);
+        }
+        return List<Map<String, dynamic>>.from(await query.limit(limit));
+      },
       tag: _tag,
-      description: 'loadLeaderboard',
+      description: 'loadLeaderboard(scope=$scope, period=$period)',
       maxAttempts: 3,
     );
 
@@ -353,23 +362,6 @@ class PredictionRepository {
 
   // ── Competitions ──────────────────────────────────────────────────────
 
-  Future<List<Map<String, dynamic>>> loadCompetitions() async {
-    return _cachedRawListQuery(
-      cacheKey: _cacheKey('competitions'),
-      ttl: _catalogCacheTtl,
-      description: 'loadCompetitions',
-      request: () async {
-        return List<Map<String, dynamic>>.from(
-          await _client
-              .from('football_competitions_catalog')
-              .select('id, slug, name, short_name, region, country_code')
-              .eq('is_active', true)
-              .order('name', ascending: true),
-        );
-      },
-    );
-  }
-
   Future<List<CompetitionCatalogItem>> loadCompetitionCatalog() async {
     return _cachedListQuery(
       cacheKey: _cacheKey('competition_catalog'),
@@ -378,10 +370,11 @@ class PredictionRepository {
       request: () async {
         final rows = List<Map<String, dynamic>>.from(
           await _client
-              .from('football_competitions_catalog')
+              .from(_competitionsCatalog)
               .select()
+              .eq('is_supported', true)
               .eq('is_active', true)
-              .order('name', ascending: true),
+              .order('support_sort_order', ascending: true),
         );
 
         return rows;
@@ -399,8 +392,9 @@ class PredictionRepository {
       description: 'loadCompetition($competitionSlug)',
       request: () async {
         final row = await _client
-            .from('football_competitions_catalog')
+            .from(_competitionsCatalog)
             .select()
+            .eq('is_supported', true)
             .eq('slug', competitionSlug)
             .maybeSingle();
 
@@ -488,7 +482,7 @@ class PredictionRepository {
       description: 'loadTeamFixtures($teamSlug)',
       request: () async {
         var query = _client
-            .from('football_fixtures_catalog')
+            .from(_fixturesCatalog)
             .select()
             .or('home_team_slug.eq.$teamSlug,away_team_slug.eq.$teamSlug');
 
@@ -550,6 +544,118 @@ class PredictionRepository {
     );
   }
 
+  // ── H2H Encounters ────────────────────────────────────────────────────
+
+  /// Loads head-to-head encounters between two teams.
+  ///
+  /// Returns recent matches from the supported prediction fixtures catalog where one team
+  /// is home and the other is away (and vice versa). No dedicated H2H table
+  /// exists — we query finished fixtures for the two team slugs.
+  Future<List<Map<String, dynamic>>> loadH2hEncounters({
+    required String homeTeamSlug,
+    required String awayTeamSlug,
+    int limit = 10,
+  }) async {
+    return _cachedRawListQuery(
+      cacheKey: _cacheKey('h2h', <Object?>[homeTeamSlug, awayTeamSlug, limit]),
+      ttl: _detailCacheTtl,
+      description: 'loadH2h($homeTeamSlug vs $awayTeamSlug)',
+      request: () async {
+        // Match A vs B OR B vs A in finished fixtures.
+        final rows = List<Map<String, dynamic>>.from(
+          await _client
+              .from(_fixturesCatalog)
+              .select()
+              .eq('status', 'finished')
+              .or(
+                'and(home_team_slug.eq.$homeTeamSlug,away_team_slug.eq.$awayTeamSlug),'
+                'and(home_team_slug.eq.$awayTeamSlug,away_team_slug.eq.$homeTeamSlug)',
+              )
+              .order('kickoff_at', ascending: false)
+              .limit(limit),
+        );
+        return rows;
+      },
+    );
+  }
+
+  // ── Lineups ────────────────────────────────────────────────────────────
+
+  /// Loads fixture lineups from `football_roster_catalog` for both teams.
+  ///
+  /// No dedicated lineups table exists per fixture; we return the current
+  /// active roster for both teams as a proxy. When lineups become available
+  /// via an external data provider, swap this for a dedicated table query.
+  Future<Map<String, List<Map<String, dynamic>>>> loadFixtureLineups({
+    required String homeTeamSlug,
+    required String awayTeamSlug,
+  }) async {
+    final homeRoster = await _cachedRawListQuery(
+      cacheKey: _cacheKey('lineup_home', <Object?>[homeTeamSlug]),
+      ttl: _catalogCacheTtl,
+      description: 'loadLineupHome($homeTeamSlug)',
+      request: () async {
+        return List<Map<String, dynamic>>.from(
+          await _client
+              .from('football_roster_catalog')
+              .select()
+              .eq('team_slug', homeTeamSlug)
+              .eq('is_active', true)
+              .order('squad_number', ascending: true)
+              .limit(25),
+        );
+      },
+    );
+
+    final awayRoster = await _cachedRawListQuery(
+      cacheKey: _cacheKey('lineup_away', <Object?>[awayTeamSlug]),
+      ttl: _catalogCacheTtl,
+      description: 'loadLineupAway($awayTeamSlug)',
+      request: () async {
+        return List<Map<String, dynamic>>.from(
+          await _client
+              .from('football_roster_catalog')
+              .select()
+              .eq('team_slug', awayTeamSlug)
+              .eq('is_active', true)
+              .order('squad_number', ascending: true)
+              .limit(25),
+        );
+      },
+    );
+
+    return <String, List<Map<String, dynamic>>>{
+      'home': homeRoster,
+      'away': awayRoster,
+    };
+  }
+
+  // ── Profile ────────────────────────────────────────────────────────────
+
+  /// Updates the current user's profile (display_name, club_id, etc.)
+  /// for onboarding and privacy settings.
+  Future<bool> updateProfile(Map<String, dynamic> updates) async {
+    final userId = _client.auth.currentUser?.id;
+    if (userId == null) return false;
+
+    final result = await SafeRpc.query<void>(
+      () async {
+        await _client.from('profiles').update(updates).eq('id', userId);
+      },
+      tag: _tag,
+      description: 'updateProfile',
+      maxAttempts: 2,
+    );
+
+    return result.isSuccess;
+  }
+
+  /// Returns the current authenticated user ID, or null.
+  String? get currentUserId => _client.auth.currentUser?.id;
+
+  /// Whether the current user is authenticated.
+  bool get isAuthenticated => _client.auth.currentUser != null;
+
   // ── Badges ──────────────────────────────────────────────────────────
 
   Future<List<PredictionBadge>> loadUserBadges() async {
@@ -601,6 +707,92 @@ class PredictionRepository {
       },
       decoder: PredictionNotification.fromJson,
     );
+  }
+
+  // ── Calendar-based Fixture Loading ──────────────────────────────────
+
+  /// Loads fixtures for a specific date range via the `fixtures_calendar` RPC.
+  Future<List<FixtureSummary>> loadFixturesByDate({
+    required DateTime dateFrom,
+    required DateTime dateTo,
+    String? competitionSlug,
+    String? status,
+    int limit = 200,
+  }) async {
+    final fromStr =
+        '${dateFrom.year}-${dateFrom.month.toString().padLeft(2, '0')}-${dateFrom.day.toString().padLeft(2, '0')}';
+    final toStr =
+        '${dateTo.year}-${dateTo.month.toString().padLeft(2, '0')}-${dateTo.day.toString().padLeft(2, '0')}';
+
+    final cacheKey = _cacheKey('cal_fixtures', <Object?>[
+      fromStr,
+      toStr,
+      competitionSlug,
+      status,
+      limit,
+    ]);
+
+    final result = await SafeRpc.call(
+      'fixtures_calendar',
+      params: <String, dynamic>{
+        'p_date_from': fromStr,
+        'p_date_to': toStr,
+        if (competitionSlug != null) 'p_competition_slug': competitionSlug,
+        if (status != null) 'p_status': status,
+        'p_limit': limit,
+      },
+      tag: _tag,
+    );
+
+    if (result.isSuccess && result.data is List) {
+      final rows = (result.data as List)
+          .whereType<Map>()
+          .map((row) => Map<String, dynamic>.from(row))
+          .toList(growable: false);
+      await HiveCacheService.putJson(cacheKey, rows, ttl: _fixturesCacheTtl);
+      return rows.map(FixtureSummary.fromJson).toList(growable: false);
+    }
+
+    return _readCachedList(cacheKey, FixtureSummary.fromJson);
+  }
+
+  /// Returns a summary of fixture counts per date for calendar indicators.
+  Future<List<FixtureDateSummary>> loadFixtureDateSummary({
+    required DateTime dateFrom,
+    required DateTime dateTo,
+    String? competitionSlug,
+  }) async {
+    final fromStr =
+        '${dateFrom.year}-${dateFrom.month.toString().padLeft(2, '0')}-${dateFrom.day.toString().padLeft(2, '0')}';
+    final toStr =
+        '${dateTo.year}-${dateTo.month.toString().padLeft(2, '0')}-${dateTo.day.toString().padLeft(2, '0')}';
+
+    final cacheKey = _cacheKey('cal_summary', <Object?>[
+      fromStr,
+      toStr,
+      competitionSlug,
+    ]);
+
+    final result = await SafeRpc.call(
+      'fixtures_date_summary',
+      params: <String, dynamic>{
+        'p_date_from': fromStr,
+        'p_date_to': toStr,
+        if (competitionSlug != null) 'p_competition_slug': competitionSlug,
+      },
+      tag: _tag,
+    );
+
+    if (result.isSuccess && result.data is List) {
+      final rows = (result.data as List)
+          .whereType<Map>()
+          .map((row) => Map<String, dynamic>.from(row))
+          .toList(growable: false);
+      await HiveCacheService.putJson(cacheKey, rows, ttl: _fixturesCacheTtl);
+      return rows.map(FixtureDateSummary.fromJson).toList(growable: false);
+    }
+
+    return _readCachedList(cacheKey, FixtureDateSummary.fromJson);
   }
 
   Future<void> _clearUserCaches() async {

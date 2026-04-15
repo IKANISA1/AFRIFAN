@@ -4,6 +4,8 @@ import 'package:core_utils/core_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
+import 'hive_encryption_service.dart';
+
 /// Generic key-value cache backed by Hive with TTL support.
 ///
 /// Designed for offline-first scenarios on African mobile networks where
@@ -32,15 +34,36 @@ class HiveCacheService {
   static Box<String>? _box;
   static bool _initialized = false;
 
-  /// Initialize the cache box. Must be called after [Hive.initFlutter()].
+  /// Initialize the cache box. Must be called after [Hive.initFlutter()]
+  /// and [HiveEncryptionService.initialize()].
   static Future<void> initialize() async {
     if (_initialized) return;
 
     try {
-      _box = await Hive.openBox<String>(_boxName);
+      _box = await Hive.openBox<String>(
+        _boxName,
+        encryptionCipher: HiveEncryptionService.cipher,
+      );
       _initialized = true;
       AfriLogger.info(_tag, 'Cache initialized (${_box!.length} entries).');
     } catch (error, stackTrace) {
+      // Migration path: existing unencrypted box cannot be opened with cipher.
+      // Delete and recreate — cache is ephemeral, data loss is acceptable.
+      try {
+        await Hive.deleteBoxFromDisk(_boxName);
+        _box = await Hive.openBox<String>(
+          _boxName,
+          encryptionCipher: HiveEncryptionService.cipher,
+        );
+        _initialized = true;
+        AfriLogger.info(
+          _tag,
+          'Cache migrated to encrypted storage (old data cleared).',
+        );
+        return;
+      } catch (_) {
+        // Intentional fallthrough to original error handling.
+      }
       AfriLogger.error(_tag, 'Failed to initialize cache.', error, stackTrace);
       // Cache failure is non-fatal — the app works without it.
     }

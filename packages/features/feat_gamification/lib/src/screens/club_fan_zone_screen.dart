@@ -54,7 +54,14 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
         competitionSlug: selectedSlug,
         limit: 6,
       );
-      final fixtures = await repo.loadFixtures(
+      final now = DateTime.now();
+      final twoWeeks = now.add(const Duration(days: 14));
+      final dateFrom = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+      final dateTo = '${twoWeeks.year}-${twoWeeks.month.toString().padLeft(2, '0')}-${twoWeeks.day.toString().padLeft(2, '0')}';
+
+      final fixtures = await repo.loadFixturesByDate(
+        dateFrom: dateFrom,
+        dateTo: dateTo,
         competitionSlug: selectedSlug,
         status: 'scheduled',
         limit: 3,
@@ -119,7 +126,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
       ),
       body: _isLoading

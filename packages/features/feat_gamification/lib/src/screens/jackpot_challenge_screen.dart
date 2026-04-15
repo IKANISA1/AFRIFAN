@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../fet_providers.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/market_option_pill.dart';
@@ -24,6 +25,7 @@ class _JackpotChallengeScreenState
   bool _isLoading = true;
   bool _isSubmitting = false;
   String? _error;
+  String _prizePoolLabel = 'PRIZE POOL';
 
   @override
   void initState() {
@@ -39,7 +41,20 @@ class _JackpotChallengeScreenState
 
     try {
       final repo = ref.read(predictionRepositoryProvider);
-      final fixtures = await repo.loadFixtures(status: 'scheduled', limit: 10);
+      final fetRepo = ref.read(fetRepositoryProvider);
+
+      // Load fixtures via calendar API (next 7 days)
+      final now = DateTime.now();
+      final weekLater = now.add(const Duration(days: 7));
+      final dateFrom = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+      final dateTo = '${weekLater.year}-${weekLater.month.toString().padLeft(2, '0')}-${weekLater.day.toString().padLeft(2, '0')}';
+
+      final fixtures = await repo.loadFixturesByDate(
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        status: 'scheduled',
+        limit: 10,
+      );
       final marketResults = await Future.wait<List<FixtureMarket>>(
         fixtures.map((fixture) => repo.loadFixtureMarkets(fixture.id)),
       );
@@ -58,9 +73,26 @@ class _JackpotChallengeScreenState
       if (!mounted) {
         return;
       }
+
+      // Compute dynamic prize pool from FET catalog.
+      String prizeLabel = 'PRIZE POOL';
+      try {
+        final catalog = await fetRepo.loadCatalog();
+        if (catalog.isNotEmpty) {
+          final totalFet = catalog.fold<int>(
+            0,
+            (sum, item) => sum + item.fetValue,
+          );
+          prizeLabel = 'PRIZE POOL · ${_formatFet(totalFet)} FET';
+        }
+      } catch (_) {
+        // Keep default label.
+      }
+
       setState(() {
         _fixtures = jackpotFixtures;
         _leaders = leaders;
+        _prizePoolLabel = prizeLabel;
         _isLoading = false;
       });
     } catch (_) {
@@ -216,7 +248,7 @@ class _JackpotChallengeScreenState
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
       ),
       bottomNavigationBar: SafeArea(
@@ -282,7 +314,7 @@ class _JackpotChallengeScreenState
                             borderRadius: BorderRadius.circular(999),
                           ),
                           child: Text(
-                            'PRIZE POOL · 50,000 FET',
+                            _prizePoolLabel,
                             style: TypographyTokens.labelSmall(
                               ColorTokens.clubAccent,
                             ),
@@ -452,3 +484,14 @@ class _JackpotFixtureData {
   final FixtureSummary fixture;
   final FixtureMarket market;
 }
+
+String _formatFet(int value) {
+  if (value >= 1000000) {
+    return '${(value / 1000000).toStringAsFixed(1)}M';
+  }
+  if (value >= 1000) {
+    return '${(value / 1000).toStringAsFixed(value % 1000 == 0 ? 0 : 1)}k';
+  }
+  return value.toString();
+}
+

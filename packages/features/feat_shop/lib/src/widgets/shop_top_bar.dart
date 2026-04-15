@@ -27,7 +27,7 @@ class ShopTopBar extends StatelessWidget {
       child: Row(
         children: [
           AfriIconButton(
-            icon: Icons.arrow_back_rounded,
+            icon: AfriIcons.back,
             tooltip: 'Back',
             onTap: () {
               if (context.canPop()) {
@@ -42,7 +42,7 @@ class ShopTopBar extends StatelessWidget {
             child: Text('Shop', style: TypographyTokens.headlineSmall()),
           ),
           AfriIconButton(
-            icon: Icons.search_rounded,
+            icon: AfriIcons.search,
             tooltip: 'Search',
             onTap: onSearchPressed,
           ),

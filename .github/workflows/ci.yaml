@@ -56,7 +56,7 @@ jobs:
           done
 
       - name: Analyze (fatal infos + warnings)
-        run: melos exec -- dart analyze --fatal-infos --fatal-warnings
+        run: melos exec -- flutter analyze --fatal-infos --fatal-warnings
 
       - name: Run unit & widget tests with coverage
         run: melos exec --dir-exists="test" -- flutter test --coverage

@@ -1,4 +1,5 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class ProfileScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
     final profile = ref.watch(currentUserProvider);
+    final membershipSummary = ref.watch(_profileMembershipSummaryProvider);
     final alias = AliasGenerator.format(profile?.publicUserId ?? '000000');
 
     return Scaffold(
@@ -22,7 +24,7 @@ class ProfileScreen extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: ColorTokens.onSurface),
+          icon: Icon(AfriIcons.back, color: ColorTokens.onSurface),
           onPressed: () => context.pop(),
           tooltip: 'Back',
         ),
@@ -93,6 +95,15 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: SpacingTokens.spacing2),
+                      if ((profile?.displayName ?? '').trim().isNotEmpty) ...[
+                        Text(
+                          profile!.displayName!.trim(),
+                          style: TypographyTokens.bodyMedium().copyWith(
+                            color: ColorTokens.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing2),
+                      ],
 
                       // Tier + FET
                       Row(
@@ -107,23 +118,66 @@ class ProfileScreen extends ConsumerWidget {
                               color: primary.withValues(alpha: 0.15),
                               borderRadius: ShapeTokens.chipRadius,
                             ),
-                            child: Text(
-                              'FAN',
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: primary,
-                                letterSpacing: 1.5,
+                            child: membershipSummary.when(
+                              data: (summary) => Text(
+                                summary.tier,
+                                style: TypographyTokens.monolithFont(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: primary,
+                                  letterSpacing: 1.5,
+                                ),
+                              ),
+                              loading: () => SizedBox(
+                                width: 44,
+                                height: 18,
+                                child: Center(
+                                  child: SizedBox(
+                                    width: 12,
+                                    height: 12,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: primary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              error: (_, __) => Text(
+                                'FAN',
+                                style: TypographyTokens.monolithFont(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: primary,
+                                  letterSpacing: 1.5,
+                                ),
                               ),
                             ),
                           ),
                           const SizedBox(width: SpacingTokens.spacing3),
-                          Text(
-                            'FET in Membership',
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: ColorTokens.onSurfaceVariant,
+                          membershipSummary.when(
+                            data: (summary) => Text(
+                              summary.fetLabel,
+                              style: TypographyTokens.monolithFont(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: ColorTokens.onSurfaceVariant,
+                              ),
+                            ),
+                            loading: () => Text(
+                              'Loading membership…',
+                              style: TypographyTokens.monolithFont(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: ColorTokens.onSurfaceVariant,
+                              ),
+                            ),
+                            error: (_, __) => Text(
+                              'FET in Membership',
+                              style: TypographyTokens.monolithFont(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: ColorTokens.onSurfaceVariant,
+                              ),
                             ),
                           ),
                         ],
@@ -263,6 +317,65 @@ class ProfileScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+final _profileMembershipSummaryProvider =
+    FutureProvider.autoDispose<_ProfileMembershipSummary>((ref) async {
+      final profile = ref.watch(currentUserProvider);
+      if (profile == null) {
+        return const _ProfileMembershipSummary();
+      }
+
+      final client = ref.watch(supabaseClientProvider);
+      final resolver = ClubScopeResolver(client: client);
+      final scope = await resolver.requireResolved();
+
+      var query = client
+          .from('fan_memberships')
+          .select('tier, points')
+          .eq('user_id', profile.id)
+          .limit(1);
+      query = resolver.apply(query, scope);
+
+      final row = await query.maybeSingle();
+      if (row == null) {
+        return const _ProfileMembershipSummary();
+      }
+
+      return _ProfileMembershipSummary(
+        tier:
+            ((row['tier']?.toString() ?? 'fan').trim().isEmpty
+                    ? 'fan'
+                    : row['tier']!.toString())
+                .toUpperCase(),
+        points: (row['points'] as num?)?.toInt() ?? 0,
+      );
+    });
+
+class _ProfileMembershipSummary {
+  const _ProfileMembershipSummary({this.tier = 'FAN', this.points = 0});
+
+  final String tier;
+  final int points;
+
+  String get fetLabel {
+    if (points <= 0) {
+      return 'No FET in Membership';
+    }
+    return '${_formatPoints(points)} FET in Membership';
+  }
+
+  static String _formatPoints(int value) {
+    final buffer = StringBuffer();
+    final digits = value.toString();
+    for (var index = 0; index < digits.length; index++) {
+      if (index > 0 && (digits.length - index) % 3 == 0) {
+        buffer.write(',');
+      }
+      buffer.write(digits[index]);
+    }
+    return buffer.toString();
   }
 }
 

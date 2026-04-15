@@ -1,7 +1,28 @@
+import 'package:core_utils/core_utils.dart';
 import 'package:feat_biopay/feat_biopay.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+const _testCountry = AfriCountry(
+  isoCode: 'RW',
+  dialCode: '+250',
+  name: 'Rwanda',
+  flagEmoji: '🇷🇼',
+  currencyCode: 'RWF',
+  currencyName: 'Rwandan Franc',
+  momoUssdTemplate: '*182#',
+);
+
 void main() {
+  setUpAll(() {
+    AfriCountryCatalog.setPreferredCountryCode('RW');
+    AfriCountryCatalog.withCountries(const <AfriCountry>[_testCountry]);
+  });
+
+  tearDownAll(() {
+    AfriCountryCatalog.setPreferredCountryCode(null);
+    AfriCountryCatalog.withCountries(const <AfriCountry>[]);
+  });
+
   group('BiopayProfile', () {
     late BiopayProfile profile;
 

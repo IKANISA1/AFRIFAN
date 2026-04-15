@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
+import '../widgets/fet_split_model.dart';
 
 class FetWalletScreen extends ConsumerStatefulWidget {
   const FetWalletScreen({super.key});
@@ -294,6 +295,30 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     }
   }
 
+  void _showOverflow() {
+    showAfriActionSheet(
+      context: context,
+      title: 'Wallet',
+      actions: [
+        AfriSheetAction(
+          icon: AfriIcons.history,
+          label: 'Token history',
+          onTap: () => context.push('/fanzone/history'),
+        ),
+        AfriSheetAction(
+          icon: AfriIcons.rewards,
+          label: 'Rewards store',
+          onTap: () => context.push('/fanzone/rewards'),
+        ),
+        AfriSheetAction(
+          icon: AfriIcons.refresh,
+          label: 'Refresh',
+          onTap: _loadWallet,
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final wallet = _wallet;
@@ -312,21 +337,13 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
         actions: [
           IconButton(
-            onPressed: () => context.push('/fanzone/history'),
-            icon: const Icon(Icons.history_rounded),
-          ),
-          IconButton(
-            onPressed: () => context.push('/fanzone/rewards'),
-            icon: const Icon(Icons.redeem_rounded),
-          ),
-          IconButton(
-            onPressed: _isLoading ? null : _loadWallet,
-            icon: const Icon(Icons.refresh_rounded),
-            tooltip: 'Refresh wallet',
+            onPressed: _showOverflow,
+            icon: const Icon(AfriIcons.more),
+            tooltip: 'More options',
           ),
         ],
       ),
@@ -361,52 +378,39 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'AVAILABLE BALANCE',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 1.4,
-                            color: ColorTokens.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing3),
-                        Text(
-                          '${_formatFet(wallet?.balance ?? 0)} FET',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 34,
-                            fontWeight: FontWeight.w800,
-                            color: ColorTokens.clubAccent,
-                          ),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing2),
-                        Text(
-                          'Tier ${(wallet?.tier ?? 'fan').toUpperCase()} • ${wallet?.transactionCount ?? 0} wallet events',
-                          style: TypographyTokens.bodyMedium(
-                            ColorTokens.onSurfaceVariant,
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '${_formatFet(wallet?.balance ?? 0)} FET',
+                                style: TypographyTokens.metricValue(
+                                  ColorTokens.clubAccent,
+                                ),
+                              ),
+                            ),
+                            AfriInfoChip(
+                              label: (wallet?.tier ?? 'fan').toUpperCase(),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
-                        Wrap(
-                          spacing: SpacingTokens.spacing2,
-                          runSpacing: SpacingTokens.spacing2,
-                          children: [
-                            _MetricPill(
-                              label: 'Weekly earned',
-                              value:
-                                  '+${_formatFet(wallet?.weeklyEarned ?? 0)}',
-                              color: ColorTokens.success,
+                        AfriStatRow(
+                          compact: true,
+                          stats: [
+                            AfriStat(
+                              label: 'Weekly',
+                              value: '+${_formatFet(wallet?.weeklyEarned ?? 0)}',
+                              accentColor: ColorTokens.success,
                             ),
-                            _MetricPill(
-                              label: 'Monthly earned',
-                              value:
-                                  '+${_formatFet(wallet?.monthlyEarned ?? 0)}',
-                              color: Theme.of(context).colorScheme.primary,
+                            AfriStat(
+                              label: 'Monthly',
+                              value: '+${_formatFet(wallet?.monthlyEarned ?? 0)}',
+                              accentColor: ColorTokens.primaryContainer,
                             ),
-                            _MetricPill(
-                              label: 'Lifetime spent',
+                            AfriStat(
+                              label: 'Spent',
                               value: _formatFet(wallet?.lifetimeSpent ?? 0),
-                              color: ColorTokens.warning,
+                              accentColor: ColorTokens.warning,
                             ),
                           ],
                         ),
@@ -431,55 +435,47 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                       ),
                     ),
                   ],
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  FetSplitModel(
+                    currentTier: wallet?.tier ?? 'supporter',
+                  ),
                   const SizedBox(height: SpacingTokens.spacing5),
-                  GlassCard(
+                  AfriSectionCard(
+                    title: 'Transfer',
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'TRANSFER FET',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing3),
-                        TextField(
+                        AfriInputField(
                           key: const ValueKey<String>('wallet-transfer-search'),
                           controller: _searchController,
-                          decoration: InputDecoration(
-                            labelText: 'Search supporter by name or alias',
-                            helperText:
-                                'Search by public ID, phone, or supporter name.',
-                            suffixIcon: _isSearching
-                                ? const Padding(
-                                    padding: EdgeInsets.all(12),
-                                    child: SizedBox(
-                                      height: 16,
-                                      width: 16,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
+                          label: 'Search supporter',
+                          suffixIcon: _isSearching
+                              ? const Padding(
+                                  padding: EdgeInsets.all(12),
+                                  child: SizedBox(
+                                    height: 16,
+                                    width: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
                                     ),
-                                  )
-                                : (_searchController.text.isEmpty
-                                      ? const Icon(Icons.search_rounded)
-                                      : IconButton(
-                                          onPressed: () {
-                                            _searchController.clear();
-                                            setState(() {
-                                              _selectedSupporter = null;
-                                              _supporterMatches =
-                                                  const <FetWalletSupporter>[];
-                                            });
-                                          },
-                                          icon: const Icon(Icons.close_rounded),
-                                        )),
-                          ),
+                                  ),
+                                )
+                              : (_searchController.text.isEmpty
+                                    ? const Icon(AfriIcons.search)
+                                    : IconButton(
+                                        onPressed: () {
+                                          _searchController.clear();
+                                          setState(() {
+                                            _selectedSupporter = null;
+                                            _supporterMatches =
+                                                const <FetWalletSupporter>[];
+                                          });
+                                        },
+                                        icon: const Icon(AfriIcons.close),
+                                      )),
                         ),
                         if (_selectedSupporter != null) ...[
-                          const SizedBox(height: SpacingTokens.spacing3),
+                          const SizedBox(height: SpacingTokens.listItemGap),
                           _SelectedSupporterTile(
                             supporter: _selectedSupporter!,
                             onClear: () {
@@ -489,14 +485,14 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                             },
                           ),
                         ] else if (_supporterMatches.isNotEmpty) ...[
-                          const SizedBox(height: SpacingTokens.spacing3),
+                          const SizedBox(height: SpacingTokens.listItemGap),
                           ..._supporterMatches.map(
                             (supporter) => ListTile(
                               contentPadding: EdgeInsets.zero,
                               dense: true,
                               title: Text(supporter.displayName),
                               subtitle: Text(
-                                '#${supporter.publicUserId ?? '000000'} • ${supporter.tier.toUpperCase()} • ${_formatFet(supporter.balance)} FET',
+                                '#${supporter.publicUserId ?? '000000'} · ${supporter.tier.toUpperCase()}',
                               ),
                               trailing: const Icon(Icons.north_east_rounded),
                               onTap: () {
@@ -510,117 +506,76 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                             ),
                           ),
                         ],
-                        const SizedBox(height: SpacingTokens.spacing3),
-                        TextField(
+                        const SizedBox(height: SpacingTokens.listItemGap),
+                        AfriInputField(
                           key: const ValueKey<String>('wallet-transfer-amount'),
                           controller: _transferAmountController,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: 'Amount',
-                            prefixText: 'FET ',
-                          ),
+                          label: 'Amount',
+                          prefixText: 'FET ',
                         ),
-                        const SizedBox(height: SpacingTokens.spacing3),
-                        TextField(
+                        const SizedBox(height: SpacingTokens.listItemGap),
+                        AfriInputField(
                           controller: _transferNoteController,
-                          decoration: const InputDecoration(
-                            labelText: 'Note (optional)',
-                          ),
+                          label: 'Note (optional)',
                           maxLines: 2,
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton(
-                            key: const ValueKey<String>(
-                              'wallet-transfer-submit',
-                            ),
-                            onPressed: _isSubmittingTransfer
-                                ? null
-                                : _submitTransfer,
-                            child: Text(
-                              _isSubmittingTransfer ? 'Sending…' : 'Send FET',
-                            ),
+                        AfriButton(
+                          key: const ValueKey<String>(
+                            'wallet-transfer-submit',
                           ),
+                          label: _isSubmittingTransfer ? 'Sending…' : 'Send FET',
+                          onTap: _submitTransfer,
+                          isLoading: _isSubmittingTransfer,
+                          enabled: !_isSubmittingTransfer,
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  GlassCard(
+                  AfriSectionCard(
+                    title: 'Redeem',
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'REDEEM FET',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing2),
-                        Text(
-                          'Use this to request a wallet redemption once you are ready to spend or cash out earned FET.',
-                          style: TypographyTokens.bodyMedium(
-                            ColorTokens.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing3),
-                        TextField(
+                        AfriInputField(
                           key: const ValueKey<String>('wallet-redeem-amount'),
                           controller: _redeemAmountController,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: 'Amount',
-                            prefixText: 'FET ',
-                          ),
+                          label: 'Amount',
+                          prefixText: 'FET ',
                         ),
-                        const SizedBox(height: SpacingTokens.spacing3),
-                        TextField(
+                        const SizedBox(height: SpacingTokens.listItemGap),
+                        AfriInputField(
                           controller: _redeemNoteController,
-                          decoration: const InputDecoration(
-                            labelText: 'Redemption note',
-                          ),
+                          label: 'Note',
                           maxLines: 2,
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton(
-                            key: const ValueKey<String>('wallet-redeem-submit'),
-                            onPressed: _isSubmittingRedemption
-                                ? null
-                                : _submitRedemption,
-                            child: Text(
-                              _isSubmittingRedemption
-                                  ? 'Submitting…'
-                                  : 'Request redemption',
-                            ),
-                          ),
+                        AfriButton(
+                          key: const ValueKey<String>('wallet-redeem-submit'),
+                          label: _isSubmittingRedemption
+                              ? 'Submitting…'
+                              : 'Redeem FET',
+                          onTap: _submitRedemption,
+                          isLoading: _isSubmittingRedemption,
+                          enabled: !_isSubmittingRedemption,
+                          variant: AfriButtonVariant.secondary,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: SpacingTokens.spacing5),
-                  Row(
-                    children: [
-                      Text(
-                        'RECENT ACTIVITY',
-                        style: TypographyTokens.monolithFont(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 1.2,
-                        ),
+                  const SizedBox(height: SpacingTokens.sectionGap),
+                  AfriSectionHeader(
+                    title: 'Activity',
+                    trailing: Text(
+                      '${_transactions.length}',
+                      style: TypographyTokens.labelSmall(
+                        ColorTokens.onSurfaceVariant,
                       ),
-                      const Spacer(),
-                      Text(
-                        '${_transactions.length} items',
-                        style: TypographyTokens.bodySmall(
-                          ColorTokens.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
+                    ),
+                    padding: EdgeInsets.zero,
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
                   if (_transactions.isEmpty)
@@ -743,52 +698,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
   }
 }
 
-class _MetricPill extends StatelessWidget {
-  const _MetricPill({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  final String label;
-  final String value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.spacing3,
-        vertical: SpacingTokens.spacing2,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(999),
-        color: color.withValues(alpha: 0.12),
-        border: BorderTokens.all(color: color.withValues(alpha: 0.18)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label.toUpperCase(),
-            style: TypographyTokens.monolithFont(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: ColorTokens.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: SpacingTokens.spacing1),
-          Text(
-            value,
-            style: TypographyTokens.bodyMedium(
-              color,
-            ).copyWith(fontWeight: FontWeight.w700),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// _MetricPill removed — replaced by AfriStatRow(compact: true)
 
 class _SelectedSupporterTile extends StatelessWidget {
   const _SelectedSupporterTile({
@@ -832,7 +742,7 @@ class _SelectedSupporterTile extends StatelessWidget {
           ),
           IconButton(
             onPressed: onClear,
-            icon: const Icon(Icons.close_rounded),
+            icon: const Icon(AfriIcons.close),
             tooltip: 'Clear supporter',
           ),
         ],

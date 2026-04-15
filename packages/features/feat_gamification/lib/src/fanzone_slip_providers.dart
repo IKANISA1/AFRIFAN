@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'models/fanzone_slip_models.dart';
@@ -10,8 +13,17 @@ final fanzoneSlipProvider =
     );
 
 class FanzoneSlipController extends Notifier<FanzoneSlipState> {
+  static const _cacheKey = 'fanzone_prediction_slip_v1';
+  static const _persistTtl = Duration(days: 7);
+
   @override
-  FanzoneSlipState build() => const FanzoneSlipState();
+  FanzoneSlipState build() {
+    final cached = HiveCacheService.getJson<Map>(_cacheKey);
+    if (cached is Map) {
+      return FanzoneSlipState.fromJson(Map<String, dynamic>.from(cached));
+    }
+    return const FanzoneSlipState();
+  }
 
   void addSelection(FanzoneSlipSelection selection) {
     final existing = state.items.where(
@@ -20,6 +32,7 @@ class FanzoneSlipController extends Notifier<FanzoneSlipState> {
     state = state.copyWith(
       items: <FanzoneSlipSelection>[...existing, selection],
     );
+    _persistState();
   }
 
   void addFromMarket({
@@ -42,14 +55,17 @@ class FanzoneSlipController extends Notifier<FanzoneSlipState> {
           .where((item) => item.fixtureMarketId != fixtureMarketId)
           .toList(growable: false),
     );
+    _persistState();
   }
 
   void clear() {
     state = state.copyWith(items: const <FanzoneSlipSelection>[]);
+    _persistState();
   }
 
   void toggleAcca(bool value) {
     state = state.copyWith(accaMode: value);
+    _persistState();
   }
 
   Future<FanzoneSlipSubmissionResult> submit() async {
@@ -143,6 +159,13 @@ class FanzoneSlipController extends Notifier<FanzoneSlipState> {
       );
     } finally {
       state = state.copyWith(isSubmitting: false);
+      _persistState();
     }
+  }
+
+  void _persistState() {
+    unawaited(
+      HiveCacheService.putJson(_cacheKey, state.toJson(), ttl: _persistTtl),
+    );
   }
 }

@@ -292,7 +292,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         title: Text('Cart', style: TypographyTokens.headlineSmall()),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
       ),
       body: items.isEmpty

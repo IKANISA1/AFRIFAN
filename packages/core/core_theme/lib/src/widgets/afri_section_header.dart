@@ -32,7 +32,7 @@ class AfriSectionHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: TypographyTokens.titleLarge()),
+                Text(title, style: TypographyTokens.sectionTitle()),
                 if (subtitle != null) ...[
                   const SizedBox(height: SpacingTokens.spacing1),
                   Text(

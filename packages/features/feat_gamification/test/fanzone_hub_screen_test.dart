@@ -1,4 +1,5 @@
 import 'package:feat_gamification/src/fet_providers.dart';
+import 'package:feat_gamification/src/models/fanzone_models.dart';
 import 'package:feat_gamification/src/models/fet_models.dart';
 import 'package:feat_gamification/src/models/prediction_models.dart';
 import 'package:feat_gamification/src/prediction_providers.dart';
@@ -80,8 +81,45 @@ class _FakePredictionRepository extends PredictionRepository {
   }
 
   @override
+  Future<List<FixtureSummary>> loadFixturesByDate({
+    required DateTime dateFrom,
+    required DateTime dateTo,
+    String? competitionSlug,
+    String? status,
+    int limit = 200,
+  }) async {
+    return <FixtureSummary>[
+      FixtureSummary(
+        id: 'fixture-today',
+        competitionSlug: 'rpl',
+        competitionName: 'Rwanda Premier League',
+        seasonLabel: '2025/26',
+        matchday: 25,
+        homeTeamName: 'Musanze FC',
+        homeTeamShort: 'MUS',
+        awayTeamName: 'Etincelles',
+        awayTeamShort: 'ETI',
+        kickoffAt: DateTime.now().add(const Duration(hours: 3)),
+        venueName: 'Musanze Stadium',
+        status: 'scheduled',
+      ),
+    ];
+  }
+
+  @override
+  Future<List<FixtureDateSummary>> loadFixtureDateSummary({
+    required DateTime dateFrom,
+    required DateTime dateTo,
+    String? competitionSlug,
+  }) async {
+    return const <FixtureDateSummary>[];
+  }
+
+  @override
   Future<List<PredictionLeaderboardEntry>> loadLeaderboard({
     int limit = 20,
+    String? scope,
+    String? period,
   }) async {
     return const <PredictionLeaderboardEntry>[
       PredictionLeaderboardEntry(
@@ -184,10 +222,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('FANZONE'), findsOneWidget);
-    expect(find.text('Predict. Earn. Repeat.'), findsOneWidget);
-    expect(find.text('Live Matches'), findsOneWidget);
     expect(find.text('Fixtures'), findsAtLeastNWidgets(1));
     expect(find.text('Wallet'), findsAtLeastNWidgets(1));
-    expect(find.textContaining('1250 FET'), findsOneWidget);
   });
 }

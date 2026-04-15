@@ -5,13 +5,14 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../models/fanzone_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 
 class FixturesBrowserScreen extends ConsumerStatefulWidget {
   const FixturesBrowserScreen({
     super.key,
-    this.statusFilter = 'scheduled',
+    this.statusFilter,
     this.title = 'FIXTURES',
     this.showBackButton = true,
   });
@@ -27,16 +28,31 @@ class FixturesBrowserScreen extends ConsumerStatefulWidget {
 
 class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
   List<FixtureSummary> _fixtures = const <FixtureSummary>[];
-  List<Map<String, dynamic>> _competitions = const <Map<String, dynamic>>[];
+  List<CompetitionCatalogItem> _competitions = const <CompetitionCatalogItem>[];
+  Map<String, FixtureDateSummary> _dateSummary =
+      const <String, FixtureDateSummary>{};
   PredictionDashboard? _dashboard;
   String? _selectedCompetition;
   bool _isLoading = true;
   String? _error;
 
+  /// Currently selected date.
+  late DateTime _selectedDate;
+
+  /// Scroll controller for the calendar strip.
+  final ScrollController _calendarController = ScrollController();
+
   @override
   void initState() {
     super.initState();
+    _selectedDate = DateTime.now();
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _calendarController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -47,20 +63,42 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
 
     try {
       final repo = ref.read(predictionRepositoryProvider);
+
+      // Load date summary for the calendar (±30 days)
+      final now = DateTime.now();
+      final summaryFrom = now.subtract(const Duration(days: 7));
+      final summaryTo = now.add(const Duration(days: 60));
+
       final results = await Future.wait<Object?>([
-        repo.loadFixtures(
+        repo.loadFixturesByDate(
+          dateFrom: _selectedDate,
+          dateTo: _selectedDate,
           competitionSlug: _selectedCompetition,
           status: widget.statusFilter,
         ),
-        repo.loadCompetitions(),
+        repo.loadCompetitionCatalog(),
         repo.loadUserStats(),
+        repo.loadFixtureDateSummary(
+          dateFrom: summaryFrom,
+          dateTo: summaryTo,
+          competitionSlug: _selectedCompetition,
+        ),
       ]);
 
       if (!mounted) return;
+
+      final summaryList = results[3]! as List<FixtureDateSummary>;
+      final summaryMap = <String, FixtureDateSummary>{};
+      for (final s in summaryList) {
+        final key = _dateKey(s.matchDate);
+        summaryMap[key] = s;
+      }
+
       setState(() {
         _fixtures = results[0]! as List<FixtureSummary>;
-        _competitions = results[1]! as List<Map<String, dynamic>>;
+        _competitions = results[1]! as List<CompetitionCatalogItem>;
         _dashboard = results[2] as PredictionDashboard;
+        _dateSummary = summaryMap;
         _isLoading = false;
       });
     } catch (_) {
@@ -77,6 +115,50 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
     await _loadData();
   }
 
+  void _onDateSelected(DateTime date) {
+    HapticFeedback.selectionClick();
+    setState(() => _selectedDate = date);
+    _loadData();
+  }
+
+  /// Groups fixtures by competition for the selected day.
+  Map<String, List<FixtureSummary>> _groupByCompetition() {
+    final grouped = <String, List<FixtureSummary>>{};
+    for (final fixture in _fixtures) {
+      final key = fixture.competitionName;
+      grouped.putIfAbsent(key, () => <FixtureSummary>[]).add(fixture);
+    }
+    return grouped;
+  }
+
+  static String _dateKey(DateTime dt) =>
+      '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+
+  String _selectedDateLabel() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final sel = DateTime(
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+    );
+    final diff = sel.difference(today).inDays;
+
+    const monthNames = [
+      'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
+      'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC',
+    ];
+    const dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+
+    final dateStr =
+        '${dayNames[sel.weekday - 1]}, ${monthNames[sel.month - 1]} ${sel.day}';
+
+    if (diff == 0) return 'TODAY  ·  $dateStr';
+    if (diff == 1) return 'TOMORROW  ·  $dateStr';
+    if (diff == -1) return 'YESTERDAY  ·  $dateStr';
+    return dateStr;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,6 +167,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
         child: SafeArea(
           child: Column(
             children: [
+              // ── Title bar ──
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                   SpacingTokens.spacing4,
@@ -97,7 +180,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                     if (widget.showBackButton)
                       IconButton(
                         onPressed: () => context.pop(),
-                        icon: const Icon(Icons.arrow_back_rounded),
+                        icon: const Icon(AfriIcons.back),
                       ),
                     if (!widget.showBackButton)
                       const SizedBox(width: SpacingTokens.spacing4),
@@ -124,6 +207,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                   ],
                 ),
               ),
+              // ── Dashboard overview ──
               if (_dashboard != null)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(
@@ -134,11 +218,73 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                   ),
                   child: _PredictionOverviewRow(dashboard: _dashboard!),
                 ),
+              // ── Calendar date strip ──
+              Padding(
+                padding: const EdgeInsets.only(top: SpacingTokens.spacing4),
+                child: _CalendarStrip(
+                  selectedDate: _selectedDate,
+                  dateSummary: _dateSummary,
+                  onDateSelected: _onDateSelected,
+                  controller: _calendarController,
+                ),
+              ),
+
+              // ── Selected date label ──
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  SpacingTokens.spacing6,
+                  SpacingTokens.spacing3,
+                  SpacingTokens.spacing6,
+                  0,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_today_rounded,
+                      size: 14,
+                      color: ColorTokens.clubAccent,
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing2),
+                    Expanded(
+                      child: Text(
+                        _selectedDateLabel(),
+                        style: TypographyTokens.monolithFont(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: ColorTokens.onSurface,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                    ),
+                    // Fixture count badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: ColorTokens.clubAccent.withValues(alpha: 0.14),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        '${_fixtures.length} ${_fixtures.length == 1 ? 'match' : 'matches'}',
+                        style: TypographyTokens.editorialFont(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: ColorTokens.clubAccent,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // ── Competition filter rail ──
               if (_competitions.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: SpacingTokens.spacing4),
                   child: SizedBox(
-                    height: 40,
+                    height: 36,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(
@@ -155,15 +301,12 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                             onTap: () => _onFilterChanged(null),
                           );
                         }
-
                         final competition = _competitions[index - 1];
-                        final slug = competition['slug']?.toString() ?? '';
-                        final shortName =
-                            competition['short_name']?.toString() ?? '';
                         return _FilterChip(
-                          label: shortName.toUpperCase(),
-                          isSelected: _selectedCompetition == slug,
-                          onTap: () => _onFilterChanged(slug),
+                          label: competition.shortName.toUpperCase(),
+                          isSelected:
+                              _selectedCompetition == competition.slug,
+                          onTap: () => _onFilterChanged(competition.slug),
                         );
                       },
                     ),
@@ -200,26 +343,27 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
       );
     }
 
-    if (_fixtures.isEmpty) {
+    final grouped = _groupByCompetition();
+
+    if (grouped.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing6),
           child: AfriEmptyView(
-            title: widget.statusFilter == 'live'
-                ? 'No live fixtures right now'
-                : 'No fixtures available',
-            message: widget.statusFilter == 'live'
-                ? 'When matches go live, they will appear here instantly.'
-                : 'Try another league or pull to refresh.',
+            title: 'No fixtures on this date',
+            message:
+                'Try selecting another day on the calendar or change the league filter.',
           ),
         ),
       );
     }
 
+    final competitionKeys = grouped.keys.toList(growable: false);
+
     return RefreshIndicator(
       onRefresh: _loadData,
       color: ColorTokens.clubAccent,
-      child: ListView.separated(
+      child: ListView.builder(
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
         ),
@@ -229,26 +373,279 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
           SpacingTokens.spacing6,
           SpacingTokens.spacing20,
         ),
-        itemCount: _fixtures.length,
-        separatorBuilder: (_, __) =>
-            const SizedBox(height: SpacingTokens.spacing3),
-        itemBuilder: (context, index) {
-          final fixture = _fixtures[index];
-          return _FixtureCard(
-                fixture: fixture,
-                onOpen: () {
-                  HapticFeedback.lightImpact();
-                  context.push('/fanzone/match/${fixture.id}');
-                },
-              )
-              .animate(delay: (index * 50).ms)
-              .fadeIn(duration: 300.ms)
-              .slideY(begin: 0.04, end: 0, duration: 300.ms);
+        itemCount: competitionKeys.length,
+        itemBuilder: (context, sectionIndex) {
+          final compName = competitionKeys[sectionIndex];
+          final fixtures = grouped[compName]!;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (sectionIndex > 0)
+                const SizedBox(height: SpacingTokens.spacing5),
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: SpacingTokens.spacing3,
+                  left: SpacingTokens.spacing1,
+                ),
+                child: Text(
+                  compName.toUpperCase(),
+                  style: TypographyTokens.editorialFont(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: ColorTokens.onSurfaceVariant,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ),
+              ...fixtures.asMap().entries.map((entry) {
+                final index = entry.key;
+                final fixture = entry.value;
+                return Padding(
+                  padding: EdgeInsets.only(
+                    bottom: index < fixtures.length - 1
+                        ? SpacingTokens.spacing3
+                        : 0,
+                  ),
+                  child: _FixtureCard(
+                        fixture: fixture,
+                        onOpen: () {
+                          HapticFeedback.lightImpact();
+                          context.push('/fanzone/match/${fixture.id}');
+                        },
+                      )
+                      .animate(delay: (index * 50).ms)
+                      .fadeIn(duration: 300.ms)
+                      .slideY(begin: 0.04, end: 0, duration: 300.ms),
+                );
+              }),
+            ],
+          );
         },
       ),
     );
   }
 }
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Calendar Date Strip – scrollable horizontal date selector with dots
+// ══════════════════════════════════════════════════════════════════════════════
+
+class _CalendarStrip extends StatefulWidget {
+  const _CalendarStrip({
+    required this.selectedDate,
+    required this.dateSummary,
+    required this.onDateSelected,
+    required this.controller,
+  });
+
+  final DateTime selectedDate;
+  final Map<String, FixtureDateSummary> dateSummary;
+  final ValueChanged<DateTime> onDateSelected;
+  final ScrollController controller;
+
+  @override
+  State<_CalendarStrip> createState() => _CalendarStripState();
+}
+
+class _CalendarStripState extends State<_CalendarStrip> {
+  static const int _pastDays = 7;
+  static const int _futureDays = 60;
+  static const int _totalDays = _pastDays + 1 + _futureDays; // 68 days
+  static const double _cellWidth = 52;
+
+  late final DateTime _baseDate; // 7 days ago
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _baseDate = DateTime(now.year, now.month, now.day)
+        .subtract(const Duration(days: _pastDays));
+
+    // Scroll to today after layout
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToIndex(_pastDays);
+    });
+  }
+
+  void _scrollToIndex(int index) {
+    if (!widget.controller.hasClients) return;
+    final target = index * _cellWidth;
+    final maxScroll = widget.controller.position.maxScrollExtent;
+    widget.controller.animateTo(
+      target.clamp(0, maxScroll),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
+
+  DateTime _dateForIndex(int index) =>
+      _baseDate.add(Duration(days: index));
+
+  static String _dateKey(DateTime dt) =>
+      '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 72,
+      child: ListView.builder(
+        controller: widget.controller,
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(
+          horizontal: SpacingTokens.spacing6,
+        ),
+        itemCount: _totalDays,
+        itemExtent: _cellWidth,
+        itemBuilder: (context, index) {
+          final date = _dateForIndex(index);
+          final sel = DateTime(
+            widget.selectedDate.year,
+            widget.selectedDate.month,
+            widget.selectedDate.day,
+          );
+          final cellDate = DateTime(date.year, date.month, date.day);
+          final isSelected = cellDate == sel;
+          final now = DateTime.now();
+          final isToday =
+              cellDate == DateTime(now.year, now.month, now.day);
+          final key = _dateKey(date);
+          final summary = widget.dateSummary[key];
+          final hasFixtures = summary != null && summary.fixtureCount > 0;
+          final hasLive = summary?.hasLive ?? false;
+
+          return GestureDetector(
+            onTap: () => widget.onDateSelected(date),
+            child: _CalendarCell(
+              date: date,
+              isSelected: isSelected,
+              isToday: isToday,
+              hasFixtures: hasFixtures,
+              hasLive: hasLive,
+              fixtureCount: summary?.fixtureCount ?? 0,
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _CalendarCell extends StatelessWidget {
+  const _CalendarCell({
+    required this.date,
+    required this.isSelected,
+    required this.isToday,
+    required this.hasFixtures,
+    required this.hasLive,
+    required this.fixtureCount,
+  });
+
+  final DateTime date;
+  final bool isSelected;
+  final bool isToday;
+  final bool hasFixtures;
+  final bool hasLive;
+  final int fixtureCount;
+
+  static const _dayNames = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      margin: const EdgeInsets.symmetric(horizontal: 2),
+      decoration: BoxDecoration(
+        color: isSelected
+            ? ColorTokens.clubAccent.withValues(alpha: 0.18)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(14),
+        border: isSelected
+            ? BorderTokens.all(color: ColorTokens.clubAccent, width: 1.5)
+            : isToday
+                ? BorderTokens.all(
+                    color: ColorTokens.clubAccent.withValues(alpha: 0.4),
+                    width: 1,
+                  )
+                : null,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            _dayNames[date.weekday - 1],
+            style: TypographyTokens.editorialFont(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: isSelected
+                  ? ColorTokens.clubAccent
+                  : ColorTokens.onSurfaceVariant,
+              letterSpacing: 1,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '${date.day}',
+            style: TypographyTokens.monolithFont(
+              fontSize: 18,
+              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+              color: isSelected
+                  ? ColorTokens.clubAccent
+                  : isToday
+                      ? ColorTokens.onSurface
+                      : hasFixtures
+                          ? ColorTokens.onSurface
+                          : ColorTokens.onSurfaceVariant
+                              .withValues(alpha: 0.4),
+            ),
+          ),
+          const SizedBox(height: 4),
+          // Dot indicators
+          if (hasFixtures)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 5,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: hasLive
+                        ? ColorTokens.success
+                        : isSelected
+                            ? ColorTokens.clubAccent
+                            : ColorTokens.onSurfaceVariant,
+                  ),
+                ),
+                if (fixtureCount > 3) ...[
+                  const SizedBox(width: 2),
+                  Container(
+                    width: 5,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: (isSelected
+                              ? ColorTokens.clubAccent
+                              : ColorTokens.onSurfaceVariant)
+                          .withValues(alpha: 0.5),
+                    ),
+                  ),
+                ],
+              ],
+            )
+          else
+            const SizedBox(height: 5),
+        ],
+      ),
+    );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Supporting widgets
+// ══════════════════════════════════════════════════════════════════════════════
 
 class _PredictionOverviewRow extends StatelessWidget {
   const _PredictionOverviewRow({required this.dashboard});
@@ -346,7 +743,7 @@ class _FilterChip extends StatelessWidget {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
         decoration: BoxDecoration(
           color: isSelected
               ? ColorTokens.clubAccent.withValues(alpha: 0.18)
@@ -359,7 +756,7 @@ class _FilterChip extends StatelessWidget {
         child: Text(
           label,
           style: TypographyTokens.editorialFont(
-            fontSize: 13,
+            fontSize: 12,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
             color: isSelected
                 ? ColorTokens.clubAccent
@@ -382,39 +779,9 @@ class _FixtureCard extends StatelessWidget {
     final kickoff = fixture.kickoffAt;
     if (kickoff == null) return 'TBD';
     final local = kickoff.toLocal();
-    final now = DateTime.now();
-    final isToday =
-        local.year == now.year &&
-        local.month == now.month &&
-        local.day == now.day;
-    final isTomorrow =
-        local.year == now.year &&
-        local.month == now.month &&
-        local.day == now.day + 1;
-
     final hour = local.hour.toString().padLeft(2, '0');
     final minute = local.minute.toString().padLeft(2, '0');
-    final time = '$hour:$minute';
-
-    if (isToday) return 'TODAY  •  $time';
-    if (isTomorrow) return 'TOMORROW  •  $time';
-
-    const dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-    const monthNames = [
-      'JAN',
-      'FEB',
-      'MAR',
-      'APR',
-      'MAY',
-      'JUN',
-      'JUL',
-      'AUG',
-      'SEP',
-      'OCT',
-      'NOV',
-      'DEC',
-    ];
-    return '${dayNames[local.weekday - 1]} ${local.day} ${monthNames[local.month - 1]}  •  $time';
+    return '$hour:$minute';
   }
 
   String _statusLabel() {
@@ -445,27 +812,19 @@ class _FixtureCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text(
-                  fixture.competitionName.toUpperCase(),
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: ColorTokens.onSurfaceVariant,
-                    letterSpacing: 1.5,
-                  ),
-                ),
-                if (fixture.matchday != null) ...[
-                  Text(
-                    '  •  MD ${fixture.matchday}',
+                Expanded(
+                  child: Text(
+                    fixture.matchday != null
+                        ? 'MD ${fixture.matchday}'
+                        : _formatKickoff(),
                     style: TypographyTokens.editorialFont(
                       fontSize: 11,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       color: ColorTokens.onSurfaceVariant,
-                      letterSpacing: 1.0,
+                      letterSpacing: 1.5,
                     ),
                   ),
-                ],
-                const Spacer(),
+                ),
                 if (isLive || isFinished)
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -473,11 +832,10 @@ class _FixtureCard extends StatelessWidget {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color:
-                          (isLive
-                                  ? ColorTokens.success
-                                  : ColorTokens.onSurfaceVariant)
-                              .withValues(alpha: 0.14),
+                      color: (isLive
+                              ? ColorTokens.success
+                              : ColorTokens.onSurfaceVariant)
+                          .withValues(alpha: 0.14),
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
@@ -560,7 +918,7 @@ class _FixtureCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      fixture.isPredictable ? 'PREDICT' : 'DETAILS',
+                      fixture.isPredictable ? 'PREDICT' : _formatKickoff(),
                       style: TypographyTokens.editorialFont(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
@@ -587,7 +945,11 @@ class _FixtureCard extends StatelessWidget {
                     ),
                   ),
                 Text(
-                  _formatKickoff(),
+                  fixture.matchday != null
+                      ? '${_formatKickoff()}  ·  ${fixture.venueName ?? ''}'
+                      : fixture.venueName ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TypographyTokens.editorialFont(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,

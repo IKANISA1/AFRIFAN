@@ -50,7 +50,7 @@ void showShopSearchSheet({
                   onChanged: (value) => setModalState(() => query = value),
                   decoration: const InputDecoration(
                     hintText: 'Search kits, scarves, and drops',
-                    prefixIcon: Icon(Icons.search_rounded),
+                    prefixIcon: Icon(AfriIcons.search),
                   ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing4),

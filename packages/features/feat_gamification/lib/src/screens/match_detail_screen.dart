@@ -9,9 +9,12 @@ import '../models/fanzone_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/community_prediction_bar.dart';
+import '../widgets/h2h_tab_body.dart';
+import '../widgets/lineups_tab_body.dart';
 import '../widgets/market_option_pill.dart';
 import '../widgets/market_selector_sheet.dart';
 import '../widgets/prediction_slip_widgets.dart';
+import '../widgets/stats_panel.dart';
 
 class MatchDetailScreen extends ConsumerStatefulWidget {
   const MatchDetailScreen({super.key, required this.fixtureId});
@@ -22,18 +25,33 @@ class MatchDetailScreen extends ConsumerStatefulWidget {
   ConsumerState<MatchDetailScreen> createState() => _MatchDetailScreenState();
 }
 
-class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
+class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
+    with SingleTickerProviderStateMixin {
   FixtureSummary? _fixture;
   List<FixtureMarket> _markets = const <FixtureMarket>[];
   Map<String, List<CommunityPick>> _communityPicks =
       const <String, List<CommunityPick>>{};
+  List<H2hEncounter> _h2hEncounters = const <H2hEncounter>[];
+  List<LineupPlayer> _homeLineup = const <LineupPlayer>[];
+  List<LineupPlayer> _awayLineup = const <LineupPlayer>[];
   bool _isLoading = true;
   String? _error;
+
+  late final TabController _tabController;
+
+  static const _tabLabels = <String>['PREDICT', 'STATS', 'H2H', 'LINEUPS'];
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: _tabLabels.length, vsync: this);
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -67,6 +85,11 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
         _isLoading = false;
         _error = _fixture == null ? 'Fixture not found.' : null;
       });
+
+      // Load H2H + Lineups in background (non-blocking).
+      if (_fixture != null) {
+        _loadH2hAndLineups(_fixture!);
+      }
     } catch (_) {
       if (!mounted) return;
       setState(() {
@@ -74,6 +97,64 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> _loadH2hAndLineups(FixtureSummary fixture) async {
+    final repo = ref.read(predictionRepositoryProvider);
+
+    try {
+      // H2H: query finished fixtures for matching team slugs.
+      final h2hRaw = await repo.loadH2hEncounters(
+        homeTeamSlug: fixture.homeTeamSlug,
+        awayTeamSlug: fixture.awayTeamSlug,
+        limit: 10,
+      );
+      if (mounted) {
+        setState(() {
+          _h2hEncounters = h2hRaw
+              .map((row) => H2hEncounter(
+                    homeTeam: row['home_team_name']?.toString() ?? '',
+                    awayTeam: row['away_team_name']?.toString() ?? '',
+                    homeScore: (row['home_score'] as num?)?.toInt() ?? 0,
+                    awayScore: (row['away_score'] as num?)?.toInt() ?? 0,
+                    date: row['kickoff_at']?.toString(),
+                    competition: row['competition_name']?.toString(),
+                  ))
+              .toList(growable: false);
+        });
+      }
+    } catch (_) {
+      // Silently fail — H2H is supplementary data.
+    }
+
+    try {
+      // Lineups: use roster catalog as proxy.
+      final lineupsRaw = await repo.loadFixtureLineups(
+        homeTeamSlug: fixture.homeTeamSlug,
+        awayTeamSlug: fixture.awayTeamSlug,
+      );
+      if (mounted) {
+        setState(() {
+          _homeLineup = _parseLineupPlayers(lineupsRaw['home'] ?? []);
+          _awayLineup = _parseLineupPlayers(lineupsRaw['away'] ?? []);
+        });
+      }
+    } catch (_) {
+      // Silently fail — lineups are supplementary data.
+    }
+  }
+
+  List<LineupPlayer> _parseLineupPlayers(
+    List<Map<String, dynamic>> rows,
+  ) {
+    return rows
+        .map((row) => LineupPlayer(
+              name: row['player_name']?.toString() ?? 'Unknown',
+              number: (row['squad_number'] as num?)?.toInt(),
+              position: row['position']?.toString(),
+              isStarter: true, // Roster proxy — all shown as starters.
+            ))
+        .toList(growable: false);
   }
 
   Future<void> _openSlip() async {
@@ -130,7 +211,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
                   children: [
                     IconButton(
                       onPressed: () => context.pop(),
-                      icon: const Icon(Icons.arrow_back_rounded),
+                      icon: const Icon(AfriIcons.back),
                     ),
                   ],
                 ),
@@ -149,16 +230,16 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
     }
 
     final fixture = _fixture!;
-    final featuredMarkets = _markets.take(4).toList(growable: false);
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
       bottomNavigationBar: PredictionSlipBar(onTap: _openSlip),
       body: GradientBackground(
         child: SafeArea(
-          child: CustomScrollView(
+          child: NestedScrollView(
             physics: const BouncingScrollPhysics(),
-            slivers: [
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              // ── Back + actions row ──
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
@@ -171,7 +252,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
                     children: [
                       IconButton(
                         onPressed: () => context.pop(),
-                        icon: const Icon(Icons.arrow_back_rounded),
+                        icon: const Icon(AfriIcons.back),
                       ),
                       const Spacer(),
                       IconButton(
@@ -189,6 +270,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
                   ),
                 ),
               ),
+              // ── Match hero card ──
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(SpacingTokens.spacing6),
@@ -292,64 +374,285 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
                   ),
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing6,
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        'TOP MARKETS',
-                        style: TypographyTokens.monolithFont(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: ColorTokens.onSurfaceVariant,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                      const Spacer(),
-                      TextButton.icon(
-                        onPressed: _markets.isEmpty
-                            ? null
-                            : () => showMarketSelectorSheet(
-                                context: context,
-                                fixture: fixture,
-                                markets: _markets,
-                              ),
-                        icon: const Icon(Icons.grid_view_rounded, size: 16),
-                        label: const Text('All markets'),
-                      ),
-                    ],
+              // ── Tab bar ──
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _TabBarDelegate(
+                  tabBar: TabBar(
+                    controller: _tabController,
+                    isScrollable: false,
+                    indicatorColor: ColorTokens.clubAccent,
+                    indicatorWeight: 2.5,
+                    labelColor: ColorTokens.clubAccent,
+                    unselectedLabelColor: ColorTokens.onSurfaceVariant,
+                    labelStyle: TypographyTokens.editorialFont(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.2,
+                    ),
+                    unselectedLabelStyle: TypographyTokens.editorialFont(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.0,
+                    ),
+                    dividerColor: Colors.transparent,
+                    tabs: _tabLabels
+                        .map((label) => Tab(text: label))
+                        .toList(growable: false),
                   ),
                 ),
               ),
-              SliverList.separated(
-                itemBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing6,
-                  ),
-                  child: _MarketCard(
-                    fixture: fixture,
-                    market: featuredMarkets[index],
-                    communityPicks:
-                        _communityPicks[featuredMarkets[index]
-                            .fixtureMarketId] ??
-                        const <CommunityPick>[],
-                  ),
-                ),
-                separatorBuilder: (_, __) =>
-                    const SizedBox(height: SpacingTokens.spacing3),
-                itemCount: featuredMarkets.length,
-              ),
-              const SliverToBoxAdapter(child: SizedBox(height: 120)),
             ],
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                // ── Predict tab ──
+                _PredictTabBody(
+                  fixture: fixture,
+                  markets: _markets,
+                  communityPicks: _communityPicks,
+                ),
+                // ── Stats tab ──
+                _StatsTabBody(fixture: fixture),
+                // ── H2H tab ──
+                H2hTabBody(
+                  homeTeamName: fixture.homeTeamName,
+                  awayTeamName: fixture.awayTeamName,
+                  homeTeamShort: fixture.homeTeamShort,
+                  awayTeamShort: fixture.awayTeamShort,
+                  encounters: _h2hEncounters,
+                ),
+                // ── Lineups tab ──
+                LineupsTabBody(
+                  homeTeamName: fixture.homeTeamName,
+                  awayTeamName: fixture.awayTeamName,
+                  homeTeamShort: fixture.homeTeamShort,
+                  awayTeamShort: fixture.awayTeamShort,
+                  homeLineup: _homeLineup,
+                  awayLineup: _awayLineup,
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+
+// ── Tab bar persistent header delegate ─────────────────────────────────
+
+class _TabBarDelegate extends SliverPersistentHeaderDelegate {
+  const _TabBarDelegate({required this.tabBar});
+
+  final TabBar tabBar;
+
+  @override
+  double get minExtent => tabBar.preferredSize.height;
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(
+      color: ColorTokens.background,
+      child: tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_TabBarDelegate oldDelegate) => false;
+}
+
+// ── Predict tab body ───────────────────────────────────────────────────
+
+class _PredictTabBody extends StatelessWidget {
+  const _PredictTabBody({
+    required this.fixture,
+    required this.markets,
+    required this.communityPicks,
+  });
+
+  final FixtureSummary fixture;
+  final List<FixtureMarket> markets;
+  final Map<String, List<CommunityPick>> communityPicks;
+
+  @override
+  Widget build(BuildContext context) {
+    final featuredMarkets = markets.take(4).toList(growable: false);
+
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(),
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: SpacingTokens.spacing6,
+              vertical: SpacingTokens.spacing4,
+            ),
+            child: Row(
+              children: [
+                Text(
+                  'TOP MARKETS',
+                  style: TypographyTokens.monolithFont(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: ColorTokens.onSurfaceVariant,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                const Spacer(),
+                TextButton.icon(
+                  onPressed: markets.isEmpty
+                      ? null
+                      : () => showMarketSelectorSheet(
+                          context: context,
+                          fixture: fixture,
+                          markets: markets,
+                        ),
+                  icon: const Icon(Icons.grid_view_rounded, size: 16),
+                  label: const Text('All markets'),
+                ),
+              ],
+            ),
+          ),
+        ),
+        SliverList.separated(
+          itemBuilder: (context, index) => Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: SpacingTokens.spacing6,
+            ),
+            child: _MarketCard(
+              fixture: fixture,
+              market: featuredMarkets[index],
+              communityPicks:
+                  communityPicks[featuredMarkets[index].fixtureMarketId] ??
+                  const <CommunityPick>[],
+            ),
+          ),
+          separatorBuilder: (_, __) =>
+              const SizedBox(height: SpacingTokens.spacing3),
+          itemCount: featuredMarkets.length,
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 120)),
+      ],
+    );
+  }
+}
+
+// ── Stats tab body ─────────────────────────────────────────────────────
+
+class _StatsTabBody extends StatelessWidget {
+  const _StatsTabBody({required this.fixture});
+
+  final FixtureSummary fixture;
+
+  @override
+  Widget build(BuildContext context) {
+    // Build stats from actual match data when scores are available.
+    final hasScores = fixture.homeScore != null && fixture.awayScore != null;
+
+    if (!hasScores) {
+      // No live or final stats available — show informative empty state.
+      return ListView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        children: [
+          const SizedBox(height: SpacingTokens.spacing8),
+          const AfriEmptyView(
+            compact: true,
+            title: 'Stats not yet available',
+            message:
+                'Match statistics will appear here once the match is live or has been completed.',
+            icon: Icons.bar_chart_rounded,
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          GlassCard(
+            animate: false,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_outline_rounded,
+                  size: 16,
+                  color: ColorTokens.onSurfaceVariant,
+                ),
+                const SizedBox(width: SpacingTokens.spacing2),
+                Expanded(
+                  child: Text(
+                    'Live stats update automatically during the match.',
+                    style: TypographyTokens.bodySmall(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    // Show score-based summary stats for live or completed matches.
+    final homeGoals = fixture.homeScore ?? 0;
+    final awayGoals = fixture.awayScore ?? 0;
+    final totalGoals = homeGoals + awayGoals;
+
+    final liveStats = <MatchStatRow>[
+      MatchStatRow(
+        label: 'Goals',
+        leftValue: homeGoals,
+        rightValue: awayGoals,
+        leftDisplay: '$homeGoals',
+        rightDisplay: '$awayGoals',
+      ),
+      MatchStatRow(
+        label: 'Total Goals',
+        leftValue: totalGoals,
+        rightValue: totalGoals,
+        leftDisplay: '$totalGoals',
+        rightDisplay: '$totalGoals',
+      ),
+    ];
+
+    return ListView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      children: [
+        StatsPanel(
+          stats: liveStats,
+          homeLabel: fixture.homeTeamShort,
+          awayLabel: fixture.awayTeamShort,
+        ),
+        const SizedBox(height: SpacingTokens.spacing4),
+        GlassCard(
+          animate: false,
+          child: Row(
+            children: [
+              Icon(
+                Icons.info_outline_rounded,
+                size: 16,
+                color: ColorTokens.onSurfaceVariant,
+              ),
+              const SizedBox(width: SpacingTokens.spacing2),
+              Expanded(
+                child: Text(
+                  fixture.isLive
+                      ? 'Live stats update automatically during the match.'
+                      : 'Final match statistics.',
+                  style: TypographyTokens.bodySmall(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Market card (unchanged) ────────────────────────────────────────────
 
 class _MarketCard extends ConsumerWidget {
   const _MarketCard({

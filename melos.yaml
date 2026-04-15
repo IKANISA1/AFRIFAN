@@ -15,7 +15,7 @@ command:
 
 scripts:
   analyze:
-    run: melos exec -- flutter analyze --fatal-infos
+    run: melos exec -- flutter analyze --fatal-infos --fatal-warnings
     description: Analyze all packages
 
   format:

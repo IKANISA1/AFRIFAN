@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -24,21 +26,10 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
   String? _error;
   String _activeFilter = 'ALL';
 
-  static const _filters = <String>[
-    'ALL',
-    'OFFICIAL',
-    'KIGALI',
-    'NORTHERN',
-    'SOUTHERN',
-    'EASTERN',
-    'WESTERN',
-    'INTERNATIONAL',
-  ];
-
   @override
   void initState() {
     super.initState();
-    _loadClubs();
+    unawaited(_loadClubs());
   }
 
   @override
@@ -64,6 +55,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
           .from('fan_clubs')
           .select()
           .eq('club_id', scope.clubId!)
+          .eq('is_active', true)
           .order('member_count', ascending: false);
 
       final userId = client.auth.currentUser?.id;
@@ -86,11 +78,16 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
       }
 
       if (!mounted) return;
+      final loadedClubs = List<Map<String, dynamic>>.from(clubs);
+      final availableFilters = _buildFilters(loadedClubs);
       setState(() {
-        _clubs = List<Map<String, dynamic>>.from(clubs);
+        _clubs = loadedClubs;
         _joinedClubIds
           ..clear()
           ..addAll(joined);
+        if (!availableFilters.contains(_activeFilter)) {
+          _activeFilter = 'ALL';
+        }
         _isLoading = false;
       });
     } catch (error) {
@@ -116,7 +113,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
     }
 
     final isJoined = _joinedClubIds.contains(clubId);
-    HapticFeedback.lightImpact();
+    unawaited(HapticFeedback.lightImpact());
     setState(() => _pendingClubIds.add(clubId));
 
     try {
@@ -177,35 +174,33 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
     }
   }
 
-  bool _isOfficial(Map<String, dynamic> club) {
-    final members = (club['member_count'] as num?)?.toInt() ?? 0;
-    final rating = (club['rating'] as num?)?.toDouble() ?? 0;
-    return members >= 300 || rating >= 4.8;
+  List<String> _buildFilters(List<Map<String, dynamic>> clubs) {
+    final filters = <String>['ALL'];
+    final seen = <String>{'all'};
+
+    for (final club in clubs) {
+      final region = _trimmedRegion(club['region']);
+      if (region == null) {
+        continue;
+      }
+      final key = region.toLowerCase();
+      if (seen.add(key)) {
+        filters.add(region);
+      }
+    }
+
+    return filters;
   }
 
   List<Map<String, dynamic>> get _visibleClubs {
     final query = _searchController.text.trim().toLowerCase();
     return _clubs
         .where((club) {
-          final region = club['region']?.toString().toLowerCase() ?? '';
+          final region = _trimmedRegion(club['region'])?.toLowerCase() ?? '';
           final name = club['name']?.toString().toLowerCase() ?? '';
-          final matchesFilter = switch (_activeFilter) {
-            'KIGALI' => region.contains('kigali'),
-            'NORTHERN' => region.contains('northern'),
-            'SOUTHERN' => region.contains('southern'),
-            'WESTERN' => region.contains('western'),
-            'EASTERN' => region.contains('eastern'),
-            'INTERNATIONAL' =>
-              region.contains('international') ||
-                  (!region.contains('kigali') &&
-                      !region.contains('northern') &&
-                      !region.contains('southern') &&
-                      !region.contains('western') &&
-                      !region.contains('eastern') &&
-                      region != 'official'),
-            'OFFICIAL' => _isOfficial(club),
-            _ => true,
-          };
+          final normalizedFilter = _activeFilter.trim().toLowerCase();
+          final matchesFilter =
+              normalizedFilter == 'all' || region == normalizedFilter;
           final matchesQuery =
               query.isEmpty ||
               name.contains(query) ||
@@ -222,6 +217,14 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
     final featuredClub = _clubs.isEmpty ? null : _clubs.first;
+    final filters = _buildFilters(_clubs);
+    final isSearching = _searchController.text.trim().isNotEmpty;
+    final emptyTitle = _clubs.isEmpty && !isSearching
+        ? 'No fan clubs yet'
+        : 'No clubs found';
+    final emptyMessage = _clubs.isEmpty && !isSearching
+        ? 'New fan clubs appear here after admin approval.'
+        : 'Try a different club name or region.';
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -248,7 +251,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                         IconButton(
                           onPressed: () => context.pop(),
                           icon: Icon(
-                            Icons.arrow_back_rounded,
+                            AfriIcons.back,
                             color: ColorTokens.onSurface,
                           ),
                         ),
@@ -274,7 +277,14 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () => context.push('/fan-clubs/create'),
+                          onPressed: () async {
+                            final created = await context.push<bool>(
+                              '/fan-clubs/create',
+                            );
+                            if (created == true && mounted) {
+                              unawaited(_loadClubs());
+                            }
+                          },
                           icon: Icon(
                             Icons.add_circle_outline_rounded,
                             color: ColorTokens.onSurface,
@@ -286,14 +296,12 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                 ),
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                    child: TextField(
+                    padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                    child: AfriInputField(
                       controller: _searchController,
+                      hint: 'Search clubs or locations',
+                      prefixIcon: AfriIcons.search,
                       onChanged: (_) => setState(() {}),
-                      decoration: const InputDecoration(
-                        hintText: 'Search clubs or regions',
-                        prefixIcon: Icon(Icons.search_rounded),
-                      ),
                     ),
                   ),
                 ),
@@ -318,10 +326,10 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                       SpacingTokens.spacing6,
                       0,
                     ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: _filters
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                        children: filters
                             .map((filter) {
                               final selected = filter == _activeFilter;
                               return Padding(
@@ -356,45 +364,23 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                 else if (_error != null)
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                      child: GlassCard(
-                        animate: false,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(_error!, style: TypographyTokens.bodyLarge()),
-                            const SizedBox(height: SpacingTokens.spacing3),
-                            ClaymorphicButton(
-                              label: 'TRY AGAIN',
-                              width: double.infinity,
-                              onPressed: _loadClubs,
-                            ),
-                          ],
-                        ),
+                      padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                      child: AfriErrorView(
+                        compact: true,
+                        message: _error,
+                        onRetry: _loadClubs,
                       ),
                     ),
                   )
                 else if (_visibleClubs.isEmpty)
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                      child: GlassCard(
-                        animate: false,
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.groups_rounded,
-                              size: 42,
-                              color: ColorTokens.onSurfaceVariant,
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing3),
-                            Text(
-                              'No fan clubs match this filter yet.',
-                              style: TypographyTokens.bodyLarge(),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
+                      padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                      child: AfriEmptyView(
+                        compact: true,
+                        title: emptyTitle,
+                        message: emptyMessage,
+                        icon: AfriIcons.clubZone,
                       ),
                     ),
                   )
@@ -419,7 +405,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                           club: club,
                           isJoined: joined,
                           isPending: isPending,
-                          isOfficial: _isOfficial(club),
+                          isOfficial: false,
                           onTap: () => context.push('/fan-clubs/$clubId'),
                           onJoinToggled: () => _toggleJoin(club),
                         ),
@@ -433,4 +419,12 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
       ),
     );
   }
+}
+
+String? _trimmedRegion(Object? value) {
+  final trimmed = value?.toString().trim();
+  if (trimmed == null || trimmed.isEmpty) {
+    return null;
+  }
+  return trimmed;
 }

@@ -308,7 +308,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                     if (context.canPop())
                       IconButton(
                         onPressed: () => context.pop(),
-                        icon: const Icon(Icons.arrow_back_rounded),
+                        icon: const Icon(AfriIcons.back),
                       ),
                   ],
                 ),
@@ -383,11 +383,11 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                       if (context.canPop())
                         IconButton(
                           onPressed: () => context.pop(),
-                          icon: const Icon(Icons.arrow_back_rounded),
+                          icon: const Icon(AfriIcons.back),
                         ),
                       IconButton(
                         onPressed: () => context.push('/fanzone/my'),
-                        icon: const Icon(Icons.history_rounded),
+                        icon: const Icon(AfriIcons.history),
                         tooltip: 'My Predictions',
                       ),
                       const Spacer(),

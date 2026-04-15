@@ -1,4 +1,5 @@
 import 'package:core_theme/core_theme.dart';
+import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:feat_home/src/widgets/quick_actions_grid.dart';
 import 'package:feat_home/src/widgets/stats_row.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ void main() {
     testWidgets('renders rank label', (tester) async {
       await tester.pumpWidget(buildTestApp());
       await tester.pumpAndSettle();
-      expect(find.text('Rank'), findsOneWidget);
+      expect(find.text('RANK'), findsOneWidget);
     });
 
     testWidgets('renders formatted FET number with commas', (tester) async {
@@ -79,8 +80,10 @@ void main() {
         routes: [
           GoRoute(
             path: '/',
-            builder: (_, __) => const Scaffold(
-              body: SingleChildScrollView(child: QuickActionsGrid()),
+            builder: (_, __) => Scaffold(
+              body: SingleChildScrollView(
+                child: QuickActionsGrid(actions: HomeQuickAction.fallbackItems),
+              ),
             ),
           ),
           // Stub routes for navigation
@@ -130,13 +133,6 @@ void main() {
       expect(find.text('Leaderboard'), findsOneWidget);
       expect(find.text('Wallet'), findsOneWidget);
       expect(find.text('Tickets'), findsOneWidget);
-    });
-
-    testWidgets('renders support button', (tester) async {
-      await tester.pumpWidget(buildTestApp());
-      await tester.pumpAndSettle();
-
-      expect(find.text('Support'), findsOneWidget);
     });
   });
 }

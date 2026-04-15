@@ -29,7 +29,7 @@ void main() {
       expect(topRoutes, hasLength(1));
     });
 
-    test('/admin has 5 sub-routes for each admin screen', () {
+    test('/admin has the full admin sub-route set', () {
       final adminRoute = module.routes
           .whereType<GoRoute>()
           .firstWhere((r) => r.path == '/admin');
@@ -38,12 +38,14 @@ void main() {
           .map((r) => r.path)
           .toList();
 
-      expect(subPaths, hasLength(5));
+      expect(subPaths, hasLength(7));
       expect(subPaths, contains('cms'));
       expect(subPaths, contains('matches'));
       expect(subPaths, contains('contributions'));
       expect(subPaths, contains('notifications'));
       expect(subPaths, contains('sms-monitor'));
+      expect(subPaths, contains('settle'));
+      expect(subPaths, contains('competitions'));
     });
 
     test('isEnabled defaults to true when key is absent', () {

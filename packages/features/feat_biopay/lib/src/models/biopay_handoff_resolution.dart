@@ -26,7 +26,9 @@ class BiopayHandoffResolution {
       publicId: data['public_id']?.toString() ?? '',
       routeType: _parseRouteType(data['route_type']),
       recipientValue: data['recipient_value']?.toString() ?? '',
-      countryCode: data['country_code']?.toString() ?? 'RW',
+      countryCode:
+          data['country_code']?.toString() ??
+          jh.AfriCountryCatalog.defaultCountry.isoCode,
       paymentCode:
           data['payment_code']?.toString() ??
           data['ussd_code']?.toString() ??

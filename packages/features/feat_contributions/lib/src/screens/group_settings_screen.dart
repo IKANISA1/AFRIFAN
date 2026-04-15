@@ -286,7 +286,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.close_rounded),
+          icon: const Icon(AfriIcons.close),
         ),
       ),
       body: _isLoading

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -27,7 +29,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadData();
+    unawaited(_loadData());
   }
 
   Future<void> _loadData() async {
@@ -72,7 +74,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // ── Scrollable content (hero goes edge-to-edge to top) ──
             RefreshIndicator(
               onRefresh: _loadData,
-              color: Theme.of(context).primaryColor,
+              color: ColorTokens.clubAccent,
               child: CustomScrollView(
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
@@ -86,9 +88,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(
-                          SpacingTokens.spacing6,
+                          SpacingTokens.screenPadding,
                           SpacingTokens.spacing4,
-                          SpacingTokens.spacing6,
+                          SpacingTokens.screenPadding,
                           0,
                         ),
                         child: AfriStateView.offline(
@@ -100,24 +102,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
 
                   // ── Quick actions rail ──
-                  const SliverToBoxAdapter(
+                  SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: SpacingTokens.spacing6,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: SpacingTokens.screenPadding,
                       ),
-                      child: QuickActionsGrid(),
+                      child: QuickActionsGrid(actions: _snapshot.quickActions),
                     ),
                   ),
 
                   // ── Stats row ──
                   if (_snapshot.hasStats) ...[
                     const SliverToBoxAdapter(
-                      child: SizedBox(height: SpacingTokens.spacing8),
+                      child: SizedBox(height: SpacingTokens.sectionGap),
                     ),
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: SpacingTokens.spacing6,
+                          horizontal: SpacingTokens.screenPadding,
                         ),
                         child: _buildAnimatedSection(
                           context,
@@ -134,12 +136,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   // ── Leaderboard ──
                   if (_snapshot.hasLeaderboard) ...[
                     const SliverToBoxAdapter(
-                      child: SizedBox(height: SpacingTokens.spacing8),
+                      child: SizedBox(height: SpacingTokens.sectionGap),
                     ),
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: SpacingTokens.spacing6,
+                          horizontal: SpacingTokens.screenPadding,
                         ),
                         child: _buildAnimatedSection(
                           context,
@@ -153,7 +155,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
 
                   const SliverToBoxAdapter(
-                    child: SizedBox(height: SpacingTokens.spacing8),
+                    child: SizedBox(height: SpacingTokens.sectionGap),
                   ),
 
                   // ── Latest Intel ──
@@ -171,8 +173,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     const SliverToBoxAdapter(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: SpacingTokens.spacing6,
-                          vertical: SpacingTokens.spacing8,
+                          horizontal: SpacingTokens.screenPadding,
+                          vertical: SpacingTokens.sectionGap,
                         ),
                         child: AfriSkeletonList(itemCount: 2),
                       ),
@@ -246,7 +248,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           compact: true,
           title: 'No fixture yet',
           message: 'The next fixture appears here when confirmed.',
-          icon: Icons.calendar_month_rounded,
+          icon: AfriIcons.fixture,
         ),
       );
     }

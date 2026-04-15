@@ -189,10 +189,10 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
       body: GradientBackground(
         child: SafeArea(
           child: ListView(
-            padding: const EdgeInsets.all(SpacingTokens.spacing6),
+            padding: const EdgeInsets.all(SpacingTokens.screenPadding),
             children: [
               Text(
-                'Enter an invite code to preview a circle before you join it.',
+                'Enter an invite code to preview a circle.',
                 style: TypographyTokens.bodyLarge(ColorTokens.onSurfaceVariant),
               ),
               const SizedBox(height: SpacingTokens.spacing5),
@@ -201,25 +201,20 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('INVITE CODE', style: TypographyTokens.labelMedium()),
-                    const SizedBox(height: SpacingTokens.spacing3),
-                    TextField(
+                    AfriInputField(
+                      label: 'Invite code',
+                      hint: 'ABCD1234',
                       controller: _inviteController,
                       textCapitalization: TextCapitalization.characters,
                       enabled: !_isPreviewLoading && !_isJoining,
-                      decoration: const InputDecoration(
-                        hintText: 'ABCD1234',
-                        prefixIcon: Icon(Icons.qr_code_rounded),
-                      ),
+                      prefixIcon: AfriIcons.scan,
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
-                    FilledButton(
-                      onPressed: _isPreviewLoading || !_hasInviteCode
-                          ? null
-                          : _previewInvite,
-                      child: Text(
-                        _isPreviewLoading ? 'CHECKING...' : 'PREVIEW CIRCLE',
-                      ),
+                    AfriButton(
+                      label: _isPreviewLoading ? 'Checking…' : 'Preview circle',
+                      onTap: _previewInvite,
+                      isLoading: _isPreviewLoading,
+                      enabled: !_isPreviewLoading && _hasInviteCode,
                     ),
                   ],
                 ),
@@ -245,9 +240,9 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
                         spacing: SpacingTokens.spacing2,
                         runSpacing: SpacingTokens.spacing2,
                         children: [
-                          _PreviewChip(label: visibility.toUpperCase()),
-                          _PreviewChip(label: groupType.toUpperCase()),
-                          _PreviewChip(label: '$memberCount MEMBERS'),
+                          AfriInfoChip(label: visibility.toUpperCase()),
+                          AfriInfoChip(label: groupType.toUpperCase()),
+                          AfriInfoChip(label: '$memberCount members'),
                         ],
                       ),
                       const SizedBox(height: SpacingTokens.spacing4),
@@ -275,15 +270,15 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
                         ),
                       ),
                       const SizedBox(height: SpacingTokens.spacing5),
-                      FilledButton(
-                        onPressed: _isJoining ? null : _joinGroup,
-                        child: Text(
-                          _isJoining
-                              ? 'JOINING...'
-                              : alreadyMember
-                              ? 'OPEN CIRCLE'
-                              : 'JOIN CIRCLE',
-                        ),
+                      AfriButton(
+                        label: _isJoining
+                            ? 'Joining…'
+                            : alreadyMember
+                            ? 'Open circle'
+                            : 'Join circle',
+                        onTap: _joinGroup,
+                        isLoading: _isJoining,
+                        enabled: !_isJoining,
                       ),
                     ],
                   ),
@@ -297,27 +292,4 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
   }
 }
 
-class _PreviewChip extends StatelessWidget {
-  const _PreviewChip({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.spacing3,
-        vertical: SpacingTokens.spacing2,
-      ),
-      decoration: BoxDecoration(
-        color: ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(999),
-        border: BorderTokens.all(color: ColorTokens.ghostBorder),
-      ),
-      child: Text(
-        label,
-        style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
-      ),
-    );
-  }
-}
+// _PreviewChip removed – replaced by AfriInfoChip from core_theme.

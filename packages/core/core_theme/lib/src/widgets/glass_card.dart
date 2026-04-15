@@ -8,7 +8,12 @@ import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_press_feedback.dart';
 
-/// Elevated surface used for lightweight grouped content.
+/// Elevated surface used for **content containers** — read-only grouped
+/// information, transaction rows, fixture rows, stat displays, and any
+/// surface where the primary interaction is reading, not tapping.
+///
+/// For **interactive surfaces** (tappable tiles, action shortcuts, navigation
+/// cards), prefer [ClayCard].
 class GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;

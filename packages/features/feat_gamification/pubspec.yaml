@@ -14,6 +14,8 @@ dependencies:
     path: ../../core/core_theme
   core_router:
     path: ../../core/core_router
+  core_auth:
+    path: ../../core/core_auth
   core_network:
     path: ../../core/core_network
   core_utils:
@@ -24,6 +26,7 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_animate: ^4.5.2
   share_plus: ^11.1.0
+  url_launcher: ^6.3.1
 
 resolution: workspace
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_utils/core_utils.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/widgets.dart';
@@ -64,7 +66,7 @@ class _AnalyticsRouteObserver extends RouteObserver<PageRoute<dynamic>> {
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPush(route, previousRoute);
     if (route.settings.name != null) {
-      FirebaseAnalyticsService.setCurrentScreen(route.settings.name!);
+      unawaited(FirebaseAnalyticsService.setCurrentScreen(route.settings.name!));
     }
   }
 
@@ -72,7 +74,7 @@ class _AnalyticsRouteObserver extends RouteObserver<PageRoute<dynamic>> {
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
     super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
     if (newRoute?.settings.name != null) {
-      FirebaseAnalyticsService.setCurrentScreen(newRoute!.settings.name!);
+      unawaited(FirebaseAnalyticsService.setCurrentScreen(newRoute!.settings.name!));
     }
   }
 
@@ -80,7 +82,7 @@ class _AnalyticsRouteObserver extends RouteObserver<PageRoute<dynamic>> {
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPop(route, previousRoute);
     if (previousRoute?.settings.name != null) {
-      FirebaseAnalyticsService.setCurrentScreen(previousRoute!.settings.name!);
+      unawaited(FirebaseAnalyticsService.setCurrentScreen(previousRoute!.settings.name!));
     }
   }
 }

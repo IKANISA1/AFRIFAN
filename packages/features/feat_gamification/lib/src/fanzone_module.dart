@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'screens/badges_screen.dart';
 import 'screens/challenges_screen.dart';
 import 'screens/club_fan_zone_screen.dart';
+import 'screens/fan_id_screen.dart';
 import 'screens/fanzone_hub_screen.dart';
 import 'screens/fet_wallet_screen.dart';
 import 'screens/fixtures_browser_screen.dart';
@@ -16,11 +17,14 @@ import 'screens/league_hub_screen.dart';
 import 'screens/league_standings_screen.dart';
 import 'screens/match_detail_screen.dart';
 import 'screens/my_predictions_screen.dart';
+import 'screens/onboarding_profile_setup_screen.dart';
 import 'screens/prediction_detail_screen.dart';
 import 'screens/prediction_notifications_screen.dart';
 import 'screens/prediction_settlement_screen.dart';
+import 'screens/privacy_settings_screen.dart';
 import 'screens/rewards_store_screen.dart';
 import 'screens/share_card_generator_screen.dart';
+import 'screens/social_hub_screen.dart';
 import 'screens/streak_calendar_screen.dart';
 import 'screens/team_profile_screen.dart';
 import 'screens/token_history_screen.dart';
@@ -46,16 +50,12 @@ class FanzoneModule extends FeatureModule {
   }
 
   @override
-  TabRoute get tabRoute => TabRoute(
-    path: '/fanzone',
-    label: 'FANZONE',
-    icon: Icons.sports_soccer_outlined,
-    activeIcon: Icons.sports_soccer_rounded,
-    builder: (context, state) => const FanzoneHubScreen(),
-  );
-
-  @override
   List<RouteBase> get routes => [
+    GoRoute(
+      path: '/fanzone',
+      name: 'fanzone',
+      builder: (context, state) => const FanzoneHubScreen(),
+      routes: [
     GoRoute(
       path: 'fixtures',
       name: 'fanzone-fixtures',
@@ -189,73 +189,27 @@ class FanzoneModule extends FeatureModule {
       name: 'fanzone-club-zone',
       builder: (context, state) => const ClubFanZoneScreen(),
     ),
-  ];
-
-  @override
-  List<RouteBase> get standaloneRoutes => <RouteBase>[
-    GoRoute(path: '/predictions', redirect: (_, __) => '/fanzone/fixtures'),
     GoRoute(
-      path: '/predictions/leaderboard',
-      redirect: (_, __) => '/fanzone/leaderboard',
+      path: 'fan-id',
+      name: 'fanzone-fan-id',
+      builder: (context, state) => const FanIdScreen(),
     ),
     GoRoute(
-      path: '/predictions/notifications',
-      redirect: (_, __) => '/fanzone/notifications',
-    ),
-    GoRoute(path: '/predictions/my', redirect: (_, __) => '/fanzone/my'),
-    GoRoute(
-      path: '/predictions/league',
-      redirect: (_, __) => '/fanzone/league',
+      path: 'social',
+      name: 'fanzone-social',
+      builder: (context, state) => const SocialHubScreen(),
     ),
     GoRoute(
-      path: '/predictions/my/:predictionId',
-      redirect: (_, state) =>
-          '/fanzone/my/${state.pathParameters['predictionId'] ?? ''}',
+      path: 'privacy',
+      name: 'fanzone-privacy',
+      builder: (context, state) => const PrivacySettingsScreen(),
     ),
     GoRoute(
-      path: '/predictions/my/:predictionId/settlement',
-      redirect: (_, state) =>
-          '/fanzone/my/${state.pathParameters['predictionId'] ?? ''}/settlement',
+      path: 'onboarding-setup',
+      name: 'fanzone-onboarding-setup',
+      builder: (context, state) => const OnboardingProfileSetupScreen(),
     ),
-    GoRoute(
-      path: '/predictions/league/:competitionSlug',
-      redirect: (_, state) =>
-          '/fanzone/league/${state.pathParameters['competitionSlug'] ?? ''}',
+      ],
     ),
-    GoRoute(
-      path: '/predictions/league/:competitionSlug/standings',
-      redirect: (_, state) =>
-          '/fanzone/standings/${state.pathParameters['competitionSlug'] ?? ''}',
-    ),
-    GoRoute(
-      path: '/predictions/team/:teamSlug',
-      redirect: (_, state) =>
-          '/fanzone/team/${state.pathParameters['teamSlug'] ?? ''}',
-    ),
-    GoRoute(
-      path: '/predictions/match/:fixtureId',
-      redirect: (_, state) =>
-          '/fanzone/match/${state.pathParameters['fixtureId'] ?? ''}',
-    ),
-    GoRoute(path: '/fanzone/predictions', redirect: (_, __) => '/fanzone/my'),
-    GoRoute(path: '/fet', redirect: (_, __) => '/fanzone'),
-    GoRoute(
-      path: '/fet/leaderboard',
-      redirect: (_, __) => '/fanzone/leaderboard',
-    ),
-    GoRoute(path: '/fet/wallet', redirect: (_, __) => '/fanzone/wallet'),
-    GoRoute(path: '/fet/rewards', redirect: (_, __) => '/fanzone/rewards'),
-    GoRoute(path: '/fet/history', redirect: (_, __) => '/fanzone/history'),
-    GoRoute(
-      path: '/fet/challenges',
-      redirect: (_, __) => '/fanzone/challenges',
-    ),
-    GoRoute(path: '/fet/badges', redirect: (_, __) => '/fanzone/badges'),
-    GoRoute(path: '/fet/streak', redirect: (_, __) => '/fanzone/streak'),
-    GoRoute(path: '/fet/jackpot', redirect: (_, __) => '/fanzone/jackpot'),
-    GoRoute(path: '/fet/share', redirect: (_, __) => '/fanzone/share'),
-    GoRoute(path: '/fet/friends', redirect: (_, __) => '/fanzone/friends'),
-    GoRoute(path: '/fet/challenge', redirect: (_, __) => '/fanzone/challenge'),
-    GoRoute(path: '/fet/club-zone', redirect: (_, __) => '/fanzone/club-zone'),
   ];
 }

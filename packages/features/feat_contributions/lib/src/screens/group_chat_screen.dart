@@ -232,14 +232,14 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
         leading: IconButton(
           onPressed: () => context.pop(),
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
         actions: [
           IconButton(
             onPressed: () =>
                 context.push('/contribute/group/${widget.groupId}/settings'),
             tooltip: 'Open circle settings',
-            icon: const Icon(Icons.settings_outlined),
+            icon: const Icon(AfriIcons.settings),
           ),
         ],
       ),

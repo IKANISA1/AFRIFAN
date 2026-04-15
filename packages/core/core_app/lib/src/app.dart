@@ -299,8 +299,6 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
 
     // The app is intentionally single-theme: always render with the original
     // dark design system regardless of device appearance settings.
-    ColorTokens.setBrightness(Brightness.dark);
-
     return MaterialApp.router(
       title: widget.config.appName,
       debugShowCheckedModeBanner: false,

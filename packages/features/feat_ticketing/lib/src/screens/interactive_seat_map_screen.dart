@@ -55,7 +55,7 @@ class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: ColorTokens.onSurface),
+          icon: Icon(AfriIcons.back, color: ColorTokens.onSurface),
           onPressed: () => context.pop(),
         ),
       ),
@@ -128,20 +128,10 @@ class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
                             style: TypographyTokens.titleMedium()),
                       ],
                     ),
-                    FilledButton(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: ColorTokens.clubPrimary,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: SpacingTokens.spacing8),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: ShapeTokens.buttonRadius),
-                      ),
-                      onPressed: () {
-                        context.pop(_selectedSeat);
-                      },
-                      child: Text('CONFIRM',
-                          style: TypographyTokens.labelLarge()
-                            ..copyWith(color: ColorTokens.onSurface)),
+                    AfriButton(
+                      label: 'Confirm',
+                      fullWidth: false,
+                      onTap: () => context.pop(_selectedSeat),
                     ),
                   ],
                 ),
@@ -234,8 +224,7 @@ class StadiumPainter extends CustomPainter {
     canvas.drawRect(
       pitchRect,
       Paint()
-        // NOTE: Stadium pitch green — domain color, not club-specific
-        ..color = const Color(0xFF1B5E20) // Deep dark green pitch
+        ..color = ExternalBrandColors.stadiumPitch
         ..style = PaintingStyle.fill,
     );
 

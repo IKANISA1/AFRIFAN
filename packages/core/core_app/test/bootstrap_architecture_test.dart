@@ -61,7 +61,7 @@ void main() {
         expect(steps, <String>['critical']);
 
         await tester.pumpWidget(const SizedBox.shrink());
-        coordinator.scheduleDeferredInitialization(config);
+        unawaited(coordinator.scheduleDeferredInitialization(config));
         expect(steps, <String>['critical']);
 
         await tester.pump();

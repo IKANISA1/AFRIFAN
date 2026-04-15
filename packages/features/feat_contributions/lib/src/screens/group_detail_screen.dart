@@ -147,7 +147,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
               context.go('/contribute/groups');
             }
           },
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
         actions: [
           IconButton(

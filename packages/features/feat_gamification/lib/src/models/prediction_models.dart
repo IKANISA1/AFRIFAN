@@ -65,6 +65,7 @@ class PredictionLeaderboardEntry {
     required this.totalSettled,
     required this.totalFetEarned,
     required this.winRate,
+    this.trend,
   });
 
   final int rank;
@@ -74,6 +75,9 @@ class PredictionLeaderboardEntry {
   final int totalSettled;
   final int totalFetEarned;
   final double winRate;
+
+  /// Trend indicator: 'up', 'down', or 'same'. Null if unavailable.
+  final String? trend;
 
   factory PredictionLeaderboardEntry.fromJson(
     Map<String, dynamic> json, {
@@ -87,6 +91,7 @@ class PredictionLeaderboardEntry {
       totalSettled: (json['total_settled'] as num?)?.toInt() ?? 0,
       totalFetEarned: (json['total_fet_earned'] as num?)?.toInt() ?? 0,
       winRate: (json['win_rate'] as num?)?.toDouble() ?? 0,
+      trend: json['trend']?.toString(),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _loadClub();
+    unawaited(_loadClub());
   }
 
   Future<void> _loadClub() async {
@@ -108,6 +110,9 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     final club = _club;
     final userId = ref.read(supabaseClientProvider).auth.currentUser?.id;
     if (club == null || _isJoinMutationPending) return;
+    if (!(club['is_active'] as bool? ?? true)) {
+      return;
+    }
 
     if (userId == null) {
       context.go('/onboarding');
@@ -119,7 +124,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
       return;
     }
 
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
     setState(() => _isJoinMutationPending = true);
     try {
       if (_joined) {
@@ -187,12 +192,6 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     ).showSnackBar(const SnackBar(content: Text('Fan club link copied.')));
   }
 
-  bool _isOfficial(Map<String, dynamic> club) {
-    final members = (club['member_count'] as num?)?.toInt() ?? 0;
-    final rating = (club['rating'] as num?)?.toDouble() ?? 0;
-    return members >= 300 || rating >= 4.8;
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -214,7 +213,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
           backgroundColor: Colors.transparent,
           leading: IconButton(
             onPressed: () => context.pop(),
-            icon: const Icon(Icons.arrow_back_rounded),
+            icon: const Icon(AfriIcons.back),
           ),
         ),
         body: Center(
@@ -238,7 +237,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     final members = (club['member_count'] as num?)?.toInt() ?? 0;
     final events = (club['event_count'] as num?)?.toInt() ?? 0;
     final rating = (club['rating'] as num?)?.toDouble() ?? 0;
-    // Removed emoji string loading
+    final isActive = club['is_active'] as bool? ?? true;
     final match = _upcomingMatch;
 
     return Scaffold(
@@ -252,7 +251,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
             pinned: true,
             leading: IconButton(
               onPressed: () => context.pop(),
-              icon: const Icon(Icons.arrow_back_rounded),
+              icon: const Icon(AfriIcons.back),
             ),
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
@@ -281,28 +280,31 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                             color: ColorTokens.onSurface,
                           ),
                           const SizedBox(width: SpacingTokens.spacing3),
-                          if (_isOfficial(club))
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: ColorTokens.clubAccent.withValues(
-                                  alpha: 0.14,
-                                ),
-                                borderRadius: BorderRadius.circular(999),
-                              ),
-                              child: Text(
-                                'OFFICIAL',
-                                style: TypographyTokens.editorialFont(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: ColorTokens.clubAccent,
-                                  letterSpacing: 1.2,
-                                ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isActive
+                                  ? ColorTokens.clubAccent.withValues(
+                                      alpha: 0.14,
+                                    )
+                                  : ColorTokens.warning.withValues(alpha: 0.14),
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              isActive ? 'ACTIVE' : 'PENDING REVIEW',
+                              style: TypographyTokens.editorialFont(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                                color: isActive
+                                    ? ColorTokens.clubAccent
+                                    : ColorTokens.warning,
+                                letterSpacing: 1.2,
                               ),
                             ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: SpacingTokens.spacing4),
@@ -396,7 +398,9 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
                         _SnapshotRow(
-                          title: _joined
+                          title: !isActive
+                              ? 'This fan club is waiting for admin approval.'
+                              : _joined
                               ? 'You are a member.'
                               : 'Join for updates & matchday coordination.',
                         ),
@@ -423,7 +427,12 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                           ),
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
-                        if (match == null)
+                        if (!isActive)
+                          Text(
+                            'Matchday coordination unlocks once this fan club is approved.',
+                            style: TypographyTokens.bodyMedium(),
+                          )
+                        else if (match == null)
                           Text(
                             'No upcoming club fixture is linked to this chapter yet.',
                             style: TypographyTokens.bodyMedium(),
@@ -455,32 +464,36 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: ClaymorphicButton(
-                          label: _isJoinMutationPending
+                        child: AfriButton(
+                          label: !isActive
+                              ? 'PENDING REVIEW'
+                              : _isJoinMutationPending
                               ? 'UPDATING...'
                               : _joined
                               ? 'JOINED'
                               : 'JOIN CLUB',
-                          onPressed: _isJoinMutationPending
-                              ? null
-                              : _toggleJoin,
+                          variant: AfriButtonVariant.clay,
+                          enabled: isActive && !_isJoinMutationPending,
+                          isLoading: isActive && _isJoinMutationPending,
+                          onTap: _toggleJoin,
                         ),
                       ),
                       const SizedBox(width: SpacingTokens.spacing3),
-                      SizedBox(
-                        width: 58,
-                        height: 58,
-                        child: OutlinedButton(
-                          onPressed: _copyShareLink,
-                          style: OutlinedButton.styleFrom(
-                            side: BorderTokens.side(color: primary),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
+                      if (isActive)
+                        SizedBox(
+                          width: 58,
+                          height: 58,
+                          child: OutlinedButton(
+                            onPressed: _copyShareLink,
+                            style: OutlinedButton.styleFrom(
+                              side: BorderTokens.side(color: primary),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
+                              ),
                             ),
+                            child: const Icon(AfriIcons.share),
                           ),
-                          child: const Icon(Icons.share_rounded),
                         ),
-                      ),
                     ],
                   ),
                 ],

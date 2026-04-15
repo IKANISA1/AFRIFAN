@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_auth/core_auth.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -7,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show SupabaseClient;
 
+import '../widgets/contribution_history.dart';
+import '../widgets/digital_membership_card.dart';
 import '../widgets/membership_card.dart';
 import '../widgets/tier_progress.dart';
 
@@ -21,6 +25,7 @@ class MembershipScreen extends ConsumerStatefulWidget {
 class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   List<Map<String, dynamic>> _packages = [];
   Map<String, dynamic>? _membership;
+  List<ContributionRecord> _contributions = const <ContributionRecord>[];
   bool _isLoading = true;
   bool _isJoining = false;
   String? _joiningTier;
@@ -30,7 +35,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   @override
   void initState() {
     super.initState();
-    _loadPackages();
+    unawaited(_loadPackages());
   }
 
   Future<void> _loadPackages() async {
@@ -62,6 +67,15 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
             .maybeSingle();
       }
 
+      final contributions = userId == null
+          ? const <ContributionRecord>[]
+          : await _loadContributionHistory(
+              client: client,
+              clubId: clubId,
+              userId: userId,
+              membership: membership,
+            );
+
       if (mounted) {
         setState(() {
           final loadedPackages = List<Map<String, dynamic>>.from(
@@ -71,6 +85,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
           _membership = membership == null
               ? null
               : Map<String, dynamic>.from(membership);
+          _contributions = contributions;
           _isLoading = false;
           _error = null;
           _emptyMessage = loadedPackages.isEmpty
@@ -81,12 +96,74 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     } catch (_) {
       if (mounted) {
         setState(() {
+          _contributions = const <ContributionRecord>[];
           _isLoading = false;
           _error = 'Membership details are temporarily unavailable.';
           _emptyMessage = null;
         });
       }
     }
+  }
+
+  Future<List<ContributionRecord>> _loadContributionHistory({
+    required SupabaseClient client,
+    required int clubId,
+    required String userId,
+    required Map<String, dynamic>? membership,
+  }) async {
+    final rows = List<Map<String, dynamic>>.from(
+      await client
+          .from('initiative_contributions')
+          .select('initiative_id, amount, status, created_at')
+          .eq('user_id', userId)
+          .eq('club_id', clubId)
+          .order('created_at', ascending: false)
+          .limit(8),
+    );
+    if (rows.isEmpty) {
+      return const <ContributionRecord>[];
+    }
+
+    final initiativeIds = rows
+        .map((row) => row['initiative_id']?.toString())
+        .whereType<String>()
+        .where((value) => value.isNotEmpty)
+        .toSet()
+        .toList(growable: false);
+
+    final initiativeTitles = <String, String>{};
+    if (initiativeIds.isNotEmpty) {
+      final initiatives = List<Map<String, dynamic>>.from(
+        await client
+            .from('initiatives')
+            .select('id, title')
+            .inFilter('id', initiativeIds),
+      );
+      for (final initiative in initiatives) {
+        final id = initiative['id']?.toString();
+        final title = initiative['title']?.toString().trim();
+        if (id != null && id.isNotEmpty && title != null && title.isNotEmpty) {
+          initiativeTitles[id] = title;
+        }
+      }
+    }
+
+    final fallbackLabel = membership == null
+        ? 'Club contribution'
+        : '${_currentTierLabel(membership['tier']?.toString(), (membership['points'] as num?)?.toInt() ?? 0)} contribution';
+
+    return rows
+        .map(
+          (row) => ContributionRecord(
+            date: _formatMembershipDate(row['created_at']?.toString()),
+            amount: (row['amount'] as num?)?.toInt() ?? 0,
+            label:
+                initiativeTitles[row['initiative_id']?.toString()] ??
+                fallbackLabel,
+            status: _normalizeContributionStatus(row['status']?.toString()),
+          ),
+        )
+        .toList(growable: false);
   }
 
   Future<void> _activatePackage(Map<String, dynamic> pkg) async {
@@ -143,9 +220,9 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                 onPressed: () => Navigator.of(context).pop(false),
                 child: const Text('Cancel'),
               ),
-              FilledButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('I completed payment'),
+              AfriButton(
+                label: 'I completed payment',
+                onTap: () => Navigator.of(context).pop(true),
               ),
             ],
           ),
@@ -311,7 +388,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: ColorTokens.onSurface),
+          icon: Icon(AfriIcons.back, color: ColorTokens.onSurface),
           onPressed: () => context.pop(),
           tooltip: 'Back',
         ),
@@ -354,21 +431,82 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
             child: SizedBox(height: SpacingTokens.spacing8),
           ),
 
-          // Packages header
+          // ── Enhanced Digital Card ──
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.screenPadding,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Digital card',
+                          style: TypographyTokens.sectionTitle(),
+                        ),
+                      ),
+                      AfriInfoChip(
+                        icon: AfriIcons.share,
+                        label: 'Share',
+                        onTap: () {
+                          // FIXME(#AFRI-104): Open share card modal.
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Share coming soon.')),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing3),
+                  DigitalMembershipCardFull(
+                    clubName: RuntimeBranding.displayHomeTeamName,
+                    tier: currentTier,
+                    fanId: user?.publicUserId != null
+                        ? AliasGenerator.format(user!.publicUserId!)
+                        : '#000000',
+                    memberSince: _membership?['joined_at'] != null
+                        ? _formatMembershipDate(
+                            _membership?['joined_at']?.toString(),
+                          )
+                        : null,
+                    accentColor: primary,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SliverToBoxAdapter(
+            child: SizedBox(height: SpacingTokens.spacing6),
+          ),
+
+          // ── Contribution History ──
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: SpacingTokens.spacing6,
               ),
-              child: Text(
-                'MEMBERSHIP PACKAGES',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: ColorTokens.onSurfaceVariant,
-                  letterSpacing: 1.5,
-                ),
+              child: ContributionHistorySection(
+                contributions: _contributions,
+                currencySymbol: context.afriCurrencySymbol,
               ),
+            ),
+          ),
+
+          const SliverToBoxAdapter(
+            child: SizedBox(height: SpacingTokens.spacing8),
+          ),
+
+          // ── Packages header ──
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.screenPadding,
+              ),
+              child: Text('Packages', style: TypographyTokens.sectionTitle()),
             ),
           ),
 
@@ -468,61 +606,16 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
-                SpacingTokens.spacing6,
+                SpacingTokens.screenPadding,
                 0,
-                SpacingTokens.spacing6,
+                SpacingTokens.screenPadding,
                 SpacingTokens.spacing4,
               ),
-              child: GlassCard(
+              child: AfriListRow(
+                icon: AfriIcons.clubZone,
+                title: 'Fan registry',
+                subtitle: 'Browse all supporters',
                 onTap: () => context.push('/membership/fans'),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: primary.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(
-                          ShapeTokens.radiusMd,
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.groups_rounded,
-                        color: primary,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing4),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'FAN REGISTRY',
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: ColorTokens.onSurface,
-                              letterSpacing: 1.1,
-                            ),
-                          ),
-                          const SizedBox(height: SpacingTokens.spacing1),
-                          Text(
-                            'Open the full supporter list and browse every registered fan.',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: ColorTokens.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing3),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      color: ColorTokens.onSurfaceVariant,
-                    ),
-                  ],
-                ),
               ),
             ),
           ),
@@ -575,12 +668,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                               ),
                               child: Text(
                                 (pkg['tier'] ?? '').toString().toUpperCase(),
-                                style: TypographyTokens.monolithFont(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: primary,
-                                  letterSpacing: 1.0,
-                                ),
+                                style: TypographyTokens.labelSmall(primary),
                               ),
                             ),
                           ],
@@ -608,15 +696,15 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                               ),
                             ),
                             if (user != null)
-                              FilledButton(
-                                onPressed: _isJoining && _joiningTier == tierId
-                                    ? null
-                                    : () => _activatePackage(pkg),
-                                child: Text(
-                                  _isJoining && _joiningTier == tierId
-                                      ? 'Processing...'
-                                      : _membershipActionLabel(tierId),
-                                ),
+                              AfriButton(
+                                label: _isJoining && _joiningTier == tierId
+                                    ? 'Processing…'
+                                    : _membershipActionLabel(tierId),
+                                onTap: () => _activatePackage(pkg),
+                                isLoading: _isJoining && _joiningTier == tierId,
+                                enabled:
+                                    !(_isJoining && _joiningTier == tierId),
+                                fullWidth: false,
                               ),
                           ],
                         ),
@@ -648,6 +736,14 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       return _membershipPackageLabel(trimmed);
     }
     return _tierLabelFromFet(fet);
+  }
+
+  String _normalizeContributionStatus(String? rawStatus) {
+    return switch ((rawStatus ?? '').trim().toLowerCase()) {
+      'confirmed' || 'verified' => 'verified',
+      'failed' || 'cancelled' || 'reversed' => 'failed',
+      _ => 'pending',
+    };
   }
 
   String _formatMembershipDate(String? rawValue) {

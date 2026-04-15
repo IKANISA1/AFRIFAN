@@ -12,6 +12,7 @@ class UserProfile extends Equatable {
     String? displayName,
     String? fullName,
     this.publicUserId,
+    this.favoriteTeamSlug,
     String? country,
     String? countryCode,
     this.languageCode,
@@ -28,6 +29,7 @@ class UserProfile extends Equatable {
   final String? momoNumber;
   final String? displayName;
   final String? publicUserId;
+  final String? favoriteTeamSlug;
   final String? countryCode;
   final String? languageCode;
   final String? avatarUrl;
@@ -71,6 +73,7 @@ class UserProfile extends Equatable {
       momoNumber: _asNullableString(json['momo_number'] ?? json['phone']),
       displayName: _asNullableString(json['display_name'] ?? json['full_name']),
       publicUserId: _asNullableString(json['public_user_id']),
+      favoriteTeamSlug: _asNullableString(json['favorite_team_slug']),
       countryCode: _asNullableString(json['country_code'] ?? json['country']),
       languageCode: _asNullableString(json['language_code']),
       avatarUrl: _asNullableString(json['avatar_url']),
@@ -85,6 +88,7 @@ class UserProfile extends Equatable {
     final normalizedClubId = int.tryParse(clubId);
     final normalizedDisplayName = _trimToNull(displayName);
     final normalizedAlias = _trimToNull(publicUserId);
+    final normalizedFavoriteTeam = _trimToNull(favoriteTeamSlug);
     final normalizedCountry = _trimToNull(countryCode);
     final normalizedLanguage = _trimToNull(languageCode) ?? 'en';
     final normalizedAvatar = _trimToNull(avatarUrl);
@@ -94,6 +98,7 @@ class UserProfile extends Equatable {
       if (normalizedClubId != null) 'club_id': normalizedClubId,
       if (normalizedAlias != null) 'public_user_id': normalizedAlias,
       'display_name': normalizedDisplayName,
+      'favorite_team_slug': normalizedFavoriteTeam,
       'country_code': normalizedCountry,
       'language_code': normalizedLanguage,
       'avatar_url': normalizedAvatar,
@@ -128,6 +133,7 @@ class UserProfile extends Equatable {
     String? displayName,
     String? fullName,
     String? publicUserId,
+    String? favoriteTeamSlug,
     String? country,
     String? countryCode,
     String? languageCode,
@@ -142,6 +148,7 @@ class UserProfile extends Equatable {
       momoNumber: momoNumber ?? phone ?? this.momoNumber,
       displayName: displayName ?? fullName ?? this.displayName,
       publicUserId: publicUserId ?? this.publicUserId,
+      favoriteTeamSlug: favoriteTeamSlug ?? this.favoriteTeamSlug,
       countryCode: countryCode ?? country ?? this.countryCode,
       languageCode: languageCode ?? this.languageCode,
       avatarUrl: avatarUrl ?? this.avatarUrl,
@@ -162,6 +169,7 @@ class UserProfile extends Equatable {
     momoNumber,
     displayName,
     publicUserId,
+    favoriteTeamSlug,
     countryCode,
     languageCode,
     avatarUrl,

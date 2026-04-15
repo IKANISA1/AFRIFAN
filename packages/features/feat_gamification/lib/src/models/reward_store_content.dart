@@ -4,25 +4,54 @@ import 'package:flutter/services.dart' show rootBundle;
 
 class FetRewardOption {
   const FetRewardOption({
+    this.id = '',
+    this.slug = '',
     required this.reward,
     required this.cost,
     required this.category,
     required this.notes,
+    this.costFet = 0,
+    this.emoji,
+    this.isActive = true,
   });
 
   factory FetRewardOption.fromJson(Map<String, dynamic> json) {
+    final costFet =
+        (json['cost_fet'] as num?)?.toInt() ??
+        int.tryParse(
+          (json['cost_label']?.toString() ?? json['cost']?.toString() ?? '')
+              .replaceAll(RegExp(r'[^0-9]'), ''),
+        ) ??
+        0;
     return FetRewardOption(
-      reward: json['reward']?.toString() ?? '',
-      cost: json['cost']?.toString() ?? '',
+      id: json['id']?.toString() ?? '',
+      slug: json['slug']?.toString() ?? '',
+      reward: json['reward']?.toString() ?? json['title']?.toString() ?? '',
+      cost:
+          json['cost_label']?.toString() ??
+          json['cost']?.toString() ??
+          (costFet > 0 ? '$costFet FET' : ''),
       category: json['category']?.toString() ?? '',
-      notes: json['notes']?.toString() ?? '',
+      notes:
+          json['notes']?.toString() ??
+          json['description']?.toString() ??
+          json['redemption_note']?.toString() ??
+          '',
+      costFet: costFet,
+      emoji: json['emoji']?.toString(),
+      isActive: json['is_active'] != false,
     );
   }
 
+  final String id;
+  final String slug;
   final String reward;
   final String cost;
   final String category;
   final String notes;
+  final int costFet;
+  final String? emoji;
+  final bool isActive;
 }
 
 abstract final class RewardStoreContent {
@@ -30,12 +59,19 @@ abstract final class RewardStoreContent {
       'packages/feat_gamification/assets/reward_store_catalog.json';
   static const String _localAssetPath = 'assets/reward_store_catalog.json';
 
-  static Future<List<FetRewardOption>> loadOptions() async {
+  /// Loads reward options from the bundled JSON fallback.
+  /// Used only when Supabase data is unavailable.
+  static Future<List<FetRewardOption>> loadFallbackOptions() async {
     final payload = await _loadCatalogPayload();
-    return parseOptions(payload);
+    return parseFallbackOptions(payload);
   }
 
+  /// Backward-compatible parser name retained for older tests/callers.
   static List<FetRewardOption> parseOptions(String payload) {
+    return parseFallbackOptions(payload);
+  }
+
+  static List<FetRewardOption> parseFallbackOptions(String payload) {
     final json = jsonDecode(payload);
     if (json is! Map<String, dynamic>) {
       return const <FetRewardOption>[];

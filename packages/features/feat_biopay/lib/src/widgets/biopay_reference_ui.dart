@@ -7,7 +7,7 @@ import '../biopay_tokens.dart';
 
 // ── Legacy aliases → BiopayTokens ──
 // Kept as getters so existing call sites continue to compile.
-// TODO(cleanup): Migrate callers to BiopayTokens directly.
+// FIXME(#AFRI-106): Migrate callers to BiopayTokens directly, then remove these aliases.
 Color get biopayReferenceBackground => BiopayTokens.background;
 Color get biopayReferencePanel => BiopayTokens.panel;
 Color get biopayReferenceInk => BiopayTokens.ink;

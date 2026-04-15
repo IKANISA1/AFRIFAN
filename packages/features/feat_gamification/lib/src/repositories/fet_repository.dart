@@ -2,6 +2,7 @@ import 'package:core_network/core_network.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/fet_models.dart';
+import '../models/reward_store_content.dart';
 
 class FetRepository {
   FetRepository({required SupabaseClient client}) : _client = client;
@@ -11,21 +12,31 @@ class FetRepository {
     client: _client,
   );
 
+  static const _tag = 'FetRepo';
+
   Future<List<FetCatalogItem>> loadCatalog() async {
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
       return const <FetCatalogItem>[];
     }
 
-    final rows = List<Map<String, dynamic>>.from(
-      await _client.rpc(
-        'fet_get_catalog',
-        params: <String, dynamic>{
-          'p_club_id': scope.clubId,
-          'p_include_inactive': false,
-        },
-      ),
+    final result = await SafeRpc.call(
+      'fet_get_catalog',
+      params: <String, dynamic>{
+        'p_club_id': scope.clubId,
+        'p_include_inactive': false,
+      },
+      tag: _tag,
     );
+
+    if (!result.isSuccess || result.data is! List) {
+      return const <FetCatalogItem>[];
+    }
+
+    final rows = (result.data as List)
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
 
     return rows
         .map(FetCatalogItem.fromJson)
@@ -39,14 +50,49 @@ class FetRepository {
       return const <FetLeaderboardRow>[];
     }
 
-    final rows = List<Map<String, dynamic>>.from(
-      await _client.rpc(
-        'fet_get_leaderboard',
-        params: <String, dynamic>{'p_club_id': scope.clubId, 'p_limit': limit},
-      ),
+    final result = await SafeRpc.call(
+      'fet_get_leaderboard',
+      params: <String, dynamic>{'p_club_id': scope.clubId, 'p_limit': limit},
+      tag: _tag,
     );
 
+    if (!result.isSuccess || result.data is! List) {
+      return const <FetLeaderboardRow>[];
+    }
+
+    final rows = (result.data as List)
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
+
     return rows.map(FetLeaderboardRow.fromJson).toList(growable: false);
+  }
+
+  Future<List<FetRewardOption>> loadRewardStoreItems() async {
+    final scope = await _scopeResolver.requireResolved();
+
+    try {
+      var query = _client
+          .from('fet_reward_store_items')
+          .select()
+          .eq('is_active', true);
+
+      if (scope.clubId != null) {
+        query = query.or('club_id.is.null,club_id.eq.${scope.clubId}');
+      } else {
+        query = query.isFilter('club_id', null);
+      }
+
+      final rows = List<Map<String, dynamic>>.from(
+        await query.order('sort_order', ascending: true),
+      );
+      if (rows.isEmpty) {
+        return RewardStoreContent.loadFallbackOptions();
+      }
+      return rows.map(FetRewardOption.fromJson).toList(growable: false);
+    } catch (_) {
+      return RewardStoreContent.loadFallbackOptions();
+    }
   }
 
   Future<FetExperienceContext> loadExperienceContext({
@@ -172,12 +218,20 @@ class FetRepository {
       return null;
     }
 
-    final rows = List<Map<String, dynamic>>.from(
-      await _client.rpc(
-        'fet_get_wallet',
-        params: <String, dynamic>{'p_club_id': scope.clubId},
-      ),
+    final result = await SafeRpc.call(
+      'fet_get_wallet',
+      params: <String, dynamic>{'p_club_id': scope.clubId},
+      tag: _tag,
     );
+
+    if (!result.isSuccess || result.data is! List) {
+      return null;
+    }
+
+    final rows = (result.data as List)
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
 
     if (rows.isEmpty) {
       return null;
@@ -195,16 +249,24 @@ class FetRepository {
       return const <FetWalletTransaction>[];
     }
 
-    final rows = List<Map<String, dynamic>>.from(
-      await _client.rpc(
-        'fet_get_wallet_transactions',
-        params: <String, dynamic>{
-          'p_club_id': scope.clubId,
-          'p_limit': limit,
-          'p_offset': offset,
-        },
-      ),
+    final result = await SafeRpc.call(
+      'fet_get_wallet_transactions',
+      params: <String, dynamic>{
+        'p_club_id': scope.clubId,
+        'p_limit': limit,
+        'p_offset': offset,
+      },
+      tag: _tag,
     );
+
+    if (!result.isSuccess || result.data is! List) {
+      return const <FetWalletTransaction>[];
+    }
+
+    final rows = (result.data as List)
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
 
     return rows.map(FetWalletTransaction.fromJson).toList(growable: false);
   }
@@ -223,16 +285,24 @@ class FetRepository {
       return const <FetWalletSupporter>[];
     }
 
-    final rows = List<Map<String, dynamic>>.from(
-      await _client.rpc(
-        'fet_find_supporters',
-        params: <String, dynamic>{
-          'p_query': trimmed,
-          'p_club_id': scope.clubId,
-          'p_limit': limit,
-        },
-      ),
+    final result = await SafeRpc.call(
+      'fet_find_supporters',
+      params: <String, dynamic>{
+        'p_query': trimmed,
+        'p_club_id': scope.clubId,
+        'p_limit': limit,
+      },
+      tag: _tag,
     );
+
+    if (!result.isSuccess || result.data is! List) {
+      return const <FetWalletSupporter>[];
+    }
+
+    final rows = (result.data as List)
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
 
     return rows.map(FetWalletSupporter.fromJson).toList(growable: false);
   }
@@ -245,10 +315,17 @@ class FetRepository {
   }) async {
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
-      throw Exception('Club context is required for wallet transfers.');
+      return const FetWalletOperationResult(
+        status: 'error',
+        amount: 0,
+        balance: 0,
+        referenceId: null,
+        alreadyProcessed: false,
+        recipientUserId: null,
+      );
     }
 
-    final response = await _client.rpc(
+    final result = await SafeRpc.call(
       'fet_transfer',
       params: <String, dynamic>{
         'p_recipient_user_id': recipientUserId,
@@ -257,10 +334,23 @@ class FetRepository {
         'p_idempotency_key': idempotencyKey,
         'p_club_id': scope.clubId,
       },
+      tag: _tag,
+      maxAttempts: 1, // Don't retry writes to prevent duplicates.
     );
 
+    if (!result.isSuccess || result.data is! Map) {
+      return const FetWalletOperationResult(
+        status: 'error',
+        amount: 0,
+        balance: 0,
+        referenceId: null,
+        alreadyProcessed: false,
+        recipientUserId: null,
+      );
+    }
+
     return FetWalletOperationResult.fromJson(
-      Map<String, dynamic>.from(response as Map),
+      Map<String, dynamic>.from(result.data as Map),
     );
   }
 
@@ -271,10 +361,17 @@ class FetRepository {
   }) async {
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
-      throw Exception('Club context is required for wallet redemption.');
+      return const FetWalletOperationResult(
+        status: 'error',
+        amount: 0,
+        balance: 0,
+        referenceId: null,
+        alreadyProcessed: false,
+        recipientUserId: null,
+      );
     }
 
-    final response = await _client.rpc(
+    final result = await SafeRpc.call(
       'fet_redeem',
       params: <String, dynamic>{
         'p_amount': amount,
@@ -282,10 +379,23 @@ class FetRepository {
         'p_idempotency_key': idempotencyKey,
         'p_club_id': scope.clubId,
       },
+      tag: _tag,
+      maxAttempts: 1, // Don't retry writes to prevent duplicates.
     );
 
+    if (!result.isSuccess || result.data is! Map) {
+      return const FetWalletOperationResult(
+        status: 'error',
+        amount: 0,
+        balance: 0,
+        referenceId: null,
+        alreadyProcessed: false,
+        recipientUserId: null,
+      );
+    }
+
     return FetWalletOperationResult.fromJson(
-      Map<String, dynamic>.from(response as Map),
+      Map<String, dynamic>.from(result.data as Map),
     );
   }
 

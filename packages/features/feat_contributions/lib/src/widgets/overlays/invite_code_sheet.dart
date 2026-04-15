@@ -113,8 +113,7 @@ class _InviteCodeSheet extends StatelessWidget {
                 _ShareAction(
                   icon: Icons.chat_rounded,
                   label: 'WhatsApp',
-                  // NOTE: WhatsApp brand color — not a club color
-                  color: const Color(0xFF25D366),
+                  color: ExternalBrandColors.whatsAppGreen,
                   onTap: _shareWhatsApp,
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
@@ -126,7 +125,7 @@ class _InviteCodeSheet extends StatelessWidget {
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
                 _ShareAction(
-                  icon: Icons.share_rounded,
+                  icon: AfriIcons.share,
                   label: 'More',
                   color: ColorTokens.onSurfaceVariant,
                   onTap: _shareSystem,

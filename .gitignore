@@ -95,3 +95,11 @@ apps/rayon_sports/web/.wrangler/
 apps/rayon_sports/web/.lighthouseci/
 apps/rayon_sports/web/tmp/
 supabase/recovery/
+
+# Relocated design assets (archived from root Diagrams/ and Screens/)
+docs/screenshots/archive/
+
+# Sensitive credentials — never commit
+**/ios/AuthKey_*.p8
+**/google-services.json
+!**/android/app/google-services.json

@@ -80,11 +80,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           title: Text('Profile', style: TypographyTokens.headlineSmall()),
           leading: IconButton(
             onPressed: () => closeSettingsChild(context),
-            icon: const Icon(Icons.arrow_back_rounded),
+            icon: const Icon(AfriIcons.back),
           ),
         ),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(SpacingTokens.spacing6),
+          padding: const EdgeInsets.all(SpacingTokens.screenPadding),
           child: Column(
             children: [
               GlassCard(
@@ -100,7 +100,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         ).colorScheme.primary.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Icon(Icons.person_rounded, size: 28),
+                      child: Icon(AfriIcons.profile, size: 28),
                     ),
                     const SizedBox(width: SpacingTokens.spacing4),
                     Expanded(
@@ -111,9 +111,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             '#$alias',
                             style: TypographyTokens.headlineSmall(),
                           ),
-                          const SizedBox(height: SpacingTokens.spacing2),
+                          const SizedBox(height: SpacingTokens.spacing1),
                           Text(
-                            'Public alias',
+                            languageLabel,
                             style: TypographyTokens.bodySmall(
                               ColorTokens.onSurfaceVariant,
                             ),
@@ -125,52 +125,54 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
-              _SettingsInput(
+              AfriInputField(
                 label: 'Nickname',
                 hint: 'Optional supporter nickname',
                 controller: _nicknameController,
               ),
-              const SizedBox(height: SpacingTokens.spacing3),
+              const SizedBox(height: SpacingTokens.spacing6),
+              AfriButton(
+                label: _isSaving ? 'Saving…' : 'Save changes',
+                onTap: _saveProfile,
+                isLoading: _isSaving,
+                enabled: !_isSaving,
+              ),
+              const SizedBox(height: SpacingTokens.spacing8),
               GlassCard(
                 animate: false,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Language', style: TypographyTokens.labelSmall()),
-                    const SizedBox(height: SpacingTokens.spacing2),
-                    Text(languageLabel, style: TypographyTokens.bodyLarge()),
-                  ],
-                ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing6),
-              ClaymorphicButton(
-                label: _isSaving ? 'Saving...' : 'Save changes',
-                preserveCase: true,
-                width: double.infinity,
-                onPressed: _isSaving ? null : _saveProfile,
-              ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              TextButton(
-                onPressed: () async {
-                  final confirmed = await showDeleteAccountConfirmDialog(
-                    context,
-                  );
-                  if (!context.mounted) return;
-                  if (!confirmed) return;
-                  final error = await ref
-                      .read(authStateProvider.notifier)
-                      .deleteAccount();
-                  if (!context.mounted) return;
-                  if (error != null) {
-                    _showMessage(error);
-                    return;
-                  }
-                  context.go('/onboarding');
-                },
-                child: Text(
-                  'Delete account',
-                  style: TypographyTokens.labelLarge().copyWith(
-                    color: ColorTokens.error,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(18),
+                  onTap: () async {
+                    final confirmed = await showDeleteAccountConfirmDialog(
+                      context,
+                    );
+                    if (!context.mounted) return;
+                    if (!confirmed) return;
+                    final error = await ref
+                        .read(authStateProvider.notifier)
+                        .deleteAccount();
+                    if (!context.mounted) return;
+                    if (error != null) {
+                      _showMessage(error);
+                      return;
+                    }
+                    context.go('/onboarding');
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        AfriIcons.delete,
+                        color: ColorTokens.error,
+                        size: 20,
+                      ),
+                      const SizedBox(width: SpacingTokens.spacing3),
+                      Text(
+                        'Delete account',
+                        style: TypographyTokens.bodyMedium().copyWith(
+                          color: ColorTokens.error,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -190,32 +192,4 @@ String _languageLabel(String? languageCode) {
   };
 }
 
-class _SettingsInput extends StatelessWidget {
-  const _SettingsInput({
-    required this.label,
-    required this.hint,
-    required this.controller,
-  });
-
-  final String label;
-  final String hint;
-  final TextEditingController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      animate: false,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: TypographyTokens.labelSmall()),
-          const SizedBox(height: SpacingTokens.spacing2),
-          TextField(
-            controller: controller,
-            decoration: InputDecoration(hintText: hint),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// _SettingsInput removed — replaced by AfriInputField from core_theme.

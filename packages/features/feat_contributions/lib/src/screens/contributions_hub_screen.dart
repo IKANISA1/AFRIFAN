@@ -201,7 +201,7 @@ class _ContributionsHubScreenState
                       }
                     },
                     icon: Icon(
-                      Icons.arrow_back_rounded,
+                      AfriIcons.back,
                       color: ColorTokens.onSurface,
                     ),
                     tooltip: 'Back',
@@ -212,8 +212,10 @@ class _ContributionsHubScreenState
                   Expanded(
                     child: Text(
                       'CONTRIBUTE',
-                      style: TypographyTokens.displaySmall(
-                        Theme.of(context).colorScheme.primary,
+                      style: TypographyTokens.monolithFont(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.4,
                       ),
                     ),
                   ),
@@ -250,87 +252,55 @@ class _ContributionsHubScreenState
                 onTap: () => context.push('/fan-clubs'),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
-              GlassCard(
-                animate: false,
+              AfriSectionCard(
+                title: 'MoMo SMS sync',
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('MOMO SMS SYNC', style: TypographyTokens.labelLarge()),
-                    const SizedBox(height: SpacingTokens.spacing2),
-                    Text(
-                      smsSyncAvailable
-                          ? 'Auto-match MoMo receipts to contributions on this device.'
-                          : 'SMS sync is unavailable in this build.',
-                      style: TypographyTokens.bodyMedium(),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing4),
                     if (!smsSyncAvailable)
                       Text(
-                        'Release builds must enable this capability before supporters can opt in.',
+                        'Unavailable in this build.',
                         style: TypographyTokens.bodySmall(
                           ColorTokens.onSurfaceVariant,
                         ),
                       )
                     else if (smsSyncEnabled) ...[
-                      Text(
-                        'Status: active for this device.',
-                        style: TypographyTokens.bodySmall(
-                          ColorTokens.onSurfaceVariant,
-                        ),
+                      AfriInfoChip(
+                        label: 'ACTIVE',
+                        color: ColorTokens.success,
                       ),
-                      const SizedBox(height: SpacingTokens.spacing3),
-                      ClaymorphicButton(
-                        label: _isUpdatingSmsSync ? 'SYNCING...' : 'SYNC NOW',
-                        width: double.infinity,
-                        onPressed: _isUpdatingSmsSync
-                            ? null
-                            : _runManualSmsSync,
+                      const SizedBox(height: SpacingTokens.spacing4),
+                      AfriButton(
+                        label: _isUpdatingSmsSync ? 'Syncing…' : 'Sync now',
+                        onTap: _runManualSmsSync,
+                        isLoading: _isUpdatingSmsSync,
+                        enabled: !_isUpdatingSmsSync,
                       ),
-                      const SizedBox(height: SpacingTokens.spacing3),
-                      OutlinedButton(
-                        onPressed: _isUpdatingSmsSync ? null : _disableSmsSync,
-                        style: OutlinedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 56),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                        ),
-                        child: const Text('DISABLE SMS SYNC'),
+                      const SizedBox(height: SpacingTokens.listItemGap),
+                      AfriButton(
+                        label: 'Disable',
+                        variant: AfriButtonVariant.outline,
+                        onTap: _disableSmsSync,
+                        enabled: !_isUpdatingSmsSync,
                       ),
                     ] else
-                      OutlinedButton(
-                        onPressed: _isUpdatingSmsSync ? null : _enableSmsSync,
-                        style: OutlinedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 56),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                        ),
-                        child: Text(
-                          _isUpdatingSmsSync
-                              ? 'ENABLING...'
-                              : 'ENABLE SMS SYNC',
-                        ),
+                      AfriButton(
+                        label: _isUpdatingSmsSync
+                            ? 'Enabling…'
+                            : 'Enable SMS sync',
+                        variant: AfriButtonVariant.outline,
+                        onTap: _enableSmsSync,
+                        isLoading: _isUpdatingSmsSync,
+                        enabled: !_isUpdatingSmsSync,
                       ),
                   ],
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
-              GlassCard(
-                animate: false,
+              AfriSectionCard(
+                title: 'Live circles',
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'LIVE CIRCLES',
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: ColorTokens.onSurface,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing3),
                     if (_isLoading)
                       const AfriSkeletonList()
                     else if (_error != null)
@@ -342,9 +312,10 @@ class _ContributionsHubScreenState
                         compact: true,
                       )
                     else if (_groups.isEmpty)
-                      Text(
-                        'No circles yet.',
-                        style: TypographyTokens.bodyMedium(),
+                      const AfriEmptyView(
+                        compact: true,
+                        title: 'No circles yet',
+                        icon: AfriIcons.clubZone,
                       )
                     else
                       ..._groups.take(3).map((group) {
@@ -356,61 +327,31 @@ class _ContributionsHubScreenState
                             (group['target_amount'] as num?)?.toInt() ?? 0;
                         return Padding(
                           padding: const EdgeInsets.only(
-                            bottom: SpacingTokens.spacing3,
+                            bottom: SpacingTokens.listItemGap,
                           ),
-                          child: InkWell(
+                          child: AfriListRow(
+                            icon: AfriIcons.contribute,
+                            title: name,
+                            subtitle:
+                                '${currency.format(currentTotal)} of ${currency.format(targetAmount)}',
                             onTap: () =>
                                 context.push('/contribute/group/$groupId'),
-                            borderRadius: BorderRadius.circular(18),
-                            child: Container(
-                              padding: const EdgeInsets.all(
-                                SpacingTokens.spacing4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: ColorTokens.surfaceContainerLow,
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          name.toUpperCase(),
-                                          style: TypographyTokens.monolithFont(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w700,
-                                            color: ColorTokens.onSurface,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: SpacingTokens.spacing1,
-                                        ),
-                                        Text(
-                                          '${currency.format(currentTotal)} raised  •  ${currency.format(targetAmount)} target',
-                                          style: TypographyTokens.bodySmall(),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const Icon(Icons.arrow_forward_rounded),
-                                ],
-                              ),
-                            ),
                           ),
                         );
                       }),
                     if (_groups.length > 3)
                       Align(
                         alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () => context.push('/contribute/groups'),
-                          child: Text(
-                            'See all ${_groups.length} circles',
-                            style: TypographyTokens.labelMedium(
-                              ColorTokens.primaryContainer,
+                        child: GestureDetector(
+                          onTap: () => context.push('/contribute/groups'),
+                          behavior: HitTestBehavior.opaque,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: SpacingTokens.spacing2,
+                            ),
+                            child: Text(
+                              'See all ${_groups.length}',
+                              style: TypographyTokens.inlineAction(),
                             ),
                           ),
                         ),
@@ -418,23 +359,17 @@ class _ContributionsHubScreenState
                   ],
                 ),
               ),
-              const SizedBox(height: SpacingTokens.spacing6),
-              ClaymorphicButton(
-                label: 'START A CIRCLE',
-                width: double.infinity,
-                onPressed: () => context.push('/contribute/create'),
+              const SizedBox(height: SpacingTokens.sectionGap),
+              AfriButton(
+                label: 'Start a circle',
+                onTap: () => context.push('/contribute/create'),
               ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              OutlinedButton.icon(
-                onPressed: () => context.push('/contribute/join'),
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 56),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                ),
-                icon: const Icon(Icons.group_add_rounded),
-                label: const Text('JOIN A CIRCLE'),
+              const SizedBox(height: SpacingTokens.listItemGap),
+              AfriButton(
+                label: 'Join a circle',
+                icon: AfriIcons.friend,
+                variant: AfriButtonVariant.outline,
+                onTap: () => context.push('/contribute/join'),
               ),
             ],
           ),

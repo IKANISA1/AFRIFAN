@@ -51,7 +51,7 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh_rounded),
+            icon: const Icon(AfriIcons.refresh),
             onPressed: () => ref.invalidate(myTicketsProvider),
           ),
         ],

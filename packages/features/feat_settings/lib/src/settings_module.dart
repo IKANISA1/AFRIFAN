@@ -1,5 +1,5 @@
 import 'package:core_router/core_router.dart';
-import 'package:flutter/material.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:go_router/go_router.dart';
 
 import 'screens/edit_profile_screen.dart';
@@ -20,8 +20,8 @@ class SettingsModule extends FeatureModule {
   TabRoute get tabRoute => TabRoute(
     path: '/settings',
     label: 'SETTINGS',
-    icon: Icons.settings_outlined,
-    activeIcon: Icons.settings,
+    icon: AfriIcons.settings,
+    activeIcon: AfriIcons.settings,
     builder: (context, state) => const SettingsScreen(),
   );
 

@@ -2,65 +2,28 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-/// Compact home shortcuts with one primary CTA and a small action grid.
+import '../repositories/home_content_repository.dart';
+
+/// Compact home shortcuts — icon-led action grid without verbose copy.
 class QuickActionsGrid extends StatelessWidget {
-  const QuickActionsGrid({super.key});
+  const QuickActionsGrid({super.key, required this.actions});
+
+  final List<HomeQuickAction> actions;
 
   @override
   Widget build(BuildContext context) {
-    final actions = [
-      _QuickAction(
-        icon: Icons.sports_soccer_rounded,
-        label: 'Predict',
-        onTap: () => context.push('/fanzone/fixtures'),
-      ),
-      _QuickAction(
-        icon: Icons.receipt_long_outlined,
-        label: 'My Picks',
-        onTap: () => context.push('/fanzone/my'),
-      ),
-      _QuickAction(
-        icon: Icons.live_tv_rounded,
-        label: 'Live',
-        onTap: () => context.push('/live'),
-      ),
-      _QuickAction(
-        icon: Icons.leaderboard_outlined,
-        label: 'Leaderboard',
-        onTap: () => context.push('/fanzone/leaderboard'),
-      ),
-      _QuickAction(
-        icon: Icons.account_balance_wallet_outlined,
-        label: 'Wallet',
-        onTap: () => context.push('/fanzone/wallet'),
-      ),
-      _QuickAction(
-        icon: Icons.confirmation_number_outlined,
-        label: 'Tickets',
-        onTap: () => context.push('/tickets'),
-      ),
-    ];
+    if (actions.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const AfriSectionHeader(
-          title: 'Shortcuts',
-          subtitle: 'Fast entry to core actions',
-          padding: EdgeInsets.zero,
-        ),
-        const SizedBox(height: SpacingTokens.spacing4),
-        ClaymorphicButton(
-          label: 'Support',
-          preserveCase: true,
-          icon: Icons.volunteer_activism_outlined,
-          width: double.infinity,
-          onPressed: () => context.push('/contribute'),
-        ),
+        const AfriSectionHeader(title: 'Shortcuts', padding: EdgeInsets.zero),
         const SizedBox(height: SpacingTokens.spacing4),
         LayoutBuilder(
           builder: (context, constraints) {
-            const spacing = SpacingTokens.spacing3;
+            const spacing = SpacingTokens.listItemGap;
             final columns = actions.length <= 4 ? 2 : 3;
             final tileWidth =
                 (constraints.maxWidth - (spacing * (columns - 1))) / columns;
@@ -72,7 +35,11 @@ class QuickActionsGrid extends StatelessWidget {
                   .map(
                     (action) => SizedBox(
                       width: tileWidth,
-                      child: _QuickActionTile(action: action),
+                      child: AfriActionRow(
+                        icon: _resolveActionIcon(action),
+                        label: action.title,
+                        onTap: () => context.push(action.route),
+                      ),
                     ),
                   )
                   .toList(),
@@ -82,62 +49,35 @@ class QuickActionsGrid extends StatelessWidget {
       ],
     );
   }
-}
 
-class _QuickAction {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
+  IconData _resolveActionIcon(HomeQuickAction action) {
+    return switch (action.iconKey.trim()) {
+      'predict' => AfriIcons.predict,
+      'myPicks' => AfriIcons.myPicks,
+      'live' => AfriIcons.live,
+      'leaderboard' => AfriIcons.leaderboard,
+      'wallet' => AfriIcons.wallet,
+      'tickets' => AfriIcons.tickets,
+      'contribute' => AfriIcons.contribute,
+      'league' => AfriIcons.league,
+      'clubZone' => AfriIcons.clubZone,
+      'notifications' => AfriIcons.notifications,
+      'history' => AfriIcons.history,
+      'rewards' => AfriIcons.rewards,
+      'membership' => AfriIcons.membership,
+      _ => _fallbackIconForRoute(action.route),
+    };
+  }
 
-  const _QuickAction({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-}
-
-class _QuickActionTile extends StatelessWidget {
-  const _QuickActionTile({required this.action});
-
-  final _QuickAction action;
-
-  @override
-  Widget build(BuildContext context) {
-    return AfriPressFeedback(
-      onTap: action.onTap,
-      semanticsLabel: action.label,
-      semanticsHint: 'Open ${action.label}',
-      tooltip: action.label,
-      excludeChildSemantics: true,
-      builder: (context, state) => ClayCard(
-        padding: const EdgeInsets.all(SpacingTokens.spacing4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 38,
-              height: 38,
-              decoration: BoxDecoration(
-                color: ColorTokens.primaryTint(state.isPressed ? 0.20 : 0.14),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              alignment: Alignment.center,
-              child: Icon(
-                action.icon,
-                size: 18,
-                color: ColorTokens.primaryContainer,
-              ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing4),
-            Text(
-              action.label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TypographyTokens.titleSmall(),
-            ),
-          ],
-        ),
-      ),
-    );
+  IconData _fallbackIconForRoute(String route) {
+    final normalized = route.trim().toLowerCase();
+    if (normalized.contains('/fanzone/fixtures')) return AfriIcons.predict;
+    if (normalized.contains('/fanzone/my')) return AfriIcons.myPicks;
+    if (normalized.contains('/live')) return AfriIcons.live;
+    if (normalized.contains('/leaderboard')) return AfriIcons.leaderboard;
+    if (normalized.contains('/wallet')) return AfriIcons.wallet;
+    if (normalized.contains('/tickets')) return AfriIcons.tickets;
+    if (normalized.contains('/contribute')) return AfriIcons.contribute;
+    return AfriIcons.chevronRight;
   }
 }

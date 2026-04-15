@@ -25,6 +25,20 @@ class FanzoneSlipSelection {
 
   String get id => '$fixtureMarketId::$outcomeKey';
 
+  factory FanzoneSlipSelection.fromJson(Map<String, dynamic> json) {
+    return FanzoneSlipSelection(
+      fixtureId: json['fixture_id']?.toString() ?? '',
+      fixtureLabel: json['fixture_label']?.toString() ?? '',
+      fixtureMarketId: json['fixture_market_id']?.toString() ?? '',
+      marketName: json['market_name']?.toString() ?? '',
+      marketSlug: json['market_slug']?.toString() ?? '',
+      outcomeKey: json['outcome_key']?.toString() ?? '',
+      outcomeLabel: json['outcome_label']?.toString() ?? '',
+      fetPotential: (json['fet_potential'] as num?)?.toInt() ?? 0,
+      competitionName: json['competition_name']?.toString(),
+    );
+  }
+
   factory FanzoneSlipSelection.fromFixtureMarket({
     required FixtureSummary fixture,
     required FixtureMarket market,
@@ -66,6 +80,20 @@ class FanzoneSlipSelection {
       competitionName: competitionName ?? this.competitionName,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'fixture_id': fixtureId,
+      'fixture_label': fixtureLabel,
+      'fixture_market_id': fixtureMarketId,
+      'market_name': marketName,
+      'market_slug': marketSlug,
+      'outcome_key': outcomeKey,
+      'outcome_label': outcomeLabel,
+      'fet_potential': fetPotential,
+      'competition_name': competitionName,
+    };
+  }
 }
 
 class FanzoneSlipSubmissionResult {
@@ -97,6 +125,22 @@ class FanzoneSlipState {
   final bool accaMode;
   final bool isSubmitting;
 
+  factory FanzoneSlipState.fromJson(Map<String, dynamic> json) {
+    final rawItems = json['items'];
+    final items = rawItems is List
+        ? rawItems
+              .whereType<Map>()
+              .map(
+                (item) => FanzoneSlipSelection.fromJson(
+                  Map<String, dynamic>.from(item),
+                ),
+              )
+              .toList(growable: false)
+        : const <FanzoneSlipSelection>[];
+
+    return FanzoneSlipState(items: items, accaMode: json['acca_mode'] == true);
+  }
+
   int get totalPotential {
     final base = items.fold<int>(0, (sum, item) => sum + item.fetPotential);
     if (!accaMode || items.length < 2) {
@@ -120,5 +164,12 @@ class FanzoneSlipState {
       accaMode: accaMode ?? this.accaMode,
       isSubmitting: isSubmitting ?? this.isSubmitting,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'items': items.map((item) => item.toJson()).toList(growable: false),
+      'acca_mode': accaMode,
+    };
   }
 }

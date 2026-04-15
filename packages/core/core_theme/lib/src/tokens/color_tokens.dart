@@ -139,21 +139,10 @@ class ColorTokens {
 
   static const bool isDark = true;
 
-  /// Compatibility shim for older call sites after the theme system was locked
-  /// to a single dark palette.
-  static void setBrightness(Brightness brightness) {}
-
   static Color get clubPrimary => _primary;
   static Color get clubSecondary => _secondary;
   static Color get clubAccent => _accent;
   static List<Color> get clubGradient => _gradient;
-
-  @Deprecated('Use clubPrimary instead')
-  static Color get clubRed => _primary;
-  @Deprecated('Use clubSecondary instead')
-  static Color get deepNavy => _secondary;
-  @Deprecated('Use clubAccent instead')
-  static Color get trophyGold => _accent;
 
   static Color _darkBackground = _inkBase;
   static Color _darkSurfaceDim = _inkBase;

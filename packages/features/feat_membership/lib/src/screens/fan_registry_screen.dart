@@ -177,7 +177,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: ColorTokens.onSurface),
+          icon: Icon(AfriIcons.back, color: ColorTokens.onSurface),
           onPressed: () => context.pop(),
           tooltip: 'Back',
         ),
@@ -259,26 +259,24 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.spacing6,
+                  SpacingTokens.screenPadding,
                   0,
-                  SpacingTokens.spacing6,
+                  SpacingTokens.screenPadding,
                   SpacingTokens.spacing4,
                 ),
-                child: TextField(
+                child: AfriInputField(
                   controller: _searchController,
+                  hint: 'Search fans by name',
+                  prefixIcon: AfriIcons.search,
                   onChanged: _handleSearchChanged,
                   textInputAction: TextInputAction.search,
-                  decoration: InputDecoration(
-                    hintText: 'Search fans by name',
-                    prefixIcon: const Icon(Icons.search_rounded),
-                    suffixIcon: _searchController.text.isEmpty
-                        ? null
-                        : IconButton(
-                            onPressed: _clearSearch,
-                            icon: const Icon(Icons.close_rounded),
-                            tooltip: 'Clear search',
-                          ),
-                  ),
+                  suffixIcon: _searchController.text.isEmpty
+                      ? null
+                      : IconButton(
+                          onPressed: _clearSearch,
+                          icon: const Icon(AfriIcons.close),
+                          tooltip: 'Clear search',
+                        ),
                 ),
               ),
             ),

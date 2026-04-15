@@ -161,7 +161,7 @@ class _SupporterPhoneAuthScreenState
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
           onPressed: () {
             if (context.canPop()) {
               context.pop();
@@ -175,16 +175,16 @@ class _SupporterPhoneAuthScreenState
         child: SafeArea(
           child: ListView(
             padding: const EdgeInsets.fromLTRB(
-              SpacingTokens.spacing6,
+              SpacingTokens.screenPadding,
               SpacingTokens.spacing2,
-              SpacingTokens.spacing6,
+              SpacingTokens.screenPadding,
               SpacingTokens.spacing8,
             ),
             children: [
               Text('SIGN IN WITH OTP', style: TypographyTokens.headlineLarge()),
               const SizedBox(height: SpacingTokens.spacing3),
               Text(
-                'Use your phone number to sign in securely. We will send a 6-digit verification code to your WhatsApp number.',
+                'We’ll send a 6-digit code to your WhatsApp.',
                 style: TypographyTokens.bodyLarge().copyWith(
                   color: ColorTokens.onSurfaceVariant,
                 ),
@@ -210,22 +210,15 @@ class _SupporterPhoneAuthScreenState
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.chat_bubble_rounded),
+                          const Icon(AfriIcons.chat),
                           const SizedBox(width: SpacingTokens.spacing3),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'WhatsApp verification',
+                                  'Code via WhatsApp',
                                   style: TypographyTokens.labelLarge(),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Codes are currently delivered through the verified WhatsApp channel for this app.',
-                                  style: TypographyTokens.bodySmall(
-                                    ColorTokens.onSurfaceVariant,
-                                  ),
                                 ),
                               ],
                             ),
@@ -234,26 +227,20 @@ class _SupporterPhoneAuthScreenState
                       ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing5),
-                    TextField(
-                      key: const ValueKey<String>('supporter-phone-input'),
+                    AfriInputField(
                       controller: _phoneController,
+                      label: 'Phone number',
+                      hint: '+2507...',
                       keyboardType: TextInputType.phone,
                       enabled: !_isLoading,
-                      decoration: const InputDecoration(
-                        labelText: 'Phone number',
-                        hintText: '+2507...',
-                        prefixIcon: Icon(Icons.phone_android_rounded),
-                      ),
+                      prefixIcon: AfriIcons.help,
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
-                    FilledButton(
+                    AfriButton(
                       key: const ValueKey<String>('supporter-send-otp-button'),
-                      onPressed: _isLoading || !_canSubmitPhone
-                          ? null
-                          : _sendCode,
-                      child: Text(
-                        _pendingPhone == null ? 'SEND CODE' : 'RESEND CODE',
-                      ),
+                      label: _pendingPhone == null ? 'Send code' : 'Resend code',
+                      onTap: _sendCode,
+                      enabled: !_isLoading && _canSubmitPhone,
                     ),
                   ],
                 ),
@@ -275,35 +262,21 @@ class _SupporterPhoneAuthScreenState
                       ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
-                    TextField(
-                      key: const ValueKey<String>('supporter-phone-otp-input'),
+                    AfriInputField(
                       controller: _otpController,
+                      label: '6-digit OTP',
+                      hint: '123456',
                       keyboardType: TextInputType.number,
-                      maxLength: 6,
-                      enabled:
-                          (_pendingPhone?.isNotEmpty ?? false) && !_isLoading,
-                      decoration: const InputDecoration(
-                        labelText: '6-digit OTP',
-                        hintText: '123456',
-                        prefixIcon: Icon(Icons.password_rounded),
-                        counterText: '',
-                      ),
+                      enabled: (_pendingPhone?.isNotEmpty ?? false) && !_isLoading,
+                      prefixIcon: AfriIcons.privacy,
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
-                    FilledButton(
-                      key: const ValueKey<String>(
-                        'supporter-verify-otp-button',
-                      ),
-                      onPressed: _isLoading || !_canSubmitOtp
-                          ? null
-                          : _verifyCode,
-                      child: _isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Text('VERIFY & CONTINUE'),
+                    AfriButton(
+                      key: const ValueKey<String>('supporter-verify-otp-button'),
+                      label: 'Verify & continue',
+                      onTap: _verifyCode,
+                      isLoading: _isLoading,
+                      enabled: !_isLoading && _canSubmitOtp,
                     ),
                   ],
                 ),

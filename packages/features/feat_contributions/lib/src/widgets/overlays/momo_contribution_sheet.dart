@@ -26,12 +26,18 @@ Future<void> showMomoAmountEntrySheet(
   final confirmed = await showModalBottomSheet<bool>(
     context: context,
     backgroundColor: Colors.transparent,
-    builder: (context) => _UssdConfirmationSheet(
-      amount: amount,
-      title: title,
-      // §2.4 LOCKED — no hardcoded MOMO. Caller must supply recipientMomo.
-      recipientMomo: recipientMomo ?? '',
-    ),
+    builder: (context) {
+      final country =
+          AfriCountryCatalog.byIsoCode(context.afriCountryCode) ??
+          AfriCountryCatalog.defaultCountry;
+      return _UssdConfirmationSheet(
+        amount: amount,
+        title: title,
+        country: country,
+        // §2.4 LOCKED — no hardcoded MOMO. Caller must supply recipientMomo.
+        recipientMomo: recipientMomo ?? '',
+      );
+    },
   );
 
   if (confirmed != true || !context.mounted) return;
@@ -42,6 +48,9 @@ Future<void> showMomoAmountEntrySheet(
   final launched = await MomoDialerService.launchMomoUssd(
     recipient: recipient,
     amount: amount,
+    country:
+        AfriCountryCatalog.byIsoCode(context.afriCountryCode) ??
+        AfriCountryCatalog.defaultCountry,
   );
 
   if (!launched) {
@@ -76,7 +85,10 @@ Future<void> showMomoAmountEntrySheet(
         recordedPending = true;
       }
     } catch (e) {
-      AfriLogger.warn('ContributionOverlay', 'Failed to record contribution: $e');
+      AfriLogger.warn(
+        'ContributionOverlay',
+        'Failed to record contribution: $e',
+      );
     }
   }
 
@@ -158,7 +170,7 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
                   .map(
                     (value) => ChoiceChip(
                       selected: _amount == value,
-                      label: Text('+${value.toString()}'),
+                      label: Text('+$value'),
                       onSelected: (_) => setState(() => _amount = value),
                     ),
                   )
@@ -185,17 +197,17 @@ class _UssdConfirmationSheet extends StatelessWidget {
   const _UssdConfirmationSheet({
     required this.amount,
     required this.title,
+    required this.country,
     required this.recipientMomo,
   });
 
   final int amount;
   final String title;
+  final AfriCountry country;
   final String recipientMomo;
 
   @override
   Widget build(BuildContext context) {
-    // Build dynamic USSD string from country catalog
-    final country = AfriCountryCatalog.defaultCountry;
     final ussdCode = country.buildUssdCode(
       recipientMomo: recipientMomo,
       amount: amount,
@@ -228,16 +240,17 @@ class _UssdConfirmationSheet extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('CANCEL'),
+                  child: AfriButton(
+                    label: 'Cancel',
+                    variant: AfriButtonVariant.outline,
+                    onTap: () => Navigator.of(context).pop(false),
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
-                  child: FilledButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text('DIAL NOW'),
+                  child: AfriButton(
+                    label: 'Dial now',
+                    onTap: () => Navigator.of(context).pop(true),
                   ),
                 ),
               ],
@@ -280,8 +293,8 @@ class _ContributionSuccessDialog extends StatelessWidget {
           children: [
             Icon(
               recordedPending
-                  ? Icons.hourglass_top_rounded
-                  : Icons.open_in_new_rounded,
+                  ? AfriIcons.statusPending
+                  : AfriIcons.statusSuccess,
               color: recordedPending
                   ? ColorTokens.warning
                   : ColorTokens.clubAccent,

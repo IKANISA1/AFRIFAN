@@ -277,4 +277,43 @@ class TypographyTokens {
         color: color ?? ColorTokens.onSurface,
         letterSpacing: 0.3,
       );
+
+  // ── Semantic aliases ──
+
+  /// Section title — medium-weight heading for card and list sections.
+  static TextStyle sectionTitle([Color? color]) => utilityFont(
+    fontSize: semanticSizes['titleMedium'],
+    fontWeight: FontWeight.w600,
+    color: color ?? ColorTokens.onSurface,
+    height: 1.24,
+    letterSpacing: -0.1,
+  );
+
+  /// Large metric value (wallet balance, score, stat hero).
+  static TextStyle metricValue([Color? color]) => monolithFont(
+    fontSize: 28,
+    fontWeight: FontWeight.w800,
+    color: color ?? ColorTokens.onSurface,
+    height: 1.0,
+    letterSpacing: -0.4,
+  );
+
+  /// Small uppercase metric label (below stat values).
+  static TextStyle metricLabel([Color? color]) => utilityFont(
+    fontSize: 11,
+    fontWeight: FontWeight.w600,
+    color: color ?? ColorTokens.onSurfaceVariant,
+    height: 1.1,
+    letterSpacing: 0.6,
+  );
+
+  /// Inline action text ("See all", "Open", "More").
+  static TextStyle inlineAction([Color? color]) => utilityFont(
+    fontSize: semanticSizes['labelMedium'],
+    fontWeight: FontWeight.w600,
+    color: color ?? ColorTokens.primaryContainer,
+    height: 1.15,
+    letterSpacing: 0.2,
+  );
 }
+

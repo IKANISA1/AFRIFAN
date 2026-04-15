@@ -138,7 +138,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         ),
         IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.close_rounded),
+          icon: const Icon(AfriIcons.close),
           tooltip: 'Exit Admin',
         ),
       ],
@@ -225,6 +225,13 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           subtitle: 'Enter results and grade prediction markets',
           icon: Icons.scoreboard_rounded,
           onTap: () => context.push('/admin/settle'),
+        ),
+        const SizedBox(height: SpacingTokens.spacing3),
+        _AdminActionTile(
+          title: 'Manage Competitions',
+          subtitle: 'Add, edit, and toggle supported leagues and cups',
+          icon: Icons.emoji_events_rounded,
+          onTap: () => context.push('/admin/competitions'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(

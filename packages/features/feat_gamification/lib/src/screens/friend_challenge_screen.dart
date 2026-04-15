@@ -38,7 +38,14 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
       final predictionRepo = ref.read(predictionRepositoryProvider);
       final fetRepo = ref.read(fetRepositoryProvider);
       final leaders = await fetRepo.loadLeaderboard(limit: 8);
-      final fixtures = await predictionRepo.loadFixtures(
+      final now = DateTime.now();
+      final weekLater = now.add(const Duration(days: 7));
+      final dateFrom = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+      final dateTo = '${weekLater.year}-${weekLater.month.toString().padLeft(2, '0')}-${weekLater.day.toString().padLeft(2, '0')}';
+
+      final fixtures = await predictionRepo.loadFixturesByDate(
+        dateFrom: dateFrom,
+        dateTo: dateTo,
         status: 'scheduled',
         limit: 5,
       );
@@ -127,7 +134,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
       ),
       bottomNavigationBar: SafeArea(

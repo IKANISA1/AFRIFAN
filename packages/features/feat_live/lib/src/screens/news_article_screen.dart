@@ -149,7 +149,7 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                   backgroundColor: ColorTokens.background,
                   leading: IconButton(
                     onPressed: () => context.pop(),
-                    icon: const Icon(Icons.arrow_back_rounded),
+                    icon: const Icon(AfriIcons.back),
                   ),
                   flexibleSpace: FlexibleSpaceBar(
                     background: imageUrl != null && imageUrl.isNotEmpty

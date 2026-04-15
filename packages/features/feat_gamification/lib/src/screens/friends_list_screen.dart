@@ -118,7 +118,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
       ),
       body: _isLoading
@@ -141,19 +141,18 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
           : ListView(
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
               children: [
-                TextField(
+                AfriInputField(
                   controller: _controller,
-                  decoration: const InputDecoration(
-                    hintText: 'Search supporter alias or display name',
-                    prefixIcon: Icon(Icons.search_rounded),
-                  ),
+                  hint: 'Search supporter alias or name',
+                  prefixIcon: AfriIcons.search,
+                  onChanged: (_) {},
                 ),
                 const SizedBox(height: SpacingTokens.spacing4),
                 if (_isSearching) const LinearProgressIndicator(minHeight: 4),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  searchMode ? 'SEARCH RESULTS' : 'TOP SUPPORTERS',
-                  style: TypographyTokens.titleLarge(),
+                  searchMode ? 'Search results' : 'Top supporters',
+                  style: TypographyTokens.sectionTitle(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 ...(searchMode

@@ -17,6 +17,7 @@ void main() {
           'momo_number': '+250788123456',
           'display_name': 'Jean',
           'public_user_id': '123-456',
+          'favorite_team_slug': 'rayon-sports-fc',
           'country_code': 'RW',
           'language_code': 'rw',
           'avatar_url': 'https://example.com/avatar.jpg',
@@ -30,6 +31,7 @@ void main() {
         expect(profile.momoNumber, '+250788123456');
         expect(profile.displayName, 'Jean');
         expect(profile.publicUserId, '123-456');
+        expect(profile.favoriteTeamSlug, 'rayon-sports-fc');
         expect(profile.countryCode, 'RW');
         expect(profile.languageCode, 'rw');
         expect(profile.avatarUrl, 'https://example.com/avatar.jpg');
@@ -128,11 +130,13 @@ void main() {
           id: 'user-1',
           clubId: '42',
           displayName: 'Jean',
+          favoriteTeamSlug: 'rayon-sports-fc',
         );
         final row = profile.toProfileRow(includeId: true);
         expect(row['id'], 'user-1');
         expect(row['club_id'], 42); // Should be int
         expect(row['display_name'], 'Jean');
+        expect(row['favorite_team_slug'], 'rayon-sports-fc');
       });
 
       test('excludes id when includeId is false', () {
@@ -191,10 +195,12 @@ void main() {
         );
         final updated = original.copyWith(
           displayName: 'Updated Name',
+          favoriteTeamSlug: 'musanze-fc',
           isAdmin: true,
         );
 
         expect(updated.displayName, 'Updated Name');
+        expect(updated.favoriteTeamSlug, 'musanze-fc');
         expect(updated.isAdmin, isTrue);
         expect(updated.momoNumber, '+250788111111'); // unchanged
         expect(updated.id, 'u1'); // unchanged

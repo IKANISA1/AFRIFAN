@@ -7,6 +7,7 @@ import {
 } from "../_shared/response.ts";
 import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
+import { enforceRateLimit } from "../_shared/rate_limit.ts";
 
 export async function handleRequest(request: Request) {
   if (request.method === "OPTIONS") {
@@ -23,6 +24,12 @@ export async function handleRequest(request: Request) {
     const { userId } = validated;
 
     const adminClient = createAdminClient();
+
+    // Rate limit: max 3 deletion attempts per hour per user.
+    await enforceRateLimit(adminClient, userId, "delete-account", {
+      maxRequests: 3,
+      windowSeconds: 3600,
+    });
 
     let body: { user_id?: string } = {};
     try {

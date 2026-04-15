@@ -231,30 +231,30 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(SpacingTokens.spacing6),
         child: Column(
           children: [
-            _ContributionInput(
-              label: 'GROUP NAME',
+            AfriInputField(
+              label: 'Group name',
               controller: _nameController,
               hint: 'APR Final Away Convoy',
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-            _ContributionInput(
-              label: 'PURPOSE',
+            AfriInputField(
+              label: 'Purpose',
               controller: _purposeController,
               hint: 'Transport, tickets, and tifo',
               maxLines: 2,
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-            _ContributionInput(
-              label: 'TARGET AMOUNT',
+            AfriInputField(
+              label: 'Target amount',
               controller: _targetController,
               hint: '${context.afriCurrencySymbol} 500,000',
               keyboardType: TextInputType.number,
@@ -353,17 +353,15 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                           ],
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
-                        TextField(
+                        AfriInputField(
                           controller: _recipientController,
+                          label: _recipientLabel,
+                          hint: _recipientHint,
                           keyboardType:
                               _recipientType == PaymentRecipientType.code
                               ? TextInputType.number
                               : TextInputType.phone,
                           onChanged: (_) => setState(() {}),
-                          decoration: InputDecoration(
-                            labelText: _recipientLabel,
-                            hintText: _recipientHint,
-                          ),
                         ),
                       ],
                     ),
@@ -435,7 +433,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                       ],
                     ),
                   ),
-                  const Icon(Icons.calendar_month_rounded),
+                  const Icon(AfriIcons.calendar),
                 ],
               ),
             ),
@@ -504,41 +502,4 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
   }
 }
 
-class _ContributionInput extends StatelessWidget {
-  const _ContributionInput({
-    required this.label,
-    required this.controller,
-    required this.hint,
-    this.keyboardType,
-    this.maxLines = 1,
-    this.onChanged,
-  });
-
-  final String label;
-  final TextEditingController controller;
-  final String hint;
-  final TextInputType? keyboardType;
-  final int maxLines;
-  final ValueChanged<String>? onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      animate: false,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: TypographyTokens.labelSmall()),
-          const SizedBox(height: SpacingTokens.spacing2),
-          TextField(
-            controller: controller,
-            keyboardType: keyboardType,
-            maxLines: maxLines,
-            onChanged: onChanged,
-            decoration: InputDecoration(hintText: hint),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// _ContributionInput removed — replaced by AfriInputField.

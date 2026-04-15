@@ -110,6 +110,7 @@ class AppStartupCoordinator {
 
   Future<void> _initializePersistence() async {
     await Hive.initFlutter();
+    await HiveEncryptionService.initialize();
     await HiveCacheService.initialize();
   }
 

@@ -20,15 +20,23 @@ void main() {
       expect(module.featureKey, 'live');
     });
 
-    test('registers live as a bottom-nav tab', () {
-      final tab = module.tabRoute;
+    test('live is a standalone module (not a tab)', () {
+      expect(module.tabRoute, isNull);
+    });
 
-      expect(tab.path, '/live');
-      expect(tab.label, 'LIVE');
+    test('/live route exists at root level', () {
+      final paths = module.routes
+          .whereType<GoRoute>()
+          .map((r) => r.path)
+          .toSet();
+      expect(paths, contains('/live'));
     });
 
     test('registers nested news route and standalone live-match alias', () {
-      final routePaths = module.routes
+      final liveRoute = module.routes
+          .whereType<GoRoute>()
+          .firstWhere((r) => r.path == '/live');
+      final subPaths = liveRoute.routes
           .whereType<GoRoute>()
           .map((route) => route.path)
           .toList();
@@ -37,7 +45,7 @@ void main() {
           .map((route) => route.path)
           .toList();
 
-      expect(routePaths, orderedEquals(<String>['news/:articleId']));
+      expect(subPaths, orderedEquals(<String>['news/:articleId']));
       expect(standalonePaths, orderedEquals(<String>['/live-match']));
     });
 

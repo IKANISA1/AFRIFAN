@@ -158,7 +158,7 @@ class _PredictionSettlementScreenState
                           if (context.canPop())
                             IconButton(
                               onPressed: () => context.pop(),
-                              icon: const Icon(Icons.arrow_back_rounded),
+                              icon: const Icon(AfriIcons.back),
                             ),
                         ],
                       ),
@@ -194,7 +194,7 @@ class _PredictionSettlementScreenState
                           if (context.canPop())
                             IconButton(
                               onPressed: () => context.pop(),
-                              icon: const Icon(Icons.arrow_back_rounded),
+                              icon: const Icon(AfriIcons.back),
                             ),
                           const SizedBox(width: SpacingTokens.spacing2),
                           Expanded(

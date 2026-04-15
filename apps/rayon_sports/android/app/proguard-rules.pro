@@ -83,3 +83,8 @@
     public static *** v(...);
     public static *** i(...);
 }
+
+# ── Flutter Secure Storage (Hive encryption key in OS keychain) ──
+-keep class com.it_nomads.fluttersecurestorage.** { *; }
+-keep class androidx.security.crypto.** { *; }
+-keep class com.google.crypto.tink.** { *; }

@@ -84,7 +84,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
         bottom: TabBar(
           controller: _tabController,
@@ -316,7 +316,7 @@ class _PredictionCard extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: AfriButton(
               label: 'Cancel',
-              icon: Icons.close_rounded,
+              icon: AfriIcons.close,
               variant: AfriButtonVariant.secondary,
               onTap: onCancel!,
             ),

@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('MomoSmsSyncPlanner', () {
     test('resolveManualCutoff returns historicalCutoff if latestKnownMessageAt is null', () {
-      final syncState = const MomoSmsSyncState(latestKnownMessageAt: null);
+      const syncState = MomoSmsSyncState(latestKnownMessageAt: null);
       final historicalCutoff = DateTime(2026, 1, 1).toUtc();
       
       final result = MomoSmsSyncPlanner.resolveManualCutoff(

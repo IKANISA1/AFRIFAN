@@ -7,7 +7,11 @@ import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_press_feedback.dart';
 
-/// Primary neutral card surface used across the app.
+/// Primary **interactive** card surface — tappable tiles, action shortcuts,
+/// navigation cards, and any surface where the user is expected to tap.
+///
+/// For **content containers** (read-only grouped info, transaction rows,
+/// stat displays), prefer [GlassCard].
 class ClayCard extends StatelessWidget {
   const ClayCard({
     required this.child,

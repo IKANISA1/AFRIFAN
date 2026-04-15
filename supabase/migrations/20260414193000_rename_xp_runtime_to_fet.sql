@@ -227,7 +227,8 @@ begin
 end;
 $$;
 
-create or replace view public.cool_events
+drop view if exists public.cool_events;
+create view public.cool_events
 with (security_invoker = true) as
 select
   x.id,

@@ -1,10 +1,16 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fanzone_slip_providers.dart';
 import '../models/fanzone_slip_models.dart';
+import '../models/prediction_models.dart';
+import '../widgets/confetti_overlay.dart';
+import '../widgets/prediction_share_card.dart';
 
 class PredictionSlipBar extends ConsumerWidget {
   const PredictionSlipBar({super.key, required this.onTap});
@@ -196,18 +202,34 @@ class _PredictionSlipSheet extends ConsumerWidget {
             enabled: !slip.isSubmitting,
             onTap: () async {
               final messenger = ScaffoldMessenger.of(context);
+
+              // Capture slip info before submit clears it.
+              final slipItems = List<FanzoneSlipSelection>.from(slip.items);
               final result = await controller.submit();
               if (!context.mounted) return;
               Navigator.of(context).pop();
 
               if (result.submittedCount > 0) {
                 onSubmitted?.call();
+                unawaited(HapticFeedback.mediumImpact());
+
+                // ── Confetti burst ──
                 if (hostContext.mounted) {
-                  await Future<void>.delayed(Duration.zero);
+                  showConfettiOverlay(hostContext);
+                }
+
+                // ── Share card modal (replaces old confirmation sheet) ──
+                if (hostContext.mounted) {
+                  await Future<void>.delayed(const Duration(milliseconds: 800));
                   if (hostContext.mounted) {
-                    await showPredictionConfirmationSheet(hostContext, result);
+                    await _showShareCardModal(
+                      hostContext,
+                      result: result,
+                      slipItems: slipItems,
+                    );
                   }
                 }
+
                 if (result.hasFailures && messenger.mounted) {
                   messenger.showSnackBar(
                     SnackBar(
@@ -238,21 +260,26 @@ class _PredictionSlipSheet extends ConsumerWidget {
   }
 }
 
-Future<void> showPredictionConfirmationSheet(
-  BuildContext context,
-  FanzoneSlipSubmissionResult result,
-) {
+// ── Post-submission share card modal ───────────────────────────────────
+
+Future<void> _showShareCardModal(
+  BuildContext context, {
+  required FanzoneSlipSubmissionResult result,
+  required List<FanzoneSlipSelection> slipItems,
+}) {
   return showAfriBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    builder: (context) => _PredictionConfirmationSheet(result: result),
+    builder: (context) =>
+        _ShareCardModalSheet(result: result, slipItems: slipItems),
   );
 }
 
-class _PredictionConfirmationSheet extends StatelessWidget {
-  const _PredictionConfirmationSheet({required this.result});
+class _ShareCardModalSheet extends StatelessWidget {
+  const _ShareCardModalSheet({required this.result, required this.slipItems});
 
   final FanzoneSlipSubmissionResult result;
+  final List<FanzoneSlipSelection> slipItems;
 
   @override
   Widget build(BuildContext context) {
@@ -260,12 +287,16 @@ class _PredictionConfirmationSheet extends StatelessWidget {
         ? 'Prediction Locked'
         : '${result.submittedCount} Predictions Locked';
 
+    // Build share data from the first slip item.
+    final first = slipItems.isNotEmpty ? slipItems.first : null;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing4),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ── Success header ──
           ClayCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -305,20 +336,87 @@ class _PredictionConfirmationSheet extends StatelessWidget {
                     style: TypographyTokens.bodySmall(),
                   ),
                 ],
-                if (result.messages.isNotEmpty) ...[
-                  const SizedBox(height: SpacingTokens.spacing3),
-                  Text(
-                    result.messages.first,
-                    style: TypographyTokens.bodySmall(),
-                  ),
-                ],
               ],
             ),
           ),
+          // ── Share card preview ──
+          if (first != null) ...[
+            const SizedBox(height: SpacingTokens.spacing4),
+            PredictionShareCard(
+              data: PredictionShareData(
+                competitionName: first.competitionName ?? '',
+                homeTeam: first.fixtureLabel.split(' vs ').first,
+                homeTeamShort: first.fixtureLabel.split(' vs ').first,
+                awayTeam: first.fixtureLabel.split(' vs ').last,
+                awayTeamShort: first.fixtureLabel.split(' vs ').last,
+                marketName: first.marketName,
+                selectedOutcome: first.outcomeLabel,
+                status: PredictionStatus.pending,
+                fetPotential: result.totalPotential,
+                fetEarned: 0,
+              ),
+            ),
+          ],
           const SizedBox(height: SpacingTokens.spacing4),
+          // ── Action buttons ──
+          if (first != null)
+            Row(
+              children: [
+                Expanded(
+                  child: AfriButton(
+                    onTap: () {
+                      PredictionShareService.share(
+                        data: PredictionShareData(
+                          competitionName: first.competitionName ?? '',
+                          homeTeam: first.fixtureLabel.split(' vs ').first,
+                          homeTeamShort: first.fixtureLabel.split(' vs ').first,
+                          awayTeam: first.fixtureLabel.split(' vs ').last,
+                          awayTeamShort: first.fixtureLabel.split(' vs ').last,
+                          marketName: first.marketName,
+                          selectedOutcome: first.outcomeLabel,
+                          status: PredictionStatus.pending,
+                          fetPotential: result.totalPotential,
+                          fetEarned: 0,
+                        ),
+                        context: context,
+                      );
+                    },
+                    label: 'SHARE',
+                    icon: AfriIcons.share,
+                  ),
+                ),
+                const SizedBox(width: SpacingTokens.spacing3),
+                Expanded(
+                  child: AfriButton(
+                    onTap: () {
+                      PredictionShareService.copy(
+                        data: PredictionShareData(
+                          competitionName: first.competitionName ?? '',
+                          homeTeam: first.fixtureLabel.split(' vs ').first,
+                          homeTeamShort: first.fixtureLabel.split(' vs ').first,
+                          awayTeam: first.fixtureLabel.split(' vs ').last,
+                          awayTeamShort: first.fixtureLabel.split(' vs ').last,
+                          marketName: first.marketName,
+                          selectedOutcome: first.outcomeLabel,
+                          status: PredictionStatus.pending,
+                          fetPotential: result.totalPotential,
+                          fetEarned: 0,
+                        ),
+                        context: context,
+                      );
+                    },
+                    label: 'COPY',
+                    icon: Icons.copy_rounded,
+                    variant: AfriButtonVariant.secondary,
+                  ),
+                ),
+              ],
+            ),
+          const SizedBox(height: SpacingTokens.spacing3),
           AfriButton(
             label: 'VIEW MY PREDICTIONS',
             icon: Icons.receipt_long_rounded,
+            variant: AfriButtonVariant.secondary,
             onTap: () {
               Navigator.of(context).pop();
               context.push('/fanzone/my');
@@ -335,6 +433,24 @@ class _PredictionConfirmationSheet extends StatelessWidget {
     );
   }
 }
+
+// ── Preserved: public showPredictionConfirmationSheet (backward compat) ──
+
+Future<void> showPredictionConfirmationSheet(
+  BuildContext context,
+  FanzoneSlipSubmissionResult result,
+) {
+  return showAfriBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    builder: (context) => _ShareCardModalSheet(
+      result: result,
+      slipItems: const <FanzoneSlipSelection>[],
+    ),
+  );
+}
+
+// ── Slip row / chip ────────────────────────────────────────────────────
 
 class _SlipRow extends StatelessWidget {
   const _SlipRow({required this.item, required this.onRemove});
@@ -375,7 +491,7 @@ class _SlipRow extends StatelessWidget {
           ),
           IconButton(
             onPressed: onRemove,
-            icon: const Icon(Icons.close_rounded),
+            icon: const Icon(AfriIcons.close),
             tooltip: 'Remove prediction',
           ),
         ],

@@ -11,6 +11,7 @@ export 'src/crashlytics_service.dart';
 export 'src/firebase_analytics_service.dart';
 export 'src/firebase_bootstrap_service.dart';
 export 'src/hive_cache_service.dart';
+export 'src/hive_encryption_service.dart';
 export 'src/offline_banner.dart';
 export 'src/offline_event_queue.dart';
 export 'src/operational_health_service.dart';

@@ -166,7 +166,7 @@ class _NotificationPreferencesScreenState
           ),
           leading: IconButton(
             onPressed: () => closeSettingsChild(context),
-            icon: const Icon(Icons.arrow_back_rounded),
+            icon: const Icon(AfriIcons.back),
           ),
         ),
         body: settings == null

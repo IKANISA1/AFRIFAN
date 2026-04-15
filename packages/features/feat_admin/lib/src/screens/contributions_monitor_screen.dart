@@ -232,7 +232,7 @@ class _ContributionsMonitorScreenState
         title: Text('CONTRIBUTIONS', style: TypographyTokens.titleLarge()),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
       ),
       body: _isLoading

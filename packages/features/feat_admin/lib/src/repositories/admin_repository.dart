@@ -103,7 +103,11 @@ class AdminRepository {
       groupsQuery = _scopeResolver.apply(groupsQuery, scope);
       final groupsResult = await groupsQuery.count(CountOption.exact);
 
-      final txCount = await _countTransactionsToday(startOfDay, endOfDay, scope);
+      final txCount = await _countTransactionsToday(
+        startOfDay,
+        endOfDay,
+        scope,
+      );
       final ticketsCount = await _countTicketsSold(scope);
 
       return AdminDashboardMetrics(
@@ -202,11 +206,13 @@ class AdminRepository {
     int offset = 0,
   }) async {
     final scope = await _scopeResolver.resolve(null);
-    var query = _client.from('contribution_groups').select(
-      'id, name, description, group_type, privacy, '
-      'target_amount, current_total, member_count, '
-      'is_closed, creator_id, created_at, invite_code',
-    );
+    var query = _client
+        .from('contribution_groups')
+        .select(
+          'id, name, description, group_type, privacy, '
+          'target_amount, current_total, member_count, '
+          'is_closed, creator_id, created_at, invite_code',
+        );
     query = _scopeResolver.apply(query, scope);
     final data = await query
         .order('created_at', ascending: false)
@@ -294,6 +300,209 @@ class AdminRepository {
     var query = _client.from(newsTable).update(updates).eq('id', articleId);
     query = _scopeResolver.apply(query, scope);
     await query;
+  }
+
+  // ── Dynamic Home / Partner Catalogs ──
+
+  Future<List<Map<String, dynamic>>> getQuickActions({int limit = 50}) async {
+    final data = await _client
+        .from('quick_actions')
+        .select('*')
+        .order('sort_order', ascending: true)
+        .order('title', ascending: true)
+        .limit(limit);
+    return List<Map<String, dynamic>>.from(data as List);
+  }
+
+  Future<Map<String, dynamic>> createQuickAction({
+    required String actionKey,
+    required String title,
+    required String route,
+    required String iconKey,
+    String? subtitle,
+    String? emoji,
+    String? countryCode,
+    int sortOrder = 0,
+    bool isActive = true,
+  }) async {
+    final data = await _client
+        .from('quick_actions')
+        .insert({
+          'action_key': actionKey,
+          'title': title,
+          'subtitle': subtitle,
+          'route': route,
+          'icon_key': iconKey,
+          'emoji': emoji,
+          'country': countryCode,
+          'sort_order': sortOrder,
+          'is_active': isActive,
+        })
+        .select()
+        .single();
+    return Map<String, dynamic>.from(data);
+  }
+
+  Future<void> updateQuickAction(
+    String quickActionId,
+    Map<String, dynamic> updates,
+  ) async {
+    await _client.from('quick_actions').update(updates).eq('id', quickActionId);
+  }
+
+  Future<List<Map<String, dynamic>>> getPartners({int limit = 100}) async {
+    final data = await _client
+        .from('partners')
+        .select('*')
+        .order('sort_order', ascending: true)
+        .order('name', ascending: true)
+        .limit(limit);
+    return List<Map<String, dynamic>>.from(data as List);
+  }
+
+  Future<Map<String, dynamic>> createPartner({
+    required String name,
+    required String slug,
+    required String category,
+    required String countryCode,
+    String emoji = '🤝',
+    String? subtitle,
+    String? description,
+    bool isActive = true,
+    bool gamificationEnabled = false,
+    int sortOrder = 0,
+  }) async {
+    final data = await _client
+        .from('partners')
+        .insert({
+          'name': name,
+          'slug': slug,
+          'category': category,
+          'country': countryCode,
+          'emoji': emoji,
+          'subtitle': subtitle,
+          'description': description,
+          'is_active': isActive,
+          'sort_order': sortOrder,
+          'gamification_enabled': gamificationEnabled,
+        })
+        .select()
+        .single();
+    return Map<String, dynamic>.from(data);
+  }
+
+  Future<void> updatePartner(
+    String partnerId,
+    Map<String, dynamic> updates,
+  ) async {
+    await _client.from('partners').update(updates).eq('id', partnerId);
+  }
+
+  Future<List<Map<String, dynamic>>> getPartnerServices({
+    int limit = 200,
+  }) async {
+    final data = await _client
+        .from('partner_services')
+        .select('*, partner:partners(id, name, slug)')
+        .order('sort_order', ascending: true)
+        .order('title', ascending: true)
+        .limit(limit);
+    return List<Map<String, dynamic>>.from(data as List);
+  }
+
+  Future<Map<String, dynamic>> createPartnerService({
+    required String partnerId,
+    required String title,
+    required String serviceSlug,
+    String category = 'general',
+    String? subtitle,
+    String? emoji,
+    String? ctaLabel,
+    String? ctaAction,
+    String? countryCode,
+    int sortOrder = 0,
+    bool isActive = true,
+    bool gamificationEnabled = false,
+  }) async {
+    final data = await _client
+        .from('partner_services')
+        .insert({
+          'partner_id': partnerId,
+          'title': title,
+          'service_slug': serviceSlug,
+          'subtitle': subtitle,
+          'emoji': emoji,
+          'category': category,
+          'cta_label': ctaLabel,
+          'cta_action': ctaAction,
+          'country': countryCode,
+          'sort_order': sortOrder,
+          'is_active': isActive,
+          'gamification_enabled': gamificationEnabled,
+        })
+        .select('*, partner:partners(id, name, slug)')
+        .single();
+    return Map<String, dynamic>.from(data);
+  }
+
+  Future<void> updatePartnerService(
+    String serviceId,
+    Map<String, dynamic> updates,
+  ) async {
+    await _client.from('partner_services').update(updates).eq('id', serviceId);
+  }
+
+  Future<List<Map<String, dynamic>>> getFootballCompetitions({
+    int limit = 200,
+  }) async {
+    final data = await _client
+        .from('football_competitions_catalog')
+        .select('*')
+        .eq('is_active', true)
+        .order('name', ascending: true)
+        .limit(limit);
+    return List<Map<String, dynamic>>.from(data as List);
+  }
+
+  Future<List<Map<String, dynamic>>> getPredictionSupportedCompetitions({
+    int limit = 200,
+  }) async {
+    final data = await _client
+        .from('prediction_supported_competitions_catalog')
+        .select('*')
+        .order('support_sort_order', ascending: true)
+        .order('name', ascending: true)
+        .limit(limit);
+    return List<Map<String, dynamic>>.from(data as List);
+  }
+
+  Future<Map<String, dynamic>> createPredictionSupportedCompetition({
+    required String competitionId,
+    String? highlightLabel,
+    int sortOrder = 0,
+    bool isActive = true,
+  }) async {
+    final data = await _client
+        .from('prediction_supported_competitions')
+        .insert({
+          'competition_id': competitionId,
+          'highlight_label': highlightLabel,
+          'sort_order': sortOrder,
+          'is_active': isActive,
+        })
+        .select()
+        .single();
+    return Map<String, dynamic>.from(data);
+  }
+
+  Future<void> updatePredictionSupportedCompetition(
+    String supportId,
+    Map<String, dynamic> updates,
+  ) async {
+    await _client
+        .from('prediction_supported_competitions')
+        .update(updates)
+        .eq('id', supportId);
   }
 
   // ── Shop Products ──

@@ -92,7 +92,6 @@ class _FixtureSettlementScreenState
     );
 
     try {
-      final client = ref.read(supabaseClientProvider);
       final params = <String, dynamic>{
         'p_fixture_id': fixture['id'],
         'p_home_score': result['home_score'],
@@ -103,12 +102,31 @@ class _FixtureSettlementScreenState
         params['p_ht_home_score'] = result['ht_home_score'];
         params['p_ht_away_score'] = result['ht_away_score'];
       }
-      final response = await client.rpc('prediction_admin_settle', params: params);
+
+      final rpcResult = await SafeRpc.call(
+        'prediction_admin_settle',
+        params: params,
+        tag: 'AdminSettle',
+        maxAttempts: 1, // Don't retry writes.
+      );
 
       if (!mounted) return;
       Navigator.of(context).pop(); // close loading
 
-      final responseMap = response as Map<String, dynamic>? ?? {};
+      if (!rpcResult.isSuccess || rpcResult.data is! Map) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Settlement failed: ${rpcResult.error ?? 'Unexpected response'}',
+            ),
+            backgroundColor: ColorTokens.error,
+          ),
+        );
+        return;
+      }
+
+      final responseMap = Map<String, dynamic>.from(rpcResult.data as Map);
       final settlementData =
           responseMap['settlement'] as Map<String, dynamic>? ?? {};
       final marketsProcessed =
@@ -151,7 +169,7 @@ class _FixtureSettlementScreenState
         title: Text('SETTLE FIXTURES', style: TypographyTokens.titleLarge()),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
       ),
       body: _isLoading

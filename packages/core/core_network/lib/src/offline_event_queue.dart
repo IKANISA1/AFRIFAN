@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
 import 'connectivity_service.dart';
+import 'hive_encryption_service.dart';
 import 'operational_health_service.dart';
 
 /// Queues [OperationalHealthService] events locally when offline,
@@ -50,7 +51,10 @@ class OfflineEventQueue {
     _sender = sender;
 
     try {
-      _box = await Hive.openBox<String>(_boxName);
+      _box = await Hive.openBox<String>(
+        _boxName,
+        encryptionCipher: HiveEncryptionService.cipher,
+      );
       _initialized = true;
 
       final pendingCount = _box!.length;
@@ -66,6 +70,24 @@ class OfflineEventQueue {
         unawaited(_flush());
       }
     } catch (error, stackTrace) {
+      // Migration path: existing unencrypted box → delete and recreate.
+      // Queued telemetry events are non-critical; loss is acceptable.
+      try {
+        await Hive.deleteBoxFromDisk(_boxName);
+        _box = await Hive.openBox<String>(
+          _boxName,
+          encryptionCipher: HiveEncryptionService.cipher,
+        );
+        _initialized = true;
+        ConnectivityService.onlineNotifier.addListener(_onConnectivityChanged);
+        AfriLogger.info(
+          _tag,
+          'Event queue migrated to encrypted storage (old events cleared).',
+        );
+        return;
+      } catch (_) {
+        // Intentional fallthrough.
+      }
       AfriLogger.error(_tag, 'Failed to initialize.', error, stackTrace);
     }
   }

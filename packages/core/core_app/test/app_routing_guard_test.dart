@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_app/core_app.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_router/core_router.dart';
@@ -89,7 +91,7 @@ class _FakeSplashScreenState extends ConsumerState<_FakeSplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToNext();
+    unawaited(_navigateToNext());
   }
 
   Future<void> _navigateToNext() async {

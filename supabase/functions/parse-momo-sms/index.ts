@@ -12,6 +12,7 @@ import {
   recordOperationalHealthEvent,
 } from "../_shared/observability.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
+import { enforceRateLimit } from "../_shared/rate_limit.ts";
 import {
   type AiProvider,
   buildPrompt,
@@ -84,6 +85,13 @@ async function handleRequest(request: Request) {
     }
 
     const adminClient = createAdminClient();
+
+    // Rate limit: max 60 parse requests per 5 minutes per user.
+    await enforceRateLimit(adminClient, userId, "parse-momo-sms", {
+      maxRequests: 60,
+      windowSeconds: 300,
+    });
+
     const rawSmsResult = await adminClient
       .from("momo_sms_raw")
       .select("*")

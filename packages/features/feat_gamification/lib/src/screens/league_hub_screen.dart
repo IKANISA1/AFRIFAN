@@ -48,10 +48,19 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
         throw Exception('No competitions available.');
       }
 
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final futureEnd = today.add(const Duration(days: 30));
+
       final results = await Future.wait<Object?>([
         repo.loadCompetition(resolvedSlug),
         repo.loadStandings(competitionSlug: resolvedSlug, limit: 8),
-        repo.loadFixtures(competitionSlug: resolvedSlug, limit: 8),
+        repo.loadFixturesByDate(
+          dateFrom: today,
+          dateTo: futureEnd,
+          competitionSlug: resolvedSlug,
+          limit: 10,
+        ),
       ]);
 
       if (!mounted) {
@@ -103,7 +112,7 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
       ),
       body: _isLoading

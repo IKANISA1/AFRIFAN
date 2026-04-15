@@ -28,7 +28,7 @@ class BiopayResultScreen extends StatelessWidget {
     };
     final icon = switch (args.tone) {
       BiopayTaskResultTone.success => Icons.check_rounded,
-      BiopayTaskResultTone.error => Icons.close_rounded,
+      BiopayTaskResultTone.error => AfriIcons.close,
       BiopayTaskResultTone.blocked => Icons.warning_rounded,
       BiopayTaskResultTone.pending => Icons.schedule_rounded,
     };

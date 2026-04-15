@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_utils/core_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -94,7 +96,7 @@ class CrashlyticsService {
     if (!_isAvailable) return;
 
     try {
-      FirebaseCrashlytics.instance.log(message);
+      unawaited(FirebaseCrashlytics.instance.log(message));
     } catch (_) {
       // Best-effort.
     }

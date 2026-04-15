@@ -20,6 +20,7 @@ class _FanzoneHubScreenState extends ConsumerState<FanzoneHubScreen> {
   PredictionDashboard? _dashboard;
   FetWalletSummary? _wallet;
   List<FixtureSummary> _liveFixtures = const <FixtureSummary>[];
+  List<FixtureSummary> _todayFixtures = const <FixtureSummary>[];
   List<FixtureSummary> _upcomingFixtures = const <FixtureSummary>[];
   List<PredictionLeaderboardEntry> _leaderboard =
       const <PredictionLeaderboardEntry>[];
@@ -44,11 +45,24 @@ class _FanzoneHubScreenState extends ConsumerState<FanzoneHubScreen> {
       final predictionRepository = ref.read(predictionRepositoryProvider);
       final fetRepository = ref.read(fetRepositoryProvider);
 
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final weekEnd = today.add(const Duration(days: 7));
+      final tomorrow = today.add(const Duration(days: 1));
+
       final results = await Future.wait<Object?>([
         predictionRepository.loadUserStats(),
         fetRepository.loadWallet(),
-        predictionRepository.loadFixtures(status: 'live', limit: 2),
-        predictionRepository.loadFixtures(status: 'scheduled', limit: 4),
+        predictionRepository.loadFixtures(status: 'live', limit: 5),
+        predictionRepository.loadFixturesByDate(
+          dateFrom: today,
+          dateTo: today,
+        ),
+        predictionRepository.loadFixturesByDate(
+          dateFrom: tomorrow,
+          dateTo: weekEnd,
+          limit: 8,
+        ),
         predictionRepository.loadLeaderboard(limit: 5),
         predictionRepository.loadMarketCatalog(),
         fetRepository.loadCatalog(),
@@ -59,10 +73,11 @@ class _FanzoneHubScreenState extends ConsumerState<FanzoneHubScreen> {
         _dashboard = results[0] as PredictionDashboard;
         _wallet = results[1] as FetWalletSummary?;
         _liveFixtures = results[2]! as List<FixtureSummary>;
-        _upcomingFixtures = results[3]! as List<FixtureSummary>;
-        _leaderboard = results[4]! as List<PredictionLeaderboardEntry>;
-        _markets = results[5]! as List<PredictionMarket>;
-        _challenges = results[6]! as List<FetCatalogItem>;
+        _todayFixtures = results[3]! as List<FixtureSummary>;
+        _upcomingFixtures = results[4]! as List<FixtureSummary>;
+        _leaderboard = results[5]! as List<PredictionLeaderboardEntry>;
+        _markets = results[6]! as List<PredictionMarket>;
+        _challenges = results[7]! as List<FetCatalogItem>;
         _isLoading = false;
       });
     } catch (_) {
@@ -76,6 +91,60 @@ class _FanzoneHubScreenState extends ConsumerState<FanzoneHubScreen> {
 
   Future<void> _openSlip() async {
     await showPredictionSlipSheet(context, ref, onSubmitted: _loadData);
+  }
+
+  void _showOverflow() {
+    showAfriActionSheet(
+      context: context,
+      title: 'Fanzone',
+      actions: [
+        AfriSheetAction(
+          icon: AfriIcons.myPicks,
+          label: 'My predictions',
+          onTap: () => context.push('/fanzone/my'),
+        ),
+        AfriSheetAction(
+          icon: AfriIcons.notifications,
+          label: 'Alerts',
+          onTap: () => context.push('/fanzone/notifications'),
+        ),
+        AfriSheetAction(
+          icon: AfriIcons.wallet,
+          label: 'FET wallet',
+          onTap: () => context.push('/fanzone/wallet'),
+        ),
+        AfriSheetAction(
+          icon: AfriIcons.rewards,
+          label: 'Rewards store',
+          onTap: () => context.push('/fanzone/rewards'),
+        ),
+        AfriSheetAction(
+          icon: AfriIcons.history,
+          label: 'Token history',
+          onTap: () => context.push('/fanzone/history'),
+        ),
+        AfriSheetAction(
+          icon: AfriIcons.friend,
+          label: 'Friends',
+          onTap: () => context.push('/fanzone/friends'),
+        ),
+        AfriSheetAction(
+          icon: AfriIcons.versus,
+          label: 'Challenge a friend',
+          onTap: () => context.push('/fanzone/challenge'),
+        ),
+        AfriSheetAction(
+          icon: AfriIcons.share,
+          label: 'Share card',
+          onTap: () => context.push('/fanzone/share'),
+        ),
+        AfriSheetAction(
+          icon: AfriIcons.clubZone,
+          label: 'Club zone',
+          onTap: () => context.push('/fanzone/club-zone'),
+        ),
+      ],
+    );
   }
 
   @override
@@ -93,32 +162,22 @@ class _FanzoneHubScreenState extends ConsumerState<FanzoneHubScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () => context.push('/fanzone/my'),
-            tooltip: 'My predictions',
-            icon: const Icon(Icons.receipt_long_rounded),
-          ),
-          IconButton(
-            onPressed: () => context.push('/fanzone/notifications'),
-            tooltip: 'Prediction alerts',
-            icon: const Icon(Icons.notifications_none_rounded),
-          ),
-          IconButton(
-            onPressed: () => context.push('/fanzone/wallet'),
-            tooltip: 'FET wallet',
-            icon: const Icon(Icons.account_balance_wallet_rounded),
+            onPressed: _showOverflow,
+            tooltip: 'More options',
+            icon: const Icon(AfriIcons.more),
           ),
         ],
       ),
       bottomNavigationBar: PredictionSlipBar(onTap: _openSlip),
       body: _isLoading
           ? const Padding(
-              padding: EdgeInsets.all(SpacingTokens.spacing6),
+              padding: EdgeInsets.all(SpacingTokens.screenPadding),
               child: AfriSkeletonList(),
             )
           : _error != null
           ? Center(
               child: Padding(
-                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                padding: const EdgeInsets.all(SpacingTokens.screenPadding),
                 child: AfriStateView.offline(
                   title: 'Fanzone unavailable',
                   message: _error!,
@@ -136,53 +195,57 @@ class _FanzoneHubScreenState extends ConsumerState<FanzoneHubScreen> {
                     parent: AlwaysScrollableScrollPhysics(),
                   ),
                   slivers: [
+                    // ── Hero stats ──
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(
-                          SpacingTokens.spacing6,
+                          SpacingTokens.screenPadding,
                           SpacingTokens.spacing4,
-                          SpacingTokens.spacing6,
+                          SpacingTokens.screenPadding,
                           0,
                         ),
-                        child: _HeroCard(
+                        child: _HeroStats(
                           dashboard: _dashboard,
                           wallet: _wallet,
                         ),
                       ),
                     ),
+
+                    // ── Quick routes (capped at 6) ──
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(
-                          SpacingTokens.spacing6,
+                          SpacingTokens.screenPadding,
                           SpacingTokens.spacing4,
-                          SpacingTokens.spacing6,
+                          SpacingTokens.screenPadding,
                           0,
                         ),
-                        child: _QuickRoutes(),
+                        child: _QuickRoutes(onMore: _showOverflow),
                       ),
                     ),
+
+                    // ── Live matches ──
                     if (_liveFixtures.isNotEmpty)
                       SliverToBoxAdapter(
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(
-                            SpacingTokens.spacing6,
-                            SpacingTokens.spacing6,
-                            SpacingTokens.spacing6,
+                            SpacingTokens.screenPadding,
+                            SpacingTokens.sectionGap,
+                            SpacingTokens.screenPadding,
                             0,
                           ),
-                          child: _SectionCard(
-                            title: 'Live Matches',
-                            subtitle:
-                                'Fixtures already in play and ready for live follow-up.',
+                          child: AfriSectionCard(
+                            title: 'Live Now',
                             child: Column(
                               children: _liveFixtures
                                   .map(
                                     (fixture) => Padding(
                                       padding: const EdgeInsets.only(
-                                        bottom: SpacingTokens.spacing3,
+                                        bottom: SpacingTokens.listItemGap,
                                       ),
                                       child: _HubFixtureRow(
                                         fixture: fixture,
+                                        isLive: true,
                                         onTap: () => context.push(
                                           '/fanzone/match/${fixture.id}',
                                         ),
@@ -194,28 +257,33 @@ class _FanzoneHubScreenState extends ConsumerState<FanzoneHubScreen> {
                           ),
                         ),
                       ),
+
+                    // ── Today's fixtures ──
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(
-                          SpacingTokens.spacing6,
-                          SpacingTokens.spacing6,
-                          SpacingTokens.spacing6,
+                          SpacingTokens.screenPadding,
+                          SpacingTokens.sectionGap,
+                          SpacingTokens.screenPadding,
                           0,
                         ),
-                        child: _SectionCard(
-                          title: 'Upcoming Fixtures',
-                          subtitle:
-                              'Quick entry into the first prediction loop.',
-                          actionLabel: 'Browse all',
-                          onAction: () => context.push('/fanzone/fixtures'),
-                          child: _upcomingFixtures.isEmpty
-                              ? const Text('No upcoming fixtures loaded.')
+                        child: AfriSectionCard(
+                          title: 'Today',
+                          trailingLabel: 'Calendar',
+                          onTrailingTap: () =>
+                              context.push('/fanzone/fixtures'),
+                          child: _todayFixtures.isEmpty
+                              ? const AfriEmptyView(
+                                  compact: true,
+                                  title: 'No matches today',
+                                  icon: AfriIcons.fixture,
+                                )
                               : Column(
-                                  children: _upcomingFixtures
+                                  children: _todayFixtures
                                       .map(
                                         (fixture) => Padding(
                                           padding: const EdgeInsets.only(
-                                            bottom: SpacingTokens.spacing3,
+                                            bottom: SpacingTokens.listItemGap,
                                           ),
                                           child: _HubFixtureRow(
                                             fixture: fixture,
@@ -230,27 +298,65 @@ class _FanzoneHubScreenState extends ConsumerState<FanzoneHubScreen> {
                         ),
                       ),
                     ),
+
+                    // ── Upcoming fixtures (next 7 days) ──
+                    if (_upcomingFixtures.isNotEmpty)
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            SpacingTokens.screenPadding,
+                            SpacingTokens.sectionGap,
+                            SpacingTokens.screenPadding,
+                            0,
+                          ),
+                          child: AfriSectionCard(
+                            title: 'This Week',
+                            trailingLabel: 'Browse',
+                            onTrailingTap: () =>
+                                context.push('/fanzone/fixtures'),
+                            child: Column(
+                              children: _upcomingFixtures
+                                  .map(
+                                    (fixture) => Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: SpacingTokens.listItemGap,
+                                      ),
+                                      child: _HubFixtureRow(
+                                        fixture: fixture,
+                                        showDate: true,
+                                        onTap: () => context.push(
+                                          '/fanzone/match/${fixture.id}',
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(growable: false),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                    // ── Markets ──
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(
-                          SpacingTokens.spacing6,
-                          SpacingTokens.spacing6,
-                          SpacingTokens.spacing6,
+                          SpacingTokens.screenPadding,
+                          SpacingTokens.sectionGap,
+                          SpacingTokens.screenPadding,
                           0,
                         ),
-                        child: _SectionCard(
-                          title: 'Market Stack',
-                          subtitle:
-                              'Top launch markets, powered by the live catalog.',
+                        child: AfriSectionCard(
+                          title: 'Markets',
                           child: Wrap(
-                            spacing: SpacingTokens.spacing2,
-                            runSpacing: SpacingTokens.spacing2,
+                            spacing: SpacingTokens.inlineGap,
+                            runSpacing: SpacingTokens.inlineGap,
                             children: _markets
                                 .take(8)
                                 .map(
-                                  (market) => _MarketChip(
-                                    label: market.shortName,
-                                    value: market.defaultFetValue,
+                                  (market) => AfriInfoChip(
+                                    label:
+                                        '${market.shortName} +${market.defaultFetValue}',
+                                    color: ColorTokens.onSurfaceVariant,
                                   ),
                                 )
                                 .toList(growable: false),
@@ -258,26 +364,27 @@ class _FanzoneHubScreenState extends ConsumerState<FanzoneHubScreen> {
                         ),
                       ),
                     ),
+
+                    // ── Leaderboard ──
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(
-                          SpacingTokens.spacing6,
-                          SpacingTokens.spacing6,
-                          SpacingTokens.spacing6,
+                          SpacingTokens.screenPadding,
+                          SpacingTokens.sectionGap,
+                          SpacingTokens.screenPadding,
                           0,
                         ),
-                        child: _SectionCard(
+                        child: AfriSectionCard(
                           title: 'Leaderboard',
-                          subtitle:
-                              'Prediction rank ordered by FET earned and win rate.',
-                          actionLabel: 'Open',
-                          onAction: () => context.push('/fanzone/leaderboard'),
+                          trailingLabel: 'Open',
+                          onTrailingTap: () =>
+                              context.push('/fanzone/leaderboard'),
                           child: Column(
                             children: _leaderboard
                                 .map(
                                   (entry) => Padding(
                                     padding: const EdgeInsets.only(
-                                      bottom: SpacingTokens.spacing3,
+                                      bottom: SpacingTokens.listItemGap,
                                     ),
                                     child: _LeaderboardRow(entry: entry),
                                   ),
@@ -287,27 +394,28 @@ class _FanzoneHubScreenState extends ConsumerState<FanzoneHubScreen> {
                         ),
                       ),
                     ),
+
+                    // ── Challenges ──
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(
-                          SpacingTokens.spacing6,
-                          SpacingTokens.spacing6,
-                          SpacingTokens.spacing6,
+                          SpacingTokens.screenPadding,
+                          SpacingTokens.sectionGap,
+                          SpacingTokens.screenPadding,
                           120,
                         ),
-                        child: _SectionCard(
+                        child: AfriSectionCard(
                           title: 'Challenges',
-                          subtitle:
-                              'Current FET actions and engagement loops already configured.',
-                          actionLabel: 'Open',
-                          onAction: () => context.push('/fanzone/challenges'),
+                          trailingLabel: 'Open',
+                          onTrailingTap: () =>
+                              context.push('/fanzone/challenges'),
                           child: Column(
                             children: _challenges
                                 .take(4)
                                 .map(
                                   (item) => Padding(
                                     padding: const EdgeInsets.only(
-                                      bottom: SpacingTokens.spacing3,
+                                      bottom: SpacingTokens.listItemGap,
                                     ),
                                     child: _ChallengeRow(item: item),
                                   ),
@@ -325,287 +433,204 @@ class _FanzoneHubScreenState extends ConsumerState<FanzoneHubScreen> {
   }
 }
 
-class _HeroCard extends StatelessWidget {
-  const _HeroCard({required this.dashboard, required this.wallet});
+// ── Hero stats — metrics only, no marketing copy ──
+class _HeroStats extends StatelessWidget {
+  const _HeroStats({required this.dashboard, required this.wallet});
 
   final PredictionDashboard? dashboard;
   final FetWalletSummary? wallet;
 
   @override
   Widget build(BuildContext context) {
-    return ClayCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing3,
-                  vertical: SpacingTokens.spacing1,
-                ),
-                decoration: BoxDecoration(
-                  color: ColorTokens.success.withValues(alpha: 0.16),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  'LIVE ${dashboard?.activeCount ?? 0}',
-                  style: TypographyTokens.labelSmall(ColorTokens.success),
-                ),
-              ),
-              const SizedBox(width: SpacingTokens.spacing2),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing3,
-                  vertical: SpacingTokens.spacing1,
-                ),
-                decoration: BoxDecoration(
-                  color: ColorTokens.clubAccent.withValues(alpha: 0.16),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  '${wallet?.balance ?? 0} FET',
-                  style: TypographyTokens.labelSmall(ColorTokens.clubAccent),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          Text(
-            'Predict. Earn. Repeat.',
-            style: TypographyTokens.monolithFont(
-              fontSize: 36,
-              fontWeight: FontWeight.w800,
-              height: 0.95,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ── Status chips ──
+        Wrap(
+          spacing: SpacingTokens.inlineGap,
+          children: [
+            AfriInfoChip(
+              label: 'LIVE ${dashboard?.activeCount ?? 0}',
+              color: ColorTokens.success,
             ),
-          ),
-          const SizedBox(height: SpacingTokens.spacing3),
-          Text(
-            'One consolidated FANZONE surface for fixtures, picks, rewards, and performance.',
-            style: TypographyTokens.bodyMedium(),
-          ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          Row(
-            children: [
-              Expanded(
-                child: _HeroMetric(
-                  label: 'Win rate',
-                  value: '${dashboard?.winRate.toStringAsFixed(0) ?? '0'}%',
-                ),
-              ),
-              const SizedBox(width: SpacingTokens.spacing3),
-              Expanded(
-                child: _HeroMetric(
-                  label: 'Current streak',
-                  value: '${dashboard?.currentStreak ?? 0}',
-                ),
-              ),
-              const SizedBox(width: SpacingTokens.spacing3),
-              Expanded(
-                child: _HeroMetric(
-                  label: 'Wallet',
-                  value: '${wallet?.balance ?? 0}',
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+            AfriInfoChip(
+              label: '${wallet?.balance ?? 0} FET',
+              color: ColorTokens.clubAccent,
+            ),
+          ],
+        ),
+        const SizedBox(height: SpacingTokens.spacing4),
+        // ── Stat row ──
+        AfriStatRow(
+          stats: [
+            AfriStat(
+              label: 'Win rate',
+              value: '${dashboard?.winRate.toStringAsFixed(0) ?? '0'}%',
+            ),
+            AfriStat(
+              label: 'Streak',
+              value: '${dashboard?.currentStreak ?? 0}',
+            ),
+            AfriStat(
+              label: 'Balance',
+              value: '${wallet?.balance ?? 0}',
+              accentColor: ColorTokens.clubAccent,
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
 
-class _HeroMetric extends StatelessWidget {
-  const _HeroMetric({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      animate: false,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label.toUpperCase(),
-            style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
-          ),
-          const SizedBox(height: SpacingTokens.spacing1),
-          Text(
-            value,
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.onSurface,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
+// ── Quick routes — capped at 6, rest goes to overflow ──
 class _QuickRoutes extends StatelessWidget {
+  const _QuickRoutes({required this.onMore});
+
+  final VoidCallback onMore;
+
   @override
   Widget build(BuildContext context) {
     final items = <({String label, IconData icon, String route})>[
       (
         label: 'Fixtures',
-        icon: Icons.calendar_month_rounded,
+        icon: AfriIcons.fixture,
         route: '/fanzone/fixtures',
       ),
-      (label: 'Live', icon: Icons.live_tv_rounded, route: '/fanzone/live'),
       (
         label: 'My Picks',
-        icon: Icons.receipt_long_rounded,
+        icon: AfriIcons.myPicks,
         route: '/fanzone/my',
       ),
       (
         label: 'Leaderboard',
-        icon: Icons.leaderboard_rounded,
+        icon: AfriIcons.leaderboard,
         route: '/fanzone/leaderboard',
       ),
       (
         label: 'Wallet',
-        icon: Icons.account_balance_wallet_rounded,
+        icon: AfriIcons.wallet,
         route: '/fanzone/wallet',
-      ),
-      (label: 'Rewards', icon: Icons.redeem_rounded, route: '/fanzone/rewards'),
-      (
-        label: 'History',
-        icon: Icons.history_rounded,
-        route: '/fanzone/history',
-      ),
-      (
-        label: 'Alerts',
-        icon: Icons.notifications_none_rounded,
-        route: '/fanzone/notifications',
       ),
       (
         label: 'Jackpot',
-        icon: Icons.emoji_events_rounded,
+        icon: AfriIcons.rank,
         route: '/fanzone/jackpot',
       ),
       (
-        label: 'League Hub',
-        icon: Icons.table_chart_rounded,
+        label: 'League',
+        icon: AfriIcons.league,
         route: '/fanzone/league',
-      ),
-      (
-        label: 'Club Zone',
-        icon: Icons.groups_rounded,
-        route: '/fanzone/club-zone',
-      ),
-      (
-        label: 'Friends',
-        icon: Icons.person_search_rounded,
-        route: '/fanzone/friends',
-      ),
-      (
-        label: 'Challenge',
-        icon: Icons.compare_arrows_rounded,
-        route: '/fanzone/challenge',
-      ),
-      (label: 'Share', icon: Icons.share_rounded, route: '/fanzone/share'),
-      (
-        label: 'Challenges',
-        icon: Icons.flag_rounded,
-        route: '/fanzone/challenges',
       ),
     ];
 
     return Wrap(
-      spacing: SpacingTokens.spacing2,
-      runSpacing: SpacingTokens.spacing2,
-      children: items
-          .map(
-            (item) => AfriPressFeedback(
-              onTap: () => context.push(item.route),
-              tooltip: item.label,
-              semanticsLabel: item.label,
-              excludeChildSemantics: true,
-              builder: (context, state) => Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing3,
-                  vertical: SpacingTokens.spacing2,
+      spacing: SpacingTokens.inlineGap,
+      runSpacing: SpacingTokens.inlineGap,
+      children: [
+        ...items.map(
+          (item) => AfriPressFeedback(
+            onTap: () => context.push(item.route),
+            tooltip: item.label,
+            semanticsLabel: item.label,
+            excludeChildSemantics: true,
+            builder: (context, state) => Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.spacing3,
+                vertical: SpacingTokens.inlineGap,
+              ),
+              decoration: BoxDecoration(
+                color: ColorTokens.surfaceContainerHigh.withValues(
+                  alpha: state.isPressed ? 0.92 : 0.78,
                 ),
-                decoration: BoxDecoration(
-                  color: ColorTokens.surfaceContainerHigh.withValues(
-                    alpha: state.isPressed ? 0.92 : 0.78,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    item.icon,
+                    size: AfriIcons.sizeChip,
+                    color: ColorTokens.primaryContainer,
                   ),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      item.icon,
-                      size: 16,
-                      color: ColorTokens.primaryContainer,
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing2),
-                    Text(item.label, style: TypographyTokens.labelSmall()),
-                  ],
-                ),
+                  const SizedBox(width: SpacingTokens.inlineGap),
+                  Text(item.label, style: TypographyTokens.labelSmall()),
+                ],
               ),
             ),
-          )
-          .toList(growable: false),
-    );
-  }
-}
-
-class _SectionCard extends StatelessWidget {
-  const _SectionCard({
-    required this.title,
-    required this.subtitle,
-    required this.child,
-    this.actionLabel,
-    this.onAction,
-  });
-
-  final String title;
-  final String subtitle;
-  final Widget child;
-  final String? actionLabel;
-  final VoidCallback? onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClayCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(title, style: TypographyTokens.titleLarge()),
-              ),
-              if (actionLabel != null && onAction != null)
-                TextButton(onPressed: onAction, child: Text(actionLabel!)),
-            ],
           ),
-          const SizedBox(height: SpacingTokens.spacing1),
-          Text(subtitle, style: TypographyTokens.bodySmall()),
-          const SizedBox(height: SpacingTokens.spacing4),
-          child,
-        ],
-      ),
+        ),
+        // ── More chip ──
+        AfriPressFeedback(
+          onTap: onMore,
+          tooltip: 'More options',
+          semanticsLabel: 'More options',
+          excludeChildSemantics: true,
+          builder: (context, state) => Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: SpacingTokens.spacing3,
+              vertical: SpacingTokens.inlineGap,
+            ),
+            decoration: BoxDecoration(
+              color: ColorTokens.surfaceContainerHigh.withValues(
+                alpha: state.isPressed ? 0.92 : 0.78,
+              ),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  AfriIcons.more,
+                  size: AfriIcons.sizeChip,
+                  color: ColorTokens.onSurfaceVariant,
+                ),
+                const SizedBox(width: SpacingTokens.inlineGap),
+                Text(
+                  'More',
+                  style: TypographyTokens.labelSmall(
+                    ColorTokens.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
 
 class _HubFixtureRow extends StatelessWidget {
-  const _HubFixtureRow({required this.fixture, required this.onTap});
+  const _HubFixtureRow({
+    required this.fixture,
+    required this.onTap,
+    this.isLive = false,
+    this.showDate = false,
+  });
 
   final FixtureSummary fixture;
   final VoidCallback onTap;
+  final bool isLive;
+  final bool showDate;
+
+  String _kickoffTime() {
+    final kickoff = fixture.kickoffAt;
+    if (kickoff == null) return 'TBD';
+    final local = kickoff.toLocal();
+    return '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+  }
+
+  String _dateLabel() {
+    final kickoff = fixture.kickoffAt;
+    if (kickoff == null) return '';
+    final local = kickoff.toLocal();
+    const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return '${dayNames[local.weekday - 1]} ${local.day}/${local.month}';
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isLive = fixture.isLive;
     return AfriPressFeedback(
       onTap: onTap,
       tooltip: fixture.fixtureLabel,
@@ -625,8 +650,12 @@ class _HubFixtureRow extends StatelessWidget {
                   ),
                   const SizedBox(height: SpacingTokens.spacing1),
                   Text(
-                    fixture.competitionName,
+                    showDate
+                        ? '${fixture.competitionName}  ·  ${_dateLabel()} ${_kickoffTime()}'
+                        : '${fixture.competitionName}  ·  ${_kickoffTime()}',
                     style: TypographyTokens.bodySmall(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -640,50 +669,12 @@ class _HubFixtureRow extends StatelessWidget {
                 ),
               )
             else
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing2,
-                  vertical: SpacingTokens.spacing1,
-                ),
-                decoration: BoxDecoration(
-                  color: (isLive ? ColorTokens.success : ColorTokens.clubAccent)
-                      .withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  isLive ? 'LIVE' : 'PREDICT',
-                  style: TypographyTokens.labelSmall(
-                    isLive ? ColorTokens.success : ColorTokens.clubAccent,
-                  ),
-                ),
+              AfriInfoChip(
+                label: isLive ? 'LIVE' : 'PREDICT',
+                color: isLive ? ColorTokens.success : ColorTokens.clubAccent,
               ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _MarketChip extends StatelessWidget {
-  const _MarketChip({required this.label, required this.value});
-
-  final String label;
-  final int value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.spacing3,
-        vertical: SpacingTokens.spacing2,
-      ),
-      decoration: BoxDecoration(
-        color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        '$label · +$value FET',
-        style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
       ),
     );
   }
@@ -711,14 +702,14 @@ class _LeaderboardRow extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: SpacingTokens.spacing2),
+        const SizedBox(width: SpacingTokens.inlineGap),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(entry.displayName, style: TypographyTokens.titleSmall()),
               Text(
-                '${entry.winRate.toStringAsFixed(1)}% win rate · ${entry.totalSettled} settled',
+                '${entry.winRate.toStringAsFixed(0)}% · ${entry.totalSettled} settled',
                 style: TypographyTokens.bodySmall(),
               ),
             ],
@@ -756,12 +747,12 @@ class _ChallengeRow extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: Icon(
-            Icons.stars_rounded,
+            AfriIcons.earn,
             size: 18,
             color: ColorTokens.clubAccent,
           ),
         ),
-        const SizedBox(width: SpacingTokens.spacing3),
+        const SizedBox(width: SpacingTokens.listItemGap),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -773,6 +764,8 @@ class _ChallengeRow extends StatelessWidget {
                     ? item.triggerCondition
                     : item.description,
                 style: TypographyTokens.bodySmall(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

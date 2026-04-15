@@ -39,6 +39,12 @@ linter:
     - unnecessary_string_interpolations
     - use_build_context_synchronously
     - use_key_in_widget_constructors
+    - prefer_relative_imports
+    - unawaited_futures
+    - discarded_futures
+    - unnecessary_to_list_in_spreads
+    - use_if_null_to_convert_nulls
+    - noop_primitive_operations
 
 analyzer:
   errors:

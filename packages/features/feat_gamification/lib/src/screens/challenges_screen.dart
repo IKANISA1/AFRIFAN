@@ -102,7 +102,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(AfriIcons.back),
         ),
         bottom: TabBar(
           controller: _tabController,

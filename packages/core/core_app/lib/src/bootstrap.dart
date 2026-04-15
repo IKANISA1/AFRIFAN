@@ -77,18 +77,15 @@ Future<void> bootstrap(
       }
 
       final normalizedClubId = int.tryParse(config.clubId);
-      assert(
-        config.appName.trim().isNotEmpty,
-        'ClubConfig.appName must not be empty.',
-      );
-      assert(
-        config.clubName.trim().isNotEmpty,
-        'ClubConfig.clubName must not be empty.',
-      );
-      assert(
-        config.crestAsset.trim().isNotEmpty,
-        'ClubConfig.crestAsset must not be empty.',
-      );
+      if (config.appName.trim().isEmpty) {
+        throw StateError('ClubConfig.appName must not be empty.');
+      }
+      if (config.clubName.trim().isEmpty) {
+        throw StateError('ClubConfig.clubName must not be empty.');
+      }
+      if (config.crestAsset.trim().isEmpty) {
+        throw StateError('ClubConfig.crestAsset must not be empty.');
+      }
       if (normalizedClubId == null) {
         throw StateError(
           'ClubConfig.clubId must be a numeric string matching the backend id. '
@@ -103,6 +100,7 @@ Future<void> bootstrap(
         currencyCode: config.currency,
         currencySymbol: config.currencySymbol,
       );
+      AfriCountryCatalog.setPreferredCountryCode(config.countryCode);
 
       final builtinCountries = await loadBuiltInCountries();
       AfriCountryCatalog.addCountries(builtinCountries);
@@ -131,7 +129,7 @@ Future<void> bootstrap(
           deepLinkService: deepLinkService,
         ),
       );
-      startupCoordinator.scheduleDeferredInitialization(config);
+      unawaited(startupCoordinator.scheduleDeferredInitialization(config));
     },
     (error, stackTrace) {
       unawaited(

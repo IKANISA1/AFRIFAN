@@ -119,7 +119,7 @@ class _MarketSelectorContentState
             onChanged: (value) => setState(() => _query = value),
             decoration: InputDecoration(
               hintText: 'Search markets',
-              prefixIcon: const Icon(Icons.search_rounded),
+              prefixIcon: const Icon(AfriIcons.search),
               filled: true,
               fillColor: ColorTokens.surfaceContainerHigh,
               border: InputBorder.none,

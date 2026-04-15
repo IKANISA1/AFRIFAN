@@ -359,6 +359,28 @@ class PredictionNotification {
   }
 }
 
+class FixtureDateSummary {
+  const FixtureDateSummary({
+    required this.matchDate,
+    required this.fixtureCount,
+    required this.hasLive,
+  });
+
+  final DateTime matchDate;
+  final int fixtureCount;
+  final bool hasLive;
+
+  factory FixtureDateSummary.fromJson(Map<String, dynamic> json) {
+    return FixtureDateSummary(
+      matchDate:
+          DateTime.tryParse(json['match_date']?.toString() ?? '') ??
+          DateTime.now(),
+      fixtureCount: (json['fixture_count'] as num?)?.toInt() ?? 0,
+      hasLive: json['has_live'] == true,
+    );
+  }
+}
+
 String? _nullableString(Object? value) {
   final text = value?.toString().trim() ?? '';
   return text.isEmpty ? null : text;
