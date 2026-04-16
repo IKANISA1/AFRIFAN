@@ -75,11 +75,11 @@ export const getMatches = cache(async function getMatches() {
 
   try {
     const { data } = await client
-      .from("matches")
+      .from("unified_matches")
       .select("*")
       .eq("club_id", activeClub.numericId)
       .order("match_date", { ascending: true })
-      .limit(12);
+      .limit(20);
 
     if (!data || data.length == 0) return fallbackMatches;
     return data.map((row) => mapMatchRow(row, activeClub.shortName));

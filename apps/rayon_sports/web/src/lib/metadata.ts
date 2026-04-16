@@ -150,6 +150,26 @@ export function buildProductJsonLd(product: ShopProduct) {
   };
 }
 
+export function buildSquadJsonLd(club: ClubProfile, squad: SquadPlayer[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SportsTeam",
+    name: club.clubName,
+    sport: "Association Football",
+    member: squad.map((player) => ({
+      "@type": "OrganizationRole",
+      member: {
+        "@type": "Person",
+        name: player.name,
+        jobTitle: player.role,
+        image: player.imageUrl ? absoluteUrl(player.imageUrl) : undefined,
+      },
+      roleName: player.role,
+      numberedPosition: player.number,
+    })),
+  };
+}
+
 export function buildSiteJsonLd() {
   return {
     "@context": "https://schema.org",

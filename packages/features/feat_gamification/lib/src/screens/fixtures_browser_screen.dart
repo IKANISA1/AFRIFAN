@@ -5,22 +5,22 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../models/fanzone_models.dart';
 import '../models/prediction_models.dart';
+import '../models/fanzone_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/fixtures_browser_widgets.dart';
 
 class FixturesBrowserScreen extends ConsumerStatefulWidget {
   const FixturesBrowserScreen({
     super.key,
+    this.title = 'FIXTURES',
+    this.showBackButton = false,
     this.statusFilter,
-    this.title = 'Fixtures',
-    this.showBackButton = true,
   });
 
-  final String? statusFilter;
   final String title;
   final bool showBackButton;
+  final String? statusFilter;
 
   @override
   ConsumerState<FixturesBrowserScreen> createState() =>
@@ -28,32 +28,21 @@ class FixturesBrowserScreen extends ConsumerStatefulWidget {
 }
 
 class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
-  List<FixtureSummary> _fixtures = const <FixtureSummary>[];
-  List<CompetitionCatalogItem> _competitions = const <CompetitionCatalogItem>[];
-  Map<String, FixtureDateSummary> _dateSummary =
-      const <String, FixtureDateSummary>{};
-  PredictionDashboard? _dashboard;
+  final ScrollController _calendarController = ScrollController();
+  DateTime _selectedDate = DateTime.now();
   String? _selectedCompetition;
+
+  List<FixtureSummary> _fixtures = [];
+  List<CompetitionCatalogItem> _competitions = [];
+  PredictionDashboard? _dashboard;
+  Map<String, int> _dateSummary = {};
   bool _isLoading = true;
   String? _error;
-
-  /// Currently selected date.
-  late DateTime _selectedDate;
-
-  /// Scroll controller for the calendar strip.
-  final ScrollController _calendarController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _selectedDate = DateTime.now();
     _loadData();
-  }
-
-  @override
-  void dispose() {
-    _calendarController.dispose();
-    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -64,13 +53,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
 
     try {
       final repo = ref.read(predictionRepositoryProvider);
-
-      // Load date summary for the calendar (±30 days)
-      final now = DateTime.now();
-      final summaryFrom = now.subtract(const Duration(days: 7));
-      final summaryTo = now.add(const Duration(days: 60));
-
-      final results = await Future.wait<Object?>([
+      final results = await Future.wait([
         repo.loadFixturesByDate(
           dateFrom: _selectedDate,
           dateTo: _selectedDate,
@@ -80,24 +63,24 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
         repo.loadCompetitionCatalog(),
         repo.loadUserStats(),
         repo.loadFixtureDateSummary(
-          dateFrom: summaryFrom,
-          dateTo: summaryTo,
+          dateFrom: _selectedDate.subtract(const Duration(days: 7)),
+          dateTo: _selectedDate.add(const Duration(days: 7)),
           competitionSlug: _selectedCompetition,
         ),
       ]);
 
-      if (!mounted) return;
-
-      final summaryList = results[3]! as List<FixtureDateSummary>;
-      final summaryMap = <String, FixtureDateSummary>{};
-      for (final s in summaryList) {
-        final key = _dateKey(s.matchDate);
-        summaryMap[key] = s;
+      final summaryList = results[3] as List<FixtureDateSummary>;
+      final summaryMap = <String, int>{};
+      for (final item in summaryList) {
+        final d =
+            '${item.matchDate.year}-${item.matchDate.month.toString().padLeft(2, '0')}-${item.matchDate.day.toString().padLeft(2, '0')}';
+        summaryMap[d] = item.fixtureCount;
       }
 
+      if (!mounted) return;
       setState(() {
-        _fixtures = results[0]! as List<FixtureSummary>;
-        _competitions = results[1]! as List<CompetitionCatalogItem>;
+        _fixtures = results[0] as List<FixtureSummary>;
+        _competitions = results[1] as List<CompetitionCatalogItem>;
         _dashboard = results[2] as PredictionDashboard;
         _dateSummary = summaryMap;
         _isLoading = false;
@@ -122,7 +105,6 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
     _loadData();
   }
 
-  /// Groups fixtures by competition for the selected day.
   Map<String, List<FixtureSummary>> _groupByCompetition() {
     final grouped = <String, List<FixtureSummary>>{};
     for (final fixture in _fixtures) {
@@ -131,9 +113,6 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
     }
     return grouped;
   }
-
-  static String _dateKey(DateTime dt) =>
-      '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
 
   String _selectedDateLabel() {
     final now = DateTime.now();
@@ -190,7 +169,6 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // ── Dashboard overview ──
             if (_dashboard != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(
@@ -201,7 +179,6 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                 ),
                 child: PredictionOverviewRow(dashboard: _dashboard!),
               ),
-            // ── Calendar date strip ──
             Padding(
               padding: const EdgeInsets.only(top: SpacingTokens.spacing4),
               child: FixturesCalendarStrip(
@@ -211,8 +188,6 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                 controller: _calendarController,
               ),
             ),
-
-            // ── Selected date label ──
             Padding(
               padding: const EdgeInsets.fromLTRB(
                 SpacingTokens.spacing6,
@@ -234,7 +209,6 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                       style: TypographyTokens.titleSmall(),
                     ),
                   ),
-                  // Fixture count badge
                   AfriStatusChip(
                     label: '${_fixtures.length} ${_fixtures.length == 1 ? 'match' : 'matches'}',
                     tone: AfriStatusTone.live,
@@ -242,43 +216,41 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                 ],
               ),
             ),
-              // ── Competition filter rail ──
-              if (_competitions.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: SpacingTokens.spacing4),
-                  child: SizedBox(
-                    height: 38,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: SpacingTokens.spacing6,
-                      ),
-                      itemCount: _competitions.length + 1,
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(width: SpacingTokens.spacing2),
-                      itemBuilder: (context, index) {
-                        if (index == 0) {
-                          return CompetitionFilterChip(
-                            label: 'All',
-                            isSelected: _selectedCompetition == null,
-                            onTap: () => _onFilterChanged(null),
-                          );
-                        }
-                        final competition = _competitions[index - 1];
-                        return CompetitionFilterChip(
-                          label: competition.shortName,
-                          isSelected:
-                              _selectedCompetition == competition.slug,
-                          onTap: () => _onFilterChanged(competition.slug),
-                        );
-                      },
+            if (_competitions.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: SpacingTokens.spacing4),
+                child: SizedBox(
+                  height: 38,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.spacing6,
                     ),
+                    itemCount: _competitions.length + 1,
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(width: SpacingTokens.spacing2),
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return CompetitionFilterChip(
+                          label: 'All',
+                          isSelected: _selectedCompetition == null,
+                          onTap: () => _onFilterChanged(null),
+                        );
+                      }
+                      final competition = _competitions[index - 1];
+                      return CompetitionFilterChip(
+                        label: competition.shortName,
+                        isSelected:
+                            _selectedCompetition == competition.slug,
+                        onTap: () => _onFilterChanged(competition.slug),
+                      );
+                    },
                   ),
                 ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              Expanded(child: _buildContent()),
-            ],
-          ),
+              ),
+            const SizedBox(height: SpacingTokens.spacing4),
+            Expanded(child: _buildContent()),
+          ],
         ),
       ),
     );

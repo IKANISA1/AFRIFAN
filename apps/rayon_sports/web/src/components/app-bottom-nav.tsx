@@ -7,21 +7,26 @@ import { cn } from "@/lib/utils";
 import type { SiteChromeCopy } from "@/lib/site-copy";
 import { ui } from "@/design-system";
 
-const baseTabs = [
+import { PlatformFeature } from "@/lib/feature-config";
+
+const BASE_TABS = [
   {
     id: "home",
+    featureKey: "home",
     href: "/",
     icon: Landmark,
     label: "Home",
   },
   {
     id: "tickets",
+    featureKey: "ticketing",
     href: "/tickets",
     icon: Ticket,
     label: "Tickets",
   },
   {
     id: "membership",
+    featureKey: "membership",
     href: "/membership",
     icon: ShieldCheck,
     label: "Membership",
@@ -60,14 +65,27 @@ function resolveActiveTab(pathname: string): string {
   return "home";
 }
 
-export function AppBottomNav({ copy }: { copy: SiteChromeCopy }) {
+export function AppBottomNav({ 
+  copy, 
+  features = [] 
+}: { 
+  copy: SiteChromeCopy;
+  features?: PlatformFeature[];
+}) {
   const pathname = usePathname();
   const activeTab = resolveActiveTab(pathname);
-  const tabs = [
-    { ...baseTabs[0], label: copy.home },
-    { ...baseTabs[1], label: copy.tickets },
-    { ...baseTabs[2], label: copy.membership },
-  ] as const;
+  
+  const tabs = BASE_TABS.filter(tab => {
+    // Keep home always
+    if (tab.id === 'home') return true;
+    const f = features.find(f => f.feature_key === tab.featureKey);
+    return f ? f.is_enabled && f.visibility_state === 'visible' : true; // Fallback to visible if not found
+  }).map(tab => {
+    // Map label from copy
+    const label = tab.id === 'home' ? copy.home : 
+                  tab.id === 'tickets' ? copy.tickets : copy.membership;
+    return { ...tab, label };
+  });
 
   return (
     <nav

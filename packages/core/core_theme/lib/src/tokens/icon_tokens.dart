@@ -23,6 +23,7 @@ class AfriIcons {
   static const IconData tickets = Icons.confirmation_number_outlined;
   static const IconData live = Icons.live_tv_rounded;
   static const IconData shop = Icons.storefront_outlined;
+  static const IconData cart = Icons.shopping_cart_outlined;
   static const IconData groups = Icons.groups_outlined;
   static const IconData members = Icons.badge_outlined;
   static const IconData stadium = Icons.stadium_rounded;

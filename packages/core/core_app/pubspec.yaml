@@ -24,6 +24,8 @@ dependencies:
     path: ../core_utils
   core_network:
     path: ../core_network
+  core_feature_config:
+    path: ../core_feature_config
 
   supabase_flutter: ^2.12.2
   go_router: ^14.8.1

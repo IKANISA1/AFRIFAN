@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
@@ -22,6 +23,7 @@ import 'shell.dart';
 class AfriClubApp extends StatefulWidget {
   final ClubConfig config;
   final List<FeatureModule> modules;
+  final Map<String, dynamic>? platformConfigSnapshot;
   final AuthRepository? authRepository;
   final List<Override> providerOverrides;
   final String? initialLocation;
@@ -32,6 +34,7 @@ class AfriClubApp extends StatefulWidget {
     super.key,
     required this.config,
     required this.modules,
+    this.platformConfigSnapshot,
     this.authRepository,
     this.providerOverrides = const <Override>[],
     this.initialLocation,
@@ -71,6 +74,7 @@ class _AfriClubAppState extends State<AfriClubApp> {
         config: widget.config,
         modules: widget.modules,
         supportedLocales: _supportedLocales,
+        platformConfigSnapshot: widget.platformConfigSnapshot,
         initialLocation: widget.initialLocation,
         deepLinkParser: widget.deepLinkParser,
         deepLinkService: widget.deepLinkService,
@@ -115,6 +119,7 @@ class _AfriClubMaterialApp extends ConsumerStatefulWidget {
     required this.modules,
     required this.supportedLocales,
     required this.frameworkLocaleForLanguageCode,
+    this.platformConfigSnapshot,
     this.initialLocation,
     this.deepLinkParser,
     this.deepLinkService,
@@ -123,6 +128,7 @@ class _AfriClubMaterialApp extends ConsumerStatefulWidget {
   final ClubConfig config;
   final List<FeatureModule> modules;
   final List<Locale> supportedLocales;
+  final Map<String, dynamic>? platformConfigSnapshot;
   final String? initialLocation;
   final DeepLinkParser? deepLinkParser;
   final DeepLinkService? deepLinkService;
@@ -149,6 +155,18 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
   @override
   void initState() {
     super.initState();
+
+    // ── Hydrate Riverpod feature config from bootstrap snapshot ──
+    // The bootstrap sequence already fetched the platform config from Supabase.
+    // Inject it into the reactive provider graph so the first frame uses
+    // admin-controlled feature states.
+    if (widget.platformConfigSnapshot != null) {
+      final snapshot = PlatformConfigSnapshot.fromJson(
+        widget.platformConfigSnapshot!,
+      );
+      ref.read(featureConfigProvider.notifier).hydrateFromBootstrap(snapshot);
+    }
+
     _routerRefreshTick = ValueNotifier<int>(0);
     _authSubscription = ref.listenManual<AuthState>(authStateProvider, (_, __) {
       _routerRefreshTick.value = _routerRefreshTick.value + 1;
@@ -159,6 +177,26 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
       refreshListenable: _routerRefreshTick,
       redirect: _handleRedirect,
       observers: [FirebaseAnalyticsService.routeObserver],
+      isFeatureEnabled: (path) {
+        final segments = path.split('/');
+        if (segments.length < 2) return true;
+        final firstSegment = segments[1];
+
+        // Map route paths to Supabase feature_keys
+        const pathMap = {
+          'tickets': 'ticketing',
+          'my-tickets': 'ticketing',
+          'e-ticket': 'ticketing',
+          'contribute': 'contributions',
+          'Groups': 'contributions',
+          'challenge': 'challenge',
+          'fanzone': 'fanzone',
+          'fan-clubs': 'fan_clubs',
+        };
+
+        final key = pathMap[firstSegment] ?? firstSegment;
+        return ref.read(featureConfigServiceProvider).isFeatureEnabled(key);
+      },
       shellBuilder: (context, shell) => AppShell(
         shell: shell,
         config: widget.config,

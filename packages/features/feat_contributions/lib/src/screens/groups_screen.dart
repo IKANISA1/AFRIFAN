@@ -260,8 +260,6 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
     );
   }
 }
-  }
-}
 
 class _SummaryItem extends StatelessWidget {
   final String value;

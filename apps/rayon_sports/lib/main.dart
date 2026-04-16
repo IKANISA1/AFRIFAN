@@ -7,13 +7,27 @@ import 'firebase_options.dart';
 Future<void> startRayonSportsApp({
   AfriClubBootstrapOptions? options,
 }) async {
-  await bootstrap(const RayonSportsConfig(), options: options ?? AfriClubBootstrapOptions(modules: AppModuleRegistry.build(const RayonSportsConfig())));
+  const config = RayonSportsConfig();
+  await bootstrap(
+    config,
+    options: options ??
+        AfriClubBootstrapOptions(
+          moduleBuilder: (snapshot) => AppModuleRegistry.build(
+            config,
+            configSnapshot: snapshot,
+          ),
+        ),
+  );
 }
 
 void main() async {
+  const config = RayonSportsConfig();
   await startRayonSportsApp(
     options: AfriClubBootstrapOptions(
-      modules: AppModuleRegistry.build(const RayonSportsConfig()),
+      moduleBuilder: (snapshot) => AppModuleRegistry.build(
+        config,
+        configSnapshot: snapshot,
+      ),
       startupOptions: AppStartupOptions(
         firebaseOptions: DefaultFirebaseOptions.currentPlatform,
       ),

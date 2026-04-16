@@ -44,7 +44,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
       final client = ref.read(supabaseClientProvider);
       final resolver = ClubScopeResolver(client: client);
       final scope = await resolver.requireResolved();
-      var query = client.from('matches').select();
+      var query = client.from('unified_matches').select();
       query = resolver.apply(query, scope);
       final rows = await query.order('match_date', ascending: true).limit(12);
       final matches = List<Map<String, dynamic>>.from(rows);

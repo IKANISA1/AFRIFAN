@@ -328,26 +328,34 @@
       <li><strong>Mobile Money Number:</strong> If you choose to link a MoMo number for transactions (stored securely,
         never shared)</li>
       <li><strong>Display Preferences:</strong> Fan club affiliations, notification preferences</li>
-      <li><strong>Biometric Data (BioPay):</strong> If you opt into BioPay face enrollment, facial feature data is
-        processed on-device to generate embeddings, those embeddings may be transmitted securely to our backend for
-        enrollment and matching, and raw photos are not stored as part of the BioPay flow</li>
-    </ul>
+      <li><strong>Biometric Data (BioPay):</strong> If you opt into BioPay face enrollment, facial feature data is processed on-device to generate a mathematical representation (embedding). This embedding is transmitted securely to our servers for enrollment and matching. We do not store raw photos or original facial images.</li>
+      </ul>
 
-    <h3>2.4 Camera Permission</h3>
-    <p>The app requests camera access <strong>only</strong> for the BioPay face enrollment and verification feature.
-      Camera access is:</p>
-    <ul>
+      <h3>2.4 Camera Permission</h3>
+      <p>The app requests camera access <strong>only</strong> for the BioPay face enrollment and verification feature. Camera access is:</p>
+      <ul>
       <li>Requested only when you explicitly initiate BioPay enrollment</li>
-      <li>Used solely for real-time face processing and secure BioPay enrollment or matching requests — no raw photos
-        are stored</li>
+      <li>Used solely for real-time face processing and secure BioPay enrollment or matching requests — no raw photos are stored</li>
       <li>Fully optional — the app works without granting camera permission</li>
-    </ul>
+      </ul>
 
-    <h2>3. HOW WE USE INFORMATION</h2>
-    <p>We use the collected information to:</p>
-    <ul>
+      <h2>3. HOW WE USE INFORMATION</h2>
+      <p>We use the collected information to:</p>
+      <ul>
       <li>Provide and maintain the Gikundiro fan experience</li>
       <li>Display personalized content (match updates, club news, fan leaderboards)</li>
+      <li>Facilitate BioPay transactions by matching face embeddings against our secure registry</li>
+      <li>Communicate matchday alerts and club notifications</li>
+      <li>Improve app performance and security</li>
+      </ul>
+
+      <h2>4. DATA RETENTION AND DELETION</h2>
+      <p>We retain data only as long as necessary to provide the services:</p>
+      <ul>
+      <li><strong>Anonymous IDs and Preferences:</strong> Retained as long as the app is installed or until you request account deletion.</li>
+      <li><strong>BioPay Embeddings:</strong> Stored securely in our encrypted registry. You can delete your BioPay profile and all associated biometric data at any time through the "Settings" menu in the app. Deleting your BioPay profile immediately and permanently removes your biometric embeddings from our servers.</li>
+      <li><strong>Transaction Logs:</strong> Retained as required for operational history and legal compliance.</li>
+      </ul>
       <li>Process transactions when you initiate purchases (tickets, merchandise, contributions)</li>
       <li>Improve app performance, fix bugs, and develop new features</li>
       <li>Generate anonymized, aggregated analytics to understand fan engagement</li>

@@ -35,9 +35,8 @@ export async function getAdminStandings(
     return requestAdminApi<AdminStandingRow[]>("standings");
   }
   const clubId = requireAdminClubId(access, "load standings");
-  const table = await resolveStandingsTable(client);
   const { data, error } = await client
-    .from(table)
+    .from("unified_standings")
     .select("*")
     .eq("club_id", clubId)
     .order("position", { ascending: true });

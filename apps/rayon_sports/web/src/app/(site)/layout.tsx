@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { getClubProfile, getMatches } from "@/lib/data/public";
 import { buildClubThemeStyle } from "@/lib/club-theme";
 import { getSiteChromeCopy } from "@/lib/site-copy";
+import { getPlatformConfig } from "@/lib/feature-config";
 import { ui } from "@/design-system";
 
 export default async function SiteLayout({
@@ -14,7 +15,11 @@ export default async function SiteLayout({
 }: {
   children: ReactNode;
 }) {
-  const [club, matches] = await Promise.all([getClubProfile(), getMatches()]);
+  const [club, matches, platformConfig] = await Promise.all([
+    getClubProfile(),
+    getMatches(),
+    getPlatformConfig(),
+  ]);
   const copy = getSiteChromeCopy(club.defaultLanguage);
   const themeStyle = buildClubThemeStyle(club);
   const liveMatch = matches.find((match) => match.matchStatus === "live");
@@ -61,6 +66,7 @@ export default async function SiteLayout({
       <GlobalNav
         club={club}
         copy={copy}
+        features={platformConfig.features}
         ribbon={<MatchRibbon match={nextMatch} copy={copy} />}
       />
       <script dangerouslySetInnerHTML={{ __html: publicSwBootstrap }} />
@@ -75,7 +81,7 @@ export default async function SiteLayout({
 
       <SiteFooter club={club} copy={copy} />
       <FocusOnRouteChange targetId="main-content" />
-      <AppBottomNav copy={copy} />
+      <AppBottomNav copy={copy} features={platformConfig.features} />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -98,13 +99,24 @@ class HomeScreen extends ConsumerWidget {
     final hasStatusMessage =
         statusMessage != null && statusMessage.isNotEmpty;
 
+    // ── Load all placements for home ──
+    final heroBlocks = ref.watch(contentBlocksProvider('home_hero'));
+    final topBlocks = ref.watch(contentBlocksProvider('home_top'));
+    final midBlocks = ref.watch(contentBlocksProvider('home_mid'));
+    final bottomBlocks = ref.watch(contentBlocksProvider('home_bottom'));
+
+    final allBlocks = [
+      ...heroBlocks,
+      ...topBlocks,
+      ...midBlocks,
+      ...bottomBlocks,
+    ];
+
     return CustomScrollView(
       physics: const BouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics(),
       ),
       slivers: [
-        SliverToBoxAdapter(child: _buildHeroSurface(context, ref, snapshot)),
-
         // ── Degraded / partial error banner ──
         if (hasStatusMessage &&
             (snapshot.status == HomeFeedStatus.degraded ||
@@ -126,112 +138,8 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
 
-        // ── Primary Actions ──
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              SpacingTokens.screenPadding,
-              SpacingTokens.sectionGap,
-              SpacingTokens.screenPadding,
-              0,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: AfriButton(
-                    label: 'Fan Zone',
-                    onTap: () => context.push('/fanzone'),
-                    variant: AfriButtonVariant.secondary,
-                  ),
-                ),
-                const SizedBox(width: SpacingTokens.listItemGap),
-                Expanded(
-                  child: AfriButton(
-                    label: 'BioPay',
-                    onTap: () => context.push('/BioPay'),
-                    variant: AfriButtonVariant.primary,
-                  ),
-                ),
-                const SizedBox(width: SpacingTokens.listItemGap),
-                Expanded(
-                  child: AfriButton(
-                    label: 'Live',
-                    onTap: () => context.push('/live'),
-                    variant: AfriButtonVariant.secondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        // ── Quick actions rail ──
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: SpacingTokens.screenPadding,
-            ),
-            child: QuickActionsGrid(actions: snapshot.quickActions),
-          ),
-        ),
-
-        // ── Stats row ──
-        if (snapshot.hasStats) ...[
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.sectionGap),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: SpacingTokens.screenPadding,
-              ),
-              child: _buildAnimatedSection(
-                context,
-                StatsRow(
-                  globalFet: snapshot.userFet,
-                  fanRank: snapshot.fanRank,
-                  onFetTap: () =>
-                      context.push('/fanzone/leaderboard?tab=fet'),
-                  onRankTap: () =>
-                      context.push('/fanzone/leaderboard?tab=supporters'),
-                ),
-                delayMs: 200,
-              ),
-            ),
-          ),
-        ],
-
-        // ── Leaderboard ──
-        if (snapshot.hasLeaderboard) ...[
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.sectionGap),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: SpacingTokens.screenPadding,
-              ),
-              child: _buildAnimatedSection(
-                context,
-                ContributorLeaderboard(entries: snapshot.leaderboard),
-                delayMs: 300,
-              ),
-            ),
-          ),
-        ],
-
-        const SliverToBoxAdapter(
-          child: SizedBox(height: SpacingTokens.sectionGap),
-        ),
-
-        // ── Latest Intel ──
-        SliverToBoxAdapter(
-          child: _buildAnimatedSection(
-            context,
-            LatestIntelSection(key: ValueKey<int>(refreshKey)),
-            delayMs: 400,
-          ),
-        ),
+        // ── Dynamic Blocks Loop ──
+        ...allBlocks.map((block) => _buildBlockRenderer(context, ref, block, snapshot, refreshKey)),
 
         // ── Refresh indicator skeleton ──
         if (isRefreshing)
@@ -250,6 +158,138 @@ class HomeScreen extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildBlockRenderer(
+    BuildContext context,
+    WidgetRef ref,
+    ContentBlock block,
+    HomeFeedSnapshot snapshot,
+    int refreshKey,
+  ) {
+    final widgetKey = block.content['widget']?.toString() ?? '';
+    
+    Widget content;
+    switch (widgetKey) {
+      case 'match_score_card':
+        content = _buildHeroSurface(context, ref, snapshot);
+        break;
+      case 'primary_action_buttons':
+        content = Padding(
+          padding: const EdgeInsets.fromLTRB(
+            SpacingTokens.screenPadding,
+            SpacingTokens.sectionGap,
+            SpacingTokens.screenPadding,
+            0,
+          ),
+          child: Row(
+            children: [
+              FeatureGate(
+                featureKey: 'fanzone',
+                child: Expanded(
+                  child: AfriButton(
+                    label: 'Fan Zone',
+                    onTap: () => context.push('/fanzone'),
+                    variant: AfriButtonVariant.secondary,
+                  ),
+                ),
+              ),
+              const SizedBox(width: SpacingTokens.listItemGap),
+              FeatureGate(
+                featureKey: 'BioPay',
+                child: Expanded(
+                  child: AfriButton(
+                    label: 'BioPay',
+                    onTap: () => context.push('/BioPay'),
+                    variant: AfriButtonVariant.primary,
+                  ),
+                ),
+              ),
+              const SizedBox(width: SpacingTokens.listItemGap),
+              FeatureGate(
+                featureKey: 'live',
+                child: Expanded(
+                  child: AfriButton(
+                    label: 'Live',
+                    onTap: () => context.push('/live'),
+                    variant: AfriButtonVariant.secondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+        break;
+      case 'quick_actions_grid':
+        content = Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.screenPadding,
+          ),
+          child: QuickActionsGrid(actions: snapshot.quickActions),
+        );
+        break;
+      case 'stats_row':
+        if (!snapshot.hasStats) return const SizedBox.shrink();
+        content = Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.screenPadding,
+            vertical: SpacingTokens.sectionGap,
+          ),
+          child: StatsRow(
+            globalFet: snapshot.userFet,
+            fanRank: snapshot.fanRank,
+            onFetTap: () => context.push('/fanzone/leaderboard?tab=fet'),
+            onRankTap: () => context.push('/fanzone/leaderboard?tab=supporters'),
+          ),
+        );
+        break;
+      case 'contributor_leaderboard':
+        if (!snapshot.hasLeaderboard) return const SizedBox.shrink();
+        content = Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.screenPadding,
+            vertical: SpacingTokens.sectionGap,
+          ),
+          child: ContributorLeaderboard(entries: snapshot.leaderboard),
+        );
+        break;
+      case 'latest_intel_section':
+        content = LatestIntelSection(key: ValueKey<int>(refreshKey));
+        break;
+      default:
+        // Generic fallback for custom blocks
+        content = Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.screenPadding,
+            vertical: SpacingTokens.spacing2,
+          ),
+          child: GlassCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (block.title != null)
+                  Text(block.title!, style: TypographyTokens.titleMedium()),
+                if (block.subtitle != null)
+                  Text(block.subtitle!, style: TypographyTokens.bodySmall()),
+              ],
+            ),
+          ),
+        );
+    }
+
+    // Wrap in animations and FeatureGate if necessary
+    final wrapped = _buildAnimatedSection(context, content, delayMs: (block.sortOrder ?? 0) * 10);
+    
+    if (block.featureKey != null) {
+      return SliverToBoxAdapter(
+        child: FeatureGate(
+          featureKey: block.featureKey!,
+          child: wrapped,
+        ),
+      );
+    }
+
+    return SliverToBoxAdapter(child: wrapped);
   }
 
   bool _animationsEnabled(BuildContext context) {

@@ -6,6 +6,8 @@ import 'screens/admin_route_guard.dart';
 import 'screens/cms_content_manager_screen.dart';
 import 'screens/competition_manager_screen.dart';
 import 'screens/contributions_monitor_screen.dart';
+import 'screens/feature_detail_screen.dart';
+import 'screens/feature_manager_screen.dart';
 import 'screens/fixture_settlement_screen.dart';
 import 'screens/match_manager_screen.dart';
 import 'screens/push_notifications_screen.dart';
@@ -59,6 +61,21 @@ class AdminModule extends FeatureModule {
           path: 'competitions',
           builder: (context, state) =>
               const AdminRouteGuard(child: CompetitionManagerScreen()),
+        ),
+        GoRoute(
+          path: 'features',
+          builder: (context, state) =>
+              const AdminRouteGuard(child: FeatureManagerScreen()),
+          routes: [
+            GoRoute(
+              path: ':featureKey',
+              builder: (context, state) => AdminRouteGuard(
+                child: FeatureDetailScreen(
+                  featureKey: state.pathParameters['featureKey'] ?? '',
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     ),

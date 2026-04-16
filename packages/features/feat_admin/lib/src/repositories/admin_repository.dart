@@ -1,6 +1,5 @@
 import 'package:core_network/core_network.dart';
 import 'package:core_utils/core_utils.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Admin repository for club-scoped management queries.
@@ -85,12 +84,12 @@ class AdminRepository {
   // ── Dashboard Metrics ──
 
   /// Returns key metrics for the admin dashboard.
-  Future<AdminDashboardMetrics> getDashboardMetrics() async {
+  Future<AdminDashboardMetrics> getDashboardMetrics({String? clubId}) async {
     try {
       final now = DateTime.now().toUtc();
       final startOfDay = DateTime.utc(now.year, now.month, now.day);
       final endOfDay = startOfDay.add(const Duration(days: 1));
-      final scope = await _scopeResolver.resolve(null);
+      final scope = await _scopeResolver.resolve(clubId);
 
       var usersQuery = _client.from('profiles').select('id');
       usersQuery = _scopeResolver.apply(usersQuery, scope);
@@ -505,6 +504,94 @@ class AdminRepository {
         .eq('id', supportId);
   }
 
+  // ── Platform Features ──
+
+  /// Returns all platform features for registry management.
+  Future<List<Map<String, dynamic>>> getPlatformFeatures({
+    int limit = 100,
+  }) async {
+    final data = await _client
+        .from('platform_features')
+        .select('*, channels:platform_feature_channels(*), rules:platform_feature_rules(*)')
+        .order('feature_key', ascending: true)
+        .limit(limit);
+    return List<Map<String, dynamic>>.from(data as List);
+  }
+
+  // ── Platform Content Blocks ──
+
+  /// Returns all platform content blocks (homepage sections, banners, etc.).
+  Future<List<Map<String, dynamic>>> getPlatformContentBlocks({
+    int limit = 100,
+  }) async {
+    final data = await _client
+        .from('platform_content_blocks')
+        .select('*, feature:platform_features(id, feature_key, display_name)')
+        .order('placement_key', ascending: true)
+        .order('sort_order', ascending: true, nullsFirst: false)
+        .limit(limit);
+    return List<Map<String, dynamic>>.from(data as List);
+  }
+
+  /// Creates a new platform content block.
+  Future<Map<String, dynamic>> createPlatformContentBlock({
+    required String blockKey,
+    required String blockType,
+    required String targetChannel,
+    required String placementKey,
+    String? title,
+    String? subtitle,
+    Map<String, dynamic> content = const <String, dynamic>{},
+    String? featureId,
+    int? sortOrder,
+    bool isActive = true,
+    Map<String, dynamic> metadata = const <String, dynamic>{},
+  }) async {
+    final data = await _client
+        .from('platform_content_blocks')
+        .insert({
+          'block_key': blockKey,
+          'block_type': blockType,
+          'title': title,
+          'subtitle': subtitle,
+          'content': content,
+          'target_channel': targetChannel,
+          'placement_key': placementKey,
+          'feature_id': featureId,
+          'is_active': isActive,
+          'sort_order': sortOrder,
+          'metadata': metadata,
+        })
+        .select('*, feature:platform_features(id, feature_key, display_name)')
+        .single();
+    return Map<String, dynamic>.from(data);
+  }
+
+  /// Updates a platform content block.
+  Future<void> updatePlatformContentBlock(
+    String blockId,
+    Map<String, dynamic> updates,
+  ) async {
+    await _client
+        .from('platform_content_blocks')
+        .update(updates)
+        .eq('id', blockId);
+  }
+
+  // ── Platform Feature Audit Logs ──
+
+  /// Returns recent feature management audit logs.
+  Future<List<Map<String, dynamic>>> getPlatformFeatureAuditLogs({
+    int limit = 50,
+  }) async {
+    final data = await _client
+        .from('platform_feature_audit_logs')
+        .select('*, feature:platform_features(id, feature_key, display_name)')
+        .order('created_at', ascending: false)
+        .limit(limit);
+    return List<Map<String, dynamic>>.from(data as List);
+  }
+
   // ── Shop Products ──
 
   /// Returns all shop products (admin view — includes inactive).
@@ -613,13 +700,3 @@ class AdminDashboardMetrics {
   final int transactionsToday;
   final int ticketsSold;
 }
-
-// ── Providers ──
-
-final adminRepositoryProvider = Provider<AdminRepository>((ref) {
-  return AdminRepository(client: ref.watch(supabaseClientProvider));
-});
-
-final isAdminProvider = FutureProvider<bool>((ref) async {
-  return ref.read(adminRepositoryProvider).isCurrentUserAdmin();
-});

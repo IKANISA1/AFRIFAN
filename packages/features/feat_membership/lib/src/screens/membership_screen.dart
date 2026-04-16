@@ -699,7 +699,6 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       ),
     );
   }
-  }
 
   String _tierLabelFromFet(int fet) {
     if (fet >= 5000) return 'Platinum';

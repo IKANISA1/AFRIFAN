@@ -259,7 +259,7 @@ class ClubRepository {
     bool onSaleOnly = false,
   }) async {
     final scope = await _scopeResolver.requireResolved(partnerId);
-    var query = _client.from('matches').select();
+    var query = _client.from('unified_matches').select();
     query = _scopeResolver.apply(query, scope);
 
     if (onSaleOnly) query = query.eq('is_on_sale', true);
@@ -589,7 +589,7 @@ class ClubRepository {
   }) async {
     final scope = await _scopeResolver.requireResolved();
     var matchQuery = _client
-        .from('matches')
+        .from('unified_matches')
         .select(
             'id, club_id, is_on_sale, ticket_general_price, ticket_vip_price')
         .eq('id', matchId);

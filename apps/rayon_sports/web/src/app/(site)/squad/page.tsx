@@ -1,9 +1,15 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ShieldCheck, Zap } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { getClubProfile, getSquad } from "@/lib/data/public";
-import { buildPageMetadata } from "@/lib/metadata";
+import {
+  buildPageMetadata,
+  buildSquadJsonLd,
+  renderJsonLdScriptContent,
+} from "@/lib/metadata";
 import { getSiteCopy } from "@/lib/site-copy";
+import type { SquadPlayer } from "@/lib/types";
 
 export async function generateMetadata() {
   const club = await getClubProfile();
@@ -28,6 +34,12 @@ export default async function SquadPage() {
 
   return (
     <div className="bg-[var(--club-primary)] min-h-screen pt-24 pb-20 lg:pt-32">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: renderJsonLdScriptContent(buildSquadJsonLd(club, squad)),
+        }}
+      />
       <div className="page-shell">
         <header className="mb-16 lg:mb-24">
           <p className="text-xs font-bold uppercase tracking-[0.4em] text-[var(--club-accent)] mb-4">{copy.pages.squad.eyebrow}</p>
@@ -54,7 +66,17 @@ export default async function SquadPage() {
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-8">
                   {players.map((player) => (
                     <article key={player.id} className="group relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 aspect-[3/4] transition-all hover:border-[var(--club-accent)]/50">
-                      {/* Player Image Placeholder with gradient */}
+                      {player.imageUrl && (
+                        <Image
+                          src={player.imageUrl}
+                          alt={player.name}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-110"
+                          sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                        />
+                      )}
+                      
+                      {/* Gradient Overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
                       
                       {/* Big Number Background */}

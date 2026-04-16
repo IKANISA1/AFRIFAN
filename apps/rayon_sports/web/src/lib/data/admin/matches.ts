@@ -60,7 +60,7 @@ export async function getAdminMatches(client: SupabaseClient, access: AdminAcces
     return requestAdminApi<AdminMatchItem[]>("matches");
   }
   let query = client
-    .from("matches")
+    .from("unified_matches")
     .select("*")
     .order("match_date", { ascending: true });
 

@@ -51,12 +51,11 @@ export async function getAdminSquad(
     return requestAdminApi<AdminSquadPlayer[]>("squad");
   }
   const clubId = requireAdminClubId(access, "load squad");
-  const table = await resolveSquadTable(client);
   const { data, error } = await client
-    .from(table)
+    .from("unified_roster")
     .select("*")
     .eq("club_id", clubId)
-    .order("shirt_number", { ascending: true })
+    .order("number", { ascending: true })
     .limit(50);
   if (error) throw new Error(error.message);
   return Array.isArray(data)

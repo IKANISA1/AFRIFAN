@@ -20,7 +20,7 @@ class FixturesCalendarStrip extends StatefulWidget {
   });
 
   final DateTime selectedDate;
-  final Map<String, FixtureDateSummary> dateSummary;
+  final Map<String, int> dateSummary;
   final ValueChanged<DateTime> onDateSelected;
   final ScrollController controller;
 
@@ -92,9 +92,9 @@ class _FixturesCalendarStripState extends State<FixturesCalendarStrip> {
           final isToday =
               cellDate == DateTime(now.year, now.month, now.day);
           final key = _dateKey(date);
-          final summary = widget.dateSummary[key];
-          final hasFixtures = summary != null && summary.fixtureCount > 0;
-          final hasLive = summary?.hasLive ?? false;
+          final count = widget.dateSummary[key] ?? 0;
+          final hasFixtures = count > 0;
+          final hasLive = false;
 
           return GestureDetector(
             onTap: () => widget.onDateSelected(date),
@@ -104,7 +104,7 @@ class _FixturesCalendarStripState extends State<FixturesCalendarStrip> {
               isToday: isToday,
               hasFixtures: hasFixtures,
               hasLive: hasLive,
-              fixtureCount: summary?.fixtureCount ?? 0,
+              fixtureCount: count,
             ),
           );
         },

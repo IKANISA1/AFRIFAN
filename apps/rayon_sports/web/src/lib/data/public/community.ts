@@ -170,6 +170,7 @@ function mapSquadRow(row: Record<string, unknown>): SquadPlayer {
       safeString(row.description) ||
       safeString(row.player_summary) ||
       "First-team squad member.",
+    imageUrl: safeString(row.image_url) || null,
   };
 }
 
@@ -263,19 +264,15 @@ export const getStandings = cache(async function getStandings(): Promise<
   }
 
   try {
-    const table = await resolveAccessibleTable(
-      client,
-      standingsTableCandidates,
-    );
-    const scopedQuery = await client
-      .from(table)
+    const { data } = await client
+      .from("unified_standings")
       .select("*")
       .eq("club_id", activeClub.numericId)
       .order("position", { ascending: true })
-      .limit(20);
+      .limit(24);
 
-    if (scopedQuery.data && scopedQuery.data.length >= 6) {
-      return scopedQuery.data.map((row, index) =>
+    if (data && data.length >= 6) {
+      return data.map((row, index) =>
         mapStandingRow(row, index, activeClub.slug),
       );
     }
@@ -294,16 +291,15 @@ export const getSquad = cache(async function getSquad(): Promise<
   }
 
   try {
-    const table = await resolveAccessibleTable(client, squadTableCandidates);
-    const scopedQuery = await client
-      .from(table)
+    const { data } = await client
+      .from("unified_roster")
       .select("*")
       .eq("club_id", activeClub.numericId)
-      .order("shirt_number", { ascending: true })
-      .limit(30);
+      .order("number", { ascending: true })
+      .limit(40);
 
-    if (scopedQuery.data && scopedQuery.data.length > 0) {
-      return scopedQuery.data.map((row) => mapSquadRow(row));
+    if (data && data.length > 0) {
+      return data.map((row) => mapSquadRow(row));
     }
   } catch { }
 

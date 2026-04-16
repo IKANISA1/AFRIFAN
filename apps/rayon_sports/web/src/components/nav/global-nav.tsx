@@ -13,13 +13,16 @@ import { ui } from "@/design-system";
 
 import type { ReactNode } from "react";
 
+import { PlatformFeature } from "@/lib/feature-config";
+
 interface GlobalNavProps {
   club: ClubProfile;
   copy: SiteChromeCopy;
+  features?: PlatformFeature[];
   ribbon?: ReactNode;
 }
 
-export function GlobalNav({ club, copy, ribbon }: GlobalNavProps) {
+export function GlobalNav({ club, copy, features = [], ribbon }: GlobalNavProps) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -32,15 +35,28 @@ export function GlobalNav({ club, copy, ribbon }: GlobalNavProps) {
 
   const logoUrl = club.officialLogoUrl ?? "/icons/icon-192x192.png";
 
-  const NAV_ITEMS = [
-    { label: "News", href: "/news" },
-    { label: "Matchday", href: "/fixtures", hasMega: true },
-    { label: "Squad", href: "/squad", hasMega: true },
-    { label: "Tickets", href: "/tickets" },
-    { label: "Membership", href: "/membership" },
-    { label: "Community", href: "/Groups" },
-    { label: "Shop", href: "/shop" },
-  ];
+  const NAV_ITEMS = features
+    .filter((f) => {
+      // Must be enabled and set to show in navigation for web
+      const isVisible = f.is_enabled && f.visibility_state === 'visible';
+      const isNavigable = f.channel?.is_enabled && f.channel?.is_visible && f.channel?.show_in_navigation;
+      return isVisible && isNavigable;
+    })
+    .map((f) => {
+      // Map platform feature to Nav Item structure
+      return {
+        label: f.display_name,
+        href: f.channel?.route_key || `/${f.feature_key}`,
+        featureKey: f.feature_key,
+        hasMega: f.rules?.metadata?.hasMega === true || 
+                ["live", "squad"].includes(f.feature_key), // Fallback for legacy
+      };
+    })
+    .sort((a, b) => {
+      const featA = features.find(f => f.feature_key === a.featureKey);
+      const featB = features.find(f => f.feature_key === b.featureKey);
+      return (featA?.channel?.sort_order ?? 99) - (featB?.channel?.sort_order ?? 99);
+    });
 
   return (
     <div 

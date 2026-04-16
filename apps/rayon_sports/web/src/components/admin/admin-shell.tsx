@@ -94,6 +94,7 @@ const sidebarSections = [
       "/admin/gamification",
       "/admin/gamification/wallet",
       "/admin/settings",
+      "/admin/settings/features",
       "/admin/settings/audit",
     ],
   },
@@ -102,6 +103,7 @@ const sidebarSections = [
 const cmsViews = [
   "/admin/cms/banners",
   "/admin/cms/content",
+  "/admin/cms/content-blocks",
   "/admin/cms/config",
 ];
 const primaryMobileTabs = [

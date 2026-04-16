@@ -9,6 +9,7 @@ import {
 import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { HttpError } from "../_shared/auth.ts";
 import { requireAppCheckToken } from "../_shared/app_check.ts";
+import { enforceFeature } from "../_shared/feature_guard.ts";
 import {
   buildBioPayPaymentCode,
   resolveBioPayPaymentRouting,
@@ -139,6 +140,13 @@ export function createBioPayCreatePaymentIntentHandler(
 
       const { userId } = validated;
       requesterUserId = userId;
+
+      // ── Feature Guard ──
+      const guardResponse = await enforceFeature(adminClient, {
+        featureKey: "biopay",
+        channel: "mobile",
+      });
+      if (guardResponse) return guardResponse;
 
       await deps.requireAppCheckToken(request);
 

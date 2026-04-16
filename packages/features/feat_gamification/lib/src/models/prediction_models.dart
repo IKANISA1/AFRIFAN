@@ -506,7 +506,7 @@ class JackpotRoundFixture {
   final List<MarketOutcomeOption> outcomes;
 
   String get fixtureLabel =>
-      '${homeTeamShort.toUpperCase()} vs ${awayTeamShort.toUpperCase()}';
+      '${homeTeamShortName.toUpperCase()} vs ${awayTeamShortName.toUpperCase()}';
 
   factory JackpotRoundFixture.fromJson(Map<String, dynamic> json) {
     return JackpotRoundFixture(

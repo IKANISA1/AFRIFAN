@@ -268,7 +268,7 @@ class _MyEntryCard extends StatelessWidget {
       animate: false,
       child: Row(
         children: [
-          const Icon(AfriIcons.predict, color: ColorTokens.clubAccent),
+          Icon(AfriIcons.predict, color: ColorTokens.clubAccent),
           const SizedBox(width: 12),
           Expanded(
             child: Column(

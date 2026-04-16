@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:core_modules/core_modules.dart';
+import 'package:app_registry/app_registry.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';

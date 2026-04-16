@@ -6,11 +6,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../admin_providers.dart';
 import '../repositories/admin_repository.dart';
-
 part '../widgets/cms/cms_widgets.dart';
 
-enum _CmsSection { news, quickActions, partners, services, competitions }
+enum _CmsSection {
+  news,
+  quickActions,
+  partners,
+  services,
+  competitions,
+  placements,
+  auditLogs,
+}
 
 class CmsContentManagerScreen extends ConsumerStatefulWidget {
   const CmsContentManagerScreen({super.key});
@@ -40,6 +48,14 @@ class _CmsContentManagerScreenState
     'insurance',
     'mobility',
   ];
+  static const List<String> _targetChannels = <String>['mobile', 'web', 'both'];
+  static const List<String> _placementKeys = <String>[
+    'home_hero',
+    'home_top',
+    'home_mid',
+    'home_bottom',
+    'home_footer',
+  ];
 
   _CmsSection _section = _CmsSection.news;
   List<Map<String, dynamic>> _articles = const <Map<String, dynamic>>[];
@@ -50,6 +66,9 @@ class _CmsContentManagerScreenState
       const <Map<String, dynamic>>[];
   List<Map<String, dynamic>> _competitionCatalog =
       const <Map<String, dynamic>>[];
+  List<Map<String, dynamic>> _contentBlocks = const <Map<String, dynamic>>[];
+  List<Map<String, dynamic>> _platformFeatures = const <Map<String, dynamic>>[];
+  List<Map<String, dynamic>> _auditLogs = const <Map<String, dynamic>>[];
   bool _isLoading = true;
   String? _error;
 
@@ -74,6 +93,9 @@ class _CmsContentManagerScreenState
         repo.getPartnerServices(),
         repo.getPredictionSupportedCompetitions(),
         repo.getFootballCompetitions(),
+        repo.getPlatformContentBlocks(),
+        repo.getPlatformFeatures(),
+        repo.getPlatformFeatureAuditLogs(),
       ]);
 
       if (!mounted) return;
@@ -88,6 +110,9 @@ class _CmsContentManagerScreenState
         _competitionCatalog = List<Map<String, dynamic>>.from(
           results[5] as List,
         );
+        _contentBlocks = List<Map<String, dynamic>>.from(results[6] as List);
+        _platformFeatures = List<Map<String, dynamic>>.from(results[7] as List);
+        _auditLogs = List<Map<String, dynamic>>.from(results[8] as List);
         _isLoading = false;
       });
     } catch (error) {
@@ -160,6 +185,227 @@ class _CmsContentManagerScreenState
     } catch (error) {
       _showSnack('Failed to update prediction competition: $error');
     }
+  }
+
+  Future<void> _toggleContentBlock(Map<String, dynamic> block) async {
+    try {
+      await ref.read(adminRepositoryProvider).updatePlatformContentBlock(
+        block['id'].toString(),
+        {'is_active': block['is_active'] != true},
+      );
+      await _loadContent();
+    } catch (error) {
+      _showSnack('Failed to update content block: $error');
+    }
+  }
+
+  void _showContentBlockDialog([Map<String, dynamic>? existing]) {
+    final blockKeyController = TextEditingController(
+      text: existing?['block_key']?.toString() ?? '',
+    );
+    final blockTypeController = TextEditingController(
+      text: existing?['block_type']?.toString() ?? 'banner',
+    );
+    final titleController = TextEditingController(
+      text: existing?['title']?.toString() ?? '',
+    );
+    final subtitleController = TextEditingController(
+      text: existing?['subtitle']?.toString() ?? '',
+    );
+    final contentComponentController = TextEditingController(
+      text: (existing?['content'] as Map?)?['component']?.toString() ?? '',
+    );
+    final sortOrderController = TextEditingController(
+      text: '${(existing?['sort_order'] as num?)?.toInt() ?? 0}',
+    );
+
+    var targetChannel = existing?['target_channel']?.toString() ?? 'both';
+    var placementKey = existing?['placement_key']?.toString() ?? 'home_hero';
+    var selectedFeatureId = existing?['feature_id']?.toString();
+    var isActive = existing?['is_active'] != false;
+
+    unawaited(
+      showDialog<void>(
+        context: context,
+        builder: (dialogContext) => StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: ColorTokens.surfaceContainer,
+              title: Text(
+                existing == null ? 'ADD CONTENT BLOCK' : 'EDIT CONTENT BLOCK',
+                style: TypographyTokens.titleLarge(),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _DialogTextField(
+                      controller: blockKeyController,
+                      hint: 'Block key (e.g. home_hero_1)',
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    _DialogTextField(
+                      controller: blockTypeController,
+                      hint: 'Block type (e.g. banner)',
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    DropdownButtonFormField<String>(
+                      value: targetChannel,
+                      decoration:
+                          const InputDecoration(labelText: 'Target Channel'),
+                      items: _targetChannels
+                          .map(
+                            (item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(item),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        if (value == null) return;
+                        setDialogState(() => targetChannel = value);
+                      },
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    DropdownButtonFormField<String>(
+                      value: _placementKeys.contains(placementKey)
+                          ? placementKey
+                          : null,
+                      decoration:
+                          const InputDecoration(labelText: 'Placement Key'),
+                      items: _placementKeys
+                          .map(
+                            (item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(item),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        if (value == null) return;
+                        setDialogState(() => placementKey = value);
+                      },
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    _DialogTextField(
+                      controller: titleController,
+                      hint: 'Title',
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    _DialogTextField(
+                      controller: subtitleController,
+                      hint: 'Subtitle',
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    _DialogTextField(
+                      controller: contentComponentController,
+                      hint: 'Content Component Name',
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    DropdownButtonFormField<String>(
+                      value: selectedFeatureId,
+                      decoration: const InputDecoration(labelText: 'Feature'),
+                      items: [
+                        const DropdownMenuItem<String>(
+                          value: null,
+                          child: Text('None'),
+                        ),
+                        ..._platformFeatures.map(
+                          (feature) => DropdownMenuItem<String>(
+                            value: feature['id']?.toString(),
+                            child: Text(
+                              feature['display_name']?.toString() ??
+                                  feature['feature_key']?.toString() ??
+                                  'Feature',
+                            ),
+                          ),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setDialogState(() => selectedFeatureId = value);
+                      },
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    _DialogTextField(
+                      controller: sortOrderController,
+                      hint: 'Sort order',
+                      keyboardType: TextInputType.number,
+                    ),
+                    SwitchListTile.adaptive(
+                      value: isActive,
+                      onChanged: (value) =>
+                          setDialogState(() => isActive = value),
+                      title: const Text('Active'),
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => dialogContext.pop(),
+                  child: const Text('CANCEL'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    final blockKey = blockKeyController.text.trim();
+                    if (blockKey.isEmpty) return;
+
+                    final payload = <String, dynamic>{
+                      'block_key': blockKey,
+                      'block_type': blockTypeController.text.trim(),
+                      'target_channel': targetChannel,
+                      'placement_key': placementKey,
+                      'title': _trimToNull(titleController.text),
+                      'subtitle': _trimToNull(subtitleController.text),
+                      'content': {
+                        'component': _trimToNull(
+                          contentComponentController.text,
+                        ),
+                      },
+                      'feature_id': selectedFeatureId,
+                      'sort_order':
+                          int.tryParse(sortOrderController.text.trim()) ?? 0,
+                      'is_active': isActive,
+                    };
+
+                    dialogContext.pop();
+                    try {
+                      final repo = ref.read(adminRepositoryProvider);
+                      if (existing == null) {
+                        await repo.createPlatformContentBlock(
+                          blockKey: payload['block_key'] as String,
+                          blockType: payload['block_type'] as String,
+                          targetChannel: payload['target_channel'] as String,
+                          placementKey: payload['placement_key'] as String,
+                          title: payload['title'] as String?,
+                          subtitle: payload['subtitle'] as String?,
+                          content:
+                              payload['content'] as Map<String, dynamic>? ??
+                              const {},
+                          featureId: payload['feature_id'] as String?,
+                          sortOrder: payload['sort_order'] as int?,
+                          isActive: isActive,
+                        );
+                      } else {
+                        await repo.updatePlatformContentBlock(
+                          existing['id'].toString(),
+                          payload,
+                        );
+                      }
+                      await _loadContent();
+                    } catch (error) {
+                      _showSnack('Failed to save content block: $error');
+                    }
+                  },
+                  child: Text(existing == null ? 'CREATE' : 'SAVE'),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
   }
 
   void _showCreateArticleDialog() {
@@ -1048,6 +1294,8 @@ class _CmsContentManagerScreenState
       _CmsSection.partners => _buildPartnersSection(),
       _CmsSection.services => _buildPartnerServicesSection(),
       _CmsSection.competitions => _buildPredictionCompetitionsSection(),
+      _CmsSection.placements => _buildPlacementsSection(),
+      _CmsSection.auditLogs => _buildAuditLogsSection(),
     };
   }
 
@@ -1252,6 +1500,120 @@ class _CmsContentManagerScreenState
     );
   }
 
+  Widget _buildPlacementsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _SectionHeader(
+          title: 'Platform Content Blocks',
+          actionLabel: 'ADD BLOCK',
+          onAction: _showContentBlockDialog,
+        ),
+        const SizedBox(height: SpacingTokens.spacing3),
+        if (_contentBlocks.isEmpty)
+          const _EmptySectionState(
+            title: 'No content blocks configured',
+            message: 'Add banners or custom sections for the platform home.',
+          )
+        else
+          ..._contentBlocks.map(
+            (block) => Padding(
+              padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
+              child: _EntityCard(
+                title: block['block_key']?.toString() ?? 'Content block',
+                subtitle:
+                    '${block['placement_key']?.toString() ?? 'unknown'} • ${block['target_channel']?.toString() ?? 'both'}',
+                body:
+                    '${block['title']?.toString() ?? ''}\n${(block['content'] as Map?)?['component'] ?? ''}',
+                tags: <String>[
+                  (block['block_type']?.toString() ?? 'banner').toUpperCase(),
+                  block['is_active'] == true ? 'ACTIVE' : 'INACTIVE',
+                ],
+                onEdit: () => _showContentBlockDialog(block),
+                onToggle: () => _toggleContentBlock(block),
+                toggleLabel: block['is_active'] == true
+                    ? 'DEACTIVATE'
+                    : 'ACTIVATE',
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildAuditLogsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'FEATURE MANAGEMENT AUDIT LOGS',
+          style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.1),
+        ),
+        const SizedBox(height: SpacingTokens.spacing3),
+        if (_auditLogs.isEmpty)
+          const _EmptySectionState(
+            title: 'No audit logs yet',
+            message: 'Changes to platform features will appear here.',
+          )
+        else
+          ..._auditLogs.map((log) {
+            final feature = log['feature'] as Map<String, dynamic>?;
+            final featureName = feature?['display_name'] ??
+                feature?['feature_key'] ??
+                'Unknown Feature';
+            final timestamp = DateTime.tryParse(
+              log['created_at']?.toString() ?? '',
+            );
+            final dateStr = timestamp != null
+                ? DateFormat('dd MMM, HH:mm').format(timestamp)
+                : 'Unknown date';
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
+              child: GlassCard(
+                animate: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            log['action']?.toString().toUpperCase() ?? 'ACTION',
+                            style: TypographyTokens.labelLarge().copyWith(
+                              color: ColorTokens.clubAccent,
+                            ),
+                          ),
+                        ),
+                        Text(dateStr, style: TypographyTokens.labelSmall()),
+                      ],
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing2),
+                    Text(
+                      'Feature: $featureName',
+                      style: TypographyTokens.titleMedium(),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing1),
+                    Text(
+                      'Changed by: ${log['changed_by'] ?? 'System'}',
+                      style: TypographyTokens.bodySmall(),
+                    ),
+                    if (log['notes'] != null) ...[
+                      const SizedBox(height: SpacingTokens.spacing2),
+                      Text(
+                        log['notes'].toString(),
+                        style: TypographyTokens.bodyMedium(),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            );
+          }),
+      ],
+    );
+  }
+
   String _sectionLabel(_CmsSection section) {
     return switch (section) {
       _CmsSection.news => 'News',
@@ -1259,6 +1621,8 @@ class _CmsContentManagerScreenState
       _CmsSection.partners => 'Partners',
       _CmsSection.services => 'Services',
       _CmsSection.competitions => 'Predictions',
+      _CmsSection.placements => 'Placements',
+      _CmsSection.auditLogs => 'Audit Logs',
     };
   }
 }

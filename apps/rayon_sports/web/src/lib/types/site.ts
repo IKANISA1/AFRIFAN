@@ -165,6 +165,7 @@ export interface SquadPlayer {
   number: number;
   nationality: string;
   bio: string;
+  imageUrl?: string | null;
 }
 
 export interface StandingRow {

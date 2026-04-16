@@ -153,6 +153,33 @@ export interface AdminShopProduct extends ShopProduct {
   createdAt: string;
 }
 
+export interface PlatformFeature {
+  id: string;
+  featureKey: string;
+  displayName: string;
+  description: string | null;
+  category: string | null;
+  isEnabled: boolean;
+  visibilityState: "visible" | "hidden" | "disabled";
+  channels: {
+    id: string;
+    channel: "mobile" | "web" | "both";
+    isEnabled: boolean;
+    isVisible: boolean;
+    showInNavigation: boolean;
+    showOnHome: boolean;
+    sortOrder: number;
+    routeKey: string | null;
+    placementKey: string | null;
+  }[];
+  rules: {
+    authRequired: boolean;
+    roleRestrictions: string[];
+    dependencyRules: Record<string, any>;
+    rolloutRules: Record<string, any>;
+  } | null;
+}
+
 export interface AdminFanClub extends FanClubItem {
   clubId: number | null;
   isActive: boolean;

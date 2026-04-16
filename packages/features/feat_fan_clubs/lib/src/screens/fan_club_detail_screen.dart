@@ -62,7 +62,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
 
       Map<String, dynamic>? matchRow;
       try {
-        var query = client.from('matches').select().eq('is_on_sale', true);
+        var query = client.from('unified_matches').select().eq('is_on_sale', true);
         query = resolver.apply(query, scope);
         matchRow = await query
             .order('match_date', ascending: true)

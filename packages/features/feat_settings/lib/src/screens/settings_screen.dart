@@ -85,7 +85,8 @@ class SettingsScreen extends ConsumerWidget {
                             const SizedBox(height: 4),
                             AfriStatusChip(
                               label: profile?.isAdmin == true ? 'Admin' : 'Supporter',
-                              tone: AfriStatusTone.accent,
+                              tone: AfriStatusTone.live,
+
                             ),
                           ],
                         ),

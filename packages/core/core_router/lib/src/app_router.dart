@@ -13,6 +13,7 @@ class AppRouter {
   final Listenable? refreshListenable;
   final GoRouterWidgetBuilder? errorBuilder;
   final List<NavigatorObserver> observers;
+  final bool Function(String path)? isFeatureEnabled;
 
   AppRouter({
     required this.modules,
@@ -22,6 +23,7 @@ class AppRouter {
     this.refreshListenable,
     this.errorBuilder,
     this.observers = const <NavigatorObserver>[],
+    this.isFeatureEnabled,
   }) : _explicitInitialLocation = initialLocation;
 
   String get initialLocation =>
@@ -29,7 +31,22 @@ class AppRouter {
 
   late final GoRouter router = GoRouter(
     initialLocation: initialLocation,
-    redirect: redirect,
+    redirect: (context, state) {
+      // 1. Feature Gate Check
+      if (isFeatureEnabled != null) {
+        final path = state.uri.path;
+        if (path != '/' && path != '/home' && !isFeatureEnabled!(path)) {
+          return initialLocation;
+        }
+      }
+
+      // 2. Custom Redirect
+      if (redirect != null) {
+        return redirect!(context, state);
+      }
+
+      return null;
+    },
     refreshListenable: refreshListenable,
     observers: observers,
     errorBuilder:

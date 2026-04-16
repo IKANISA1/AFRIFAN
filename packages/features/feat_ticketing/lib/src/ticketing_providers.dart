@@ -17,7 +17,7 @@ final ticketMatchProvider =
   final client = ref.watch(supabaseClientProvider);
   final resolver = ClubScopeResolver(client: client);
   final scope = await resolver.requireResolved(user.clubId);
-  var query = client.from('matches').select().eq('id', matchId);
+  var query = client.from('unified_matches').select().eq('id', matchId);
   query = resolver.apply(query, scope);
   final row = await query.maybeSingle();
 

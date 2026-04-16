@@ -15,10 +15,28 @@ import 'package:feat_ticketing/feat_ticketing.dart';
 
 /// Shared registry for all feature modules used by AFRICLUB apps.
 abstract final class AppModuleRegistry {
-  static List<FeatureModule> build(ClubConfig config) {
-    return _allModules
-        .where((module) => module.isEnabled(config.features))
-        .toList(growable: false);
+  /// Build the active module list for this app configuration.
+  ///
+  /// When [configSnapshot] (the raw JSON from `get_platform_config`) is
+  /// provided, modules use [FeatureModule.isEnabledForConfig] which
+  /// checks the admin-controlled platform feature registry first,
+  /// falling back to [ClubConfig.features] when a feature is not found.
+  ///
+  /// When [configSnapshot] is null (network failed, first run, etc.),
+  /// modules fall back to the compile-time [config.features] map.
+  static List<FeatureModule> build(
+    ClubConfig config, {
+    Map<String, dynamic>? configSnapshot,
+  }) {
+    return _allModules.where((module) {
+      if (configSnapshot != null) {
+        return module.isEnabledForConfig(
+          featureFlags: config.features,
+          configSnapshot: configSnapshot,
+        );
+      }
+      return module.isEnabled(config.features);
+    }).toList(growable: false);
   }
 
   static final List<FeatureModule> _allModules = <FeatureModule>[
@@ -37,3 +55,4 @@ abstract final class AppModuleRegistry {
     ShopModule(),
   ];
 }
+

@@ -166,7 +166,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('This item is currently out of stock.'),
-          backgroundColor: ColorTokens.error,
         ),
       );
       return;
@@ -350,7 +349,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           bottom: SpacingTokens.spacing4,
                           child: AfriStatusChip(
                             label: badge,
-                            tone: AfriStatusTone.accent,
+                            tone: AfriStatusTone.live,
                           ),
                         ).animate().fadeIn(duration: 400.ms),
                     ],
@@ -394,7 +393,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                   ? '$stockCount available now'
                                   : 'Available now')
                             : 'Out of stock',
-                        tone: inStock ? AfriStatusTone.success : AfriStatusTone.danger,
+                        tone: inStock ? AfriStatusTone.success : AfriStatusTone.error,
                       ),
                       const SizedBox(height: SpacingTokens.spacing8),
                       if (sizes.isNotEmpty) ...[
@@ -449,7 +448,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  icon: const Icon(Icons.remove_rounded, size: 20),
+                                  icon: Icon(Icons.remove_rounded, size: 20),
                                   onPressed: _quantity > 1 ? _decrement : null,
                                 ),
                                 SizedBox(
@@ -462,7 +461,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                   ),
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.add_rounded, size: 20),
+                                  icon: Icon(Icons.add_rounded, size: 20),
                                   onPressed: _quantity < maxQuantity
                                       ? _increment
                                       : null,
@@ -534,10 +533,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                   AfriButton(
                                     label: 'Buy now',
                                     variant: AfriButtonVariant.outline,
-                                    onTap: inStock ? () {
+                                    onTap: () {
                                       _addToCart();
                                       context.push('/shop/cart');
-                                    } : null,
+                                    },
                                     enabled: inStock,
                                   ),
                                 ],
@@ -571,7 +570,7 @@ class _ImageFallback extends StatelessWidget {
     return Container(
       color: ColorTokens.surfaceContainerLow,
       child: Icon(
-        Icons.shield_rounded,
+        AfriIcons.groups,
         size: 64,
         color: primary.withValues(alpha: 0.2),
       ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../admin_providers.dart';
 import '../repositories/admin_repository.dart';
 
 class AdminDashboardScreen extends ConsumerStatefulWidget {
@@ -239,6 +240,13 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           subtitle: 'MoMo SMS ingestion pipeline health',
           icon: AfriIcons.sms,
           onTap: () => context.push('/admin/sms-monitor'),
+        ),
+        const SizedBox(height: SpacingTokens.spacing3),
+        _AdminActionTile(
+          title: 'Feature Manager',
+          subtitle: 'Toggle features, visibility, and scheduling',
+          icon: AfriIcons.settings,
+          onTap: () => context.push('/admin/features'),
         ),
       ],
     );

@@ -48,6 +48,7 @@ workspace:
   - packages/core/core_theme
   - packages/core/core_router
   - packages/core/core_utils
+  - packages/core/core_feature_config
   # ── Feature packages ──
   - packages/features/feat_admin
   - packages/features/feat_biopay

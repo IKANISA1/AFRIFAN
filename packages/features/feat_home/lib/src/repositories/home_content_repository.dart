@@ -248,7 +248,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     }
 
     try {
-      var matchesQuery = client.from('matches').select();
+      var matchesQuery = client.from('unified_matches').select();
       matchesQuery = ClubScopeResolver(
         client: client,
       ).apply(matchesQuery, scope);

@@ -137,7 +137,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                   top: 8,
                   child: Container(
                     padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: ColorTokens.clubAccent,
                       shape: BoxShape.circle,
                     ),

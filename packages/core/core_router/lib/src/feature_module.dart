@@ -7,8 +7,12 @@ import 'package:go_router/go_router.dart';
 /// registers its routes. The app bootstrap collects all modules
 /// and builds the GoRouter.
 abstract class FeatureModule {
-  /// Feature key — must match ClubConfig.features key.
+  /// Feature key — must match ClubConfig.features key AND
+  /// `platform_features.feature_key` in Supabase.
   String get featureKey;
+
+  /// Feature category for grouping in admin UI.
+  String get category => 'core';
 
   /// Whether this module should be registered for the current app flavor.
   ///
@@ -16,6 +20,44 @@ abstract class FeatureModule {
   /// redundantly listed in every club configuration package.
   bool isEnabled(Map<String, bool> featureFlags) {
     return featureFlags[featureKey] ?? true;
+  }
+
+  /// Config-aware enablement check.
+  ///
+  /// When a [PlatformConfigSnapshot] is available (fetched from Supabase),
+  /// this checks `isEffectivelyEnabled` on the matching feature.
+  /// Falls back to [isEnabled] with compile-time [featureFlags] when:
+  ///   - The config snapshot is null (network failed, first run)
+  ///   - The feature is not found in the snapshot
+  ///
+  /// This method is called by [AppModuleRegistry.build()] after bootstrap.
+  bool isEnabledForConfig({
+    Map<String, bool> featureFlags = const <String, bool>{},
+    Map<String, dynamic>? configSnapshot,
+  }) {
+    if (configSnapshot != null) {
+      final features = configSnapshot['features'];
+      if (features is List) {
+        for (final raw in features) {
+          if (raw is Map<String, dynamic> &&
+              raw['feature_key'] == featureKey) {
+            // Found in snapshot — use the resolved enabled state.
+            final isGlobalEnabled = raw['is_enabled'] as bool? ?? true;
+            final visibility = raw['visibility_state'] as String? ?? 'visible';
+            final channel = raw['channel'] as Map<String, dynamic>?;
+            final channelEnabled = channel?['is_enabled'] as bool? ?? true;
+            final channelVisible = channel?['is_visible'] as bool? ?? true;
+
+            return isGlobalEnabled &&
+                visibility != 'hidden' &&
+                channelEnabled &&
+                channelVisible;
+          }
+        }
+      }
+    }
+    // Not in config → fall back to compile-time flags.
+    return isEnabled(featureFlags);
   }
 
   /// Routes contributed by this module.
@@ -53,3 +95,4 @@ class TabRoute {
     required this.builder,
   });
 }
+

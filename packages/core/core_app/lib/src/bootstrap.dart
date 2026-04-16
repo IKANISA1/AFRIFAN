@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
@@ -18,7 +19,8 @@ bool _globalErrorHandlersInstalled = false;
 
 class AfriClubBootstrapOptions {
   const AfriClubBootstrapOptions({
-    required this.modules,
+    this.modules = const <FeatureModule>[],
+    this.moduleBuilder,
     this.startupOptions = const AppStartupOptions(),
     this.authRepository,
     this.providerOverrides = const <Override>[],
@@ -28,6 +30,15 @@ class AfriClubBootstrapOptions {
   });
 
   final List<FeatureModule> modules;
+
+  /// Optional: A function that rebuilds the module list based on the
+  /// admin-controlled platform feature configuration snapshot.
+  ///
+  /// When provided, this takes precedence over the static [modules] list
+  /// and is called after the platform config is fetched from Supabase.
+  final List<FeatureModule> Function(Map<String, dynamic>? snapshot)?
+  moduleBuilder;
+
   final AppStartupOptions startupOptions;
   final AuthRepository? authRepository;
   final List<Override> providerOverrides;
@@ -108,7 +119,38 @@ Future<void> bootstrap(
         options: options.startupOptions,
       );
       await startupCoordinator.initialize(config);
-      final modules = options.modules;
+
+      // Fetch the platform feature config from Supabase.
+      // This runs AFTER Supabase initialization (inside startupCoordinator)
+      // and BEFORE runApp, so the first frame already uses config-driven modules.
+      Map<String, dynamic>? platformConfigSnapshot;
+      try {
+        final featureConfigRepo = FeatureConfigRepository();
+        final snapshot = await featureConfigRepo.loadConfig(
+          clubId: normalizedClubId,
+          channel: 'mobile',
+        );
+        if (snapshot.isNotEmpty) {
+          platformConfigSnapshot = snapshot.toJson();
+          AfriLogger.info(
+            'Bootstrap',
+            'Platform config loaded: ${snapshot.features.length} features.',
+          );
+        }
+      } catch (error) {
+        AfriLogger.warn(
+          'Bootstrap',
+          'Platform config fetch failed (non-fatal): $error. '
+          'Using compile-time feature flags.',
+        );
+      }
+
+      // Rebuild module list with config-aware enablement.
+      // If platformConfigSnapshot is null, falls back to compile-time flags.
+      final modules = options.moduleBuilder != null
+          ? options.moduleBuilder!(platformConfigSnapshot)
+          : (options.modules.isNotEmpty ? options.modules : <FeatureModule>[]);
+
       final deepLinkParser =
           options.deepLinkParser ?? DeepLinkParser.fromEnvironment();
       final deepLinkService = deepLinkParser.isEnabled
@@ -125,6 +167,7 @@ Future<void> bootstrap(
           initialLocation: options.initialLocation,
           deepLinkParser: deepLinkService == null ? null : deepLinkParser,
           deepLinkService: deepLinkService,
+          platformConfigSnapshot: platformConfigSnapshot,
         ),
       );
       unawaited(startupCoordinator.scheduleDeferredInitialization(config));

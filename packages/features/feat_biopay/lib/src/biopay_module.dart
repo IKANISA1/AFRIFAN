@@ -1,4 +1,5 @@
 import 'package:core_router/core_router.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -28,6 +29,15 @@ import 'widgets/biopay_feature_gate.dart';
 class BioPayModule extends FeatureModule {
   @override
   String get featureKey => 'BioPay';
+
+  @override
+  TabRoute get tabRoute => TabRoute(
+        path: '/BioPay',
+        label: 'BioPay',
+        icon: AfriIcons.face,
+        activeIcon: AfriIcons.face,
+        builder: (context, state) => const BioPayScreen(),
+      );
 
   @override
   List<RouteBase> get routes => [

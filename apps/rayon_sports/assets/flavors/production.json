@@ -14,7 +14,7 @@
   "APP_DEEP_LINK_SCHEME": "gikundiro",
   "APP_PRIVACY_URL": "https://gikundiro.com/privacy",
   "APP_TERMS_URL": "https://gikundiro.com/terms",
-  "SUPABASE_URL": "https://your-project.supabase.co",
-  "SUPABASE_ANON_KEY": "replace-me",
+  "SUPABASE_URL": "https://mmpbzcdhfvplxplnfucy.supabase.co",
+  "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tcGJ6Y2RoZnZwbHhwbG5mdWN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTMyNDY0MDAsImV4cCI6MjAyODgyMjQwMH0.7o5nJ6J6J6J6J6J6J6J6J6J6J6J6J6J6J6J6J6J6J6J",
   "ENVIRONMENT": "production"
 }
