@@ -43,11 +43,11 @@ class BioPayScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 28),
                   Text(
-                    'Pay & Get Paid\nInstantly',
+                    'Pay and get paid\ninstantly',
                     style: BioPayReferenceText(
                       fontSize: 34,
-                      fontWeight: FontWeight.w900,
-                      height: 1.05,
+                      fontWeight: FontWeight.w700,
+                      height: 1.1,
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -60,25 +60,25 @@ class BioPayScreen extends ConsumerWidget {
                       childAspectRatio: 0.92,
                       children: [
                         BioPayReferenceHomeTile(
-                          icon: Icons.face_retouching_natural_rounded,
+                          icon: AfriIcons.faceScan,
                           color: BioPayReferenceBlue,
                           label: 'Face Scan',
                           onTap: () => context.push('/BioPay/scan?mode=pay'),
                         ),
                         BioPayReferenceHomeTile(
-                          icon: Icons.nfc_rounded,
+                          icon: AfriIcons.nfc,
                           color: BioPayReferencePurple,
                           label: 'NFC Tap',
                           onTap: () => context.push('/BioPay/nfc'),
                         ),
                         BioPayReferenceHomeTile(
-                          icon: Icons.qr_code_2_rounded,
+                          icon: AfriIcons.qrCode,
                           color: BioPayReferenceOrange,
                           label: 'Get QR',
                           onTap: () => context.push('/BioPay/qr'),
                         ),
                         BioPayReferenceHomeTile(
-                          icon: Icons.qr_code_scanner_rounded,
+                          icon: AfriIcons.qrScan,
                           color: BioPayReferenceTeal,
                           label: 'Scan QR',
                           onTap: () => context.push('/BioPay/qr/scan'),

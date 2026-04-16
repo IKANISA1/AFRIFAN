@@ -96,7 +96,7 @@ class TicketCheckoutStep extends StatelessWidget {
               child: Row(
                 children: [
                   const Icon(
-                    Icons.verified_rounded,
+                    AfriIcons.verified,
                     color: ColorTokens.success,
                   ),
                   const SizedBox(width: SpacingTokens.spacing3),
@@ -119,7 +119,7 @@ class TicketCheckoutStep extends StatelessWidget {
                     : submitting
                         ? 'Processing'
                         : 'Pay via MOMO',
-            icon: Icons.phone_android_rounded,
+            icon: AfriIcons.phone,
             fullWidth: true,
             isLoading: submitting,
             onTap: onPurchaseRequest,

@@ -20,17 +20,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final label = appName.trim().isEmpty ? 'your club' : appName.trim();
     return <Map<String, String>>[
       {
-        'title': 'YOUR CLUB. YOUR APP.',
+        'title': 'Your club. Your app.',
         'body':
             'The official $label fan platform. Matches, contributions, and more.',
       },
       {
-        'title': 'FAN MEMBERSHIP. TICKETS. CONTRIBUTIONS.',
+        'title': 'Fan membership. Tickets. Contributions.',
         'body':
             'Earn FET, buy match tickets, and contribute to club projects — all in one place.',
       },
       {
-        'title': 'READY TO PLAY?',
+        'title': 'Ready to play?',
         'body': 'Tickets, merch, and fan communities — all anonymous.',
       },
     ];
@@ -225,8 +225,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                 },
                               ).toString(),
                             ),
-                      icon: const Icon(Icons.chat_bubble_outline_rounded),
-                      label: const Text('USE PHONE / WHATSAPP OTP'),
+                      icon: const Icon(AfriIcons.chat),
+                      label: const Text('Use phone / WhatsApp OTP'),
                     ),
                   ),
                 ),
@@ -243,9 +243,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     int index,
   ) {
     final icon = switch (index) {
-      0 => Icons.stadium_outlined,
-      1 => Icons.workspace_premium_outlined,
-      _ => Icons.account_balance_wallet_outlined,
+      0 => AfriIcons.stadium,
+      1 => AfriIcons.premium,
+      _ => AfriIcons.wallet,
     };
     final accent = index == 1 ? ColorTokens.clubAccent : ColorTokens.primary;
     final pageNumber = '${index + 1}'.padLeft(2, '0');
@@ -301,7 +301,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                               borderRadius: ShapeTokens.chipRadius,
                             ),
                             child: Text(
-                              'OFFICIAL SUPPORTER OS',
+                              'Official Supporter OS',
                               style: TypographyTokens.labelSmall().copyWith(
                                 color: ColorTokens.onSurface,
                                 letterSpacing: 1.1,
@@ -343,7 +343,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       slideContent['title']!,
                       style: TypographyTokens.displaySmall().copyWith(
                         fontSize: isCompact ? 32 : 40,
-                        height: 0.95,
+                        height: 1.1,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),

@@ -5,12 +5,14 @@ class MarketOptionPill extends StatelessWidget {
   const MarketOptionPill({
     super.key,
     required this.label,
+    this.odds,
     required this.isSelected,
     required this.onTap,
     this.trailing,
   });
 
   final String label;
+  final double? odds;
   final bool isSelected;
   final VoidCallback onTap;
   final Widget? trailing;
@@ -35,16 +37,35 @@ class MarketOptionPill extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              label.toUpperCase(),
-              style: TypographyTokens.editorialFont(
-                fontSize: 13,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                color: isSelected
-                    ? ColorTokens.clubAccent
-                    : ColorTokens.onSurfaceVariant,
-                letterSpacing: 1.0,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label.toUpperCase(),
+                  style: TypographyTokens.editorialFont(
+                    fontSize: 12,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                    color: isSelected
+                        ? ColorTokens.clubAccent
+                        : ColorTokens.onSurfaceVariant,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                if (odds != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    odds!.toStringAsFixed(1),
+                    style: TypographyTokens.monolithFont(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: isSelected
+                          ? ColorTokens.clubAccent
+                          : ColorTokens.onSurface,
+                    ),
+                  ),
+                ],
+              ],
             ),
             if (trailing != null) ...[
               const SizedBox(width: SpacingTokens.spacing2),

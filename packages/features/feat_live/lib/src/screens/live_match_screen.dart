@@ -374,207 +374,205 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                  child: Row(
-                    children: [
-                      if (context.canPop())
-                        IconButton(
-                          onPressed: () => context.pop(),
-                          icon: const Icon(AfriIcons.back),
-                        ),
-                      IconButton(
-                        onPressed: () => context.push('/fanzone/my'),
-                        icon: const Icon(AfriIcons.history),
-                        tooltip: 'My Predictions',
-                      ),
-                      const Spacer(),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color:
-                              (status == 'live'
-                                      ? ColorTokens.success
-                                      : ColorTokens.clubAccent)
-                                  .withValues(alpha: 0.14),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Text(
-                          statusLabel,
-                          style: TypographyTokens.bodyLarge(),
-                        ),
-                      ),
-                    ],
-                  ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(
+          'Match Center',
+          style: TypographyTokens.headlineSmall(),
+        ),
+        leading: IconButton(
+          onPressed: () => context.pop(),
+          icon: const Icon(AfriIcons.back),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => context.push('/fanzone/my'),
+            icon: const Icon(AfriIcons.history),
+            tooltip: 'My Predictions',
+          ),
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: _loadMatch,
+        color: ColorTokens.clubAccent,
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  SpacingTokens.spacing6,
+                  SpacingTokens.spacing4,
+                  SpacingTokens.spacing6,
+                  SpacingTokens.spacing5,
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing6,
-                  ),
-                  child: EliteCard(
-                    padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                    backgroundColor: Colors.white,
-                    child: Column(
-                      children: [
-                        Text(
-                          competition.toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.black38,
-                            letterSpacing: 1.5,
-                          ),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing4),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TeamBadge(label: _abbreviate(homeTeam)),
-                            const SizedBox(width: SpacingTokens.spacing6),
-                            Text(
-                              '$homeScore - $awayScore',
-                              style: const TextStyle(
-                                fontFamily: 'Display',
-                                fontSize: 48,
-                                fontWeight: FontWeight.w900,
-                                fontStyle: FontStyle.italic,
-                                color: Colors.black,
-                              ),
-                            ),
-                            const SizedBox(width: SpacingTokens.spacing6),
-                            TeamBadge(label: _abbreviate(awayTeam)),
-                          ],
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing4),
-                        Text(
-                          '${homeTeam.toUpperCase()}  •  ${awayTeam.toUpperCase()}',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.black,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing2),
-                        Text(
-                          _timeAndVenue(match, status),
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w900,
-                            color: ColorTokens.clubAccent,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                  child: Row(
-                    children: [
-                      LiveStatBox(
-                        label: 'POSSESSION',
-                        value: stats['POSSESSION']!,
-                      ),
-                      const SizedBox(width: SpacingTokens.spacing3),
-                      LiveStatBox(label: 'SHOTS', value: stats['SHOTS']!),
-                      const SizedBox(width: SpacingTokens.spacing3),
-                      LiveStatBox(label: 'CORNERS', value: stats['CORNERS']!),
-                    ],
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing6,
-                  ),
-                  child: Text(
-                    'MATCH INTEL',
-                    style: TypographyTokens.titleMedium().copyWith(
-                      letterSpacing: 1.4,
-                    ),
-                  ),
-                ),
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  events
-                      .map(
-                        (event) => RepaintBoundary(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                              SpacingTokens.spacing6,
-                              0,
-                              SpacingTokens.spacing6,
-                              SpacingTokens.spacing3,
-                            ),
-                            child: CommentaryCard(
-                              minute: event.minute,
-                              title: event.title,
-                              body: event.body,
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(growable: false),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                child: GlassCard(
                   child: Column(
                     children: [
-                      EliteButton(
-                        label: 'Browse predictions',
-                        fullWidth: true,
-                        onTap: () => context.go('/fanzone/fixtures'),
-                      ),
-                      const SizedBox(height: SpacingTokens.spacing3),
-                      EliteButton(
-                        label: 'Share match',
-                        fullWidth: true,
-                        variant: EliteButtonVariant.outline,
-                        onTap: () async {
-                          await Clipboard.setData(
-                            ClipboardData(
-                              text:
-                                  '${RuntimeBranding.displayAppName}: $homeTeam $homeScore-$awayScore $awayTeam ($statusLabel)',
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            competition,
+                            style: TypographyTokens.labelSmall(
+                              ColorTokens.onSurfaceVariant,
                             ),
-                          );
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Match update copied to clipboard.',
-                                ),
-                              ),
-                            );
-                          }
-                        },
+                          ),
+                          AfriStatusChip(
+                            label: statusLabel,
+                            tone: status == 'live'
+                                ? AfriStatusTone.success
+                                : AfriStatusTone.live,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: SpacingTokens.spacing6),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildTeamBox(homeTeam),
+                          const SizedBox(width: SpacingTokens.spacing6),
+                          Text(
+                            '$homeScore - $awayScore',
+                            style: TypographyTokens.displayMedium(),
+                          ),
+                          const SizedBox(width: SpacingTokens.spacing6),
+                          _buildTeamBox(awayTeam),
+                        ],
+                      ),
+                      const SizedBox(height: SpacingTokens.spacing6),
+                      Text(
+                        _timeAndVenue(match, status).replaceAll('•', '·'),
+                        textAlign: TextAlign.center,
+                        style: TypographyTokens.bodyMedium(
+                          ColorTokens.clubAccent,
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: SpacingTokens.spacing6,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: AfriMetricTile(
+                        label: 'Possession',
+                        value: stats['POSSESSION']!,
+                      ),
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing3),
+                    Expanded(
+                      child: AfriMetricTile(
+                        label: 'Shots',
+                        value: stats['SHOTS']!,
+                      ),
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing3),
+                    Expanded(
+                      child: AfriMetricTile(
+                        label: 'Corners',
+                        value: stats['CORNERS']!,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: SpacingTokens.spacing8,
+                  bottom: SpacingTokens.spacing4,
+                ),
+                child: const AfriSectionHeader(title: 'Match Intel'),
+              ),
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate(
+                events
+                    .map(
+                      (event) => Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          SpacingTokens.spacing6,
+                          0,
+                          SpacingTokens.spacing6,
+                          SpacingTokens.spacing3,
+                        ),
+                        child: CommentaryCard(
+                          minute: event.minute,
+                          title: event.title,
+                          body: event.body,
+                        ),
+                      ),
+                    )
+                    .toList(growable: false),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                child: Column(
+                  children: [
+                    AfriButton(
+                      label: 'Browse predictions',
+                      onTap: () => context.go('/fanzone/fixtures'),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    AfriButton(
+                      label: 'Share match',
+                      variant: AfriButtonVariant.outline,
+                      onTap: () async {
+                        await Clipboard.setData(
+                          ClipboardData(
+                            text:
+                                '${RuntimeBranding.displayAppName}: $homeTeam $homeScore-$awayScore $awayTeam ($statusLabel)',
+                          ),
+                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Match update copied to clipboard.',
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTeamBox(String team) {
+    return Column(
+      children: [
+        TeamBadge(label: _abbreviate(team)),
+        const SizedBox(height: SpacingTokens.spacing2),
+        SizedBox(
+          width: 80,
+          child: Text(
+            team,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TypographyTokens.labelSmall(),
+          ),
+        ),
+      ],
     );
   }
 

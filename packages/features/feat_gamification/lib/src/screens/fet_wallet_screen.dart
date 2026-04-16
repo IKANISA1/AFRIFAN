@@ -264,12 +264,8 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          'FET WALLET',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.4,
-          ),
+          'Wallet',
+          style: TypographyTokens.headlineSmall(),
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
@@ -318,56 +314,33 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           SpacingTokens.spacing12,
         ),
         children: [
-          EliteCard(
-            backgroundColor: Colors.white,
+          GlassCard(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
             child: Column(
               children: [
-                const Text(
-                  'CURRENT BALANCE',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.black38,
-                    letterSpacing: 1.5,
+                Text(
+                  'Current Balance',
+                  style: TypographyTokens.labelSmall(
+                    ColorTokens.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   '${_formatFet(wallet?.balance ?? 0)} FET',
-                  style: const TextStyle(
-                    fontFamily: 'Display',
-                    fontSize: 48,
-                    fontWeight: FontWeight.w900,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.black,
-                    height: 1,
-                  ),
+                  style: TypographyTokens.metricValue(ColorTokens.clubAccent),
                 ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: ColorTokens.clubAccent.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    (wallet?.tier ?? 'fan').toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      color: ColorTokens.clubAccent,
-                      letterSpacing: 1,
-                    ),
-                  ),
+                const SizedBox(height: 12),
+                AfriStatusChip(
+                  label: wallet?.tier ?? 'fan',
+                  tone: AfriStatusTone.live,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildEliteStat('WEEKLY', '+${_formatFet(wallet?.weeklyEarned ?? 0)}'),
-                    _buildEliteStat('MONTHLY', '+${_formatFet(wallet?.monthlyEarned ?? 0)}'),
-                    _buildEliteStat('SPENT', _formatFet(wallet?.lifetimeSpent ?? 0)),
+                    _buildCompactStat('Weekly', '+${_formatFet(wallet?.weeklyEarned ?? 0)}'),
+                    _buildCompactStat('Monthly', '+${_formatFet(wallet?.monthlyEarned ?? 0)}'),
+                    _buildCompactStat('Spent', _formatFet(wallet?.lifetimeSpent ?? 0)),
                   ],
                 ),
               ],
@@ -375,29 +348,29 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           ),
           if ((wallet?.legacyBalanceGap ?? 0) > 0) ...[
             const SizedBox(height: SpacingTokens.spacing4),
-            GlassCard(
-              animate: false,
+            ClayCard(
               child: Row(
                 children: [
-                  const Icon(AfriIcons.statusInfo),
+                  const Icon(AfriIcons.statusInfo, size: 20),
                   const SizedBox(width: SpacingTokens.spacing3),
                   Expanded(
                     child: Text(
                       '${_formatFet(wallet!.legacyBalanceGap)} FET comes from older rewards before wallet history was enabled.',
-                      style: TypographyTokens.bodyMedium(),
+                      style: TypographyTokens.bodySmall(),
                     ),
                   ),
                 ],
               ),
             ),
           ],
-          const SizedBox(height: SpacingTokens.spacing4),
+          const SizedBox(height: SpacingTokens.spacing6),
           FetSplitModel(
             currentTier: wallet?.tier ?? 'supporter',
           ),
-          const SizedBox(height: SpacingTokens.spacing5),
-          AfriSectionCard(
-            title: 'Transfer',
+          const SizedBox(height: SpacingTokens.spacing8),
+          const AfriSectionHeader(title: 'Transfer'),
+          const SizedBox(height: SpacingTokens.spacing4),
+          ClayCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -446,11 +419,12 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                     (supporter) => ListTile(
                       contentPadding: EdgeInsets.zero,
                       dense: true,
-                      title: Text(supporter.displayName),
+                      title: Text(supporter.displayName, style: TypographyTokens.titleSmall()),
                       subtitle: Text(
-                        '#${supporter.publicUserId ?? '000000'} · ${supporter.tier.toUpperCase()}',
+                        '#${supporter.publicUserId ?? '000000'} · ${supporter.tier}',
+                        style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
                       ),
-                      trailing: const Icon(AfriIcons.out),
+                      trailing: const Icon(AfriIcons.out, size: 18),
                       onTap: () {
                         _searchController.text = supporter.displayName;
                         setState(() {
@@ -476,22 +450,22 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                   label: 'Note (optional)',
                   maxLines: 2,
                 ),
-                const SizedBox(height: SpacingTokens.spacing4),
-                EliteButton(
+                const SizedBox(height: SpacingTokens.spacing5),
+                AfriButton(
                   key: const ValueKey<String>(
                     'wallet-transfer-submit',
                   ),
                   label: _isSubmittingTransfer ? 'Sending…' : 'Send FET',
                   onTap: _submitTransfer,
                   isLoading: _isSubmittingTransfer,
-                  enabled: !_isSubmittingTransfer,
                 ),
               ],
             ),
           ),
+          const SizedBox(height: SpacingTokens.spacing8),
+          const AfriSectionHeader(title: 'Redeem'),
           const SizedBox(height: SpacingTokens.spacing4),
-          AfriSectionCard(
-            title: 'Redeem',
+          ClayCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -508,59 +482,36 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                   label: 'Note',
                   maxLines: 2,
                 ),
-                const SizedBox(height: SpacingTokens.spacing4),
-                EliteButton(
+                const SizedBox(height: SpacingTokens.spacing5),
+                AfriButton(
                   key: const ValueKey<String>('wallet-redeem-submit'),
                   label: _isSubmittingRedemption
                       ? 'Submitting…'
                       : 'Redeem FET',
                   onTap: _submitRedemption,
                   isLoading: _isSubmittingRedemption,
-                  enabled: !_isSubmittingRedemption,
-                  variant: EliteButtonVariant.secondary,
+                  variant: AfriButtonVariant.secondary,
                 ),
               ],
             ),
           ),
           const SizedBox(height: SpacingTokens.sectionGap),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Row(
-              children: [
-                const Text(
-                  'ACTIVITY',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white38,
-                    letterSpacing: 2,
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.white10,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    '${transactions.length}',
-                    style: const TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white70,
-                    ),
-                  ),
-                ),
-              ],
+          AfriSectionHeader(
+            title: 'Activity',
+            trailing: Text(
+              '${transactions.length}',
+              style: TypographyTokens.labelSmall(
+                ColorTokens.onSurfaceVariant,
+              ),
             ),
           ),
+          const SizedBox(height: SpacingTokens.spacing4),
           if (transactions.isEmpty)
-            EliteCard(
+            ClayCard(
               child: Text(
                 'Wallet activity appears here once you start earning, sending, or redeeming FET.',
-                style: TypographyTokens.bodyMedium(),
+                style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
+                textAlign: TextAlign.center,
               ),
             )
           else
@@ -577,6 +528,22 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildCompactStat(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TypographyTokens.titleMedium(),
+        ),
+      ],
     );
   }
 

@@ -191,7 +191,7 @@ class _BioPayNfcScreenState extends ConsumerState<BioPayNfcScreen> {
           const SizedBox(height: 34),
           BioPayReferencePrimaryButton(
             label: _isBusy ? 'Activating NFC' : 'Activate NFC',
-            icon: Icons.nfc_rounded,
+            icon: AfriIcons.nfc,
             onTap: _isBusy ? null : _activateNfc,
           ),
         ],

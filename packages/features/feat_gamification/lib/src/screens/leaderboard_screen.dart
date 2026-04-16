@@ -68,86 +68,66 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: Column(
-            children: [
-              // ── Header ──
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.spacing4,
-                  SpacingTokens.spacing4,
-                  SpacingTokens.spacing6,
-                  0,
-                ),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () => context.pop(),
-                      icon: const Icon(AfriIcons.back),
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing2),
-                    Text(
-                      'LEADERBOARD',
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.6,
-                      ),
-                    ),
-                  ],
-                ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(
+          'Leaderboard',
+          style: TypographyTokens.headlineSmall(),
+        ),
+        leading: IconButton(
+          onPressed: () => context.pop(),
+          icon: const Icon(AfriIcons.back),
+        ),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // ── Top-level tabs: FET / SUPPORTERS ──
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.spacing6,
+                vertical: SpacingTokens.spacing3,
               ),
-
-              // ── Top-level tabs: FET / SUPPORTERS ──
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing6,
-                  vertical: SpacingTokens.spacing3,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: ColorTokens.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: ColorTokens.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.all(3),
-                  child: TabBar(
-                    controller: _topTabController,
-                    isScrollable: false,
-                    indicator: BoxDecoration(
-                      color: ColorTokens.clubAccent,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    labelColor: ColorTokens.background,
-                    unselectedLabelColor: ColorTokens.onSurfaceVariant,
-                    labelStyle: TypographyTokens.editorialFont(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.0,
-                    ),
-                    dividerColor: Colors.transparent,
-                    splashFactory: NoSplash.splashFactory,
-                    tabs: const [
-                      Tab(text: 'FET RANKING'),
-                      Tab(text: 'SUPPORTERS'),
-                    ],
-                  ),
-                ),
-              ),
-
-              // ── Tab content ──
-              Expanded(
-                child: TabBarView(
+                padding: const EdgeInsets.all(3),
+                child: TabBar(
                   controller: _topTabController,
-                  children: [
-                    _buildFetTab(),
-                    _buildSupporterTab(),
+                  isScrollable: false,
+                  indicator: BoxDecoration(
+                    color: ColorTokens.clubAccent,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  labelColor: ColorTokens.background,
+                  unselectedLabelColor: ColorTokens.onSurfaceVariant,
+                  labelStyle: TypographyTokens.labelMedium(
+                    ColorTokens.background,
+                  ),
+                  dividerColor: Colors.transparent,
+                  splashFactory: NoSplash.splashFactory,
+                  tabs: const [
+                    Tab(text: 'FET Ranking'),
+                    Tab(text: 'Supporters'),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+
+            // ── Tab content ──
+            Expanded(
+              child: TabBarView(
+                controller: _topTabController,
+                children: [
+                  _buildFetTab(),
+                  _buildSupporterTab(),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -168,19 +148,19 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
           child: Row(
             children: [
               LeaderboardPeriodChip(
-                label: 'ALL TIME',
+                label: 'All time',
                 selected: _fetPeriodIndex == 0,
                 onTap: () => _selectFetPeriod(0),
               ),
               const SizedBox(width: SpacingTokens.spacing2),
               LeaderboardPeriodChip(
-                label: 'WEEKLY',
+                label: 'Weekly',
                 selected: _fetPeriodIndex == 1,
                 onTap: () => _selectFetPeriod(1),
               ),
               const SizedBox(width: SpacingTokens.spacing2),
               LeaderboardPeriodChip(
-                label: 'MONTHLY',
+                label: 'Monthly',
                 selected: _fetPeriodIndex == 2,
                 onTap: () => _selectFetPeriod(2),
               ),

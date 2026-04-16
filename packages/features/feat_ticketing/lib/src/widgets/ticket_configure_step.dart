@@ -93,7 +93,7 @@ class TicketConfigureStep extends StatelessWidget {
                 Row(
                   children: [
                     AfriIconButton(
-                      icon: Icons.remove_rounded,
+                      icon: AfriIcons.remove,
                       onTap: quantity > 1
                           ? () => onQuantityChanged(quantity - 1)
                           : null,
@@ -105,7 +105,7 @@ class TicketConfigureStep extends StatelessWidget {
                     ),
                     const SizedBox(width: SpacingTokens.spacing3),
                     AfriIconButton(
-                      icon: Icons.add_rounded,
+                      icon: AfriIcons.add,
                       onTap: quantity < 8
                           ? () => onQuantityChanged(quantity + 1)
                           : null,
@@ -118,7 +118,7 @@ class TicketConfigureStep extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing6),
           OutlinedButton.icon(
             onPressed: onSeatCodeRequested,
-            icon: const Icon(Icons.event_seat_rounded),
+            icon: const Icon(AfriIcons.seat),
             label: Text(
               selectedSeatCode == null
                   ? 'CHOOSE SPECIFIC SEAT'

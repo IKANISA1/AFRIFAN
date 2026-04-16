@@ -141,7 +141,7 @@ class BioPayReferenceLightBackButton extends StatelessWidget {
           radius: 18,
         ),
         child: Icon(
-          Icons.chevron_left_rounded,
+          AfriIcons.chevronLeft,
           size: 34,
           color: BioPayReferenceInk,
         ),
@@ -170,7 +170,7 @@ class BioPayReferenceDarkBackButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
         ),
         child: const Icon(
-          Icons.chevron_left_rounded,
+          AfriIcons.chevronLeft,
           color: Colors.white,
           size: 34,
         ),
@@ -207,7 +207,7 @@ class BioPayReferenceProfileButton extends StatelessWidget {
           ],
         ),
         child: Icon(
-          Icons.person_outline_rounded,
+          AfriIcons.profile,
           color: BioPayTokens.iconMuted,
           size: 26,
         ),

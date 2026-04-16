@@ -348,29 +348,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         Positioned(
                           left: SpacingTokens.spacing6,
                           bottom: SpacingTokens.spacing4,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: ColorTokens.background.withValues(
-                                alpha: 0.6,
-                              ),
-                              borderRadius: BorderRadius.circular(6),
-                              border: BorderTokens.ghost(),
-                            ),
-                            child: Text(
-                              badge.toUpperCase(),
-                              style: TypographyTokens.editorialFont(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: ColorTokens.onSurface.withValues(
-                                  alpha: 0.9,
-                                ),
-                                letterSpacing: 1.5,
-                              ),
-                            ),
+                          child: AfriStatusChip(
+                            label: badge,
+                            tone: AfriStatusTone.accent,
                           ),
                         ).animate().fadeIn(duration: 400.ms),
                     ],
@@ -388,14 +368,14 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         children: [
                           Expanded(
                             child: Text(
-                              name.toUpperCase(),
+                              name,
                               style: TypographyTokens.headlineLarge(),
                             ),
                           ),
                           const SizedBox(width: SpacingTokens.spacing4),
                           Text(
                             currency.format(price),
-                            style: TypographyTokens.displayMedium(primary),
+                            style: TypographyTokens.titleLarge(primary),
                           ),
                         ],
                       ).animate().fadeIn(duration: 400.ms),
@@ -407,30 +387,18 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           height: 1.5,
                         ),
                       ).animate().fadeIn(delay: 100.ms, duration: 400.ms),
-                      const SizedBox(height: SpacingTokens.spacing4),
-                      Text(
-                        inStock
+                      const SizedBox(height: SpacingTokens.spacing6),
+                      AfriStatusChip(
+                        label: inStock
                             ? (stockCount != null
                                   ? '$stockCount available now'
                                   : 'Available now')
                             : 'Out of stock',
-                        style: TypographyTokens.bodyMedium().copyWith(
-                          color: inStock
-                              ? ColorTokens.success
-                              : ColorTokens.error,
-                        ),
+                        tone: inStock ? AfriStatusTone.success : AfriStatusTone.danger,
                       ),
                       const SizedBox(height: SpacingTokens.spacing8),
                       if (sizes.isNotEmpty) ...[
-                        Text(
-                          'SELECT SIZE',
-                          style: TypographyTokens.editorialFont(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: ColorTokens.onSurfaceVariant,
-                            letterSpacing: 1,
-                          ),
-                        ),
+                        const AfriSectionHeader(title: 'Select size', padding: EdgeInsets.zero),
                         const SizedBox(height: SpacingTokens.spacing3),
                         Wrap(
                           spacing: SpacingTokens.spacing3,
@@ -451,18 +419,14 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                 decoration: BoxDecoration(
                                   color: selected
                                       ? primary
-                                      : Colors.transparent,
+                                      : ColorTokens.surfaceContainerLow,
                                   borderRadius: ShapeTokens.buttonRadius,
-                                  border: selected
-                                      ? BorderTokens.all(color: primary)
-                                      : BorderTokens.ghost(),
+                                  border: BorderTokens.ghost(),
                                 ),
                                 child: Text(
                                   size,
-                                  style: TypographyTokens.editorialFont(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700,
-                                    color: ColorTokens.onSurface,
+                                  style: TypographyTokens.labelMedium(
+                                    selected ? Colors.white : ColorTokens.onSurface,
                                   ),
                                 ),
                               ),
@@ -474,15 +438,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'QUANTITY',
-                            style: TypographyTokens.editorialFont(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: ColorTokens.onSurfaceVariant,
-                              letterSpacing: 1,
-                            ),
-                          ),
+                          const AfriSectionHeader(title: 'Quantity', padding: EdgeInsets.zero),
                           Container(
                             decoration: BoxDecoration(
                               color: ColorTokens.surfaceContainerLow,
@@ -493,7 +449,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  icon: const Icon(Icons.remove_rounded),
+                                  icon: const Icon(Icons.remove_rounded, size: 20),
                                   onPressed: _quantity > 1 ? _decrement : null,
                                 ),
                                 SizedBox(
@@ -501,14 +457,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                   child: Center(
                                     child: Text(
                                       '$_quantity',
-                                      style: TypographyTokens.displaySmall(
-                                        ColorTokens.onSurface,
-                                      ),
+                                      style: TypographyTokens.titleMedium(),
                                     ),
                                   ),
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.add_rounded),
+                                  icon: const Icon(Icons.add_rounded, size: 20),
                                   onPressed: _quantity < maxQuantity
                                       ? _increment
                                       : null,
@@ -518,7 +472,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 120),
+                      const SizedBox(height: 140),
                     ],
                   ),
                 ),
@@ -536,7 +490,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: SpacingTokens.spacing6,
-                        vertical: SpacingTokens.spacing5,
+                        vertical: SpacingTokens.spacing6,
                       ),
                       decoration: BoxDecoration(
                         color: ColorTokens.glassFill,
@@ -552,23 +506,19 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    'TOTAL',
-                                    style: TypographyTokens.editorialFont(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                      color: ColorTokens.onSurfaceVariant,
-                                      letterSpacing: 1,
-                                    ),
+                                    'Total',
+                                    style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
                                   ),
                                   Text(
                                     currency.format(total),
-                                    style: TypographyTokens.displayMedium(
-                                      ColorTokens.onSurface,
+                                    style: TypographyTokens.titleLarge(
+                                      ColorTokens.clubAccent,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
+                            const SizedBox(width: SpacingTokens.spacing4),
                             Expanded(
                               flex: 2,
                               child: Column(
@@ -576,30 +526,19 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                 children: [
                                   AfriButton(
                                     label: 'Add to cart',
-                                    icon: Icons.shopping_bag_outlined,
+                                    icon: AfriIcons.cart,
                                     onTap: _addToCart,
                                     enabled: inStock,
                                   ),
-                                  const SizedBox(
-                                    height: SpacingTokens.spacing2,
-                                  ),
-                                  OutlinedButton(
-                                    onPressed: inStock
-                                        ? () {
-                                            _addToCart();
-                                            context.push('/shop/cart');
-                                          }
-                                        : null,
-                                    style: OutlinedButton.styleFrom(
-                                      minimumSize: const Size(
-                                        double.infinity,
-                                        48,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                    ),
-                                    child: const Text('REVIEW CHECKOUT'),
+                                  const SizedBox(height: SpacingTokens.spacing2),
+                                  AfriButton(
+                                    label: 'Buy now',
+                                    variant: AfriButtonVariant.outline,
+                                    onTap: inStock ? () {
+                                      _addToCart();
+                                      context.push('/shop/cart');
+                                    } : null,
+                                    enabled: inStock,
                                   ),
                                 ],
                               ),

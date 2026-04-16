@@ -2,6 +2,7 @@
 library;
 
 export 'src/fanzone_module.dart';
+export 'src/challenge_module.dart';
 export 'src/notification_providers.dart';
 export 'src/screens/club_fan_zone_screen.dart';
 export 'src/screens/fan_id_screen.dart';

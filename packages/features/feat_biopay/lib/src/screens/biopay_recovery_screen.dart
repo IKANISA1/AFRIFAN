@@ -34,7 +34,7 @@ class BioPayRecoveryScreen extends StatelessWidget {
                     color: ColorTokens.warning.withValues(alpha: 0.14),
                   ),
                   child: const Icon(
-                    Icons.lock_outline_rounded,
+                    AfriIcons.lock,
                     size: 44,
                     color: ColorTokens.warning,
                   ),

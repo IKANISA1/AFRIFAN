@@ -108,34 +108,85 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(
+          'Store',
+          style: TypographyTokens.headlineSmall(),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => showShopSearchSheet(
+              context: context,
+              products: _products,
+            ),
+            icon: const Icon(AfriIcons.search),
+            tooltip: 'Search products',
+          ),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              IconButton(
+                onPressed: () => context.push('/shop/cart'),
+                icon: const Icon(AfriIcons.cart),
+                tooltip: 'View cart',
+              ),
+              if (cartItemCount > 0)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: ColorTokens.clubAccent,
+                      shape: BoxShape.circle,
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
+                    child: Text(
+                      '$cartItemCount',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(width: SpacingTokens.spacing4),
+        ],
+      ),
       body: Stack(
         children: [
           // ── Main Scrollable Content ──
           SafeArea(
             child: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
+              ),
               slivers: [
-                SliverToBoxAdapter(
-                  child: ShopTopBar(
-                    cartItemCount: cartItemCount,
-                    categories: _categories,
-                    onSearchPressed: () => showShopSearchSheet(
-                      context: context,
-                      products: _products,
-                    ),
-                  ),
-                ),
                 SliverToBoxAdapter(
                   child: AfriSectionHeader(
                     title: 'Club store',
                     subtitle:
-                        '${_filteredProducts.length} items${_selectedCategory == 'All' ? '' : ' in $_selectedCategory'}',
+                        '${_filteredProducts.length} items available now.',
+                    padding: const EdgeInsets.fromLTRB(
+                      SpacingTokens.spacing6,
+                      SpacingTokens.spacing4,
+                      SpacingTokens.spacing6,
+                      SpacingTokens.spacing4,
+                    ),
                   ),
                 ),
 
                 SliverToBoxAdapter(
                   child: SizedBox(
-                    height: 44,
+                    height: 40,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(
@@ -150,12 +201,22 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                           padding: const EdgeInsets.only(
                             right: SpacingTokens.spacing2,
                           ),
-                          child: ShopCategoryChip(
-                            label: cat,
-                            isSelected: isSelected,
-                            primary: ColorTokens.clubPrimary,
-                            onTap: () =>
-                                setState(() => _selectedCategory = cat),
+                          child: ChoiceChip(
+                            label: Text(cat),
+                            selected: isSelected,
+                            onSelected: (_) => setState(() => _selectedCategory = cat),
+                            selectedColor: ColorTokens.clubAccent.withValues(alpha: 0.2),
+                            labelStyle: TypographyTokens.labelSmall(
+                              isSelected ? ColorTokens.clubAccent : ColorTokens.onSurfaceVariant,
+                            ),
+                            backgroundColor: Colors.transparent,
+                            side: BorderSide(
+                              color: isSelected ? ColorTokens.clubAccent : ColorTokens.ghostBorder,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
+                            ),
+                            showCheckmark: false,
                           ),
                         );
                       },
@@ -196,7 +257,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                             crossAxisCount: 2,
                             mainAxisSpacing: SpacingTokens.spacing4,
                             crossAxisSpacing: SpacingTokens.spacing3,
-                            childAspectRatio: 0.62,
+                            childAspectRatio: 0.65,
                           ),
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final product = _filteredProducts[index];
@@ -224,7 +285,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                       child: AfriStateView.empty(
                         title: 'No products found',
                         message:
-                            'No active products match this category yet. Try another filter.',
+                            'No items match this category yet. Try another filter.',
                         compact: true,
                       ),
                     ),
@@ -234,7 +295,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                 SliverToBoxAdapter(
                   child: SizedBox(
                     height: cartItemCount > 0
-                        ? SpacingTokens.spacing20 + 56
+                        ? SpacingTokens.spacing20 + 80
                         : SpacingTokens.spacing20,
                   ),
                 ),
@@ -242,18 +303,17 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
             ),
           ),
 
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: CheckoutBar(
-              itemCount: cartItemCount,
-              total: cartTotal.toDouble(),
-              onCheckout: cartItemCount == 0
-                  ? null
-                  : () => context.push('/shop/cart'),
+          if (cartItemCount > 0)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: CheckoutBar(
+                itemCount: cartItemCount,
+                total: cartTotal.toDouble(),
+                onCheckout: () => context.push('/shop/cart'),
+              ),
             ),
-          ),
         ],
       ),
     );

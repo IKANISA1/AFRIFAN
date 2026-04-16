@@ -25,6 +25,7 @@ abstract final class AppModuleRegistry {
     HomeModule(),
     LiveModule(),
     FanzoneModule(),
+    ChallengeModule(),
     BioPayModule(),
     SettingsModule(),
     OnboardingModule(),

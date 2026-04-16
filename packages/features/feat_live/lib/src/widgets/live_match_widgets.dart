@@ -101,27 +101,22 @@ class CommentaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return EliteCard(
-      padding: const EdgeInsets.all(SpacingTokens.spacing5),
+    return ClayCard(
+      padding: const EdgeInsets.all(SpacingTokens.spacing4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 32,
-            height: 32,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
               color: ColorTokens.clubAccent.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
             ),
             alignment: Alignment.center,
             child: Text(
               minute,
-              style: TextStyle(
-                fontFamily: 'Display',
-                fontSize: 14,
-                fontWeight: FontWeight.w900,
-                color: ColorTokens.clubAccent,
-              ),
+              style: TypographyTokens.labelMedium(ColorTokens.clubAccent),
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing4),
@@ -130,22 +125,15 @@ class CommentaryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title.toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                    letterSpacing: 0.5,
-                  ),
+                  title,
+                  style: TypographyTokens.titleSmall(),
                 ),
                 if (body.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+                  const SizedBox(height: SpacingTokens.spacing1),
                   Text(
                     body,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: Colors.white60,
-                      height: 1.4,
+                    style: TypographyTokens.bodySmall(
+                      ColorTokens.onSurfaceVariant,
                     ),
                   ),
                 ],

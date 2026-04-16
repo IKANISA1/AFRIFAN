@@ -10,6 +10,7 @@ class FanzoneSlipSelection {
     required this.outcomeKey,
     required this.outcomeLabel,
     required this.fetPotential,
+    this.odds = 1.0,
     this.competitionName,
   });
 
@@ -21,6 +22,7 @@ class FanzoneSlipSelection {
   final String outcomeKey;
   final String outcomeLabel;
   final int fetPotential;
+  final double odds;
   final String? competitionName;
 
   String get id => '$fixtureMarketId::$outcomeKey';
@@ -35,6 +37,7 @@ class FanzoneSlipSelection {
       outcomeKey: json['outcome_key']?.toString() ?? '',
       outcomeLabel: json['outcome_label']?.toString() ?? '',
       fetPotential: (json['fet_potential'] as num?)?.toInt() ?? 0,
+      odds: (json['odds'] as num?)?.toDouble() ?? 1.0,
       competitionName: json['competition_name']?.toString(),
     );
   }
@@ -53,6 +56,7 @@ class FanzoneSlipSelection {
       outcomeKey: outcome.key,
       outcomeLabel: outcome.label,
       fetPotential: market.fetValue,
+      odds: outcome.odds,
       competitionName: fixture.competitionName,
     );
   }
@@ -66,6 +70,7 @@ class FanzoneSlipSelection {
     String? outcomeKey,
     String? outcomeLabel,
     int? fetPotential,
+    double? odds,
     String? competitionName,
   }) {
     return FanzoneSlipSelection(
@@ -77,6 +82,7 @@ class FanzoneSlipSelection {
       outcomeKey: outcomeKey ?? this.outcomeKey,
       outcomeLabel: outcomeLabel ?? this.outcomeLabel,
       fetPotential: fetPotential ?? this.fetPotential,
+      odds: odds ?? this.odds,
       competitionName: competitionName ?? this.competitionName,
     );
   }
@@ -91,6 +97,7 @@ class FanzoneSlipSelection {
       'outcome_key': outcomeKey,
       'outcome_label': outcomeLabel,
       'fet_potential': fetPotential,
+      'odds': odds,
       'competition_name': competitionName,
     };
   }
@@ -142,16 +149,28 @@ class FanzoneSlipState {
   }
 
   int get totalPotential {
-    final base = items.fold<int>(0, (sum, item) => sum + item.fetPotential);
+    if (items.isEmpty) return 0;
+    
+    // In Betting logic, base potential is multiplied by each selection's odds.
+    // sum(base_fet_per_item * item_odds) for single bets.
+    // (sum(base_fet) * product(odds)) for accumulators/accas.
+    
     if (!accaMode || items.length < 2) {
-      return base;
+       return items.fold<double>(0.0, (sum, item) => sum + (item.fetPotential * item.odds)).floor();
     }
-    final multiplier = switch (items.length) {
-      2 => 1.5,
-      3 => 2.0,
-      _ => 3.0,
+    
+    final baseSum = items.fold<int>(0, (sum, item) => sum + item.fetPotential);
+    final totalOdds = items.fold<double>(1.0, (prod, item) => prod * item.odds);
+    
+    // Add extra acca boost based on length
+    final accaMultiplier = switch (items.length) {
+      2 => 1.1,
+      3 => 1.25,
+      4 => 1.5,
+      _ => 2.0,
     };
-    return (base * multiplier).floor();
+    
+    return (baseSum * totalOdds * accaMultiplier).floor();
   }
 
   FanzoneSlipState copyWith({

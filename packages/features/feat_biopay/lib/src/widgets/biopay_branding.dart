@@ -110,7 +110,7 @@ class BioPayHeroCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     BioPayBadge(
-                      icon: Icons.shield_rounded,
+                      icon: AfriIcons.shield,
                       label: eyebrow,
                       tint: accent.withValues(alpha: 0.16),
                     ),

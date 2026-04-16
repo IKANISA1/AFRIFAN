@@ -184,7 +184,7 @@ class _BioPayQrScreenState extends ConsumerState<BioPayQrScreen> {
                     label: _isLoading
                         ? 'Generating QR Code'
                         : 'Generate QR Code',
-                    icon: Icons.qr_code_2_rounded,
+                    icon: AfriIcons.qrCode,
                     color: BioPayTokens.qrCardBackground,
                     onTap: _isLoading ? null : _generateQr,
                   ),
@@ -233,7 +233,7 @@ class _BioPayQrScreenState extends ConsumerState<BioPayQrScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.bolt_rounded,
+                            AfriIcons.bolt,
                             color: BioPayReferenceBlue,
                             size: 24,
                           ),

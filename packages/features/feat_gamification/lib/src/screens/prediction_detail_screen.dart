@@ -274,7 +274,7 @@ class _PredictionDetailScreenState
                                 ),
                                 const SizedBox(height: SpacingTokens.spacing4),
                                 Text(
-                                  '${detail.homeTeam.toUpperCase()}  •  ${detail.awayTeam.toUpperCase()}',
+                                  '${detail.homeTeamShort.toUpperCase()}  •  ${detail.awayTeamShort.toUpperCase()}',
                                   textAlign: TextAlign.center,
                                   style: TypographyTokens.monolithFont(
                                     fontSize: 18,
@@ -324,7 +324,7 @@ class _PredictionDetailScreenState
                               const SizedBox(width: SpacingTokens.spacing3),
                               _DetailMetric(
                                 label: 'SELECTION',
-                                value: detail.selectedOutcome.toUpperCase(),
+                                value: '${detail.selectedOutcome.toUpperCase()} (${detail.odds.toStringAsFixed(1)}x)',
                                 accent: true,
                               ),
                               const SizedBox(width: SpacingTokens.spacing3),

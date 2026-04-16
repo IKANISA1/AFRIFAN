@@ -118,13 +118,12 @@ class _BioPayRegisterScreenState extends ConsumerState<BioPayRegisterScreen> {
       },
       child: ListView(
         children: [
-          const SizedBox(height: 6),
           Text(
-            'Link Face ID\nto this route.',
+            'Link Face ID\nto this route',
             style: BioPayReferenceText(
               fontSize: 34,
-              fontWeight: FontWeight.w900,
-              height: 1.08,
+              fontWeight: FontWeight.w700,
+              height: 1.1,
             ),
           ),
           const SizedBox(height: 12),
@@ -218,12 +217,12 @@ class _BioPayRegisterScreenState extends ConsumerState<BioPayRegisterScreen> {
                       ),
                       const SizedBox(height: 34),
                       Text(
-                        'ENROLLMENT SUCCESS',
+                        'Enrollment successful',
                         style: BioPayReferenceText(
                           fontSize: 15,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                           color: BioPayReferenceMuted,
-                          letterSpacing: 2.2,
+                          letterSpacing: 0.5,
                         ),
                       ),
                       const SizedBox(height: 14),

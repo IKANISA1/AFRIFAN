@@ -109,7 +109,7 @@ class BioPayLivenessPromptOverlay extends StatelessWidget {
                       ),
                       alignment: Alignment.center,
                       child: Icon(
-                        Icons.visibility_rounded,
+                        AfriIcons.visibility,
                         color: ColorTokens.clubPrimary,
                       ),
                     ),

@@ -185,52 +185,34 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primary.withValues(alpha: 0.16),
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                          child: Text(
-                            category.toUpperCase(),
-                            style: TypographyTokens.titleMedium().copyWith(
-                              color: Theme.of(context).colorScheme.primary,
-                              letterSpacing: 1.2,
-                            ),
-                          ),
+                        AfriStatusChip(
+                          label: category,
+                          tone: AfriStatusTone.info,
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
                         Text(
-                          title.toUpperCase(),
+                          title,
                           style: TypographyTokens.headlineLarge().copyWith(
                             color: ColorTokens.onSurface,
                           ),
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
                         Text(
-                          'Club News  •  ${createdAt.isEmpty ? 'Today' : createdAt.split('T').first}  •  By ${RuntimeBranding.displayAppName} Media Desk',
+                          'Club News  ·  ${createdAt.isEmpty ? 'Today' : createdAt.split('T').first}  ·  Media Desk',
                           style: TypographyTokens.bodySmall(),
                         ),
                         const SizedBox(height: SpacingTokens.spacing6),
-                        GlassCard(
-                          animate: false,
-                          child: Text(
-                            content,
-                            style: TypographyTokens.bodyLarge(),
+                        Text(
+                          content,
+                          style: TypographyTokens.bodyLarge().copyWith(
+                            height: 1.6,
                           ),
                         ),
                         if (_related.isNotEmpty) ...[
-                          const SizedBox(height: SpacingTokens.spacing6),
-                          Text(
-                            'RELATED INTEL',
-                            style: TypographyTokens.titleMedium().copyWith(
-                              letterSpacing: 1.4,
-                            ),
+                          const SizedBox(height: SpacingTokens.spacing8),
+                          const AfriSectionHeader(
+                            title: 'Related intel',
+                            padding: EdgeInsets.zero,
                           ),
                           const SizedBox(height: SpacingTokens.spacing4),
                           ..._related.map((entry) {
@@ -279,7 +261,7 @@ class _ArticleHeroFallback extends StatelessWidget {
       alignment: Alignment.bottomLeft,
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       child: Text(
-        category.toUpperCase(),
+        category,
         style: TypographyTokens.headlineLarge().copyWith(
           color: ColorTokens.onSurface,
         ),
@@ -301,20 +283,24 @@ class _RelatedArticle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
-      animate: false,
+    return ClayCard(
       onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title.toUpperCase(),
-            style: TypographyTokens.titleLarge().copyWith(
+            title,
+            style: TypographyTokens.titleMedium().copyWith(
               color: ColorTokens.onSurface,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
-          Text(subtitle, style: TypographyTokens.bodyMedium()),
+          Text(
+            subtitle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TypographyTokens.bodySmall(),
+          ),
         ],
       ),
     );

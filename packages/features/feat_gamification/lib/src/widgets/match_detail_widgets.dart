@@ -328,7 +328,7 @@ class MatchMarketCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      market.marketName,
+                      '${fixture.homeTeamShort} vs ${fixture.awayTeamShort} · ${market.marketName}',
                       style: TypographyTokens.titleMedium(),
                     ),
                     if (market.description.isNotEmpty) ...[
@@ -362,10 +362,11 @@ class MatchMarketCard extends ConsumerWidget {
                   .map((outcome) {
                     return MarketOptionPill(
                       label: outcome.label,
+                      odds: outcome.odds,
                       isSelected: selectedOutcomeKey == outcome.key,
                       trailing: selectedOutcomeKey == outcome.key
                           ? Icon(
-                              Icons.check_rounded,
+                              AfriIcons.check,
                               size: 14,
                               color: ColorTokens.clubAccent,
                             )

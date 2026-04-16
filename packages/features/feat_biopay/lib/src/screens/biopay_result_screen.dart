@@ -27,10 +27,10 @@ class BioPayResultScreen extends StatelessWidget {
       BioPayTaskResultTone.pending => BioPayTokens.pendingPanel,
     };
     final icon = switch (args.tone) {
-      BioPayTaskResultTone.success => Icons.check_rounded,
+      BioPayTaskResultTone.success => AfriIcons.check,
       BioPayTaskResultTone.error => AfriIcons.close,
-      BioPayTaskResultTone.blocked => Icons.warning_rounded,
-      BioPayTaskResultTone.pending => Icons.schedule_rounded,
+      BioPayTaskResultTone.blocked => AfriIcons.warning,
+      BioPayTaskResultTone.pending => AfriIcons.statusPending,
     };
 
     return Scaffold(

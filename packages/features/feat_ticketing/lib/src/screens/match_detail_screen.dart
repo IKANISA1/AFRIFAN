@@ -208,7 +208,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: ColorTokens.onSurface),
+          icon: Icon(AfriIcons.back, color: ColorTokens.onSurface),
           onPressed: () {
             if (_step == _CheckoutWizardStep.checkout) {
               setState(() => _step = _CheckoutWizardStep.configure);

@@ -121,7 +121,7 @@ class MatchDetailEmptyState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.confirmation_number_outlined,
+              AfriIcons.tickets,
               size: 56,
               color: ColorTokens.onSurfaceVariant,
             ),

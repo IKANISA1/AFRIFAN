@@ -186,21 +186,18 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Review order', style: TypographyTokens.headlineMedium()),
-            const SizedBox(height: SpacingTokens.spacing3),
+            Text('Review order', style: TypographyTokens.headlineSmall()),
+            const SizedBox(height: SpacingTokens.spacing4),
             ClayCard(
-              padding: const EdgeInsets.all(SpacingTokens.spacing5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Summary', style: TypographyTokens.labelLarge()),
-                  const SizedBox(height: SpacingTokens.spacing3),
                   ...items
                       .take(3)
                       .map(
                         (item) => Padding(
                           padding: const EdgeInsets.only(
-                            bottom: SpacingTokens.spacing2,
+                            bottom: SpacingTokens.spacing3,
                           ),
                           child: Row(
                             children: [
@@ -212,55 +209,60 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               ),
                               Text(
                                 currency.format(item.lineTotal),
-                                style: TypographyTokens.labelLarge(),
+                                style: TypographyTokens.titleSmall(),
                               ),
                             ],
                           ),
                         ),
                       ),
                   if (items.length > 3)
-                    Text(
-                      '+${items.length - 3} more items',
-                      style: TypographyTokens.bodySmall(),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
+                      child: Text(
+                        '+${items.length - 3} more items',
+                        style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+                      ),
                     ),
-                  const SizedBox(height: SpacingTokens.spacing3),
-                  Text('Deliver to', style: TypographyTokens.labelSmall()),
+                  const SizedBox(height: SpacingTokens.spacing2),
+                  Text('Deliver to', style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant)),
                   const SizedBox(height: SpacingTokens.spacing1),
                   Text(
                     _addressController.text.trim(),
                     style: TypographyTokens.bodyMedium(),
                   ),
-                  const SizedBox(height: SpacingTokens.spacing2),
-                  Text(
-                    currency.format(total),
-                    style: TypographyTokens.headlineSmall(
-                      ColorTokens.clubAccent,
-                    ),
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Total', style: TypographyTokens.titleMedium()),
+                      Text(
+                        currency.format(total),
+                        style: TypographyTokens.titleLarge(
+                          ColorTokens.clubAccent,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: SpacingTokens.spacing3),
+            const SizedBox(height: SpacingTokens.spacing5),
             Text(
-              'Approve the MOMO prompt, then confirm once you have submitted the payment request. Orders remain pending until verification completes.',
+              'Approve the MOMO prompt on your device, then confirm here. Orders remain pending until verification is complete.',
               style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
             ),
-            const SizedBox(height: SpacingTokens.spacing5),
+            const SizedBox(height: SpacingTokens.spacing6),
             AfriButton(
-              label: 'I submitted the MOMO request',
+              label: 'I submitted the payment',
               fullWidth: true,
               onTap: () => Navigator.of(context).pop(true),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-            OutlinedButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 56),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              child: const Text('Back'),
+            AfriButton(
+              label: 'Back',
+              variant: AfriButtonVariant.outline,
+              fullWidth: true,
+              onTap: () => Navigator.of(context).pop(false),
             ),
           ],
         );
@@ -349,7 +351,6 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   }),
                   const SizedBox(height: SpacingTokens.spacing4),
                   ClayCard(
-                    padding: const EdgeInsets.all(SpacingTokens.spacing5),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -358,23 +359,23 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           subtitle: 'Address and total',
                           padding: EdgeInsets.zero,
                         ),
-                        const SizedBox(height: SpacingTokens.spacing3),
+                        const SizedBox(height: SpacingTokens.spacing4),
                         TextField(
                           controller: _addressController,
                           maxLines: 2,
                           decoration: InputDecoration(hintText: deliveryHint),
                         ),
-                        const SizedBox(height: SpacingTokens.spacing4),
+                        const SizedBox(height: SpacingTokens.spacing6),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               'Subtotal',
-                              style: TypographyTokens.bodyMedium(),
+                              style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
                             ),
                             Text(
                               currency.format(total),
-                              style: TypographyTokens.bodyLarge(),
+                              style: TypographyTokens.titleSmall(),
                             ),
                           ],
                         ),
@@ -384,22 +385,22 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           children: [
                             Text(
                               'Delivery',
-                              style: TypographyTokens.bodyMedium(),
+                              style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
                             ),
                             Text(
                               currency.format(0),
-                              style: TypographyTokens.bodyLarge(),
+                              style: TypographyTokens.titleSmall(),
                             ),
                           ],
                         ),
-                        const SizedBox(height: SpacingTokens.spacing3),
+                        const SizedBox(height: SpacingTokens.spacing4),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('TOTAL', style: TypographyTokens.labelLarge()),
+                            Text('Total', style: TypographyTokens.titleMedium()),
                             Text(
                               currency.format(total),
-                              style: TypographyTokens.headlineSmall(
+                              style: TypographyTokens.titleLarge(
                                 ColorTokens.clubAccent,
                               ),
                             ),
@@ -418,25 +419,25 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   ] else if (_paymentRoute != null) ...[
                     const SizedBox(height: SpacingTokens.spacing4),
                     ClayCard(
-                      padding: const EdgeInsets.all(SpacingTokens.spacing4),
                       child: Row(
                         children: [
                           const Icon(
                             Icons.verified_rounded,
                             color: ColorTokens.success,
+                            size: 20,
                           ),
                           const SizedBox(width: SpacingTokens.spacing3),
                           Expanded(
                             child: Text(
                               'Pay to ${_paymentRoute!.payToLabel}',
-                              style: TypographyTokens.bodyMedium(),
+                              style: TypographyTokens.bodySmall(),
                             ),
                           ),
                         ],
                       ),
                     ),
                   ],
-                  const SizedBox(height: SpacingTokens.spacing6),
+                  const SizedBox(height: SpacingTokens.spacing8),
                   AfriButton(
                     label: paymentRouteBlocked
                         ? 'Payment route not ready'
@@ -448,6 +449,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     onTap: () => _checkout(items, total),
                     enabled: !_submitting && !paymentRouteBlocked,
                   ),
+                  const SizedBox(height: SpacingTokens.spacing10),
                 ],
               ),
             ),

@@ -51,7 +51,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
         title: Text('TICKETS', style: TypographyTokens.headlineLarge()),
         actions: [
           IconButton(
-            icon: Icon(Icons.tune_rounded, color: ColorTokens.onSurface),
+            icon: Icon(AfriIcons.filter, color: ColorTokens.onSurface),
             onPressed: () => showAfriFilterSortSheet(
               context: context,
               title: 'Match Filters',
@@ -228,7 +228,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
               Row(
                 children: [
                   Icon(
-                    Icons.calendar_today,
+                    AfriIcons.calendar,
                     size: 14,
                     color: ColorTokens.onSurfaceVariant,
                   ),
@@ -239,7 +239,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                   ),
                   const SizedBox(width: SpacingTokens.spacing4),
                   Icon(
-                    Icons.location_on_outlined,
+                    AfriIcons.location,
                     size: 14,
                     color: ColorTokens.onSurfaceVariant,
                   ),
@@ -318,7 +318,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
         shape: BoxShape.circle,
       ),
       child: Icon(
-        Icons.shield,
+        AfriIcons.shield,
         color: ColorTokens.onSurfaceVariant,
         size: 20,
       ),
@@ -348,7 +348,7 @@ class _TicketState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.confirmation_number_outlined,
+              AfriIcons.tickets,
               size: 56,
               color: ColorTokens.onSurfaceVariant,
             ),

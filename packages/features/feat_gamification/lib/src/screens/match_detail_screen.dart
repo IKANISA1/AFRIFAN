@@ -318,7 +318,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                     children: [
                       Expanded(
                         child: Text(
-                          fixture.homeTeamName,
+                          fixture.homeTeamShort.toUpperCase(),
                           textAlign: TextAlign.center,
                           style: TypographyTokens.titleLarge(),
                         ),
@@ -342,7 +342,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                       ),
                       Expanded(
                         child: Text(
-                          fixture.awayTeamName,
+                          fixture.awayTeamShort.toUpperCase(),
                           textAlign: TextAlign.center,
                           style: TypographyTokens.titleLarge(),
                         ),

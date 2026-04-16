@@ -41,175 +41,154 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(
-              SpacingTokens.screenPadding,
-              SpacingTokens.screenPadding,
-              SpacingTokens.screenPadding,
-              92.0 + SpacingTokens.sectionGap,
-            ),
-            children: [
-              Text(
-                'THE BELOVED',
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: ColorTokens.clubAccent, letterSpacing: 2),
-              ),
-              const Text(
-                'SETTINGS',
-                style: TextStyle(fontFamily: 'Display', fontSize: 32, fontWeight: FontWeight.w900, fontStyle: FontStyle.italic, color: Colors.white, height: 1),
-              ),
-              const SizedBox(height: 24),
-
-              // ── Profile card ──
-              EliteCard(
-                backgroundColor: Colors.white,
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 56,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
-                          ),
-                          alignment: Alignment.center,
-                          child: const Icon(AfriIcons.profile, color: Colors.black),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                alias, 
-                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.black, letterSpacing: -0.5)
-                              ),
-                              const SizedBox(height: 2),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.05),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  (profile?.isAdmin == true ? 'Admin' : 'Supporter').toUpperCase(),
-                                  style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Colors.black54),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Container(height: 1, color: Colors.black.withValues(alpha: 0.05)),
-                    const SizedBox(height: 20),
-                    EliteButton(
-                      label: 'Membership Details',
-                      onTap: () => context.push('/membership'),
-                      variant: EliteButtonVariant.primary,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // ── Heritage ──
-              _buildEliteSection('HERITAGE', [
-                AfriListRow(
-                  icon: AfriIcons.history,
-                  title: 'History & Honors',
-                  onTap: () => context.push('/history'),
-                ),
-                AfriListRow(
-                  icon: Icons.auto_awesome_rounded,
-                  title: 'Hall of Fame',
-                  onTap: () {},
-                ),
-              ]),
-
-              const SizedBox(height: 24),
-
-              // ── Account ──
-              _buildEliteSection('ACCOUNT', [
-                AfriListRow(
-                  icon: AfriIcons.profile,
-                  title: 'Edit profile',
-                  onTap: () => context.push('/settings/edit-profile'),
-                ),
-                AfriListRow(
-                  icon: AfriIcons.notifications,
-                  title: 'Notifications',
-                  onTap: () => context.push('/settings/notifications'),
-                ),
-              ]),
-
-              const SizedBox(height: 24),
-
-              // ── Support ──
-              _buildEliteSection('SUPPORT', [
-                AfriListRow(
-                  icon: AfriIcons.help,
-                  title: 'Help & Support',
-                  onTap: () => _openWhatsApp(context, supportWhatsApp.valueOrNull),
-                ),
-                AfriListRow(
-                  icon: AfriIcons.privacy,
-                  title: 'Privacy Policy',
-                  onTap: () {},
-                ),
-              ]),
-
-              const SizedBox(height: 32),
-
-              // ── Account actions ──
-              if (profile?.isAdmin == true)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: EliteButton(
-                    label: 'Admin Workspace',
-                    onTap: () => _openAdminWorkspace(context, ref),
-                    variant: EliteButtonVariant.secondary,
-                    icon: AfriIcons.admin,
-                  ),
-                ),
-              
-              EliteButton(
-                label: 'Sign Out',
-                onTap: () async {
-                  final confirmed = await showSignOutConfirmationSheet(context);
-                  if (!confirmed) return;
-                  await ref.read(authStateProvider.notifier).signOut();
-                  if (!context.mounted) return;
-                  context.go('/onboarding');
-                },
-                variant: EliteButtonVariant.outline,
-                icon: AfriIcons.logout,
-              ),
-            ],
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(
+          'Settings',
+          style: TypographyTokens.headlineSmall(),
+        ),
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(
+            SpacingTokens.screenPadding,
+            SpacingTokens.spacing4,
+            SpacingTokens.screenPadding,
+            SpacingTokens.spacing20,
           ),
+          children: [
+            // ── Profile summary ──
+            GlassCard(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          color: ColorTokens.surfaceContainerHigh,
+                          borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+                        ),
+                        alignment: Alignment.center,
+                        child: const Icon(AfriIcons.profile, color: Colors.white),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              alias, 
+                              style: TypographyTokens.titleLarge(),
+                            ),
+                            const SizedBox(height: 4),
+                            AfriStatusChip(
+                              label: profile?.isAdmin == true ? 'Admin' : 'Supporter',
+                              tone: AfriStatusTone.accent,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  AfriButton(
+                    label: 'Membership details',
+                    onTap: () => context.push('/membership'),
+                    variant: AfriButtonVariant.primary,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: SpacingTokens.spacing8),
+
+            // ── Heritage ──
+            _buildMinimalistSection('Heritage', [
+              AfriListRow(
+                icon: AfriIcons.history,
+                title: 'History & honors',
+                onTap: () => context.push('/history'),
+              ),
+              AfriListRow(
+                icon: Icons.auto_awesome_rounded,
+                title: 'Hall of fame',
+                onTap: () {},
+              ),
+            ]),
+
+            const SizedBox(height: SpacingTokens.spacing6),
+
+            // ── Account ──
+            _buildMinimalistSection('Account', [
+              AfriListRow(
+                icon: AfriIcons.profile,
+                title: 'Edit profile',
+                onTap: () => context.push('/settings/edit-profile'),
+              ),
+              AfriListRow(
+                icon: AfriIcons.notifications,
+                title: 'Notifications',
+                onTap: () => context.push('/settings/notifications'),
+              ),
+            ]),
+
+            const SizedBox(height: SpacingTokens.spacing6),
+
+            // ── Support ──
+            _buildMinimalistSection('Support', [
+              AfriListRow(
+                icon: AfriIcons.help,
+                title: 'Help & support',
+                onTap: () => _openWhatsApp(context, supportWhatsApp.valueOrNull),
+              ),
+              AfriListRow(
+                icon: AfriIcons.privacy,
+                title: 'Privacy policy',
+                onTap: () {},
+              ),
+            ]),
+
+            const SizedBox(height: SpacingTokens.spacing8),
+
+            // ── Account actions ──
+            if (profile?.isAdmin == true)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: AfriButton(
+                  label: 'Admin workspace',
+                  onTap: () => _openAdminWorkspace(context, ref),
+                  variant: AfriButtonVariant.secondary,
+                  icon: AfriIcons.admin,
+                ),
+              ),
+            
+            AfriButton(
+              label: 'Sign out',
+              onTap: () async {
+                final confirmed = await showSignOutConfirmationSheet(context);
+                if (!confirmed) return;
+                await ref.read(authStateProvider.notifier).signOut();
+                if (!context.mounted) return;
+                context.go('/onboarding');
+              },
+              variant: AfriButtonVariant.outline,
+              icon: AfriIcons.logout,
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildEliteSection(String title, List<Widget> children) {
+  Widget _buildMinimalistSection(String title, List<Widget> children) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Text(
-            title,
-            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.white38, letterSpacing: 2),
-          ),
-        ),
+        AfriSectionHeader(title: title, padding: EdgeInsets.zero),
+        const SizedBox(height: SpacingTokens.spacing3),
         ...children.map((child) => Padding(
-          padding: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.only(bottom: 4),
           child: child,
         )),
       ],

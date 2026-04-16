@@ -393,22 +393,24 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
           tooltip: 'Back',
         ),
         title: Text(
-          'MEMBERSHIP',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: ColorTokens.onSurface,
-            letterSpacing: 2.0,
-          ),
+          'Membership',
+          style: TypographyTokens.headlineSmall(),
         ),
       ),
       body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         slivers: [
           // Digital membership card
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              padding: const EdgeInsets.fromLTRB(
+                SpacingTokens.spacing6,
+                SpacingTokens.spacing4,
+                SpacingTokens.spacing6,
+                SpacingTokens.spacing6,
+              ),
               child: MembershipCard(
                 tierLabel: currentTier,
                 fet: currentFet,
@@ -431,7 +433,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
             child: SizedBox(height: SpacingTokens.spacing8),
           ),
 
-          // ── Enhanced Digital Card ──
+          // ── Digital card ──
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -440,27 +442,20 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Digital card',
-                          style: TypographyTokens.sectionTitle(),
-                        ),
-                      ),
-                      AfriInfoChip(
-                        icon: AfriIcons.share,
-                        label: 'Share',
-                        onTap: () {
-                          // TODO(#AFRI-104): Open share card modal.
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Share coming soon.')),
-                          );
-                        },
-                      ),
-                    ],
+                  AfriSectionHeader(
+                    title: 'Digital card',
+                    padding: EdgeInsets.zero,
+                    trailing: AfriInfoChip(
+                      icon: AfriIcons.share,
+                      label: 'Share',
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Share coming soon.')),
+                        );
+                      },
+                    ),
                   ),
-                  const SizedBox(height: SpacingTokens.spacing3),
+                  const SizedBox(height: SpacingTokens.spacing4),
                   DigitalMembershipCardFull(
                     clubName: RuntimeBranding.displayHomeTeamName,
                     tier: currentTier,
@@ -478,6 +473,55 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
               ),
             ),
           ),
+
+          const SliverToBoxAdapter(
+            child: SizedBox(height: SpacingTokens.spacing8),
+          ),
+
+          // ── Status summary ──
+          if (!_isLoading && _error == null)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: SpacingTokens.spacing6,
+                ),
+                child: GlassCard(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              currentTier,
+                              style: TypographyTokens.metricValue(
+                                ColorTokens.clubAccent,
+                              ),
+                            ),
+                            const SizedBox(height: SpacingTokens.spacing2),
+                            Text(
+                              currentFet == 0
+                                  ? 'Earn FET from tickets, fan clubs & contributions.'
+                                  : '$currentFet FET earned.',
+                              style: TypographyTokens.bodyMedium(),
+                            ),
+                            if (_membership?['expires_at'] != null) ...[
+                              const SizedBox(height: SpacingTokens.spacing2),
+                              Text(
+                                'Renews on ${_formatMembershipDate(_membership?['expires_at']?.toString())}',
+                                style: TypographyTokens.bodySmall(
+                                  ColorTokens.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
 
           const SliverToBoxAdapter(
             child: SizedBox(height: SpacingTokens.spacing6),
@@ -500,14 +544,28 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
             child: SizedBox(height: SpacingTokens.spacing8),
           ),
 
-          // ── Packages header ──
+          // ── Registry ──
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: SpacingTokens.screenPadding,
               ),
-              child: Text('Packages', style: TypographyTokens.sectionTitle()),
+              child: AfriListRow(
+                icon: AfriIcons.clubZone,
+                title: 'Fan registry',
+                subtitle: 'Browse all supporters',
+                onTap: () => context.push('/membership/fans'),
+              ),
             ),
+          ),
+
+          const SliverToBoxAdapter(
+            child: SizedBox(height: SpacingTokens.spacing8),
+          ),
+
+          // ── Packages ──
+          const SliverToBoxAdapter(
+            child: AfriSectionHeader(title: 'Packages'),
           ),
 
           const SliverToBoxAdapter(
@@ -555,71 +613,6 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
               ),
             ),
 
-          if (!_isLoading && _error == null)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.spacing6,
-                  0,
-                  SpacingTokens.spacing6,
-                  SpacingTokens.spacing4,
-                ),
-                child: GlassCard(
-                  animate: false,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              currentTier.toUpperCase(),
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w800,
-                                color: ColorTokens.clubAccent,
-                              ),
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing2),
-                            Text(
-                              currentFet == 0
-                                  ? 'Earn FET from tickets, fan clubs & contributions.'
-                                  : '$currentFet FET earned.',
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                            if (_membership?['expires_at'] != null) ...[
-                              const SizedBox(height: SpacingTokens.spacing2),
-                              Text(
-                                'Renews on ${_formatMembershipDate(_membership?['expires_at']?.toString())}',
-                                style: theme.textTheme.bodySmall,
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                SpacingTokens.screenPadding,
-                0,
-                SpacingTokens.screenPadding,
-                SpacingTokens.spacing4,
-              ),
-              child: AfriListRow(
-                icon: AfriIcons.clubZone,
-                title: 'Fan registry',
-                subtitle: 'Browse all supporters',
-                onTap: () => context.push('/membership/fans'),
-              ),
-            ),
-          ),
-
           if (!_isLoading && _packages.isNotEmpty)
             SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
@@ -632,9 +625,9 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                     SpacingTokens.spacing6,
                     0,
                     SpacingTokens.spacing6,
-                    SpacingTokens.spacing2,
+                    SpacingTokens.spacing3,
                   ),
-                  child: GlassCard(
+                  child: ClayCard(
                     onTap: () => context.push('/membership/tier/$tierId'),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -644,32 +637,16 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                             Expanded(
                               child: Text(
                                 (pkg['title'] ?? pkg['tier'] ?? 'Package')
-                                    .toString()
-                                    .toUpperCase(),
+                                    .toString(),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TypographyTokens.monolithFont(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                  color: ColorTokens.onSurface,
-                                  letterSpacing: 0.5,
-                                ),
+                                style: TypographyTokens.titleMedium(),
                               ),
                             ),
                             const SizedBox(width: SpacingTokens.spacing3),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: primary.withValues(alpha: 0.15),
-                                borderRadius: ShapeTokens.chipRadius,
-                              ),
-                              child: Text(
-                                (pkg['tier'] ?? '').toString().toUpperCase(),
-                                style: TypographyTokens.labelSmall(primary),
-                              ),
+                            AfriStatusChip(
+                              label: (pkg['tier'] ?? '').toString(),
+                              tone: AfriStatusTone.info,
                             ),
                           ],
                         ),
@@ -677,21 +654,21 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                           const SizedBox(height: SpacingTokens.spacing2),
                           Text(
                             pkg['description'].toString(),
-                            style: theme.textTheme.bodySmall,
+                            style: TypographyTokens.bodySmall(
+                              ColorTokens.onSurfaceVariant,
+                            ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],
-                        const SizedBox(height: SpacingTokens.spacing3),
+                        const SizedBox(height: SpacingTokens.spacing4),
                         Row(
                           children: [
                             Expanded(
                               child: Text(
                                 _packagePriceLabel(pkg),
-                                style: TypographyTokens.monolithFont(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: ColorTokens.clubAccent,
+                                style: TypographyTokens.titleMedium(
+                                  ColorTokens.clubAccent,
                                 ),
                               ),
                             ),
@@ -721,6 +698,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
         ],
       ),
     );
+  }
   }
 
   String _tierLabelFromFet(int fet) {

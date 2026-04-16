@@ -105,117 +105,85 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(
+          'My groups',
+          style: TypographyTokens.headlineSmall(),
+        ),
+        leading: IconButton(
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/home');
+            }
+          },
+          icon: Icon(
+            AfriIcons.back,
+            color: ColorTokens.onSurface,
+          ),
+          tooltip: 'Back',
+        ),
+        actions: [
+          AfriIconButton(
+            icon: AfriIcons.join,
+            onTap: _openJoinGroup,
+            tooltip: 'Join group',
+          ),
+          const SizedBox(width: SpacingTokens.spacing1),
+          AfriIconButton(
+            icon: AfriIcons.add,
+            onTap: _openCreateGroup,
+            tooltip: 'New group',
+          ),
+          const SizedBox(width: SpacingTokens.spacing4),
+        ],
+      ),
       body: SafeArea(
         child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
           slivers: [
-            // Header
+            // Summary row
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
                   SpacingTokens.spacing6,
                   SpacingTokens.spacing4,
                   SpacingTokens.spacing6,
-                  0,
+                  SpacingTokens.spacing6,
                 ),
                 child: Row(
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        if (context.canPop()) {
-                          context.pop();
-                        } else {
-                          context.go('/home');
-                        }
-                      },
-                      icon: Icon(
-                        AfriIcons.back,
-                        color: ColorTokens.onSurface,
+                    Expanded(
+                      child: AfriMetricTile(
+                        label: 'Groups',
+                        value: '${_groups.length}',
+                        accentColor: ColorTokens.clubAccent,
                       ),
-                      tooltip: 'Back',
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
                     ),
                     const SizedBox(width: SpacingTokens.spacing3),
                     Expanded(
-                      child: Text(
-                        'MY Groups',
-                        style: TypographyTokens.monolithFont(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: ColorTokens.onSurface,
-                          letterSpacing: 2.0,
-                        ),
+                      child: AfriMetricTile(
+                        label: 'Contributed',
+                        value: currency.formatPlain(totalContributed),
+                        meta: context.afriCurrencyCode,
                       ),
-                    ),
-                    Wrap(
-                      spacing: SpacingTokens.spacing3,
-                      children: [
-                        OutlinedButton.icon(
-                          onPressed: _openJoinGroup,
-                          icon: const Icon(AfriIcons.join),
-                          label: const Text('Join'),
-                        ),
-                        AfriButton(
-                          label: 'New',
-                          icon: AfriIcons.add,
-                          onTap: _openCreateGroup,
-                          fullWidth: false,
-                        ),
-                      ],
                     ),
                   ],
                 ),
               ),
             ),
 
-            const SliverToBoxAdapter(
-              child: SizedBox(height: SpacingTokens.spacing6),
-            ),
-
-            // Summary card
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing6,
-                ),
-                child: GlassCard(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _SummaryItem(
-                        value: '${_groups.length}',
-                        label: 'GROUPS',
-                        color: primary,
-                      ),
-                      Container(
-                        width: 1,
-                        height: 40,
-                        color: ColorTokens.ghostBorder,
-                      ),
-                      _SummaryItem(
-                        value: currency.format(totalContributed),
-                        label: 'CONTRIBUTED',
-                        color: ColorTokens.success,
-                      ),
-                      Container(
-                        width: 1,
-                        height: 40,
-                        color: ColorTokens.ghostBorder,
-                      ),
-                      _SummaryItem(
-                        value: '$totalMembers',
-                        label: 'MEMBERS',
-                        color: ColorTokens.info,
-                      ),
-                    ],
-                  ),
-                ),
+            if (_groups.isNotEmpty)
+              const SliverToBoxAdapter(
+                child: AfriSectionHeader(title: 'Active groups'),
               ),
-            ),
 
             const SliverToBoxAdapter(
-              child: SizedBox(height: SpacingTokens.spacing6),
+              child: SizedBox(height: SpacingTokens.spacing3),
             ),
 
             // Loading
@@ -255,7 +223,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                       SpacingTokens.spacing6,
                       0,
                       SpacingTokens.spacing6,
-                      SpacingTokens.spacing2,
+                      SpacingTokens.spacing3,
                     ),
                     child: GroupCard(
                       group: group,
@@ -272,40 +240,13 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
             if (!_isLoading && _error == null && _groups.isEmpty)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(SpacingTokens.spacing10),
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Icon(
-                          AfriIcons.groups,
-                          size: 56,
-                          color: primary.withValues(alpha: 0.3),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing4),
-                        Text(
-                          'No contribution groups yet',
-                          style: theme.textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing2),
-                        Text(
-                          'Create or join a group to start contributing.',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing6),
-                        AfriButton(
-                          label: 'Create group',
-                          icon: AfriIcons.add,
-                          onTap: _openCreateGroup,
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing3),
-                        OutlinedButton.icon(
-                          onPressed: _openJoinGroup,
-                          icon: const Icon(AfriIcons.join),
-                          label: const Text('JOIN GROUP'),
-                        ),
-                      ],
-                    ),
+                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                  child: AfriEmptyView(
+                    icon: AfriIcons.groups,
+                    title: 'No groups yet',
+                    message: 'Create or join a group to start contributing.',
+                    actionLabel: 'Create group',
+                    onAction: _openCreateGroup,
                   ),
                 ),
               ),
@@ -317,6 +258,8 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
         ),
       ),
     );
+  }
+}
   }
 }
 

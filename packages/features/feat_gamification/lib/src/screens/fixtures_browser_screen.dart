@@ -14,7 +14,7 @@ class FixturesBrowserScreen extends ConsumerStatefulWidget {
   const FixturesBrowserScreen({
     super.key,
     this.statusFilter,
-    this.title = 'FIXTURES',
+    this.title = 'Fixtures',
     this.showBackButton = true,
   });
 
@@ -146,17 +146,17 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
     final diff = sel.difference(today).inDays;
 
     const monthNames = [
-      'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-      'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC',
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
     ];
-    const dayNames = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
     final dateStr =
         '${dayNames[sel.weekday - 1]}, ${monthNames[sel.month - 1]} ${sel.day}';
 
-    if (diff == 0) return 'TODAY  ·  $dateStr';
-    if (diff == 1) return 'TOMORROW  ·  $dateStr';
-    if (diff == -1) return 'YESTERDAY  ·  $dateStr';
+    if (diff == 0) return 'Today · $dateStr';
+    if (diff == 1) return 'Tomorrow · $dateStr';
+    if (diff == -1) return 'Yesterday · $dateStr';
     return dateStr;
   }
 
@@ -164,128 +164,90 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: Column(
-            children: [
-              // ── Title bar ──
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(
+          widget.title,
+          style: TypographyTokens.headlineSmall(),
+        ),
+        leading: widget.showBackButton
+            ? IconButton(
+                onPressed: () => context.pop(),
+                icon: const Icon(AfriIcons.back),
+              )
+            : null,
+        actions: [
+          IconButton(
+            onPressed: () => context.push('/fanzone/my'),
+            icon: Icon(
+              AfriIcons.myPicks,
+              color: ColorTokens.onSurfaceVariant,
+            ),
+            tooltip: 'My Predictions',
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // ── Dashboard overview ──
+            if (_dashboard != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.spacing4,
-                  SpacingTokens.spacing4,
+                  SpacingTokens.spacing6,
+                  SpacingTokens.spacing2,
                   SpacingTokens.spacing6,
                   0,
                 ),
-                child: Row(
-                  children: [
-                    if (widget.showBackButton)
-                      IconButton(
-                        onPressed: () => context.pop(),
-                        icon: const Icon(AfriIcons.back),
-                      ),
-                    if (!widget.showBackButton)
-                      const SizedBox(width: SpacingTokens.spacing4),
-                    const SizedBox(width: SpacingTokens.spacing2),
-                    Expanded(
-                      child: Text(
-                        widget.title,
-                        style: TypographyTokens.monolithFont(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: ColorTokens.onSurface,
-                          letterSpacing: 1.8,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => context.push('/fanzone/my'),
-                      icon: Icon(
-                        AfriIcons.myPicks,
-                        color: ColorTokens.onSurfaceVariant,
-                      ),
-                      tooltip: 'My Predictions',
-                    ),
-                  ],
-                ),
+                child: PredictionOverviewRow(dashboard: _dashboard!),
               ),
-              // ── Dashboard overview ──
-              if (_dashboard != null)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    SpacingTokens.spacing6,
-                    SpacingTokens.spacing4,
-                    SpacingTokens.spacing6,
-                    0,
-                  ),
-                  child: PredictionOverviewRow(dashboard: _dashboard!),
-                ),
-              // ── Calendar date strip ──
-              Padding(
-                padding: const EdgeInsets.only(top: SpacingTokens.spacing4),
-                child: FixturesCalendarStrip(
-                  selectedDate: _selectedDate,
-                  dateSummary: _dateSummary,
-                  onDateSelected: _onDateSelected,
-                  controller: _calendarController,
-                ),
+            // ── Calendar date strip ──
+            Padding(
+              padding: const EdgeInsets.only(top: SpacingTokens.spacing4),
+              child: FixturesCalendarStrip(
+                selectedDate: _selectedDate,
+                dateSummary: _dateSummary,
+                onDateSelected: _onDateSelected,
+                controller: _calendarController,
               ),
+            ),
 
-              // ── Selected date label ──
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.spacing6,
-                  SpacingTokens.spacing3,
-                  SpacingTokens.spacing6,
-                  0,
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      AfriIcons.calendar,
-                      size: 14,
-                      color: ColorTokens.clubAccent,
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing2),
-                    Expanded(
-                      child: Text(
-                        _selectedDateLabel(),
-                        style: TypographyTokens.monolithFont(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: ColorTokens.onSurface,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                    ),
-                    // Fixture count badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: ColorTokens.clubAccent.withValues(alpha: 0.14),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        '${_fixtures.length} ${_fixtures.length == 1 ? 'match' : 'matches'}',
-                        style: TypographyTokens.editorialFont(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: ColorTokens.clubAccent,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+            // ── Selected date label ──
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                SpacingTokens.spacing6,
+                SpacingTokens.spacing3,
+                SpacingTokens.spacing6,
+                0,
               ),
+              child: Row(
+                children: [
+                  Icon(
+                    AfriIcons.calendar,
+                    size: 16,
+                    color: ColorTokens.clubAccent,
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing2),
+                  Expanded(
+                    child: Text(
+                      _selectedDateLabel(),
+                      style: TypographyTokens.titleSmall(),
+                    ),
+                  ),
+                  // Fixture count badge
+                  AfriStatusChip(
+                    label: '${_fixtures.length} ${_fixtures.length == 1 ? 'match' : 'matches'}',
+                    tone: AfriStatusTone.live,
+                  ),
+                ],
+              ),
+            ),
               // ── Competition filter rail ──
               if (_competitions.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: SpacingTokens.spacing4),
                   child: SizedBox(
-                    height: 36,
+                    height: 38,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(
@@ -297,14 +259,14 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                       itemBuilder: (context, index) {
                         if (index == 0) {
                           return CompetitionFilterChip(
-                            label: 'ALL',
+                            label: 'All',
                             isSelected: _selectedCompetition == null,
                             onTap: () => _onFilterChanged(null),
                           );
                         }
                         final competition = _competitions[index - 1];
                         return CompetitionFilterChip(
-                          label: competition.shortName.toUpperCase(),
+                          label: competition.shortName,
                           isSelected:
                               _selectedCompetition == competition.slug,
                           onTap: () => _onFilterChanged(competition.slug),
@@ -384,19 +346,10 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
             children: [
               if (sectionIndex > 0)
                 const SizedBox(height: SpacingTokens.spacing5),
-              Padding(
+              AfriSectionHeader(
+                title: compName,
                 padding: const EdgeInsets.only(
                   bottom: SpacingTokens.spacing3,
-                  left: SpacingTokens.spacing1,
-                ),
-                child: Text(
-                  compName.toUpperCase(),
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurfaceVariant,
-                    letterSpacing: 1.5,
-                  ),
                 ),
               ),
               ...fixtures.asMap().entries.map((entry) {

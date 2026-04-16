@@ -64,6 +64,7 @@ class AfriIcons {
   static const IconData statusEmpty = Icons.inbox_rounded;
   static const IconData statusBlocked = Icons.block_rounded;
   static const IconData statusWait = Icons.hourglass_bottom_rounded;
+  static const IconData warning = Icons.warning_rounded;
 
   // ── Content ──
   static const IconData fixture = Icons.calendar_month_rounded;
@@ -98,11 +99,13 @@ class AfriIcons {
 
   // ── Navigation chrome ──
   static const IconData chevronRight = Icons.chevron_right_rounded;
+  static const IconData chevronLeft = Icons.chevron_left_rounded;
   static const IconData chevronDown = Icons.expand_more_rounded;
   static const IconData expandMore = Icons.expand_more_rounded;
   static const IconData expandLess = Icons.expand_less_rounded;
   static const IconData up = Icons.keyboard_arrow_up_rounded;
   static const IconData add = Icons.add_rounded;
+  static const IconData remove = Icons.remove_rounded;
   static const IconData join = Icons.group_add_rounded;
   static const IconData shareIos = Icons.ios_share_rounded;
   static const IconData smile = Icons.sentiment_satisfied_alt_rounded;
@@ -123,6 +126,13 @@ class AfriIcons {
   // ── Misc ──
   static const IconData checkGroup = Icons.check_circle_rounded;
   static const IconData scan = Icons.qr_code_rounded;
+  static const IconData qrCode = Icons.qr_code_2_rounded;
+  static const IconData qrScan = Icons.qr_code_scanner_rounded;
+  static const IconData faceScan = Icons.face_retouching_natural_rounded;
+  static const IconData seat = Icons.event_seat_rounded;
+  static const IconData shield = Icons.shield_rounded;
+  static const IconData nfc = Icons.nfc_rounded;
+  static const IconData addCard = Icons.add_card_rounded;
   static const IconData chat = Icons.chat_bubble_outline_rounded;
   static const IconData delete = Icons.delete_outline_rounded;
   static const IconData pin = Icons.push_pin_outlined;

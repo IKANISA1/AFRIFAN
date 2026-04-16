@@ -139,12 +139,8 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          'OFFERS',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
-          ),
+          'Offers',
+          style: TypographyTokens.headlineSmall(),
         ),
         leading: IconButton(
           onPressed: () => context.pop(),
@@ -185,50 +181,35 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
                         SpacingTokens.spacing6,
                         SpacingTokens.spacing5,
                       ),
-                      child: ClayCard(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'OTHER WAYS TO EARN',
-                              style: TypographyTokens.labelSmall(
-                                ColorTokens.onSurfaceVariant,
-                              ),
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing2),
-                            Text(
-                              '${_wallet?.balance ?? 0} FET',
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 32,
-                                fontWeight: FontWeight.w900,
-                                color: ColorTokens.clubAccent,
-                              ),
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing2),
-                            Text(
-                              'Partner campaigns, matchday activations, and club commerce offers all live here.',
-                              style: TypographyTokens.bodyMedium(),
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing4),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: _OfferStat(
-                                    label: 'Active',
-                                    value: '${_offers.length}',
-                                  ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AfriSectionHeader(
+                            title: 'Ways to earn',
+                            subtitle: 'Join campaigns and activations to earn FET.',
+                            padding: EdgeInsets.zero,
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: AfriMetricTile(
+                                  label: 'Balance',
+                                  value: '${_wallet?.balance ?? 0} FET',
+                                  accentColor: ColorTokens.clubAccent,
                                 ),
-                                const SizedBox(width: SpacingTokens.spacing3),
-                                Expanded(
-                                  child: _OfferStat(
-                                    label: 'Top reward',
-                                    value: '+$maxReward',
-                                  ),
+                              ),
+                              const SizedBox(width: SpacingTokens.spacing3),
+                              Expanded(
+                                child: AfriMetricTile(
+                                  label: 'Available',
+                                  value: '${_offers.length}',
+                                  meta: 'active offers',
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -270,31 +251,19 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
-          SpacingTokens.spacing6,
+          0,
           SpacingTokens.spacing4,
-          SpacingTokens.spacing6,
+          0,
           SpacingTokens.spacing3,
         ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                title.toUpperCase(),
-                style: TypographyTokens.monolithFont(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1.2,
-                  color: ColorTokens.onSurfaceVariant,
-                ),
-              ),
+        child: AfriSectionHeader(
+          title: title,
+          trailing: Text(
+            '$count',
+            style: TypographyTokens.labelSmall(
+              ColorTokens.onSurfaceVariant,
             ),
-            Text(
-              '$count',
-              style: TypographyTokens.labelSmall(
-                ColorTokens.onSurfaceVariant,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -333,8 +302,7 @@ class _OfferCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
-      animate: false,
+    return ClayCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -342,29 +310,19 @@ class _OfferCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  '${offer.partnerEmoji ?? '🤝'} ${offer.partnerName}'.toUpperCase(),
+                  '${offer.partnerEmoji ?? '🤝'} ${offer.partnerName}',
                   style: TypographyTokens.labelSmall(
                     ColorTokens.onSurfaceVariant,
                   ),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing2,
-                  vertical: SpacingTokens.spacing1,
-                ),
-                decoration: BoxDecoration(
-                  color: ColorTokens.clubAccent.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  '+${offer.fetValue} FET',
-                  style: TypographyTokens.labelSmall(ColorTokens.clubAccent),
-                ),
+              AfriStatusChip(
+                label: '+${offer.fetValue} FET',
+                tone: AfriStatusTone.live,
               ),
             ],
           ),
-          const SizedBox(height: SpacingTokens.spacing2),
+          const SizedBox(height: SpacingTokens.spacing3),
           Text(offer.title, style: TypographyTokens.titleMedium()),
           const SizedBox(height: SpacingTokens.spacing1),
           Text(
@@ -373,13 +331,13 @@ class _OfferCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
           ),
-          const SizedBox(height: SpacingTokens.spacing3),
+          const SizedBox(height: SpacingTokens.spacing4),
           Row(
             children: [
               Expanded(
                 child: Text(
                   offer.activationTiming,
-                  style: TypographyTokens.bodySmall(),
+                  style: TypographyTokens.labelSmall(),
                 ),
               ),
               const SizedBox(width: SpacingTokens.spacing3),

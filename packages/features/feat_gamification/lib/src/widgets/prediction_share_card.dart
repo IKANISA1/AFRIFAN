@@ -109,7 +109,7 @@ class PredictionShareService {
       _ => '⏳',
     };
 
-    buffer.writeln('$emoji ${data.homeTeam} vs ${data.awayTeam}');
+    buffer.writeln('$emoji ${data.homeTeamShort.toUpperCase()} vs ${data.awayTeamShort.toUpperCase()}');
     if (data.homeScore != null && data.awayScore != null) {
       buffer.writeln('⚽ Final: ${data.homeScore}-${data.awayScore}');
     }

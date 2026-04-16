@@ -242,15 +242,21 @@ class UserPredictionSummary {
 }
 
 class MarketOutcomeOption {
-  const MarketOutcomeOption({required this.key, required this.label});
+  const MarketOutcomeOption({
+    required this.key,
+    required this.label,
+    this.odds = 1.0,
+  });
 
   final String key;
   final String label;
+  final double odds;
 
   factory MarketOutcomeOption.fromJson(Map<String, dynamic> json) {
     return MarketOutcomeOption(
       key: json['key']?.toString() ?? '',
       label: json['label']?.toString() ?? '',
+      odds: (json['odds'] as num?)?.toDouble() ?? 1.0,
     );
   }
 }
@@ -270,6 +276,7 @@ class UserPrediction {
     required this.fixtureStatus,
     required this.competitionName,
     required this.selectedOutcome,
+    this.odds = 1.0,
     required this.status,
     required this.fetPotential,
     required this.fetEarned,
@@ -293,6 +300,7 @@ class UserPrediction {
   final String fixtureStatus;
   final String competitionName;
   final String selectedOutcome;
+  final double odds;
   final PredictionStatus status;
   final int fetPotential;
   final int fetEarned;
@@ -317,6 +325,7 @@ class UserPrediction {
       fixtureStatus: json['fixture_status']?.toString() ?? 'scheduled',
       competitionName: json['competition_name']?.toString() ?? '',
       selectedOutcome: json['selected_outcome']?.toString() ?? '',
+      odds: (json['odds'] as num?)?.toDouble() ?? 1.0,
       status: _parseStatus(json['status']?.toString()),
       fetPotential: (json['fet_potential'] as num?)?.toInt() ?? 0,
       fetEarned: (json['fet_earned'] as num?)?.toInt() ?? 0,
@@ -385,6 +394,7 @@ class PredictionDetail {
     required this.awayTeam,
     required this.awayTeamShort,
     required this.selectedOutcome,
+    this.odds = 1.0,
     required this.status,
     required this.fetPotential,
     required this.fetEarned,
@@ -412,6 +422,7 @@ class PredictionDetail {
   final String awayTeam;
   final String awayTeamShort;
   final String selectedOutcome;
+  final double odds;
   final PredictionStatus status;
   final int fetPotential;
   final int fetEarned;
@@ -446,6 +457,7 @@ class PredictionDetail {
       awayTeam: json['away_team']?.toString() ?? '',
       awayTeamShort: json['away_team_short']?.toString() ?? '',
       selectedOutcome: json['selected_outcome']?.toString() ?? '',
+      odds: (json['odds'] as num?)?.toDouble() ?? 1.0,
       status: _parseStatus(json['status']?.toString()),
       fetPotential: (json['fet_potential'] as num?)?.toInt() ?? 0,
       fetEarned: (json['fet_earned'] as num?)?.toInt() ?? 0,
@@ -494,7 +506,7 @@ class JackpotRoundFixture {
   final List<MarketOutcomeOption> outcomes;
 
   String get fixtureLabel =>
-      '${homeTeamName.toUpperCase()} vs ${awayTeamName.toUpperCase()}';
+      '${homeTeamShort.toUpperCase()} vs ${awayTeamShort.toUpperCase()}';
 
   factory JackpotRoundFixture.fromJson(Map<String, dynamic> json) {
     return JackpotRoundFixture(
@@ -893,7 +905,7 @@ class FixtureSummary {
   bool get isPredictable => isScheduled;
 
   String get fixtureLabel =>
-      '${homeTeamName.toUpperCase()} vs ${awayTeamName.toUpperCase()}';
+      '${homeTeamShort.toUpperCase()} vs ${awayTeamShort.toUpperCase()}';
 
   factory FixtureSummary.fromJson(Map<String, dynamic> json) {
     return FixtureSummary(

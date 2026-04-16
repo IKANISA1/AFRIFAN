@@ -25,12 +25,8 @@ class FanzoneHubScreen extends ConsumerWidget {
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
         title: Text(
-          'FANZONE',
-          style: TypographyTokens.monolithFont(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.6,
-          ),
+          'Fanzone',
+          style: TypographyTokens.headlineSmall(),
         ),
         actions: [
           IconButton(

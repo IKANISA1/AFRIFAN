@@ -138,26 +138,26 @@ class HomeScreen extends ConsumerWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: EliteButton(
+                  child: AfriButton(
                     label: 'Fan Zone',
                     onTap: () => context.push('/fanzone'),
-                    variant: EliteButtonVariant.secondary,
+                    variant: AfriButtonVariant.secondary,
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.listItemGap),
                 Expanded(
-                  child: EliteButton(
+                  child: AfriButton(
                     label: 'BioPay',
                     onTap: () => context.push('/BioPay'),
-                    variant: EliteButtonVariant.primary,
+                    variant: AfriButtonVariant.primary,
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.listItemGap),
                 Expanded(
-                  child: EliteButton(
+                  child: AfriButton(
                     label: 'Live',
                     onTap: () => context.push('/live'),
-                    variant: EliteButtonVariant.secondary,
+                    variant: AfriButtonVariant.secondary,
                   ),
                 ),
               ],
@@ -343,10 +343,10 @@ class HomeScreen extends ConsumerWidget {
     return <MatchSlide>[
       MatchSlide(
         homeTeam: homeTeam,
-        awayTeam: 'MATCHDAY',
+        awayTeam: 'Matchday',
         venue: RuntimeBranding.displayHomeVenueName,
-        status: 'NO FIXTURE',
-        dateInfo: 'NEXT FIXTURE COMING SOON',
+        status: 'No fixture',
+        dateInfo: 'Next fixture coming soon',
       ),
     ];
   }

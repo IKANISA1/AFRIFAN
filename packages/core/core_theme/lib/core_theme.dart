@@ -38,6 +38,7 @@ export 'src/widgets/afri_icon_button.dart';
 export 'src/widgets/afri_info_chip.dart';
 export 'src/widgets/afri_input_field.dart';
 export 'src/widgets/afri_list_row.dart';
+export 'src/widgets/afri_loading_indicator.dart';
 export 'src/widgets/afri_metric_tile.dart';
 export 'src/widgets/afri_press_feedback.dart';
 export 'src/widgets/afri_scanner_shell.dart';
