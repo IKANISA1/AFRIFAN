@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:core_auth/core_auth.dart';
-import 'package:core_modules/core_modules.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
@@ -19,8 +18,8 @@ bool _globalErrorHandlersInstalled = false;
 
 class AfriClubBootstrapOptions {
   const AfriClubBootstrapOptions({
+    required this.modules,
     this.startupOptions = const AppStartupOptions(),
-    this.modulesOverride,
     this.authRepository,
     this.providerOverrides = const <Override>[],
     this.initialLocation,
@@ -28,8 +27,8 @@ class AfriClubBootstrapOptions {
     this.deepLinkService,
   });
 
+  final List<FeatureModule> modules;
   final AppStartupOptions startupOptions;
-  final List<FeatureModule>? modulesOverride;
   final AuthRepository? authRepository;
   final List<Override> providerOverrides;
   final String? initialLocation;
@@ -43,7 +42,7 @@ class AfriClubBootstrapOptions {
 /// feature composition. This keeps each club entrypoint declarative.
 Future<void> bootstrap(
   ClubConfig config, {
-  AfriClubBootstrapOptions options = const AfriClubBootstrapOptions(),
+  required AfriClubBootstrapOptions options,
 }) async {
   await runZonedGuarded(
     () async {
@@ -109,8 +108,7 @@ Future<void> bootstrap(
         options: options.startupOptions,
       );
       await startupCoordinator.initialize(config);
-      final modules =
-          options.modulesOverride ?? AppModuleRegistry.build(config);
+      final modules = options.modules;
       final deepLinkParser =
           options.deepLinkParser ?? DeepLinkParser.fromEnvironment();
       final deepLinkService = deepLinkParser.isEnabled
@@ -175,6 +173,8 @@ void _installGlobalErrorHandlers() {
   };
 }
 
+final List<Map<String, dynamic>> _pendingPreInitErrors = [];
+
 Future<void> _reportUnhandledError({
   required String component,
   required Object error,
@@ -189,8 +189,14 @@ Future<void> _reportUnhandledError({
     stackTrace,
   );
   if (!SupabaseClientFactory.isInitialized) {
+    _pendingPreInitErrors.add({
+      'component': component,
+      'error': error,
+      'stackTrace': stackTrace,
+    });
     return;
   }
+
 
   await OperationalHealthService(
     client: SupabaseClientFactory.client,
@@ -206,6 +212,23 @@ Future<void> _reportUnhandledError({
       'stack_trace': summarizedStackTrace,
     },
   );
+}
+
+Future<void> flushPendingPreInitErrors() async {
+  if (_pendingPreInitErrors.isEmpty || !SupabaseClientFactory.isInitialized) {
+    return;
+  }
+  
+  final flushQueue = List<Map<String, dynamic>>.from(_pendingPreInitErrors);
+  _pendingPreInitErrors.clear();
+
+  for (final error in flushQueue) {
+    await _reportUnhandledError(
+      component: error['component'] as String,
+      error: error['error'] as Object,
+      stackTrace: error['stackTrace'] as StackTrace,
+    );
+  }
 }
 
 String _summarizeStackTrace(StackTrace stackTrace) {

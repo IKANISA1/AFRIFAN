@@ -1,13 +1,13 @@
 import { assertEquals } from "https://deno.land/std@0.208.0/assert/mod.ts";
 
 import {
-  type BiopayResolveHandoffDependencies,
-  createBiopayResolveHandoffHandler,
+  type BioPayResolveHandoffDependencies,
+  createBioPayResolveHandoffHandler,
 } from "./index.ts";
 
-function buildDependencies(): BiopayResolveHandoffDependencies {
+function buildDependencies(): BioPayResolveHandoffDependencies {
   return {
-    verifyBiopayToken: async () => ({
+    verifyBioPayToken: async () => ({
       kind: "handoff_request",
       v: 1,
       iat: "2026-03-30T12:00:00.000Z",
@@ -33,11 +33,11 @@ function buildDependencies(): BiopayResolveHandoffDependencies {
   };
 }
 
-Deno.test("biopay-resolve-handoff redirects GET requests to a dial URI", async () => {
-  const handler = createBiopayResolveHandoffHandler(buildDependencies());
+Deno.test("BioPay-resolve-handoff redirects GET requests to a dial URI", async () => {
+  const handler = createBioPayResolveHandoffHandler(buildDependencies());
   const response = await handler(
     new Request(
-      "https://example.com/functions/v1/biopay-resolve-handoff?token=abc123",
+      "https://example.com/functions/v1/BioPay-resolve-handoff?token=abc123",
       {
         method: "GET",
       },
@@ -51,10 +51,10 @@ Deno.test("biopay-resolve-handoff redirects GET requests to a dial URI", async (
   );
 });
 
-Deno.test("biopay-resolve-handoff returns JSON resolution data on POST", async () => {
-  const handler = createBiopayResolveHandoffHandler(buildDependencies());
+Deno.test("BioPay-resolve-handoff returns JSON resolution data on POST", async () => {
+  const handler = createBioPayResolveHandoffHandler(buildDependencies());
   const response = await handler(
-    new Request("https://example.com/functions/v1/biopay-resolve-handoff", {
+    new Request("https://example.com/functions/v1/BioPay-resolve-handoff", {
       method: "POST",
       headers: {
         "content-type": "application/json",

@@ -72,11 +72,11 @@ class _PredictionSettlementScreenState
 
   IconData _icon(PredictionDetail detail) {
     return switch (detail.status) {
-      PredictionStatus.won => Icons.emoji_events_rounded,
-      PredictionStatus.lost => Icons.flag_rounded,
-      PredictionStatus.void_ => Icons.remove_circle_outline_rounded,
-      PredictionStatus.cancelled => Icons.block_rounded,
-      _ => Icons.hourglass_bottom_rounded,
+      PredictionStatus.won => AfriIcons.rank,
+      PredictionStatus.lost => AfriIcons.challenge,
+      PredictionStatus.void_ => AfriIcons.statusEmpty,
+      PredictionStatus.cancelled => AfriIcons.statusBlocked,
+      _ => AfriIcons.statusWait,
     };
   }
 

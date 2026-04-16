@@ -26,36 +26,38 @@ class OfflineBanner extends StatelessWidget {
       builder: (context, isOnline, _) {
         return Column(
           children: <Widget>[
-            AnimatedContainer(
+            AnimatedSize(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
-              height: isOnline ? 0 : 32,
               child: isOnline
                   ? const SizedBox.shrink()
                   : Material(
                       color: Colors.orange.shade800,
-                      child: const SizedBox(
-                        width: double.infinity,
-                        height: 32,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(
-                                Icons.cloud_off_rounded,
-                                size: 14,
-                                color: Colors.white,
-                              ),
-                              SizedBox(width: 6),
-                              Text(
-                                'No internet connection',
-                                style: TextStyle(
+                      child: SafeArea(
+                        bottom: false,
+                        child: const SizedBox(
+                          width: double.infinity,
+                          height: 32,
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.cloud_off_rounded,
+                                  size: 14,
                                   color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
                                 ),
-                              ),
-                            ],
+                                SizedBox(width: 6),
+                                Text(
+                                  'No internet connection',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

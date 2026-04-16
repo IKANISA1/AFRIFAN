@@ -15,14 +15,12 @@ class FakeAuthRepository extends AuthRepository {
   FakeAuthRepository({
     this.restoreResult,
     this.restoreError,
-    this.fallbackProfile,
     this.signInResult,
     this.updateResult,
   }) : super(clubId: '24');
 
   final UserProfile? restoreResult;
   final Object? restoreError;
-  final UserProfile? fallbackProfile;
   final UserProfile? signInResult;
   final UserProfile? updateResult;
 
@@ -34,11 +32,6 @@ class FakeAuthRepository extends AuthRepository {
       throw restoreError!;
     }
     return restoreResult;
-  }
-
-  @override
-  Future<UserProfile?> restoreSessionFallbackProfile() async {
-    return fallbackProfile;
   }
 
   @override

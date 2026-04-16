@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -51,32 +53,93 @@ class _MarketSelectorContent extends ConsumerStatefulWidget {
 
 class _MarketSelectorContentState
     extends ConsumerState<_MarketSelectorContent> {
-  static const List<(MarketGroup, String)> _groupOrder =
-      <(MarketGroup, String)>[
-        (MarketGroup.matchResult, 'MATCH'),
-        (MarketGroup.goals, 'GOALS'),
-        (MarketGroup.scorers, 'PLAYERS'),
-        (MarketGroup.specials, 'SPECIALS'),
-      ];
-
   String _query = '';
-  MarketGroup _activeGroup = MarketGroup.matchResult;
+  String? _activeCategory;
+
+  /// Dynamically computed categories from actual market data.
+  late final List<String> _categories;
+
+  /// Preferred display order — categories appearing here will be placed first.
+  static const _preferredOrder = <String>[
+    'Match Prediction',
+    'Match Betting',
+    'Goals Prediction',
+    'Goals Betting',
+    'Goalscorer Markets',
+    'Handicap Prediction',
+    'Handicap Betting',
+    'Corners Prediction',
+    'Corners Betting',
+    'Cards Prediction',
+    'Cards Betting',
+    'Player Props',
+    'Match Props',
+    'Match Events',
+    'In-Play/Live',
+    'Combo Markets',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Build category list from the actual markets, preserving preferred order.
+    final seen = <String>{};
+    final orderedCats = <String>[];
+    for (final market in widget.markets) {
+      final cat = market.marketCategory;
+      if (cat.isNotEmpty && seen.add(cat)) {
+        orderedCats.add(cat);
+      }
+    }
+    // Sort: preferred order first, then alphabetical for any new ones.
+    orderedCats.sort((a, b) {
+      final ai = _preferredOrder.indexOf(a);
+      final bi = _preferredOrder.indexOf(b);
+      if (ai != -1 && bi != -1) return ai.compareTo(bi);
+      if (ai != -1) return -1;
+      if (bi != -1) return 1;
+      return a.compareTo(b);
+    });
+
+    _categories = orderedCats;
+    _activeCategory = _categories.isNotEmpty ? _categories.first : null;
+  }
+
+  /// Short label for chip display.
+  String _chipLabel(String category) {
+    // Shorten common suffixes for chip UI
+    return category
+        .replaceAll(' Prediction', '')
+        .replaceAll(' Betting', '')
+        .replaceAll(' Markets', '')
+        .replaceAll('In-Play/Live', 'LIVE')
+        .toUpperCase();
+  }
 
   @override
   Widget build(BuildContext context) {
     final slip = ref.watch(fanzoneSlipProvider);
-    final allMarkets = widget.markets
-        .where((market) {
-          final q = _query.trim().toLowerCase();
-          if (q.isEmpty) return true;
-          return market.marketName.toLowerCase().contains(q) ||
-              market.description.toLowerCase().contains(q) ||
-              market.marketShortName.toLowerCase().contains(q);
-        })
-        .toList(growable: false);
-    final markets = allMarkets
-        .where((market) => market.marketGroup == _activeGroup)
-        .toList(growable: false);
+    final allMarkets = widget.markets.where((market) {
+      final q = _query.trim().toLowerCase();
+      if (q.isEmpty) return true;
+      return market.marketName.toLowerCase().contains(q) ||
+          market.description.toLowerCase().contains(q) ||
+          market.marketShortName.toLowerCase().contains(q) ||
+          market.marketCategory.toLowerCase().contains(q);
+    }).toList(growable: false);
+
+    final markets = _activeCategory == null
+        ? allMarkets
+        : allMarkets
+              .where((m) => m.marketCategory == _activeCategory)
+              .toList(growable: false);
+
+    // Market count per category for badges.
+    final countByCategory = <String, int>{};
+    for (final m in allMarkets) {
+      countByCategory[m.marketCategory] =
+          (countByCategory[m.marketCategory] ?? 0) + 1;
+    }
 
     return Column(
       children: [
@@ -106,7 +169,12 @@ class _MarketSelectorContentState
                   ),
                 ),
               ),
-              Text('Markets', style: TypographyTokens.bodySmall()),
+              Text(
+                '${allMarkets.length} markets',
+                style: TypographyTokens.labelSmall(
+                  ColorTokens.onSurfaceVariant,
+                ),
+              ),
             ],
           ),
         ),
@@ -127,6 +195,7 @@ class _MarketSelectorContentState
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing4),
+        // ── Dynamic category chip rail ──
         SizedBox(
           height: 38,
           child: ListView.separated(
@@ -134,17 +203,17 @@ class _MarketSelectorContentState
               horizontal: SpacingTokens.spacing6,
             ),
             scrollDirection: Axis.horizontal,
-            itemCount: _groupOrder.length,
+            itemCount: _categories.length,
             separatorBuilder: (_, __) =>
                 const SizedBox(width: SpacingTokens.spacing2),
             itemBuilder: (context, index) {
-              final group = _groupOrder[index].$1;
-              final label = _groupOrder[index].$2;
-              final isSelected = _activeGroup == group;
+              final cat = _categories[index];
+              final isSelected = _activeCategory == cat;
+              final count = countByCategory[cat] ?? 0;
               return AfriPressFeedback(
                 onTap: () {
-                  HapticFeedback.selectionClick();
-                  setState(() => _activeGroup = group);
+                  unawaited(HapticFeedback.selectionClick());
+                  setState(() => _activeCategory = cat);
                 },
                 builder: (context, state) => Container(
                   padding: const EdgeInsets.symmetric(
@@ -160,13 +229,45 @@ class _MarketSelectorContentState
                         ? BorderTokens.all(color: ColorTokens.clubAccent)
                         : BorderTokens.ghost(),
                   ),
-                  child: Text(
-                    label,
-                    style: TypographyTokens.labelSmall(
-                      isSelected
-                          ? ColorTokens.clubAccent
-                          : ColorTokens.onSurfaceVariant,
-                    ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _chipLabel(cat),
+                        style: TypographyTokens.labelSmall(
+                          isSelected
+                              ? ColorTokens.clubAccent
+                              : ColorTokens.onSurfaceVariant,
+                        ),
+                      ),
+                      if (count > 0) ...[
+                        const SizedBox(width: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 5,
+                            vertical: 1,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? ColorTokens.clubAccent
+                                    .withValues(alpha: 0.25)
+                                : ColorTokens.onSurfaceVariant
+                                    .withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Text(
+                            '$count',
+                            style: TypographyTokens.editorialFont(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              color: isSelected
+                                  ? ColorTokens.clubAccent
+                                  : ColorTokens.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               );
@@ -174,23 +275,76 @@ class _MarketSelectorContentState
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing4),
-        Expanded(
-          child: ListView.separated(
-            controller: widget.scrollController,
+        // ── Category label ──
+        if (_activeCategory != null)
+          Padding(
             padding: const EdgeInsets.fromLTRB(
               SpacingTokens.spacing6,
               0,
               SpacingTokens.spacing6,
-              SpacingTokens.spacing6,
+              SpacingTokens.spacing3,
             ),
-            itemBuilder: (context, index) => _SheetMarketCard(
-              fixture: widget.fixture,
-              market: markets[index],
+            child: Row(
+              children: [
+                Container(
+                  width: 3,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: ColorTokens.clubAccent,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(width: SpacingTokens.spacing2),
+                Expanded(
+                  child: Text(
+                    _activeCategory!,
+                    style: TypographyTokens.editorialFont(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: ColorTokens.onSurfaceVariant,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                ),
+                Text(
+                  '${markets.length} ${markets.length == 1 ? 'market' : 'markets'}',
+                  style: TypographyTokens.bodySmall(
+                    ColorTokens.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ),
-            separatorBuilder: (_, __) =>
-                const SizedBox(height: SpacingTokens.spacing3),
-            itemCount: markets.length,
           ),
+        Expanded(
+          child: markets.isEmpty
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                    child: AfriEmptyView(
+                      compact: true,
+                      title: _query.isNotEmpty
+                          ? 'No markets match "$_query"'
+                          : 'No markets in this category',
+                      icon: AfriIcons.grid,
+                    ),
+                  ),
+                )
+              : ListView.separated(
+                  controller: widget.scrollController,
+                  padding: const EdgeInsets.fromLTRB(
+                    SpacingTokens.spacing6,
+                    0,
+                    SpacingTokens.spacing6,
+                    SpacingTokens.spacing6,
+                  ),
+                  itemBuilder: (context, index) => _SheetMarketCard(
+                    fixture: widget.fixture,
+                    market: markets[index],
+                  ),
+                  separatorBuilder: (_, __) =>
+                      const SizedBox(height: SpacingTokens.spacing3),
+                  itemCount: markets.length,
+                ),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(
@@ -203,7 +357,7 @@ class _MarketSelectorContentState
             label: slip.items.isEmpty
                 ? 'Add predictions to unlock slip'
                 : 'Open Slip · ${slip.items.length} picks · ${slip.totalPotential} FET',
-            icon: Icons.receipt_long_rounded,
+            icon: AfriIcons.myPicks,
             enabled: slip.items.isNotEmpty,
             onTap: () => Navigator.of(context).pop(),
           ),
@@ -253,19 +407,37 @@ class _SheetMarketCard extends ConsumerWidget {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing2,
-                  vertical: SpacingTokens.spacing1,
-                ),
-                decoration: BoxDecoration(
-                  color: ColorTokens.clubAccent.withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  '+${market.fetValue} FET',
-                  style: TypographyTokens.labelSmall(ColorTokens.clubAccent),
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.spacing2,
+                      vertical: SpacingTokens.spacing1,
+                    ),
+                    decoration: BoxDecoration(
+                      color: ColorTokens.clubAccent.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      '+${market.fetValue} FET',
+                      style:
+                          TypographyTokens.labelSmall(ColorTokens.clubAccent),
+                    ),
+                  ),
+                  if (market.betType.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      market.betType,
+                      style: TypographyTokens.editorialFont(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w600,
+                        color: ColorTokens.onSurfaceVariant,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ],
           ),
@@ -287,13 +459,13 @@ class _SheetMarketCard extends ConsumerWidget {
                       isSelected: isSelected,
                       trailing: isSelected
                           ? Icon(
-                              Icons.check_rounded,
+                              AfriIcons.check,
                               size: 14,
                               color: ColorTokens.clubAccent,
                             )
                           : null,
                       onTap: () {
-                        HapticFeedback.lightImpact();
+                        unawaited(HapticFeedback.lightImpact());
                         ref
                             .read(fanzoneSlipProvider.notifier)
                             .addFromMarket(

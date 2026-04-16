@@ -10,10 +10,10 @@ import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { HttpError } from "../_shared/auth.ts";
 import { requireAppCheckToken } from "../_shared/app_check.ts";
 import {
-  generateBiopayNonce,
-  signBiopayToken,
-  type SignedBiopayTokenPayload,
-} from "../_shared/biopay_signed_token.ts";
+  generateBioPayNonce,
+  signBioPayToken,
+  type SignedBioPayTokenPayload,
+} from "../_shared/BioPay_signed_token.ts";
 import {
   recordEdgeFunctionFailure,
   recordOperationalHealthEvent,
@@ -26,11 +26,11 @@ type CreateChallengeRequest = {
 
 type AdminClientLike = ReturnType<typeof createAdminClient>;
 
-export type BiopayCreateLivenessChallengeDependencies = {
+export type BioPayCreateLivenessChallengeDependencies = {
   createAdminClient: () => AdminClientLike;
   validateRequest: typeof validateRequest;
   requireAppCheckToken: (request: Request) => Promise<string>;
-  signBiopayToken: (payload: SignedBiopayTokenPayload) => Promise<string>;
+  signBioPayToken: (payload: SignedBioPayTokenPayload) => Promise<string>;
   recordOperationalHealthEvent: (
     adminClient: AdminClientLike,
     event: Parameters<typeof recordOperationalHealthEvent>[1],
@@ -44,20 +44,20 @@ export type BiopayCreateLivenessChallengeDependencies = {
 
 const CHALLENGE_TTL_SECONDS = 300;
 
-const defaultDependencies: BiopayCreateLivenessChallengeDependencies = {
+const defaultDependencies: BioPayCreateLivenessChallengeDependencies = {
   createAdminClient,
   validateRequest,
   requireAppCheckToken,
-  signBiopayToken,
+  signBioPayToken,
   recordOperationalHealthEvent,
   recordEdgeFunctionFailure,
   now: () => new Date(),
 };
 
-export function createBiopayCreateLivenessChallengeHandler(
-  dependencies: Partial<BiopayCreateLivenessChallengeDependencies> = {},
+export function createBioPayCreateLivenessChallengeHandler(
+  dependencies: Partial<BioPayCreateLivenessChallengeDependencies> = {},
 ) {
-  const deps: BiopayCreateLivenessChallengeDependencies = {
+  const deps: BioPayCreateLivenessChallengeDependencies = {
     ...defaultDependencies,
     ...dependencies,
   };
@@ -77,7 +77,7 @@ export function createBiopayCreateLivenessChallengeHandler(
     try {
       const validated = await deps.validateRequest(request, { requireClubId: true });
       if (isErrorResponse(validated)) return validated;
-      
+
       const { userId, clubId } = validated;
       requesterUserId = userId;
       const numericClubId = Number(clubId);
@@ -93,10 +93,10 @@ export function createBiopayCreateLivenessChallengeHandler(
       const expiresAt = new Date(
         now.getTime() + CHALLENGE_TTL_SECONDS * 1000,
       ).toISOString();
-      const nonce = generateBiopayNonce();
+      const nonce = generateBioPayNonce();
 
       const { data: challengeRow, error: challengeError } = await adminClient
-        .from("biopay_liveness_challenges")
+        .from("BioPay_liveness_challenges")
         .insert({
           user_id: userId,
           club_id: numericClubId,
@@ -112,7 +112,7 @@ export function createBiopayCreateLivenessChallengeHandler(
         throw challengeError ?? new Error("Failed to create liveness challenge.");
       }
 
-      const token = await deps.signBiopayToken({
+      const token = await deps.signBioPayToken({
         kind: "liveness_challenge",
         v: 1,
         iat: now.toISOString(),
@@ -125,14 +125,14 @@ export function createBiopayCreateLivenessChallengeHandler(
       });
 
       await deps.recordOperationalHealthEvent(adminClient, {
-        service: "biopay",
+        service: "BioPay",
         component: "liveness",
         status: "ok",
         severity: "info",
         message: "BioPay liveness challenge issued.",
-        functionName: "biopay-create-liveness-challenge",
+        functionName: "BioPay-create-liveness-challenge",
         userId: userId,
-        subjectType: "biopay_liveness_challenge",
+        subjectType: "BioPay_liveness_challenge",
         subjectId: challengeRow.id?.toString() ?? null,
         metadata: {
           club_id: numericClubId,
@@ -158,12 +158,12 @@ export function createBiopayCreateLivenessChallengeHandler(
       }
 
       await deps.recordEdgeFunctionFailure(adminClient, {
-        functionName: "biopay-create-liveness-challenge",
+        functionName: "BioPay-create-liveness-challenge",
         error,
-        issueCode: "biopay_create_liveness_challenge_failed",
+        issueCode: "BioPay_create_liveness_challenge_failed",
         userId: requesterUserId,
       });
-      console.error("biopay-create-liveness-challenge failed:", error);
+      console.error("BioPay-create-liveness-challenge failed:", error);
       return jsonError(
         error instanceof Error
           ? error.message
@@ -175,7 +175,7 @@ export function createBiopayCreateLivenessChallengeHandler(
 }
 
 if (import.meta.main) {
-  const handler = createBiopayCreateLivenessChallengeHandler();
+  const handler = createBioPayCreateLivenessChallengeHandler();
   Deno.serve((req: Request) => handler(req).then(
     (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
   ));

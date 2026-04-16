@@ -10,14 +10,14 @@ import '../providers/biopay_providers.dart';
 import '../services/biopay_nfc_service.dart';
 import '../widgets/biopay_reference_ui.dart';
 
-class BiopayNfcScreen extends ConsumerStatefulWidget {
-  const BiopayNfcScreen({super.key});
+class BioPayNfcScreen extends ConsumerStatefulWidget {
+  const BioPayNfcScreen({super.key});
 
   @override
-  ConsumerState<BiopayNfcScreen> createState() => _BiopayNfcScreenState();
+  ConsumerState<BioPayNfcScreen> createState() => _BioPayNfcScreenState();
 }
 
-class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
+class _BioPayNfcScreenState extends ConsumerState<BioPayNfcScreen> {
   final _amountController = TextEditingController();
   final _recipientController = TextEditingController();
   PaymentRecipientType? _selectedRouteType;
@@ -47,8 +47,8 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
   }
 
   Future<void> _refreshCapabilities() async {
-    await BiopayNfcService.checkAvailability();
-    final hceService = ref.read(biopayNfcHceServiceProvider);
+    await BioPayNfcService.checkAvailability();
+    final hceService = ref.read(BioPayNfcHceServiceProvider);
     final supportsHce = await hceService.isSupported();
     if (!mounted) return;
     setState(() => _supportsHce = supportsHce);
@@ -65,7 +65,7 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
   Future<void> _activateNfc() async {
     final selectedRouteType =
         _selectedRouteType ?? PaymentRecipientType.phoneNumber;
-    final validationError = validateBiopayRecipient(
+    final validationError = validateBioPayRecipient(
       routeType: selectedRouteType,
       value: _recipientController.text,
       country: _country,
@@ -81,13 +81,13 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
     });
 
     try {
-      final normalizedRecipient = normalizeBiopayRecipient(
+      final normalizedRecipient = normalizeBioPayRecipient(
         routeType: selectedRouteType,
         value: _recipientController.text,
         country: _country,
       );
       final token = await ref
-          .read(biopayRepositoryProvider)
+          .read(BioPayRepositoryProvider)
           .createHandoffToken(
             channel: 'nfc',
             amount: _amount,
@@ -98,10 +98,10 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
 
       if (_supportsHce) {
         await ref
-            .read(biopayNfcHceServiceProvider)
+            .read(BioPayNfcHceServiceProvider)
             .startPaymentRequest(uri: token.resolverUrl);
-      } else if (BiopayNfcService.canWrite) {
-        await BiopayNfcService.writeUri(token.resolverUrl);
+      } else if (BioPayNfcService.canWrite) {
+        await BioPayNfcService.writeUri(token.resolverUrl);
       } else {
         throw StateError('NFC is unavailable on this device.');
       }
@@ -114,7 +114,7 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
     } catch (error) {
       if (!mounted) return;
       setState(() {
-        _error = error.toString();
+        _error = _userFriendlyError(error);
         _isBusy = false;
       });
     }
@@ -122,7 +122,7 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
 
   void _formatAmount(String raw) {
     final digits = raw.replaceAll(RegExp(r'[^0-9]'), '');
-    final formatted = biopayReferenceFormatNumber(digits);
+    final formatted = BioPayReferenceFormatNumber(digits);
     _amountController.value = TextEditingValue(
       text: formatted,
       selection: TextSelection.collapsed(offset: formatted.length),
@@ -131,33 +131,33 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(biopayProfileProvider).valueOrNull;
+    final profile = ref.watch(BioPayProfileProvider).valueOrNull;
     final selectedRouteType =
         _selectedRouteType ??
         profile?.routeType ??
         PaymentRecipientType.phoneNumber;
     final currencyCode = context.afriCurrencyCode;
 
-    return BiopayReferencePage(
+    return BioPayReferencePage(
       title: 'NFC Payment',
       onBack: () {
         if (context.canPop()) {
           context.pop();
         } else {
-          context.go('/biopay');
+          context.go('/BioPay');
         }
       },
       child: ListView(
         children: [
-          BiopayReferenceSegmentedControl(
+          BioPayReferenceSegmentedControl(
             selected: selectedRouteType,
             onChanged: _switchRouteType,
           ),
           const SizedBox(height: 22),
-          BiopayReferenceValueCard(
+          BioPayReferenceValueCard(
             label: _labelForRoute(selectedRouteType),
             controller: _recipientController,
-            hintText: biopayRecipientHint(selectedRouteType, _country),
+            hintText: BioPayRecipientHint(selectedRouteType, _country),
             keyboardType: TextInputType.number,
             onChanged: (_) {
               if (_error != null) {
@@ -166,7 +166,7 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
             },
           ),
           const SizedBox(height: 22),
-          BiopayReferenceValueCard(
+          BioPayReferenceValueCard(
             label: 'Amount (Optional)',
             controller: _amountController,
             prefix: currencyCode,
@@ -181,15 +181,15 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
             const SizedBox(height: 16),
             Text(
               _error!,
-              style: biopayReferenceText(
+              style: BioPayReferenceText(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: Colors.red.shade600,
+                color: Colors.red.shade500,
               ),
             ),
           ],
           const SizedBox(height: 34),
-          BiopayReferencePrimaryButton(
+          BioPayReferencePrimaryButton(
             label: _isBusy ? 'Activating NFC' : 'Activate NFC',
             icon: Icons.nfc_rounded,
             onTap: _isBusy ? null : _activateNfc,
@@ -203,5 +203,24 @@ class _BiopayNfcScreenState extends ConsumerState<BiopayNfcScreen> {
     return routeType == PaymentRecipientType.code
         ? 'Merchant Code'
         : 'MoMo Number';
+  }
+
+  static String _userFriendlyError(Object error) {
+    final raw = error.toString().toLowerCase();
+    if (raw.contains('nfc') && raw.contains('unavailable')) {
+      return 'NFC is not available on this device.';
+    }
+    if (raw.contains('attestation') || raw.contains('app check')) {
+      return 'Device verification failed. Restart the app and try again.';
+    }
+    if (raw.contains('timeout') || raw.contains('timed out')) {
+      return 'The request timed out. Check your connection and try again.';
+    }
+    if (raw.contains('socket') ||
+        raw.contains('network') ||
+        raw.contains('connection')) {
+      return 'Network error. Check your internet connection and try again.';
+    }
+    return 'Something went wrong. Please try again.';
   }
 }

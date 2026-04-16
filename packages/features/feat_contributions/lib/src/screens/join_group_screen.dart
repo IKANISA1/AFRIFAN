@@ -77,7 +77,7 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
       setState(() {
         _preview = preview;
         _error = preview == null
-            ? 'No circle was found for this invite code.'
+            ? 'No Group was found for this invite code.'
             : null;
       });
     } catch (error) {
@@ -120,7 +120,7 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
       final groupName =
           result['group_name']?.toString() ??
           _preview?['group_name']?.toString() ??
-          'circle';
+          'Group';
 
       if (!mounted) {
         return;
@@ -146,14 +146,14 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
       setState(() {
         _error =
             result['message']?.toString() ??
-            'Could not join this circle with the supplied invite.';
+            'Could not join this Group with the supplied invite.';
       });
     } catch (error) {
       if (!mounted) {
         return;
       }
       setState(() {
-        _error = 'Could not join this circle right now.';
+        _error = 'Could not join this Group right now.';
       });
     } finally {
       if (mounted) {
@@ -165,7 +165,7 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
   @override
   Widget build(BuildContext context) {
     final preview = _preview;
-    final groupName = preview?['group_name']?.toString() ?? 'Support circle';
+    final groupName = preview?['group_name']?.toString() ?? 'Support Group';
     final description = preview?['description']?.toString();
     final memberCount = (preview?['member_count'] as num?)?.toInt() ?? 0;
     final inviteCode = preview?['invite_code']?.toString() ?? _inviteCode;
@@ -178,7 +178,7 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          'JOIN A CIRCLE',
+          'JOIN A Group',
           style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w700,
@@ -192,7 +192,7 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
             padding: const EdgeInsets.all(SpacingTokens.screenPadding),
             children: [
               Text(
-                'Enter an invite code to preview a circle.',
+                'Enter an invite code to preview a Group.',
                 style: TypographyTokens.bodyLarge(ColorTokens.onSurfaceVariant),
               ),
               const SizedBox(height: SpacingTokens.spacing5),
@@ -211,7 +211,7 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriButton(
-                      label: _isPreviewLoading ? 'Checking…' : 'Preview circle',
+                      label: _isPreviewLoading ? 'Checking…' : 'Preview Group',
                       onTap: _previewInvite,
                       isLoading: _isPreviewLoading,
                       enabled: !_isPreviewLoading && _hasInviteCode,
@@ -274,8 +274,8 @@ class _JoinGroupScreenState extends ConsumerState<JoinGroupScreen> {
                         label: _isJoining
                             ? 'Joining…'
                             : alreadyMember
-                            ? 'Open circle'
-                            : 'Join circle',
+                            ? 'Open Group'
+                            : 'Join Group',
                         onTap: _joinGroup,
                         isLoading: _isJoining,
                         enabled: !_isJoining,

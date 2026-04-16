@@ -358,17 +358,17 @@ void main() {
   // ══════════════════════════════════════════════════════════════════════
 
   group('Journey 7: BioPay payment flow', () {
-    late FeatureModule biopay;
+    late FeatureModule BioPay;
 
     setUp(() {
-      biopay = modules.firstWhere((m) => m.featureKey == 'biopay');
+      BioPay = modules.firstWhere((m) => m.featureKey == 'BioPay');
     });
 
-    test('/biopay tab resolves', () {
-      expect(biopay.tabRoute!.path, '/biopay');
+    test('/BioPay tab resolves', () {
+      expect(BioPay.tabRoute!.path, '/BioPay');
     });
 
-    final biopayScreens = [
+    final BioPayScreens = [
       'profile',
       'register',
       'review',
@@ -379,9 +379,9 @@ void main() {
       'nfc',
     ];
 
-    for (final screen in biopayScreens) {
-      test('/biopay/$screen sub-route resolves', () {
-        final paths = biopay.routes
+    for (final screen in BioPayScreens) {
+      test('/BioPay/$screen sub-route resolves', () {
+        final paths = BioPay.routes
             .whereType<GoRoute>()
             .map((r) => r.path)
             .toSet();
@@ -626,7 +626,7 @@ class _AllFeaturesConfig implements ClubConfig {
   @override String get supabaseUrl => 'https://test.supabase.co';
   @override String get supabaseAnonKey => 'test-key';
   @override List<String> get supportedLanguages => const ['en'];
-  @override bool get hasBiopay => true;
+  @override bool get hasBioPay => true;
   @override bool get hasFanClubs => true;
   @override bool get hasShop => true;
   @override bool get hasTicketing => true;
@@ -639,7 +639,7 @@ class _AllFeaturesConfig implements ClubConfig {
   );
   @override String get environment => 'test';
   @override Map<String, bool> get features => {
-    'biopay': true,
+    'BioPay': true,
     'fan_clubs': true,
     'shop': true,
     'ticketing': true,

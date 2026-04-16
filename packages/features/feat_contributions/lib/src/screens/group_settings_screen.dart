@@ -27,7 +27,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
   String _privacy = 'private';
   DateTime? _deadline;
   String? _inviteCode;
-  String _groupName = 'CIRCLE';
+  String _groupName = 'Group';
   bool _allowChat = true;
   bool _isLoading = true;
   bool _saving = false;
@@ -53,7 +53,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
       final client = ref.read(supabaseClientProvider);
       final scope = await ClubScopeResolver(client: client).requireResolved();
       if (scope.clubId == null) {
-        throw StateError('Contribution circles require a numeric club scope.');
+        throw StateError('Contribution Groups require a numeric club scope.');
       }
       final group = await client
           .from('contribution_groups')
@@ -66,7 +66,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
       if (group == null) {
         setState(() {
           _isLoading = false;
-          _error = 'This circle is no longer available.';
+          _error = 'This Group is no longer available.';
         });
         return;
       }
@@ -75,7 +75,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
       _deadline = deadlineRaw == null || deadlineRaw.isEmpty
           ? null
           : DateTime.tryParse(deadlineRaw);
-      _groupName = group['name']?.toString().toUpperCase() ?? 'CIRCLE';
+      _groupName = group['name']?.toString().toUpperCase() ?? 'Group';
       _nameController.text = group['name']?.toString() ?? '';
       _momoController.text =
           group['receiving_momo_code']?.toString() ??
@@ -96,7 +96,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _error = 'Circle settings are temporarily unavailable.';
+        _error = 'Group settings are temporarily unavailable.';
       });
     }
   }
@@ -108,7 +108,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
       final client = ref.read(supabaseClientProvider);
       final scope = await ClubScopeResolver(client: client).requireResolved();
       if (scope.clubId == null) {
-        throw StateError('Contribution circles require a numeric club scope.');
+        throw StateError('Contribution Groups require a numeric club scope.');
       }
       await client
           .from('contribution_groups')
@@ -127,7 +127,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Circle settings updated.'),
+          content: Text('Group settings updated.'),
           backgroundColor: ColorTokens.success,
         ),
       );
@@ -159,12 +159,12 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
     setState(() => _deadline = picked);
   }
 
-  Future<void> _closeCircle() async {
+  Future<void> _closeGroup() async {
     try {
       final client = ref.read(supabaseClientProvider);
       final scope = await ClubScopeResolver(client: client).requireResolved();
       if (scope.clubId == null) {
-        throw StateError('Contribution circles require a numeric club scope.');
+        throw StateError('Contribution Groups require a numeric club scope.');
       }
       await client
           .from('contribution_groups')
@@ -175,7 +175,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Circle closed.'),
+          content: Text('Group closed.'),
           backgroundColor: ColorTokens.success,
         ),
       );
@@ -184,21 +184,21 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Could not close this circle: $error'),
+          content: Text('Could not close this Group: $error'),
           backgroundColor: ColorTokens.error,
         ),
       );
     }
   }
 
-  Future<void> _deleteCircle() async {
+  Future<void> _deleteGroup() async {
     final confirmed = await showDialog<bool>(
       context: context,
       barrierColor: ColorTokens.scrim,
       builder: (context) => AlertDialog(
         backgroundColor: ColorTokens.surfaceContainerHigh,
-        title: const Text('Delete circle?'),
-        content: const Text('This removes the circle permanently.'),
+        title: const Text('Delete Group?'),
+        content: const Text('This removes the Group permanently.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -221,7 +221,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
       final client = ref.read(supabaseClientProvider);
       final scope = await ClubScopeResolver(client: client).requireResolved();
       if (scope.clubId == null) {
-        throw StateError('Contribution circles require a numeric club scope.');
+        throw StateError('Contribution Groups require a numeric club scope.');
       }
       await client
           .from('contribution_groups')
@@ -232,7 +232,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Circle deleted.'),
+          content: Text('Group deleted.'),
           backgroundColor: ColorTokens.success,
         ),
       );
@@ -241,7 +241,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Could not delete this circle: $error'),
+          content: Text('Could not delete this Group: $error'),
           backgroundColor: ColorTokens.error,
         ),
       );
@@ -277,7 +277,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          'CIRCLE SETTINGS',
+          'Group SETTINGS',
           style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w700,
@@ -357,7 +357,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
                   ContributionInput(
                     label: 'GROUP NAME',
                     controller: _nameController,
-                    hint: 'APR Final Away Convoy',
+                    hint: 'Rayon Sports Final Away Convoy',
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
                   GlassCard(
@@ -461,7 +461,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
                   ContributionInput(
                     label: 'DESCRIPTION',
                     controller: _descriptionController,
-                    hint: 'Circle purpose and logistics',
+                    hint: 'Group purpose and logistics',
                     maxLines: 2,
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
@@ -478,7 +478,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
                               setState(() => _allowChat = value),
                           title: const Text('Allow chat'),
                           subtitle: const Text(
-                            'Let circle members coordinate in-app.',
+                            'Let Group members coordinate in-app.',
                           ),
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
@@ -541,7 +541,7 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
                           ),
                           const SizedBox(height: SpacingTokens.spacing3),
                           OutlinedButton(
-                            onPressed: _closeCircle,
+                            onPressed: _closeGroup,
                             style: OutlinedButton.styleFrom(
                               minimumSize: const Size(double.infinity, 52),
                               shape: RoundedRectangleBorder(
@@ -549,13 +549,13 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
                               ),
                               foregroundColor: ColorTokens.warning,
                             ),
-                            child: const Text('CLOSE CIRCLE'),
+                            child: const Text('CLOSE Group'),
                           ),
                           const SizedBox(height: SpacingTokens.spacing2),
                           TextButton(
-                            onPressed: _deleteCircle,
+                            onPressed: _deleteGroup,
                             child: const Text(
-                              'DELETE CIRCLE',
+                              'DELETE Group',
                               style: TextStyle(color: ColorTokens.error),
                             ),
                           ),
@@ -564,10 +564,12 @@ class _GroupSettingsScreenState extends ConsumerState<GroupSettingsScreen> {
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing6),
-                  ClaymorphicButton(
-                    label: _saving ? 'SAVING' : 'SAVE CHANGES',
-                    width: double.infinity,
-                    onPressed: _saving ? null : _saveChanges,
+                  AfriButton(
+                    label: _saving ? 'Saving…' : 'Save changes',
+                    fullWidth: true,
+                    isLoading: _saving,
+                    onTap: _saveChanges,
+                    enabled: !_saving,
                   ),
                 ],
               ),

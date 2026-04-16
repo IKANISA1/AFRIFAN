@@ -20,7 +20,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
   final _recipientController = TextEditingController();
 
   GroupPrivacy _privacy = GroupPrivacy.private_;
-  ContributionGroupType _groupType = ContributionGroupType.fanCircle;
+  ContributionGroupType _groupType = ContributionGroupType.fanGroup;
   PaymentRecipientType _recipientType = PaymentRecipientType.phoneNumber;
   DateTime? _deadline;
   bool _isRecurring = false;
@@ -83,10 +83,10 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
         'merchant' => 'merchant code',
         _ => 'collection code',
       };
-      return 'Supporters will pay this circle using the club $codeLabel.';
+      return 'Supporters will pay this Group using the club $codeLabel.';
     }
 
-    return 'Supporters will pay this circle to the selected mobile money number.';
+    return 'Supporters will pay this Group to the selected mobile money number.';
   }
 
   void _setRecipientType(PaymentRecipientType value) {
@@ -120,7 +120,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
     if (_nameController.text.trim().isEmpty || _targetAmount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Enter a circle name and a valid target amount.'),
+          content: Text('Enter a Group name and a valid target amount.'),
         ),
       );
       return;
@@ -166,7 +166,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
       } catch (error, stackTrace) {
         AfriLogger.warn(
           'CreateGroupScreen',
-          'Circle FET logging failed after successful creation: $error',
+          'Group FET logging failed after successful creation: $error',
         );
         AfriLogger.error(
           'CreateGroupScreen',
@@ -180,7 +180,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Circle created successfully.'),
+          content: Text('Group created successfully.'),
           backgroundColor: ColorTokens.success,
         ),
       );
@@ -189,7 +189,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Could not create circle: $error'),
+          content: Text('Could not create Group: $error'),
           backgroundColor: ColorTokens.error,
         ),
       );
@@ -207,7 +207,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
       currencySymbol: context.afriCurrencySymbol,
     );
     final previewName = _nameController.text.trim().isEmpty
-        ? 'YOUR CIRCLE'
+        ? 'YOUR Group'
         : _nameController.text.trim().toUpperCase();
     final previewTarget = _targetAmount > 0
         ? currency.format(_targetAmount)
@@ -222,7 +222,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          'NEW CIRCLE',
+          'NEW Group',
           style: TypographyTokens.monolithFont(
             fontSize: 22,
             fontWeight: FontWeight.w700,
@@ -241,7 +241,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
             AfriInputField(
               label: 'Group name',
               controller: _nameController,
-              hint: 'APR Final Away Convoy',
+              hint: 'Rayon Sports Final Away Convoy',
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
@@ -272,7 +272,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                   ),
                   const SizedBox(height: SpacingTokens.spacing2),
                   Text(
-                    'Show the circle collection destination up front.',
+                    'Show the Group collection destination up front.',
                     style: TypographyTokens.bodySmall(),
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
@@ -323,8 +323,8 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                               ),
                               child: Icon(
                                 _recipientType == PaymentRecipientType.code
-                                    ? Icons.dialpad_rounded
-                                    : Icons.smartphone_rounded,
+                                    ? AfriIcons.dialpad
+                                    : AfriIcons.smartphone,
                                 color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
@@ -444,7 +444,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
                 horizontal: SpacingTokens.spacing2,
               ),
               title: Text(
-                'Recurring circle',
+                'Recurring Group',
                 style: TypographyTokens.bodyLarge(),
               ),
               subtitle: Text(
@@ -490,10 +490,12 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing6),
-            ClaymorphicButton(
-              label: _submitting ? 'CREATING' : 'CREATE CIRCLE',
-              width: double.infinity,
-              onPressed: _submitting ? null : _createGroup,
+            AfriButton(
+              label: _submitting ? 'Creating…' : 'Create group',
+              fullWidth: true,
+              isLoading: _submitting,
+              onTap: _createGroup,
+              enabled: !_submitting,
             ),
           ],
         ),

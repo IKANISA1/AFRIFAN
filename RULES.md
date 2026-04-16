@@ -95,7 +95,7 @@ if (data.isEmpty || data == null) {
 
 * Home screen Zone 1 (Live/Next Match) — hide entirely if no upcoming or live match exists  
 * Home screen Zone 3 (Admin Banner Carousel) — hide if no active banners in CMS  
-* Home screen Zone 4 (My Active Circles) — hide if user has no active groups  
+* Home screen Zone 4 (My Active Groups) — hide if user has no active groups  
 * Home screen Zone 5 (Gamification Teaser) — hide if user FET is 0 and no events recorded  
 * Home screen Zone 6 (Club News Feed) — hide if no published news articles  
 * Leaderboard — hide "Top Supporters" section if fewer than 3 ranked users exist  
@@ -273,7 +273,7 @@ Text('Hello', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold))
 
 **White-drop rule:** If any club color has luminance > 0.9 (white/near-white), it is automatically replaced with the design system default. White breaks the dark-mode UI.
 
-**Legacy aliases:** `clubRed` → `clubPrimary`, `deepNavy` → `clubSecondary`, `trophyGold` → `clubAccent`.
+**Legacy :** `clubRed` → `clubPrimary`, `deepNavy` → `clubSecondary`, `trophyGold` → `clubAccent`.
 
 ### **4.4 Minimum Font Sizes**
 
@@ -354,7 +354,7 @@ Every optional feature must check `ClubConfig.instance.features['feature_key']` 
 
 ```
 // ✅ CORRECT
-if (ClubConfig.instance.features['biopay'] == true)
+if (ClubConfig.instance.features['BioPay'] == true)
   BiPayModule()
 
 // ❌ FORBIDDEN — feature rendered for clubs that haven't enabled it
@@ -520,7 +520,7 @@ For every section governed by rule §2.3:
 // Format: test('description of what it does', () { ... })
 test('returns SizedBox.shrink when news list is empty', () { ... })
 test('renders NewsFeedSection when news list has items', () { ... })
-test('hides active circles zone when user has no groups', () { ... })
+test('hides active Groups zone when user has no groups', () { ... })
 ```
 
 ### **9.4 CI Must Stay Green**

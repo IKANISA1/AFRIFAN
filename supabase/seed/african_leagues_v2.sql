@@ -77,10 +77,10 @@ INSERT INTO football.fixtures (id, competition_id, season_id, stage_name, matchd
 INSERT INTO football.fixture_markets (fixture_id, market_id, outcomes) SELECT f.id, pm.id, CASE pm.slug WHEN '1x2' THEN '["Home","Draw","Away"]'::jsonb WHEN 'btts' THEN '["Yes","No"]'::jsonb WHEN 'over-under-2-5' THEN '["Over 2.5","Under 2.5"]'::jsonb END FROM football.fixtures f CROSS JOIN football.prediction_markets pm WHERE f.competition_id = 'ec0e015c-f2bd-41d0-8e53-69176b661a30' AND pm.slug IN ('1x2','btts','over-under-2-5') ON CONFLICT DO NOTHING;
 
 -- ══════════════════════════════════════════════════════
--- Zambia Super League
+-- ZSL
 -- ══════════════════════════════════════════════════════
 
-INSERT INTO football.competitions (id, slug, name, short_name, competition_kind, region, country_code, country_name, organizer, gender, is_active) VALUES ('93aace28-df45-4450-89d2-0bccc38f8405', 'zambia-super-league-2026', 'Zambia Super League', 'ZSL', 'league', 'africa', 'ZM', 'Zambia', 'FAZ', 'male', true) ON CONFLICT (slug) DO NOTHING;
+INSERT INTO football.competitions (id, slug, name, short_name, competition_kind, region, country_code, country_name, organizer, gender, is_active) VALUES ('93aace28-df45-4450-89d2-0bccc38f8405', 'zambia-super-league-2026', 'ZSL', 'ZSL', 'league', 'africa', 'ZM', 'Zambia', 'FAZ', 'male', true) ON CONFLICT (slug) DO NOTHING;
 
 INSERT INTO football.seasons (id, competition_id, slug, label, year_start, year_end, starts_on, ends_on, status, is_active) VALUES ('42290470-8a77-4966-8435-b166d04f6971', '93aace28-df45-4450-89d2-0bccc38f8405', 'zsl-2026', '2026', 2026, 2026, '2026-04-14', '2026-05-31', 'active', true) ON CONFLICT (slug) DO NOTHING;
 
@@ -165,7 +165,7 @@ INSERT INTO football.teams (id, slug, name, short_name, team_type, country_code,
 INSERT INTO football.teams (id, slug, name, short_name, team_type, country_code, country_name, is_active) VALUES ('63c77316-8509-4b8a-8e30-a81dbc2cbd27', 'musanze-fc-rw', 'Musanze FC', 'MUS', 'club', 'RW', 'Rwanda', true) ON CONFLICT (slug) DO NOTHING;
 INSERT INTO football.teams (id, slug, name, short_name, team_type, country_code, country_name, is_active) VALUES ('1537246c-5d2d-45c5-8623-2d532c896b0a', 'amagaju-fc-rw', 'Amagaju FC', 'AMA', 'club', 'RW', 'Rwanda', true) ON CONFLICT (slug) DO NOTHING;
 INSERT INTO football.teams (id, slug, name, short_name, team_type, country_code, country_name, is_active) VALUES ('b11ef791-f1b9-4963-8ff4-c7ae47f5865b', 'etincelles-fc-rw', 'Etincelles FC', 'ETI', 'club', 'RW', 'Rwanda', true) ON CONFLICT (slug) DO NOTHING;
-INSERT INTO football.teams (id, slug, name, short_name, team_type, country_code, country_name, is_active) VALUES ('cd8fe3c9-e7fc-4c19-88b1-78b0c4217f88', 'apr-fc-rw', 'APR FC', 'APR', 'club', 'RW', 'Rwanda', true) ON CONFLICT (slug) DO NOTHING;
+INSERT INTO football.teams (id, slug, name, short_name, team_type, country_code, country_name, is_active) VALUES ('cd8fe3c9-e7fc-4c19-88b1-78b0c4217f88', 'Rayon Sports-fc-rw', 'Rayon Sports FC', 'Rayon Sports', 'club', 'RW', 'Rwanda', true) ON CONFLICT (slug) DO NOTHING;
 INSERT INTO football.teams (id, slug, name, short_name, team_type, country_code, country_name, is_active) VALUES ('63f027b4-88ec-4320-8eba-4fd30929c047', 'gicumbi-fc-rw', 'Gicumbi FC', 'GIC', 'club', 'RW', 'Rwanda', true) ON CONFLICT (slug) DO NOTHING;
 INSERT INTO football.teams (id, slug, name, short_name, team_type, country_code, country_name, is_active) VALUES ('30a2a43a-a154-41cb-8dc5-3c2667173227', 'as-muhanga-rw', 'AS Muhanga', 'AS ', 'club', 'RW', 'Rwanda', true) ON CONFLICT (slug) DO NOTHING;
 INSERT INTO football.teams (id, slug, name, short_name, team_type, country_code, country_name, is_active) VALUES ('306c5a67-0473-46ff-896b-ffbb55b64ffb', 'mukura-victory-sports-rw', 'Mukura Victory Sports', 'MUK', 'club', 'RW', 'Rwanda', true) ON CONFLICT (slug) DO NOTHING;

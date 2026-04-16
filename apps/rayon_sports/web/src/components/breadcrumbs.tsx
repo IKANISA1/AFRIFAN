@@ -12,7 +12,7 @@ const labelMap: Record<string, string> = {
   tickets: "Tickets",
   shop: "Shop",
   membership: "Membership",
-  circles: "Support Circles",
+  Groups: "Support Groups",
   "fan-clubs": "Fan Clubs",
   history: "History",
   contact: "Contact",

@@ -1,21 +1,21 @@
 import {
-  type BiopayMatchHandlerDependencies,
-  createBiopayMatchHandler,
+  type BioPayMatchHandlerDependencies,
+  createBioPayMatchHandler,
 } from "./index.ts";
 import { HttpError } from "../_shared/auth.ts";
-import { BIOPAY_EMBEDDING_LENGTH } from "../_shared/biopay_embedding.ts";
+import { BioPay_EMBEDDING_LENGTH } from "../_shared/BioPay_embedding.ts";
 import type {
-  BiopayMatchProtectionConfig,
-  BiopayMatchRateOutcome,
-} from "../_shared/biopay_match_abuse.ts";
+  BioPayMatchProtectionConfig,
+  BioPayMatchRateOutcome,
+} from "../_shared/BioPay_match_abuse.ts";
 
 const fixedNow = new Date("2026-03-23T12:00:00.000Z");
 const sampleEmbedding = Array.from(
-  { length: BIOPAY_EMBEDDING_LENGTH },
+  { length: BioPay_EMBEDDING_LENGTH },
   (_, index) => index / 1000,
 );
 
-function buildConfig(): BiopayMatchProtectionConfig {
+function buildConfig(): BioPayMatchProtectionConfig {
   return {
     threshold: 0.72,
     rateWindowSeconds: 60,
@@ -29,7 +29,7 @@ function buildConfig(): BiopayMatchProtectionConfig {
 
 function buildLivenessEvidence() {
   return {
-    version: "biopay-liveness-v1",
+    version: "BioPay-liveness-v1",
     mode: "payment",
     result: "passed",
     completed_at: new Date().toISOString(),
@@ -41,7 +41,7 @@ function buildLivenessEvidence() {
 }
 
 function buildRequest() {
-  return new Request("https://example.com/functions/v1/biopay-match", {
+  return new Request("https://example.com/functions/v1/BioPay-match", {
     method: "POST",
     headers: {
       authorization: "Bearer test-token",
@@ -64,14 +64,14 @@ function buildDeps(overrides: {
   latestLockoutAt?: string | null;
   matchRow?: Record<string, unknown> | null;
 } = {}) {
-  const rateEvents: Array<{ outcome: BiopayMatchRateOutcome; scope: string }> =
+  const rateEvents: Array<{ outcome: BioPayMatchRateOutcome; scope: string }> =
     [];
   const matchEvents: Array<Record<string, unknown>> = [];
   const operationalEvents: Array<Record<string, unknown>> = [];
   const edgeFailures: Array<Record<string, unknown>> = [];
   let matchCalls = 0;
 
-  const deps: BiopayMatchHandlerDependencies = {
+  const deps: BioPayMatchHandlerDependencies = {
     createAdminClient: () => ({
       rpc: async (fn: string) => {
         if (fn == "normalize_club_id") {
@@ -130,7 +130,7 @@ function buildDeps(overrides: {
         route_type: "phone_number",
         recipient_value: "0781234567",
         country_code: "RW",
-        consent_version: "biopay-v1",
+        consent_version: "BioPay-v1",
         score: 0.91,
       };
     },
@@ -151,11 +151,11 @@ function buildDeps(overrides: {
   };
 }
 
-Deno.test("biopay-match allows a request that is within limits", async () => {
-  Deno.env.set("BIOPAY_TOKEN_SIGNING_KEY", "test-biopay-signing-key");
+Deno.test("BioPay-match allows a request that is within limits", async () => {
+  Deno.env.set("BioPay_TOKEN_SIGNING_KEY", "test-BioPay-signing-key");
   try {
     const { deps, getState } = buildDeps();
-    const handler = createBiopayMatchHandler(deps);
+    const handler = createBioPayMatchHandler(deps);
 
     const response = await handler(buildRequest());
     const payload = await response.json();
@@ -195,16 +195,16 @@ Deno.test("biopay-match allows a request that is within limits", async () => {
       throw new Error(`Unexpected rate outcomes: ${outcomes.join(",")}`);
     }
   } finally {
-    Deno.env.delete("BIOPAY_TOKEN_SIGNING_KEY");
+    Deno.env.delete("BioPay_TOKEN_SIGNING_KEY");
   }
 });
 
-Deno.test("biopay-match throttles requests that exceed the user attempt budget", async () => {
+Deno.test("BioPay-match throttles requests that exceed the user attempt budget", async () => {
   const config = buildConfig();
   const { deps, getState } = buildDeps({
     userAttempts: config.userMaxAttempts,
   });
-  const handler = createBiopayMatchHandler(deps);
+  const handler = createBioPayMatchHandler(deps);
 
   const response = await handler(buildRequest());
   const payload = await response.json();
@@ -216,7 +216,7 @@ Deno.test("biopay-match throttles requests that exceed the user attempt budget",
 
   if (
     payload.message !=
-      "Too many BioPay match attempts. Please wait a moment before trying again."
+    "Too many BioPay match attempts. Please wait a moment before trying again."
   ) {
     throw new Error(`Unexpected payload: ${JSON.stringify(payload)}`);
   }
@@ -227,18 +227,17 @@ Deno.test("biopay-match throttles requests that exceed the user attempt budget",
 
   if (state.rateEvents[0]?.outcome != "blocked_user_rate_limit") {
     throw new Error(
-      `Expected blocked_user_rate_limit, received ${
-        state.rateEvents[0]?.outcome
+      `Expected blocked_user_rate_limit, received ${state.rateEvents[0]?.outcome
       }`,
     );
   }
 });
 
-Deno.test("biopay-match blocks users with an active miss lockout", async () => {
+Deno.test("BioPay-match blocks users with an active miss lockout", async () => {
   const { deps, getState } = buildDeps({
     latestLockoutAt: new Date(fixedNow.getTime() - 60_000).toISOString(),
   });
-  const handler = createBiopayMatchHandler(deps);
+  const handler = createBioPayMatchHandler(deps);
 
   const response = await handler(buildRequest());
   const payload = await response.json();
@@ -250,7 +249,7 @@ Deno.test("biopay-match blocks users with an active miss lockout", async () => {
 
   if (
     payload.message !=
-      "Too many failed BioPay match attempts. Please wait before trying again."
+    "Too many failed BioPay match attempts. Please wait before trying again."
   ) {
     throw new Error(`Unexpected payload: ${JSON.stringify(payload)}`);
   }
@@ -266,9 +265,9 @@ Deno.test("biopay-match blocks users with an active miss lockout", async () => {
   }
 });
 
-Deno.test("biopay-match rejects requests without valid App Check attestation", async () => {
+Deno.test("BioPay-match rejects requests without valid App Check attestation", async () => {
   const { deps, getState } = buildDeps();
-  const handler = createBiopayMatchHandler({
+  const handler = createBioPayMatchHandler({
     ...deps,
     requireAppCheckToken: async () => {
       throw new HttpError(401, "Device attestation required.");

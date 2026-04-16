@@ -163,7 +163,6 @@ export default function AdminCmsPage() {
       <AdminPageHeader
         eyebrow="Publishing"
         title="Content"
-        description="Articles move through draft, live, and featured states without leaving the workspace."
       />
 
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">

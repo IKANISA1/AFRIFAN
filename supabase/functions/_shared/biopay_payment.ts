@@ -2,7 +2,7 @@ type PaymentRoutingClient = {
   from(table: string): any;
 };
 
-export type BiopayPaymentRouting = {
+export type BioPayPaymentRouting = {
   countryCode: string;
   currencyCode: string;
   currencySymbol: string;
@@ -53,14 +53,14 @@ function collapseDialArtifacts(value: string): string {
   return normalized;
 }
 
-export async function resolveBiopayPaymentRouting(
+export async function resolveBioPayPaymentRouting(
   adminClient: PaymentRoutingClient,
   options: {
     clubId?: number | null;
     countryCode?: string | null;
     routeType?: string | null;
   },
-): Promise<BiopayPaymentRouting> {
+): Promise<BioPayPaymentRouting> {
   let effectiveCountryCode = asTrimmedString(options.countryCode)?.toUpperCase() ??
     null;
   let clubTemplate: string | null = null;
@@ -133,7 +133,7 @@ export async function resolveBiopayPaymentRouting(
   };
 }
 
-export function buildBiopayPaymentCode(options: {
+export function buildBioPayPaymentCode(options: {
   paymentTemplate: string;
   routeType: string;
   recipientValue: string;
@@ -149,7 +149,7 @@ export function buildBiopayPaymentCode(options: {
     "",
   );
   const normalizedAmount = typeof options.amount === "number" &&
-      Number.isFinite(options.amount) && options.amount > 0
+    Number.isFinite(options.amount) && options.amount > 0
     ? Math.trunc(options.amount).toString()
     : null;
 

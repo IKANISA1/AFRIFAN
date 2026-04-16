@@ -5,7 +5,7 @@
 -- a biometric match to a specific payment action.
 -- ════════════════════════════════════════════════════════════════
 
-CREATE TABLE IF NOT EXISTS public.biopay_payment_intents (
+CREATE TABLE IF NOT EXISTS public.BioPay_payment_intents (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id         uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   profile_id      uuid NOT NULL,
@@ -23,27 +23,27 @@ CREATE TABLE IF NOT EXISTS public.biopay_payment_intents (
 );
 
 -- Fast lookups by user and nonce
-CREATE INDEX IF NOT EXISTS idx_biopay_intents_user
-  ON public.biopay_payment_intents (user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_BioPay_intents_user
+  ON public.BioPay_payment_intents (user_id, created_at DESC);
 
-CREATE INDEX IF NOT EXISTS idx_biopay_intents_nonce
-  ON public.biopay_payment_intents (nonce) WHERE status = 'pending';
+CREATE INDEX IF NOT EXISTS idx_BioPay_intents_nonce
+  ON public.BioPay_payment_intents (nonce) WHERE status = 'pending';
 
 -- ── RLS ──────────────────────────────────────────────────────
 
-ALTER TABLE public.biopay_payment_intents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_payment_intents ENABLE ROW LEVEL SECURITY;
 
 -- Users can read their own intents
-DROP POLICY IF EXISTS biopay_intents_select_own ON public.biopay_payment_intents;
-CREATE POLICY biopay_intents_select_own
-  ON public.biopay_payment_intents
+DROP POLICY IF EXISTS BioPay_intents_select_own ON public.BioPay_payment_intents;
+CREATE POLICY BioPay_intents_select_own
+  ON public.BioPay_payment_intents
   FOR SELECT TO authenticated
   USING (user_id = auth.uid());
 
 -- Users can update their own pending intents (mark as dialed)
-DROP POLICY IF EXISTS biopay_intents_update_own ON public.biopay_payment_intents;
-CREATE POLICY biopay_intents_update_own
-  ON public.biopay_payment_intents
+DROP POLICY IF EXISTS BioPay_intents_update_own ON public.BioPay_payment_intents;
+CREATE POLICY BioPay_intents_update_own
+  ON public.BioPay_payment_intents
   FOR UPDATE TO authenticated
   USING (user_id = auth.uid() AND status = 'pending')
   WITH CHECK (user_id = auth.uid());

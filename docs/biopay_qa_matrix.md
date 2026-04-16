@@ -17,10 +17,10 @@ This matrix covers the current shipped BioPay flows:
 
 | Area | Verification |
 |---|---|
-| Hub routing | `flutter test packages/features/feat_biopay/test/biopay_routing_test.dart` |
-| Review privacy | `flutter test packages/features/feat_biopay/test/biopay_review_and_privacy_test.dart` |
-| Payment intent contract | `flutter test packages/features/feat_biopay/test/biopay_repository_test.dart` |
-| Edge function amount binding | `deno test --allow-env --allow-net --allow-read supabase/functions/biopay-create-payment-intent/payment_intent_test.ts` |
+| Hub routing | `flutter test packages/features/feat_BioPay/test/BioPay_routing_test.dart` |
+| Review privacy | `flutter test packages/features/feat_BioPay/test/BioPay_review_and_privacy_test.dart` |
+| Payment intent contract | `flutter test packages/features/feat_BioPay/test/BioPay_repository_test.dart` |
+| Edge function amount binding | `deno test --allow-env --allow-net --allow-read supabase/functions/BioPay-create-payment-intent/payment_intent_test.ts` |
 
 ## Manual scenarios
 
@@ -72,9 +72,9 @@ This matrix covers the current shipped BioPay flows:
 
 BioPay is release-ready only when:
 
-- Dart analysis passes for `feat_biopay` and `feat_settings`
+- Dart analysis passes for `feat_BioPay` and `feat_settings`
 - BioPay Flutter tests pass
-- `biopay-create-payment-intent` Deno tests pass
+- `BioPay-create-payment-intent` Deno tests pass
 - All manual scenarios above are signed off on a device set that includes:
   - Android with NFC/HCE
   - Android without NFC/HCE

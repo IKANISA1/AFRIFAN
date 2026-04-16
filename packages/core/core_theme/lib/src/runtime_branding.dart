@@ -83,8 +83,8 @@ class RuntimeBranding {
     defaultValue: 'League Match',
   );
   static const String nfcMethodChannel = String.fromEnvironment(
-    'BIOPAY_NFC_CHANNEL',
-    defaultValue: 'africlub/biopay_nfc_hce',
+    'BioPay_NFC_CHANNEL',
+    defaultValue: 'africlub/BioPay_nfc_hce',
   );
 
   static void configure({

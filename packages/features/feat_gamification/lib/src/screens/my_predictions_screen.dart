@@ -44,7 +44,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
 
     try {
       final repo = ref.read(predictionRepositoryProvider);
-      final results = await Future.wait([
+      final results = await Future.wait<List<UserPrediction>>([
         repo.loadActivePredictions(),
         repo.loadPredictionHistory(),
       ]);

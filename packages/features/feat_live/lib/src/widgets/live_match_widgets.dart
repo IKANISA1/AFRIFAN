@@ -1,7 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
-/// Data class for a match event entry (goal, card, etc.).
 class MatchIntelEvent {
   const MatchIntelEvent({
     required this.minute,
@@ -14,7 +13,6 @@ class MatchIntelEvent {
   final String body;
 }
 
-/// Abbreviated team badge (e.g. "RAY" or "APR").
 class TeamBadge extends StatelessWidget {
   const TeamBadge({super.key, required this.label});
 
@@ -23,25 +21,28 @@ class TeamBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 58,
-      height: 58,
+      width: 64,
+      height: 64,
       decoration: BoxDecoration(
-        color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(20),
+        color: Colors.white10,
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
         border: BorderTokens.ghost(),
       ),
       alignment: Alignment.center,
       child: Text(
         label,
-        style: TypographyTokens.titleLarge().copyWith(
-          color: ColorTokens.onSurface,
+        style: const TextStyle(
+          fontFamily: 'Display',
+          fontSize: 24,
+          fontWeight: FontWeight.w900,
+          fontStyle: FontStyle.italic,
+          color: Colors.white,
         ),
       ),
     );
   }
 }
 
-/// Stat summary box (possession, shots, corners).
 class LiveStatBox extends StatelessWidget {
   const LiveStatBox({super.key, required this.label, required this.value});
 
@@ -51,20 +52,32 @@ class LiveStatBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ClayCard(
+      child: EliteCard(
         padding: const EdgeInsets.symmetric(
-          horizontal: SpacingTokens.spacing3,
+          horizontal: SpacingTokens.spacing4,
           vertical: SpacingTokens.spacing4,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: TypographyTokens.labelSmall()),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.w900,
+                color: Colors.white38,
+                letterSpacing: 1,
+              ),
+            ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
               value,
-              style: TypographyTokens.headlineMedium().copyWith(
-                color: ColorTokens.onSurface,
+              style: const TextStyle(
+                fontSize: 20,
+                fontFamily: 'Display',
+                fontWeight: FontWeight.w900,
+                fontStyle: FontStyle.italic,
+                color: Colors.white,
               ),
             ),
           ],
@@ -74,7 +87,6 @@ class LiveStatBox extends StatelessWidget {
   }
 }
 
-/// Commentary card showing match intel events with minute, title, and body.
 class CommentaryCard extends StatelessWidget {
   const CommentaryCard({
     super.key,
@@ -89,15 +101,27 @@ class CommentaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClayCard(
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+    return EliteCard(
+      padding: const EdgeInsets.all(SpacingTokens.spacing5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            minute,
-            style: TypographyTokens.headlineSmall().copyWith(
-              color: ColorTokens.clubAccent,
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: ColorTokens.clubAccent.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              minute,
+              style: TextStyle(
+                fontFamily: 'Display',
+                fontSize: 14,
+                fontWeight: FontWeight.w900,
+                color: ColorTokens.clubAccent,
+              ),
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing4),
@@ -105,9 +129,26 @@ class CommentaryCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: TypographyTokens.bodyLarge()),
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(body, style: TypographyTokens.bodyMedium()),
+                Text(
+                  title.toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                if (body.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    body,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Colors.white60,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

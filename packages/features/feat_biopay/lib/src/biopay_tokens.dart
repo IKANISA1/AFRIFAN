@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 ///
 /// To brand BioPay for a specific club, override [accent] and
 /// [accentSecondary] at initialization time.
-class BiopayTokens {
-  BiopayTokens._();
+class BioPayTokens {
+  BioPayTokens._();
 
   // ── Surface & Background ──
 

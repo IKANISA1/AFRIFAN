@@ -1,0 +1,444 @@
+import 'dart:async';
+
+import 'package:core_theme/core_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../fanzone_slip_providers.dart';
+import '../models/fanzone_models.dart';
+import '../models/prediction_models.dart';
+import '../widgets/community_prediction_bar.dart';
+import '../widgets/market_option_pill.dart';
+import '../widgets/market_selector_sheet.dart';
+import '../widgets/stats_panel.dart';
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Predict Tab
+// ══════════════════════════════════════════════════════════════════════════════
+
+/// The "Predict" tab — shows featured markets + community picks.
+class MatchPredictTabBody extends StatelessWidget {
+  const MatchPredictTabBody({
+    super.key,
+    required this.fixture,
+    required this.markets,
+    required this.communityPicks,
+  });
+
+  final FixtureSummary fixture;
+  final List<FixtureMarket> markets;
+  final Map<String, List<CommunityPick>> communityPicks;
+
+  /// Picks one featured market per category, up to 6.
+  List<FixtureMarket> _featuredMarkets() {
+    final seen = <String>{};
+    final result = <FixtureMarket>[];
+    for (final m in markets) {
+      if (result.length >= 6) break;
+      if (m.marketCategory.isNotEmpty && seen.add(m.marketCategory)) {
+        result.add(m);
+      }
+    }
+    return result;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final featuredMarkets = _featuredMarkets();
+
+    return ListView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      children: [
+        AfriSectionCard(
+          title: 'Markets',
+          trailingLabel: markets.isEmpty
+              ? null
+              : '${markets.length} markets',
+          onTrailingTap: markets.isEmpty
+              ? null
+              : () {
+                  unawaited(
+                    showMarketSelectorSheet(
+                      context: context,
+                      fixture: fixture,
+                      markets: markets,
+                    ),
+                  );
+                },
+          child: featuredMarkets.isEmpty
+              ? const AfriEmptyView(
+                  compact: true,
+                  title: 'No markets available',
+                  icon: Icons.grid_view_rounded,
+                )
+              : Column(
+                  children: featuredMarkets
+                      .asMap()
+                      .entries
+                      .map((entry) {
+                        final market = entry.value;
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: entry.key == featuredMarkets.length - 1
+                                ? 0
+                                : SpacingTokens.spacing3,
+                          ),
+                          child: MatchMarketCard(
+                            fixture: fixture,
+                            market: market,
+                            communityPicks:
+                                communityPicks[market.fixtureMarketId] ??
+                                const <CommunityPick>[],
+                          ),
+                        );
+                      })
+                      .toList(growable: false),
+                ),
+        ),
+        const SizedBox(height: 120),
+      ],
+    );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Stats Tab
+// ══════════════════════════════════════════════════════════════════════════════
+
+/// The "Stats" tab — shows match statistics or derived score-based stats.
+class MatchStatsTabBody extends StatelessWidget {
+  const MatchStatsTabBody({
+    super.key,
+    required this.fixture,
+    required this.stats,
+  });
+
+  final FixtureSummary fixture;
+  final List<MatchStatRow> stats;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasScores = fixture.homeScore != null && fixture.awayScore != null;
+
+    if (!hasScores) {
+      return ListView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        children: [
+          const SizedBox(height: SpacingTokens.spacing8),
+          const AfriEmptyView(
+            compact: true,
+            title: 'Stats not yet available',
+            message:
+                'Match statistics will appear here once the match is live or completed.',
+            icon: Icons.bar_chart_rounded,
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          ClayCard(
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_outline_rounded,
+                  size: 16,
+                  color: ColorTokens.onSurfaceVariant,
+                ),
+                const SizedBox(width: SpacingTokens.spacing2),
+                Expanded(
+                  child: Text(
+                    'Live stats update automatically during the match.',
+                    style: TypographyTokens.bodySmall(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (stats.isNotEmpty) {
+      return ListView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        children: [
+          StatsPanel(
+            stats: stats,
+            homeLabel: fixture.homeTeamShort,
+            awayLabel: fixture.awayTeamShort,
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          ClayCard(
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_outline_rounded,
+                  size: 16,
+                  color: ColorTokens.onSurfaceVariant,
+                ),
+                const SizedBox(width: SpacingTokens.spacing2),
+                Expanded(
+                  child: Text(
+                    fixture.isLive
+                        ? 'Live match-center data is updating for this fixture.'
+                        : 'Structured match-center statistics for this fixture.',
+                    style: TypographyTokens.bodySmall(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    final homeGoals = fixture.homeScore ?? 0;
+    final awayGoals = fixture.awayScore ?? 0;
+    final totalGoals = homeGoals + awayGoals;
+
+    final liveStats = <MatchStatRow>[
+      MatchStatRow(
+        label: 'Goals',
+        leftValue: homeGoals.toDouble(),
+        rightValue: awayGoals.toDouble(),
+        leftDisplay: '$homeGoals',
+        rightDisplay: '$awayGoals',
+      ),
+      MatchStatRow(
+        label: 'Total Goals',
+        leftValue: totalGoals.toDouble(),
+        rightValue: totalGoals.toDouble(),
+        leftDisplay: '$totalGoals',
+        rightDisplay: '$totalGoals',
+      ),
+    ];
+
+    return ListView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      children: [
+        StatsPanel(
+          stats: liveStats,
+          homeLabel: fixture.homeTeamShort,
+          awayLabel: fixture.awayTeamShort,
+        ),
+        const SizedBox(height: SpacingTokens.spacing4),
+        ClayCard(
+          child: Row(
+            children: [
+              Icon(
+                Icons.info_outline_rounded,
+                size: 16,
+                color: ColorTokens.onSurfaceVariant,
+              ),
+              const SizedBox(width: SpacingTokens.spacing2),
+              Expanded(
+                child: Text(
+                  fixture.isLive
+                      ? 'Live stats update automatically during the match.'
+                      : 'Final match statistics.',
+                  style: TypographyTokens.bodySmall(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Market Card
+// ══════════════════════════════════════════════════════════════════════════════
+
+/// Single market card with outcome pills + community bar.
+class MatchMarketCard extends ConsumerWidget {
+  const MatchMarketCard({
+    super.key,
+    required this.fixture,
+    required this.market,
+    required this.communityPicks,
+  });
+
+  final FixtureSummary fixture;
+  final FixtureMarket market;
+  final List<CommunityPick> communityPicks;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final slip = ref.watch(fanzoneSlipProvider);
+    final selected = slip.items
+        .where((item) => item.fixtureMarketId == market.fixtureMarketId)
+        .toList(growable: false);
+    final selectedOutcomeKey = selected.isEmpty
+        ? null
+        : selected.first.outcomeKey;
+
+    return ClayCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Category + bet type chip row ──
+          if (market.marketCategory.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: ColorTokens.surfaceContainerHigh,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      market.marketCategory,
+                      style: TypographyTokens.editorialFont(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w700,
+                        color: ColorTokens.onSurfaceVariant,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ),
+                  if (market.betType.isNotEmpty) ...[
+                    const SizedBox(width: SpacingTokens.spacing2),
+                    Text(
+                      market.betType,
+                      style: TypographyTokens.editorialFont(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w600,
+                        color: ColorTokens.onSurfaceVariant
+                            .withValues(alpha: 0.6),
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      market.marketName,
+                      style: TypographyTokens.titleMedium(),
+                    ),
+                    if (market.description.isNotEmpty) ...[
+                      const SizedBox(height: SpacingTokens.spacing1),
+                      Text(
+                        market.description,
+                        style: TypographyTokens.bodySmall(),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(width: SpacingTokens.spacing3),
+              Text(
+                '+${market.fetValue} FET',
+                style: TypographyTokens.labelSmall(ColorTokens.clubAccent),
+              ),
+            ],
+          ),
+          const SizedBox(height: SpacingTokens.spacing3),
+          if (market.isLocked)
+            Text(
+              'Market locked for this fixture state.',
+              style: TypographyTokens.bodySmall(),
+            )
+          else
+            Wrap(
+              spacing: SpacingTokens.spacing2,
+              runSpacing: SpacingTokens.spacing2,
+              children: market.outcomes
+                  .map((outcome) {
+                    return MarketOptionPill(
+                      label: outcome.label,
+                      isSelected: selectedOutcomeKey == outcome.key,
+                      trailing: selectedOutcomeKey == outcome.key
+                          ? Icon(
+                              Icons.check_rounded,
+                              size: 14,
+                              color: ColorTokens.clubAccent,
+                            )
+                          : null,
+                      onTap: () {
+                        ref
+                            .read(fanzoneSlipProvider.notifier)
+                            .addFromMarket(
+                              fixture: fixture,
+                              market: market,
+                              outcome: outcome,
+                            );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              '${outcome.label} added to your slip.',
+                            ),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      },
+                    );
+                  })
+                  .toList(growable: false),
+            ),
+          if (communityPicks.isNotEmpty) ...[
+            const SizedBox(height: SpacingTokens.spacing4),
+            CommunityPredictionBar(
+              picks: communityPicks,
+              userSelection:
+                  selectedOutcomeKey ?? market.userPrediction?.selectedOutcome,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Meta Link
+// ══════════════════════════════════════════════════════════════════════════════
+
+/// Mini pill link to league/team profiles from within the hero card.
+class MatchMetaLink extends StatelessWidget {
+  const MatchMetaLink({
+    super.key,
+    required this.label,
+    required this.onTap,
+  });
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return AfriPressFeedback(
+      onTap: onTap,
+      builder: (context, _) => Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: SpacingTokens.spacing3,
+          vertical: SpacingTokens.spacing2,
+        ),
+        decoration: BoxDecoration(
+          color: ColorTokens.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: ColorTokens.ghostBorder),
+        ),
+        child: Text(
+          label,
+          style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
+        ),
+      ),
+    );
+  }
+}

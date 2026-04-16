@@ -2,8 +2,8 @@ import 'package:core_utils/core_utils.dart' as jh;
 
 import 'biopay_money.dart';
 
-class BiopayHandoffToken {
-  const BiopayHandoffToken({
+class BioPayHandoffToken {
+  const BioPayHandoffToken({
     required this.token,
     required this.resolverUrl,
     required this.expiresAt,
@@ -19,8 +19,8 @@ class BiopayHandoffToken {
     this.senderName,
   });
 
-  factory BiopayHandoffToken.fromApiResponse(Map<String, dynamic> data) {
-    return BiopayHandoffToken(
+  factory BioPayHandoffToken.fromApiResponse(Map<String, dynamic> data) {
+    return BioPayHandoffToken(
       token: data['token']?.toString() ?? '',
       resolverUrl: Uri.parse(data['resolver_url']?.toString() ?? ''),
       expiresAt:
@@ -60,7 +60,7 @@ class BiopayHandoffToken {
 
   String? get formattedAmount => amount == null
       ? null
-      : formatBiopayAmount(
+      : formatBioPayAmount(
           amount: amount!,
           currencySymbol: currencySymbol,
           currencyCode: currencyCode,

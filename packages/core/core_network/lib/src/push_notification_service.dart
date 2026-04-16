@@ -255,7 +255,9 @@ class PushNotificationService {
           .select('push_enabled')
           .eq('user_id', userId)
           .maybeSingle();
-      return row?['push_enabled'] == true;
+      // Default to true (opt-out) when no settings row exists yet.
+      if (row == null) return true;
+      return row['push_enabled'] == true;
     } catch (error, stackTrace) {
       AfriLogger.error(
         'Push',
@@ -263,7 +265,8 @@ class PushNotificationService {
         error,
         stackTrace,
       );
-      return false;
+      // Default to enabled on error — better to over-deliver than silently fail.
+      return true;
     }
   }
 

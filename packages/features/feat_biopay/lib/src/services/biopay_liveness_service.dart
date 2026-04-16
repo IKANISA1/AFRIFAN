@@ -3,32 +3,32 @@ import 'dart:math' as math;
 import '../models/biopay_face_frame_analysis.dart';
 
 /// Liveness mode: enrollment requires more steps.
-enum BiopayLivenessMode { enrollment, payment }
+enum BioPayLivenessMode { enrollment, payment }
 
 /// Feedback level shown to the user.
-enum BiopayLivenessFeedbackLevel { searching, ready, blocked }
+enum BioPayLivenessFeedbackLevel { searching, ready, blocked }
 
 /// User-facing liveness assessment.
-class BiopayLivenessAssessment {
-  const BiopayLivenessAssessment({
+class BioPayLivenessAssessment {
+  const BioPayLivenessAssessment({
     required this.level,
     required this.statusLabel,
     required this.helperText,
   });
 
-  final BiopayLivenessFeedbackLevel level;
+  final BioPayLivenessFeedbackLevel level;
   final String statusLabel;
   final String helperText;
 }
 
-enum _BiopayLivenessStep { blink, turnSide, recenter }
+enum _BioPayLivenessStep { blink, turnSide, recenter }
 
 /// 3-step passive liveness challenge: blink → turn → recenter.
 ///
 /// - Enrollment: blink + turn + recenter (3 steps)
 /// - Payment: blink + turn (2 steps — faster checkout)
-class BiopayLivenessService {
-  BiopayLivenessService({required this.mode, int maxFramesWithoutProgress = 45})
+class BioPayLivenessService {
+  BioPayLivenessService({required this.mode, int maxFramesWithoutProgress = 45})
     : _maxFramesWithoutProgress = maxFramesWithoutProgress;
 
   static const challengeVersion = 'challenge_pad_v1';
@@ -37,7 +37,7 @@ class BiopayLivenessService {
   static const _headTurnThreshold = 18.0;
   static const _recenterThreshold = 8.0;
 
-  final BiopayLivenessMode mode;
+  final BioPayLivenessMode mode;
   final int _maxFramesWithoutProgress;
 
   bool _isSatisfied = false;
@@ -101,7 +101,7 @@ class BiopayLivenessService {
     _completedAt = null;
   }
 
-  BiopayLivenessAssessment? evaluate(BiopayFaceFrameAnalysis analysis) {
+  BioPayLivenessAssessment? evaluate(BioPayFaceFrameAnalysis analysis) {
     if (_isSatisfied) return null;
 
     if (!_canEvaluateChallenge(analysis)) {
@@ -114,9 +114,9 @@ class BiopayLivenessService {
 
     final step = _requiredSteps[_stepIndex];
     final advanced = switch (step) {
-      _BiopayLivenessStep.blink => _advanceBlink(analysis),
-      _BiopayLivenessStep.turnSide => _advanceTurnSide(analysis),
-      _BiopayLivenessStep.recenter => _advanceRecenter(analysis),
+      _BioPayLivenessStep.blink => _advanceBlink(analysis),
+      _BioPayLivenessStep.turnSide => _advanceTurnSide(analysis),
+      _BioPayLivenessStep.recenter => _advanceRecenter(analysis),
     };
 
     if (advanced) {
@@ -132,8 +132,8 @@ class BiopayLivenessService {
       _framesWithoutProgress += 1;
       if (_framesWithoutProgress >= _maxFramesWithoutProgress) {
         reset();
-        return const BiopayLivenessAssessment(
-          level: BiopayLivenessFeedbackLevel.blocked,
+        return const BioPayLivenessAssessment(
+          level: BioPayLivenessFeedbackLevel.blocked,
           statusLabel: 'Liveness challenge restarted',
           helperText:
               'Liveness check failed. Re-center your face and try again.',
@@ -144,30 +144,30 @@ class BiopayLivenessService {
     return _buildAssessment(step, analysis);
   }
 
-  List<_BiopayLivenessStep> get _requiredSteps =>
-      mode == BiopayLivenessMode.enrollment
-      ? const <_BiopayLivenessStep>[
-          _BiopayLivenessStep.blink,
-          _BiopayLivenessStep.turnSide,
-          _BiopayLivenessStep.recenter,
+  List<_BioPayLivenessStep> get _requiredSteps =>
+      mode == BioPayLivenessMode.enrollment
+      ? const <_BioPayLivenessStep>[
+          _BioPayLivenessStep.blink,
+          _BioPayLivenessStep.turnSide,
+          _BioPayLivenessStep.recenter,
         ]
-      : const <_BiopayLivenessStep>[
-          _BiopayLivenessStep.blink,
-          _BiopayLivenessStep.turnSide,
+      : const <_BioPayLivenessStep>[
+          _BioPayLivenessStep.blink,
+          _BioPayLivenessStep.turnSide,
         ];
 
-  bool _canEvaluateChallenge(BiopayFaceFrameAnalysis analysis) {
+  bool _canEvaluateChallenge(BioPayFaceFrameAnalysis analysis) {
     if (analysis.faceCount != 1) return false;
     return switch (analysis.guidance) {
-      BiopayFaceGuidance.multipleFaces => false,
-      BiopayFaceGuidance.tooDark => false,
-      BiopayFaceGuidance.tooBright => false,
-      BiopayFaceGuidance.tooFar => false,
+      BioPayFaceGuidance.multipleFaces => false,
+      BioPayFaceGuidance.tooDark => false,
+      BioPayFaceGuidance.tooBright => false,
+      BioPayFaceGuidance.tooFar => false,
       _ => true,
     };
   }
 
-  bool _advanceBlink(BiopayFaceFrameAnalysis analysis) {
+  bool _advanceBlink(BioPayFaceFrameAnalysis analysis) {
     if (_eyesAreOpen(analysis)) {
       if (_blinkArmed && _blinkClosedObserved) return true;
       _blinkArmed = true;
@@ -179,48 +179,48 @@ class BiopayLivenessService {
     return false;
   }
 
-  bool _advanceTurnSide(BiopayFaceFrameAnalysis analysis) {
+  bool _advanceTurnSide(BioPayFaceFrameAnalysis analysis) {
     return analysis.absHeadYaw >= _headTurnThreshold;
   }
 
-  bool _advanceRecenter(BiopayFaceFrameAnalysis analysis) {
+  bool _advanceRecenter(BioPayFaceFrameAnalysis analysis) {
     return analysis.absHeadYaw <= _recenterThreshold && _eyesAreOpen(analysis);
   }
 
-  BiopayLivenessAssessment _buildAssessment(
-    _BiopayLivenessStep step,
-    BiopayFaceFrameAnalysis analysis,
+  BioPayLivenessAssessment _buildAssessment(
+    _BioPayLivenessStep step,
+    BioPayFaceFrameAnalysis analysis,
   ) {
     return switch (step) {
-      _BiopayLivenessStep.blink => _buildBlinkAssessment(analysis),
-      _BiopayLivenessStep.turnSide => const BiopayLivenessAssessment(
-        level: BiopayLivenessFeedbackLevel.ready,
+      _BioPayLivenessStep.blink => _buildBlinkAssessment(analysis),
+      _BioPayLivenessStep.turnSide => const BioPayLivenessAssessment(
+        level: BioPayLivenessFeedbackLevel.ready,
         statusLabel: 'Turn your head slightly',
         helperText: 'Turn your head slightly to verify liveness.',
       ),
-      _BiopayLivenessStep.recenter => const BiopayLivenessAssessment(
-        level: BiopayLivenessFeedbackLevel.ready,
+      _BioPayLivenessStep.recenter => const BioPayLivenessAssessment(
+        level: BioPayLivenessFeedbackLevel.ready,
         statusLabel: 'Look straight again',
         helperText: 'Center your face in the oval to continue.',
       ),
     };
   }
 
-  BiopayLivenessAssessment _buildBlinkAssessment(
-    BiopayFaceFrameAnalysis analysis,
+  BioPayLivenessAssessment _buildBlinkAssessment(
+    BioPayFaceFrameAnalysis analysis,
   ) {
     if (analysis.leftEyeOpenProbability == null ||
         analysis.rightEyeOpenProbability == null) {
-      return const BiopayLivenessAssessment(
-        level: BiopayLivenessFeedbackLevel.blocked,
+      return const BioPayLivenessAssessment(
+        level: BioPayLivenessFeedbackLevel.blocked,
         statusLabel: 'Keep both eyes visible',
         helperText: 'Both eyes must be visible for the blink challenge.',
       );
     }
 
     if (!_blinkArmed) {
-      return const BiopayLivenessAssessment(
-        level: BiopayLivenessFeedbackLevel.searching,
+      return const BioPayLivenessAssessment(
+        level: BioPayLivenessFeedbackLevel.searching,
         statusLabel: 'Hold steady with eyes open',
         helperText:
             'BioPay is arming the live blink challenge before it allows a capture.',
@@ -228,21 +228,21 @@ class BiopayLivenessService {
     }
 
     if (!_blinkClosedObserved) {
-      return const BiopayLivenessAssessment(
-        level: BiopayLivenessFeedbackLevel.ready,
+      return const BioPayLivenessAssessment(
+        level: BioPayLivenessFeedbackLevel.ready,
         statusLabel: 'Blink once',
         helperText: 'Blink naturally to confirm a live face.',
       );
     }
 
-    return const BiopayLivenessAssessment(
-      level: BiopayLivenessFeedbackLevel.ready,
+    return const BioPayLivenessAssessment(
+      level: BioPayLivenessFeedbackLevel.ready,
       statusLabel: 'Open your eyes again',
       helperText: 'Blink detected. Open your eyes to finish.',
     );
   }
 
-  bool _eyesAreOpen(BiopayFaceFrameAnalysis analysis) {
+  bool _eyesAreOpen(BioPayFaceFrameAnalysis analysis) {
     final left = analysis.leftEyeOpenProbability;
     final right = analysis.rightEyeOpenProbability;
     return left != null &&
@@ -251,7 +251,7 @@ class BiopayLivenessService {
         right >= _eyesOpenThreshold;
   }
 
-  bool _eyesAreClosed(BiopayFaceFrameAnalysis analysis) {
+  bool _eyesAreClosed(BioPayFaceFrameAnalysis analysis) {
     final left = analysis.leftEyeOpenProbability;
     final right = analysis.rightEyeOpenProbability;
     return left != null &&
@@ -260,11 +260,11 @@ class BiopayLivenessService {
         right <= _eyesClosedThreshold;
   }
 
-  String _stepCode(_BiopayLivenessStep step) {
+  String _stepCode(_BioPayLivenessStep step) {
     return switch (step) {
-      _BiopayLivenessStep.blink => 'blink',
-      _BiopayLivenessStep.turnSide => 'turn_side',
-      _BiopayLivenessStep.recenter => 'recenter',
+      _BioPayLivenessStep.blink => 'blink',
+      _BioPayLivenessStep.turnSide => 'turn_side',
+      _BioPayLivenessStep.recenter => 'recenter',
     };
   }
 }

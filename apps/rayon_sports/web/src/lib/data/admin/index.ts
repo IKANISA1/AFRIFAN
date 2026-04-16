@@ -13,7 +13,7 @@
  *   ✅ shop.ts           — product CRUD
  *   ✅ fan-clubs.ts      — fan clubs CRUD
  *   ✅ standings.ts      — league table CRUD
- *   ✅ contributions.ts  — circles, Excel export, group CRUD
+ *   ✅ contributions.ts  — Groups, Excel export, group CRUD
  *   ✅ notifications.ts  — push notification context + delivery
  *   ✅ sms.ts            — SMS monitor sync runs
  *   ✅ squad.ts          — player CRUD

@@ -86,7 +86,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     UserPrivacySettings settings,
   ) async {
     final config = ClubConfigScope.maybeOf(context);
-    if (config?.hasBiopay != true) {
+    if (config?.hasBioPay != true) {
       return;
     }
 
@@ -147,7 +147,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     final appName =
         ClubConfigScope.maybeOf(context)?.appName ??
         RuntimeBranding.displayAppName;
-    final hasBiopay = ClubConfigScope.maybeOf(context)?.hasBiopay ?? false;
+    final hasBioPay = ClubConfigScope.maybeOf(context)?.hasBioPay ?? false;
     final asyncSettings = ref.watch(privacySettingsProvider);
     final loadedSettings = asyncSettings.valueOrNull;
     if (loadedSettings != null) {
@@ -187,9 +187,9 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: SpacingTokens.spacing4),
-                            ClaymorphicButton(
-                              label: 'RETRY',
-                              onPressed: () =>
+                            AfriButton(
+                              label: 'Retry',
+                              onTap: () =>
                                   ref.invalidate(privacySettingsProvider),
                             ),
                           ],
@@ -228,7 +228,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                           }).toList(),
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
-                        if (hasBiopay)
+                        if (hasBioPay)
                           SwitchListTile(
                             value: settings.momoSmsAutoreadEnabled,
                             onChanged: (value) => setState(
@@ -264,10 +264,10 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                           style: TypographyTokens.bodyMedium(),
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
-                        ClaymorphicButton(
-                          label: 'REQUEST DATA EXPORT',
-                          width: double.infinity,
-                          onPressed:
+                        AfriButton(
+                          label: 'Request data export',
+                          fullWidth: true,
+                          onTap:
                               AppLinks.hasSupportWhatsApp ||
                                   AppLinks.hasSupportEmail
                               ? () async {
@@ -291,7 +291,9 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                                         'Could not open your mail app.',
                                   );
                                 }
-                              : null,
+                              : () {},
+                          enabled: AppLinks.hasSupportWhatsApp ||
+                              AppLinks.hasSupportEmail,
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
                         OutlinedButton(
@@ -332,10 +334,12 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing6),
-                  ClaymorphicButton(
-                    label: _isSaving ? 'SAVING...' : 'SAVE PRIVACY SETTINGS',
-                    width: double.infinity,
-                    onPressed: _isSaving ? null : () => _saveSettings(settings),
+                  AfriButton(
+                    label: _isSaving ? 'Saving…' : 'Save privacy settings',
+                    fullWidth: true,
+                    isLoading: _isSaving,
+                    onTap: () => _saveSettings(settings),
+                    enabled: !_isSaving,
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
                   OutlinedButton(

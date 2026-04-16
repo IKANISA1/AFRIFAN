@@ -21,7 +21,7 @@ abstract final class AppModuleRegistry {
         .toList(growable: false);
   }
 
-  static List<FeatureModule> get _allModules => <FeatureModule>[
+  static final List<FeatureModule> _allModules = <FeatureModule>[
     HomeModule(),
     LiveModule(),
     FanzoneModule(),

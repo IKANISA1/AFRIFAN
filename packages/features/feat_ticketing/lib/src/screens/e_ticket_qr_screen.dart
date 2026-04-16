@@ -77,107 +77,111 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.shield,
-                    size: 48,
-                    color: ColorTokens.onSurfaceVariant,
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  Text(
-                    ticket.matchTitle,
-                    style: TypographyTokens.headlineSmall(),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing6),
-                  Container(
-                    width: 300,
-                    padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                    decoration: BoxDecoration(
-                      color: ColorTokens.surface,
-                      borderRadius: ShapeTokens.cardRadius,
-                      border: BorderTokens.ghost(),
-                    ),
+                  EliteCard(
+                    backgroundColor: Colors.white,
+                    borderColor: Colors.transparent,
+                    padding: EdgeInsets.zero,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: 260,
-                              height: 260,
-                              decoration: BoxDecoration(
-                                color: ColorTokens.onSurface,
-                                borderRadius: BorderRadius.circular(
-                                  SpacingTokens.spacing2,
+                        // Upper Pass: QR Code
+                        Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                              ),
-                              alignment: Alignment.center,
-                              child: QrImageView(
-                                data: code,
-                                size: 220,
-                                backgroundColor: ColorTokens.onSurface,
-                                eyeStyle: QrEyeStyle(
-                                  eyeShape: QrEyeShape.square,
-                                  color: ColorTokens.background,
-                                ),
-                                dataModuleStyle: QrDataModuleStyle(
-                                  dataModuleShape: QrDataModuleShape.square,
-                                  color: ColorTokens.background,
-                                ),
-                              ),
-                            ),
-                            AnimatedBuilder(
-                              animation: _scannerController,
-                              builder: (context, child) {
-                                return Positioned(
-                                  top: _scannerController.value * 240,
-                                  child: Container(
-                                    width: 260,
-                                    height: 2,
-                                    color: ColorTokens.clubPrimary,
-                                    decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: ColorTokens.clubPrimary
-                                              .withValues(
-                                            alpha: 0.5,
-                                          ),
-                                          blurRadius: 8,
-                                          spreadRadius: 2,
-                                        ),
-                                      ],
-                                    ),
+                                child: QrImageView(
+                                  data: code,
+                                  size: 220,
+                                  backgroundColor: Colors.white,
+                                  eyeStyle: const QrEyeStyle(
+                                    eyeShape: QrEyeShape.square,
+                                    color: Colors.black,
                                   ),
-                                );
-                              },
+                                  dataModuleStyle: const QrDataModuleStyle(
+                                    dataModuleShape: QrDataModuleShape.square,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              AnimatedBuilder(
+                                animation: _scannerController,
+                                builder: (context, child) {
+                                  return Positioned(
+                                    top: _scannerController.value * 220,
+                                    child: Container(
+                                      width: 220,
+                                      height: 2,
+                                      color: ColorTokens.clubPrimary,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        
+                        // Perforated Divider
+                        Row(
+                          children: List.generate(20, (i) => Expanded(
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 2),
+                              height: 1,
+                              color: Colors.black12,
                             ),
-                          ],
+                          )),
                         ),
-                        const SizedBox(height: SpacingTokens.spacing6),
-                        Text(
-                          ticket.seatType.label.toUpperCase(),
-                          style: TypographyTokens.headlineMedium().copyWith(
-                            color: ColorTokens.clubAccent,
+
+                        // Lower Pass: Details
+                        Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Column(
+                            children: [
+                              Text(
+                                ticket.matchTitle.toUpperCase(),
+                                style: const TextStyle(
+                                  fontFamily: 'Display',
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w900,
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.black,
+                                  height: 1,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: ColorTokens.clubAccent.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  ticket.seatType.label.toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w900,
+                                    color: ColorTokens.clubAccent,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  _buildPassMeta('DATE', AfriDateFormatter.formatDate(ticket.match.matchDate)),
+                                  _buildPassMeta('TIME', ticket.match.kickoffTime ?? '18:00'),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              _buildPassMeta('VENUE', ticket.match.venue.toUpperCase()),
+                            ],
                           ),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing2),
-                        Text(
-                          AfriDateFormatter.formatDate(ticket.match.matchDate),
-                          style: TypographyTokens.bodyMedium(),
-                        ),
-                        Text(
-                          ticket.match.venue,
-                          style: TypographyTokens.bodyMedium().copyWith(
-                            color: ColorTokens.onSurfaceVariant,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing3),
-                        Text(
-                          'Ticket code: $code',
-                          style: TypographyTokens.numericAlias(fontSize: 15),
-                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),
@@ -185,19 +189,24 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                         duration: 400.ms,
                         curve: Curves.easeOutBack,
                       ),
-                  const SizedBox(height: SpacingTokens.spacing10),
+                  const SizedBox(height: 32),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.wifi_tethering,
-                        color: ColorTokens.onSurfaceVariant,
+                      Expanded(
+                        child: EliteButton(
+                          label: 'Apple Wallet',
+                          onTap: () {},
+                          variant: EliteButtonVariant.outline,
+                          icon: Icons.add_card_rounded,
+                        ),
                       ),
-                      const SizedBox(width: SpacingTokens.spacing2),
-                      Text(
-                        'Present this QR code at the gate',
-                        style: TypographyTokens.bodyMedium().copyWith(
-                          color: ColorTokens.onSurfaceVariant,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: EliteButton(
+                          label: 'Google Wallet',
+                          onTap: () {},
+                          variant: EliteButtonVariant.outline,
+                          icon: Icons.wallet_rounded,
                         ),
                       ),
                     ],
@@ -208,6 +217,22 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
           );
         },
       ),
+    );
+  }
+
+  Widget _buildPassMeta(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Colors.black26, letterSpacing: 1),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.black, letterSpacing: -0.5),
+        ),
+      ],
     );
   }
 }

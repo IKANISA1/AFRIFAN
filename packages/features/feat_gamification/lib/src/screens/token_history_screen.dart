@@ -201,8 +201,8 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
                                 alignment: Alignment.center,
                                 child: Icon(
                                   isCredit
-                                      ? Icons.south_west_rounded
-                                      : Icons.north_east_rounded,
+                                      ? AfriIcons.incoming
+                                      : AfriIcons.out,
                                   color: color,
                                   size: 18,
                                 ),

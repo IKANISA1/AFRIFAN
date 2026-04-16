@@ -114,11 +114,11 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
 
   IconData _iconForType(String type) {
     return switch (type) {
-      'challenge_received' => Icons.compare_arrows_rounded,
-      'challenge_settled' => Icons.emoji_events_rounded,
-      'settlement' => Icons.check_circle_rounded,
-      'earn' => Icons.stars_rounded,
-      _ => Icons.notifications_rounded,
+      'challenge_received' => AfriIcons.versus,
+      'challenge_settled' => AfriIcons.rank,
+      'settlement' => AfriIcons.checkGroup,
+      'earn' => AfriIcons.earn,
+      _ => AfriIcons.notifications,
     };
   }
 

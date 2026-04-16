@@ -45,10 +45,10 @@ Future<void> showXpLevelUpModal(
                 ),
               ],
               const SizedBox(height: SpacingTokens.spacing4),
-              ClaymorphicButton(
-                label: 'AWESOME',
-                width: double.infinity,
-                onPressed: () => Navigator.of(context).pop(),
+              AfriButton(
+                label: 'Awesome',
+                fullWidth: true,
+                onTap: () => Navigator.of(context).pop(),
               ),
             ],
           ),
@@ -103,10 +103,10 @@ Future<void> showBadgeEarnedModal(
                 style: TypographyTokens.bodyMedium(),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
-              ClaymorphicButton(
-                label: 'KEEP GOING',
-                width: double.infinity,
-                onPressed: () => Navigator.of(context).pop(),
+              AfriButton(
+                label: 'Keep going',
+                fullWidth: true,
+                onTap: () => Navigator.of(context).pop(),
               ),
             ],
           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Semantic icon aliases — single source of truth for icon choices.
+/// Semantic icon  — single source of truth for icon choices.
 ///
 /// Every feature screen references these instead of choosing ad-hoc
 /// Material icons. This guarantees visual consistency and makes icon
@@ -23,6 +23,10 @@ class AfriIcons {
   static const IconData tickets = Icons.confirmation_number_outlined;
   static const IconData live = Icons.live_tv_rounded;
   static const IconData shop = Icons.storefront_outlined;
+  static const IconData groups = Icons.groups_outlined;
+  static const IconData members = Icons.badge_outlined;
+  static const IconData stadium = Icons.stadium_rounded;
+  static const IconData face = Icons.face_rounded;
 
   // ── Actions ──
   static const IconData predict = Icons.sports_soccer_rounded;
@@ -31,6 +35,7 @@ class AfriIcons {
   static const IconData share = Icons.share_rounded;
   static const IconData friend = Icons.person_search_rounded;
   static const IconData notifications = Icons.notifications_none_rounded;
+  static const IconData notificationsActive = Icons.notifications_active_rounded;
   static const IconData search = Icons.search_rounded;
   static const IconData filter = Icons.tune_rounded;
   static const IconData back = Icons.arrow_back_rounded;
@@ -41,8 +46,13 @@ class AfriIcons {
   static const IconData logout = Icons.logout_rounded;
   static const IconData help = Icons.chat_outlined;
   static const IconData privacy = Icons.lock_outline;
+  static const IconData lock = Icons.lock_rounded;
   static const IconData profile = Icons.person_outline_rounded;
   static const IconData admin = Icons.admin_panel_settings_outlined;
+  static const IconData visibility = Icons.visibility_rounded;
+  static const IconData visibilityOff = Icons.visibility_off_rounded;
+  static const IconData check = Icons.check_rounded;
+  static const IconData verified = Icons.verified_rounded;
 
   // ── Status ──
   static const IconData statusLive = Icons.fiber_manual_record_rounded;
@@ -52,6 +62,8 @@ class AfriIcons {
   static const IconData statusInfo = Icons.info_outline_rounded;
   static const IconData statusPending = Icons.schedule_rounded;
   static const IconData statusEmpty = Icons.inbox_rounded;
+  static const IconData statusBlocked = Icons.block_rounded;
+  static const IconData statusWait = Icons.hourglass_bottom_rounded;
 
   // ── Content ──
   static const IconData fixture = Icons.calendar_month_rounded;
@@ -67,6 +79,13 @@ class AfriIcons {
   static const IconData clubZone = Icons.groups_rounded;
   static const IconData versus = Icons.compare_arrows_rounded;
   static const IconData rewards = Icons.redeem_rounded;
+  static const IconData offers = Icons.local_offer_outlined;
+  static const IconData premium = Icons.workspace_premium_rounded;
+  static const IconData bolt = Icons.bolt_rounded;
+  static const IconData star = Icons.star_rounded;
+  static const IconData gift = Icons.celebration_rounded;
+  static const IconData pdf = Icons.picture_as_pdf_rounded;
+  static const IconData excel = Icons.table_chart_rounded;
 
   // ── Transaction ──
   static const IconData earn = Icons.stars_rounded;
@@ -74,15 +93,35 @@ class AfriIcons {
   static const IconData sendFet = Icons.call_made_rounded;
   static const IconData adjustment = Icons.tune_rounded;
   static const IconData openingBalance = Icons.account_balance_wallet_rounded;
+  static const IconData out = Icons.north_east_rounded;
+  static const IconData incoming = Icons.south_west_rounded;
 
   // ── Navigation chrome ──
   static const IconData chevronRight = Icons.chevron_right_rounded;
   static const IconData chevronDown = Icons.expand_more_rounded;
   static const IconData expandMore = Icons.expand_more_rounded;
   static const IconData expandLess = Icons.expand_less_rounded;
+  static const IconData up = Icons.keyboard_arrow_up_rounded;
+  static const IconData add = Icons.add_rounded;
+  static const IconData join = Icons.group_add_rounded;
+  static const IconData shareIos = Icons.ios_share_rounded;
+  static const IconData smile = Icons.sentiment_satisfied_alt_rounded;
+  static const IconData dialpad = Icons.dialpad_rounded;
+  static const IconData smartphone = Icons.smartphone_rounded;
+  static const IconData public = Icons.public_rounded;
+  static const IconData article = Icons.article_outlined;
+  static const IconData score = Icons.sports_score_rounded;
+  static const IconData sms = Icons.sms_rounded;
+  static const IconData people = Icons.people_alt_rounded;
+  static const IconData business = Icons.business_rounded;
+  static const IconData category = Icons.category_rounded;
+  static const IconData cloud = Icons.cloud_upload_rounded;
+  static const IconData magic = Icons.auto_fix_high_rounded;
+  static const IconData scoreboard = Icons.scoreboard_rounded;
+  static const IconData forward = Icons.arrow_forward_rounded;
 
   // ── Misc ──
-  static const IconData checkCircle = Icons.check_circle_rounded;
+  static const IconData checkGroup = Icons.check_circle_rounded;
   static const IconData scan = Icons.qr_code_rounded;
   static const IconData chat = Icons.chat_bubble_outline_rounded;
   static const IconData delete = Icons.delete_outline_rounded;
@@ -90,6 +129,10 @@ class AfriIcons {
   static const IconData copy = Icons.copy_rounded;
   static const IconData timer = Icons.timer_outlined;
   static const IconData users = Icons.people_outline_rounded;
+  static const IconData grid = Icons.grid_view_rounded;
+  static const IconData chart = Icons.bar_chart_rounded;
+  static const IconData language = Icons.language_rounded;
+  static const IconData phone = Icons.phone_android_rounded;
 
   // ── Date & location ──
   static const IconData calendar = Icons.calendar_today_rounded;

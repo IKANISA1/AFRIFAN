@@ -226,7 +226,7 @@ REVOKE EXECUTE ON FUNCTION public.custom_access_token_hook(jsonb)
 
 
 -- ═══════════════════════════════════════════════════════════════════════════
--- §4 — ADD club_id TO BIOPAY TABLES + UPDATE RLS + UPDATE RPCs
+-- §4 — ADD club_id TO BioPay TABLES + UPDATE RLS + UPDATE RPCs
 -- ═══════════════════════════════════════════════════════════════════════════
 
 -- Helper function to extract club_id from JWT
@@ -245,65 +245,65 @@ $$;
 
 -- ── Add club_id columns ──
 
-ALTER TABLE public.biopay_profiles
+ALTER TABLE public.BioPay_profiles
   ADD COLUMN IF NOT EXISTS club_id bigint REFERENCES public.african_football_clubs(id);
 
-ALTER TABLE public.biopay_embeddings
+ALTER TABLE public.BioPay_embeddings
   ADD COLUMN IF NOT EXISTS club_id bigint REFERENCES public.african_football_clubs(id);
 
-ALTER TABLE public.biopay_match_events
+ALTER TABLE public.BioPay_match_events
   ADD COLUMN IF NOT EXISTS club_id bigint REFERENCES public.african_football_clubs(id);
 
-ALTER TABLE public.biopay_enrollment_audits
+ALTER TABLE public.BioPay_enrollment_audits
   ADD COLUMN IF NOT EXISTS club_id bigint REFERENCES public.african_football_clubs(id);
 
-ALTER TABLE public.biopay_revocations
+ALTER TABLE public.BioPay_revocations
   ADD COLUMN IF NOT EXISTS club_id bigint REFERENCES public.african_football_clubs(id);
 
-ALTER TABLE public.biopay_payment_intents
+ALTER TABLE public.BioPay_payment_intents
   ADD COLUMN IF NOT EXISTS club_id bigint REFERENCES public.african_football_clubs(id);
 
 -- ── Indexes for club_id on BioPay ──
 
-CREATE INDEX IF NOT EXISTS idx_biopay_profiles_club
-  ON public.biopay_profiles (club_id);
+CREATE INDEX IF NOT EXISTS idx_BioPay_profiles_club
+  ON public.BioPay_profiles (club_id);
 
-CREATE INDEX IF NOT EXISTS idx_biopay_embeddings_club
-  ON public.biopay_embeddings (club_id);
+CREATE INDEX IF NOT EXISTS idx_BioPay_embeddings_club
+  ON public.BioPay_embeddings (club_id);
 
-CREATE INDEX IF NOT EXISTS idx_biopay_match_events_club
-  ON public.biopay_match_events (club_id);
+CREATE INDEX IF NOT EXISTS idx_BioPay_match_events_club
+  ON public.BioPay_match_events (club_id);
 
-CREATE INDEX IF NOT EXISTS idx_biopay_enrollment_audits_club
-  ON public.biopay_enrollment_audits (club_id);
+CREATE INDEX IF NOT EXISTS idx_BioPay_enrollment_audits_club
+  ON public.BioPay_enrollment_audits (club_id);
 
-CREATE INDEX IF NOT EXISTS idx_biopay_revocations_club
-  ON public.biopay_revocations (club_id);
+CREATE INDEX IF NOT EXISTS idx_BioPay_revocations_club
+  ON public.BioPay_revocations (club_id);
 
-CREATE INDEX IF NOT EXISTS idx_biopay_intents_club
-  ON public.biopay_payment_intents (club_id);
+CREATE INDEX IF NOT EXISTS idx_BioPay_intents_club
+  ON public.BioPay_payment_intents (club_id);
 
 -- ── Update RLS policies for BioPay (club_id isolation) ──
 
-DROP POLICY IF EXISTS biopay_profiles_select_own ON public.biopay_profiles;
-CREATE POLICY biopay_profiles_select_own
-  ON public.biopay_profiles FOR SELECT
+DROP POLICY IF EXISTS BioPay_profiles_select_own ON public.BioPay_profiles;
+CREATE POLICY BioPay_profiles_select_own
+  ON public.BioPay_profiles FOR SELECT
   USING (
     auth.uid() = user_id
     AND club_id::text = public.requesting_club_id()
   );
 
-DROP POLICY IF EXISTS biopay_profiles_insert_own ON public.biopay_profiles;
-CREATE POLICY biopay_profiles_insert_own
-  ON public.biopay_profiles FOR INSERT
+DROP POLICY IF EXISTS BioPay_profiles_insert_own ON public.BioPay_profiles;
+CREATE POLICY BioPay_profiles_insert_own
+  ON public.BioPay_profiles FOR INSERT
   WITH CHECK (
     auth.uid() = user_id
     AND club_id::text = public.requesting_club_id()
   );
 
-DROP POLICY IF EXISTS biopay_profiles_update_own ON public.biopay_profiles;
-CREATE POLICY biopay_profiles_update_own
-  ON public.biopay_profiles FOR UPDATE
+DROP POLICY IF EXISTS BioPay_profiles_update_own ON public.BioPay_profiles;
+CREATE POLICY BioPay_profiles_update_own
+  ON public.BioPay_profiles FOR UPDATE
   USING (
     auth.uid() = user_id
     AND club_id::text = public.requesting_club_id()
@@ -313,41 +313,41 @@ CREATE POLICY biopay_profiles_update_own
     AND club_id::text = public.requesting_club_id()
   );
 
-DROP POLICY IF EXISTS biopay_match_events_select_own ON public.biopay_match_events;
-CREATE POLICY biopay_match_events_select_own
-  ON public.biopay_match_events FOR SELECT
+DROP POLICY IF EXISTS BioPay_match_events_select_own ON public.BioPay_match_events;
+CREATE POLICY BioPay_match_events_select_own
+  ON public.BioPay_match_events FOR SELECT
   USING (
     auth.uid() = requester_user_id
     AND club_id::text = public.requesting_club_id()
   );
 
-DROP POLICY IF EXISTS biopay_enrollment_audits_select_own ON public.biopay_enrollment_audits;
-CREATE POLICY biopay_enrollment_audits_select_own
-  ON public.biopay_enrollment_audits FOR SELECT
+DROP POLICY IF EXISTS BioPay_enrollment_audits_select_own ON public.BioPay_enrollment_audits;
+CREATE POLICY BioPay_enrollment_audits_select_own
+  ON public.BioPay_enrollment_audits FOR SELECT
   USING (
     auth.uid() = user_id
     AND club_id::text = public.requesting_club_id()
   );
 
-DROP POLICY IF EXISTS biopay_revocations_select_own ON public.biopay_revocations;
-CREATE POLICY biopay_revocations_select_own
-  ON public.biopay_revocations FOR SELECT
+DROP POLICY IF EXISTS BioPay_revocations_select_own ON public.BioPay_revocations;
+CREATE POLICY BioPay_revocations_select_own
+  ON public.BioPay_revocations FOR SELECT
   USING (
     auth.uid() = user_id
     AND club_id::text = public.requesting_club_id()
   );
 
-DROP POLICY IF EXISTS biopay_intents_select_own ON public.biopay_payment_intents;
-CREATE POLICY biopay_intents_select_own
-  ON public.biopay_payment_intents FOR SELECT TO authenticated
+DROP POLICY IF EXISTS BioPay_intents_select_own ON public.BioPay_payment_intents;
+CREATE POLICY BioPay_intents_select_own
+  ON public.BioPay_payment_intents FOR SELECT TO authenticated
   USING (
     user_id = auth.uid()
     AND club_id::text = public.requesting_club_id()
   );
 
-DROP POLICY IF EXISTS biopay_intents_update_own ON public.biopay_payment_intents;
-CREATE POLICY biopay_intents_update_own
-  ON public.biopay_payment_intents FOR UPDATE TO authenticated
+DROP POLICY IF EXISTS BioPay_intents_update_own ON public.BioPay_payment_intents;
+CREATE POLICY BioPay_intents_update_own
+  ON public.BioPay_payment_intents FOR UPDATE TO authenticated
   USING (
     user_id = auth.uid()
     AND status = 'pending'
@@ -357,12 +357,12 @@ CREATE POLICY biopay_intents_update_own
 
 -- ── Update BioPay RPCs to enforce club_id ──
 
-CREATE OR REPLACE FUNCTION public.biopay_upsert_enrollment(
+CREATE OR REPLACE FUNCTION public.BioPay_upsert_enrollment(
   p_display_name text DEFAULT NULL,
   p_route_type text DEFAULT NULL,
   p_recipient_value text DEFAULT NULL,
   p_country_code text DEFAULT 'RW',
-  p_consent_version text DEFAULT 'biopay-v1',
+  p_consent_version text DEFAULT 'BioPay-v1',
   p_embedding double precision[] DEFAULT NULL,
   p_model_version text DEFAULT 'mobilefacenet_int8_v1',
   p_quality_score double precision DEFAULT NULL
@@ -391,7 +391,7 @@ AS $$
 DECLARE
   v_user_id uuid := auth.uid();
   v_club_id bigint;
-  v_profile public.biopay_profiles%rowtype;
+  v_profile public.BioPay_profiles%rowtype;
   v_embedding extensions.vector(192);
   v_display_name text;
   v_route_type text;
@@ -436,19 +436,19 @@ BEGIN
   END IF;
 
   v_country_code := upper(trim(coalesce(nullif(p_country_code, ''), 'RW')));
-  v_consent_version := coalesce(nullif(trim(p_consent_version), ''), 'biopay-v1');
-  v_embedding := public.biopay_array_to_vector(p_embedding);
+  v_consent_version := coalesce(nullif(trim(p_consent_version), ''), 'BioPay-v1');
+  v_embedding := public.BioPay_array_to_vector(p_embedding);
 
   -- Upsert profile (scoped to club_id)
   SELECT * INTO v_profile
-  FROM public.biopay_profiles
-  WHERE biopay_profiles.user_id = v_user_id
-    AND biopay_profiles.club_id = v_club_id
+  FROM public.BioPay_profiles
+  WHERE BioPay_profiles.user_id = v_user_id
+    AND BioPay_profiles.club_id = v_club_id
     AND deleted_at IS NULL
   LIMIT 1;
 
   IF FOUND THEN
-    UPDATE public.biopay_profiles SET
+    UPDATE public.BioPay_profiles SET
       display_name = v_display_name,
       route_type = v_route_type,
       recipient_value = v_recipient_value,
@@ -458,10 +458,10 @@ BEGIN
       consent_at = timezone('utc', now()),
       revoked_at = NULL,
       deleted_at = NULL
-    WHERE biopay_profiles.id = v_profile.id
+    WHERE BioPay_profiles.id = v_profile.id
     RETURNING * INTO v_profile;
   ELSE
-    INSERT INTO public.biopay_profiles (
+    INSERT INTO public.BioPay_profiles (
       user_id, club_id, display_name, route_type, recipient_value,
       country_code, active, consent_version, consent_at
     ) VALUES (
@@ -471,14 +471,14 @@ BEGIN
   END IF;
 
   -- Retire old embeddings for this club
-  UPDATE public.biopay_embeddings SET
+  UPDATE public.BioPay_embeddings SET
     active = false, retired_at = timezone('utc', now())
-  WHERE biopay_embeddings.profile_id = v_profile.id
-    AND biopay_embeddings.club_id = v_club_id
-    AND biopay_embeddings.active = true;
+  WHERE BioPay_embeddings.profile_id = v_profile.id
+    AND BioPay_embeddings.club_id = v_club_id
+    AND BioPay_embeddings.active = true;
 
   -- Insert new embedding
-  INSERT INTO public.biopay_embeddings (
+  INSERT INTO public.BioPay_embeddings (
     profile_id, club_id, embedding, model_version, quality_score, active, enrolled_at
   ) VALUES (
     v_profile.id, v_club_id, v_embedding,
@@ -487,7 +487,7 @@ BEGIN
   );
 
   -- Audit trail
-  INSERT INTO public.biopay_enrollment_audits (profile_id, user_id, club_id, event_type, metadata)
+  INSERT INTO public.BioPay_enrollment_audits (profile_id, user_id, club_id, event_type, metadata)
   VALUES (v_profile.id, v_user_id, v_club_id, 'enrolled', jsonb_build_object(
     'route_type', v_route_type,
     'country_code', v_country_code,
@@ -506,7 +506,7 @@ $$;
 
 -- ── Face match scoped to club_id ──
 
-CREATE OR REPLACE FUNCTION public.match_biopay_profile(
+CREATE OR REPLACE FUNCTION public.match_BioPay_profile(
   p_embedding double precision[]
 )
 RETURNS TABLE (
@@ -529,7 +529,7 @@ SECURITY DEFINER
 SET search_path = public, extensions
 AS $$
   WITH query_vector AS (
-    SELECT public.biopay_array_to_vector(p_embedding) AS embedding
+    SELECT public.BioPay_array_to_vector(p_embedding) AS embedding
   ),
   requesting_club AS (
     SELECT NULLIF(
@@ -544,8 +544,8 @@ AS $$
     p.display_name, p.route_type, p.recipient_value, p.country_code,
     p.consent_version, p.consent_at, p.created_at, p.updated_at,
     1 - (e.embedding <=> q.embedding) AS score
-  FROM public.biopay_embeddings e
-  JOIN public.biopay_profiles p ON p.id = e.profile_id
+  FROM public.BioPay_embeddings e
+  JOIN public.BioPay_profiles p ON p.id = e.profile_id
   CROSS JOIN query_vector q
   CROSS JOIN requesting_club rc
   WHERE e.active = true
@@ -1273,11 +1273,11 @@ GRANT EXECUTE ON FUNCTION public.is_club_admin(bigint) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.is_super_admin() TO authenticated;
 
 -- Re-grant BioPay RPCs (signatures changed)
-GRANT EXECUTE ON FUNCTION public.biopay_upsert_enrollment(
+GRANT EXECUTE ON FUNCTION public.BioPay_upsert_enrollment(
   text, text, text, text, text, double precision[], text, double precision
 ) TO authenticated;
 
-GRANT EXECUTE ON FUNCTION public.match_biopay_profile(double precision[])
+GRANT EXECUTE ON FUNCTION public.match_BioPay_profile(double precision[])
 TO authenticated;
 
 
@@ -1309,11 +1309,11 @@ BEGIN
   -- Verify club_id columns added to BioPay
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'biopay_profiles' AND column_name = 'club_id'
+    WHERE table_name = 'BioPay_profiles' AND column_name = 'club_id'
   ) THEN
     RAISE NOTICE 'OK: BioPay tables have club_id column';
   ELSE
-    RAISE WARNING 'MISSING: club_id on biopay_profiles';
+    RAISE WARNING 'MISSING: club_id on BioPay_profiles';
   END IF;
 
   -- Verify JWT hook function exists

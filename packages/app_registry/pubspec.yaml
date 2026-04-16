@@ -1,5 +1,5 @@
-name: core_modules
-description: Shared AFRICLUB feature-module composition registry.
+name: app_registry
+description: App-level feature registry.
 publish_to: none
 version: 1.0.0
 

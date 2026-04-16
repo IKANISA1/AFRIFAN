@@ -24,7 +24,7 @@ export const siteConfig = {
   shortTitle: process.env.NEXT_PUBLIC_SITE_SHORT_TITLE?.trim() || "Gikundiro",
   description:
     process.env.NEXT_PUBLIC_SITE_DESCRIPTION?.trim() ||
-    "Official Rayon Sports website for fixtures, tickets, membership, news, shop, supporter circles, and fan app journeys.",
+    "Official Rayon Sports website for fixtures, tickets, membership, news, shop, supporter Groups, and fan app journeys.",
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://gikundiro.com",
   adminUrl:
@@ -39,7 +39,7 @@ export const siteConfig = {
   ),
   clubHostMap: parseHostMap(
     process.env.CLUB_HOST_MAP_JSON ??
-      process.env.NEXT_PUBLIC_CLUB_HOST_MAP_JSON,
+    process.env.NEXT_PUBLIC_CLUB_HOST_MAP_JSON,
   ),
 };
 
@@ -87,7 +87,7 @@ export function hasServerSupabase() {
 export function hasAdminSupabase() {
   return Boolean(
     serverSupabaseConfig.url &&
-      serverSupabaseConfig.serviceRoleKey,
+    serverSupabaseConfig.serviceRoleKey,
   );
 }
 

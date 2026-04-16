@@ -433,9 +433,9 @@ values
     jsonb_build_object('tier', 1, 'supports_tables', true, 'supports_fixtures', true, 'supports_player_registrations', true)
   ),
   (
-    'drc-premier-league',
-    'DRC Premier League',
-    'DRC Premier League',
+    'Linafoot',
+    'Linafoot',
+    'Linafoot',
     'league',
     'africa',
     'CD',
@@ -446,8 +446,8 @@ values
   ),
   (
     'zambia-super-league',
-    'Zambia Super League',
-    'Zambia Super League',
+    'ZSL',
+    'ZSL',
     'league',
     'africa',
     'ZM',
@@ -522,8 +522,8 @@ from (
       jsonb_build_object('default_stage', 'league')
     ),
     (
-      'drc-premier-league',
-      'drc-premier-league-2026',
+      'Linafoot',
+      'Linafoot-2026',
       '2026',
       2026,
       2026,

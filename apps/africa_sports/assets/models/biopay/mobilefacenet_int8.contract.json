@@ -1,5 +1,5 @@
 {
-  "asset_path": "assets/models/biopay/mobilefacenet_int8.tflite",
+  "asset_path": "assets/models/BioPay/mobilefacenet_int8.tflite",
   "model_version": "mobilefacenet_int8_v1",
   "sha256": "be4bc7cfc53f7bc336d0f28b1ab92535f618c913a422b683210750f6b5354854",
   "bytes": 5233552,

@@ -46,7 +46,7 @@ Validated directly during this assessment:
   - `packages/core/core_app`
   - `packages/core/core_theme`
   - `packages/core/core_utils`
-  - `packages/features/feat_biopay`
+  - `packages/features/feat_BioPay`
   - `packages/features/feat_club`
   - `packages/features/feat_home`
   - `packages/features/feat_onboarding`
@@ -146,13 +146,13 @@ Evidence:
 
 - `packages/core/core_network/lib/src/firebase_bootstrap_service.dart` initializes Firebase on a best-effort basis and silently skips on failure.
 - `packages/core/core_network/lib/src/app_check_service.dart` skips activation if Firebase is not initialized.
-- `packages/features/feat_biopay/lib/src/repositories/biopay_repository.dart` requires an App Check limited-use token for BioPay calls.
-- `tools/scripts/validate_biopay_firebase.sh` explicitly says BioPay-enabled flavors must include `google-services.json` and `GoogleService-Info.plist`.
+- `packages/features/feat_BioPay/lib/src/repositories/BioPay_repository.dart` requires an App Check limited-use token for BioPay calls.
+- `tools/scripts/validate_BioPay_firebase.sh` explicitly says BioPay-enabled flavors must include `google-services.json` and `GoogleService-Info.plist`.
 - No Firebase config files were found under `apps/rayon_sports`.
 
 Why this matters:
 
-- Rayon has `hasBiopay => true`, but the security/provisioning path needed for BioPay is incomplete.
+- Rayon has `hasBioPay => true`, but the security/provisioning path needed for BioPay is incomplete.
 - In production, this creates a late-failing security dependency instead of a guaranteed-attested path.
 
 Required fix:
@@ -167,8 +167,8 @@ Evidence:
 
 - `apps/rayon_sports/store_metadata/play_store/data_safety.md` says biometric data is processed locally and never transmitted.
 - `apps/rayon_sports/store_metadata/privacy_policy.html` says biometric data is never transmitted and stored only locally.
-- `supabase/functions/biopay-enroll/index.ts` sends `p_embedding` to a server RPC.
-- `supabase/functions/biopay-match/index.ts` sends `p_embedding` to a server RPC for matching.
+- `supabase/functions/BioPay-enroll/index.ts` sends `p_embedding` to a server RPC.
+- `supabase/functions/BioPay-match/index.ts` sends `p_embedding` to a server RPC for matching.
 
 Why this matters:
 
@@ -568,11 +568,11 @@ Key files reviewed:
 - `packages/features/feat_settings/lib/src/widgets/settings_overlays.dart`
 - `packages/features/feat_settings/lib/src/settings_actions.dart`
 - `packages/features/feat_sms_ledger/lib/src/services/momo_sms_deps.dart`
-- `packages/features/feat_biopay/lib/src/repositories/biopay_repository.dart`
-- `supabase/functions/biopay-enroll/index.ts`
-- `supabase/functions/biopay-match/index.ts`
+- `packages/features/feat_BioPay/lib/src/repositories/BioPay_repository.dart`
+- `supabase/functions/BioPay-enroll/index.ts`
+- `supabase/functions/BioPay-match/index.ts`
 - `supabase/functions/delete-account/index.ts`
-- `tools/scripts/validate_biopay_firebase.sh`
+- `tools/scripts/validate_BioPay_firebase.sh`
 
 ## External Standards Used
 

@@ -239,7 +239,7 @@ class _FakeClubConfig implements ClubConfig {
   String get currencySymbol => 'RWF';
 
   @override
-  bool get hasBiopay => false;
+  bool get hasBioPay => false;
 
   @override
   bool get hasChat => false;
@@ -258,7 +258,7 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   Map<String, bool> get features => <String, bool>{
-    'biopay': hasBiopay,
+    'BioPay': hasBioPay,
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,

@@ -129,7 +129,6 @@ export default function AdminShopPage() {
       <AdminPageHeader
         eyebrow="Retail"
         title="Shop"
-        description="Manage product availability, catalogue order, and branded pricing for the active club scope."
       />
       <div className="grid gap-5 md:grid-cols-3">
         <AdminStateCard label="Products" value={loading ? "..." : products.length.toString()} helper="In catalogue." icon={ShoppingBag} />

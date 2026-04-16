@@ -2,6 +2,7 @@
 
 export 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 
+export 'src/afri_image_cache_manager.dart';
 export 'src/app_check_service.dart';
 export 'src/app_config_repository.dart';
 export 'src/club_scope.dart';

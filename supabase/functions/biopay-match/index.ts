@@ -9,29 +9,29 @@ import {
 import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { HttpError } from "../_shared/auth.ts";
 import { requireAppCheckToken } from "../_shared/app_check.ts";
-import { normalizeBiopayEmbedding } from "../_shared/biopay_embedding.ts";
-import { validateBiopayLivenessMetadata } from "../_shared/biopay_liveness.ts";
+import { normalizeBioPayEmbedding } from "../_shared/BioPay_embedding.ts";
+import { validateBioPayLivenessMetadata } from "../_shared/BioPay_liveness.ts";
 import {
-  countRecentBiopayMatchRateEvents,
+  countRecentBioPayMatchRateEvents,
   extractClientIp,
-  getBiopayMatchProtectionConfig,
-  getLatestBiopayMatchRateEventAt,
-  hashBiopayMatchActorKey,
-  recordBiopayMatchRateEvent,
-} from "../_shared/biopay_match_abuse.ts";
+  getBioPayMatchProtectionConfig,
+  getLatestBioPayMatchRateEventAt,
+  hashBioPayMatchActorKey,
+  recordBioPayMatchRateEvent,
+} from "../_shared/BioPay_match_abuse.ts";
 import {
   recordEdgeFunctionFailure,
   recordOperationalHealthEvent,
 } from "../_shared/observability.ts";
 import {
-  generateBiopayNonce,
-  signBiopayToken,
-} from "../_shared/biopay_signed_token.ts";
+  generateBioPayNonce,
+  signBioPayToken,
+} from "../_shared/BioPay_signed_token.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 import type {
-  BiopayMatchProtectionConfig,
-  BiopayMatchRateOutcome,
-} from "../_shared/biopay_match_abuse.ts";
+  BioPayMatchProtectionConfig,
+  BioPayMatchRateOutcome,
+} from "../_shared/BioPay_match_abuse.ts";
 
 type AdminClientLike = unknown;
 
@@ -40,7 +40,7 @@ type MatchRequest = {
   liveness?: unknown;
 };
 
-type BiopayMatchRow = Record<string, unknown> & {
+type BioPayMatchRow = Record<string, unknown> & {
   profile_id?: unknown;
   score?: unknown;
   club_id?: unknown;
@@ -66,22 +66,22 @@ type MatchEventInsert = {
   metadata: Record<string, unknown>;
 };
 
-export type BiopayMatchHandlerDependencies = {
+export type BioPayMatchHandlerDependencies = {
   createAdminClient: () => AdminClientLike;
   validateRequest: typeof validateRequest;
   requireAppCheckToken: (request: Request) => Promise<string>;
-  validateLiveness: typeof validateBiopayLivenessMetadata;
+  validateLiveness: typeof validateBioPayLivenessMetadata;
   now: () => Date;
   getProtectionConfig: (
     adminClient: AdminClientLike,
-  ) => Promise<BiopayMatchProtectionConfig>;
+  ) => Promise<BioPayMatchProtectionConfig>;
   countRecentRateEvents: (
     adminClient: AdminClientLike,
     options: {
       scope: "user" | "ip";
       actorKey: string;
       windowStartIso: string;
-      outcomes?: readonly BiopayMatchRateOutcome[];
+      outcomes?: readonly BioPayMatchRateOutcome[];
     },
   ) => Promise<number>;
   getLatestRateEventAt: (
@@ -89,7 +89,7 @@ export type BiopayMatchHandlerDependencies = {
     options: {
       scope: "user" | "ip";
       actorKey: string;
-      outcome: BiopayMatchRateOutcome;
+      outcome: BioPayMatchRateOutcome;
       windowStartIso: string;
     },
   ) => Promise<string | null>;
@@ -99,7 +99,7 @@ export type BiopayMatchHandlerDependencies = {
       scope: "user" | "ip";
       actorKey: string;
       requesterUserId: string;
-      outcome: BiopayMatchRateOutcome;
+      outcome: BioPayMatchRateOutcome;
       metadata?: Record<string, unknown>;
     },
   ) => Promise<void>;
@@ -115,14 +115,14 @@ export type BiopayMatchHandlerDependencies = {
     adminClient: AdminClientLike,
     clubId: number,
     embedding: number[],
-  ) => Promise<BiopayMatchRow | null>;
+  ) => Promise<BioPayMatchRow | null>;
   insertMatchEvent: (
     adminClient: AdminClientLike,
     event: MatchEventInsert,
   ) => Promise<void>;
 };
 
-class BiopayValidationError extends Error {}
+class BioPayValidationError extends Error { }
 const MATCH_RECEIPT_TTL_SECONDS = 45;
 
 function sanitizeHeaderValue(
@@ -156,7 +156,7 @@ async function runMatchRpc(
 ) {
   const { data, error } = await (adminClient as ReturnType<
     typeof createAdminClient
-  >).rpc("match_biopay_profile_server", {
+  >).rpc("match_BioPay_profile_server", {
     p_club_id: clubId,
     p_embedding: embedding,
   });
@@ -166,7 +166,7 @@ async function runMatchRpc(
   }
 
   const row = Array.isArray(data) ? data[0] : data;
-  return row ? row as BiopayMatchRow : null;
+  return row ? row as BioPayMatchRow : null;
 }
 
 async function insertMatchEvent(
@@ -175,7 +175,7 @@ async function insertMatchEvent(
 ) {
   const { error } = await (adminClient as ReturnType<
     typeof createAdminClient
-  >).from("biopay_match_events").insert({
+  >).from("BioPay_match_events").insert({
     requester_user_id: event.requesterUserId,
     club_id: event.clubId,
     matched_profile_id: event.matchedProfileId,
@@ -190,28 +190,28 @@ async function insertMatchEvent(
   }
 }
 
-const defaultDependencies: BiopayMatchHandlerDependencies = {
+const defaultDependencies: BioPayMatchHandlerDependencies = {
   createAdminClient,
   validateRequest,
   requireAppCheckToken,
-  validateLiveness: validateBiopayLivenessMetadata,
+  validateLiveness: validateBioPayLivenessMetadata,
   now: () => new Date(),
   getProtectionConfig: (adminClient) =>
-    getBiopayMatchProtectionConfig(
+    getBioPayMatchProtectionConfig(
       adminClient as ReturnType<typeof createAdminClient>,
     ),
   countRecentRateEvents: (adminClient, options) =>
-    countRecentBiopayMatchRateEvents(
+    countRecentBioPayMatchRateEvents(
       adminClient as ReturnType<typeof createAdminClient>,
       options,
     ),
   getLatestRateEventAt: (adminClient, options) =>
-    getLatestBiopayMatchRateEventAt(
+    getLatestBioPayMatchRateEventAt(
       adminClient as ReturnType<typeof createAdminClient>,
       options,
     ),
   recordRateEvent: (adminClient, event) =>
-    recordBiopayMatchRateEvent(
+    recordBioPayMatchRateEvent(
       adminClient as ReturnType<typeof createAdminClient>,
       event,
     ),
@@ -229,10 +229,10 @@ const defaultDependencies: BiopayMatchHandlerDependencies = {
   insertMatchEvent,
 };
 
-export function createBiopayMatchHandler(
-  dependencies: Partial<BiopayMatchHandlerDependencies> = {},
+export function createBioPayMatchHandler(
+  dependencies: Partial<BioPayMatchHandlerDependencies> = {},
 ) {
-  const deps: BiopayMatchHandlerDependencies = {
+  const deps: BioPayMatchHandlerDependencies = {
     ...defaultDependencies,
     ...dependencies,
   };
@@ -252,7 +252,7 @@ export function createBiopayMatchHandler(
     try {
       const validated = await deps.validateRequest(request, { requireClubId: true });
       if (isErrorResponse(validated)) return validated;
-      
+
       const { userId, clubId } = validated;
       requesterUserId = userId;
       const numericClubId = Number(clubId);
@@ -263,9 +263,9 @@ export function createBiopayMatchHandler(
       const body = await request.json() as MatchRequest;
       let embedding: number[];
       try {
-        embedding = normalizeBiopayEmbedding(body.embedding);
+        embedding = normalizeBioPayEmbedding(body.embedding);
       } catch (error) {
-        throw new BiopayValidationError(
+        throw new BioPayValidationError(
           error instanceof Error ? error.message : "Invalid BioPay embedding.",
         );
       }
@@ -277,12 +277,12 @@ export function createBiopayMatchHandler(
       });
       const protectionConfig = await deps.getProtectionConfig(adminClient);
       const clientIp = extractClientIp(request);
-      const userActorKey = await hashBiopayMatchActorKey(
+      const userActorKey = await hashBioPayMatchActorKey(
         `match_user:${requesterUserId}`,
       );
       const ipActorKey = clientIp == null
         ? null
-        : await hashBiopayMatchActorKey(`match_ip:${clientIp}`);
+        : await hashBioPayMatchActorKey(`match_ip:${clientIp}`);
       const telemetryMetadata = {
         ip_actor_key: ipActorKey,
         user_actor_key: userActorKey,
@@ -330,15 +330,15 @@ export function createBiopayMatchHandler(
             },
           });
           await deps.recordOperationalHealthEvent(adminClient, {
-            service: "biopay",
+            service: "BioPay",
             component: "matching",
             status: "warn",
             severity: "warning",
-            issueCode: "biopay_match_locked_out",
+            issueCode: "BioPay_match_locked_out",
             message: "BioPay match request blocked by an active user lockout.",
-            functionName: "biopay-match",
+            functionName: "BioPay-match",
             userId: requesterUserId,
-            subjectType: "biopay_match_request",
+            subjectType: "BioPay_match_request",
             metadata: {
               ...telemetryMetadata,
               lockout_until: lockoutUntil,
@@ -373,15 +373,15 @@ export function createBiopayMatchHandler(
           },
         });
         await deps.recordOperationalHealthEvent(adminClient, {
-          service: "biopay",
+          service: "BioPay",
           component: "matching",
           status: "warn",
           severity: "warning",
-          issueCode: "biopay_match_user_rate_limited",
+          issueCode: "BioPay_match_user_rate_limited",
           message: "BioPay match request blocked by the user attempt budget.",
-          functionName: "biopay-match",
+          functionName: "BioPay-match",
           userId: requesterUserId,
-          subjectType: "biopay_match_request",
+          subjectType: "BioPay_match_request",
           metadata: {
             ...telemetryMetadata,
             attempt_count: recentUserAttempts,
@@ -417,15 +417,15 @@ export function createBiopayMatchHandler(
             },
           });
           await deps.recordOperationalHealthEvent(adminClient, {
-            service: "biopay",
+            service: "BioPay",
             component: "matching",
             status: "warn",
             severity: "warning",
-            issueCode: "biopay_match_ip_rate_limited",
+            issueCode: "BioPay_match_ip_rate_limited",
             message: "BioPay match request blocked by the IP attempt budget.",
-            functionName: "biopay-match",
+            functionName: "BioPay-match",
             userId: requesterUserId,
-            subjectType: "biopay_match_request",
+            subjectType: "BioPay_match_request",
             metadata: {
               ...telemetryMetadata,
               attempt_count: recentIpAttempts,
@@ -447,10 +447,10 @@ export function createBiopayMatchHandler(
       const hasMatch = !!row &&
         normalizedScore >= protectionConfig.threshold &&
         row.profile_id != null;
-      const outcome: BiopayMatchRateOutcome = hasMatch ? "match" : "miss";
+      const outcome: BioPayMatchRateOutcome = hasMatch ? "match" : "miss";
       const decisionMetadata = {
         ...telemetryMetadata,
-        decision_version: "biopay-match-v2",
+        decision_version: "BioPay-match-v2",
         route_type: row?.route_type ?? null,
         public_id: row?.public_id ?? null,
       };
@@ -469,15 +469,15 @@ export function createBiopayMatchHandler(
         });
       } catch (error) {
         await deps.recordOperationalHealthEvent(adminClient, {
-          service: "biopay",
+          service: "BioPay",
           component: "matching",
           status: "warn",
           severity: "warning",
-          issueCode: "biopay_match_event_insert_failed",
+          issueCode: "BioPay_match_event_insert_failed",
           message: "BioPay match telemetry could not be persisted.",
-          functionName: "biopay-match",
+          functionName: "BioPay-match",
           userId: requesterUserId,
-          subjectType: "biopay_match_event",
+          subjectType: "BioPay_match_event",
           metadata: {
             ...decisionMetadata,
             error: error instanceof Error ? error.message : String(error),
@@ -535,16 +535,16 @@ export function createBiopayMatchHandler(
             },
           });
           await deps.recordOperationalHealthEvent(adminClient, {
-            service: "biopay",
+            service: "BioPay",
             component: "matching",
             status: "warn",
             severity: "warning",
-            issueCode: "biopay_match_lockout_started",
+            issueCode: "BioPay_match_lockout_started",
             message:
               "BioPay match request triggered a temporary lockout after repeated misses.",
-            functionName: "biopay-match",
+            functionName: "BioPay-match",
             userId: requesterUserId,
-            subjectType: "biopay_match_request",
+            subjectType: "BioPay_match_request",
             metadata: {
               ...decisionMetadata,
               miss_count: recentMisses,
@@ -574,12 +574,12 @@ export function createBiopayMatchHandler(
       const matchReceiptExpiresAt = new Date(
         now.getTime() + MATCH_RECEIPT_TTL_SECONDS * 1000,
       ).toISOString();
-      const matchReceipt = await signBiopayToken({
+      const matchReceipt = await signBioPayToken({
         kind: "match_receipt",
         v: 1,
         iat: now.toISOString(),
         exp: matchReceiptExpiresAt,
-        nonce: generateBiopayNonce(),
+        nonce: generateBioPayNonce(),
         requester_user_id: requesterUserId,
         profile_id: row.profile_id?.toString() ?? "",
         profile_public_id: row.public_id?.toString() ?? "",
@@ -603,17 +603,17 @@ export function createBiopayMatchHandler(
       if (error instanceof HttpError) {
         return jsonError(error.message, error.status);
       }
-      if (error instanceof BiopayValidationError) {
+      if (error instanceof BioPayValidationError) {
         return jsonError(error.message, 400);
       }
 
       await deps.recordEdgeFunctionFailure(adminClient, {
-        functionName: "biopay-match",
+        functionName: "BioPay-match",
         error,
-        issueCode: "biopay_match_failed",
+        issueCode: "BioPay_match_failed",
         userId: requesterUserId,
       });
-      console.error("biopay-match failed:", error);
+      console.error("BioPay-match failed:", error);
       return jsonError(
         error instanceof Error ? error.message : "BioPay match failed.",
         500,
@@ -623,7 +623,7 @@ export function createBiopayMatchHandler(
 }
 
 if (import.meta.main) {
-  const handler = createBiopayMatchHandler();
+  const handler = createBioPayMatchHandler();
   Deno.serve((req: Request) => handler(req).then(
     (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
   ));

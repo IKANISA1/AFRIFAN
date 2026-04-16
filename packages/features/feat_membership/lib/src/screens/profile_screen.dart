@@ -56,7 +56,7 @@ class ProfileScreen extends ConsumerWidget {
                 child: GlassCard(
                   child: Column(
                     children: [
-                      // Avatar circle
+                      // Avatar Group
                       Container(
                         width: 72,
                         height: 72,

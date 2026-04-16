@@ -1,5 +1,5 @@
 name: feat_contributions
-description: Contribution circles, group management, and MOMO USSD payments
+description: Contribution Groups, group management, and MOMO USSD payments
 publish_to: none
 version: 0.1.0
 
@@ -27,7 +27,7 @@ dependencies:
   flutter_riverpod: ^2.6.1
   go_router: ^14.8.1
   supabase_flutter: ^2.12.2
-  google_fonts: ^6.2.1
+  google_fonts: ^8.0.2
   flutter_animate: ^4.5.2
   intl: ^0.20.2
   url_launcher: ^6.3.1

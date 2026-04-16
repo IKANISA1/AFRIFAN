@@ -252,7 +252,7 @@ begin
 
   if v_group_type = 'saving' then
     v_group_type := 'savings';
-  elsif v_group_type not in ('club', 'community', 'savings', 'fan_circle') then
+  elsif v_group_type not in ('club', 'community', 'savings', 'fan_Group') then
     v_group_type := 'community';
   end if;
 

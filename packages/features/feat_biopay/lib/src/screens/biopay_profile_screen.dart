@@ -9,40 +9,40 @@ import '../biopay_tokens.dart';
 import '../providers/biopay_providers.dart';
 import '../widgets/biopay_reference_ui.dart';
 
-class BiopayProfileScreen extends ConsumerStatefulWidget {
-  const BiopayProfileScreen({super.key});
+class BioPayProfileScreen extends ConsumerStatefulWidget {
+  const BioPayProfileScreen({super.key});
 
   @override
-  ConsumerState<BiopayProfileScreen> createState() =>
-      _BiopayProfileScreenState();
+  ConsumerState<BioPayProfileScreen> createState() =>
+      _BioPayProfileScreenState();
 }
 
-class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
+class _BioPayProfileScreenState extends ConsumerState<BioPayProfileScreen> {
   PaymentRecipientType? _selectedRouteType;
 
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(biopayProfileProvider).valueOrNull;
+    final profile = ref.watch(BioPayProfileProvider).valueOrNull;
     final user = ref.watch(currentUserProvider);
     final selectedRouteType =
         _selectedRouteType ??
         profile?.routeType ??
         PaymentRecipientType.phoneNumber;
-    final bioPayId = resolveBiopayId(profile, user) ?? kBiopayUnlinkedLabel;
+    final BioPayId = resolveBioPayId(profile, user) ?? kBioPayUnlinkedLabel;
     final displayedValue =
-        resolveBiopayRouteValue(selectedRouteType, profile, user) ??
-        kBiopayUnlinkedLabel;
+        resolveBioPayRouteValue(selectedRouteType, profile, user) ??
+        kBioPayUnlinkedLabel;
     final displayedLabel = selectedRouteType == PaymentRecipientType.code
         ? 'Saved Face ID Code'
         : 'Saved Face ID Number';
 
-    return BiopayReferencePage(
+    return BioPayReferencePage(
       title: 'Profile',
       onBack: () {
         if (context.canPop()) {
           context.pop();
         } else {
-          context.go('/biopay');
+          context.go('/BioPay');
         }
       },
       child: ListView(
@@ -52,19 +52,19 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
             child: Container(
               width: 96,
               height: 96,
-              decoration: biopayReferencePanelDecoration(radius: 30),
+              decoration: BioPayReferencePanelDecoration(radius: 30),
               child: Icon(
                 Icons.person_outline_rounded,
                 size: 48,
-                color: BiopayTokens.iconMuted,
+                color: BioPayTokens.iconMuted,
               ),
             ),
           ),
           const SizedBox(height: 22),
           Center(
             child: Text(
-              bioPayId,
-              style: biopayReferenceText(
+              BioPayId,
+              style: BioPayReferenceText(
                 fontSize: 28,
                 fontWeight: FontWeight.w900,
               ),
@@ -73,32 +73,32 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
           const SizedBox(height: 6),
           Center(
             child: Text(
-              'BIOPAY ID',
-              style: biopayReferenceText(
+              'BioPay ID',
+              style: BioPayReferenceText(
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
-                color: biopayReferenceMuted,
+                color: BioPayReferenceMuted,
                 letterSpacing: 1.8,
               ),
             ),
           ),
           const SizedBox(height: 36),
-          BiopayReferenceSegmentedControl(
+          BioPayReferenceSegmentedControl(
             selected: selectedRouteType,
             onChanged: (value) => setState(() => _selectedRouteType = value),
           ),
           const SizedBox(height: 22),
-          BiopayReferenceValueCard(
+          BioPayReferenceValueCard(
             label: displayedLabel,
             value: displayedValue,
           ),
           const SizedBox(height: 22),
           GestureDetector(
-            onTap: () => context.push('/biopay/register'),
+            onTap: () => context.push('/BioPay/register'),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(26, 22, 24, 22),
-              decoration: biopayReferencePanelDecoration(),
+              decoration: BioPayReferencePanelDecoration(),
               child: Row(
                 children: [
                   Expanded(
@@ -107,7 +107,7 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
                       children: [
                         Text(
                           'Face ID',
-                          style: biopayReferenceText(
+                          style: BioPayReferenceText(
                             fontSize: 18,
                             fontWeight: FontWeight.w800,
                           ),
@@ -115,12 +115,12 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
                         const SizedBox(height: 6),
                         Text(
                           profile != null ? 'Ready' : 'Set Up',
-                          style: biopayReferenceText(
+                          style: BioPayReferenceText(
                             fontSize: 15,
                             fontWeight: FontWeight.w800,
                             color: profile != null
-                                ? biopayReferenceGreen
-                                : biopayReferenceMuted,
+                                ? BioPayReferenceGreen
+                                : BioPayReferenceMuted,
                           ),
                         ),
                       ],
@@ -128,7 +128,7 @@ class _BiopayProfileScreenState extends ConsumerState<BiopayProfileScreen> {
                   ),
                   Icon(
                     Icons.qr_code_scanner_rounded,
-                    color: biopayReferenceInk,
+                    color: BioPayReferenceInk,
                     size: 28,
                   ),
                 ],

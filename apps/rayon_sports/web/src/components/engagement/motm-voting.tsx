@@ -85,7 +85,7 @@ export function MotmVoting({
               isLocked && selectedId !== player.id && "opacity-40",
             )}
           >
-            {/* Player number circle */}
+            {/* Player number Group */}
             <div
               className={cn(
                 "flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold",

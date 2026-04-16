@@ -155,7 +155,9 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (tickets.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Payment was confirmed, but ticket issuance failed.'),
+            content: Text(
+              'Ticket reservation failed. Please try again from the match screen.',
+            ),
             backgroundColor: ColorTokens.error,
           ),
         );
@@ -166,8 +168,8 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
         SnackBar(
           content: Text(
             _quantity == 1
-                ? 'Ticket issued successfully.'
-                : '${tickets.length} tickets issued successfully.',
+                ? 'Ticket reserved — pending payment verification.'
+                : '${tickets.length} tickets reserved — pending verification.',
           ),
           backgroundColor: ColorTokens.success,
         ),

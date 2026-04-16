@@ -61,7 +61,7 @@ export default async function SupportersPage() {
         stats={[
           { label: copy.tickets, value: copy.common.mobile },
           { label: copy.membership, value: copy.common.mobile },
-          { label: copy.common.bioPay, value: copy.common.mobile },
+          { label: copy.common.BioPay, value: copy.common.mobile },
         ]}
       />
 

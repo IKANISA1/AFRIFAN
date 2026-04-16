@@ -111,22 +111,22 @@ class TicketCheckoutStep extends StatelessWidget {
             ),
           ],
           const SizedBox(height: SpacingTokens.spacing6),
-          ClaymorphicButton(
+          AfriButton(
             label: match.isSoldOut
-                ? 'SOLD OUT'
+                ? 'Sold out'
                 : paymentRouteMessage != null
-                    ? 'PAYMENT ROUTE NOT READY'
+                    ? 'Payment route not ready'
                     : submitting
-                        ? 'PROCESSING'
-                        : 'PAY VIA MOMO',
+                        ? 'Processing'
+                        : 'Pay via MOMO',
             icon: Icons.phone_android_rounded,
-            width: double.infinity,
-            onPressed: match.isSoldOut ||
-                    !match.isOnSale ||
-                    submitting ||
-                    paymentRouteMessage != null
-                ? null
-                : onPurchaseRequest,
+            fullWidth: true,
+            isLoading: submitting,
+            onTap: onPurchaseRequest,
+            enabled: !match.isSoldOut &&
+                    match.isOnSale &&
+                    !submitting &&
+                    paymentRouteMessage == null,
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           Text(

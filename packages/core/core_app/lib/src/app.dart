@@ -227,7 +227,9 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
       if (!mounted) {
         return;
       }
-      _appRouter.router.go(target);
+      // Use push (not go) to preserve the user's existing navigation history.
+      // Deep links should add to the stack, not replace it entirely.
+      _appRouter.router.push(target);
     });
   }
 
@@ -252,6 +254,15 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
       }
 
       return null;
+    }
+
+    // Session recovery failed — route to onboarding without preserving
+    // the stale deferred destination to avoid redirect loops.
+    if (authState is AuthRecoveryRequired || authState is AuthError) {
+      if (_isPublicPath(location)) {
+        return null;
+      }
+      return '/onboarding';
     }
 
     if (_isPublicPath(location)) {
@@ -330,7 +341,6 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
               minScaleFactor: 1.0,
               maxScaleFactor: 1.4,
             ),
-            accessibleNavigation: true,
           ),
           child: ClubConfigScope(
             config: widget.config,

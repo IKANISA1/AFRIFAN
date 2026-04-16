@@ -2,8 +2,8 @@ import 'package:core_utils/core_utils.dart' as jh;
 
 import 'biopay_money.dart';
 
-class BiopayHandoffResolution {
-  const BiopayHandoffResolution({
+class BioPayHandoffResolution {
+  const BioPayHandoffResolution({
     required this.displayName,
     required this.publicId,
     required this.routeType,
@@ -20,8 +20,8 @@ class BiopayHandoffResolution {
     this.senderName,
   });
 
-  factory BiopayHandoffResolution.fromApiResponse(Map<String, dynamic> data) {
-    return BiopayHandoffResolution(
+  factory BioPayHandoffResolution.fromApiResponse(Map<String, dynamic> data) {
+    return BioPayHandoffResolution(
       displayName: data['display_name']?.toString() ?? '',
       publicId: data['public_id']?.toString() ?? '',
       routeType: _parseRouteType(data['route_type']),
@@ -88,7 +88,7 @@ class BiopayHandoffResolution {
 
   String? get formattedAmount => amount == null
       ? null
-      : formatBiopayAmount(
+      : formatBioPayAmount(
           amount: amount!,
           currencySymbol: currencySymbol,
           currencyCode: currencyCode,

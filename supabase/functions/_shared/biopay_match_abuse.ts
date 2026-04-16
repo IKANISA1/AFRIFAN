@@ -3,8 +3,8 @@ import { extractClientIp, hashOtpRateActorKey } from "./otp_abuse.ts";
 
 type AdminClient = ReturnType<typeof createAdminClient>;
 
-export type BiopayMatchRateScope = "user" | "ip";
-export type BiopayMatchRateOutcome =
+export type BioPayMatchRateScope = "user" | "ip";
+export type BioPayMatchRateOutcome =
   | "match"
   | "miss"
   | "blocked_user_rate_limit"
@@ -12,7 +12,7 @@ export type BiopayMatchRateOutcome =
   | "lockout_started"
   | "blocked_lockout";
 
-export type BiopayMatchProtectionConfig = {
+export type BioPayMatchProtectionConfig = {
   threshold: number;
   rateWindowSeconds: number;
   userMaxAttempts: number;
@@ -22,7 +22,7 @@ export type BiopayMatchProtectionConfig = {
   lockoutSeconds: number;
 };
 
-const defaultBiopayMatchProtectionConfig: BiopayMatchProtectionConfig = {
+const defaultBioPayMatchProtectionConfig: BioPayMatchProtectionConfig = {
   threshold: 0.72,
   rateWindowSeconds: 60,
   userMaxAttempts: 8,
@@ -33,13 +33,13 @@ const defaultBiopayMatchProtectionConfig: BiopayMatchProtectionConfig = {
 };
 
 const protectionConfigKeys = [
-  "biopay_match_threshold",
-  "biopay_match_rate_window_seconds",
-  "biopay_match_user_max_attempts",
-  "biopay_match_ip_max_attempts",
-  "biopay_match_miss_window_seconds",
-  "biopay_match_miss_lockout_threshold",
-  "biopay_match_lockout_seconds",
+  "BioPay_match_threshold",
+  "BioPay_match_rate_window_seconds",
+  "BioPay_match_user_max_attempts",
+  "BioPay_match_ip_max_attempts",
+  "BioPay_match_miss_window_seconds",
+  "BioPay_match_miss_lockout_threshold",
+  "BioPay_match_lockout_seconds",
 ] as const;
 
 function parsePositiveInteger(
@@ -60,9 +60,9 @@ function parseThreshold(
     : fallback;
 }
 
-export async function getBiopayMatchProtectionConfig(
+export async function getBioPayMatchProtectionConfig(
   adminClient: AdminClient,
-): Promise<BiopayMatchProtectionConfig> {
+): Promise<BioPayMatchProtectionConfig> {
   const { data, error } = await adminClient
     .from("app_config")
     .select("key, value")
@@ -83,47 +83,47 @@ export async function getBiopayMatchProtectionConfig(
 
   return {
     threshold: parseThreshold(
-      values.get("biopay_match_threshold"),
-      defaultBiopayMatchProtectionConfig.threshold,
+      values.get("BioPay_match_threshold"),
+      defaultBioPayMatchProtectionConfig.threshold,
     ),
     rateWindowSeconds: parsePositiveInteger(
-      values.get("biopay_match_rate_window_seconds"),
-      defaultBiopayMatchProtectionConfig.rateWindowSeconds,
+      values.get("BioPay_match_rate_window_seconds"),
+      defaultBioPayMatchProtectionConfig.rateWindowSeconds,
     ),
     userMaxAttempts: parsePositiveInteger(
-      values.get("biopay_match_user_max_attempts"),
-      defaultBiopayMatchProtectionConfig.userMaxAttempts,
+      values.get("BioPay_match_user_max_attempts"),
+      defaultBioPayMatchProtectionConfig.userMaxAttempts,
     ),
     ipMaxAttempts: parsePositiveInteger(
-      values.get("biopay_match_ip_max_attempts"),
-      defaultBiopayMatchProtectionConfig.ipMaxAttempts,
+      values.get("BioPay_match_ip_max_attempts"),
+      defaultBioPayMatchProtectionConfig.ipMaxAttempts,
     ),
     missWindowSeconds: parsePositiveInteger(
-      values.get("biopay_match_miss_window_seconds"),
-      defaultBiopayMatchProtectionConfig.missWindowSeconds,
+      values.get("BioPay_match_miss_window_seconds"),
+      defaultBioPayMatchProtectionConfig.missWindowSeconds,
     ),
     maxMissesPerWindow: parsePositiveInteger(
-      values.get("biopay_match_miss_lockout_threshold"),
-      defaultBiopayMatchProtectionConfig.maxMissesPerWindow,
+      values.get("BioPay_match_miss_lockout_threshold"),
+      defaultBioPayMatchProtectionConfig.maxMissesPerWindow,
     ),
     lockoutSeconds: parsePositiveInteger(
-      values.get("biopay_match_lockout_seconds"),
-      defaultBiopayMatchProtectionConfig.lockoutSeconds,
+      values.get("BioPay_match_lockout_seconds"),
+      defaultBioPayMatchProtectionConfig.lockoutSeconds,
     ),
   };
 }
 
-export async function countRecentBiopayMatchRateEvents(
+export async function countRecentBioPayMatchRateEvents(
   adminClient: AdminClient,
   options: {
-    scope: BiopayMatchRateScope;
+    scope: BioPayMatchRateScope;
     actorKey: string;
     windowStartIso: string;
-    outcomes?: readonly BiopayMatchRateOutcome[];
+    outcomes?: readonly BioPayMatchRateOutcome[];
   },
 ): Promise<number> {
   let query = adminClient
-    .from("biopay_match_rate_events")
+    .from("BioPay_match_rate_events")
     .select("id", { count: "exact", head: true })
     .eq("scope", options.scope)
     .eq("actor_key", options.actorKey)
@@ -143,17 +143,17 @@ export async function countRecentBiopayMatchRateEvents(
   return result.count ?? 0;
 }
 
-export async function getLatestBiopayMatchRateEventAt(
+export async function getLatestBioPayMatchRateEventAt(
   adminClient: AdminClient,
   options: {
-    scope: BiopayMatchRateScope;
+    scope: BioPayMatchRateScope;
     actorKey: string;
-    outcome: BiopayMatchRateOutcome;
+    outcome: BioPayMatchRateOutcome;
     windowStartIso: string;
   },
 ): Promise<string | null> {
   const { data, error } = await adminClient
-    .from("biopay_match_rate_events")
+    .from("BioPay_match_rate_events")
     .select("created_at")
     .eq("scope", options.scope)
     .eq("actor_key", options.actorKey)
@@ -171,22 +171,22 @@ export async function getLatestBiopayMatchRateEventAt(
   return createdAt?.length ? createdAt : null;
 }
 
-export async function hashBiopayMatchActorKey(rawValue: string) {
+export async function hashBioPayMatchActorKey(rawValue: string) {
   return await hashOtpRateActorKey(rawValue);
 }
 
-export async function recordBiopayMatchRateEvent(
+export async function recordBioPayMatchRateEvent(
   adminClient: AdminClient,
   event: {
-    scope: BiopayMatchRateScope;
+    scope: BioPayMatchRateScope;
     actorKey: string;
     requesterUserId: string;
-    outcome: BiopayMatchRateOutcome;
+    outcome: BioPayMatchRateOutcome;
     metadata?: Record<string, unknown>;
   },
 ) {
   const { error } = await adminClient
-    .from("biopay_match_rate_events")
+    .from("BioPay_match_rate_events")
     .insert({
       scope: event.scope,
       actor_key: event.actorKey,

@@ -3,30 +3,30 @@ import 'biopay_match_result.dart';
 import 'biopay_money.dart';
 import 'biopay_profile.dart';
 
-enum BiopayReviewSource { faceScan, qrScan, nfcScan }
+enum BioPayReviewSource { faceScan, qrScan, nfcScan }
 
-class BiopayPaymentReviewArgs {
-  const BiopayPaymentReviewArgs.faceMatch({
+class BioPayPaymentReviewArgs {
+  const BioPayPaymentReviewArgs.faceMatch({
     required this.matchResult,
     this.initialAmount,
-  }) : source = BiopayReviewSource.faceScan,
+  }) : source = BioPayReviewSource.faceScan,
        handoffResolution = null;
 
-  const BiopayPaymentReviewArgs.handoff({
+  const BioPayPaymentReviewArgs.handoff({
     required this.source,
     required this.handoffResolution,
-  }) : assert(source != BiopayReviewSource.faceScan),
+  }) : assert(source != BioPayReviewSource.faceScan),
        matchResult = null,
        initialAmount = null;
 
-  final BiopayReviewSource source;
-  final BiopayMatchResult? matchResult;
-  final BiopayHandoffResolution? handoffResolution;
+  final BioPayReviewSource source;
+  final BioPayMatchResult? matchResult;
+  final BioPayHandoffResolution? handoffResolution;
   final int? initialAmount;
 
-  BiopayProfile? get profile => matchResult?.profile;
+  BioPayProfile? get profile => matchResult?.profile;
 
-  bool get canEditAmount => source == BiopayReviewSource.faceScan;
+  bool get canEditAmount => source == BioPayReviewSource.faceScan;
 
   int? get suggestedAmount => initialAmount ?? handoffResolution?.amount;
 
@@ -53,44 +53,44 @@ class BiopayPaymentReviewArgs {
   String? get matchReceipt => matchResult?.matchReceipt;
 
   String get sourceTitle => switch (source) {
-    BiopayReviewSource.faceScan => 'Face Match Confirmed',
-    BiopayReviewSource.qrScan => 'QR Request Verified',
-    BiopayReviewSource.nfcScan => 'NFC Request Verified',
+    BioPayReviewSource.faceScan => 'Face Match Confirmed',
+    BioPayReviewSource.qrScan => 'QR Request Verified',
+    BioPayReviewSource.nfcScan => 'NFC Request Verified',
   };
 
   String get sourceDescription => switch (source) {
-    BiopayReviewSource.faceScan => 'Review alias and enter amount.',
-    BiopayReviewSource.qrScan => 'QR verified. Review alias to continue.',
-    BiopayReviewSource.nfcScan => 'NFC verified. Review alias to continue.',
+    BioPayReviewSource.faceScan => 'Review alias and enter amount.',
+    BioPayReviewSource.qrScan => 'QR verified. Review alias to continue.',
+    BioPayReviewSource.nfcScan => 'NFC verified. Review alias to continue.',
   };
 
   String get confirmLabel =>
       canEditAmount ? 'Open Payment Dialer' : 'Confirm and Open';
 
   String get amountInputLabel =>
-      biopayAmountInputLabel(currencyCode: currencyCode);
+      BioPayAmountInputLabel(currencyCode: currencyCode);
 
   String get lockedAmountLabel => lockedAmount == null
       ? 'Open amount'
-      : formatBiopayAmount(
+      : formatBioPayAmount(
           amount: lockedAmount!,
           currencySymbol: currencySymbol,
           currencyCode: currencyCode,
         );
 
-  String get successPrimaryRoute => '/biopay';
+  String get successPrimaryRoute => '/BioPay';
 
   String get successPrimaryLabel => 'Back to BioPay';
 
   String? get secondaryRoute => switch (source) {
-    BiopayReviewSource.faceScan => '/biopay/scan?mode=pay',
-    BiopayReviewSource.qrScan => '/biopay/qr/scan',
-    BiopayReviewSource.nfcScan => '/biopay/nfc',
+    BioPayReviewSource.faceScan => '/BioPay/scan?mode=pay',
+    BioPayReviewSource.qrScan => '/BioPay/qr/scan',
+    BioPayReviewSource.nfcScan => '/BioPay/nfc',
   };
 
   String get secondaryLabel => switch (source) {
-    BiopayReviewSource.faceScan => 'Pay Another Member',
-    BiopayReviewSource.qrScan => 'Scan Another QR',
-    BiopayReviewSource.nfcScan => 'Scan Another NFC Request',
+    BioPayReviewSource.faceScan => 'Pay Another Member',
+    BioPayReviewSource.qrScan => 'Scan Another QR',
+    BioPayReviewSource.nfcScan => 'Scan Another NFC Request',
   };
 }

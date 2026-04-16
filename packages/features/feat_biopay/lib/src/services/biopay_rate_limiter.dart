@@ -7,8 +7,8 @@ import 'package:core_utils/core_utils.dart';
 /// Prevents abuse by enforcing maximum attempt counts within sliding windows.
 /// This is a defense-in-depth measure — server-side Edge Functions should
 /// also enforce their own rate limits.
-class BiopayRateLimiter {
-  BiopayRateLimiter({
+class BioPayRateLimiter {
+  BioPayRateLimiter({
     this.maxEnrollmentsPerHour = 3,
     this.maxMatchesPerMinute = 10,
     this.maxMatchesPerHour = 60,
@@ -86,7 +86,7 @@ class BiopayRateLimiter {
     _enrollAttempts.clear();
     _matchAttempts.clear();
     _paymentIntentAttempts.clear();
-    AfriLogger.info('BiopayRateLimiter', 'Counters reset.');
+    AfriLogger.info('BioPayRateLimiter', 'Counters reset.');
   }
 
   /// Remove entries older than the given duration from the queue.

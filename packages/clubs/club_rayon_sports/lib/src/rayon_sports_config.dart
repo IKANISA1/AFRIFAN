@@ -78,7 +78,7 @@ class RayonSportsConfig implements ClubConfig {
   List<String> get supportedLanguages => const ['rw', 'fr', 'en'];
 
   @override
-  bool get hasBiopay => true;
+  bool get hasBioPay => true;
 
   @override
   bool get hasFanClubs => true;
@@ -107,7 +107,7 @@ class RayonSportsConfig implements ClubConfig {
 
   @override
   Map<String, bool> get features => {
-    'biopay': hasBiopay,
+    'BioPay': hasBioPay,
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,

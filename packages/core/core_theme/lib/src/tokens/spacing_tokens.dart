@@ -1,6 +1,6 @@
 /// Spacing tokens — generous breathing room between high-contrast elements.
 ///
-/// Use the **semantic aliases** below for common layout patterns so every
+/// Use the **semantic ** below for common layout patterns so every
 /// screen speaks the same spatial language. The raw `spacingN` values
 /// remain available for edge-cases.
 class SpacingTokens {
@@ -24,7 +24,7 @@ class SpacingTokens {
   static const double spacing16 = 64.0;
   static const double spacing20 = 80.0;
 
-  // ── Semantic aliases ──
+  // ── Semantic  ──
 
   /// Horizontal inset for screen-level content (left/right padding).
   static const double screenPadding = spacing6; // 24

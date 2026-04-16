@@ -1,7 +1,7 @@
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 /// Camera frame guidance states from face detection.
-enum BiopayFaceGuidance {
+enum BioPayFaceGuidance {
   searching,
   multipleFaces,
   tooDark,
@@ -13,8 +13,8 @@ enum BiopayFaceGuidance {
 }
 
 /// Analysis result for a single camera frame.
-class BiopayFaceFrameAnalysis {
-  const BiopayFaceFrameAnalysis({
+class BioPayFaceFrameAnalysis {
+  const BioPayFaceFrameAnalysis({
     required this.guidance,
     required this.faceCount,
     required this.brightness,
@@ -27,7 +27,7 @@ class BiopayFaceFrameAnalysis {
     this.face,
   });
 
-  final BiopayFaceGuidance guidance;
+  final BioPayFaceGuidance guidance;
   final Face? face;
   final int faceCount;
   final double brightness;
@@ -38,6 +38,6 @@ class BiopayFaceFrameAnalysis {
   final double? leftEyeOpenProbability;
   final double? rightEyeOpenProbability;
 
-  bool get isStable => guidance == BiopayFaceGuidance.stable && face != null;
+  bool get isStable => guidance == BioPayFaceGuidance.stable && face != null;
   double get absHeadYaw => (headYaw ?? 0).abs();
 }

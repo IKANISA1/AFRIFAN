@@ -18,6 +18,13 @@ class AuthNotifier extends Notifier<AuthState> {
   String? _hydratingSessionUserId;
   int _authHydrationEpoch = 0;
 
+  /// Tracks whether the current sign-out was intentional (user-initiated).
+  /// When false, a signedOut event while previously authenticated indicates
+  /// an involuntary session loss (e.g. token refresh failure on a flaky
+  /// network), and the app transitions to [AuthRecoveryRequired] instead
+  /// of [AuthUnauthenticated] so the UI can prompt re-authentication.
+  bool _intentionalSignOut = false;
+
   @override
   AuthState build() {
     _repository = ref.watch(authRepositoryProvider);
@@ -69,7 +76,20 @@ class AuthNotifier extends Notifier<AuthState> {
       _hydratingSessionUserId = null;
       FirebaseAnalyticsService.setUserId(null);
       CrashlyticsService.setUserId(null);
-      state = const AuthUnauthenticated();
+
+      // Distinguish intentional sign-out from involuntary session loss.
+      final wasAuthenticated = state is AuthAuthenticated;
+      if (wasAuthenticated && !_intentionalSignOut) {
+        // Involuntary session loss — token refresh failed or backend revoked
+        // the session. Transition to recovery state so the UI can offer a
+        // "session expired" prompt instead of silently dropping to onboarding.
+        state = const AuthRecoveryRequired(
+          'Your session expired. Please sign in again.',
+        );
+      } else {
+        state = const AuthUnauthenticated();
+      }
+      _intentionalSignOut = false;
       return;
     }
 
@@ -265,6 +285,7 @@ class AuthNotifier extends Notifier<AuthState> {
 
   /// Sign out and clear session.
   Future<void> signOut() async {
+    _intentionalSignOut = true;
     try {
       await _repository.signOut();
     } catch (_) {
@@ -305,6 +326,7 @@ class AuthNotifier extends Notifier<AuthState> {
       return 'You must be signed in to delete your account.';
     }
 
+    _intentionalSignOut = true;
     state = const AuthLoading();
 
     try {
@@ -314,6 +336,7 @@ class AuthNotifier extends Notifier<AuthState> {
       state = const AuthUnauthenticated();
       return null;
     } catch (e) {
+      _intentionalSignOut = false;
       state = AuthAuthenticated(
         profile: current.profile,
         workspace: current.workspace,

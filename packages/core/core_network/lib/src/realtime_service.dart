@@ -21,6 +21,9 @@ class RealtimeService {
   int get activeChannelCount => _activeChannels.length;
 
   /// Subscribe to a club-scoped channel.
+  ///
+  /// The returned channel is already subscribed — callers do not need to
+  /// call `.subscribe()` again.
   RealtimeChannel subscribe({
     required String feature,
     required String resourceId,
@@ -28,6 +31,7 @@ class RealtimeService {
     final channelName = '$clubId:$feature:$resourceId';
     final channel = client.channel(channelName);
     _activeChannels.add(channel);
+    channel.subscribe();
     return channel;
   }
 

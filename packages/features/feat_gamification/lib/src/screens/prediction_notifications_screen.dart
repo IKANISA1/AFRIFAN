@@ -164,8 +164,8 @@ class _PredictionNotificationsScreenState
                                     alignment: Alignment.center,
                                     child: Icon(
                                       isPositive
-                                          ? Icons.celebration_rounded
-                                          : Icons.notifications_active_rounded,
+                                          ? AfriIcons.gift
+                                          : AfriIcons.notificationsActive,
                                       color: accent,
                                       size: 20,
                                     ),

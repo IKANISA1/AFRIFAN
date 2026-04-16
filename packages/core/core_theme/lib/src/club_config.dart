@@ -78,7 +78,7 @@ abstract class ClubConfig {
   List<String> get supportedLanguages;
 
   /// Feature flags
-  bool get hasBiopay;
+  bool get hasBioPay;
   bool get hasFanClubs;
   bool get hasShop;
   bool get hasTicketing;
@@ -93,7 +93,7 @@ abstract class ClubConfig {
 
   /// Feature flags as a map (for dynamic checks)
   Map<String, bool> get features => {
-    'biopay': hasBiopay,
+    'BioPay': hasBioPay,
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,
@@ -166,7 +166,7 @@ class _FallbackClubConfig extends ClubConfig {
   List<String> get supportedLanguages => const <String>['en'];
 
   @override
-  bool get hasBiopay => false;
+  bool get hasBioPay => false;
 
   @override
   bool get hasFanClubs => true;

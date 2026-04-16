@@ -21,7 +21,7 @@ class ColorTokens {
   static const Color _defaultSecondary = Color(0xFF0A1326);
   static const Color _defaultAccent = Color(0xFFE2B85F);
 
-  static const Color _inkBase = Color(0xFF08111F);
+  static const Color _inkBase = Color(0xFF09090B);
 
   static bool _isWhite(Color color) => color.computeLuminance() > 0.9;
 
@@ -65,8 +65,8 @@ class ColorTokens {
 
     _darkBackground = _stackColor(
       _inkBase,
-      primaryAlpha: 0.02,
-      secondaryAlpha: 0.16,
+      primaryAlpha: 0.01,
+      secondaryAlpha: 0.12,
     );
     _darkSurfaceDim = _darkBackground;
     _darkSurfaceContainerLowest = _stackColor(
@@ -146,13 +146,13 @@ class ColorTokens {
 
   static Color _darkBackground = _inkBase;
   static Color _darkSurfaceDim = _inkBase;
-  static Color _darkSurface = const Color(0xFF172740);
-  static Color _darkSurfaceContainerLowest = const Color(0xFF0E172A);
-  static Color _darkSurfaceContainerLow = const Color(0xFF111C31);
-  static Color _darkSurfaceContainer = const Color(0xFF142238);
-  static Color _darkSurfaceContainerHigh = const Color(0xFF1C2D49);
-  static Color _darkSurfaceContainerHighest = const Color(0xFF233755);
-  static Color _darkSurfaceBright = const Color(0xFF2C4364);
+  static Color _darkSurface = const Color(0xFF18181B);
+  static Color _darkSurfaceContainerLowest = const Color(0xFF09090B);
+  static Color _darkSurfaceContainerLow = const Color(0xFF121215);
+  static Color _darkSurfaceContainer = const Color(0xFF18181B);
+  static Color _darkSurfaceContainerHigh = const Color(0xFF27272A);
+  static Color _darkSurfaceContainerHighest = const Color(0xFF3F3F46);
+  static Color _darkSurfaceBright = const Color(0xFF52525B);
   static Color _darkPrimary = _defaultPrimary;
   static Color _darkPrimaryContainer = const Color(0xFF4E8CFF);
   static Color _darkSecondaryContainer = const Color(0xFF294160);
@@ -202,9 +202,9 @@ class ColorTokens {
       isDark ? const Color(0xFF9EABC2) : const Color(0xFF5E6B80);
 
   static Color get glassFill =>
-      surfaceContainerHigh.withValues(alpha: isDark ? 0.92 : 0.94);
+      Colors.white.withValues(alpha: isDark ? 0.05 : 0.08);
   static Color get ghostBorder =>
-      Colors.white.withValues(alpha: isDark ? 0.08 : 0.10);
+      Colors.white.withValues(alpha: isDark ? 0.10 : 0.12);
 
   static const double glassBlurSigma = 10.0;
 

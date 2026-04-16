@@ -10,14 +10,14 @@ import '../models/biopay_payment_review_args.dart';
 import '../providers/biopay_providers.dart';
 import '../widgets/biopay_reference_ui.dart';
 
-class BiopayQrScanScreen extends ConsumerStatefulWidget {
-  const BiopayQrScanScreen({super.key});
+class BioPayQrScanScreen extends ConsumerStatefulWidget {
+  const BioPayQrScanScreen({super.key});
 
   @override
-  ConsumerState<BiopayQrScanScreen> createState() => _BiopayQrScanScreenState();
+  ConsumerState<BioPayQrScanScreen> createState() => _BioPayQrScanScreenState();
 }
 
-class _BiopayQrScanScreenState extends ConsumerState<BiopayQrScanScreen> {
+class _BioPayQrScanScreenState extends ConsumerState<BioPayQrScanScreen> {
   late final MobileScannerController _controller = MobileScannerController(
     facing: CameraFacing.back,
     autoZoom: true,
@@ -50,19 +50,19 @@ class _BiopayQrScanScreenState extends ConsumerState<BiopayQrScanScreen> {
     });
 
     try {
-      final token = BiopayHandoffResolution.extractToken(raw);
+      final token = BioPayHandoffResolution.extractToken(raw);
       if (token == null) {
         throw StateError('Not a valid BioPay QR.');
       }
       final resolution = await ref
-          .read(biopayRepositoryProvider)
+          .read(BioPayRepositoryProvider)
           .resolveHandoffToken(token: token);
 
       if (!mounted) return;
       context.pushReplacement(
-        '/biopay/review',
-        extra: BiopayPaymentReviewArgs.handoff(
-          source: BiopayReviewSource.qrScan,
+        '/BioPay/review',
+        extra: BioPayPaymentReviewArgs.handoff(
+          source: BioPayReviewSource.qrScan,
           handoffResolution: resolution,
         ),
       );
@@ -94,8 +94,8 @@ class _BiopayQrScanScreenState extends ConsumerState<BiopayQrScanScreen> {
           Positioned(
             top: MediaQuery.of(context).padding.top + 24,
             left: 28,
-            child: BiopayReferenceDarkBackButton(
-              onTap: () => context.go('/biopay'),
+            child: BioPayReferenceDarkBackButton(
+              onTap: () => context.go('/BioPay'),
             ),
           ),
           Center(
@@ -109,7 +109,7 @@ class _BiopayQrScanScreenState extends ConsumerState<BiopayQrScanScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(24),
                         border: BorderTokens.all(
-                          color: BiopayTokens.scannerCorner,
+                          color: BioPayTokens.scannerCorner,
                           width: 3,
                         ),
                       ),
@@ -128,7 +128,7 @@ class _BiopayQrScanScreenState extends ConsumerState<BiopayQrScanScreen> {
             right: 0,
             bottom: MediaQuery.of(context).padding.bottom + 96,
             child: Center(
-              child: BiopayReferenceStatusPill(label: _statusLabel),
+              child: BioPayReferenceStatusPill(label: _statusLabel),
             ),
           ),
         ],
@@ -161,19 +161,19 @@ class _QrCorner extends StatelessWidget {
           ),
           border: Border(
             top: BorderTokens.side(
-              color: isTop ? BiopayTokens.scannerCorner : Colors.transparent,
+              color: isTop ? BioPayTokens.scannerCorner : Colors.transparent,
               width: 4,
             ),
             bottom: BorderTokens.side(
-              color: !isTop ? BiopayTokens.scannerCorner : Colors.transparent,
+              color: !isTop ? BioPayTokens.scannerCorner : Colors.transparent,
               width: 4,
             ),
             left: BorderTokens.side(
-              color: isLeft ? BiopayTokens.scannerCorner : Colors.transparent,
+              color: isLeft ? BioPayTokens.scannerCorner : Colors.transparent,
               width: 4,
             ),
             right: BorderTokens.side(
-              color: !isLeft ? BiopayTokens.scannerCorner : Colors.transparent,
+              color: !isLeft ? BioPayTokens.scannerCorner : Colors.transparent,
               width: 4,
             ),
           ),

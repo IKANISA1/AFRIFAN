@@ -48,57 +48,57 @@ class HomeQuickAction {
 
   static const List<HomeQuickAction> fallbackItems = <HomeQuickAction>[
     HomeQuickAction(
-      actionKey: 'predict',
-      title: 'Predict',
-      route: '/fanzone/fixtures',
-      iconKey: 'predict',
-      subtitle: 'Open fixtures',
-      emoji: '⚽',
+      actionKey: 'groups',
+      title: 'Groups',
+      route: '/contribute',
+      iconKey: 'groups',
+      subtitle: 'Savings & fundraising',
+      emoji: '🤝',
       sortOrder: 10,
     ),
     HomeQuickAction(
-      actionKey: 'my_picks',
-      title: 'My Picks',
-      route: '/fanzone/my',
-      iconKey: 'myPicks',
-      subtitle: 'Track slips',
-      emoji: '🧾',
+      actionKey: 'predict',
+      title: 'Predict',
+      route: '/fanzone',
+      iconKey: 'predict',
+      subtitle: 'Fixtures, picks & live',
+      emoji: '⚽',
       sortOrder: 20,
-    ),
-    HomeQuickAction(
-      actionKey: 'live',
-      title: 'Live',
-      route: '/live',
-      iconKey: 'live',
-      subtitle: 'Watch matchday',
-      emoji: '📺',
-      sortOrder: 30,
-    ),
-    HomeQuickAction(
-      actionKey: 'leaderboard',
-      title: 'Leaderboard',
-      route: '/fanzone/leaderboard',
-      iconKey: 'leaderboard',
-      subtitle: 'Top supporters',
-      emoji: '🏆',
-      sortOrder: 40,
-    ),
-    HomeQuickAction(
-      actionKey: 'wallet',
-      title: 'Wallet',
-      route: '/fanzone/wallet',
-      iconKey: 'wallet',
-      subtitle: 'FET balance',
-      emoji: '💳',
-      sortOrder: 50,
     ),
     HomeQuickAction(
       actionKey: 'tickets',
       title: 'Tickets',
       route: '/tickets',
       iconKey: 'tickets',
-      subtitle: 'Club access',
+      subtitle: 'Match access',
       emoji: '🎟️',
+      sortOrder: 30,
+    ),
+    HomeQuickAction(
+      actionKey: 'shop',
+      title: 'Shop',
+      route: '/shop',
+      iconKey: 'shop',
+      subtitle: 'Rewards & merchandise',
+      emoji: '🛍️',
+      sortOrder: 40,
+    ),
+    HomeQuickAction(
+      actionKey: 'members',
+      title: 'Members',
+      route: '/membership',
+      iconKey: 'members',
+      subtitle: 'Club supporters',
+      emoji: '👥',
+      sortOrder: 50,
+    ),
+    HomeQuickAction(
+      actionKey: 'offers',
+      title: 'Offers',
+      route: '/fanzone/offers',
+      iconKey: 'offers',
+      subtitle: 'Earn with partners',
+      emoji: '🎁',
       sortOrder: 60,
     ),
   ];
@@ -109,7 +109,7 @@ class HomeFeedSnapshot {
     this.heroSlides = const <MatchSlide>[],
     this.leaderboard = const <ContributorEntry>[],
     this.quickActions = HomeQuickAction.fallbackItems,
-    this.globalXp = 0,
+    this.userFet = 0,
     this.fanRank = 0,
     this.status = HomeFeedStatus.empty,
     this.message,
@@ -119,13 +119,15 @@ class HomeFeedSnapshot {
   final List<MatchSlide> heroSlides;
   final List<ContributorEntry> leaderboard;
   final List<HomeQuickAction> quickActions;
-  final int globalXp;
+
+  /// The current user's own FET (fan engagement points).
+  final int userFet;
   final int fanRank;
   final HomeFeedStatus status;
   final String? message;
   final bool showFixturePlaceholder;
 
-  bool get hasStats => globalXp > 0 || fanRank > 0;
+  bool get hasStats => userFet > 0 || fanRank > 0;
   bool get hasLeaderboard => leaderboard.isNotEmpty;
   bool get hasHeroSlides => heroSlides.isNotEmpty;
   bool get hasQuickActions => quickActions.isNotEmpty;
@@ -220,6 +222,12 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
                 countryCode == activeCountryCode;
           })
           .toList(growable: false);
+
+      // Deduplicate by title — first occurrence (lowest sort_order) wins.
+      final seen = <String>{};
+      quickActions = quickActions
+          .where((action) => seen.add(action.title.toLowerCase()))
+          .toList(growable: false);
       if (quickActions.isEmpty) {
         quickActions = HomeQuickAction.fallbackItems;
       }
@@ -259,12 +267,12 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
       );
     }
 
-    final profileAliases = <String, String>{};
+    final profile = <String, String>{};
     if (memberships.isNotEmpty) {
-      await _loadProfileAliases(
+      await _loadProfile(
         memberships: memberships,
         currentUserId: currentUserId,
-        profileAliases: profileAliases,
+        profile: profile,
       );
     }
 
@@ -279,7 +287,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
           return ContributorEntry(
             rank: rank,
             alias:
-                profileAliases[userId] ??
+                profile[userId] ??
                 (userId.isEmpty
                     ? '000000'
                     : (100000 + userId.hashCode.abs() % 900000).toString()),
@@ -288,17 +296,27 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         })
         .toList(growable: false);
 
-    final globalXp = memberships.fold<int>(
-      0,
-      (sum, row) => sum + ((row['points'] as num?)?.toInt() ?? 0),
-    );
-
+    // ── Derive the current user's personal FET and rank ──
+    var userFet = 0;
     var fanRank = 0;
     if (currentUserId != null) {
       final index = memberships.indexWhere(
         (row) => row['user_id']?.toString() == currentUserId,
       );
-      fanRank = index == -1 ? 0 : index + 1;
+      if (index != -1) {
+        userFet = (memberships[index]['points'] as num?)?.toInt() ?? 0;
+        fanRank = index + 1;
+      } else {
+        // User not in the top-20 batch — look up their row directly.
+        await _resolveUserFetAndRank(
+          scope: scope,
+          currentUserId: currentUserId,
+          result: (int fet, int rank) {
+            userFet = fet;
+            fanRank = rank;
+          },
+        );
+      }
     }
 
     final heroSlides = matchesError == null
@@ -310,7 +328,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         heroSlides: heroSlides,
         leaderboard: leaderboard,
         quickActions: quickActions,
-        globalXp: globalXp,
+        userFet: userFet,
         fanRank: fanRank,
         status: HomeFeedStatus.degraded,
         message: quickActionsError == null
@@ -322,7 +340,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
 
     if (heroSlides.isEmpty &&
         leaderboard.isEmpty &&
-        globalXp == 0 &&
+        userFet == 0 &&
         fanRank == 0) {
       return const HomeFeedSnapshot(
         status: HomeFeedStatus.empty,
@@ -335,17 +353,50 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
       heroSlides: heroSlides,
       leaderboard: leaderboard,
       quickActions: quickActions,
-      globalXp: globalXp,
+      userFet: userFet,
       fanRank: fanRank,
       status: HomeFeedStatus.success,
       showFixturePlaceholder: heroSlides.isEmpty,
     );
   }
 
-  Future<void> _loadProfileAliases({
+  /// Resolves the current user's FET balance and rank when they fall outside
+  /// the top-20 batch fetched for the leaderboard.
+  Future<void> _resolveUserFetAndRank({
+    required ClubScope scope,
+    required String currentUserId,
+    required void Function(int fet, int rank) result,
+  }) async {
+    try {
+      var query = client
+          .from('fan_memberships')
+          .select('points')
+          .eq('user_id', currentUserId);
+      query = ClubScopeResolver(client: client).apply(query, scope);
+      final row = await query.maybeSingle();
+      if (row == null) return; // User has no membership yet.
+
+      final userPoints = (row['points'] as num?)?.toInt() ?? 0;
+
+      // Count how many members have more points to derive rank.
+      var countQuery = client
+          .from('fan_memberships')
+          .select('user_id')
+          .gt('points', userPoints);
+      countQuery = ClubScopeResolver(client: client).apply(countQuery, scope);
+      final higherRows = List<Map<String, dynamic>>.from(await countQuery);
+      final rank = higherRows.length + 1;
+
+      result(userPoints, rank);
+    } catch (_) {
+      // Best-effort — leave values at 0 so stats row hides gracefully.
+    }
+  }
+
+  Future<void> _loadProfile({
     required List<Map<String, dynamic>> memberships,
     required String? currentUserId,
-    required Map<String, String> profileAliases,
+    required Map<String, String> profile,
   }) async {
     if (currentUserId != null) {
       try {
@@ -358,7 +409,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         if (selfAlias != null &&
             selfAlias.isNotEmpty &&
             currentUserId.isNotEmpty) {
-          profileAliases[currentUserId] = selfAlias;
+          profile[currentUserId] = selfAlias;
         }
       } catch (_) {
         // Keep rendering even if self alias lookup is restricted.
@@ -382,7 +433,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         final id = profile['id']?.toString();
         final alias = profile['public_user_id']?.toString();
         if (id != null && alias != null && alias.isNotEmpty) {
-          profileAliases[id] = alias;
+          profile[id] = alias;
         }
       }
     } catch (_) {

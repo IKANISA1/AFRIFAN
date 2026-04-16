@@ -282,7 +282,7 @@ Get the reference app back to a credible green state and add tests for the newly
 ### Primary file targets
 
 - `apps/rayon_sports/test/`
-- `packages/features/feat_biopay/`
+- `packages/features/feat_BioPay/`
 - `packages/features/feat_settings/`
 - `apps/rayon_sports/web/src/**/*.test.*`
 - any new manifest/migration verification tests
@@ -322,7 +322,7 @@ Get the reference app back to a credible green state and add tests for the newly
 ### Validation
 
 - `flutter test`
-- targeted `flutter test test/rayon_sports_biopay_host_test.dart -r expanded`
+- targeted `flutter test test/rayon_sports_BioPay_host_test.dart -r expanded`
 - `npm test`
 - documented manual UAT pass sheet
 

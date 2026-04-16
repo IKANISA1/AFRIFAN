@@ -323,7 +323,7 @@ class _FakeClubConfig implements ClubConfig {
   @override
   String get currencySymbol => 'RWF';
   @override
-  bool get hasBiopay => false;
+  bool get hasBioPay => false;
   @override
   bool get hasChat => false;
   @override

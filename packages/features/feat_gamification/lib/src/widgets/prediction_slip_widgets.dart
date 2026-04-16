@@ -80,7 +80,7 @@ class PredictionSlipBar extends ConsumerWidget {
                 ),
               ),
               Icon(
-                Icons.keyboard_arrow_up_rounded,
+                AfriIcons.up,
                 color: state.isPressed
                     ? ColorTokens.clubAccent
                     : ColorTokens.onSurfaceVariant,
@@ -128,7 +128,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                Icons.receipt_long_rounded,
+                AfriIcons.myPicks,
                 size: 32,
                 color: ColorTokens.onSurfaceVariant,
               ),
@@ -198,7 +198,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
           const SizedBox(height: SpacingTokens.spacing4),
           AfriButton(
             label: slip.isSubmitting ? 'Submitting...' : 'Lock In Predictions',
-            icon: Icons.verified_rounded,
+            icon: AfriIcons.verified,
             enabled: !slip.isSubmitting,
             onTap: () async {
               final messenger = ScaffoldMessenger.of(context);
@@ -310,7 +310,7 @@ class _ShareCardModalSheet extends StatelessWidget {
                   ),
                   alignment: Alignment.center,
                   child: const Icon(
-                    Icons.verified_rounded,
+                    AfriIcons.verified,
                     color: ColorTokens.success,
                     size: 28,
                   ),
@@ -406,7 +406,7 @@ class _ShareCardModalSheet extends StatelessWidget {
                       );
                     },
                     label: 'COPY',
-                    icon: Icons.copy_rounded,
+                    icon: AfriIcons.copy,
                     variant: AfriButtonVariant.secondary,
                   ),
                 ),
@@ -415,7 +415,7 @@ class _ShareCardModalSheet extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing3),
           AfriButton(
             label: 'VIEW MY PREDICTIONS',
-            icon: Icons.receipt_long_rounded,
+            icon: AfriIcons.myPicks,
             variant: AfriButtonVariant.secondary,
             onTap: () {
               Navigator.of(context).pop();

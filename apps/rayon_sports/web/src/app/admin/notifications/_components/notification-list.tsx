@@ -38,7 +38,6 @@ export function NotificationList({
   return (
     <AdminSurface
       title="Delivery queue"
-      description="Recent sends, schedules, and failure visibility."
       actions={
         <button
           type="button"

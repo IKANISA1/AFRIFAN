@@ -6,10 +6,10 @@ import 'package:go_router/go_router.dart';
 import '../models/biopay_recovery_args.dart';
 
 /// BioPay Recovery — action screen for auth / device issues.
-class BiopayRecoveryScreen extends StatelessWidget {
-  const BiopayRecoveryScreen({required this.args, super.key});
+class BioPayRecoveryScreen extends StatelessWidget {
+  const BioPayRecoveryScreen({required this.args, super.key});
 
-  final BiopayRecoveryArgs args;
+  final BioPayRecoveryArgs args;
 
   @override
   Widget build(BuildContext context) {
@@ -59,15 +59,13 @@ class BiopayRecoveryScreen extends StatelessWidget {
                 const Spacer(flex: 4),
 
                 // Primary CTA
-                ClaymorphicButton(
+                AfriButton(
                   label: args.primaryLabel,
-                  onPressed: () {
+                  onTap: () {
                     HapticFeedback.mediumImpact();
                     context.go(args.primaryRoute);
                   },
-                  width: double.infinity,
-                  preserveCase: true,
-                  letterSpacing: 0.6,
+                  fullWidth: true,
                 ),
 
                 // Secondary

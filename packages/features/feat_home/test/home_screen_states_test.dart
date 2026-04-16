@@ -96,7 +96,7 @@ void main() {
                 ContributorEntry(rank: 2, alias: '623025', points: 1640),
                 ContributorEntry(rank: 3, alias: '293164', points: 920),
               ],
-              globalXp: 5260,
+              userFet: 5260,
               fanRank: 8,
               status: HomeFeedStatus.success,
             ),

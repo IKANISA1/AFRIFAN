@@ -144,7 +144,6 @@ export default function AdminNotificationsPage() {
       <AdminPageHeader
         eyebrow="Broadcasts"
         title="Notifications"
-        description="Compose, target, schedule, and monitor supporter delivery from one queue."
       />
 
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">

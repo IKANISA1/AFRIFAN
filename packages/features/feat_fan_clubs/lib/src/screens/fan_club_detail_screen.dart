@@ -388,7 +388,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'CIRCLE SNAPSHOT',
+                          'Group SNAPSHOT',
                           style: TypographyTokens.monolithFont(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -407,7 +407,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                         const SizedBox(height: SpacingTokens.spacing2),
                         _SnapshotRow(title: '$events events recorded.'),
                         const SizedBox(height: SpacingTokens.spacing2),
-                        _SnapshotRow(title: '$members fans in this circle.'),
+                        _SnapshotRow(title: '$members fans in this Group.'),
                       ],
                     ),
                   ),

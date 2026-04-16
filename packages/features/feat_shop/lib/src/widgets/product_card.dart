@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -132,6 +133,7 @@ class _ProductImage extends StatelessWidget {
     if (imageUrl != null && imageUrl!.isNotEmpty) {
       return CachedNetworkImage(
         imageUrl: imageUrl!,
+        cacheManager: AfriImageCacheManager.instance,
         fit: BoxFit.cover,
         placeholder: (_, __) => _fallback(gradient),
         errorWidget: (_, __, ___) => _fallback(gradient),
@@ -149,11 +151,11 @@ class _ProductImage extends StatelessWidget {
           colors: colors,
         ),
       ),
-      child: const Center(
+      child: Center(
         child: Icon(
           Icons.shopping_bag_outlined,
           size: 40,
-          color: Colors.white70,
+          color: ColorTokens.onSurface.withValues(alpha: 0.7),
         ),
       ),
     );

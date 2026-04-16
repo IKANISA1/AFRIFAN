@@ -1,10 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Trophy } from "lucide-react";
+import { Trophy, Plus, Search } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
+import { AdminDataGrid } from "@/components/admin/admin-data-grid";
+import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
+import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
@@ -15,7 +18,13 @@ import {
 import type { AdminStandingRow } from "@/lib/types";
 import { emptyForm, type StandingForm } from "./_components/standing-state";
 import { StandingEditorForm } from "./_components/standing-editor-form";
-import { StandingList } from "./_components/standing-list";
+import { cn } from "@/lib/utils";
+
+const formBadge: Record<string, string> = {
+  W: "bg-emerald-500/18 text-emerald-300",
+  D: "bg-white/8 text-slate-200",
+  L: "bg-rose-500/18 text-rose-300",
+};
 
 export default function AdminStandingsPage() {
   const { access, activeClub, client } = useAdminPortal();
@@ -23,6 +32,7 @@ export default function AdminStandingsPage() {
   const [form, setForm] = useState<StandingForm>(emptyForm);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const load = useCallback(async () => {
     if (client == null) return;
@@ -32,13 +42,9 @@ export default function AdminStandingsPage() {
       setRows(await getAdminStandings(client, access));
       setLoadError(null);
     } catch (caught) {
-      const message =
-        caught instanceof Error ? caught.message : "Could not load standings.";
+      const message = caught instanceof Error ? caught.message : "Could not load standings.";
       setLoadError(message);
-      showAdminToast(
-        message,
-        "error",
-      );
+      showAdminToast(message, "error");
     } finally {
       setLoading(false);
     }
@@ -60,29 +66,27 @@ export default function AdminStandingsPage() {
       points: String(row.points),
       form: row.form.join(", "),
     });
-    showAdminToast(`Editing ${row.club}.`, "info");
+    setDrawerOpen(true);
+  }
+
+  function beginCreate() {
+    setForm(emptyForm);
+    setDrawerOpen(true);
   }
 
   async function removeRow(row: AdminStandingRow) {
     if (client == null) return;
-    if (
-      !confirmAdminDestructiveAction({
-        subject: row.club,
-        detail: "The selected league table row will be permanently removed.",
-      })
-    ) {
-      return;
-    }
+    if (!confirmAdminDestructiveAction({
+      subject: row.club,
+      detail: "The selected league table row will be permanently removed.",
+    })) return;
 
     try {
       await deleteAdminStandingRow(client, access, row.id);
       await load();
       showAdminToast(`${row.club} removed.`, "success");
     } catch (caught) {
-      showAdminToast(
-        caught instanceof Error ? caught.message : "Could not remove row.",
-        "error",
-      );
+      showAdminToast(caught instanceof Error ? caught.message : "Could not remove row.", "error");
     }
   }
 
@@ -93,59 +97,105 @@ export default function AdminStandingsPage() {
   );
 
   return (
-    <div className="section-grid">
+    <div className="section-grid !gap-6">
       <AdminPageHeader
         eyebrow="Competition"
         title="Standings"
-        description="Maintain the league table and keep the active club's position in view."
+        meta={
+          <button
+            onClick={beginCreate}
+            className="admin-action-button !bg-club-accent !text-white"
+          >
+            <Plus size={14} /> Add Club
+          </button>
+        }
       />
 
-      <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-3">
         <AdminStateCard
-          label="Clubs"
-          value={loading ? "..." : rows.length.toString()}
-          helper="Table rows."
+          label="League Size"
+          value={loading ? "..." : `${rows.length} clubs`}
           icon={Trophy}
         />
         <AdminStateCard
-          label="Club position"
+          label="Active Club Pos"
           value={loading ? "..." : focusRow ? `#${focusRow.position}` : "-"}
-          helper="League position."
+          tone="info"
         />
         <AdminStateCard
-          label="Club points"
-          value={loading ? "..." : focusRow ? focusRow.points.toString() : "-"}
-          helper="Points tally."
+          label="Tally"
+          value={loading ? "..." : focusRow ? `${focusRow.points} pts` : "-"}
         />
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[0.85fr_1.15fr]">
-        <StandingEditorForm
-          form={form}
-          setForm={setForm}
-          client={client}
-          access={access}
-          onSaved={load}
+      {loadError && !loading ? (
+        <AdminErrorState
+          title="Standings could not be loaded"
+          description={loadError}
+          onRetry={() => { load().catch(() => {}); }}
         />
-        {loadError && !loading ? (
-          <AdminErrorState
-            title="Standings could not be loaded"
-            description={loadError}
-            onRetry={() => {
-              load().catch(() => {});
-            }}
+      ) : (
+        <div className="admin-surface">
+           <AdminDataGrid
+            columns={[
+              { key: "pos", label: "Pos", className: "text-center" },
+              { key: "club", label: "Club" },
+              { key: "played", label: "P", className: "text-center" },
+              { key: "gd", label: "GD", className: "text-center" },
+              { key: "pts", label: "Pts", className: "text-center" },
+              { key: "form", label: "Recent Form" },
+              { key: "actions", label: "", className: "text-right" },
+            ]}
+          >
+            {rows.map((row) => {
+              const isHighlighted = (row.clubId != null && access.clubId != null && String(row.clubId) === access.clubId) || (activeClub != null && row.clubSlug === activeClub.clubSlug);
+              return (
+                <tr key={row.id} className={cn(isHighlighted && "bg-club-accent/5")}>
+                  <td className="text-center font-mono text-xs text-[var(--admin-zinc-500)]">{row.position}</td>
+                  <td>
+                    <p className="admin-row-title">{row.club}</p>
+                    {isHighlighted && <span className="text-[9px] font-bold text-club-accent uppercase">Current Focus</span>}
+                  </td>
+                  <td className="text-center font-medium">{row.played}</td>
+                  <td className="text-center text-[var(--admin-zinc-400)]">{row.goalDifference}</td>
+                  <td className="text-center font-bold text-white">{row.points}</td>
+                  <td>
+                    <div className="flex gap-1">
+                      {row.form.map((item, index) => (
+                        <span key={index} className={cn("flex h-5 w-5 items-center justify-center rounded-full text-[8px] font-bold", formBadge[item] || formBadge.D)}>
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="text-right">
+                    <div className="flex justify-end gap-2">
+                       <button onClick={() => beginEdit(row)} className="admin-action-button">Edit</button>
+                       <button onClick={() => removeRow(row)} className="admin-action-button admin-action-button-danger">Remove</button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </AdminDataGrid>
+        </div>
+      )}
+
+      <AdminActionDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        title={form.id ? "Edit standing row" : "Add club to table"}
+      >
+        <div className="p-1">
+          <StandingEditorForm
+            form={form}
+            setForm={setForm}
+            client={client}
+            access={access}
+            onSaved={async () => { setDrawerOpen(false); await load(); }}
           />
-        ) : (
-          <StandingList
-            rows={rows}
-            loading={loading}
-            highlightedClubId={access.clubId}
-            highlightedClubSlug={activeClub?.clubSlug ?? null}
-            onEdit={beginEdit}
-            onDelete={removeRow}
-          />
-        )}
-      </div>
+        </div>
+      </AdminActionDrawer>
     </div>
   );
 }

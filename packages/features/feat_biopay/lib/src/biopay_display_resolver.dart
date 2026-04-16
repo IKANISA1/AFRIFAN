@@ -3,10 +3,10 @@ import 'package:core_utils/core_utils.dart';
 
 import 'models/biopay_profile.dart';
 
-const String kBiopayUnlinkedLabel = 'Not linked';
-const String kBiopayPendingSyncLabel = 'Pending sync';
+const String kBioPayUnlinkedLabel = 'Not linked';
+const String kBioPayPendingSyncLabel = 'Pending sync';
 
-String? resolveBiopayId(BiopayProfile? profile, UserProfile? user) {
+String? resolveBioPayId(BioPayProfile? profile, UserProfile? user) {
   final candidates = <String?>[
     profile?.publicId,
     user?.publicUserId,
@@ -21,9 +21,9 @@ String? resolveBiopayId(BiopayProfile? profile, UserProfile? user) {
   return null;
 }
 
-String? resolveBiopayRouteValue(
+String? resolveBioPayRouteValue(
   PaymentRecipientType routeType,
-  BiopayProfile? profile,
+  BioPayProfile? profile,
   UserProfile? _,
 ) {
   final profileValue = profile?.recipientValue.trim();
@@ -36,13 +36,13 @@ String? resolveBiopayRouteValue(
   return null;
 }
 
-String initialBiopayRecipientValue(
+String initialBioPayRecipientValue(
   PaymentRecipientType routeType,
-  BiopayProfile? profile,
+  BioPayProfile? profile,
   UserProfile? user,
   AfriCountry country,
 ) {
-  final profileValue = resolveBiopayRouteValue(routeType, profile, user);
+  final profileValue = resolveBioPayRouteValue(routeType, profile, user);
   if (profileValue != null) {
     return _normalizeRecipientForDisplay(routeType, profileValue, country);
   }
@@ -63,7 +63,7 @@ String initialBiopayRecipientValue(
   }
 }
 
-String? validateBiopayRecipient({
+String? validateBioPayRecipient({
   required PaymentRecipientType routeType,
   required String value,
   required AfriCountry country,
@@ -76,7 +76,7 @@ String? validateBiopayRecipient({
   }
 
   try {
-    normalizeBiopayRecipient(
+    normalizeBioPayRecipient(
       routeType: routeType,
       value: trimmed,
       country: country,
@@ -90,7 +90,7 @@ String? validateBiopayRecipient({
   }
 }
 
-String normalizeBiopayRecipient({
+String normalizeBioPayRecipient({
   required PaymentRecipientType routeType,
   required String value,
   required AfriCountry country,
@@ -102,7 +102,7 @@ String normalizeBiopayRecipient({
   };
 }
 
-String biopayRecipientHint(
+String BioPayRecipientHint(
   PaymentRecipientType routeType,
   AfriCountry country,
 ) {
@@ -113,7 +113,7 @@ String biopayRecipientHint(
   };
 }
 
-String biopayEnrollmentAlias(UserProfile? user) {
+String BioPayEnrollmentAlias(UserProfile? user) {
   final candidates = <String?>[user?.publicUserId, user?.displayName];
   for (final candidate in candidates) {
     final trimmed = candidate?.trim();
@@ -130,7 +130,7 @@ String _normalizeRecipientForDisplay(
   AfriCountry country,
 ) {
   try {
-    return normalizeBiopayRecipient(
+    return normalizeBioPayRecipient(
       routeType: routeType,
       value: rawValue,
       country: country,

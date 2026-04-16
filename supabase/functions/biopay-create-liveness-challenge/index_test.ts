@@ -2,13 +2,13 @@ import { assertEquals } from "https://deno.land/std@0.208.0/assert/mod.ts";
 
 import { HttpError } from "../_shared/auth.ts";
 import {
-  type BiopayCreateLivenessChallengeDependencies,
-  createBiopayCreateLivenessChallengeHandler,
+  type BioPayCreateLivenessChallengeDependencies,
+  createBioPayCreateLivenessChallengeHandler,
 } from "./index.ts";
 
 function buildRequest(body: Record<string, unknown> = { mode: "enrollment" }) {
   return new Request(
-    "https://example.com/functions/v1/biopay-create-liveness-challenge",
+    "https://example.com/functions/v1/BioPay-create-liveness-challenge",
     {
       method: "POST",
       headers: {
@@ -22,7 +22,7 @@ function buildRequest(body: Record<string, unknown> = { mode: "enrollment" }) {
 }
 
 function buildDependencies(): {
-  deps: BiopayCreateLivenessChallengeDependencies;
+  deps: BioPayCreateLivenessChallengeDependencies;
   state: {
     insertedRow: Record<string, unknown> | null;
     signedPayload: Record<string, unknown> | null;
@@ -33,7 +33,7 @@ function buildDependencies(): {
     signedPayload: null as Record<string, unknown> | null,
   };
 
-  const deps: BiopayCreateLivenessChallengeDependencies = {
+  const deps: BioPayCreateLivenessChallengeDependencies = {
     createAdminClient: () =>
       ({
         rpc: async (fn: string) => {
@@ -46,7 +46,7 @@ function buildDependencies(): {
           throw new Error(`Unexpected RPC call in liveness challenge test: ${fn}`);
         },
         from: (table: string) => {
-          if (table != "biopay_liveness_challenges") {
+          if (table != "BioPay_liveness_challenges") {
             throw new Error(`Unexpected table in liveness challenge test: ${table}`);
           }
           return {
@@ -64,7 +64,7 @@ function buildDependencies(): {
           };
         },
       }) as unknown as ReturnType<
-        BiopayCreateLivenessChallengeDependencies["createAdminClient"]
+        BioPayCreateLivenessChallengeDependencies["createAdminClient"]
       >,
     createUserClient: () =>
       ({
@@ -80,10 +80,10 @@ function buildDependencies(): {
           }),
         },
       }) as unknown as ReturnType<
-        BiopayCreateLivenessChallengeDependencies["createUserClient"]
+        BioPayCreateLivenessChallengeDependencies["createUserClient"]
       >,
     requireAppCheckToken: async () => "fresh-token",
-    signBiopayToken: async (payload) => {
+    signBioPayToken: async (payload) => {
       state.signedPayload = payload;
       return "signed-liveness-token";
     },
@@ -95,9 +95,9 @@ function buildDependencies(): {
   return { deps, state };
 }
 
-Deno.test("biopay-create-liveness-challenge rejects requests without valid App Check attestation", async () => {
+Deno.test("BioPay-create-liveness-challenge rejects requests without valid App Check attestation", async () => {
   const { deps } = buildDependencies();
-  const handler = createBiopayCreateLivenessChallengeHandler({
+  const handler = createBioPayCreateLivenessChallengeHandler({
     ...deps,
     requireAppCheckToken: async () => {
       throw new HttpError(401, "Device attestation required.");
@@ -111,9 +111,9 @@ Deno.test("biopay-create-liveness-challenge rejects requests without valid App C
   assertEquals(payload.message, "Device attestation required.");
 });
 
-Deno.test("biopay-create-liveness-challenge issues a signed challenge bound to the user and club", async () => {
+Deno.test("BioPay-create-liveness-challenge issues a signed challenge bound to the user and club", async () => {
   const { deps, state } = buildDependencies();
-  const handler = createBiopayCreateLivenessChallengeHandler(deps);
+  const handler = createBioPayCreateLivenessChallengeHandler(deps);
 
   const response = await handler(buildRequest({ mode: "enrollment" }));
   const payload = await response.json();

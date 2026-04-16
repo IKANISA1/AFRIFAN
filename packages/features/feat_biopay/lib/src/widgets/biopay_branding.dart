@@ -1,32 +1,32 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
-String biopayAppName(BuildContext context) {
+String BioPayAppName(BuildContext context) {
   return ClubConfigScope.maybeOf(context)?.appName ??
       RuntimeBranding.displayAppName;
 }
 
-String biopayClubName(BuildContext context) {
+String BioPayClubName(BuildContext context) {
   return ClubConfigScope.maybeOf(context)?.clubName ??
       RuntimeBranding.displayClubName;
 }
 
-Color biopayPrimary(BuildContext context) {
+Color BioPayPrimary(BuildContext context) {
   return ClubConfigScope.maybeOf(context)?.colors.primary ??
       Theme.of(context).colorScheme.primary;
 }
 
-Color biopaySecondary(BuildContext context) {
+Color BioPaySecondary(BuildContext context) {
   return ClubConfigScope.maybeOf(context)?.colors.secondary ??
       ColorTokens.clubSecondary;
 }
 
-Color biopayAccent(BuildContext context) {
+Color BioPayAccent(BuildContext context) {
   return ClubConfigScope.maybeOf(context)?.colors.accent ??
       Theme.of(context).colorScheme.secondary;
 }
 
-List<Color> biopayGradient(BuildContext context) {
+List<Color> BioPayGradient(BuildContext context) {
   final configGradient = ClubConfigScope.maybeOf(context)?.colors.gradient;
   if (configGradient != null && configGradient.isNotEmpty) {
     return configGradient;
@@ -34,16 +34,16 @@ List<Color> biopayGradient(BuildContext context) {
   return ColorTokens.clubGradient;
 }
 
-class BiopayMoodBackground extends StatelessWidget {
-  const BiopayMoodBackground({required this.child, super.key});
+class BioPayMoodBackground extends StatelessWidget {
+  const BioPayMoodBackground({required this.child, super.key});
 
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final gradient = biopayGradient(context);
-    final primary = biopayPrimary(context);
-    final accent = biopayAccent(context);
+    final gradient = BioPayGradient(context);
+    final primary = BioPayPrimary(context);
+    final accent = BioPayAccent(context);
 
     return Stack(
       children: [
@@ -77,8 +77,8 @@ class BiopayMoodBackground extends StatelessWidget {
   }
 }
 
-class BiopayHeroCard extends StatelessWidget {
-  const BiopayHeroCard({
+class BioPayHeroCard extends StatelessWidget {
+  const BioPayHeroCard({
     required this.eyebrow,
     required this.title,
     this.subtitle,
@@ -95,7 +95,7 @@ class BiopayHeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = biopayAccent(context);
+    final accent = BioPayAccent(context);
 
     return GlassCard(
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
@@ -109,7 +109,7 @@ class BiopayHeroCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    BiopayBadge(
+                    BioPayBadge(
                       icon: Icons.shield_rounded,
                       label: eyebrow,
                       tint: accent.withValues(alpha: 0.16),
@@ -150,8 +150,8 @@ class BiopayHeroCard extends StatelessWidget {
   }
 }
 
-class BiopayBadge extends StatelessWidget {
-  const BiopayBadge({
+class BioPayBadge extends StatelessWidget {
+  const BioPayBadge({
     required this.label,
     this.icon,
     this.tint,

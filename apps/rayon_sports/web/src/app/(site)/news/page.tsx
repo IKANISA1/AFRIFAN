@@ -27,136 +27,80 @@ export default async function NewsPage() {
   const [featuredArticle, ...secondaryArticles] = articles;
 
   return (
-    <div className="page-shell section-grid py-12">
-      <PageHero
-        eyebrow={copy.pages.news.eyebrow}
-        title={copy.pages.news.title}
-        description={copy.pages.news.description(club)}
-        actions={
-          <>
-            <Link
-              href="/fixtures"
-              prefetch={false}
-              className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
-            >
-              {copy.common.matchdaySchedule}
-            </Link>
-            <Link
-              href="/membership"
-              prefetch={false}
-              className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              {copy.common.membershipStories}
-            </Link>
-          </>
-        }
-        stats={[
-          { label: copy.common.stories, value: articles.length.toString() },
-          {
-            label: copy.common.categories,
-            value: new Set(articles.map((article) => article.category)).size.toString(),
-          },
-          {
-            label: copy.common.featured,
-            value: featuredArticle ? `${getReadingTime(featuredArticle.content)} ${copy.common.minuteRead}` : "0",
-          },
-        ]}
-      />
+    <div className="bg-white min-h-screen pt-24 pb-20 lg:pt-32">
+      <div className="page-shell">
+        <header className="mb-16 border-b border-slate-100 pb-12">
+          <p className="text-xs font-bold uppercase tracking-[0.4em] text-[var(--club-primary)] mb-4">{copy.pages.news.eyebrow}</p>
+          <h1 className="font-display text-6xl font-black uppercase italic leading-none tracking-tighter text-slate-900 lg:text-9xl">
+            {copy.pages.news.title}
+          </h1>
+        </header>
 
-      {featuredArticle ? (
-        <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-          <Link
-            href={`/news/${featuredArticle.id}`}
-            prefetch={false}
-            className="glass-panel card-interactive grid overflow-hidden rounded-[34px] lg:grid-cols-[1.05fr_0.95fr]"
-          >
-            <div className="p-6 sm:p-8">
-              <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-                {copy.common.featuredStory}
-              </p>
-              <h2 className="mt-4 font-display text-5xl font-bold uppercase leading-none text-white text-balance">
-                {featuredArticle.title}
-              </h2>
-              <p className="mt-4 max-w-2xl text-sm leading-8 text-slate-300 sm:text-base">
-                {featuredArticle.excerpt}
-              </p>
-              <div className="mt-6 flex flex-wrap gap-2">
-                <span className="rounded-full border border-border-soft px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                  {featuredArticle.category}
-                </span>
-                <span className="rounded-full border border-border-soft px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                  {formatDate(featuredArticle.publishedAt)}
-                </span>
-                <span className="rounded-full border border-border-soft px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                  {getReadingTime(featuredArticle.content)} {copy.common.minuteRead}
-                </span>
-              </div>
-              <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-white">
-                {copy.common.openStory} <ArrowRight size={18} />
-              </div>
-            </div>
-            <div className="img-zoom relative min-h-[18rem]">
-              <Image
-                src={featuredArticle.coverImageUrl ?? "/media/stadium-hero.jpg"}
-                alt={featuredArticle.title}
-                fill
-                priority
-                sizes="(min-width: 1280px) 38rem, (min-width: 1024px) 46vw, calc(100vw - 2rem)"
-                quality={60}
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_25%,rgba(3,10,24,0.58)_100%)]" />
-            </div>
-          </Link>
-
-          <div className="glass-panel rounded-[34px] p-6">
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              {copy.pages.news.newsroomStandards}
-            </p>
-            <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              {copy.pages.news.newsroomStandardsTitle}
-            </h2>
-            <div className="mt-5 grid gap-4">
-              {copy.pages.news.standardsPoints.map((point) => (
-                <div
-                  key={point}
-                  className="rounded-[24px] border border-border-soft bg-white/5 p-4 text-sm leading-7 text-slate-300"
-                >
-                  {point}
+        {featuredArticle && (
+          <section className="mb-24">
+            <Link href={`/news/${featuredArticle.id}`} className="group grid gap-8 lg:grid-cols-12 lg:gap-16">
+              <div className="lg:col-span-7">
+                <div className="relative aspect-[16/9] overflow-hidden rounded-3xl bg-slate-100 shadow-2xl">
+                  <Image
+                    src={featuredArticle.coverImageUrl ?? "/media/stadium-hero.jpg"}
+                    alt={featuredArticle.title}
+                    fill
+                    priority
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      ) : null}
+              </div>
+              <div className="flex flex-col justify-center lg:col-span-5">
+                <div className="flex items-center gap-4 mb-6">
+                  <span className="rounded-full bg-[var(--club-primary)] px-4 py-1 text-[10px] font-black uppercase tracking-widest text-white">
+                    {featuredArticle.category}
+                  </span>
+                  <time className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                    {formatDate(featuredArticle.publishedAt)}
+                  </time>
+                </div>
+                <h2 className="font-display text-4xl font-black uppercase italic leading-[0.9] tracking-tight text-slate-900 mb-6 group-hover:text-[var(--club-primary)] transition-colors lg:text-6xl">
+                  {featuredArticle.title}
+                </h2>
+                <p className="text-lg text-slate-600 leading-relaxed mb-8">
+                  {featuredArticle.excerpt}
+                </p>
+                <div className="inline-flex items-center gap-3 text-xs font-black uppercase tracking-widest text-[var(--club-primary)]">
+                  Read Full Story <ArrowRight size={16} />
+                </div>
+              </div>
+            </Link>
+          </section>
+        )}
 
-      <section className="section-grid">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              {copy.pages.news.latestStories}
-            </p>
-            <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              {copy.pages.news.acrossTheClub}
-            </h2>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {Array.from(new Set(articles.map((article) => article.category))).map((category) => (
-              <span
-                key={category}
-                className="rounded-full border border-border-soft bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200"
-              >
-                {category}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className="grid gap-5 lg:grid-cols-3">
-          {(secondaryArticles.length > 0 ? secondaryArticles : articles).map((article) => (
-            <NewsCard key={article.id} article={article} />
+        <section className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+          {secondaryArticles.map((article) => (
+            <Link key={article.id} href={`/news/${article.id}`} className="group">
+              <div className="relative mb-6 aspect-video overflow-hidden rounded-2xl bg-slate-100 shadow-lg">
+                <Image
+                  src={article.coverImageUrl ?? "/media/stadium-hero.jpg"}
+                  alt={article.title}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-[9px] font-black uppercase tracking-widest text-[var(--club-primary)]">
+                  {article.category}
+                </span>
+                <span className="h-1 w-1 rounded-full bg-slate-200" />
+                <time className="text-[9px] font-bold uppercase tracking-widest text-slate-400">
+                  {formatDate(article.publishedAt)}
+                </time>
+              </div>
+              <h3 className="font-display text-2xl font-black uppercase italic leading-tight text-slate-900 group-hover:text-[var(--club-primary)] transition-colors">
+                {article.title}
+              </h3>
+            </Link>
           ))}
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 }

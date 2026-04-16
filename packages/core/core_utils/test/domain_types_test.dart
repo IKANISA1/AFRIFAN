@@ -18,7 +18,7 @@ void main() {
       expect(FanTierX.fromValue('platinum'), FanTier.platinum);
     });
 
-    test('fromValue handles aliases', () {
+    test('fromValue handles ', () {
       expect(FanTierX.fromValue('blue'), FanTier.fan);
       expect(FanTierX.fromValue('silver'), FanTier.bronze);
     });
@@ -249,12 +249,12 @@ void main() {
         ContributionGroupType.savings,
       );
       expect(
-        ContributionGroupTypeX.fromValue('fan_circle'),
-        ContributionGroupType.fanCircle,
+        ContributionGroupTypeX.fromValue('fan_Group'),
+        ContributionGroupType.fanGroup,
       );
       expect(
-        ContributionGroupTypeX.fromValue('fancircle'),
-        ContributionGroupType.fanCircle,
+        ContributionGroupTypeX.fromValue('fanGroup'),
+        ContributionGroupType.fanGroup,
       );
     });
 

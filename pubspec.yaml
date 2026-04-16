@@ -42,7 +42,7 @@ workspace:
   - apps/mogas_90
   # ── Core packages ──
   - packages/core/core_app
-  - packages/core/core_modules
+  - packages/app_registry
   - packages/core/core_auth
   - packages/core/core_network
   - packages/core/core_theme

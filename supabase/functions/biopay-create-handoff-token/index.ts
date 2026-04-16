@@ -10,18 +10,18 @@ import { isErrorResponse, validateRequest } from "../_shared/validation.ts";
 import { HttpError } from "../_shared/auth.ts";
 import { requireAppCheckToken } from "../_shared/app_check.ts";
 import {
-  type BiopayPaymentRouting,
-  resolveBiopayPaymentRouting,
-} from "../_shared/biopay_payment.ts";
+  type BioPayPaymentRouting,
+  resolveBioPayPaymentRouting,
+} from "../_shared/BioPay_payment.ts";
 import {
   recordEdgeFunctionFailure,
   recordOperationalHealthEvent,
 } from "../_shared/observability.ts";
 import {
-  generateBiopayNonce,
-  signBiopayToken,
-  type SignedBiopayTokenPayload,
-} from "../_shared/biopay_signed_token.ts";
+  generateBioPayNonce,
+  signBioPayToken,
+  type SignedBioPayTokenPayload,
+} from "../_shared/BioPay_signed_token.ts";
 import { createAdminClient, getSupabaseUrl } from "../_shared/supabase.ts";
 
 type CreateHandoffTokenRequest = {
@@ -53,12 +53,12 @@ type HandoffIdentityRow = {
 
 type AdminClientLike = ReturnType<typeof createAdminClient> | any;
 
-export type BiopayCreateHandoffTokenDependencies = {
+export type BioPayCreateHandoffTokenDependencies = {
   createAdminClient: () => AdminClientLike;
   validateRequest: typeof validateRequest;
   requireAppCheckToken: (request: Request) => Promise<string>;
-  signBiopayToken: (
-    payload: SignedBiopayTokenPayload,
+  signBioPayToken: (
+    payload: SignedBioPayTokenPayload,
   ) => Promise<string>;
   resolvePaymentRouting: (
     adminClient: AdminClientLike,
@@ -67,7 +67,7 @@ export type BiopayCreateHandoffTokenDependencies = {
       countryCode?: string | null;
       routeType?: string | null;
     },
-  ) => Promise<BiopayPaymentRouting>;
+  ) => Promise<BioPayPaymentRouting>;
   recordOperationalHealthEvent: (
     adminClient: AdminClientLike,
     event: Parameters<typeof recordOperationalHealthEvent>[1],
@@ -109,29 +109,29 @@ function normalizeRouteType(value: unknown): string | null {
 
 function buildResolverUrl(token: string) {
   const resolver = new URL(
-    "/functions/v1/biopay-resolve-handoff",
+    "/functions/v1/BioPay-resolve-handoff",
     getSupabaseUrl(),
   );
   resolver.searchParams.set("token", token);
   return resolver.toString();
 }
 
-const defaultDependencies: BiopayCreateHandoffTokenDependencies = {
+const defaultDependencies: BioPayCreateHandoffTokenDependencies = {
   createAdminClient,
   validateRequest,
   requireAppCheckToken,
-  signBiopayToken,
-  resolvePaymentRouting: resolveBiopayPaymentRouting,
+  signBioPayToken,
+  resolvePaymentRouting: resolveBioPayPaymentRouting,
   recordOperationalHealthEvent,
   recordEdgeFunctionFailure,
   buildResolverUrl,
   now: () => new Date(),
 };
 
-export function createBiopayCreateHandoffTokenHandler(
-  dependencies: Partial<BiopayCreateHandoffTokenDependencies> = {},
+export function createBioPayCreateHandoffTokenHandler(
+  dependencies: Partial<BioPayCreateHandoffTokenDependencies> = {},
 ) {
-  const deps: BiopayCreateHandoffTokenDependencies = {
+  const deps: BioPayCreateHandoffTokenDependencies = {
     ...defaultDependencies,
     ...dependencies,
   };
@@ -183,7 +183,7 @@ export function createBiopayCreateHandoffTokenHandler(
       }
 
       const { data: profile, error: profileError } = await adminClient
-        .from("biopay_profiles")
+        .from("BioPay_profiles")
         .select(
           "id, club_id, public_id, display_name, route_type, recipient_value, country_code",
         )
@@ -244,12 +244,12 @@ export function createBiopayCreateHandoffTokenHandler(
         countryCode: effectiveCountryCode,
         routeType: effectiveRouteType,
       });
-      const token = await deps.signBiopayToken({
+      const token = await deps.signBioPayToken({
         kind: "handoff_request",
         v: 1,
         iat: now.toISOString(),
         exp: expiresAt,
-        nonce: generateBiopayNonce(),
+        nonce: generateBioPayNonce(),
         channel,
         amount,
         reference: reference ?? null,
@@ -270,14 +270,14 @@ export function createBiopayCreateHandoffTokenHandler(
       const resolverUrl = deps.buildResolverUrl(token);
 
       await deps.recordOperationalHealthEvent(adminClient, {
-        service: "biopay",
+        service: "BioPay",
         component: "handoff_token",
         status: "ok",
         severity: "info",
         message: "BioPay handoff token created.",
-        functionName: "biopay-create-handoff-token",
+        functionName: "BioPay-create-handoff-token",
         userId: userId,
-        subjectType: profile != null ? "biopay_profile" : "profile",
+        subjectType: profile != null ? "BioPay_profile" : "profile",
         subjectId: profile?.id?.toString() ?? identity?.id?.toString() ?? null,
         metadata: {
           channel,
@@ -314,12 +314,12 @@ export function createBiopayCreateHandoffTokenHandler(
       }
 
       await deps.recordEdgeFunctionFailure(adminClient, {
-        functionName: "biopay-create-handoff-token",
+        functionName: "BioPay-create-handoff-token",
         error,
-        issueCode: "biopay_create_handoff_token_failed",
+        issueCode: "BioPay_create_handoff_token_failed",
         userId: requesterUserId,
       });
-      console.error("biopay-create-handoff-token failed:", error);
+      console.error("BioPay-create-handoff-token failed:", error);
       return jsonError(
         error instanceof Error
           ? error.message
@@ -331,7 +331,7 @@ export function createBiopayCreateHandoffTokenHandler(
 }
 
 if (import.meta.main) {
-  const handler = createBiopayCreateHandoffTokenHandler();
+  const handler = createBioPayCreateHandoffTokenHandler();
   Deno.serve((req: Request) =>
     handler(req).then(
       (res) =>

@@ -31,6 +31,12 @@ class HiveCacheService {
   static const _boxName = 'africlub_cache';
   static const _metaPrefix = '__meta__';
 
+  /// Bump this whenever the cache schema changes (new keys, removed keys,
+  /// different serialization format). On mismatch the entire cache is purged
+  /// and rebuilt from the network — cache is ephemeral, data loss is fine.
+  static const _cacheVersion = 2;
+  static const _versionKey = '__cache_version__';
+
   static Box<String>? _box;
   static bool _initialized = false;
 
@@ -44,6 +50,7 @@ class HiveCacheService {
         _boxName,
         encryptionCipher: HiveEncryptionService.cipher,
       );
+      await _migrateIfVersionChanged();
       _initialized = true;
       AfriLogger.info(_tag, 'Cache initialized (${_box!.length} entries).');
     } catch (error, stackTrace) {
@@ -55,6 +62,7 @@ class HiveCacheService {
           _boxName,
           encryptionCipher: HiveEncryptionService.cipher,
         );
+        await _stampVersion();
         _initialized = true;
         AfriLogger.info(
           _tag,
@@ -67,6 +75,30 @@ class HiveCacheService {
       AfriLogger.error(_tag, 'Failed to initialize cache.', error, stackTrace);
       // Cache failure is non-fatal — the app works without it.
     }
+  }
+
+  /// Purge all cached data if the stored version doesn't match the current
+  /// compile-time version. This prevents deserialization crashes when the
+  /// cache schema evolves between app releases.
+  static Future<void> _migrateIfVersionChanged() async {
+    final box = _box;
+    if (box == null) return;
+
+    final storedVersion = int.tryParse(box.get(_versionKey) ?? '');
+    if (storedVersion == _cacheVersion) return;
+
+    final entryCount = box.length;
+    await box.clear();
+    await _stampVersion();
+    AfriLogger.info(
+      _tag,
+      'Cache version changed ($storedVersion → $_cacheVersion), '
+      'purged $entryCount stale entries.',
+    );
+  }
+
+  static Future<void> _stampVersion() async {
+    await _box?.put(_versionKey, _cacheVersion.toString());
   }
 
   /// Store a JSON-serializable value with optional TTL.

@@ -20,7 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/shop",
     "/membership",
     "/supporters",
-    "/circles",
+    "/Groups",
     "/fan-clubs",
     "/history",
     "/contact",
@@ -62,7 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           .limit(30),
       ]);
 
-      type IdRow = { id: unknown; [k: string]: unknown };
+      type IdRow = { id: unknown;[k: string]: unknown };
       const articleRows = (articlesRes.data ?? []) as IdRow[];
       const productRows = (productsRes.data ?? []) as IdRow[];
       const matchRows = (matchesRes.data ?? []) as IdRow[];

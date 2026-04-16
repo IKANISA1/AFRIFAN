@@ -69,10 +69,12 @@ export interface AdminClubScopeOption {
 }
 
 export interface AdminDashboardMetrics {
-  totalUsers: number;
-  activeGroups: number;
-  transactionsToday: number;
-  ticketsSold: number;
+  activeUsers: number;
+  pendingVerifications: number;
+  activeSupportCircles: number;
+  recentTicketSales: number;
+  totalFans: number;
+  ticketRevenue: number;
 }
 
 export interface AdminActivityRecord {
@@ -117,6 +119,34 @@ export interface AdminMembershipPackage extends MembershipPackage {
   createdAt: string;
 }
 
+export interface AdminMembershipApplication {
+  id: string;
+  userId: string;
+  clubId: number;
+  tier: "fan" | "bronze" | "gold" | "platinum";
+  status: "pending" | "approved" | "rejected";
+  paymentStatus: "unpaid" | "paid" | "failed";
+  applicationDate: string;
+  reviewDate?: string | null;
+  reviewerId?: string | null;
+  notes?: string | null;
+  userName?: string;
+  userPhone?: string;
+}
+
+export interface AdminSupporter {
+  id: string;
+  userId: string;
+  displayName: string;
+  phone: string | null;
+  tier: "fan" | "bronze" | "gold" | "platinum";
+  status: "active" | "pending" | "suspended" | "expired";
+  points: number;
+  chapter: string;
+  membershipNumber: string;
+  joinedAt: string;
+}
+
 export interface AdminShopProduct extends ShopProduct {
   clubId: number | null;
   sortOrder: number;
@@ -159,7 +189,7 @@ export interface AdminContributionItem {
 export interface AdminContributionSnapshot {
   groups: AdminContributionGroup[];
   contributions: AdminContributionItem[];
-  aliases: Record<string, string>;
+  : Record<string, string>;
   monthlyTotal: number;
 }
 

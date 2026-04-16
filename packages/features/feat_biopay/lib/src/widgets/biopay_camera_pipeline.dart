@@ -21,8 +21,8 @@ import 'biopay_reference_ui.dart';
 import 'biopay_scan_footer.dart';
 import 'biopay_scanner_shell.dart';
 
-class BiopayCameraPipeline extends ConsumerStatefulWidget {
-  const BiopayCameraPipeline({
+class BioPayCameraPipeline extends ConsumerStatefulWidget {
+  const BioPayCameraPipeline({
     required this.mode,
     this.enrollmentDraft,
     this.onEnrollmentSuccess,
@@ -31,32 +31,32 @@ class BiopayCameraPipeline extends ConsumerStatefulWidget {
     super.key,
   });
 
-  final BiopayScanMode mode;
-  final BiopayEnrollmentDraft? enrollmentDraft;
+  final BioPayScanMode mode;
+  final BioPayEnrollmentDraft? enrollmentDraft;
   final VoidCallback? onEnrollmentSuccess;
-  final ValueChanged<BiopayPaymentReviewArgs>? onMatchSuccess;
+  final ValueChanged<BioPayPaymentReviewArgs>? onMatchSuccess;
   final VoidCallback? onCancel;
 
   @override
-  ConsumerState<BiopayCameraPipeline> createState() =>
-      _BiopayCameraPipelineState();
+  ConsumerState<BioPayCameraPipeline> createState() =>
+      _BioPayCameraPipelineState();
 }
 
-class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
+class _BioPayCameraPipelineState extends ConsumerState<BioPayCameraPipeline> {
   CameraController? _controller;
   bool _isInitializingCamera = false;
   String? _cameraError;
   String? _pipelineError;
-  BiopayLivenessChallenge? _livenessChallenge;
+  BioPayLivenessChallenge? _livenessChallenge;
 
   // Scanner state
-  BiopayScannerTone _tone = BiopayScannerTone.searching;
+  BioPayScannerTone _tone = BioPayScannerTone.searching;
   String _statusLabel = 'Preparing...';
   String _helperText = '';
 
   // Frame processing
-  late final BiopayFaceDetectionService _faceDetection;
-  late final BiopayLivenessService _livenessService;
+  late final BioPayFaceDetectionService _faceDetection;
+  late final BioPayLivenessService _livenessService;
   bool _isProcessingFrame = false;
   bool _isSubmitting = false;
   DateTime? _lastFrameProcessedAt;
@@ -69,19 +69,19 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
   // Match throttle
   DateTime? _lastMatchAttemptAt;
 
-  bool get _isEnroll => widget.mode == BiopayScanMode.enroll;
+  bool get _isEnroll => widget.mode == BioPayScanMode.enroll;
 
   @override
   void initState() {
     super.initState();
-    final stableFrames = ref.read(biopayStableFramesProvider).valueOrNull ?? 3;
-    _faceDetection = BiopayFaceDetectionService(
+    final stableFrames = ref.read(BioPayStableFramesProvider).valueOrNull ?? 3;
+    _faceDetection = BioPayFaceDetectionService(
       stableFramesRequired: stableFrames,
     );
-    _livenessService = BiopayLivenessService(
+    _livenessService = BioPayLivenessService(
       mode: _isEnroll
-          ? BiopayLivenessMode.enrollment
-          : BiopayLivenessMode.payment,
+          ? BioPayLivenessMode.enrollment
+          : BioPayLivenessMode.payment,
     );
     unawaited(_prepareSecureScan());
   }
@@ -107,7 +107,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
     try {
       if (forceChallengeRefresh || _livenessChallenge?.isExpired != false) {
         final challenge = await ref
-            .read(biopayRepositoryProvider)
+            .read(BioPayRepositoryProvider)
             .createLivenessChallenge(
               mode: _isEnroll ? 'enrollment' : 'payment',
             );
@@ -199,7 +199,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
       if (_livenessChallenge == null || _livenessChallenge!.isExpired) {
         _livenessService.reset();
         _setScannerState(
-          tone: BiopayScannerTone.blocked,
+          tone: BioPayScannerTone.blocked,
           statusLabel: 'Session expired',
           helperText: '',
         );
@@ -232,7 +232,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
       }
 
       if (_livenessService.isSatisfied && analysis.isStable && !_isSubmitting) {
-        final embeddingService = ref.read(biopayEmbeddingServiceProvider);
+        final embeddingService = ref.read(BioPayEmbeddingServiceProvider);
         if (!embeddingService.isLoaded) {
           await embeddingService.loadModel();
           if (!embeddingService.isLoaded || !mounted) return;
@@ -241,7 +241,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
         final face = analysis.face;
         if (face == null) return;
 
-        final alignmentService = ref.read(biopayFaceAlignmentServiceProvider);
+        final alignmentService = ref.read(BioPayFaceAlignmentServiceProvider);
         final tensor = await alignmentService.extractAlignedFaceTensor(
           frame: image,
           face: face,
@@ -259,7 +259,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
     } catch (e) {
       if (mounted) {
         _setScannerState(
-          tone: BiopayScannerTone.error,
+          tone: BioPayScannerTone.error,
           statusLabel: 'Error',
           helperText: '',
         );
@@ -269,58 +269,58 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
     }
   }
 
-  void _updateScannerFromAnalysis(BiopayFaceFrameAnalysis analysis) {
+  void _updateScannerFromAnalysis(BioPayFaceFrameAnalysis analysis) {
     final stableFramesRequired =
-        ref.read(biopayStableFramesProvider).valueOrNull ?? 3;
+        ref.read(BioPayStableFramesProvider).valueOrNull ?? 3;
 
     switch (analysis.guidance) {
-      case BiopayFaceGuidance.multipleFaces:
+      case BioPayFaceGuidance.multipleFaces:
         _setScannerState(
-          tone: BiopayScannerTone.blocked,
+          tone: BioPayScannerTone.blocked,
           statusLabel: 'One face only',
           helperText: '',
         );
-      case BiopayFaceGuidance.tooDark:
+      case BioPayFaceGuidance.tooDark:
         _setScannerState(
-          tone: BiopayScannerTone.blocked,
+          tone: BioPayScannerTone.blocked,
           statusLabel: 'Too dark',
           helperText: '',
         );
-      case BiopayFaceGuidance.tooBright:
+      case BioPayFaceGuidance.tooBright:
         _setScannerState(
-          tone: BiopayScannerTone.blocked,
+          tone: BioPayScannerTone.blocked,
           statusLabel: 'Too bright',
           helperText: '',
         );
-      case BiopayFaceGuidance.tooFar:
+      case BioPayFaceGuidance.tooFar:
         _setScannerState(
-          tone: BiopayScannerTone.blocked,
+          tone: BioPayScannerTone.blocked,
           statusLabel: 'Move closer',
           helperText: '',
         );
-      case BiopayFaceGuidance.headTurned:
+      case BioPayFaceGuidance.headTurned:
         _setScannerState(
-          tone: BiopayScannerTone.blocked,
+          tone: BioPayScannerTone.blocked,
           statusLabel: 'Face the camera',
           helperText: '',
         );
-      case BiopayFaceGuidance.eyesClosed:
+      case BioPayFaceGuidance.eyesClosed:
         _setScannerState(
-          tone: BiopayScannerTone.blocked,
+          tone: BioPayScannerTone.blocked,
           statusLabel: 'Open your eyes',
           helperText: '',
         );
-      case BiopayFaceGuidance.stable:
+      case BioPayFaceGuidance.stable:
         _setScannerState(
-          tone: BiopayScannerTone.ready,
+          tone: BioPayScannerTone.ready,
           statusLabel: _isEnroll
               ? '${(_capturedEnrollmentFrames + 1).clamp(1, 5)} of 5'
               : 'Matching...',
           helperText: '',
         );
-      case BiopayFaceGuidance.searching:
+      case BioPayFaceGuidance.searching:
         _setScannerState(
-          tone: BiopayScannerTone.searching,
+          tone: BioPayScannerTone.searching,
           statusLabel: analysis.faceCount == 1 && analysis.stableCount > 0
               ? 'Hold still... ${analysis.stableCount}/$stableFramesRequired'
               : (_isEnroll ? 'Center your face' : 'Point at face'),
@@ -333,7 +333,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
     final draft = widget.enrollmentDraft;
     if (draft == null) {
       _setScannerState(
-        tone: BiopayScannerTone.error,
+        tone: BioPayScannerTone.error,
         statusLabel: 'Missing data',
         helperText: '',
       );
@@ -355,7 +355,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
 
       if (_capturedEnrollmentFrames < 5) {
         _setScannerState(
-          tone: BiopayScannerTone.ready,
+          tone: BioPayScannerTone.ready,
           statusLabel: '$_capturedEnrollmentFrames of 5',
           helperText: '',
         );
@@ -366,26 +366,26 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
 
     _isSubmitting = true;
     _setScannerState(
-      tone: BiopayScannerTone.ready,
+      tone: BioPayScannerTone.ready,
       statusLabel: 'Finalizing...',
       helperText: '',
     );
 
     try {
-      final embeddingService = ref.read(biopayEmbeddingServiceProvider);
+      final embeddingService = ref.read(BioPayEmbeddingServiceProvider);
       final averaged = embeddingService.generateAveragedEmbedding(
         _enrollmentEmbeddings.take(5).toList(growable: false),
       );
 
       final authResult = await ref
-          .read(biopayAuthGateServiceProvider)
-          .authorize(BiopayAuthAction.enrollment);
+          .read(BioPayAuthGateServiceProvider)
+          .authorize(BioPayAuthAction.enrollment);
 
       if (!mounted) return;
 
       if (!authResult.isAuthorized) {
         _setScannerState(
-          tone: BiopayScannerTone.blocked,
+          tone: BioPayScannerTone.blocked,
           statusLabel: 'Auth required',
           helperText: '',
         );
@@ -393,14 +393,14 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
       }
 
       final profile = await ref
-          .read(biopayRepositoryProvider)
+          .read(BioPayRepositoryProvider)
           .enroll(
             draft: draft,
             embedding: averaged,
             livenessMetadata: _livenessService.submissionMetadata,
           );
 
-      ref.invalidate(biopayProfileProvider);
+      ref.invalidate(BioPayProfileProvider);
 
       if (!mounted) return;
 
@@ -416,13 +416,13 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
         if (context.canPop()) {
           context.pop(true);
         } else {
-          context.go('/biopay');
+          context.go('/BioPay');
         }
       }
     } catch (error) {
       if (!mounted) return;
       _setScannerState(
-        tone: BiopayScannerTone.error,
+        tone: BioPayScannerTone.error,
         statusLabel: 'Enrollment failed',
         helperText: '',
       );
@@ -443,17 +443,17 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
 
     final embeddingList = embedding.toList(growable: false);
     final matchThreshold =
-        ref.read(biopayMatchThresholdProvider).valueOrNull ?? 0.72;
+        ref.read(BioPayMatchThresholdProvider).valueOrNull ?? 0.72;
 
     try {
       _setScannerState(
-        tone: BiopayScannerTone.ready,
+        tone: BioPayScannerTone.ready,
         statusLabel: 'Matching...',
         helperText: '',
       );
 
       final result = await ref
-          .read(biopayRepositoryProvider)
+          .read(BioPayRepositoryProvider)
           .match(
             embedding: embeddingList,
             livenessMetadata: _livenessService.submissionMetadata,
@@ -465,7 +465,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
           result.profile == null ||
           result.score < matchThreshold) {
         _setScannerState(
-          tone: BiopayScannerTone.error,
+          tone: BioPayScannerTone.error,
           statusLabel: 'No match found',
           helperText: '',
         );
@@ -475,7 +475,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
       final matchReceipt = result.matchReceipt;
       if (matchReceipt == null || matchReceipt.isEmpty) {
         _setScannerState(
-          tone: BiopayScannerTone.error,
+          tone: BioPayScannerTone.error,
           statusLabel: 'Receipt missing',
           helperText: '',
         );
@@ -487,18 +487,18 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
 
       if (widget.onMatchSuccess != null) {
         widget.onMatchSuccess!(
-          BiopayPaymentReviewArgs.faceMatch(matchResult: result),
+          BioPayPaymentReviewArgs.faceMatch(matchResult: result),
         );
       } else {
         context.pushReplacement(
-          '/biopay/review',
-          extra: BiopayPaymentReviewArgs.faceMatch(matchResult: result),
+          '/BioPay/review',
+          extra: BioPayPaymentReviewArgs.faceMatch(matchResult: result),
         );
       }
     } catch (error) {
       if (!mounted) return;
       _setScannerState(
-        tone: BiopayScannerTone.error,
+        tone: BioPayScannerTone.error,
         statusLabel: 'Match failed',
         helperText: '',
       );
@@ -508,7 +508,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
   }
 
   void _setScannerState({
-    required BiopayScannerTone tone,
+    required BioPayScannerTone tone,
     required String statusLabel,
     required String helperText,
   }) {
@@ -525,11 +525,11 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
     });
   }
 
-  BiopayScannerTone _scannerToneForLiveness(BiopayLivenessFeedbackLevel level) {
+  BioPayScannerTone _scannerToneForLiveness(BioPayLivenessFeedbackLevel level) {
     return switch (level) {
-      BiopayLivenessFeedbackLevel.searching => BiopayScannerTone.searching,
-      BiopayLivenessFeedbackLevel.ready => BiopayScannerTone.ready,
-      BiopayLivenessFeedbackLevel.blocked => BiopayScannerTone.blocked,
+      BioPayLivenessFeedbackLevel.searching => BioPayScannerTone.searching,
+      BioPayLivenessFeedbackLevel.ready => BioPayScannerTone.ready,
+      BioPayLivenessFeedbackLevel.blocked => BioPayScannerTone.blocked,
     };
   }
 
@@ -544,7 +544,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
       if (context.canPop()) {
         context.pop(false);
       } else {
-        context.go('/biopay');
+        context.go('/BioPay');
       }
     }
   }
@@ -565,10 +565,10 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
         !_isInitializingCamera;
 
     final tone = _cameraError != null
-        ? BiopayScannerTone.error
+        ? BioPayScannerTone.error
         : isCameraReady
         ? _tone
-        : BiopayScannerTone.searching;
+        : BioPayScannerTone.searching;
 
     final statusLabel = _cameraError != null
         ? 'Camera unavailable'
@@ -586,7 +586,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
         body: Stack(
           children: [
             Positioned.fill(
-              child: BiopayScannerShell(
+              child: BioPayScannerShell(
                 controller: _controller,
                 isCameraReady: isCameraReady,
                 statusLabel: statusLabel,
@@ -595,7 +595,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
                 sampleCount: _capturedEnrollmentFrames,
                 totalSamples: 5,
                 isEnrollMode: _isEnroll,
-                footer: BiopayScanFooter(
+                footer: BioPayScanFooter(
                   isCameraReady: isCameraReady,
                   errorMessage: _cameraError ?? _pipelineError,
                   onEnableCamera: () =>
@@ -608,7 +608,7 @@ class _BiopayCameraPipelineState extends ConsumerState<BiopayCameraPipeline> {
             Positioned(
               top: MediaQuery.of(context).padding.top + 24,
               left: 28,
-              child: BiopayReferenceDarkBackButton(onTap: _closeScanner),
+              child: BioPayReferenceDarkBackButton(onTap: _closeScanner),
             ),
 
             // ── Initializing indicator ──

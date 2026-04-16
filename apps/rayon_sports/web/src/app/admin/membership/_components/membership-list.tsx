@@ -30,7 +30,6 @@ export function MembershipList({
   return (
     <AdminSurface
       title="Tier catalogue"
-      description="Pricing, visibility, and package structure."
       flush
     >
       {loading ? (

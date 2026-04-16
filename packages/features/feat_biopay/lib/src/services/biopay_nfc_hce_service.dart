@@ -1,15 +1,15 @@
 import 'package:flutter/services.dart';
 
-class BiopayNfcHceService {
+class BioPayNfcHceService {
   static const String _channelName = String.fromEnvironment(
-    'BIOPAY_NFC_CHANNEL',
-    defaultValue: 'africlub/biopay_nfc_hce',
+    'BioPay_NFC_CHANNEL',
+    defaultValue: 'africlub/BioPay_nfc_hce',
   );
 
-  BiopayNfcHceService({MethodChannel? channel})
+  BioPayNfcHceService({MethodChannel? channel})
     : _channel = channel ?? const MethodChannel(_channelName);
 
-  static final BiopayNfcHceService instance = BiopayNfcHceService();
+  static final BioPayNfcHceService instance = BioPayNfcHceService();
 
   final MethodChannel _channel;
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,7 @@ class _NotificationPreferencesScreenState
   @override
   void initState() {
     super.initState();
-    _refreshPermissionStatus();
+    unawaited(_refreshPermissionStatus());
   }
 
   Future<void> _refreshPermissionStatus() async {
@@ -255,10 +257,12 @@ class _NotificationPreferencesScreenState
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing6),
-                  ClaymorphicButton(
-                    label: _isSaving ? 'SAVING...' : 'SAVE',
-                    width: double.infinity,
-                    onPressed: _isSaving ? null : () => _saveSettings(settings),
+                  AfriButton(
+                    label: _isSaving ? 'Saving…' : 'Save',
+                    fullWidth: true,
+                    isLoading: _isSaving,
+                    onTap: () => _saveSettings(settings),
+                    enabled: !_isSaving,
                   ),
                 ],
               ),

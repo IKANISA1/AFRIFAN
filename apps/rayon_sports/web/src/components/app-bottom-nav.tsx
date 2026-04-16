@@ -50,7 +50,7 @@ function resolveActiveTab(pathname: string): string {
 
   if (
     pathname.startsWith("/membership") ||
-    pathname.startsWith("/circles") ||
+    pathname.startsWith("/Groups") ||
     pathname.startsWith("/fan-clubs") ||
     pathname.startsWith("/contact")
   ) {
@@ -71,10 +71,10 @@ export function AppBottomNav({ copy }: { copy: SiteChromeCopy }) {
 
   return (
     <nav
-      className={`fixed inset-x-0 bottom-0 z-50 pb-[env(safe-area-inset-bottom)] ${ui.shellBar}`}
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-[var(--club-primary)]/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
       aria-label="Main navigation"
     >
-      <div className="mx-auto flex max-w-md items-stretch justify-around px-3 pt-2">
+      <div className="mx-auto flex max-w-md items-stretch justify-around px-2 pt-2">
         {tabs.map((tab) => {
           const active = tab.id === activeTab;
           const Icon = tab.icon;
@@ -85,23 +85,26 @@ export function AppBottomNav({ copy }: { copy: SiteChromeCopy }) {
               href={tab.href}
               prefetch={false}
               aria-current={active ? "page" : undefined}
-              aria-label={tab.label}
               className={cn(
-                active ? ui.navTabActive : ui.navTab,
-                !active && "active:text-slate-200",
+                "flex flex-1 flex-col items-center gap-1.5 py-2 transition-all duration-300 active:scale-95",
+                active ? "text-[var(--club-accent)]" : "text-white/40 hover:text-white/60"
               )}
             >
-              <Icon
-                size={22}
-                strokeWidth={active ? 2.2 : 1.6}
-                className="transition-transform active:scale-90"
-              />
-              <span className={cn("leading-none", active ? ui.kicker : "text-[11px] uppercase tracking-[0.22em]")}>
+              <div className={cn(
+                "flex h-8 w-12 items-center justify-center rounded-full transition-all duration-300",
+                active && "bg-[var(--club-accent)]/10"
+              )}>
+                <Icon
+                  size={20}
+                  strokeWidth={active ? 2.5 : 2}
+                />
+              </div>
+              <span className={cn(
+                "text-[9px] font-black uppercase tracking-[0.2em] transition-colors",
+                active ? "text-white" : "text-white/40"
+              )}>
                 {tab.label}
               </span>
-              {active ? (
-                <span className={ui.navIndicator} />
-              ) : null}
             </Link>
           );
         })}

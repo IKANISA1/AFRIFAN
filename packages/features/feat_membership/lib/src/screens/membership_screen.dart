@@ -452,7 +452,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                         icon: AfriIcons.share,
                         label: 'Share',
                         onTap: () {
-                          // FIXME(#AFRI-104): Open share card modal.
+                          // TODO(#AFRI-104): Open share card modal.
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Share coming soon.')),
                           );

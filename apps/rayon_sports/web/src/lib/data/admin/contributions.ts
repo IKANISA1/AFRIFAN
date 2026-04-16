@@ -1,5 +1,5 @@
 /**
- * Admin contributions — circles snapshot, Excel export, group CRUD.
+ * Admin contributions — Groups snapshot, Excel export, group CRUD.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { fallbackClubProfile } from "@/lib/content";
@@ -16,8 +16,8 @@ import {
 function mapContributionGroup(row: Record<string, unknown>): AdminContributionGroup {
   return {
     id: toIdString(row.id, crypto.randomUUID()),
-    name: safeString(row.name, "Support circle"),
-    description: safeString(row.description, "Supporter funding circle."),
+    name: safeString(row.name, "Support Group"),
+    description: safeString(row.description, "Supporter funding Group."),
     privacy: safeString(row.privacy) === "public" ? "public" : "private",
     groupType:
       safeString(row.group_type) === "project" || safeString(row.group_type) === "savings" || safeString(row.group_type) === "emergency"
@@ -74,7 +74,7 @@ export async function getAdminContributionSnapshot(client: SupabaseClient, acces
   }
 
   const creatorIds = groups.map((group) => group.creatorId).filter((value): value is string => Boolean(value));
-  const aliases: Record<string, string> = {};
+  const : Record<string, string > = { };
   if (creatorIds.length > 0) {
     const { data } = await client.from("profiles").select("id, public_user_id").in("id", creatorIds);
     if (Array.isArray(data)) {
@@ -82,7 +82,7 @@ export async function getAdminContributionSnapshot(client: SupabaseClient, acces
         const row = profile as Record<string, unknown>;
         const id = safeString(row.id);
         const alias = safeString(row.public_user_id);
-        if (id && alias) aliases[id] = alias;
+        if (id && alias) [id] = alias;
       }
     }
   }
@@ -94,7 +94,7 @@ export async function getAdminContributionSnapshot(client: SupabaseClient, acces
     return sum + item.amount;
   }, 0);
 
-  return { groups, contributions: scopedContributions, aliases, monthlyTotal };
+  return { groups, contributions: scopedContributions, , monthlyTotal };
 }
 
 export function buildContributionExcel(snapshot: AdminContributionSnapshot) {

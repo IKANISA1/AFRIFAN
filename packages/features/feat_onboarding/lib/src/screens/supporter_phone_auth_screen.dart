@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -22,10 +24,13 @@ class _SupporterPhoneAuthScreenState
   bool _isLoading = false;
   static const OtpChannel _deliveryChannel = OtpChannel.whatsapp;
   String? _pendingPhone;
+  int _resendCooldown = 0;
+  Timer? _cooldownTimer;
 
   String get _phoneValue => _phoneController.text.trim();
   String get _otpValue => _otpController.text.trim();
-  bool get _canSubmitPhone => _phoneValue.isNotEmpty;
+  bool get _canSubmitPhone =>
+      _phoneValue.isNotEmpty && _resendCooldown == 0;
   bool get _canSubmitOtp =>
       (_pendingPhone?.isNotEmpty ?? false) && _otpValue.length >= 6;
 
@@ -38,6 +43,7 @@ class _SupporterPhoneAuthScreenState
 
   @override
   void dispose() {
+    _cooldownTimer?.cancel();
     _phoneController
       ..removeListener(_onChanged)
       ..dispose();
@@ -73,6 +79,7 @@ class _SupporterPhoneAuthScreenState
       if (error == null) {
         _pendingPhone = normalizedPhone;
         _otpController.clear();
+        _startCooldown();
       }
     });
 
@@ -81,6 +88,24 @@ class _SupporterPhoneAuthScreenState
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _startCooldown() {
+    _resendCooldown = 60;
+    _cooldownTimer?.cancel();
+    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      setState(() {
+        _resendCooldown--;
+        if (_resendCooldown <= 0) {
+          _resendCooldown = 0;
+          timer.cancel();
+        }
+      });
+    });
   }
 
   Future<void> _verifyCode() async {
@@ -107,7 +132,7 @@ class _SupporterPhoneAuthScreenState
 
   String? _normalizePhone(String value) {
     final compact = value.replaceAll(RegExp(r'\s+'), '');
-    if (RegExp(r'^\+\d{8,15}$').hasMatch(compact)) {
+    if (RegExp(r'^\+\d{10,15}$').hasMatch(compact)) {
       return compact;
     }
 
@@ -234,12 +259,18 @@ class _SupporterPhoneAuthScreenState
                       keyboardType: TextInputType.phone,
                       enabled: !_isLoading,
                       prefixIcon: AfriIcons.help,
+                      maxLength: 20,
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriButton(
                       key: const ValueKey<String>('supporter-send-otp-button'),
-                      label: _pendingPhone == null ? 'Send code' : 'Resend code',
+                      label: _resendCooldown > 0
+                          ? 'Resend in ${_resendCooldown}s'
+                          : (_pendingPhone == null
+                              ? 'Send code'
+                              : 'Resend code'),
                       onTap: _sendCode,
+                      isLoading: _isLoading && _pendingPhone == null,
                       enabled: !_isLoading && _canSubmitPhone,
                     ),
                   ],
@@ -269,6 +300,7 @@ class _SupporterPhoneAuthScreenState
                       keyboardType: TextInputType.number,
                       enabled: (_pendingPhone?.isNotEmpty ?? false) && !_isLoading,
                       prefixIcon: AfriIcons.privacy,
+                      maxLength: 6,
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriButton(
@@ -283,8 +315,31 @@ class _SupporterPhoneAuthScreenState
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               TextButton(
-                onPressed: _isLoading ? null : () => context.go('/onboarding'),
-                child: const Text('Use guest mode instead'),
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        setState(() => _isLoading = true);
+                        await ref
+                            .read(authStateProvider.notifier)
+                            .signInAnonymously();
+                        if (!mounted) return;
+                        setState(() => _isLoading = false);
+
+                        final nextState = ref.read(authStateProvider);
+                        if (nextState is AuthAuthenticated) {
+                          context.go(_postAuthDestination());
+                          return;
+                        }
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Could not start anonymous session.',
+                            ),
+                          ),
+                        );
+                      },
+                child: const Text('Continue without sign-in'),
               ),
             ],
           ),

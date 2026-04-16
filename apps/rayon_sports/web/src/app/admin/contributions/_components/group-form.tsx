@@ -31,7 +31,7 @@ export function ContributionGroupForm({
       return;
     }
 
-    showAdminToast(form.id ? "Saving circle..." : "Creating circle...", "info");
+    showAdminToast(form.id ? "Saving Group..." : "Creating Group...", "info");
     try {
       await saveAdminContributionGroup(client, access, {
         id: form.id || null,
@@ -50,10 +50,10 @@ export function ContributionGroupForm({
       });
       setForm({ ...emptyForm, currency: defaultCurrencyCode });
       await onSaved();
-      showAdminToast("Support circle saved.", "success");
+      showAdminToast("Support Group saved.", "success");
     } catch (caught) {
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not save circle.",
+        caught instanceof Error ? caught.message : "Could not save Group.",
         "error",
       );
     }
@@ -63,7 +63,7 @@ export function ContributionGroupForm({
     <form action={submitForm} className="glass-panel grid gap-4 rounded-[32px] p-6">
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-3xl font-bold uppercase leading-none">
-          {form.id ? "Edit circle" : "New circle"}
+          {form.id ? "Edit Group" : "New Group"}
         </p>
         {form.id ? (
           <button
@@ -77,7 +77,7 @@ export function ContributionGroupForm({
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-2 text-sm">
-          Circle name
+          Group name
           <input
             name="name"
             required
@@ -188,7 +188,7 @@ export function ContributionGroupForm({
         type="submit"
         className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
       >
-        {form.id ? "Save circle" : "Create circle"}
+        {form.id ? "Save Group" : "Create Group"}
       </button>
     </form>
   );

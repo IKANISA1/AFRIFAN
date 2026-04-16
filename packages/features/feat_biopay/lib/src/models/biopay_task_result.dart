@@ -1,7 +1,7 @@
-enum BiopayTaskResultTone { success, error, blocked, pending }
+enum BioPayTaskResultTone { success, error, blocked, pending }
 
-class BiopayTaskResultArgs {
-  const BiopayTaskResultArgs({
+class BioPayTaskResultArgs {
+  const BioPayTaskResultArgs({
     required this.tone,
     required this.title,
     required this.message,
@@ -16,7 +16,7 @@ class BiopayTaskResultArgs {
     this.currencySymbol,
   });
 
-  final BiopayTaskResultTone tone;
+  final BioPayTaskResultTone tone;
   final String title;
   final String message;
   final String primaryLabel;

@@ -13,7 +13,7 @@ class BioPayScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isEnabled = ref
-        .watch(biopayEnabledProvider)
+        .watch(BioPayEnabledProvider)
         .maybeWhen(data: (value) => value, orElse: () => true);
     final showBackButton = Navigator.of(context).canPop();
 
@@ -21,7 +21,7 @@ class BioPayScreen extends ConsumerWidget {
       enabled: isEnabled,
       featureName: 'BioPay',
       child: Scaffold(
-        backgroundColor: biopayReferenceBackground,
+        backgroundColor: BioPayReferenceBackground,
         body: GradientBackground(
           child: SafeArea(
             child: Padding(
@@ -32,19 +32,19 @@ class BioPayScreen extends ConsumerWidget {
                   Row(
                     children: [
                       if (showBackButton)
-                        BiopayReferenceLightBackButton(onTap: context.pop)
+                        BioPayReferenceLightBackButton(onTap: context.pop)
                       else
                         const SizedBox(width: 44, height: 44),
                       const Spacer(),
-                      BiopayReferenceProfileButton(
-                        onTap: () => context.push('/biopay/profile'),
+                      BioPayReferenceProfileButton(
+                        onTap: () => context.push('/BioPay/profile'),
                       ),
                     ],
                   ),
                   const SizedBox(height: 28),
                   Text(
                     'Pay & Get Paid\nInstantly',
-                    style: biopayReferenceText(
+                    style: BioPayReferenceText(
                       fontSize: 34,
                       fontWeight: FontWeight.w900,
                       height: 1.05,
@@ -59,29 +59,29 @@ class BioPayScreen extends ConsumerWidget {
                       mainAxisSpacing: 22,
                       childAspectRatio: 0.92,
                       children: [
-                        BiopayReferenceHomeTile(
+                        BioPayReferenceHomeTile(
                           icon: Icons.face_retouching_natural_rounded,
-                          color: biopayReferenceBlue,
+                          color: BioPayReferenceBlue,
                           label: 'Face Scan',
-                          onTap: () => context.push('/biopay/scan?mode=pay'),
+                          onTap: () => context.push('/BioPay/scan?mode=pay'),
                         ),
-                        BiopayReferenceHomeTile(
+                        BioPayReferenceHomeTile(
                           icon: Icons.nfc_rounded,
-                          color: biopayReferencePurple,
+                          color: BioPayReferencePurple,
                           label: 'NFC Tap',
-                          onTap: () => context.push('/biopay/nfc'),
+                          onTap: () => context.push('/BioPay/nfc'),
                         ),
-                        BiopayReferenceHomeTile(
+                        BioPayReferenceHomeTile(
                           icon: Icons.qr_code_2_rounded,
-                          color: biopayReferenceOrange,
+                          color: BioPayReferenceOrange,
                           label: 'Get QR',
-                          onTap: () => context.push('/biopay/qr'),
+                          onTap: () => context.push('/BioPay/qr'),
                         ),
-                        BiopayReferenceHomeTile(
+                        BioPayReferenceHomeTile(
                           icon: Icons.qr_code_scanner_rounded,
-                          color: biopayReferenceTeal,
+                          color: BioPayReferenceTeal,
                           label: 'Scan QR',
-                          onTap: () => context.push('/biopay/qr/scan'),
+                          onTap: () => context.push('/BioPay/qr/scan'),
                         ),
                       ],
                     ),

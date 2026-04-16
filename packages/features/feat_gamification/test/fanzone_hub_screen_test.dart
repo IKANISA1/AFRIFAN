@@ -51,8 +51,8 @@ class _FakePredictionRepository extends PredictionRepository {
           matchday: 24,
           homeTeamName: 'Rayon Sports',
           homeTeamShort: 'RAY',
-          awayTeamName: 'APR',
-          awayTeamShort: 'APR',
+          awayTeamName: 'Rayon Sports',
+          awayTeamShort: 'Rayon Sports',
           kickoffAt: DateTime.utc(2026, 4, 14, 16),
           venueName: 'Kigali Pele Stadium',
           status: 'live',
@@ -143,8 +143,11 @@ class _FakePredictionRepository extends PredictionRepository {
         name: 'Match Result',
         shortName: '1X2',
         marketGroup: MarketGroup.matchResult,
+        marketCategory: 'Match Betting',
+        betType: 'single',
         difficultyTier: DifficultyTier.entry,
         defaultFetValue: 100,
+        baseFet: 100,
         description: 'Predict the winner.',
         outcomeTemplate: <MarketOutcomeOption>[
           MarketOutcomeOption(key: 'home', label: 'Home'),
@@ -152,6 +155,7 @@ class _FakePredictionRepository extends PredictionRepository {
           MarketOutcomeOption(key: 'away', label: 'Away'),
         ],
         sortOrder: 1,
+        leagueAvailability: <String>['rpl', 'epl'],
       ),
     ];
   }

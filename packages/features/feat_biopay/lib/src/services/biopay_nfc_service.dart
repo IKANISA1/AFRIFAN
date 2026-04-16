@@ -5,10 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:ndef/ndef.dart' as ndef;
 
-enum BiopayNfcStatus { available, disabled, notSupported }
+enum BioPayNfcStatus { available, disabled, notSupported }
 
-class BiopayNfcReadResult {
-  const BiopayNfcReadResult({this.uri, this.rawText});
+class BioPayNfcReadResult {
+  const BioPayNfcReadResult({this.uri, this.rawText});
 
   final Uri? uri;
   final String? rawText;
@@ -16,23 +16,23 @@ class BiopayNfcReadResult {
   bool get hasPayload => uri != null || (rawText?.trim().isNotEmpty ?? false);
 }
 
-class BiopayNfcService {
+class BioPayNfcService {
   static bool get canWrite => !kIsWeb && Platform.isAndroid;
 
-  static Future<BiopayNfcStatus> checkAvailability() async {
+  static Future<BioPayNfcStatus> checkAvailability() async {
     try {
       final availability = await FlutterNfcKit.nfcAvailability;
       return switch (availability) {
-        NFCAvailability.available => BiopayNfcStatus.available,
-        NFCAvailability.disabled => BiopayNfcStatus.disabled,
-        NFCAvailability.not_supported => BiopayNfcStatus.notSupported,
+        NFCAvailability.available => BioPayNfcStatus.available,
+        NFCAvailability.disabled => BioPayNfcStatus.disabled,
+        NFCAvailability.not_supported => BioPayNfcStatus.notSupported,
       };
     } catch (_) {
-      return BiopayNfcStatus.notSupported;
+      return BioPayNfcStatus.notSupported;
     }
   }
 
-  static Future<BiopayNfcReadResult> readTag() async {
+  static Future<BioPayNfcReadResult> readTag() async {
     try {
       await FlutterNfcKit.poll(
         timeout: const Duration(seconds: 30),
@@ -58,7 +58,7 @@ class BiopayNfcService {
       }
 
       await FlutterNfcKit.finish(iosAlertMessage: 'BioPay NFC request read');
-      return BiopayNfcReadResult(uri: uri, rawText: rawText);
+      return BioPayNfcReadResult(uri: uri, rawText: rawText);
     } catch (error) {
       try {
         await FlutterNfcKit.finish(iosErrorMessage: 'BioPay NFC scan failed');

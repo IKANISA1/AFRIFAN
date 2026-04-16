@@ -162,7 +162,7 @@ export default function AdminGamificationWalletPage() {
     if (client == null || !access.hasAccess) {
       return;
     }
-    loadSnapshot().catch(() => {});
+    loadSnapshot().catch(() => { });
   }, [access.hasAccess, client, loadSnapshot]);
 
   const selectedSupporter = useMemo(
@@ -260,7 +260,6 @@ export default function AdminGamificationWalletPage() {
       <AdminPageHeader
         eyebrow="Gamification"
         title="Supporter wallet operations"
-        description="Investigate supporter balances, review the FET ledger, and apply audited balance adjustments."
       />
 
       <div className="grid gap-5 md:grid-cols-4">
@@ -291,7 +290,7 @@ export default function AdminGamificationWalletPage() {
       <section className="glass-panel rounded-[32px] p-6">
         <div className="flex flex-col gap-3 md:flex-row md:items-end">
           <label className="grid flex-1 gap-2 text-sm text-slate-300">
-            Search supporters, aliases, or reference ids
+            Search supporters, , or reference ids
             <div className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
               <input
@@ -330,7 +329,7 @@ export default function AdminGamificationWalletPage() {
             <button
               type="button"
               onClick={() => {
-                loadSnapshot().catch(() => {});
+                loadSnapshot().catch(() => { });
               }}
               className="admin-button admin-button-secondary"
             >
@@ -346,7 +345,7 @@ export default function AdminGamificationWalletPage() {
           title="Wallet operations could not be loaded"
           description={loadError}
           onRetry={() => {
-            loadSnapshot().catch(() => {});
+            loadSnapshot().catch(() => { });
           }}
         />
       ) : null}
@@ -405,7 +404,7 @@ export default function AdminGamificationWalletPage() {
               <button
                 type="button"
                 onClick={() => {
-                  handleAdjustment().catch(() => {});
+                  handleAdjustment().catch(() => { });
                 }}
                 disabled={isSubmitting}
                 className="admin-button admin-button-primary disabled:opacity-60"
@@ -441,11 +440,10 @@ export default function AdminGamificationWalletPage() {
                     key={row.userId}
                     type="button"
                     onClick={() => setSelectedUserId(row.userId)}
-                    className={`w-full rounded-[24px] border p-4 text-left transition ${
-                      isSelected
+                    className={`w-full rounded-[24px] border p-4 text-left transition ${isSelected
                         ? "border-club-accent/40 bg-club-accent/10"
                         : "border-white/10 bg-white/5 hover:bg-white/8"
-                    }`}
+                      }`}
                   >
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
@@ -465,8 +463,8 @@ export default function AdminGamificationWalletPage() {
                         <p className="text-xs uppercase tracking-[0.28em] text-slate-500">
                           {row.lastTransactionAt
                             ? timeFormatter.format(
-                                new Date(row.lastTransactionAt),
-                              )
+                              new Date(row.lastTransactionAt),
+                            )
                             : "No ledger yet"}
                         </p>
                       </div>

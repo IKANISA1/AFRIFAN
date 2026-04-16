@@ -22,7 +22,7 @@ ALTER TABLE public.african_football_clubs
   ADD COLUMN IF NOT EXISTS secondary_color_hex   text,
   ADD COLUMN IF NOT EXISTS accent_color_hex      text,
   ADD COLUMN IF NOT EXISTS supported_languages   text[] NOT NULL DEFAULT '{en}',
-  ADD COLUMN IF NOT EXISTS feature_flags         jsonb NOT NULL DEFAULT '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}';
+  ADD COLUMN IF NOT EXISTS feature_flags         jsonb NOT NULL DEFAULT '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}';
 
 CREATE INDEX IF NOT EXISTS idx_afc_slug ON public.african_football_clubs (club_slug) WHERE club_slug IS NOT NULL;
 
@@ -114,7 +114,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#0A0F2C',
   accent_color_hex     = '#D4A017',
   supported_languages  = '{rw,fr,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'Rayon Sports FC';
 
@@ -131,7 +131,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#FFFFFF',
   accent_color_hex     = '#FFD700',
   supported_languages  = '{fr,rn,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'Vital''O FC';
 
@@ -148,7 +148,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#FFD700',
   accent_color_hex     = '#FFFFFF',
   supported_languages  = '{sw,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'Young Africans (Yanga)';
 
@@ -165,7 +165,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#FFFFFF',
   accent_color_hex     = '#C0C0C0',
   supported_languages  = '{fr,ln,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'TP Mazembe';
 
@@ -182,7 +182,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#FFFFFF',
   accent_color_hex     = '#FFD700',
   supported_languages  = '{sw,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'Simba SC';
 
@@ -199,7 +199,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#000000',
   accent_color_hex     = '#FFD700',
   supported_languages  = '{fr,ln,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'AS Vita Club';
 
@@ -216,7 +216,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#FFFFFF',
   accent_color_hex     = '#FFD700',
   supported_languages  = '{en,ak,tw}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'Asante Kotoko SC';
 
@@ -233,7 +233,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#000000',
   accent_color_hex     = '#FF8C00',
   supported_languages  = '{fr,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'ASEC Mimosas';
 
@@ -250,7 +250,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#FFFFFF',
   accent_color_hex     = '#000000',
   supported_languages  = '{en,ny}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'Nyasa Big Bullets FC';
 
@@ -267,7 +267,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#FFFFFF',
   accent_color_hex     = '#FFD700',
   supported_languages  = '{en,sn}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'Dynamos FC';
 
@@ -284,7 +284,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#CC0000',
   accent_color_hex     = '#FFFFFF',
   supported_languages  = '{fr,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'Africa Sports National';
 
@@ -301,7 +301,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#FFFFFF',
   accent_color_hex     = '#000000',
   supported_languages  = '{en,bem}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'Nkana FC';
 
@@ -318,7 +318,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#CC0000',
   accent_color_hex     = '#FFD700',
   supported_languages  = '{fr,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'Canon Yaoundé';
 
@@ -335,7 +335,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#FFFFFF',
   accent_color_hex     = '#000000',
   supported_languages  = '{fr,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'Union Douala';
 
@@ -352,7 +352,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#FF8C00',
   accent_color_hex     = '#FFFFFF',
   supported_languages  = '{en,bem}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'ZESCO United FC';
 
@@ -369,7 +369,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#006B3F',
   accent_color_hex     = '#000000',
   supported_languages  = '{fr,ee,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'ASKO de Kara';
 
@@ -386,7 +386,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#FFFFFF',
   accent_color_hex     = '#000000',
   supported_languages  = '{fr,ln,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'AC Léopards';
 
@@ -403,7 +403,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#FFFFFF',
   accent_color_hex     = '#FFD700',
   supported_languages  = '{fr,ee,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'Maranatha FC';
 
@@ -420,7 +420,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#006B3F',
   accent_color_hex     = '#000000',
   supported_languages  = '{fr,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'AS Mangasport';
 
@@ -437,7 +437,7 @@ UPDATE public.african_football_clubs SET
   secondary_color_hex  = '#FFFFFF',
   accent_color_hex     = '#CC0000',
   supported_languages  = '{fr,en}',
-  feature_flags        = '{"biopay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
+  feature_flags        = '{"BioPay":true,"shop":true,"fan_clubs":true,"ticketing":true,"chat":true,"sms_ledger":true}',
   updated_at           = now()
 WHERE club_name = 'Mogas 90 FC';
 

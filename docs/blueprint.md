@@ -1,6 +1,6 @@
 # AFRICLUB Architecture Blueprint
 
-Updated: April 8, 2026
+Updated: Rayon Sportsil 8, 2026
 
 ## 1. Target State
 
@@ -128,7 +128,7 @@ packages/
     feat_home/
     feat_ticketing/
     feat_membership/
-    feat_biopay/
+    feat_BioPay/
     feat_shop/
     feat_contributions/
     feat_fan_clubs/

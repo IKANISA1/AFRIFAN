@@ -47,7 +47,7 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
       final client = ref.read(supabaseClientProvider);
       final scope = await ClubScopeResolver(client: client).requireResolved();
       if (scope.clubId == null) {
-        throw StateError('Contribution circles require a numeric club scope.');
+        throw StateError('Contribution Groups require a numeric club scope.');
       }
       final group = await client
           .from('contribution_groups')
@@ -56,7 +56,7 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
           .eq('club_id', scope.clubId!)
           .maybeSingle();
       if (group == null) {
-        throw StateError('This circle is no longer available.');
+        throw StateError('This Group is no longer available.');
       }
 
       final messages = await client
@@ -73,7 +73,7 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
           .toSet()
           .toList(growable: false);
 
-      final aliases = <String, String>{};
+      final aliasMap = <String, String>{};
       if (senderIds.isNotEmpty) {
         try {
           final profiles = await client
@@ -84,7 +84,7 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
             final id = profile['id']?.toString();
             final alias = profile['public_user_id']?.toString();
             if (id != null && alias != null && alias.isNotEmpty) {
-              aliases[id] = alias;
+              aliasMap[id] = alias;
             }
           }
         } catch (_) {
@@ -102,7 +102,7 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
               final map = Map<String, dynamic>.from(row);
               final senderId = map['sender_id']?.toString() ?? '';
               map['resolved_alias'] =
-                  map['alias']?.toString() ?? aliases[senderId] ?? '000000';
+                  map['alias']?.toString() ?? aliasMap[senderId] ?? '000000';
               return map;
             })
             .toList(growable: false);
@@ -118,7 +118,7 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _error = 'Circle chat is temporarily unavailable.';
+        _error = 'Group chat is temporarily unavailable.';
       });
     }
   }
@@ -238,7 +238,7 @@ class _GroupChatScreenState extends ConsumerState<GroupChatScreen> {
           IconButton(
             onPressed: () =>
                 context.push('/contribute/group/${widget.groupId}/settings'),
-            tooltip: 'Open circle settings',
+            tooltip: 'Open Group settings',
             icon: const Icon(AfriIcons.settings),
           ),
         ],

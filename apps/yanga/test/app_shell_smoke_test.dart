@@ -1,5 +1,5 @@
 import 'package:club_yanga/club_yanga.dart';
-import 'package:core_modules/core_modules.dart';
+import 'package:app_registry/app_registry.dart';
 import 'package:core_router/core_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

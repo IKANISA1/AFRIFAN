@@ -95,8 +95,8 @@ Secondary issues include startup jank from blocking backend bootstrap before `ru
 - Location:
   - `apps/rayon_sports/landing/terms/index.html:102`
   - `apps/rayon_sports/landing/privacy/index.html:134`
-  - `supabase/functions/biopay-enroll/index.ts:100`
-  - `supabase/functions/biopay-match/index.ts:152`
+  - `supabase/functions/BioPay-enroll/index.ts:100`
+  - `supabase/functions/BioPay-match/index.ts:152`
 - Evidence:
   - Public terms state biometric data is processed on-device only.
   - Public privacy copy refers to storage of biometric templates.
@@ -131,14 +131,14 @@ Secondary issues include startup jank from blocking backend bootstrap before `ru
 
 - Rule ID: QA-TEST-001
 - Location:
-  - `apps/rayon_sports/test/rayon_sports_biopay_host_test.dart:28`
-  - `apps/rayon_sports/test/rayon_sports_biopay_host_test.dart:69`
-  - `packages/features/feat_biopay/lib/src/biopay_module.dart:33`
+  - `apps/rayon_sports/test/rayon_sports_BioPay_host_test.dart:28`
+  - `apps/rayon_sports/test/rayon_sports_BioPay_host_test.dart:69`
+  - `packages/features/feat_BioPay/lib/src/BioPay_module.dart:33`
   - `packages/features/feat_settings/lib/src/screens/settings_screen.dart:120`
 - Evidence:
-  - The test expects `BIOPAY` and `BIOPAY & PRIVACY`.
+  - The test expects `BioPay` and `BioPay & PRIVACY`.
   - Current UI renders `BioPay` and `BioPay & Privacy`.
-  - Re-running `flutter test test/rayon_sports_biopay_host_test.dart -r expanded` fails on both assertions.
+  - Re-running `flutter test test/rayon_sports_BioPay_host_test.dart -r expanded` fails on both assertions.
 - Impact:
   - The reference app’s own regression suite is red, which weakens release confidence and makes it easier for genuine regressions to get normalized away.
 - Fix:
@@ -188,7 +188,7 @@ Secondary issues include startup jank from blocking backend bootstrap before `ru
 
 - `mcp__dart_mcp_server__analyze_files` on repo root: no analyzer errors reported.
 - Shared Flutter package tests: passed.
-- `apps/rayon_sports/test/rayon_sports_biopay_host_test.dart`: failed as documented in F-006.
+- `apps/rayon_sports/test/rayon_sports_BioPay_host_test.dart`: failed as documented in F-006.
 - `apps/rayon_sports/web`: `npm run lint`, `npm run typecheck`, and `npm test` passed.
 - `flutter pub outdated --no-dev-dependencies`: 29 packages outdated, 18 constrained below resolvable versions.
 

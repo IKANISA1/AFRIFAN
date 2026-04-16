@@ -10,6 +10,7 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -290,6 +291,7 @@ class _HeroSlide extends StatelessWidget {
     if (slide.imageUrl != null && slide.imageUrl!.isNotEmpty) {
       return CachedNetworkImage(
         imageUrl: slide.imageUrl!,
+        cacheManager: AfriImageCacheManager.instance,
         fit: BoxFit.cover,
         width: double.infinity,
         height: double.infinity,

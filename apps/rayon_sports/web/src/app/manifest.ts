@@ -102,7 +102,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     shortcuts: [
       { name: "Home", short_name: "Home", url: "/" },
       { name: "Tickets", short_name: "Tickets", url: "/tickets" },
-      { name: "Support Circles", short_name: "Circles", url: "/circles" },
+      { name: "Support Groups", short_name: "Groups", url: "/Groups" },
       { name: "Fan App", short_name: "Fan App", url: resolveFanAppHref() },
     ],
     icons: sharedIcons,

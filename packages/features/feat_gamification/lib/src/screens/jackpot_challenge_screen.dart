@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../fet_providers.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
+import '../widgets/jackpot_countdown_timer.dart';
 import '../widgets/market_option_pill.dart';
 
 class JackpotChallengeScreen extends ConsumerStatefulWidget {
@@ -18,82 +20,46 @@ class JackpotChallengeScreen extends ConsumerStatefulWidget {
 
 class _JackpotChallengeScreenState
     extends ConsumerState<JackpotChallengeScreen> {
-  List<_JackpotFixtureData> _fixtures = const <_JackpotFixtureData>[];
+  PredictionJackpotRound? _round;
   List<PredictionLeaderboardEntry> _leaders =
       const <PredictionLeaderboardEntry>[];
   final Map<String, String> _selections = <String, String>{};
   bool _isLoading = true;
   bool _isSubmitting = false;
   String? _error;
-  String _prizePoolLabel = 'PRIZE POOL';
 
   @override
   void initState() {
     super.initState();
-    _load();
+    unawaited(_load());
   }
 
   Future<void> _load() async {
     setState(() {
       _isLoading = true;
       _error = null;
+      _selections.clear();
     });
 
     try {
       final repo = ref.read(predictionRepositoryProvider);
-      final fetRepo = ref.read(fetRepositoryProvider);
-
-      // Load fixtures via calendar API (next 7 days)
-      final now = DateTime.now();
-      final weekLater = now.add(const Duration(days: 7));
-      final dateFrom = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-      final dateTo = '${weekLater.year}-${weekLater.month.toString().padLeft(2, '0')}-${weekLater.day.toString().padLeft(2, '0')}';
-
-      final fixtures = await repo.loadFixturesByDate(
-        dateFrom: dateFrom,
-        dateTo: dateTo,
-        status: 'scheduled',
-        limit: 10,
-      );
-      final marketResults = await Future.wait<List<FixtureMarket>>(
-        fixtures.map((fixture) => repo.loadFixtureMarkets(fixture.id)),
-      );
-      final leaders = await repo.loadLeaderboard(limit: 5);
-
-      final jackpotFixtures = <_JackpotFixtureData>[];
-      for (var index = 0; index < fixtures.length; index++) {
-        final market = _selectJackpotMarket(marketResults[index]);
-        if (market != null) {
-          jackpotFixtures.add(
-            _JackpotFixtureData(fixture: fixtures[index], market: market),
-          );
-        }
-      }
+      final results = await Future.wait<Object?>([
+        repo.loadActiveJackpotRound(),
+        repo.loadLeaderboard(limit: 5),
+      ]);
 
       if (!mounted) {
         return;
       }
 
-      // Compute dynamic prize pool from FET catalog.
-      String prizeLabel = 'PRIZE POOL';
-      try {
-        final catalog = await fetRepo.loadCatalog();
-        if (catalog.isNotEmpty) {
-          final totalFet = catalog.fold<int>(
-            0,
-            (sum, item) => sum + item.fetValue,
-          );
-          prizeLabel = 'PRIZE POOL · ${_formatFet(totalFet)} FET';
-        }
-      } catch (_) {
-        // Keep default label.
-      }
-
+      final round = results[0] as PredictionJackpotRound?;
       setState(() {
-        _fixtures = jackpotFixtures;
-        _leaders = leaders;
-        _prizePoolLabel = prizeLabel;
+        _round = round;
+        _leaders = results[1]! as List<PredictionLeaderboardEntry>;
         _isLoading = false;
+        _error = round == null || round.fixtures.isEmpty
+            ? 'No active jackpot round is available right now.'
+            : null;
       });
     } catch (_) {
       if (!mounted) {
@@ -106,32 +72,22 @@ class _JackpotChallengeScreenState
     }
   }
 
-  FixtureMarket? _selectJackpotMarket(List<FixtureMarket> markets) {
-    for (final market in markets) {
-      final slug = market.marketSlug.toLowerCase();
-      final name = market.marketName.toLowerCase();
-      final shortName = market.marketShortName.toLowerCase();
-      if (slug.contains('1x2') ||
-          shortName == 'ftr' ||
-          name.contains('full time result')) {
-        return market;
-      }
-    }
-    return markets.cast<FixtureMarket?>().firstWhere(
-      (market) =>
-          market != null &&
-          market.outcomes.length == 3 &&
-          market.outcomes.any((outcome) => outcome.label == '1') &&
-          market.outcomes.any((outcome) => outcome.label == 'X') &&
-          market.outcomes.any((outcome) => outcome.label == '2'),
-      orElse: () => null,
-    );
+  String _submissionKey(PredictionJackpotRound round) {
+    final selectionParts = _selections.entries.toList()
+      ..sort((left, right) => left.key.compareTo(right.key));
+    final payload = selectionParts
+        .map((entry) => '${entry.key}:${entry.value}')
+        .join('|');
+    return 'jackpot-${round.id}-$payload';
   }
 
   Future<void> _submit() async {
-    if (_fixtures.isEmpty ||
-        _selections.length != _fixtures.length ||
-        _isSubmitting) {
+    final round = _round;
+    if (round == null ||
+        round.fixtures.isEmpty ||
+        _selections.length != round.fixtures.length ||
+        _isSubmitting ||
+        !round.canEnter) {
       return;
     }
 
@@ -141,76 +97,54 @@ class _JackpotChallengeScreenState
 
     try {
       final repo = ref.read(predictionRepositoryProvider);
-      final result = await repo.placeAcca(
-        _fixtures
-            .map((entry) {
-              return <String, String>{
-                'fixture_market_id': entry.market.fixtureMarketId,
-                'selected_outcome':
-                    _selections[entry.market.fixtureMarketId] ?? '',
-              };
-            })
+      final result = await repo.placeJackpotEntry(
+        roundId: round.id,
+        selections: round.fixtures
+            .map(
+              (fixture) => <String, String>{
+                'fixture_market_id': fixture.fixtureMarketId,
+                'selected_outcome': _selections[fixture.fixtureMarketId] ?? '',
+              },
+            )
             .toList(growable: false),
+        idempotencyKey: _submissionKey(round),
       );
 
       if (!mounted) {
         return;
       }
 
-      await showDialog<void>(
-        context: context,
-        builder: (context) => Dialog(
-          backgroundColor: Colors.transparent,
-          child: ClayCard(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.emoji_events_rounded,
-                  color: ColorTokens.clubAccent,
-                  size: 40,
-                ),
-                const SizedBox(height: SpacingTokens.spacing4),
-                Text(
-                  'JACKPOT ENTRY LOCKED',
-                  textAlign: TextAlign.center,
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: SpacingTokens.spacing3),
-                Text(
-                  result.message.isEmpty
-                      ? 'Your 10-leg jackpot ticket is now live.'
-                      : result.message,
-                  textAlign: TextAlign.center,
-                  style: TypographyTokens.bodyMedium(),
-                ),
-                const SizedBox(height: SpacingTokens.spacing4),
-                AfriButton(
-                  onTap: () => Navigator.of(context).pop(),
-                  label: 'Done',
-                ),
-              ],
+      if (result.isSuccess) {
+        await showDialog<void>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Entry submitted'),
+            content: Text(
+              result.message.isEmpty
+                  ? 'Your jackpot entry is now live.'
+                  : result.message,
             ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Close'),
+              ),
+            ],
           ),
-        ),
-      );
-      if (!mounted) {
-        return;
+        );
+        await _load();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              result.message.isEmpty
+                  ? 'Could not submit the jackpot entry right now.'
+                  : result.message,
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
-      context.push('/fanzone/my');
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Could not submit the jackpot entry right now.'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
     } finally {
       if (mounted) {
         setState(() {
@@ -222,7 +156,7 @@ class _JackpotChallengeScreenState
 
   String _kickoffLabel(DateTime? value) {
     if (value == null) {
-      return 'TBD';
+      return 'Kickoff TBD';
     }
     final local = value.toLocal();
     return '${local.day}/${local.month} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
@@ -230,20 +164,22 @@ class _JackpotChallengeScreenState
 
   @override
   Widget build(BuildContext context) {
-    final completion = _fixtures.isEmpty
+    final round = _round;
+    final fixtureCount = round?.fixtures.length ?? 0;
+    final completion = fixtureCount == 0
         ? 0.0
-        : _selections.length / _fixtures.length;
+        : _selections.length / fixtureCount;
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          'JACKPOT CHALLENGE',
+          'Jackpot',
           style: TypographyTokens.monolithFont(
             fontSize: 20,
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
+            letterSpacing: 1.0,
           ),
         ),
         leading: IconButton(
@@ -261,13 +197,23 @@ class _JackpotChallengeScreenState
             SpacingTokens.spacing6,
           ),
           child: AfriButton(
-            onTap: _selections.length == _fixtures.length && !_isSubmitting
+            onTap:
+                fixtureCount > 0 &&
+                    _selections.length == fixtureCount &&
+                    !_isSubmitting &&
+                    (round?.canEnter ?? false)
                 ? _submit
                 : () {},
             label: _isSubmitting
                 ? 'Submitting...'
-                : 'Submit Entry · ${_selections.length}/${_fixtures.length}',
-            enabled: _selections.length == _fixtures.length && !_isSubmitting,
+                : round?.canEnter == false
+                ? 'Entries closed'
+                : 'Submit entry',
+            enabled:
+                fixtureCount > 0 &&
+                _selections.length == fixtureCount &&
+                !_isSubmitting &&
+                (round?.canEnter ?? false),
             isLoading: _isSubmitting,
           ),
         ),
@@ -302,171 +248,137 @@ class _JackpotChallengeScreenState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: SpacingTokens.spacing3,
-                            vertical: SpacingTokens.spacing1,
-                          ),
-                          decoration: BoxDecoration(
-                            color: ColorTokens.clubAccent.withValues(
-                              alpha: 0.16,
-                            ),
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                          child: Text(
-                            _prizePoolLabel,
-                            style: TypographyTokens.labelSmall(
-                              ColorTokens.clubAccent,
-                            ),
+                        Text(
+                          'Prize pool',
+                          style: TypographyTokens.labelSmall(
+                            ColorTokens.onSurfaceVariant,
                           ),
                         ),
-                        const SizedBox(height: SpacingTokens.spacing3),
+                        const SizedBox(height: SpacingTokens.spacing2),
                         Text(
-                          'Ten fixtures. One shot. Free entry into the current FANZONE mega-ticket.',
+                          round == null
+                              ? '0 FET'
+                              : '${_formatFet(round.prizePoolFet)} FET',
+                          style: TypographyTokens.monolithFont(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w900,
+                            color: ColorTokens.clubAccent,
+                          ),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing2),
+                        Text(
+                          round?.description.isNotEmpty == true
+                              ? round!.description
+                              : 'Pick every featured fixture before the round locks.',
                           style: TypographyTokens.bodyMedium(),
                         ),
+                        if (round?.entryDeadlineAt != null) ...[
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          JackpotCountdownTimer(
+                            deadline: round!.entryDeadlineAt!,
+                            onExpired: () {
+                              unawaited(_load());
+                            },
+                          ),
+                        ],
                         const SizedBox(height: SpacingTokens.spacing4),
                         LinearProgressIndicator(
                           value: completion,
-                          minHeight: 10,
+                          minHeight: 8,
                           borderRadius: BorderRadius.circular(999),
                           color: ColorTokens.clubAccent,
                           backgroundColor: ColorTokens.surfaceContainerHighest,
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
-                          '${_selections.length} of ${_fixtures.length} picks done',
+                          '${_selections.length} of $fixtureCount picks complete',
                           style: TypographyTokens.bodySmall(),
                         ),
+                        if ((round?.remainingEntries ?? 0) > 0) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            '${round!.remainingEntries} entries remaining',
+                            style: TypographyTokens.bodySmall(),
+                          ),
+                        ],
                       ],
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  ..._fixtures.asMap().entries.map((entry) {
-                    final data = entry.value;
-                    final selection = _selections[data.market.fixtureMarketId];
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: SpacingTokens.spacing3,
-                      ),
-                      child: ClayCard(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  width: 28,
-                                  height: 28,
-                                  decoration: BoxDecoration(
-                                    color: ColorTokens.clubAccent.withValues(
-                                      alpha: 0.16,
-                                    ),
-                                    borderRadius: BorderRadius.circular(999),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    '${entry.key + 1}',
-                                    style: TypographyTokens.monolithFont(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w800,
-                                      color: ColorTokens.clubAccent,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: SpacingTokens.spacing3),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                  AfriSectionCard(
+                    title: 'Fixtures',
+                    child: round == null || round.fixtures.isEmpty
+                        ? const AfriEmptyView(
+                            compact: true,
+                            title: 'No fixtures in this round',
+                            icon: AfriIcons.fixture,
+                          )
+                        : Column(
+                            children: round.fixtures
+                                .asMap()
+                                .entries
+                                .map((entry) {
+                                  final data = entry.value;
+                                  final selection =
+                                      _selections[data.fixtureMarketId];
+                                  return Column(
                                     children: [
-                                      Text(
-                                        data.fixture.fixtureLabel,
-                                        style: TypographyTokens.titleSmall(),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        '${data.fixture.competitionName} · ${_kickoffLabel(data.fixture.kickoffAt)}',
-                                        style: TypographyTokens.bodySmall(),
+                                      if (entry.key > 0)
+                                        Divider(
+                                          height: 1,
+                                          color: ColorTokens.ghostBorder,
+                                        ),
+                                      _JackpotFixtureRow(
+                                        fixtureLabel: data.fixtureLabel,
+                                        details:
+                                            '${data.competitionName} · ${_kickoffLabel(data.kickoffAt)}',
+                                        selection: selection,
+                                        isLocked: !(round.canEnter),
+                                        outcomes: data.outcomes,
+                                        onSelect: (outcomeKey) {
+                                          if (!round.canEnter) {
+                                            return;
+                                          }
+                                          setState(() {
+                                            _selections[data.fixtureMarketId] =
+                                                outcomeKey;
+                                          });
+                                        },
                                       ),
                                     ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing3),
-                            Wrap(
-                              spacing: SpacingTokens.spacing2,
-                              runSpacing: SpacingTokens.spacing2,
-                              children: data.market.outcomes
-                                  .map((outcome) {
-                                    return MarketOptionPill(
-                                      label: outcome.label,
-                                      isSelected: selection == outcome.key,
-                                      onTap: () {
-                                        setState(() {
-                                          _selections[data
-                                                  .market
-                                                  .fixtureMarketId] =
-                                              outcome.key;
-                                        });
-                                      },
-                                    );
-                                  })
-                                  .toList(growable: false),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
+                                  );
+                                })
+                                .toList(growable: false),
+                          ),
+                  ),
                   if (_leaders.isNotEmpty) ...[
                     const SizedBox(height: SpacingTokens.spacing4),
-                    ClayCard(
+                    AfriSectionCard(
+                      title: 'Leaders',
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'WEEKLY LEADERS',
-                            style: TypographyTokens.titleLarge(),
-                          ),
-                          const SizedBox(height: SpacingTokens.spacing3),
-                          ..._leaders.take(5).map((entry) {
-                            return Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: SpacingTokens.spacing3,
-                              ),
-                              child: Row(
+                        children: _leaders
+                            .take(5)
+                            .toList(growable: false)
+                            .asMap()
+                            .entries
+                            .map((entry) {
+                              final leader = entry.value;
+                              return Column(
                                 children: [
-                                  SizedBox(
-                                    width: 28,
-                                    child: Text(
-                                      '#${entry.rank}',
-                                      style: TypographyTokens.monolithFont(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w800,
-                                      ),
+                                  if (entry.key > 0)
+                                    Divider(
+                                      height: 1,
+                                      color: ColorTokens.ghostBorder,
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      entry.displayName,
-                                      style: TypographyTokens.bodyMedium(),
-                                    ),
-                                  ),
-                                  Text(
-                                    '+${entry.totalFetEarned} FET',
-                                    style: TypographyTokens.monolithFont(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w800,
-                                      color: ColorTokens.clubAccent,
-                                    ),
+                                  _LeaderRow(
+                                    rank: leader.rank,
+                                    name: leader.displayName,
+                                    total: '+${leader.totalFetEarned} FET',
                                   ),
                                 ],
-                              ),
-                            );
-                          }),
-                        ],
+                              );
+                            })
+                            .toList(growable: false),
                       ),
                     ),
                   ],
@@ -478,11 +390,94 @@ class _JackpotChallengeScreenState
   }
 }
 
-class _JackpotFixtureData {
-  const _JackpotFixtureData({required this.fixture, required this.market});
+class _JackpotFixtureRow extends StatelessWidget {
+  const _JackpotFixtureRow({
+    required this.fixtureLabel,
+    required this.details,
+    required this.selection,
+    required this.isLocked,
+    required this.outcomes,
+    required this.onSelect,
+  });
 
-  final FixtureSummary fixture;
-  final FixtureMarket market;
+  final String fixtureLabel;
+  final String details;
+  final String? selection;
+  final bool isLocked;
+  final List<MarketOutcomeOption> outcomes;
+  final ValueChanged<String> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing3),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(fixtureLabel, style: TypographyTokens.titleSmall()),
+          const SizedBox(height: 2),
+          Text(details, style: TypographyTokens.bodySmall()),
+          const SizedBox(height: SpacingTokens.spacing3),
+          Wrap(
+            spacing: SpacingTokens.spacing2,
+            runSpacing: SpacingTokens.spacing2,
+            children: outcomes
+                .map((outcome) {
+                  return MarketOptionPill(
+                    label: outcome.label,
+                    isSelected: selection == outcome.key,
+                    onTap: isLocked ? () {} : () => onSelect(outcome.key),
+                  );
+                })
+                .toList(growable: false),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LeaderRow extends StatelessWidget {
+  const _LeaderRow({
+    required this.rank,
+    required this.name,
+    required this.total,
+  });
+
+  final int rank;
+  final String name;
+  final String total;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing3),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 32,
+            child: Text(
+              '#$rank',
+              style: TypographyTokens.monolithFont(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          const SizedBox(width: SpacingTokens.spacing3),
+          Expanded(child: Text(name, style: TypographyTokens.titleSmall())),
+          Text(
+            total,
+            style: TypographyTokens.monolithFont(
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+              color: ColorTokens.clubAccent,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 String _formatFet(int value) {
@@ -494,4 +489,3 @@ String _formatFet(int value) {
   }
   return value.toString();
 }
-

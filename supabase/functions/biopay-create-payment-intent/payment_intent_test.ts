@@ -2,19 +2,19 @@ import { assertEquals } from "https://deno.land/std@0.208.0/assert/mod.ts";
 
 import { HttpError } from "../_shared/auth.ts";
 import {
-  signBiopayToken,
-  verifyBiopayToken,
-} from "../_shared/biopay_signed_token.ts";
+  signBioPayToken,
+  verifyBioPayToken,
+} from "../_shared/BioPay_signed_token.ts";
 import {
-  type BiopayCreatePaymentIntentDependencies,
-  createBiopayCreatePaymentIntentHandler,
+  type BioPayCreatePaymentIntentDependencies,
+  createBioPayCreatePaymentIntentHandler,
 } from "./index.ts";
 
-const signingSecret = "test-biopay-signing-key";
+const signingSecret = "test-BioPay-signing-key";
 
 function buildRequest(matchReceipt: string, amount?: number) {
   return new Request(
-    "https://example.com/functions/v1/biopay-create-payment-intent",
+    "https://example.com/functions/v1/BioPay-create-payment-intent",
     {
       method: "POST",
       headers: {
@@ -32,7 +32,7 @@ function buildRequest(matchReceipt: string, amount?: number) {
 
 async function buildMatchReceipt(overrides: Record<string, unknown> = {}) {
   const now = new Date();
-  return await signBiopayToken({
+  return await signBioPayToken({
     kind: "match_receipt",
     v: 1,
     iat: now.toISOString(),
@@ -49,7 +49,7 @@ async function buildMatchReceipt(overrides: Record<string, unknown> = {}) {
 }
 
 function buildDependencies(): {
-  deps: BiopayCreatePaymentIntentDependencies;
+  deps: BioPayCreatePaymentIntentDependencies;
   state: {
     cancelledFilters: Record<string, unknown>;
     insertedRow: Record<string, unknown> | null;
@@ -60,11 +60,11 @@ function buildDependencies(): {
     insertedRow: null as Record<string, unknown> | null,
   };
 
-  const deps: BiopayCreatePaymentIntentDependencies = {
+  const deps: BioPayCreatePaymentIntentDependencies = {
     createAdminClient: () =>
       ({
         from: (table: string) => {
-          if (table == "biopay_profiles") {
+          if (table == "BioPay_profiles") {
             return {
               select: () => ({
                 eq: (_column: string, _value: unknown) => ({
@@ -87,7 +87,7 @@ function buildDependencies(): {
             };
           }
 
-          if (table == "biopay_payment_intents") {
+          if (table == "BioPay_payment_intents") {
             return {
               update: (_values: Record<string, unknown>) => ({
                 eq: (column: string, value: unknown) => ({
@@ -124,7 +124,7 @@ function buildDependencies(): {
           throw new Error(`Unexpected table in payment-intent test: ${table}`);
         },
       }) as unknown as ReturnType<
-        BiopayCreatePaymentIntentDependencies["createAdminClient"]
+        BioPayCreatePaymentIntentDependencies["createAdminClient"]
       >,
     createUserClient: () =>
       ({
@@ -137,11 +137,11 @@ function buildDependencies(): {
           }),
         },
       }) as unknown as ReturnType<
-        BiopayCreatePaymentIntentDependencies["createUserClient"]
+        BioPayCreatePaymentIntentDependencies["createUserClient"]
       >,
     requireAppCheckToken: async () => "fresh-token",
-    verifyBiopayToken: (token, options) =>
-      verifyBiopayToken(token, {
+    verifyBioPayToken: (token, options) =>
+      verifyBioPayToken(token, {
         secret: signingSecret,
         expectedKind: options.expectedKind,
       }),
@@ -159,8 +159,8 @@ function buildDependencies(): {
           ? `*182*1*1*${recipientValue}*${amount}#`
           : `*182*1*1*${recipientValue}#`
         : amount != null
-        ? `*182*8*1*${amount}*${recipientValue}#`
-        : `*182*8*1*${recipientValue}#`,
+          ? `*182*8*1*${amount}*${recipientValue}#`
+          : `*182*8*1*${recipientValue}#`,
     recordOperationalHealthEvent: async () => undefined,
     recordEdgeFunctionFailure: async () => undefined,
     generateNonce: () => "nonce-1",
@@ -170,10 +170,10 @@ function buildDependencies(): {
   return { deps, state };
 }
 
-Deno.test("biopay-create-payment-intent rejects requests without valid App Check attestation", async () => {
+Deno.test("BioPay-create-payment-intent rejects requests without valid App Check attestation", async () => {
   const receipt = await buildMatchReceipt();
   const { deps } = buildDependencies();
-  const handler = createBiopayCreatePaymentIntentHandler({
+  const handler = createBioPayCreatePaymentIntentHandler({
     ...deps,
     requireAppCheckToken: async () => {
       throw new HttpError(401, "Device attestation required.");
@@ -187,10 +187,10 @@ Deno.test("biopay-create-payment-intent rejects requests without valid App Check
   assertEquals(payload.message, "Device attestation required.");
 });
 
-Deno.test("biopay-create-payment-intent creates an intent from a signed match receipt", async () => {
+Deno.test("BioPay-create-payment-intent creates an intent from a signed match receipt", async () => {
   const receipt = await buildMatchReceipt();
   const { deps, state } = buildDependencies();
-  const handler = createBiopayCreatePaymentIntentHandler(deps);
+  const handler = createBioPayCreatePaymentIntentHandler(deps);
 
   const response = await handler(buildRequest(receipt));
   const payload = await response.json();
@@ -208,10 +208,10 @@ Deno.test("biopay-create-payment-intent creates an intent from a signed match re
   assertEquals(state.insertedRow?.["nonce"], "nonce-1");
 });
 
-Deno.test("biopay-create-payment-intent binds the requested amount into the payment code", async () => {
+Deno.test("BioPay-create-payment-intent binds the requested amount into the payment code", async () => {
   const receipt = await buildMatchReceipt();
   const { deps, state } = buildDependencies();
-  const handler = createBiopayCreatePaymentIntentHandler(deps);
+  const handler = createBioPayCreatePaymentIntentHandler(deps);
 
   const response = await handler(buildRequest(receipt, 6500));
   const payload = await response.json();
@@ -226,12 +226,12 @@ Deno.test("biopay-create-payment-intent binds the requested amount into the paym
   assertEquals(payload.data.currency_symbol, "FRw");
 });
 
-Deno.test("biopay-create-payment-intent rejects a receipt owned by another user", async () => {
+Deno.test("BioPay-create-payment-intent rejects a receipt owned by another user", async () => {
   const receipt = await buildMatchReceipt({
     requester_user_id: "user-2",
   });
   const { deps } = buildDependencies();
-  const handler = createBiopayCreatePaymentIntentHandler(deps);
+  const handler = createBioPayCreatePaymentIntentHandler(deps);
 
   const response = await handler(buildRequest(receipt));
   const payload = await response.json();

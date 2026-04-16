@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import '../widgets/group_card.dart';
 
-/// Groups list screen — shows user's contribution circles.
+/// Groups list screen — shows user's contribution Groups.
 class GroupsScreen extends ConsumerStatefulWidget {
   const GroupsScreen({super.key});
 
@@ -58,7 +58,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _error = 'Could not load your circles right now.';
+          _error = 'Could not load your Groups right now.';
         });
       }
     }
@@ -120,28 +120,47 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                 ),
                 child: Row(
                   children: [
-                    Text(
-                      'MY CIRCLES',
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
+                    IconButton(
+                      onPressed: () {
+                        if (context.canPop()) {
+                          context.pop();
+                        } else {
+                          context.go('/home');
+                        }
+                      },
+                      icon: Icon(
+                        AfriIcons.back,
                         color: ColorTokens.onSurface,
-                        letterSpacing: 2.0,
+                      ),
+                      tooltip: 'Back',
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing3),
+                    Expanded(
+                      child: Text(
+                        'MY Groups',
+                        style: TypographyTokens.monolithFont(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: ColorTokens.onSurface,
+                          letterSpacing: 2.0,
+                        ),
                       ),
                     ),
-                    const Spacer(),
                     Wrap(
                       spacing: SpacingTokens.spacing3,
                       children: [
                         OutlinedButton.icon(
                           onPressed: _openJoinGroup,
-                          icon: const Icon(Icons.group_add_rounded),
+                          icon: const Icon(AfriIcons.join),
                           label: const Text('Join'),
                         ),
-                        ClaymorphicButton(
+                        AfriButton(
                           label: 'New',
-                          icon: Icons.add,
-                          onPressed: _openCreateGroup,
+                          icon: AfriIcons.add,
+                          onTap: _openCreateGroup,
+                          fullWidth: false,
                         ),
                       ],
                     ),
@@ -217,7 +236,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                     horizontal: SpacingTokens.spacing6,
                   ),
                   child: AfriStateView.offline(
-                    title: 'Circles unavailable',
+                    title: 'Groups unavailable',
                     message: _error!,
                     actionLabel: 'Retry',
                     onAction: _loadGroups,
@@ -258,7 +277,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                     child: Column(
                       children: [
                         Icon(
-                          Icons.group_work_outlined,
+                          AfriIcons.groups,
                           size: 56,
                           color: primary.withValues(alpha: 0.3),
                         ),
@@ -274,15 +293,15 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                           style: theme.textTheme.bodyMedium,
                         ),
                         const SizedBox(height: SpacingTokens.spacing6),
-                        ClaymorphicButton(
-                          label: 'Create Group',
-                          icon: Icons.add,
-                          onPressed: _openCreateGroup,
+                        AfriButton(
+                          label: 'Create group',
+                          icon: AfriIcons.add,
+                          onTap: _openCreateGroup,
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
                         OutlinedButton.icon(
                           onPressed: _openJoinGroup,
-                          icon: const Icon(Icons.group_add_rounded),
+                          icon: const Icon(AfriIcons.join),
                           label: const Text('JOIN GROUP'),
                         ),
                       ],

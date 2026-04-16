@@ -122,7 +122,7 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
                 child: GlassCard(
                   animate: false,
                   child: Text(
-                    'No campaigns yet. Start a new circle.',
+                    'No campaigns yet. Start a new Group.',
                     style: TypographyTokens.bodyMedium(),
                     textAlign: TextAlign.center,
                   ),
@@ -160,7 +160,7 @@ class _ProjectCard extends StatelessWidget {
     final title = project['name']?.toString() ?? 'Project';
     final body =
         project['description']?.toString() ??
-        'Supporter-led contribution circle.';
+        'Supporter-led contribution Group.';
     final currentTotal = (project['current_total'] as num?)?.toInt() ?? 0;
     final targetAmount = (project['target_amount'] as num?)?.toInt() ?? 0;
     final memberCount = (project['member_count'] as num?)?.toInt() ?? 0;
@@ -203,10 +203,10 @@ class _ProjectCard extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing1),
           Text('$memberCount supporters', style: TypographyTokens.bodySmall()),
           const SizedBox(height: SpacingTokens.spacing4),
-          ClaymorphicButton(
-            label: 'CONTRIBUTE',
-            width: double.infinity,
-            onPressed: () => showMomoAmountEntrySheet(context, title: title),
+          AfriButton(
+            label: 'Contribute',
+            fullWidth: true,
+            onTap: () => showMomoAmountEntrySheet(context, title: title),
           ),
         ],
       ),

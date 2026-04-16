@@ -26,7 +26,7 @@ class _InviteCodeSheet extends StatelessWidget {
   final String? groupName;
 
   String get _shareText =>
-      'Join my ${RuntimeBranding.displayAppName} circle${groupName != null ? ' "$groupName"' : ''}! '
+      'Join my ${RuntimeBranding.displayAppName} Group${groupName != null ? ' "$groupName"' : ''}! '
       'Use code: $inviteCode';
 
   void _copyCode(BuildContext context) {
@@ -70,7 +70,7 @@ class _InviteCodeSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'INVITE TO CIRCLE',
+              'INVITE TO Group',
               style: TypographyTokens.monolithFont(
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
@@ -168,10 +168,10 @@ class _InviteCodeSheet extends StatelessWidget {
 
             const SizedBox(height: SpacingTokens.spacing4),
 
-            ClaymorphicButton(
-              label: 'DONE',
-              width: double.infinity,
-              onPressed: () => Navigator.of(context).pop(),
+            AfriButton(
+              label: 'Done',
+              fullWidth: true,
+              onTap: () => Navigator.of(context).pop(),
             ),
           ],
         ),

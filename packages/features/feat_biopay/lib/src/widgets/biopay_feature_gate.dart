@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/biopay_providers.dart';
 
 /// Route-level guard so direct BioPay deep links respect the kill switch.
-class BiopayFeatureGate extends ConsumerWidget {
-  const BiopayFeatureGate({required this.child, this.onBackPressed, super.key});
+class BioPayFeatureGate extends ConsumerWidget {
+  const BioPayFeatureGate({required this.child, this.onBackPressed, super.key});
 
   final Widget child;
   final VoidCallback? onBackPressed;
@@ -14,7 +14,7 @@ class BiopayFeatureGate extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isEnabled = ref
-        .watch(biopayEnabledProvider)
+        .watch(BioPayEnabledProvider)
         .maybeWhen(data: (value) => value, orElse: () => true);
     return KillSwitchGate(
       enabled: isEnabled,

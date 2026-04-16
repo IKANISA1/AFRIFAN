@@ -2,11 +2,11 @@ import 'package:feat_biopay/feat_biopay.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('BiopayPaymentIntent', () {
-    late BiopayPaymentIntent intent;
+  group('BioPayPaymentIntent', () {
+    late BioPayPaymentIntent intent;
 
     setUp(() {
-      intent = BiopayPaymentIntent.fromApiResponse(<String, dynamic>{
+      intent = BioPayPaymentIntent.fromApiResponse(<String, dynamic>{
         'intent_id': 'intent-abc',
         'nonce': 'nonce-123',
         'ussd_code': '*182*1*1*0781234567#',
@@ -41,7 +41,7 @@ void main() {
     });
 
     test('isExpired returns true for past dates', () {
-      final expired = BiopayPaymentIntent.fromApiResponse(<String, dynamic>{
+      final expired = BioPayPaymentIntent.fromApiResponse(<String, dynamic>{
         'intent_id': 'exp-1',
         'nonce': 'n',
         'ussd_code': '*182#',
@@ -60,7 +60,7 @@ void main() {
     });
 
     test('launchUri returns deep link URI for deep_link method', () {
-      final deepLink = BiopayPaymentIntent.fromApiResponse(<String, dynamic>{
+      final deepLink = BioPayPaymentIntent.fromApiResponse(<String, dynamic>{
         'intent_id': 'dl-1',
         'nonce': 'n',
         'payment_code': 'https://pay.example.com/p/123',
@@ -76,7 +76,7 @@ void main() {
     });
 
     test('formattedAlias returns 000-000 for empty publicId', () {
-      final noId = BiopayPaymentIntent.fromApiResponse(<String, dynamic>{
+      final noId = BioPayPaymentIntent.fromApiResponse(<String, dynamic>{
         'intent_id': 'x',
         'nonce': 'n',
         'ussd_code': '*182#',
@@ -91,7 +91,7 @@ void main() {
     });
 
     test('maskedRecipientValue returns short values unmasked', () {
-      final short = BiopayPaymentIntent.fromApiResponse(<String, dynamic>{
+      final short = BioPayPaymentIntent.fromApiResponse(<String, dynamic>{
         'intent_id': 'x',
         'nonce': 'n',
         'ussd_code': '*182#',
@@ -107,7 +107,7 @@ void main() {
     });
 
     test('formattedAmount falls back to currency code', () {
-      final codeOnly = BiopayPaymentIntent.fromApiResponse(<String, dynamic>{
+      final codeOnly = BioPayPaymentIntent.fromApiResponse(<String, dynamic>{
         'intent_id': 'x',
         'nonce': 'n',
         'ussd_code': '*182#',
@@ -120,7 +120,7 @@ void main() {
     });
 
     test('formattedAmount returns null when amount is null', () {
-      final noAmount = BiopayPaymentIntent.fromApiResponse(<String, dynamic>{
+      final noAmount = BioPayPaymentIntent.fromApiResponse(<String, dynamic>{
         'intent_id': 'x',
         'nonce': 'n',
         'ussd_code': '*182#',
@@ -131,7 +131,7 @@ void main() {
     });
 
     test('prefers ussd_code over payment_code', () {
-      final both = BiopayPaymentIntent.fromApiResponse(<String, dynamic>{
+      final both = BioPayPaymentIntent.fromApiResponse(<String, dynamic>{
         'intent_id': 'x',
         'nonce': 'n',
         'ussd_code': '*182*1*1*999#',
@@ -143,24 +143,24 @@ void main() {
     });
   });
 
-  group('biopayAmountInputLabel', () {
+  group('BioPayAmountInputLabel', () {
     test('returns Amount when no currency', () {
-      expect(biopayAmountInputLabel(), 'Amount');
+      expect(BioPayAmountInputLabel(), 'Amount');
     });
 
     test('returns Amount when empty currency', () {
-      expect(biopayAmountInputLabel(currencyCode: ''), 'Amount');
+      expect(BioPayAmountInputLabel(currencyCode: ''), 'Amount');
     });
 
     test('includes currency code when provided', () {
-      expect(biopayAmountInputLabel(currencyCode: 'RWF'), 'Amount in RWF');
+      expect(BioPayAmountInputLabel(currencyCode: 'RWF'), 'Amount in RWF');
     });
   });
 
-  group('formatBiopayAmount', () {
+  group('formatBioPayAmount', () {
     test('uses symbol when available', () {
       expect(
-        formatBiopayAmount(
+        formatBioPayAmount(
           amount: 1000,
           currencySymbol: 'RWF',
           currencyCode: 'RWF',
@@ -171,13 +171,13 @@ void main() {
 
     test('falls back to code when no symbol', () {
       expect(
-        formatBiopayAmount(amount: 500, currencyCode: 'USD'),
+        formatBioPayAmount(amount: 500, currencyCode: 'USD'),
         'USD 500',
       );
     });
 
     test('returns plain number when no symbol or code', () {
-      expect(formatBiopayAmount(amount: 7500), '7500');
+      expect(formatBioPayAmount(amount: 7500), '7500');
     });
   });
 }

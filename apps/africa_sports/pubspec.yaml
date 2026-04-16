@@ -62,7 +62,7 @@ dependencies:
   # Third-party
   go_router: ^14.8.1
   supabase_flutter: ^2.12.2
-  google_fonts: ^6.2.1
+  google_fonts: ^8.0.2
   flutter_animate: ^4.5.2
   url_launcher: ^6.3.1
   intl: ^0.20.2
@@ -70,8 +70,8 @@ dependencies:
   hive_flutter: ^1.1.0
 
 dev_dependencies:
-  core_modules:
-    path: ../../packages/core/core_modules
+  app_registry:
+    path: ../../packages/app_registry
   flutter_test:
     sdk: flutter
   test_support:
@@ -85,6 +85,6 @@ flutter:
     - assets/crest/
     - assets/flavors/
     - assets/images/
-    - assets/models/biopay/
+    - assets/models/BioPay/
 
 resolution: workspace

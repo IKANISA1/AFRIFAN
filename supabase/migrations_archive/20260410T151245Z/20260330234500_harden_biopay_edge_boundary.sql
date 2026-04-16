@@ -2,14 +2,14 @@
 -- server functions. Edge functions pass the verified user_id and club_id
 -- explicitly; authenticated clients lose direct execute access.
 
-CREATE OR REPLACE FUNCTION public.biopay_upsert_enrollment_server(
+CREATE OR REPLACE FUNCTION public.BioPay_upsert_enrollment_server(
   p_requester_user_id uuid,
   p_club_id bigint,
   p_display_name text DEFAULT NULL,
   p_route_type text DEFAULT NULL,
   p_recipient_value text DEFAULT NULL,
   p_country_code text DEFAULT 'RW',
-  p_consent_version text DEFAULT 'biopay-v1',
+  p_consent_version text DEFAULT 'BioPay-v1',
   p_embedding double precision[] DEFAULT NULL,
   p_model_version text DEFAULT 'mobilefacenet_int8_v1',
   p_quality_score double precision DEFAULT NULL
@@ -37,7 +37,7 @@ SET search_path = public, extensions
 AS $$
 DECLARE
   v_user_id uuid := p_requester_user_id;
-  v_profile public.biopay_profiles%rowtype;
+  v_profile public.BioPay_profiles%rowtype;
   v_embedding extensions.vector(192);
   v_display_name text;
   v_route_type text;
@@ -74,18 +74,18 @@ BEGIN
   END IF;
 
   v_country_code := upper(trim(coalesce(nullif(p_country_code, ''), 'RW')));
-  v_consent_version := coalesce(nullif(trim(p_consent_version), ''), 'biopay-v1');
-  v_embedding := public.biopay_array_to_vector(p_embedding);
+  v_consent_version := coalesce(nullif(trim(p_consent_version), ''), 'BioPay-v1');
+  v_embedding := public.BioPay_array_to_vector(p_embedding);
 
   SELECT * INTO v_profile
-  FROM public.biopay_profiles
-  WHERE biopay_profiles.user_id = v_user_id
-    AND biopay_profiles.club_id = p_club_id
+  FROM public.BioPay_profiles
+  WHERE BioPay_profiles.user_id = v_user_id
+    AND BioPay_profiles.club_id = p_club_id
     AND deleted_at IS NULL
   LIMIT 1;
 
   IF FOUND THEN
-    UPDATE public.biopay_profiles SET
+    UPDATE public.BioPay_profiles SET
       display_name = v_display_name,
       route_type = v_route_type,
       recipient_value = v_recipient_value,
@@ -95,10 +95,10 @@ BEGIN
       consent_at = timezone('utc', now()),
       revoked_at = NULL,
       deleted_at = NULL
-    WHERE biopay_profiles.id = v_profile.id
+    WHERE BioPay_profiles.id = v_profile.id
     RETURNING * INTO v_profile;
   ELSE
-    INSERT INTO public.biopay_profiles (
+    INSERT INTO public.BioPay_profiles (
       user_id, club_id, display_name, route_type, recipient_value,
       country_code, active, consent_version, consent_at
     ) VALUES (
@@ -107,13 +107,13 @@ BEGIN
     ) RETURNING * INTO v_profile;
   END IF;
 
-  UPDATE public.biopay_embeddings SET
+  UPDATE public.BioPay_embeddings SET
     active = false, retired_at = timezone('utc', now())
-  WHERE biopay_embeddings.profile_id = v_profile.id
-    AND biopay_embeddings.club_id = p_club_id
-    AND biopay_embeddings.active = true;
+  WHERE BioPay_embeddings.profile_id = v_profile.id
+    AND BioPay_embeddings.club_id = p_club_id
+    AND BioPay_embeddings.active = true;
 
-  INSERT INTO public.biopay_embeddings (
+  INSERT INTO public.BioPay_embeddings (
     profile_id, club_id, embedding, model_version, quality_score, active, enrolled_at
   ) VALUES (
     v_profile.id, p_club_id, v_embedding,
@@ -121,7 +121,7 @@ BEGIN
     p_quality_score, true, v_enrolled_at
   );
 
-  INSERT INTO public.biopay_enrollment_audits (profile_id, user_id, club_id, event_type, metadata)
+  INSERT INTO public.BioPay_enrollment_audits (profile_id, user_id, club_id, event_type, metadata)
   VALUES (v_profile.id, v_user_id, p_club_id, 'enrolled', jsonb_build_object(
     'route_type', v_route_type,
     'country_code', v_country_code,
@@ -139,7 +139,7 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION public.match_biopay_profile_server(
+CREATE OR REPLACE FUNCTION public.match_BioPay_profile_server(
   p_club_id bigint,
   p_embedding double precision[]
 )
@@ -163,15 +163,15 @@ SECURITY DEFINER
 SET search_path = public, extensions
 AS $$
   WITH query_vector AS (
-    SELECT public.biopay_array_to_vector(p_embedding) AS embedding
+    SELECT public.BioPay_array_to_vector(p_embedding) AS embedding
   )
   SELECT
     p.id AS profile_id, p.public_id, p.user_id, p.club_id,
     p.display_name, p.route_type, p.recipient_value, p.country_code,
     p.consent_version, p.consent_at, p.created_at, p.updated_at,
     1 - (e.embedding <=> q.embedding) AS score
-  FROM public.biopay_embeddings e
-  JOIN public.biopay_profiles p ON p.id = e.profile_id
+  FROM public.BioPay_embeddings e
+  JOIN public.BioPay_profiles p ON p.id = e.profile_id
   CROSS JOIN query_vector q
   WHERE e.active = true
     AND p.active = true
@@ -181,7 +181,7 @@ AS $$
   LIMIT 1;
 $$;
 
-CREATE OR REPLACE FUNCTION public.biopay_revoke_profile_server(
+CREATE OR REPLACE FUNCTION public.BioPay_revoke_profile_server(
   p_requester_user_id uuid,
   p_club_id bigint,
   p_reason text DEFAULT NULL
@@ -197,7 +197,7 @@ SET search_path = public, extensions
 AS $$
 DECLARE
   v_user_id uuid := p_requester_user_id;
-  v_profile public.biopay_profiles%rowtype;
+  v_profile public.BioPay_profiles%rowtype;
   v_revoked_at timestamptz := timezone('utc', now());
 BEGIN
   IF v_user_id IS NULL THEN
@@ -209,7 +209,7 @@ BEGIN
   END IF;
 
   SELECT * INTO v_profile
-  FROM public.biopay_profiles
+  FROM public.BioPay_profiles
   WHERE user_id = v_user_id
     AND club_id = p_club_id
     AND active = true
@@ -220,18 +220,18 @@ BEGIN
     RAISE EXCEPTION 'No active BioPay enrollment was found.';
   END IF;
 
-  UPDATE public.biopay_profiles SET
+  UPDATE public.BioPay_profiles SET
     active = false, revoked_at = v_revoked_at
   WHERE id = v_profile.id
   RETURNING * INTO v_profile;
 
-  UPDATE public.biopay_embeddings SET
+  UPDATE public.BioPay_embeddings SET
     active = false, retired_at = v_revoked_at
   WHERE profile_id = v_profile.id
     AND club_id = p_club_id
     AND active = true;
 
-  INSERT INTO public.biopay_revocations (profile_id, user_id, club_id, reason, metadata)
+  INSERT INTO public.BioPay_revocations (profile_id, user_id, club_id, reason, metadata)
   VALUES (
     v_profile.id,
     v_user_id,
@@ -240,7 +240,7 @@ BEGIN
     jsonb_build_object('public_id', v_profile.public_id, 'origin', 'edge')
   );
 
-  INSERT INTO public.biopay_enrollment_audits (profile_id, user_id, club_id, event_type, metadata)
+  INSERT INTO public.BioPay_enrollment_audits (profile_id, user_id, club_id, event_type, metadata)
   VALUES (v_profile.id, v_user_id, p_club_id, 'revoked', jsonb_build_object(
     'reason', nullif(trim(coalesce(p_reason, '')), ''),
     'public_id', v_profile.public_id,
@@ -251,22 +251,22 @@ BEGIN
 END;
 $$;
 
-REVOKE EXECUTE ON FUNCTION public.biopay_upsert_enrollment(
+REVOKE EXECUTE ON FUNCTION public.BioPay_upsert_enrollment(
   text, text, text, text, text, double precision[], text, double precision
 ) FROM authenticated;
 
-REVOKE EXECUTE ON FUNCTION public.match_biopay_profile(double precision[])
+REVOKE EXECUTE ON FUNCTION public.match_BioPay_profile(double precision[])
 FROM authenticated;
 
-REVOKE EXECUTE ON FUNCTION public.biopay_revoke_profile(text)
+REVOKE EXECUTE ON FUNCTION public.BioPay_revoke_profile(text)
 FROM authenticated;
 
-GRANT EXECUTE ON FUNCTION public.biopay_upsert_enrollment_server(
+GRANT EXECUTE ON FUNCTION public.BioPay_upsert_enrollment_server(
   uuid, bigint, text, text, text, text, text, double precision[], text, double precision
 ) TO service_role;
 
-GRANT EXECUTE ON FUNCTION public.match_biopay_profile_server(bigint, double precision[])
+GRANT EXECUTE ON FUNCTION public.match_BioPay_profile_server(bigint, double precision[])
 TO service_role;
 
-GRANT EXECUTE ON FUNCTION public.biopay_revoke_profile_server(uuid, bigint, text)
+GRANT EXECUTE ON FUNCTION public.BioPay_revoke_profile_server(uuid, bigint, text)
 TO service_role;

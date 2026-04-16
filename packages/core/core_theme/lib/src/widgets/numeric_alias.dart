@@ -9,7 +9,7 @@ import '../tokens/typography_tokens.dart';
 
 /// Numeric alias badge — the "Anonymous Identity" system.
 ///
-/// "Never design for names. All layouts optimized for 6-digit numeric aliases."
+/// "Never design for names. All layouts optimized for 6-digit numeric ."
 /// - Monospaced-style tracking for the 6-digit numbers
 /// - Glassmorphic pill container with sm radius
 /// - Treated with same typographic weight as primary headlines

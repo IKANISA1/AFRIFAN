@@ -77,13 +77,13 @@ Future<bool> showDeleteAccountConfirmDialog(BuildContext context) async {
                     child: const Text('CANCEL'),
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
-                  ClaymorphicButton(
-                    label: 'DELETE PERMANENTLY',
-                    width: double.infinity,
-                    color: ColorTokens.error,
-                    onPressed: canDelete
+                  AfriButton(
+                    label: 'Delete permanently',
+                    fullWidth: true,
+                    onTap: canDelete
                         ? () => Navigator.of(context).pop(true)
-                        : null,
+                        : () {},
+                    enabled: canDelete,
                   ),
                 ],
               ),
@@ -135,10 +135,10 @@ Future<bool> showNotificationPermissionModal(BuildContext context) async {
               const _BenefitRow(label: 'Contribution and ticket updates'),
               const _BenefitRow(label: 'FET milestones and challenge drops'),
               const SizedBox(height: SpacingTokens.spacing5),
-              ClaymorphicButton(
-                label: 'ENABLE NOTIFICATIONS',
-                width: double.infinity,
-                onPressed: () => Navigator.of(context).pop(true),
+              AfriButton(
+                label: 'Enable notifications',
+                fullWidth: true,
+                onTap: () => Navigator.of(context).pop(true),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               TextButton(
@@ -199,10 +199,10 @@ Future<bool> showSignOutConfirmationSheet(BuildContext context) async {
             child: const Text('SIGN OUT'),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          ClaymorphicButton(
-            label: 'STAY',
-            width: double.infinity,
-            onPressed: () => Navigator.of(context).pop(false),
+          AfriButton(
+            label: 'Stay',
+            fullWidth: true,
+            onTap: () => Navigator.of(context).pop(false),
           ),
         ],
       );
@@ -256,10 +256,10 @@ Future<bool> showSignOutOtherDevicesSheet(BuildContext context) async {
             child: const Text('SIGN OUT OTHERS'),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          ClaymorphicButton(
-            label: 'CANCEL',
-            width: double.infinity,
-            onPressed: () => Navigator.of(context).pop(false),
+          AfriButton(
+            label: 'Cancel',
+            fullWidth: true,
+            onTap: () => Navigator.of(context).pop(false),
           ),
         ],
       );

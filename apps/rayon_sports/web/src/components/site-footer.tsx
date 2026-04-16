@@ -28,63 +28,34 @@ export function SiteFooter({ club, copy }: SiteFooterProps) {
   ].filter((entry) => entry.href);
 
   return (
-    <footer className="relative mt-24 overflow-hidden pb-[env(safe-area-inset-bottom)]">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-club-primary-light to-transparent opacity-65" />
-      <div className="pointer-events-none absolute left-[8%] top-10 h-64 w-64 rounded-full bg-[var(--site-glow-primary)] blur-[120px]" />
-      <div className="pointer-events-none absolute right-[8%] top-16 h-56 w-56 rounded-full bg-[var(--site-glow-accent)] blur-[112px]" />
-
-      <div className="page-shell relative py-14">
-        <div className={`${ui.panel} grid gap-10 rounded-[40px] border-[1.2px] px-6 py-8 sm:px-8 sm:py-10 lg:grid-cols-[1.05fr_1.95fr]`}>
-          <div className="space-y-6">
-            <div className="flex items-center gap-4">
-              <Image
-                src={club.officialLogoUrl ?? "/icons/icon-192x192.png"}
-                alt={`${club.clubName} crest`}
-                width={64}
-                height={64}
-                sizes="64px"
-                className={`${ui.brandMark} rounded-full object-cover`}
-              />
+    <footer className="bg-black border-t border-white/5 pt-20 pb-12 lg:pt-32">
+      <div className="page-shell">
+        <div className="grid gap-16 lg:grid-cols-12">
+          {/* Brand Column */}
+          <div className="lg:col-span-4">
+            <Link href="/" className="inline-flex items-center gap-4 mb-8">
+              <div className="h-16 w-16 overflow-hidden rounded-full bg-white p-1">
+                <Image
+                  src={club.officialLogoUrl ?? "/icons/icon-192x192.png"}
+                  alt={club.clubName}
+                  width={64}
+                  height={64}
+                  className="h-full w-full object-contain"
+                />
+              </div>
               <div>
-                <p className="font-display text-3xl font-bold uppercase tracking-[-0.05em] text-white">
+                <p className="font-display text-3xl font-black uppercase italic leading-none text-white tracking-tighter">
                   {club.shortName}
                 </p>
-                <p className={ui.kicker}>
-                  {club.nickname || copy.officialWebsite}
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-[var(--club-accent)]">
+                  {club.nickname || "The Beloved"}
                 </p>
               </div>
-            </div>
-
-            <p className="max-w-md text-sm leading-7 text-slate-300">
-              Official {club.clubName} coverage for fixtures, tickets,
-              membership, club news, supporter circles, and matchday access.
+            </Link>
+            <p className="text-sm font-bold leading-relaxed text-white/40 mb-10 max-w-sm">
+              Experience the pulse of Rwandan football. From matchday magic at the Cathedral to digital fan engagement across the globe.
             </p>
-
-            <div className="flex flex-wrap gap-4">
-              <Link
-                href={resolveFanAppHref()}
-                prefetch={false}
-                className={`${ui.buttonPrimary} min-h-12 px-5 py-3`}
-              >
-                {copy.openFanApp}
-              </Link>
-              <Link
-                href="/tickets"
-                prefetch={false}
-                className={`${ui.buttonSecondary} min-h-12 px-5 py-3`}
-              >
-                {copy.buyTickets}
-              </Link>
-              <Link
-                href="/circles"
-                prefetch={false}
-                className={`${ui.buttonSecondary} min-h-12 px-5 py-3`}
-              >
-                {copy.supportCircles}
-              </Link>
-            </div>
-
-            <div className="flex flex-wrap gap-2 pt-2">
+            <div className="flex gap-4">
               {socialLinks.map((entry) => {
                 const Icon = socialIconMap[entry.key];
                 return (
@@ -93,7 +64,7 @@ export function SiteFooter({ club, copy }: SiteFooterProps) {
                     href={entry.href ?? "#"}
                     target="_blank"
                     rel="noreferrer"
-                    className={`${ui.iconButton} text-slate-200`}
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white hover:bg-[var(--club-accent)] hover:text-black transition-all"
                     aria-label={entry.key}
                   >
                     <Icon size={18} />
@@ -103,32 +74,43 @@ export function SiteFooter({ club, copy }: SiteFooterProps) {
             </div>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
-            {footerNavigationGroups.map((group) => (
-              <div key={group.title} className="space-y-4">
-                <p className={ui.kicker}>
-                  {group.title}
-                </p>
-                <div className="flex flex-col gap-3">
-                  {group.links.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      prefetch={false}
-                      className="text-sm font-medium text-slate-300 transition hover:text-white"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
+          {/* Navigation Columns */}
+          <div className="lg:col-span-8">
+            <div className="grid grid-cols-2 gap-12 sm:grid-cols-4">
+              {footerNavigationGroups.map((group) => (
+                <div key={group.title}>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white mb-8">
+                    {group.title}
+                  </p>
+                  <ul className="space-y-4">
+                    {group.links.map((link) => (
+                      <li key={link.href}>
+                        <Link
+                          href={link.href}
+                          className="text-sm font-bold text-white/40 hover:text-white transition-colors uppercase tracking-widest"
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 pt-6 text-[11px] uppercase tracking-[0.22em] text-slate-500 md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} {club.clubName}</p>
-          <p>{club.league} · {club.supportedLanguages.join(" / ").toUpperCase()}</p>
+        {/* Bottom Bar */}
+        <div className="mt-20 border-t border-white/5 pt-12 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-wrap gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">
+            <span>© {new Date().getFullYear()} {club.clubName}</span>
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+          </div>
+          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
+            <span>Powered by</span>
+            <span className="text-white">AFRICLUB</span>
+          </div>
         </div>
       </div>
     </footer>

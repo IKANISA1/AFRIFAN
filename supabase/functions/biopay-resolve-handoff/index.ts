@@ -6,13 +6,13 @@ import {
   jsonOk,
   jsonError,
 } from "../_shared/response.ts";
-import { buildBiopayPaymentCode } from "../_shared/biopay_payment.ts";
+import { buildBioPayPaymentCode } from "../_shared/BioPay_payment.ts";
 import {
-  type SignedBiopayTokenPayload,
-  verifyBiopayToken,
-} from "../_shared/biopay_signed_token.ts";
+  type SignedBioPayTokenPayload,
+  verifyBioPayToken,
+} from "../_shared/BioPay_signed_token.ts";
 
-type ResolvePayload = SignedBiopayTokenPayload & {
+type ResolvePayload = SignedBioPayTokenPayload & {
   channel?: unknown;
   amount?: unknown;
   reference?: unknown;
@@ -28,11 +28,11 @@ type ResolvePayload = SignedBiopayTokenPayload & {
   sender_name?: unknown;
 };
 
-export type BiopayResolveHandoffDependencies = {
-  verifyBiopayToken: (
+export type BioPayResolveHandoffDependencies = {
+  verifyBioPayToken: (
     token: string,
     options: { expectedKind: string },
-  ) => Promise<SignedBiopayTokenPayload>;
+  ) => Promise<SignedBioPayTokenPayload>;
   buildPaymentCode: (options: {
     paymentTemplate: string;
     routeType: string;
@@ -56,15 +56,15 @@ function redirectResponse(location: string) {
   });
 }
 
-const defaultDependencies: BiopayResolveHandoffDependencies = {
-  verifyBiopayToken,
-  buildPaymentCode: buildBiopayPaymentCode,
+const defaultDependencies: BioPayResolveHandoffDependencies = {
+  verifyBioPayToken,
+  buildPaymentCode: buildBioPayPaymentCode,
 };
 
-export function createBiopayResolveHandoffHandler(
-  dependencies: Partial<BiopayResolveHandoffDependencies> = {},
+export function createBioPayResolveHandoffHandler(
+  dependencies: Partial<BioPayResolveHandoffDependencies> = {},
 ) {
-  const deps: BiopayResolveHandoffDependencies = {
+  const deps: BioPayResolveHandoffDependencies = {
     ...defaultDependencies,
     ...dependencies,
   };
@@ -93,7 +93,7 @@ export function createBiopayResolveHandoffHandler(
         return jsonError("token is required.", 400);
       }
 
-      const payload = await deps.verifyBiopayToken(token, {
+      const payload = await deps.verifyBioPayToken(token, {
         expectedKind: "handoff_request",
       }) as ResolvePayload;
       const amount = typeof payload.amount === "number" && payload.amount > 0
@@ -143,7 +143,7 @@ export function createBiopayResolveHandoffHandler(
 }
 
 if (import.meta.main) {
-  const handler = createBiopayResolveHandoffHandler();
+  const handler = createBioPayResolveHandoffHandler();
   Deno.serve((req: Request) => handler(req).then(
     (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
   ));

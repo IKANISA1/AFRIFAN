@@ -93,7 +93,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
               ),
             ),
             child: Icon(
-              AfriIcons.checkCircle,
+              AfriIcons.checkGroup,
               size: 32,
               color: ColorTokens.clubAccent,
             ),

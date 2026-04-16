@@ -33,7 +33,7 @@ Server-side secrets still required for BioPay App Check and FCM delivery:
 Validation command:
 
 ```bash
-bash tools/scripts/validate_biopay_firebase.sh rayon_sports
+bash tools/scripts/validate_BioPay_firebase.sh rayon_sports
 ```
 
 Provisioning command for Supabase Edge Function runtime secrets:

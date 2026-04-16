@@ -13,7 +13,7 @@ void main() {
     final validJson = {
       'id': 'match-1',
       'home_team': 'Rayon Sports',
-      'away_team': 'APR FC',
+      'away_team': 'Rayon Sports FC',
       'competition': 'Rwanda Premier League',
       'venue': 'Amahoro Stadium',
       'match_date': '2026-04-15T15:00:00Z',
@@ -32,7 +32,7 @@ void main() {
       final match = ClubMatch.fromJson(validJson);
       expect(match.id, 'match-1');
       expect(match.homeTeam, 'Rayon Sports');
-      expect(match.awayTeam, 'APR FC');
+      expect(match.awayTeam, 'Rayon Sports FC');
       expect(match.competition, 'Rwanda Premier League');
       expect(match.venue, 'Amahoro Stadium');
       expect(match.kickoffTime, '15:00');
@@ -86,7 +86,7 @@ void main() {
       return ClubMatch.fromJson({
         'id': 'match-tier',
         'home_team': 'Rayon',
-        'away_team': 'APR',
+        'away_team': 'Rayon Sports',
         'competition': 'League',
         'venue': 'Stadium',
         'match_date': saleStart.add(const Duration(days: 7)).toIso8601String(),
@@ -155,7 +155,7 @@ void main() {
         'match': {
           'id': 'match-1',
           'home_team': 'Rayon Sports',
-          'away_team': 'APR FC',
+          'away_team': 'Rayon Sports FC',
           'match_date': '2026-04-15T15:00:00Z',
           'is_on_sale': true,
           'capacity': 25000,
@@ -186,7 +186,7 @@ void main() {
         'match': {
           'id': 'match-2',
           'home_team': 'Rayon',
-          'away_team': 'APR',
+          'away_team': 'Rayon Sports',
           'match_date': '2026-05-01T15:00:00Z',
         },
         'user_id': 'user-1',
@@ -195,7 +195,7 @@ void main() {
         'status': 'active',
       });
 
-      expect(ticket.matchTitle, 'Rayon vs APR');
+      expect(ticket.matchTitle, 'Rayon vs Rayon Sports');
     });
 
     test('parses ticket without nested match (fallback)', () {
@@ -203,7 +203,7 @@ void main() {
         'id': 'ticket-3',
         'match_id': 'match-3',
         'home_team': 'Rayon',
-        'away_team': 'APR',
+        'away_team': 'Rayon Sports',
         'match_date': '2026-05-01T15:00:00Z',
         'user_id': 'user-1',
         'seat_type': 'general',

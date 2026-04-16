@@ -1,7 +1,7 @@
 import {
-  type SignedBiopayTokenPayload,
-  verifyBiopayToken,
-} from "./biopay_signed_token.ts";
+  type SignedBioPayTokenPayload,
+  verifyBioPayToken,
+} from "./BioPay_signed_token.ts";
 
 function readTrimmedString(
   value: unknown,
@@ -19,7 +19,7 @@ function readTrimmedString(
   return trimmed.slice(0, maxLength);
 }
 
-export function normalizeBiopayLivenessMetadata(
+export function normalizeBioPayLivenessMetadata(
   input: unknown,
 ): Record<string, unknown> | null {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
@@ -84,45 +84,45 @@ type LivenessChallengeClient = {
   from(table: string): any;
 };
 
-type BiopayLivenessChallengePayload = SignedBiopayTokenPayload & {
+type BioPayLivenessChallengePayload = SignedBioPayTokenPayload & {
   challenge_id?: unknown;
   requester_user_id?: unknown;
   club_id?: unknown;
   mode?: unknown;
 };
 
-export type BiopayLivenessMode = "enrollment" | "payment";
+export type BioPayLivenessMode = "enrollment" | "payment";
 
-export type ValidateBiopayLivenessOptions = {
+export type ValidateBioPayLivenessOptions = {
   adminClient: LivenessChallengeClient;
   requesterUserId: string;
   clubId: number;
-  mode: BiopayLivenessMode;
+  mode: BioPayLivenessMode;
 };
 
-export type BiopayLivenessValidationDependencies = {
+export type BioPayLivenessValidationDependencies = {
   verifyToken: (
     token: string,
     options: { expectedKind: string },
-  ) => Promise<SignedBiopayTokenPayload>;
+  ) => Promise<SignedBioPayTokenPayload>;
   now: () => Date;
 };
 
-const defaultDependencies: BiopayLivenessValidationDependencies = {
-  verifyToken: verifyBiopayToken,
+const defaultDependencies: BioPayLivenessValidationDependencies = {
+  verifyToken: verifyBioPayToken,
   now: () => new Date(),
 };
 
-export async function validateBiopayLivenessMetadata(
+export async function validateBioPayLivenessMetadata(
   input: unknown,
-  options: ValidateBiopayLivenessOptions,
-  dependencies: Partial<BiopayLivenessValidationDependencies> = {},
+  options: ValidateBioPayLivenessOptions,
+  dependencies: Partial<BioPayLivenessValidationDependencies> = {},
 ): Promise<Record<string, unknown>> {
-  const deps: BiopayLivenessValidationDependencies = {
+  const deps: BioPayLivenessValidationDependencies = {
     ...defaultDependencies,
     ...dependencies,
   };
-  const metadata = normalizeBiopayLivenessMetadata(input);
+  const metadata = normalizeBioPayLivenessMetadata(input);
   if (metadata == null) {
     throw new Error("BioPay liveness evidence is required.");
   }
@@ -186,7 +186,7 @@ export async function validateBiopayLivenessMetadata(
 
   const payload = await deps.verifyToken(challengeToken, {
     expectedKind: "liveness_challenge",
-  }) as BiopayLivenessChallengePayload;
+  }) as BioPayLivenessChallengePayload;
   const challengeId = readTrimmedString(payload.challenge_id, 128);
   if (challengeId == null) {
     throw new Error("BioPay liveness challenge is invalid.");
@@ -210,7 +210,7 @@ export async function validateBiopayLivenessMetadata(
   }
 
   const { data: challengeRow, error: challengeError } = await options.adminClient
-    .from("biopay_liveness_challenges")
+    .from("BioPay_liveness_challenges")
     .select("id, nonce, mode, expires_at, consumed_at")
     .eq("id", challengeId)
     .maybeSingle();
@@ -229,7 +229,7 @@ export async function validateBiopayLivenessMetadata(
   }
   if (
     readTrimmedString(challengeRow["nonce"], 128) !=
-      readTrimmedString(payload.nonce, 128)
+    readTrimmedString(payload.nonce, 128)
   ) {
     throw new Error("BioPay liveness challenge nonce is invalid.");
   }
@@ -244,7 +244,7 @@ export async function validateBiopayLivenessMetadata(
 
   const consumedAt = deps.now().toISOString();
   const { data: consumedChallenge, error: consumeError } = await options.adminClient
-    .from("biopay_liveness_challenges")
+    .from("BioPay_liveness_challenges")
     .update({ consumed_at: consumedAt })
     .eq("id", challengeId)
     .is("consumed_at", null)

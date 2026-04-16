@@ -5,11 +5,11 @@ import '../models/biopay_payment_review_args.dart';
 import '../widgets/biopay_camera_pipeline.dart';
 
 /// Scan mode: enrollment collects 5 samples, pay matches against DB.
-enum BiopayScanMode { enroll, pay }
+enum BioPayScanMode { enroll, pay }
 
 /// BioPay Scan — fullscreen camera pipeline for face capture.
-class BiopayScanScreen extends StatelessWidget {
-  const BiopayScanScreen({
+class BioPayScanScreen extends StatelessWidget {
+  const BioPayScanScreen({
     required this.mode,
     this.enrollmentDraft,
     this.onEnrollmentSuccess,
@@ -18,15 +18,15 @@ class BiopayScanScreen extends StatelessWidget {
     super.key,
   });
 
-  final BiopayScanMode mode;
-  final BiopayEnrollmentDraft? enrollmentDraft;
+  final BioPayScanMode mode;
+  final BioPayEnrollmentDraft? enrollmentDraft;
   final VoidCallback? onEnrollmentSuccess;
-  final ValueChanged<BiopayPaymentReviewArgs>? onMatchSuccess;
+  final ValueChanged<BioPayPaymentReviewArgs>? onMatchSuccess;
   final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) {
-    return BiopayCameraPipeline(
+    return BioPayCameraPipeline(
       mode: mode,
       enrollmentDraft: enrollmentDraft,
       onEnrollmentSuccess: onEnrollmentSuccess,

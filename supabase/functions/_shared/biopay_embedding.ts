@@ -1,9 +1,9 @@
-export const BIOPAY_EMBEDDING_LENGTH = 192;
+export const BioPay_EMBEDDING_LENGTH = 192;
 
-export function normalizeBiopayEmbedding(input: unknown): number[] {
-  if (!Array.isArray(input) || input.length !== BIOPAY_EMBEDDING_LENGTH) {
+export function normalizeBioPayEmbedding(input: unknown): number[] {
+  if (!Array.isArray(input) || input.length !== BioPay_EMBEDDING_LENGTH) {
     throw new Error(
-      `BioPay embedding must contain exactly ${BIOPAY_EMBEDDING_LENGTH} values.`,
+      `BioPay embedding must contain exactly ${BioPay_EMBEDDING_LENGTH} values.`,
     );
   }
 

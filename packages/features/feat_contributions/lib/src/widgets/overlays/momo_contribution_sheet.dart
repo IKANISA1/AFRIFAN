@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -68,6 +70,7 @@ Future<void> showMomoAmountEntrySheet(
 
   // Record the contribution in the database
   var recordedPending = false;
+  String? contributionId;
   if (groupId != null && context.mounted) {
     try {
       final container = ProviderScope.containerOf(context);
@@ -76,7 +79,7 @@ Future<void> showMomoAmountEntrySheet(
 
       if (userId != null) {
         final ref = 'MOMO-${DateTime.now().millisecondsSinceEpoch}';
-        await repo.contribute(
+        contributionId = await repo.contribute(
           groupId: groupId,
           userId: userId,
           amount: amount,
@@ -101,6 +104,7 @@ Future<void> showMomoAmountEntrySheet(
       amount: amount,
       title: title,
       recordedPending: recordedPending,
+      contributionId: contributionId,
     ),
   );
 }
@@ -177,10 +181,10 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
                   .toList(),
             ),
             const SizedBox(height: SpacingTokens.spacing5),
-            ClaymorphicButton(
-              label: 'LAUNCH MOMO DIALER',
-              width: double.infinity,
-              onPressed: () => Navigator.of(context).pop(_amount),
+            AfriButton(
+              label: 'Launch MOMO dialer',
+              fullWidth: true,
+              onTap: () => Navigator.of(context).pop(_amount),
             ),
           ],
         ),
@@ -263,19 +267,95 @@ class _UssdConfirmationSheet extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// Private Widgets — Success Dialog
+// Private Widgets — Payment Verification Dialog
 // ═══════════════════════════════════════════════════════════════
 
-class _ContributionSuccessDialog extends StatelessWidget {
+class _ContributionSuccessDialog extends StatefulWidget {
   const _ContributionSuccessDialog({
     required this.amount,
     required this.title,
     required this.recordedPending,
+    this.contributionId,
   });
 
   final int amount;
   final String title;
   final bool recordedPending;
+  final String? contributionId;
+
+  @override
+  State<_ContributionSuccessDialog> createState() =>
+      _ContributionSuccessDialogState();
+}
+
+class _ContributionSuccessDialogState
+    extends State<_ContributionSuccessDialog> {
+  /// `pending` → `verified` → `failed` → `timeout`
+  String _status = 'pending';
+  Timer? _pollTimer;
+  int _pollCount = 0;
+
+  // Poll every 5 seconds for up to 2 minutes (24 attempts).
+  static const int _maxPolls = 24;
+  static const Duration _pollInterval = Duration(seconds: 5);
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.recordedPending && widget.contributionId != null) {
+      _startPolling();
+    } else if (!widget.recordedPending) {
+      _status = 'error';
+    }
+  }
+
+  @override
+  void dispose() {
+    _pollTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startPolling() {
+    _pollTimer = Timer.periodic(_pollInterval, (_) => _checkStatus());
+  }
+
+  Future<void> _checkStatus() async {
+    final id = widget.contributionId;
+    if (id == null || !mounted) {
+      _pollTimer?.cancel();
+      return;
+    }
+
+    _pollCount++;
+
+    try {
+      final container = ProviderScope.containerOf(context);
+      final repo = container.read(clubRepositoryProvider);
+      final result = await repo.getContributionPaymentStatus(id);
+
+      if (!mounted) return;
+
+      if (result == 'verified') {
+        _pollTimer?.cancel();
+        setState(() => _status = 'verified');
+        return;
+      }
+      if (result == 'failed') {
+        _pollTimer?.cancel();
+        setState(() => _status = 'failed');
+        return;
+      }
+    } catch (_) {
+      // Network error during poll — continue polling
+    }
+
+    if (_pollCount >= _maxPolls) {
+      _pollTimer?.cancel();
+      if (mounted) {
+        setState(() => _status = 'timeout');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -284,6 +364,50 @@ class _ContributionSuccessDialog extends StatelessWidget {
       currencySymbol: context.afriCurrencySymbol,
     );
 
+    final IconData icon;
+    final Color iconColor;
+    final String heading;
+    final String body;
+
+    switch (_status) {
+      case 'verified':
+        icon = AfriIcons.statusSuccess;
+        iconColor = ColorTokens.success;
+        heading = 'PAYMENT CONFIRMED';
+        body = 'Your contribution of ${currency.format(widget.amount)} '
+            'has been verified and recorded.';
+        break;
+      case 'failed':
+        icon = Icons.warning_amber_rounded;
+        iconColor = ColorTokens.error;
+        heading = 'PAYMENT FAILED';
+        body = 'The payment could not be verified. '
+            'Check your MoMo balance and try again, or contact support.';
+        break;
+      case 'timeout':
+        icon = AfriIcons.statusPending;
+        iconColor = ColorTokens.warning;
+        heading = 'STILL PROCESSING';
+        body = 'Your payment is taking longer than usual. '
+            'Check the Group ledger for your updated status. '
+            'If you completed the MoMo transfer, it will appear shortly.';
+        break;
+      case 'error':
+        icon = Icons.warning_amber_rounded;
+        iconColor = ColorTokens.error;
+        heading = 'COULD NOT RECORD';
+        body = 'The MoMo dialer was launched but the contribution '
+            'could not be saved. Return to the Group and try again.';
+        break;
+      default: // 'pending'
+        icon = AfriIcons.statusPending;
+        iconColor = ColorTokens.warning;
+        heading = 'AWAITING PAYMENT';
+        body = 'Complete the MoMo payment on your phone. '
+            'Your contribution appears as "Processing" '
+            'until we receive confirmation.';
+    }
+
     return Dialog(
       backgroundColor: Colors.transparent,
       child: GlassCard(
@@ -291,29 +415,20 @@ class _ContributionSuccessDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              recordedPending
-                  ? AfriIcons.statusPending
-                  : AfriIcons.statusSuccess,
-              color: recordedPending
-                  ? ColorTokens.warning
-                  : ColorTokens.clubAccent,
-              size: 64,
-            ),
+            Icon(icon, color: iconColor, size: 64),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
-              recordedPending
-                  ? 'PENDING CONFIRMATION'
-                  : 'PAYMENT HANDOFF STARTED',
+              heading,
               style: TypographyTokens.monolithFont(
-                fontSize: 30,
+                fontSize: 28,
                 fontWeight: FontWeight.w800,
                 color: ColorTokens.onSurface,
               ),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
-              currency.format(amount),
+              currency.format(widget.amount),
               style: TypographyTokens.monolithFont(
                 fontSize: 34,
                 fontWeight: FontWeight.w800,
@@ -321,20 +436,45 @@ class _ContributionSuccessDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing2),
-            Text(title, style: TypographyTokens.bodySmall()),
+            Text(widget.title, style: TypographyTokens.bodySmall()),
             const SizedBox(height: SpacingTokens.spacing3),
             Text(
-              recordedPending
-                  ? 'Logged as pending. Moves to confirmed after receipt match.'
-                  : 'Complete the MoMo prompt. Retry from the circle if matching fails.',
+              body,
               textAlign: TextAlign.center,
               style: TypographyTokens.bodyMedium(),
             ),
+            if (_status == 'pending') ...[
+              const SizedBox(height: SpacingTokens.spacing3),
+              SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    ColorTokens.clubAccent,
+                  ),
+                ),
+              ),
+              const SizedBox(height: SpacingTokens.spacing2),
+              Text(
+                'Checking payment status…',
+                style: TypographyTokens.bodySmall(
+                  ColorTokens.onSurfaceVariant,
+                ),
+              ),
+            ],
+            if (_status == 'verified') ...[
+              const SizedBox(height: SpacingTokens.spacing3),
+              AfriInfoChip(
+                label: 'VERIFIED',
+                color: ColorTokens.success,
+              ),
+            ],
             const SizedBox(height: SpacingTokens.spacing4),
-            ClaymorphicButton(
-              label: 'BACK TO CIRCLE',
-              width: double.infinity,
-              onPressed: () => Navigator.of(context).pop(),
+            AfriButton(
+              label: _status == 'verified' ? 'Done' : 'Back to group',
+              fullWidth: true,
+              onTap: () => Navigator.of(context).pop(),
             ),
           ],
         ),
@@ -342,3 +482,4 @@ class _ContributionSuccessDialog extends StatelessWidget {
     );
   }
 }
+

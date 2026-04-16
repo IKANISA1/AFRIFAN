@@ -17,7 +17,7 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late final TextEditingController _nicknameController;
-  bool _isSaving = false;
+  bool _isBusy = false;
 
   @override
   void initState() {
@@ -36,9 +36,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   Future<void> _saveProfile() async {
     final profile = ref.read(currentUserProvider);
-    if (profile == null) return;
+    if (profile == null || _isBusy) return;
 
-    setState(() => _isSaving = true);
+    setState(() => _isBusy = true);
 
     final error = await ref
         .read(authStateProvider.notifier)
@@ -47,7 +47,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         );
 
     if (!mounted) return;
-    setState(() => _isSaving = false);
+    setState(() => _isBusy = false);
 
     if (error != null) {
       _showMessage(error);
@@ -129,35 +129,40 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 label: 'Nickname',
                 hint: 'Optional supporter nickname',
                 controller: _nicknameController,
+                maxLength: 50,
               ),
               const SizedBox(height: SpacingTokens.spacing6),
               AfriButton(
-                label: _isSaving ? 'Saving…' : 'Save changes',
+                label: _isBusy ? 'Saving…' : 'Save changes',
                 onTap: _saveProfile,
-                isLoading: _isSaving,
-                enabled: !_isSaving,
+                isLoading: _isBusy,
+                enabled: !_isBusy,
               ),
               const SizedBox(height: SpacingTokens.spacing8),
               GlassCard(
                 animate: false,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(18),
-                  onTap: () async {
-                    final confirmed = await showDeleteAccountConfirmDialog(
-                      context,
-                    );
-                    if (!context.mounted) return;
-                    if (!confirmed) return;
-                    final error = await ref
-                        .read(authStateProvider.notifier)
-                        .deleteAccount();
-                    if (!context.mounted) return;
-                    if (error != null) {
-                      _showMessage(error);
-                      return;
-                    }
-                    context.go('/onboarding');
-                  },
+                  onTap: _isBusy
+                      ? null
+                      : () async {
+                          final confirmed = await showDeleteAccountConfirmDialog(
+                            context,
+                          );
+                          if (!context.mounted) return;
+                          if (!confirmed) return;
+                          setState(() => _isBusy = true);
+                          final error = await ref
+                              .read(authStateProvider.notifier)
+                              .deleteAccount();
+                          if (!context.mounted) return;
+                          setState(() => _isBusy = false);
+                          if (error != null) {
+                            _showMessage(error);
+                            return;
+                          }
+                          context.go('/onboarding');
+                        },
                   child: Row(
                     children: [
                       Icon(

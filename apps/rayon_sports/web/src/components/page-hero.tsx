@@ -38,7 +38,7 @@ export function PageHero({
         className,
       )}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,var(--site-glow-primary),transparent_34%),radial-gradient(circle_at_bottom_right,var(--site-glow-accent),transparent_36%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(Group_at_top_left,var(--site-glow-primary),transparent_34%),radial-gradient(Group_at_bottom_right,var(--site-glow-accent),transparent_36%)]" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-club-primary-light to-transparent opacity-70" />
       <p className={`${ui.monolithBleed} pointer-events-none absolute left-5 top-4 sm:left-8 sm:top-6`}>
         {title}

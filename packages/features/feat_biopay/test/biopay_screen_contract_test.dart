@@ -20,8 +20,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          biopayProfileProvider.overrideWith((ref) => null),
-          biopayEnabledProvider.overrideWith((ref) => true),
+          BioPayProfileProvider.overrideWith((ref) => null),
+          BioPayEnabledProvider.overrideWith((ref) => true),
           currentUserProvider.overrideWith(
             (ref) => const UserProfile(
               id: 'user-1',
@@ -55,8 +55,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          biopayProfileProvider.overrideWith((ref) => null),
-          biopayEnabledProvider.overrideWith((ref) => true),
+          BioPayProfileProvider.overrideWith((ref) => null),
+          BioPayEnabledProvider.overrideWith((ref) => true),
           currentUserProvider.overrideWith(
             (ref) => const UserProfile(
               id: 'user-1',
@@ -76,7 +76,7 @@ void main() {
 
     await expectLater(
       find.byType(BioPayScreen),
-      matchesGoldenFile('goldens/biopay_screen.png'),
+      matchesGoldenFile('goldens/BioPay_screen.png'),
     );
   });
 }

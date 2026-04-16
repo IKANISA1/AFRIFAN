@@ -56,12 +56,10 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
       );
       final now = DateTime.now();
       final twoWeeks = now.add(const Duration(days: 14));
-      final dateFrom = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-      final dateTo = '${twoWeeks.year}-${twoWeeks.month.toString().padLeft(2, '0')}-${twoWeeks.day.toString().padLeft(2, '0')}';
 
       final fixtures = await repo.loadFixturesByDate(
-        dateFrom: dateFrom,
-        dateTo: dateTo,
+        dateFrom: now,
+        dateTo: twoWeeks,
         competitionSlug: selectedSlug,
         status: 'scheduled',
         limit: 3,

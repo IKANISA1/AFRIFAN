@@ -1,6 +1,6 @@
 import 'dart:math';
 
-/// Generates unique 6-digit numeric aliases for anonymous identities.
+/// Generates unique 6-digit numeric  for anonymous identities.
 class AliasGenerator {
   static final Random _random = Random.secure();
 

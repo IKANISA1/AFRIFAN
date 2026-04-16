@@ -1,4 +1,4 @@
-String biopayAmountInputLabel({String? currencyCode}) {
+String BioPayAmountInputLabel({String? currencyCode}) {
   final normalized = currencyCode?.trim();
   if (normalized == null || normalized.isEmpty) {
     return 'Amount';
@@ -6,7 +6,7 @@ String biopayAmountInputLabel({String? currencyCode}) {
   return 'Amount in $normalized';
 }
 
-String formatBiopayAmount({
+String formatBioPayAmount({
   required int amount,
   String? currencySymbol,
   String? currencyCode,

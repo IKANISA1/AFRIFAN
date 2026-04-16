@@ -90,7 +90,7 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
               Row(
                 children: [
                   Icon(
-                    Icons.language_rounded,
+                    AfriIcons.language,
                     size: 20,
                     color: ColorTokens.onSurfaceVariant,
                   ),
@@ -121,7 +121,7 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
                     dropdownColor: ColorTokens.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(12),
                     icon: Icon(
-                      Icons.expand_more_rounded,
+                      AfriIcons.chevronDown,
                       color: ColorTokens.onSurfaceVariant,
                       size: 20,
                     ),
@@ -149,21 +149,21 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
           child: Column(
             children: [
               _ToggleRow(
-                icon: Icons.notifications_active_rounded,
+                icon: AfriIcons.notificationsActive,
                 title: 'Match Kick-off Alerts',
                 value: _kickoffAlerts,
                 onChanged: _setKickoffAlerts,
               ),
               Divider(height: 1, color: ColorTokens.ghostBorder),
               _ToggleRow(
-                icon: Icons.check_circle_rounded,
+                icon: AfriIcons.checkGroup,
                 title: 'Prediction Settlement',
                 value: _settlementAlerts,
                 onChanged: _setSettlementAlerts,
               ),
               Divider(height: 1, color: ColorTokens.ghostBorder),
               _ToggleRow(
-                icon: Icons.sports_esports_rounded,
+                icon: AfriIcons.predict,
                 title: 'Friend Challenges',
                 value: _challengeAlerts,
                 onChanged: _setChallengeAlerts,

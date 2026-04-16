@@ -148,141 +148,141 @@ describe("admin browser API boundary", () => {
     const expected = {
       groups: [],
       contributions: [],
-      aliases: {},
-      monthlyTotal: 0,
+      : { },
+    monthlyTotal: 0,
     };
-    const fetchMock = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(jsonResponse(expected) as Response);
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse(expected) as Response);
 
-    await expect(getAdminContributionSnapshot(client, access)).resolves.toEqual(
-      expected,
-    );
-    expectFetchCall(fetchMock, `${origin}/api/admin/contributions`, "GET");
-  });
+  await expect(getAdminContributionSnapshot(client, access)).resolves.toEqual(
+    expected,
+  );
+  expectFetchCall(fetchMock, `${origin}/api/admin/contributions`, "GET");
+});
 
-  it("sends notifications through the scoped admin API in the browser", async () => {
-    const origin = window.location.origin;
-    const payload = {
-      title: "Kickoff moved",
-      body: "Kickoff is now 18:00",
-      audience: "all_fans" as const,
-      deliveryMode: "send_now" as const,
-    };
-    const expected = {
-      notification: { id: "notification-1" },
-      delivery: { status: "sent" },
-    };
-    const fetchMock = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(jsonResponse(expected) as Response);
+it("sends notifications through the scoped admin API in the browser", async () => {
+  const origin = window.location.origin;
+  const payload = {
+    title: "Kickoff moved",
+    body: "Kickoff is now 18:00",
+    audience: "all_fans" as const,
+    deliveryMode: "send_now" as const,
+  };
+  const expected = {
+    notification: { id: "notification-1" },
+    delivery: { status: "sent" },
+  };
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse(expected) as Response);
 
-    await expect(sendAdminNotification(client, payload)).resolves.toEqual(
-      expected,
-    );
-    expectFetchCall(
-      fetchMock,
-      `${origin}/api/admin/notifications`,
-      "POST",
-      JSON.stringify(payload),
-    );
-  });
+  await expect(sendAdminNotification(client, payload)).resolves.toEqual(
+    expected,
+  );
+  expectFetchCall(
+    fetchMock,
+    `${origin}/api/admin/notifications`,
+    "POST",
+    JSON.stringify(payload),
+  );
+});
 
-  it("loads sms monitoring through the scoped admin API in the browser", async () => {
-    const origin = window.location.origin;
-    const expected = { metrics: { "SMS captured": 2 }, syncRuns: [] };
-    const fetchMock = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(jsonResponse(expected) as Response);
+it("loads sms monitoring through the scoped admin API in the browser", async () => {
+  const origin = window.location.origin;
+  const expected = { metrics: { "SMS captured": 2 }, syncRuns: [] };
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse(expected) as Response);
 
-    await expect(getAdminSmsSnapshot(client, access)).resolves.toEqual(
-      expected,
-    );
-    expectFetchCall(fetchMock, `${origin}/api/admin/sms`, "GET");
-  });
+  await expect(getAdminSmsSnapshot(client, access)).resolves.toEqual(
+    expected,
+  );
+  expectFetchCall(fetchMock, `${origin}/api/admin/sms`, "GET");
+});
 
-  it("loads wallet operations through the scoped admin API in the browser", async () => {
-    const origin = window.location.origin;
-    const expected = {
-      overview: [
-        {
-          userId: "supporter-1",
-          displayName: "UAT Supporter Alpha",
-          balance: 1250,
-        },
-      ],
-      ledger: [],
-    };
-    const fetchMock = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(jsonResponse(expected) as Response);
-
-    await expect(
-      getAdminFetWalletSnapshot(client, access, {
-        search: "Alpha",
+it("loads wallet operations through the scoped admin API in the browser", async () => {
+  const origin = window.location.origin;
+  const expected = {
+    overview: [
+      {
         userId: "supporter-1",
-      }),
-    ).resolves.toEqual(expected);
-    expectFetchCall(
-      fetchMock,
-      `${origin}/api/admin/gamification-wallet?search=Alpha&user_id=supporter-1`,
-      "GET",
-    );
-  });
+        displayName: "UAT Supporter Alpha",
+        balance: 1250,
+      },
+    ],
+    ledger: [],
+  };
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse(expected) as Response);
 
-  it("saves wallet adjustments through the scoped admin API in the browser", async () => {
-    const origin = window.location.origin;
-    const payload = {
+  await expect(
+    getAdminFetWalletSnapshot(client, access, {
+      search: "Alpha",
       userId: "supporter-1",
-      amount: 125,
-      reason: "Manual reconciliation",
-      idempotencyKey: "wallet-adjustment-1",
-    };
-    const expected = {
-      status: "success",
-      amount: 125,
-      balance: 625,
-      referenceId: "wallet-adjustment-ref",
-    };
-    const fetchMock = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(jsonResponse(expected) as Response);
+    }),
+  ).resolves.toEqual(expected);
+  expectFetchCall(
+    fetchMock,
+    `${origin}/api/admin/gamification-wallet?search=Alpha&user_id=supporter-1`,
+    "GET",
+  );
+});
 
-    await expect(
-      adjustAdminFetWalletBalance(client, access, payload),
-    ).resolves.toEqual(expected);
-    expectFetchCall(
-      fetchMock,
-      `${origin}/api/admin/gamification-wallet`,
-      "POST",
-      JSON.stringify(payload),
-    );
-  });
+it("saves wallet adjustments through the scoped admin API in the browser", async () => {
+  const origin = window.location.origin;
+  const payload = {
+    userId: "supporter-1",
+    amount: 125,
+    reason: "Manual reconciliation",
+    idempotencyKey: "wallet-adjustment-1",
+  };
+  const expected = {
+    status: "success",
+    amount: 125,
+    balance: 625,
+    referenceId: "wallet-adjustment-ref",
+  };
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse(expected) as Response);
 
-  it("saves squad players through the scoped admin API in the browser", async () => {
-    const origin = window.location.origin;
-    const payload = {
-      id: null,
-      name: "Jean Bosco",
-      role: "Midfielder",
-      number: 8,
-      nationality: "Rwanda",
-      bio: "Creative midfielder",
-      imageUrl: "",
-      isActive: true,
-    };
-    const fetchMock = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(jsonResponse({ success: true }) as Response);
+  await expect(
+    adjustAdminFetWalletBalance(client, access, payload),
+  ).resolves.toEqual(expected);
+  expectFetchCall(
+    fetchMock,
+    `${origin}/api/admin/gamification-wallet`,
+    "POST",
+    JSON.stringify(payload),
+  );
+});
 
-    await expect(
-      saveAdminSquadPlayer(client, access, payload),
-    ).resolves.toBeUndefined();
-    expectFetchCall(
-      fetchMock,
-      `${origin}/api/admin/squad`,
-      "POST",
-      JSON.stringify(payload),
-    );
-  });
+it("saves squad players through the scoped admin API in the browser", async () => {
+  const origin = window.location.origin;
+  const payload = {
+    id: null,
+    name: "Jean Bosco",
+    role: "Midfielder",
+    number: 8,
+    nationality: "Rwanda",
+    bio: "Creative midfielder",
+    imageUrl: "",
+    isActive: true,
+  };
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse({ success: true }) as Response);
+
+  await expect(
+    saveAdminSquadPlayer(client, access, payload),
+  ).resolves.toBeUndefined();
+  expectFetchCall(
+    fetchMock,
+    `${origin}/api/admin/squad`,
+    "POST",
+    JSON.stringify(payload),
+  );
+});
 });

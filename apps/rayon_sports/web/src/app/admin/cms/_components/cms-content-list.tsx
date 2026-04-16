@@ -27,7 +27,6 @@ export function CMSContentList({
   return (
     <AdminSurface
       title="Article queue"
-      description="Drafts, live stories, and featured placement."
       actions={
         <button
           type="button"

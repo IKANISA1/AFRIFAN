@@ -145,7 +145,7 @@ class $config_class implements ClubConfig {
   List<String> get supportedLanguages => const [$DART_LANGS];
 
   @override
-  bool get hasBiopay => true;
+  bool get hasBioPay => true;
 
   @override
   bool get hasFanClubs => true;
@@ -171,7 +171,7 @@ class $config_class implements ClubConfig {
 
   @override
   Map<String, bool> get features => {
-    'biopay': hasBiopay,
+    'BioPay': hasBioPay,
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,
@@ -189,7 +189,7 @@ CFGEOF
   mkdir -p "$APP_DIR/assets/crest"
   mkdir -p "$APP_DIR/assets/images"
   mkdir -p "$APP_DIR/assets/flavors"
-  mkdir -p "$APP_DIR/assets/models/biopay"
+  mkdir -p "$APP_DIR/assets/models/BioPay"
 
   # Copy shared files from rayon_sports
   cp "$TEMPLATE_APP/lib/bootstrap.dart" "$APP_DIR/lib/bootstrap.dart"
@@ -208,9 +208,9 @@ CFGEOF
     cp -r "$TEMPLATE_APP/assets/images/"* "$APP_DIR/assets/images/" 2>/dev/null || true
   fi
 
-  # Copy biopay model assets
-  if [ -d "$TEMPLATE_APP/assets/models/biopay" ]; then
-    cp -r "$TEMPLATE_APP/assets/models/biopay/"* "$APP_DIR/assets/models/biopay/" 2>/dev/null || true
+  # Copy BioPay model assets
+  if [ -d "$TEMPLATE_APP/assets/models/BioPay" ]; then
+    cp -r "$TEMPLATE_APP/assets/models/BioPay/"* "$APP_DIR/assets/models/BioPay/" 2>/dev/null || true
   fi
 
   # main.dart
@@ -271,8 +271,8 @@ dependencies:
     path: ../../packages/features/feat_contributions
   feat_shop:
     path: ../../packages/features/feat_shop
-  feat_biopay:
-    path: ../../packages/features/feat_biopay
+  feat_BioPay:
+    path: ../../packages/features/feat_BioPay
   feat_sms_ledger:
     path: ../../packages/features/feat_sms_ledger
   feat_settings:
@@ -311,7 +311,7 @@ flutter:
     - assets/crest/
     - assets/flavors/
     - assets/images/
-    - assets/models/biopay/
+    - assets/models/BioPay/
 
 resolution: workspace
 APPEOF

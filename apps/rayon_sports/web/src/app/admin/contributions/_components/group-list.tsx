@@ -62,7 +62,6 @@ export function ContributionGroupList({
   return (
     <AdminSurface
       title="Contribution groups"
-      description="Funding progress, ownership, and group health."
       actions={
         <button
           type="button"
@@ -138,7 +137,7 @@ export function ContributionGroupList({
             <tbody>
               {filteredGroups.map((group) => {
                 const creatorAlias = group.creatorId
-                  ? snapshot.aliases[group.creatorId] ?? "000000"
+                  ? snapshot.[group.creatorId] ?? "000000"
                   : "000000";
 
                 return (

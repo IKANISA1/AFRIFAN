@@ -189,7 +189,6 @@ export default function AdminSmsMonitorPage() {
       <AdminPageHeader
         eyebrow="SMS pipeline"
         title="MoMo SMS ingestion health"
-        description="Monitor pipeline health, recent sync runs, and operational gaps in one place."
       />
 
       {loadError && !loading ? (

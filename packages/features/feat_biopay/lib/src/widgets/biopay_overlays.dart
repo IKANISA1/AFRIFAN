@@ -34,7 +34,7 @@ Future<void> showNfcPairingSheet(BuildContext context) {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: BorderTokens.all(
-                      color: BiopayTokens.infoAccent,
+                      color: BioPayTokens.infoAccent,
                       opacity: 0.38 - (index * 0.1),
                     ),
                   ),
@@ -67,8 +67,8 @@ Future<void> showNfcPairingSheet(BuildContext context) {
   );
 }
 
-class BiopayLivenessPromptOverlay extends StatelessWidget {
-  const BiopayLivenessPromptOverlay({
+class BioPayLivenessPromptOverlay extends StatelessWidget {
+  const BioPayLivenessPromptOverlay({
     required this.title,
     required this.helperText,
     required this.currentStep,

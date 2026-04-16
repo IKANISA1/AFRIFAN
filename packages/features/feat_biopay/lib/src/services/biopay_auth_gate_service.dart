@@ -1,10 +1,10 @@
 import 'package:local_auth/local_auth.dart';
 
 /// Actions that require device authentication before proceeding.
-enum BiopayAuthAction { enrollment, revocation, paymentHandoff }
+enum BioPayAuthAction { enrollment, revocation, paymentHandoff }
 
 /// Gate result status.
-enum BiopayAuthGateStatus {
+enum BioPayAuthGateStatus {
   authorized,
   unavailable,
   canceled,
@@ -13,32 +13,32 @@ enum BiopayAuthGateStatus {
 }
 
 /// Result of a device authentication attempt.
-class BiopayAuthGateResult {
-  const BiopayAuthGateResult._({required this.status, required this.message});
+class BioPayAuthGateResult {
+  const BioPayAuthGateResult._({required this.status, required this.message});
 
-  const BiopayAuthGateResult.authorized()
-    : this._(status: BiopayAuthGateStatus.authorized, message: '');
+  const BioPayAuthGateResult.authorized()
+    : this._(status: BioPayAuthGateStatus.authorized, message: '');
 
-  const BiopayAuthGateResult.unavailable(String message)
-    : this._(status: BiopayAuthGateStatus.unavailable, message: message);
+  const BioPayAuthGateResult.unavailable(String message)
+    : this._(status: BioPayAuthGateStatus.unavailable, message: message);
 
-  const BiopayAuthGateResult.canceled(String message)
-    : this._(status: BiopayAuthGateStatus.canceled, message: message);
+  const BioPayAuthGateResult.canceled(String message)
+    : this._(status: BioPayAuthGateStatus.canceled, message: message);
 
-  const BiopayAuthGateResult.lockedOut(String message)
-    : this._(status: BiopayAuthGateStatus.lockedOut, message: message);
+  const BioPayAuthGateResult.lockedOut(String message)
+    : this._(status: BioPayAuthGateStatus.lockedOut, message: message);
 
-  const BiopayAuthGateResult.failed(String message)
-    : this._(status: BiopayAuthGateStatus.failed, message: message);
+  const BioPayAuthGateResult.failed(String message)
+    : this._(status: BioPayAuthGateStatus.failed, message: message);
 
-  final BiopayAuthGateStatus status;
+  final BioPayAuthGateStatus status;
   final String message;
 
-  bool get isAuthorized => status == BiopayAuthGateStatus.authorized;
+  bool get isAuthorized => status == BioPayAuthGateStatus.authorized;
 }
 
 /// Abstract adapter for testability.
-abstract class BiopayAuthAdapter {
+abstract class BioPayAuthAdapter {
   Future<bool> isDeviceSupported();
 
   Future<bool> authenticate({
@@ -50,8 +50,8 @@ abstract class BiopayAuthAdapter {
 }
 
 /// Default adapter using the `local_auth` package.
-class LocalAuthBiopayAuthAdapter implements BiopayAuthAdapter {
-  LocalAuthBiopayAuthAdapter({LocalAuthentication? localAuthentication})
+class LocalAuthBioPayAuthAdapter implements BioPayAuthAdapter {
+  LocalAuthBioPayAuthAdapter({LocalAuthentication? localAuthentication})
     : _localAuthentication = localAuthentication ?? LocalAuthentication();
 
   final LocalAuthentication _localAuthentication;
@@ -79,17 +79,17 @@ class LocalAuthBiopayAuthAdapter implements BiopayAuthAdapter {
 
 /// Gate that requires device biometric/passcode authentication
 /// before performing sensitive BioPay operations.
-class BiopayAuthGateService {
-  BiopayAuthGateService({BiopayAuthAdapter? adapter})
-    : _adapter = adapter ?? LocalAuthBiopayAuthAdapter();
+class BioPayAuthGateService {
+  BioPayAuthGateService({BioPayAuthAdapter? adapter})
+    : _adapter = adapter ?? LocalAuthBioPayAuthAdapter();
 
-  final BiopayAuthAdapter _adapter;
+  final BioPayAuthAdapter _adapter;
 
-  Future<BiopayAuthGateResult> authorize(BiopayAuthAction action) async {
+  Future<BioPayAuthGateResult> authorize(BioPayAuthAction action) async {
     try {
       final supported = await _adapter.isDeviceSupported();
       if (!supported) {
-        return const BiopayAuthGateResult.unavailable(
+        return const BioPayAuthGateResult.unavailable(
           'Set up device security before using BioPay.',
         );
       }
@@ -100,44 +100,44 @@ class BiopayAuthGateService {
         persistAcrossBackgrounding: true,
       );
       if (authenticated) {
-        return const BiopayAuthGateResult.authorized();
+        return const BioPayAuthGateResult.authorized();
       }
 
-      return BiopayAuthGateResult.canceled(action.canceledMessage);
+      return BioPayAuthGateResult.canceled(action.canceledMessage);
     } catch (error) {
       if (error.toString().contains('LockedOut') ||
           error.toString().contains('lockout')) {
-        return const BiopayAuthGateResult.lockedOut(
+        return const BioPayAuthGateResult.lockedOut(
           'Device auth locked. Unlock and try again.',
         );
       }
-      return BiopayAuthGateResult.failed(action.failureMessage);
+      return BioPayAuthGateResult.failed(action.failureMessage);
     }
   }
 }
 
-extension on BiopayAuthAction {
+extension on BioPayAuthAction {
   String get localizedReason => switch (this) {
-    BiopayAuthAction.enrollment =>
+    BioPayAuthAction.enrollment =>
       'Confirm your identity before BioPay saves this face enrollment.',
-    BiopayAuthAction.revocation =>
+    BioPayAuthAction.revocation =>
       'Confirm your identity before BioPay revokes this face enrollment.',
-    BiopayAuthAction.paymentHandoff =>
+    BioPayAuthAction.paymentHandoff =>
       'Confirm your identity before BioPay opens the payment dialer.',
   };
 
   String get canceledMessage => switch (this) {
-    BiopayAuthAction.enrollment => 'Enrollment canceled.',
-    BiopayAuthAction.revocation => 'Revocation canceled.',
-    BiopayAuthAction.paymentHandoff => 'Payment canceled.',
+    BioPayAuthAction.enrollment => 'Enrollment canceled.',
+    BioPayAuthAction.revocation => 'Revocation canceled.',
+    BioPayAuthAction.paymentHandoff => 'Payment canceled.',
   };
 
   String get failureMessage => switch (this) {
-    BiopayAuthAction.enrollment =>
+    BioPayAuthAction.enrollment =>
       'BioPay could not verify your identity for enrollment. Try again.',
-    BiopayAuthAction.revocation =>
+    BioPayAuthAction.revocation =>
       'BioPay could not verify your identity for revocation. Try again.',
-    BiopayAuthAction.paymentHandoff =>
+    BioPayAuthAction.paymentHandoff =>
       'Identity verification failed. Try again.',
   };
 }

@@ -88,7 +88,7 @@
 
         <!-- BioPay NFC Host Card Emulation Service -->
         <service
-            android:name=".BiopayNfcHostApduService"
+            android:name=".BioPayNfcHostApduService"
             android:exported="true"
             android:permission="android.permission.BIND_NFC_SERVICE">
             <intent-filter>

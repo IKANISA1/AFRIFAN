@@ -56,7 +56,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         ...groups.take(2).map((group) {
           final total = (group['current_total'] as num?)?.toInt() ?? 0;
           final currencySymbol = RuntimeBranding.displayCurrencySymbol;
-          return 'CONTRIBUTIONS  •  ${group['name']?.toString() ?? 'Circle'} at $currencySymbol $total';
+          return 'CONTRIBUTIONS  •  ${group['name']?.toString() ?? 'Group'} at $currencySymbol $total';
         }),
       ];
 
@@ -153,13 +153,13 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
             _MetricCard(
               label: 'TOTAL USERS',
               value: '${_metrics.totalUsers}',
-              icon: Icons.people_alt_rounded,
+              icon: AfriIcons.people,
             ),
             const SizedBox(width: SpacingTokens.spacing3),
             _MetricCard(
-              label: 'ACTIVE CIRCLES',
+              label: 'ACTIVE Groups',
               value: '${_metrics.activeGroups}',
-              icon: Icons.group_work_rounded,
+              icon: AfriIcons.groups,
             ),
           ],
         ),
@@ -169,13 +169,13 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
             _MetricCard(
               label: 'TX TODAY',
               value: '${_metrics.transactionsToday}',
-              icon: Icons.receipt_long_rounded,
+              icon: AfriIcons.myPicks,
             ),
             const SizedBox(width: SpacingTokens.spacing3),
             _MetricCard(
               label: 'TICKETS SOLD',
               value: '${_metrics.ticketsSold}',
-              icon: Icons.confirmation_number_rounded,
+              icon: AfriIcons.tickets,
             ),
           ],
         ),
@@ -195,49 +195,49 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         _AdminActionTile(
           title: 'Manage CMS',
           subtitle: 'News articles, banners, and content surfaces',
-          icon: Icons.article_rounded,
+          icon: AfriIcons.article,
           onTap: () => context.push('/admin/cms'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
           title: 'Create Match',
           subtitle: 'Fixture setup, zoning, and ticket controls',
-          icon: Icons.sports_soccer_rounded,
+          icon: AfriIcons.predict,
           onTap: () => context.push('/admin/matches'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
           title: 'View Contributions',
           subtitle: 'Monitor club and community fundraising',
-          icon: Icons.volunteer_activism_rounded,
+          icon: AfriIcons.contribute,
           onTap: () => context.push('/admin/contributions'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
           title: 'Send Notification',
           subtitle: 'Tier, group, and all-fan push delivery',
-          icon: Icons.notifications_active_rounded,
+          icon: AfriIcons.notificationsActive,
           onTap: () => context.push('/admin/notifications'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
           title: 'Settle Fixtures',
           subtitle: 'Enter results and grade prediction markets',
-          icon: Icons.scoreboard_rounded,
+          icon: AfriIcons.scoreboard,
           onTap: () => context.push('/admin/settle'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
           title: 'Manage Competitions',
           subtitle: 'Add, edit, and toggle supported leagues and cups',
-          icon: Icons.emoji_events_rounded,
+          icon: AfriIcons.rank,
           onTap: () => context.push('/admin/competitions'),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         _AdminActionTile(
           title: 'SMS Sync Monitor',
           subtitle: 'MoMo SMS ingestion pipeline health',
-          icon: Icons.sms_rounded,
+          icon: AfriIcons.sms,
           onTap: () => context.push('/admin/sms-monitor'),
         ),
       ],
@@ -286,7 +286,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.lock_rounded,
+                      AfriIcons.lock,
                       size: 48,
                       color: ColorTokens.onSurfaceVariant,
                     ),
@@ -304,10 +304,10 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                       style: TypographyTokens.bodyMedium(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing6),
-                    ClaymorphicButton(
-                      label: 'GO BACK',
-                      width: double.infinity,
-                      onPressed: () => context.pop(),
+                    AfriButton(
+                      label: 'Go back',
+                      fullWidth: true,
+                      onTap: () => context.pop(),
                     ),
                   ],
                 ),
@@ -329,7 +329,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                Icons.error_outline_rounded,
+                AfriIcons.statusError,
                 size: 48,
                 color: ColorTokens.onSurfaceVariant,
               ),
@@ -339,10 +339,10 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                 style: TypographyTokens.bodyLarge(),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
-              ClaymorphicButton(
-                label: 'RETRY',
-                width: double.infinity,
-                onPressed: () {
+              AfriButton(
+                label: 'Retry',
+                fullWidth: true,
+                onTap: () {
                   setState(() {
                     _isLoading = true;
                     _error = null;
@@ -438,7 +438,7 @@ class _AdminActionTile extends StatelessWidget {
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing4),
-          const Icon(Icons.arrow_forward_rounded),
+          const Icon(AfriIcons.forward),
         ],
       ),
     );

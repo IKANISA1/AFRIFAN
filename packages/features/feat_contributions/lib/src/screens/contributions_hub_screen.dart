@@ -72,7 +72,7 @@ class _ContributionsHubScreenState
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _error = 'Contribution circles are temporarily unavailable.';
+        _error = 'Contribution Groups are temporarily unavailable.';
       });
     }
   }
@@ -233,9 +233,9 @@ class _ContributionsHubScreenState
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               _HubCard(
-                title: 'MY CIRCLES',
+                title: 'MY Groups',
                 subtitle: _groups.isEmpty
-                    ? 'No circles yet.'
+                    ? 'No Groups yet.'
                     : '$_groupsCountLabel active.',
                 accent: ColorTokens.success,
                 metricLabel: '$privateGroups PRIVATE',
@@ -298,14 +298,14 @@ class _ContributionsHubScreenState
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               AfriSectionCard(
-                title: 'Live circles',
+                title: 'Live Groups',
                 child: Column(
                   children: [
                     if (_isLoading)
                       const AfriSkeletonList()
                     else if (_error != null)
                       AfriStateView.offline(
-                        title: 'Circles unavailable',
+                        title: 'Groups unavailable',
                         message: _error!,
                         actionLabel: 'Retry',
                         onAction: _loadGroups,
@@ -314,13 +314,13 @@ class _ContributionsHubScreenState
                     else if (_groups.isEmpty)
                       const AfriEmptyView(
                         compact: true,
-                        title: 'No circles yet',
+                        title: 'No Groups yet',
                         icon: AfriIcons.clubZone,
                       )
                     else
                       ..._groups.take(3).map((group) {
                         final groupId = group['id']?.toString() ?? '';
-                        final name = group['name']?.toString() ?? 'Circle';
+                        final name = group['name']?.toString() ?? 'Group';
                         final currentTotal =
                             (group['current_total'] as num?)?.toInt() ?? 0;
                         final targetAmount =
@@ -361,12 +361,12 @@ class _ContributionsHubScreenState
               ),
               const SizedBox(height: SpacingTokens.sectionGap),
               AfriButton(
-                label: 'Start a circle',
+                label: 'Start a Group',
                 onTap: () => context.push('/contribute/create'),
               ),
               const SizedBox(height: SpacingTokens.listItemGap),
               AfriButton(
-                label: 'Join a circle',
+                label: 'Join a Group',
                 icon: AfriIcons.friend,
                 variant: AfriButtonVariant.outline,
                 onTap: () => context.push('/contribute/join'),
@@ -379,7 +379,7 @@ class _ContributionsHubScreenState
   }
 
   String get _groupsCountLabel =>
-      _groups.length == 1 ? '1 circle is' : '${_groups.length} circles are';
+      _groups.length == 1 ? '1 Group is' : '${_groups.length} Groups are';
 }
 
 class _HubCard extends StatelessWidget {

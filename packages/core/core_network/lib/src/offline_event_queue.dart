@@ -24,7 +24,7 @@ import 'operational_health_service.dart';
 ///
 /// // This call will either send immediately (online) or queue (offline).
 /// await OfflineEventQueue.enqueue(
-///   service: 'biopay',
+///   service: 'BioPay',
 ///   component: 'verification',
 ///   message: 'Fingerprint scan timeout',
 ///   status: OperationalHealthStatus.error,

@@ -71,13 +71,18 @@ class AfriScreenScaffold extends StatelessWidget {
                         Semantics(
                           header: true,
                           child: Text(
-                            title!,
+                            title!.toUpperCase(),
                             style: theme.textTheme.displayMedium?.copyWith(
                               color: colors.primaryText,
+                              fontWeight: FontWeight.w900,
+                              fontStyle: FontStyle.italic,
+                              letterSpacing: -1.0,
+                              height: 0.9,
+                              fontFamily: 'Display',
                             ),
                           ),
                         ),
-                        const SizedBox(height: SpacingTokens.spacing7),
+                        const SizedBox(height: SpacingTokens.spacing8),
                       ],
                       child,
                     ],

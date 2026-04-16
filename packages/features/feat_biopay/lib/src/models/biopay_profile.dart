@@ -6,8 +6,8 @@ import 'package:core_utils/core_utils.dart' as jh;
 /// The payment route type is generic (not MoMo-specific):
 /// - `phoneNumber`: mobile money number (MoMo, M-Pesa, etc.)
 /// - `code`: merchant/agent code
-class BiopayProfile {
-  const BiopayProfile({
+class BioPayProfile {
+  const BioPayProfile({
     required this.id,
     required this.publicId,
     required this.userId,
@@ -64,8 +64,8 @@ class BiopayProfile {
       AfriCountryCatalog.byIsoCode(countryCode) ??
       AfriCountryCatalog.defaultCountry;
 
-  factory BiopayProfile.fromJson(Map<String, dynamic> json) {
-    return BiopayProfile(
+  factory BioPayProfile.fromJson(Map<String, dynamic> json) {
+    return BioPayProfile(
       id: jh.asStringOrNull(json['id']) ?? '',
       publicId: jh.asStringOrNull(json['public_id']) ?? '',
       userId: jh.asStringOrNull(json['user_id']) ?? '',
@@ -79,7 +79,7 @@ class BiopayProfile {
           jh.asStringOrNull(json['country_code']) ??
           AfriCountryCatalog.defaultCountry.isoCode,
       active: jh.asBool(json['active']),
-      consentVersion: jh.asStringOrNull(json['consent_version']) ?? 'biopay-v1',
+      consentVersion: jh.asStringOrNull(json['consent_version']) ?? 'BioPay-v1',
       consentAt: jh.parseDateTime(json['consent_at']),
       createdAt: jh.parseDateTime(json['created_at']),
       updatedAt: jh.parseDateTime(json['updated_at']),

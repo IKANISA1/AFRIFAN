@@ -37,7 +37,7 @@ void main() {
 
   testWidgets('settings does not show removed items', (tester) async {
     await tester.pumpWidget(
-      _buildSettingsApp(config: const _FakeClubConfig(hasBiopay: true)),
+      _buildSettingsApp(config: const _FakeClubConfig(hasBioPay: true)),
     );
     await tester.pumpAndSettle();
 
@@ -82,7 +82,7 @@ void main() {
 }
 
 Widget _buildSettingsApp({_FakeClubConfig? config}) {
-  final effectiveConfig = config ?? const _FakeClubConfig(hasBiopay: false);
+  final effectiveConfig = config ?? const _FakeClubConfig(hasBioPay: false);
   final router = GoRouter(
     initialLocation: '/settings',
     routes: <RouteBase>[
@@ -106,10 +106,10 @@ Widget _buildSettingsApp({_FakeClubConfig? config}) {
 }
 
 class _FakeClubConfig implements ClubConfig {
-  const _FakeClubConfig({required this.hasBiopay});
+  const _FakeClubConfig({required this.hasBioPay});
 
   @override
-  final bool hasBiopay;
+  final bool hasBioPay;
 
   @override
   String get appName => 'Gikundiro';
@@ -160,7 +160,7 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   Map<String, bool> get features => <String, bool>{
-    'biopay': hasBiopay,
+    'BioPay': hasBioPay,
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,

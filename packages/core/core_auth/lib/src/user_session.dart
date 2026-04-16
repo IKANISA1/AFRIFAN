@@ -1,6 +1,6 @@
 /// Represents the current user session.
 ///
-/// "Anonymous Identity" — users are identified by 6-digit numeric aliases.
+/// "Anonymous Identity" — users are identified by 6-digit numeric .
 class UserSession {
   final String userId;
   final String clubId;

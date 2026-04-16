@@ -14,29 +14,29 @@ import 'biopay_scan_screen.dart';
 
 enum _RegisterStep { form, scan, success }
 
-class BiopayRegisterScreen extends ConsumerStatefulWidget {
-  const BiopayRegisterScreen({super.key});
+class BioPayRegisterScreen extends ConsumerStatefulWidget {
+  const BioPayRegisterScreen({super.key});
 
   @override
-  ConsumerState<BiopayRegisterScreen> createState() =>
-      _BiopayRegisterScreenState();
+  ConsumerState<BioPayRegisterScreen> createState() =>
+      _BioPayRegisterScreenState();
 }
 
-class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
+class _BioPayRegisterScreenState extends ConsumerState<BioPayRegisterScreen> {
   final _recipientController = TextEditingController();
   PaymentRecipientType _routeType = PaymentRecipientType.phoneNumber;
   String? _error;
   _RegisterStep _step = _RegisterStep.form;
-  BiopayEnrollmentDraft? _draft;
+  BioPayEnrollmentDraft? _draft;
 
   AfriCountry get _country => AfriCountryCatalog.defaultCountry;
 
   @override
   void initState() {
     super.initState();
-    _recipientController.text = initialBiopayRecipientValue(
+    _recipientController.text = initialBioPayRecipientValue(
       _routeType,
-      ref.read(biopayProfileProvider).valueOrNull,
+      ref.read(BioPayProfileProvider).valueOrNull,
       ref.read(currentUserProvider),
       _country,
     );
@@ -52,9 +52,9 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
     setState(() {
       _routeType = routeType;
       _error = null;
-      _recipientController.text = initialBiopayRecipientValue(
+      _recipientController.text = initialBioPayRecipientValue(
         routeType,
-        ref.read(biopayProfileProvider).valueOrNull,
+        ref.read(BioPayProfileProvider).valueOrNull,
         ref.read(currentUserProvider),
         _country,
       );
@@ -62,7 +62,7 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
   }
 
   void _startEnrollment() {
-    final validationError = validateBiopayRecipient(
+    final validationError = validateBioPayRecipient(
       routeType: _routeType,
       value: _recipientController.text,
       country: _country,
@@ -73,19 +73,19 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
     }
 
     final user = ref.read(currentUserProvider);
-    final alias = biopayEnrollmentAlias(user);
+    final alias = BioPayEnrollmentAlias(user);
 
     setState(() {
-      _draft = BiopayEnrollmentDraft(
+      _draft = BioPayEnrollmentDraft(
         displayName: alias,
         routeType: _routeType,
-        recipientValue: normalizeBiopayRecipient(
+        recipientValue: normalizeBioPayRecipient(
           routeType: _routeType,
           value: _recipientController.text,
           country: _country,
         ),
         countryCode: _country.isoCode,
-        consentVersion: 'biopay-v1',
+        consentVersion: 'BioPay-v1',
       );
       _step = _RegisterStep.scan;
     });
@@ -95,8 +95,8 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
   Widget build(BuildContext context) {
     return switch (_step) {
       _RegisterStep.form => _buildForm(context),
-      _RegisterStep.scan => BiopayScanScreen(
-        mode: BiopayScanMode.enroll,
+      _RegisterStep.scan => BioPayScanScreen(
+        mode: BioPayScanMode.enroll,
         enrollmentDraft: _draft,
         onEnrollmentSuccess: () =>
             setState(() => _step = _RegisterStep.success),
@@ -107,13 +107,13 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
   }
 
   Widget _buildForm(BuildContext context) {
-    return BiopayReferencePage(
+    return BioPayReferencePage(
       title: 'Face ID Setup',
       onBack: () {
         if (context.canPop()) {
           context.pop();
         } else {
-          context.go('/biopay/profile');
+          context.go('/BioPay/profile');
         }
       },
       child: ListView(
@@ -121,7 +121,7 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
           const SizedBox(height: 6),
           Text(
             'Link Face ID\nto this route.',
-            style: biopayReferenceText(
+            style: BioPayReferenceText(
               fontSize: 34,
               fontWeight: FontWeight.w900,
               height: 1.08,
@@ -130,25 +130,25 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
           const SizedBox(height: 12),
           Text(
             'This number or code is saved only for Face ID payments.',
-            style: biopayReferenceText(
+            style: BioPayReferenceText(
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: biopayReferenceMuted,
+              color: BioPayReferenceMuted,
               height: 1.4,
             ),
           ),
           const SizedBox(height: 34),
-          BiopayReferenceSegmentedControl(
+          BioPayReferenceSegmentedControl(
             selected: _routeType,
             onChanged: _switchRouteType,
           ),
           const SizedBox(height: 22),
-          BiopayReferenceValueCard(
+          BioPayReferenceValueCard(
             label: _routeType == PaymentRecipientType.code
                 ? 'Merchant Code'
                 : 'MoMo Number',
             controller: _recipientController,
-            hintText: biopayRecipientHint(_routeType, _country),
+            hintText: BioPayRecipientHint(_routeType, _country),
             keyboardType: TextInputType.number,
             onChanged: (_) {
               if (_error != null) {
@@ -160,15 +160,15 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
             const SizedBox(height: 16),
             Text(
               _error!,
-              style: biopayReferenceText(
+              style: BioPayReferenceText(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: BiopayTokens.errorAccent,
+                color: BioPayTokens.errorAccent,
               ),
             ),
           ],
           const SizedBox(height: 48),
-          BiopayReferencePrimaryButton(
+          BioPayReferencePrimaryButton(
             label: 'Start Enrollment',
             onTap: _startEnrollment,
           ),
@@ -178,12 +178,12 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
   }
 
   Widget _buildSuccess(BuildContext context) {
-    final profile = ref.watch(biopayProfileProvider).valueOrNull;
+    final profile = ref.watch(BioPayProfileProvider).valueOrNull;
     final user = ref.watch(currentUserProvider);
-    final bioPayId = resolveBiopayId(profile, user) ?? kBiopayPendingSyncLabel;
+    final BioPayId = resolveBioPayId(profile, user) ?? kBioPayPendingSyncLabel;
 
     return Scaffold(
-      backgroundColor: biopayReferenceBackground,
+      backgroundColor: BioPayReferenceBackground,
       body: GradientBackground(
         child: SafeArea(
           child: Padding(
@@ -194,8 +194,8 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
                   height: 52,
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: BiopayReferenceLightBackButton(
-                      onTap: () => context.go('/biopay'),
+                    child: BioPayReferenceLightBackButton(
+                      onTap: () => context.go('/BioPay'),
                     ),
                   ),
                 ),
@@ -208,55 +208,55 @@ class _BiopayRegisterScreenState extends ConsumerState<BiopayRegisterScreen> {
                         height: 132,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: BiopayTokens.successPanel,
+                          color: BioPayTokens.successPanel,
                         ),
                         child: Icon(
                           Icons.check_rounded,
-                          color: biopayReferenceGreen,
+                          color: BioPayReferenceGreen,
                           size: 70,
                         ),
                       ),
                       const SizedBox(height: 34),
                       Text(
                         'ENROLLMENT SUCCESS',
-                        style: biopayReferenceText(
+                        style: BioPayReferenceText(
                           fontSize: 15,
                           fontWeight: FontWeight.w800,
-                          color: biopayReferenceMuted,
+                          color: BioPayReferenceMuted,
                           letterSpacing: 2.2,
                         ),
                       ),
                       const SizedBox(height: 14),
                       Text(
                         'Face ID Ready',
-                        style: biopayReferenceText(
+                        style: BioPayReferenceText(
                           fontSize: 34,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        'BioPay ID: $bioPayId',
-                        style: biopayReferenceText(
+                        'BioPay ID: $BioPayId',
+                        style: BioPayReferenceText(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
-                          color: BiopayTokens.mutedDark,
+                          color: BioPayTokens.mutedDark,
                         ),
                       ),
                       const SizedBox(height: 42),
-                      BiopayReferencePrimaryButton(
+                      BioPayReferencePrimaryButton(
                         label: 'Done',
-                        onTap: () => context.go('/biopay'),
+                        onTap: () => context.go('/BioPay'),
                       ),
                       const SizedBox(height: 18),
                       TextButton(
-                        onPressed: () => context.go('/biopay/profile'),
+                        onPressed: () => context.go('/BioPay/profile'),
                         child: Text(
                           'Go to Profile',
-                          style: biopayReferenceText(
+                          style: BioPayReferenceText(
                             fontSize: 17,
                             fontWeight: FontWeight.w800,
-                            color: biopayReferenceMuted,
+                            color: BioPayReferenceMuted,
                           ),
                         ),
                       ),

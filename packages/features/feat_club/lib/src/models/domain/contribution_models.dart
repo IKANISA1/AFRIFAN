@@ -1,7 +1,7 @@
 import 'package:core_utils/core_utils.dart' as jh;
 import 'package:equatable/equatable.dart';
 
-/// A contribution circle / funding group.
+/// A contribution Group / funding group.
 class ContributionGroup extends Equatable {
   const ContributionGroup({
     required this.id,

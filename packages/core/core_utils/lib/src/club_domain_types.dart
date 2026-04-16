@@ -166,7 +166,7 @@ extension FetEventTypeX on FetEventType {
     FetEventType.dailyOpen => 'Daily Check-In',
     FetEventType.matchAttendance => 'Match Attendance',
     FetEventType.contribution => 'Make Contribution',
-    FetEventType.createGroup => 'Create Circle',
+    FetEventType.createGroup => 'Create Group',
     FetEventType.inviteFriends => 'Invite 3 Friends',
     FetEventType.shopPurchase => 'Shop Purchase',
     FetEventType.completeProfile => 'Complete Profile',
@@ -257,7 +257,7 @@ class FetEvent extends Equatable {
 // Contribution Group Types & Privacy
 // ═══════════════════════════════════════════════════════════════
 
-enum ContributionGroupType { club, community, savings, fanCircle }
+enum ContributionGroupType { club, community, savings, fanGroup }
 
 extension ContributionGroupTypeX on ContributionGroupType {
   static ContributionGroupType fromValue(String? value) {
@@ -265,7 +265,7 @@ extension ContributionGroupTypeX on ContributionGroupType {
       'club' => ContributionGroupType.club,
       'community' => ContributionGroupType.community,
       'savings' => ContributionGroupType.savings,
-      'fan_circle' || 'fancircle' => ContributionGroupType.fanCircle,
+      'fan_Group' || 'fanGroup' => ContributionGroupType.fanGroup,
       _ => ContributionGroupType.community,
     };
   }
@@ -274,14 +274,14 @@ extension ContributionGroupTypeX on ContributionGroupType {
     ContributionGroupType.club => 'club',
     ContributionGroupType.community => 'community',
     ContributionGroupType.savings => 'savings',
-    ContributionGroupType.fanCircle => 'fan_circle',
+    ContributionGroupType.fanGroup => 'fan_Group',
   };
 
   String get label => switch (this) {
     ContributionGroupType.club => 'Club Project',
-    ContributionGroupType.community => 'Community Circle',
+    ContributionGroupType.community => 'Community Group',
     ContributionGroupType.savings => 'Public Savings',
-    ContributionGroupType.fanCircle => 'Fan Circle',
+    ContributionGroupType.fanGroup => 'Fan Group',
   };
 }
 

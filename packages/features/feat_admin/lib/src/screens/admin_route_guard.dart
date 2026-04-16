@@ -29,10 +29,11 @@ class AdminRouteGuard extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.lock_rounded,
-                      size: 48,
-                      color: ColorTokens.onSurfaceVariant,
+                      AfriIcons.lock,
+                      size: 64,
+                      color: ColorTokens.warning,
                     ),
+
                     const SizedBox(height: SpacingTokens.spacing4),
                     Text(
                       'ADMIN ACCESS REQUIRED',
@@ -48,10 +49,10 @@ class AdminRouteGuard extends ConsumerWidget {
                       style: TypographyTokens.bodyMedium(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing6),
-                    ClaymorphicButton(
-                      label: 'BACK TO SETTINGS',
-                      width: double.infinity,
-                      onPressed: () => context.go('/settings'),
+                    AfriButton(
+                      label: 'Back to settings',
+                      fullWidth: true,
+                      onTap: () => context.go('/settings'),
                     ),
                   ],
                 ),

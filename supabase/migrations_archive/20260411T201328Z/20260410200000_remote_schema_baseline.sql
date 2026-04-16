@@ -66,7 +66,7 @@ CREATE TYPE public.ai_content_type AS ENUM (
     'privacy_policy',
     'terms',
     'contact_support',
-    'biopay_info',
+    'BioPay_info',
     'section_heading',
     'portal_hero',
     'general'
@@ -1705,10 +1705,10 @@ $$;
 
 
 --
--- Name: biopay_array_to_vector(double precision[]); Type: FUNCTION; Schema: public; Owner: -
+-- Name: BioPay_array_to_vector(double precision[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.biopay_array_to_vector(p_embedding double precision[]) RETURNS extensions.vector
+CREATE FUNCTION public.BioPay_array_to_vector(p_embedding double precision[]) RETURNS extensions.vector
     LANGUAGE plpgsql IMMUTABLE
     SET search_path TO 'public', 'extensions'
     AS $$
@@ -1722,10 +1722,10 @@ $$;
 
 
 --
--- Name: biopay_array_to_vector_192(double precision[]); Type: FUNCTION; Schema: public; Owner: -
+-- Name: BioPay_array_to_vector_192(double precision[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.biopay_array_to_vector_192(p_embedding double precision[]) RETURNS extensions.vector
+CREATE FUNCTION public.BioPay_array_to_vector_192(p_embedding double precision[]) RETURNS extensions.vector
     LANGUAGE plpgsql IMMUTABLE
     SET search_path TO 'public', 'extensions'
     AS $$
@@ -1740,16 +1740,16 @@ $$;
 
 
 --
--- Name: biopay_revoke_profile(text); Type: FUNCTION; Schema: public; Owner: -
+-- Name: BioPay_revoke_profile(text); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.biopay_revoke_profile(p_reason text DEFAULT NULL::text) RETURNS TABLE(profile_id uuid, public_id text, revoked_at timestamp with time zone)
+CREATE FUNCTION public.BioPay_revoke_profile(p_reason text DEFAULT NULL::text) RETURNS TABLE(profile_id uuid, public_id text, revoked_at timestamp with time zone)
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'public', 'extensions'
     AS $$
 DECLARE
   v_user_id uuid := auth.uid();
-  v_profile public.biopay_profiles%rowtype;
+  v_profile public.BioPay_profiles%rowtype;
   v_revoked_at timestamptz := timezone('utc', now());
 BEGIN
   IF v_user_id IS NULL THEN
@@ -1757,7 +1757,7 @@ BEGIN
   END IF;
 
   SELECT * INTO v_profile
-  FROM public.biopay_profiles
+  FROM public.BioPay_profiles
   WHERE user_id = v_user_id AND active = true AND deleted_at IS NULL
   LIMIT 1;
 
@@ -1765,21 +1765,21 @@ BEGIN
     RAISE EXCEPTION 'No active BioPay enrollment was found.';
   END IF;
 
-  UPDATE public.biopay_profiles SET
+  UPDATE public.BioPay_profiles SET
     active = false, revoked_at = v_revoked_at
   WHERE id = v_profile.id
   RETURNING * INTO v_profile;
 
-  UPDATE public.biopay_embeddings SET
+  UPDATE public.BioPay_embeddings SET
     active = false, retired_at = v_revoked_at
   WHERE profile_id = v_profile.id AND active = true;
 
-  INSERT INTO public.biopay_revocations (profile_id, user_id, reason, metadata)
+  INSERT INTO public.BioPay_revocations (profile_id, user_id, reason, metadata)
   VALUES (v_profile.id, v_user_id,
     nullif(trim(coalesce(p_reason, '')), ''),
     jsonb_build_object('public_id', v_profile.public_id));
 
-  INSERT INTO public.biopay_enrollment_audits (profile_id, user_id, event_type, metadata)
+  INSERT INTO public.BioPay_enrollment_audits (profile_id, user_id, event_type, metadata)
   VALUES (v_profile.id, v_user_id, 'revoked', jsonb_build_object(
     'reason', nullif(trim(coalesce(p_reason, '')), ''),
     'public_id', v_profile.public_id
@@ -1791,16 +1791,16 @@ $$;
 
 
 --
--- Name: biopay_revoke_profile_server(uuid, bigint, text); Type: FUNCTION; Schema: public; Owner: -
+-- Name: BioPay_revoke_profile_server(uuid, bigint, text); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.biopay_revoke_profile_server(p_requester_user_id uuid, p_club_id bigint, p_reason text DEFAULT NULL::text) RETURNS TABLE(profile_id uuid, public_id text, revoked_at timestamp with time zone)
+CREATE FUNCTION public.BioPay_revoke_profile_server(p_requester_user_id uuid, p_club_id bigint, p_reason text DEFAULT NULL::text) RETURNS TABLE(profile_id uuid, public_id text, revoked_at timestamp with time zone)
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'public', 'extensions'
     AS $$
 DECLARE
   v_user_id uuid := p_requester_user_id;
-  v_profile public.biopay_profiles%rowtype;
+  v_profile public.BioPay_profiles%rowtype;
   v_revoked_at timestamptz := timezone('utc', now());
 BEGIN
   IF v_user_id IS NULL THEN
@@ -1812,7 +1812,7 @@ BEGIN
   END IF;
 
   SELECT * INTO v_profile
-  FROM public.biopay_profiles
+  FROM public.BioPay_profiles
   WHERE user_id = v_user_id
     AND club_id = p_club_id
     AND active = true
@@ -1823,18 +1823,18 @@ BEGIN
     RAISE EXCEPTION 'No active BioPay enrollment was found.';
   END IF;
 
-  UPDATE public.biopay_profiles SET
+  UPDATE public.BioPay_profiles SET
     active = false, revoked_at = v_revoked_at
   WHERE id = v_profile.id
   RETURNING * INTO v_profile;
 
-  UPDATE public.biopay_embeddings SET
+  UPDATE public.BioPay_embeddings SET
     active = false, retired_at = v_revoked_at
   WHERE profile_id = v_profile.id
     AND club_id = p_club_id
     AND active = true;
 
-  INSERT INTO public.biopay_revocations (profile_id, user_id, club_id, reason, metadata)
+  INSERT INTO public.BioPay_revocations (profile_id, user_id, club_id, reason, metadata)
   VALUES (
     v_profile.id,
     v_user_id,
@@ -1843,7 +1843,7 @@ BEGIN
     jsonb_build_object('public_id', v_profile.public_id, 'origin', 'edge')
   );
 
-  INSERT INTO public.biopay_enrollment_audits (profile_id, user_id, club_id, event_type, metadata)
+  INSERT INTO public.BioPay_enrollment_audits (profile_id, user_id, club_id, event_type, metadata)
   VALUES (v_profile.id, v_user_id, p_club_id, 'revoked', jsonb_build_object(
     'reason', nullif(trim(coalesce(p_reason, '')), ''),
     'public_id', v_profile.public_id,
@@ -1856,17 +1856,17 @@ $$;
 
 
 --
--- Name: biopay_upsert_enrollment(text, text, text, text, text, double precision[], text, double precision); Type: FUNCTION; Schema: public; Owner: -
+-- Name: BioPay_upsert_enrollment(text, text, text, text, text, double precision[], text, double precision); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.biopay_upsert_enrollment(p_display_name text DEFAULT NULL::text, p_route_type text DEFAULT NULL::text, p_recipient_value text DEFAULT NULL::text, p_country_code text DEFAULT 'RW'::text, p_consent_version text DEFAULT 'biopay-v1'::text, p_embedding double precision[] DEFAULT NULL::double precision[], p_model_version text DEFAULT 'mobilefacenet_int8_v1'::text, p_quality_score double precision DEFAULT NULL::double precision) RETURNS TABLE(id uuid, public_id text, user_id uuid, club_id bigint, display_name text, route_type text, recipient_value text, country_code text, active boolean, consent_version text, consent_at timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone, revoked_at timestamp with time zone, enrolled_at timestamp with time zone)
+CREATE FUNCTION public.BioPay_upsert_enrollment(p_display_name text DEFAULT NULL::text, p_route_type text DEFAULT NULL::text, p_recipient_value text DEFAULT NULL::text, p_country_code text DEFAULT 'RW'::text, p_consent_version text DEFAULT 'BioPay-v1'::text, p_embedding double precision[] DEFAULT NULL::double precision[], p_model_version text DEFAULT 'mobilefacenet_int8_v1'::text, p_quality_score double precision DEFAULT NULL::double precision) RETURNS TABLE(id uuid, public_id text, user_id uuid, club_id bigint, display_name text, route_type text, recipient_value text, country_code text, active boolean, consent_version text, consent_at timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone, revoked_at timestamp with time zone, enrolled_at timestamp with time zone)
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'public', 'extensions'
     AS $$
 DECLARE
   v_user_id uuid := auth.uid();
   v_club_id bigint;
-  v_profile public.biopay_profiles%rowtype;
+  v_profile public.BioPay_profiles%rowtype;
   v_embedding extensions.vector(192);
   v_display_name text;
   v_route_type text;
@@ -1911,19 +1911,19 @@ BEGIN
   END IF;
 
   v_country_code := upper(trim(coalesce(nullif(p_country_code, ''), 'RW')));
-  v_consent_version := coalesce(nullif(trim(p_consent_version), ''), 'biopay-v1');
-  v_embedding := public.biopay_array_to_vector(p_embedding);
+  v_consent_version := coalesce(nullif(trim(p_consent_version), ''), 'BioPay-v1');
+  v_embedding := public.BioPay_array_to_vector(p_embedding);
 
   -- Upsert profile (scoped to club_id)
   SELECT * INTO v_profile
-  FROM public.biopay_profiles
-  WHERE biopay_profiles.user_id = v_user_id
-    AND biopay_profiles.club_id = v_club_id
+  FROM public.BioPay_profiles
+  WHERE BioPay_profiles.user_id = v_user_id
+    AND BioPay_profiles.club_id = v_club_id
     AND deleted_at IS NULL
   LIMIT 1;
 
   IF FOUND THEN
-    UPDATE public.biopay_profiles SET
+    UPDATE public.BioPay_profiles SET
       display_name = v_display_name,
       route_type = v_route_type,
       recipient_value = v_recipient_value,
@@ -1933,10 +1933,10 @@ BEGIN
       consent_at = timezone('utc', now()),
       revoked_at = NULL,
       deleted_at = NULL
-    WHERE biopay_profiles.id = v_profile.id
+    WHERE BioPay_profiles.id = v_profile.id
     RETURNING * INTO v_profile;
   ELSE
-    INSERT INTO public.biopay_profiles (
+    INSERT INTO public.BioPay_profiles (
       user_id, club_id, display_name, route_type, recipient_value,
       country_code, active, consent_version, consent_at
     ) VALUES (
@@ -1946,14 +1946,14 @@ BEGIN
   END IF;
 
   -- Retire old embeddings for this club
-  UPDATE public.biopay_embeddings SET
+  UPDATE public.BioPay_embeddings SET
     active = false, retired_at = timezone('utc', now())
-  WHERE biopay_embeddings.profile_id = v_profile.id
-    AND biopay_embeddings.club_id = v_club_id
-    AND biopay_embeddings.active = true;
+  WHERE BioPay_embeddings.profile_id = v_profile.id
+    AND BioPay_embeddings.club_id = v_club_id
+    AND BioPay_embeddings.active = true;
 
   -- Insert new embedding
-  INSERT INTO public.biopay_embeddings (
+  INSERT INTO public.BioPay_embeddings (
     profile_id, club_id, embedding, model_version, quality_score, active, enrolled_at
   ) VALUES (
     v_profile.id, v_club_id, v_embedding,
@@ -1962,7 +1962,7 @@ BEGIN
   );
 
   -- Audit trail
-  INSERT INTO public.biopay_enrollment_audits (profile_id, user_id, club_id, event_type, metadata)
+  INSERT INTO public.BioPay_enrollment_audits (profile_id, user_id, club_id, event_type, metadata)
   VALUES (v_profile.id, v_user_id, v_club_id, 'enrolled', jsonb_build_object(
     'route_type', v_route_type,
     'country_code', v_country_code,
@@ -1981,16 +1981,16 @@ $$;
 
 
 --
--- Name: biopay_upsert_enrollment_server(uuid, bigint, text, text, text, text, text, double precision[], text, double precision); Type: FUNCTION; Schema: public; Owner: -
+-- Name: BioPay_upsert_enrollment_server(uuid, bigint, text, text, text, text, text, double precision[], text, double precision); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.biopay_upsert_enrollment_server(p_requester_user_id uuid, p_club_id bigint, p_display_name text DEFAULT NULL::text, p_route_type text DEFAULT NULL::text, p_recipient_value text DEFAULT NULL::text, p_country_code text DEFAULT 'RW'::text, p_consent_version text DEFAULT 'biopay-v1'::text, p_embedding double precision[] DEFAULT NULL::double precision[], p_model_version text DEFAULT 'mobilefacenet_int8_v1'::text, p_quality_score double precision DEFAULT NULL::double precision) RETURNS TABLE(id uuid, public_id text, user_id uuid, club_id bigint, display_name text, route_type text, recipient_value text, country_code text, active boolean, consent_version text, consent_at timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone, revoked_at timestamp with time zone, enrolled_at timestamp with time zone)
+CREATE FUNCTION public.BioPay_upsert_enrollment_server(p_requester_user_id uuid, p_club_id bigint, p_display_name text DEFAULT NULL::text, p_route_type text DEFAULT NULL::text, p_recipient_value text DEFAULT NULL::text, p_country_code text DEFAULT 'RW'::text, p_consent_version text DEFAULT 'BioPay-v1'::text, p_embedding double precision[] DEFAULT NULL::double precision[], p_model_version text DEFAULT 'mobilefacenet_int8_v1'::text, p_quality_score double precision DEFAULT NULL::double precision) RETURNS TABLE(id uuid, public_id text, user_id uuid, club_id bigint, display_name text, route_type text, recipient_value text, country_code text, active boolean, consent_version text, consent_at timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone, revoked_at timestamp with time zone, enrolled_at timestamp with time zone)
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'public', 'extensions'
     AS $$
 DECLARE
   v_user_id uuid := p_requester_user_id;
-  v_profile public.biopay_profiles%rowtype;
+  v_profile public.BioPay_profiles%rowtype;
   v_embedding extensions.vector(192);
   v_display_name text;
   v_route_type text;
@@ -2027,18 +2027,18 @@ BEGIN
   END IF;
 
   v_country_code := upper(trim(coalesce(nullif(p_country_code, ''), 'RW')));
-  v_consent_version := coalesce(nullif(trim(p_consent_version), ''), 'biopay-v1');
-  v_embedding := public.biopay_array_to_vector(p_embedding);
+  v_consent_version := coalesce(nullif(trim(p_consent_version), ''), 'BioPay-v1');
+  v_embedding := public.BioPay_array_to_vector(p_embedding);
 
   SELECT * INTO v_profile
-  FROM public.biopay_profiles
-  WHERE biopay_profiles.user_id = v_user_id
-    AND biopay_profiles.club_id = p_club_id
+  FROM public.BioPay_profiles
+  WHERE BioPay_profiles.user_id = v_user_id
+    AND BioPay_profiles.club_id = p_club_id
     AND deleted_at IS NULL
   LIMIT 1;
 
   IF FOUND THEN
-    UPDATE public.biopay_profiles SET
+    UPDATE public.BioPay_profiles SET
       display_name = v_display_name,
       route_type = v_route_type,
       recipient_value = v_recipient_value,
@@ -2048,10 +2048,10 @@ BEGIN
       consent_at = timezone('utc', now()),
       revoked_at = NULL,
       deleted_at = NULL
-    WHERE biopay_profiles.id = v_profile.id
+    WHERE BioPay_profiles.id = v_profile.id
     RETURNING * INTO v_profile;
   ELSE
-    INSERT INTO public.biopay_profiles (
+    INSERT INTO public.BioPay_profiles (
       user_id, club_id, display_name, route_type, recipient_value,
       country_code, active, consent_version, consent_at
     ) VALUES (
@@ -2060,13 +2060,13 @@ BEGIN
     ) RETURNING * INTO v_profile;
   END IF;
 
-  UPDATE public.biopay_embeddings SET
+  UPDATE public.BioPay_embeddings SET
     active = false, retired_at = timezone('utc', now())
-  WHERE biopay_embeddings.profile_id = v_profile.id
-    AND biopay_embeddings.club_id = p_club_id
-    AND biopay_embeddings.active = true;
+  WHERE BioPay_embeddings.profile_id = v_profile.id
+    AND BioPay_embeddings.club_id = p_club_id
+    AND BioPay_embeddings.active = true;
 
-  INSERT INTO public.biopay_embeddings (
+  INSERT INTO public.BioPay_embeddings (
     profile_id, club_id, embedding, model_version, quality_score, active, enrolled_at
   ) VALUES (
     v_profile.id, p_club_id, v_embedding,
@@ -2074,7 +2074,7 @@ BEGIN
     p_quality_score, true, v_enrolled_at
   );
 
-  INSERT INTO public.biopay_enrollment_audits (profile_id, user_id, club_id, event_type, metadata)
+  INSERT INTO public.BioPay_enrollment_audits (profile_id, user_id, club_id, event_type, metadata)
   VALUES (v_profile.id, v_user_id, p_club_id, 'enrolled', jsonb_build_object(
     'route_type', v_route_type,
     'country_code', v_country_code,
@@ -2094,10 +2094,10 @@ $$;
 
 
 --
--- Name: biopay_vector_128_to_192(extensions.vector); Type: FUNCTION; Schema: public; Owner: -
+-- Name: BioPay_vector_128_to_192(extensions.vector); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.biopay_vector_128_to_192(p_embedding extensions.vector) RETURNS extensions.vector
+CREATE FUNCTION public.BioPay_vector_128_to_192(p_embedding extensions.vector) RETURNS extensions.vector
     LANGUAGE sql IMMUTABLE
     SET search_path TO 'public', 'extensions'
     AS $$
@@ -2484,27 +2484,27 @@ $$;
 
 
 --
--- Name: create_biopay_enrollment(text, text, uuid, timestamp with time zone, extensions.vector); Type: FUNCTION; Schema: public; Owner: -
+-- Name: create_BioPay_enrollment(text, text, uuid, timestamp with time zone, extensions.vector); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.create_biopay_enrollment(p_display_name text, p_ussd_string text, p_supabase_uid uuid, p_consent_ts timestamp with time zone, p_embedding extensions.vector) RETURNS TABLE(biopay_id text, enrolled_at timestamp with time zone)
+CREATE FUNCTION public.create_BioPay_enrollment(p_display_name text, p_ussd_string text, p_supabase_uid uuid, p_consent_ts timestamp with time zone, p_embedding extensions.vector) RETURNS TABLE(BioPay_id text, enrolled_at timestamp with time zone)
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'public', 'extensions'
     AS $$
 declare
   v_payee_id uuid;
-  v_biopay_id text;
+  v_BioPay_id text;
   v_enrolled_at timestamptz;
 begin
   for attempt in 1..10 loop
-    v_biopay_id := public.generate_biopay_id();
+    v_BioPay_id := public.generate_BioPay_id();
     begin
-      insert into public.biopay_payees (biopay_id, display_name, ussd_string, supabase_uid, consent_ts)
-      values (v_biopay_id, p_display_name, p_ussd_string, p_supabase_uid, p_consent_ts)
-      returning id, public.biopay_payees.biopay_id, public.biopay_payees.enrolled_at
-      into v_payee_id, biopay_id, v_enrolled_at;
+      insert into public.BioPay_payees (BioPay_id, display_name, ussd_string, supabase_uid, consent_ts)
+      values (v_BioPay_id, p_display_name, p_ussd_string, p_supabase_uid, p_consent_ts)
+      returning id, public.BioPay_payees.BioPay_id, public.BioPay_payees.enrolled_at
+      into v_payee_id, BioPay_id, v_enrolled_at;
 
-      insert into public.biopay_embeddings (payee_id, embedding)
+      insert into public.BioPay_embeddings (payee_id, embedding)
       values (v_payee_id, p_embedding);
 
       enrolled_at := v_enrolled_at;
@@ -2512,7 +2512,7 @@ begin
       return;
     exception
       when unique_violation then
-        if sqlerrm like '%biopay_payees_biopay_id_key%' then
+        if sqlerrm like '%BioPay_payees_BioPay_id_key%' then
           continue;
         end if;
         raise;
@@ -3086,10 +3086,10 @@ $$;
 
 
 --
--- Name: generate_biopay_id(); Type: FUNCTION; Schema: public; Owner: -
+-- Name: generate_BioPay_id(); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.generate_biopay_id() RETURNS text
+CREATE FUNCTION public.generate_BioPay_id() RETURNS text
     LANGUAGE plpgsql
     AS $$
 declare
@@ -3102,10 +3102,10 @@ $$;
 
 
 --
--- Name: generate_biopay_public_id(); Type: FUNCTION; Schema: public; Owner: -
+-- Name: generate_BioPay_public_id(); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.generate_biopay_public_id() RETURNS text
+CREATE FUNCTION public.generate_BioPay_public_id() RETURNS text
     LANGUAGE plpgsql
     SET search_path TO 'public', 'extensions'
     AS $$
@@ -3115,7 +3115,7 @@ BEGIN
   LOOP
     v_candidate := lpad(floor(random() * 1000000)::int::text, 6, '0');
     EXIT WHEN NOT EXISTS (
-      SELECT 1 FROM public.biopay_profiles WHERE public_id = v_candidate
+      SELECT 1 FROM public.BioPay_profiles WHERE public_id = v_candidate
     );
   END LOOP;
   RETURN v_candidate;
@@ -5995,10 +5995,10 @@ $$;
 
 
 --
--- Name: match_biopay_face(extensions.vector, double precision, integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: match_BioPay_face(extensions.vector, double precision, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.match_biopay_face(query_embedding extensions.vector, match_threshold double precision, match_count integer) RETURNS TABLE(display_name text, ussd_string text, score double precision)
+CREATE FUNCTION public.match_BioPay_face(query_embedding extensions.vector, match_threshold double precision, match_count integer) RETURNS TABLE(display_name text, ussd_string text, score double precision)
     LANGUAGE sql STABLE
     SET search_path TO 'public', 'extensions'
     AS $$
@@ -6006,8 +6006,8 @@ CREATE FUNCTION public.match_biopay_face(query_embedding extensions.vector, matc
     p.display_name,
     p.ussd_string,
     (1 - (e.embedding <=> query_embedding))::float as score
-  from public.biopay_embeddings e
-  join public.biopay_payees p on p.id = e.payee_id
+  from public.BioPay_embeddings e
+  join public.BioPay_payees p on p.id = e.payee_id
   where coalesce(e.is_active, true) = true
     and e.revoked_at is null
     and (1 - (e.embedding <=> query_embedding)) >= match_threshold
@@ -6017,15 +6017,15 @@ $$;
 
 
 --
--- Name: match_biopay_profile(double precision[]); Type: FUNCTION; Schema: public; Owner: -
+-- Name: match_BioPay_profile(double precision[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.match_biopay_profile(p_embedding double precision[]) RETURNS TABLE(profile_id uuid, public_id text, user_id uuid, club_id bigint, display_name text, route_type text, recipient_value text, country_code text, consent_version text, consent_at timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone, score double precision)
+CREATE FUNCTION public.match_BioPay_profile(p_embedding double precision[]) RETURNS TABLE(profile_id uuid, public_id text, user_id uuid, club_id bigint, display_name text, route_type text, recipient_value text, country_code text, consent_version text, consent_at timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone, score double precision)
     LANGUAGE sql SECURITY DEFINER
     SET search_path TO 'public', 'extensions'
     AS $$
   WITH query_vector AS (
-    SELECT public.biopay_array_to_vector(p_embedding) AS embedding
+    SELECT public.BioPay_array_to_vector(p_embedding) AS embedding
   ),
   requesting_club AS (
     SELECT NULLIF(
@@ -6040,8 +6040,8 @@ CREATE FUNCTION public.match_biopay_profile(p_embedding double precision[]) RETU
     p.display_name, p.route_type, p.recipient_value, p.country_code,
     p.consent_version, p.consent_at, p.created_at, p.updated_at,
     1 - (e.embedding <=> q.embedding) AS score
-  FROM public.biopay_embeddings e
-  JOIN public.biopay_profiles p ON p.id = e.profile_id
+  FROM public.BioPay_embeddings e
+  JOIN public.BioPay_profiles p ON p.id = e.profile_id
   CROSS JOIN query_vector q
   CROSS JOIN requesting_club rc
   WHERE e.active = true
@@ -6054,23 +6054,23 @@ $$;
 
 
 --
--- Name: match_biopay_profile_server(bigint, double precision[]); Type: FUNCTION; Schema: public; Owner: -
+-- Name: match_BioPay_profile_server(bigint, double precision[]); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.match_biopay_profile_server(p_club_id bigint, p_embedding double precision[]) RETURNS TABLE(profile_id uuid, public_id text, user_id uuid, club_id bigint, display_name text, route_type text, recipient_value text, country_code text, consent_version text, consent_at timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone, score double precision)
+CREATE FUNCTION public.match_BioPay_profile_server(p_club_id bigint, p_embedding double precision[]) RETURNS TABLE(profile_id uuid, public_id text, user_id uuid, club_id bigint, display_name text, route_type text, recipient_value text, country_code text, consent_version text, consent_at timestamp with time zone, created_at timestamp with time zone, updated_at timestamp with time zone, score double precision)
     LANGUAGE sql SECURITY DEFINER
     SET search_path TO 'public', 'extensions'
     AS $$
   WITH query_vector AS (
-    SELECT public.biopay_array_to_vector(p_embedding) AS embedding
+    SELECT public.BioPay_array_to_vector(p_embedding) AS embedding
   )
   SELECT
     p.id AS profile_id, p.public_id, p.user_id, p.club_id,
     p.display_name, p.route_type, p.recipient_value, p.country_code,
     p.consent_version, p.consent_at, p.created_at, p.updated_at,
     1 - (e.embedding <=> q.embedding) AS score
-  FROM public.biopay_embeddings e
-  JOIN public.biopay_profiles p ON p.id = e.profile_id
+  FROM public.BioPay_embeddings e
+  JOIN public.BioPay_profiles p ON p.id = e.profile_id
   CROSS JOIN query_vector q
   WHERE e.active = true
     AND p.active = true
@@ -6445,10 +6445,10 @@ $$;
 
 
 --
--- Name: peek_biopay_face_match(extensions.vector, integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: peek_BioPay_face_match(extensions.vector, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.peek_biopay_face_match(query_embedding extensions.vector, match_count integer DEFAULT 1) RETURNS TABLE(display_name text, ussd_string text, score double precision)
+CREATE FUNCTION public.peek_BioPay_face_match(query_embedding extensions.vector, match_count integer DEFAULT 1) RETURNS TABLE(display_name text, ussd_string text, score double precision)
     LANGUAGE sql STABLE
     SET search_path TO 'public', 'extensions'
     AS $$
@@ -6456,8 +6456,8 @@ CREATE FUNCTION public.peek_biopay_face_match(query_embedding extensions.vector,
     p.display_name,
     p.ussd_string,
     (1 - (e.embedding <=> query_embedding))::float as score
-  from public.biopay_embeddings e
-  join public.biopay_payees p on p.id = e.payee_id
+  from public.BioPay_embeddings e
+  join public.BioPay_payees p on p.id = e.payee_id
   where coalesce(e.is_active, true) = true
     and e.revoked_at is null
   order by e.embedding <=> query_embedding
@@ -8462,7 +8462,7 @@ CREATE TABLE public.african_football_clubs (
     secondary_color_hex text,
     accent_color_hex text,
     supported_languages text[] DEFAULT '{en}'::text[] NOT NULL,
-    feature_flags jsonb DEFAULT '{"chat": true, "shop": true, "biopay": true, "fan_clubs": true, "ticketing": true, "sms_ledger": true}'::jsonb NOT NULL
+    feature_flags jsonb DEFAULT '{"chat": true, "shop": true, "BioPay": true, "fan_clubs": true, "ticketing": true, "sms_ledger": true}'::jsonb NOT NULL
 );
 
 
@@ -8565,10 +8565,10 @@ CREATE TABLE public.app_config (
 
 
 --
--- Name: biopay_embeddings; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_embeddings; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_embeddings (
+CREATE TABLE public.BioPay_embeddings (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     payee_id uuid NOT NULL,
     embedding extensions.vector(128) NOT NULL,
@@ -8584,10 +8584,10 @@ CREATE TABLE public.biopay_embeddings (
 
 
 --
--- Name: biopay_enrollment_audits; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_enrollment_audits; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_enrollment_audits (
+CREATE TABLE public.BioPay_enrollment_audits (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     profile_id uuid NOT NULL,
     user_id uuid NOT NULL,
@@ -8599,10 +8599,10 @@ CREATE TABLE public.biopay_enrollment_audits (
 
 
 --
--- Name: biopay_events; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_events; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_events (
+CREATE TABLE public.BioPay_events (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     event_type text NOT NULL,
     status text NOT NULL,
@@ -8613,17 +8613,17 @@ CREATE TABLE public.biopay_events (
     message text DEFAULT ''::text NOT NULL,
     metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
     occurred_at timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT biopay_events_method_chk CHECK ((scan_method = ANY (ARRAY['face'::text, 'qr'::text, 'nfc'::text, 'system'::text]))),
-    CONSTRAINT biopay_events_status_chk CHECK ((status = ANY (ARRAY['success'::text, 'no-match'::text, 'error'::text, 'info'::text]))),
-    CONSTRAINT biopay_events_type_chk CHECK ((event_type = ANY (ARRAY['enroll'::text, 'match'::text, 'reindex'::text, 'profile-update'::text, 'qr-scan'::text, 'nfc-session'::text, 'data-deletion'::text])))
+    CONSTRAINT BioPay_events_method_chk CHECK ((scan_method = ANY (ARRAY['face'::text, 'qr'::text, 'nfc'::text, 'system'::text]))),
+    CONSTRAINT BioPay_events_status_chk CHECK ((status = ANY (ARRAY['success'::text, 'no-match'::text, 'error'::text, 'info'::text]))),
+    CONSTRAINT BioPay_events_type_chk CHECK ((event_type = ANY (ARRAY['enroll'::text, 'match'::text, 'reindex'::text, 'profile-update'::text, 'qr-scan'::text, 'nfc-session'::text, 'data-deletion'::text])))
 );
 
 
 --
--- Name: biopay_liveness_challenges; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_liveness_challenges; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_liveness_challenges (
+CREATE TABLE public.BioPay_liveness_challenges (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     user_id uuid NOT NULL,
     club_id bigint NOT NULL,
@@ -8633,15 +8633,15 @@ CREATE TABLE public.biopay_liveness_challenges (
     expires_at timestamp with time zone NOT NULL,
     consumed_at timestamp with time zone,
     created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
-    CONSTRAINT biopay_liveness_challenges_mode_check CHECK ((mode = ANY (ARRAY['enrollment'::text, 'payment'::text])))
+    CONSTRAINT BioPay_liveness_challenges_mode_check CHECK ((mode = ANY (ARRAY['enrollment'::text, 'payment'::text])))
 );
 
 
 --
--- Name: biopay_match_events; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_match_events; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_match_events (
+CREATE TABLE public.BioPay_match_events (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     requester_user_id uuid NOT NULL,
     matched_profile_id uuid,
@@ -8655,10 +8655,10 @@ CREATE TABLE public.biopay_match_events (
 
 
 --
--- Name: biopay_match_rate_events; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_match_rate_events; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_match_rate_events (
+CREATE TABLE public.BioPay_match_rate_events (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     requester_user_id uuid NOT NULL,
     scope text NOT NULL,
@@ -8666,56 +8666,56 @@ CREATE TABLE public.biopay_match_rate_events (
     outcome text NOT NULL,
     metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
-    CONSTRAINT biopay_match_rate_events_outcome_check CHECK ((outcome = ANY (ARRAY['match'::text, 'miss'::text, 'blocked_user_rate_limit'::text, 'blocked_ip_rate_limit'::text, 'lockout_started'::text, 'blocked_lockout'::text]))),
-    CONSTRAINT biopay_match_rate_events_scope_check CHECK ((scope = ANY (ARRAY['user'::text, 'ip'::text])))
+    CONSTRAINT BioPay_match_rate_events_outcome_check CHECK ((outcome = ANY (ARRAY['match'::text, 'miss'::text, 'blocked_user_rate_limit'::text, 'blocked_ip_rate_limit'::text, 'lockout_started'::text, 'blocked_lockout'::text]))),
+    CONSTRAINT BioPay_match_rate_events_scope_check CHECK ((scope = ANY (ARRAY['user'::text, 'ip'::text])))
 );
 
 
 --
--- Name: TABLE biopay_match_rate_events; Type: COMMENT; Schema: public; Owner: -
+-- Name: TABLE BioPay_match_rate_events; Type: COMMENT; Schema: public; Owner: -
 --
 
-COMMENT ON TABLE public.biopay_match_rate_events IS 'Service-role-only BioPay match risk and rate-limit telemetry keyed by hashed user and IP actors.';
+COMMENT ON TABLE public.BioPay_match_rate_events IS 'Service-role-only BioPay match risk and rate-limit telemetry keyed by hashed user and IP actors.';
 
 
 --
--- Name: biopay_nfc_tokens; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_nfc_tokens; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_nfc_tokens (
+CREATE TABLE public.BioPay_nfc_tokens (
     token text NOT NULL,
     payee_id uuid NOT NULL,
     actor_supabase_uid uuid,
     expires_at timestamp with time zone NOT NULL,
     resolved_at timestamp with time zone,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT biopay_nfc_tokens_token_chk CHECK ((length(token) >= 16))
+    CONSTRAINT BioPay_nfc_tokens_token_chk CHECK ((length(token) >= 16))
 );
 
 
 --
--- Name: biopay_payees; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_payees; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_payees (
+CREATE TABLE public.BioPay_payees (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
-    biopay_id text DEFAULT public.generate_biopay_id() NOT NULL,
+    BioPay_id text DEFAULT public.generate_BioPay_id() NOT NULL,
     display_name text NOT NULL,
     ussd_string text NOT NULL,
     supabase_uid uuid,
     enrolled_at timestamp with time zone DEFAULT now() NOT NULL,
     consent_ts timestamp with time zone NOT NULL,
-    CONSTRAINT biopay_payees_biopay_id_format_chk CHECK ((biopay_id ~ '^[0-9]{6}$'::text)),
-    CONSTRAINT biopay_payees_display_name_chk CHECK ((length(btrim(display_name)) > 0)),
-    CONSTRAINT biopay_payees_ussd_chk CHECK ((ussd_string ~ '^\*[0-9]+(\*[0-9]+)*#$'::text))
+    CONSTRAINT BioPay_payees_BioPay_id_format_chk CHECK ((BioPay_id ~ '^[0-9]{6}$'::text)),
+    CONSTRAINT BioPay_payees_display_name_chk CHECK ((length(btrim(display_name)) > 0)),
+    CONSTRAINT BioPay_payees_ussd_chk CHECK ((ussd_string ~ '^\*[0-9]+(\*[0-9]+)*#$'::text))
 );
 
 
 --
--- Name: biopay_payment_intents; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_payment_intents; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_payment_intents (
+CREATE TABLE public.BioPay_payment_intents (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     user_id uuid NOT NULL,
     profile_id uuid NOT NULL,
@@ -8729,40 +8729,40 @@ CREATE TABLE public.biopay_payment_intents (
     dialed_at timestamp with time zone,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     club_id bigint NOT NULL,
-    CONSTRAINT biopay_payment_intents_route_type_check CHECK ((route_type = ANY (ARRAY['phone_number'::text, 'code'::text]))),
-    CONSTRAINT biopay_payment_intents_status_check CHECK ((status = ANY (ARRAY['pending'::text, 'dialed'::text, 'expired'::text, 'cancelled'::text])))
+    CONSTRAINT BioPay_payment_intents_route_type_check CHECK ((route_type = ANY (ARRAY['phone_number'::text, 'code'::text]))),
+    CONSTRAINT BioPay_payment_intents_status_check CHECK ((status = ANY (ARRAY['pending'::text, 'dialed'::text, 'expired'::text, 'cancelled'::text])))
 );
 
 
 --
--- Name: biopay_profiles; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_profiles; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_profiles (
+CREATE TABLE public.BioPay_profiles (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
-    public_id text DEFAULT public.generate_biopay_public_id() NOT NULL,
+    public_id text DEFAULT public.generate_BioPay_public_id() NOT NULL,
     user_id uuid NOT NULL,
     display_name text NOT NULL,
     route_type text NOT NULL,
     recipient_value text NOT NULL,
     country_code text DEFAULT 'RW'::text NOT NULL,
     active boolean DEFAULT true NOT NULL,
-    consent_version text DEFAULT 'biopay-v1'::text NOT NULL,
+    consent_version text DEFAULT 'BioPay-v1'::text NOT NULL,
     consent_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     revoked_at timestamp with time zone,
     deleted_at timestamp with time zone,
     created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
     club_id bigint,
-    CONSTRAINT biopay_profiles_route_type_check CHECK ((route_type = ANY (ARRAY['phone_number'::text, 'code'::text])))
+    CONSTRAINT BioPay_profiles_route_type_check CHECK ((route_type = ANY (ARRAY['phone_number'::text, 'code'::text])))
 );
 
 
 --
--- Name: biopay_revocations; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_revocations; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_revocations (
+CREATE TABLE public.BioPay_revocations (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     profile_id uuid NOT NULL,
     user_id uuid NOT NULL,
@@ -8774,25 +8774,25 @@ CREATE TABLE public.biopay_revocations (
 
 
 --
--- Name: biopay_user_preferences; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_user_preferences; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_user_preferences (
+CREATE TABLE public.BioPay_user_preferences (
     supabase_uid uuid NOT NULL,
     preferred_momo_value text DEFAULT ''::text NOT NULL,
     preferred_momo_type text DEFAULT 'number'::text NOT NULL,
     preferred_ussd_code text DEFAULT '*182*1*1*'::text NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT biopay_user_preferences_type_chk CHECK ((preferred_momo_type = ANY (ARRAY['number'::text, 'code'::text]))),
-    CONSTRAINT biopay_user_preferences_ussd_code_chk CHECK ((preferred_ussd_code ~ '^\*[0-9]+(\*[0-9]+)*\*$'::text))
+    CONSTRAINT BioPay_user_preferences_type_chk CHECK ((preferred_momo_type = ANY (ARRAY['number'::text, 'code'::text]))),
+    CONSTRAINT BioPay_user_preferences_ussd_code_chk CHECK ((preferred_ussd_code ~ '^\*[0-9]+(\*[0-9]+)*\*$'::text))
 );
 
 
 --
--- Name: biopay_web_events; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_web_events; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_web_events (
+CREATE TABLE public.BioPay_web_events (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     actor_supabase_uid uuid,
     event_type text NOT NULL,
@@ -8801,17 +8801,17 @@ CREATE TABLE public.biopay_web_events (
     source text DEFAULT 'pwa'::text NOT NULL,
     metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
     occurred_at timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT biopay_web_events_source_chk CHECK ((source = ANY (ARRAY['pwa'::text, 'landing'::text, 'service-worker'::text]))),
-    CONSTRAINT biopay_web_events_status_chk CHECK ((status = ANY (ARRAY['success'::text, 'dismissed'::text, 'error'::text, 'info'::text]))),
-    CONSTRAINT biopay_web_events_type_chk CHECK ((event_type = ANY (ARRAY['install_prompt_impression'::text, 'install_prompt_result'::text, 'shortcut_saved'::text, 'shortcut_shared'::text, 'support_request'::text, 'notification_opt_in'::text, 'web_vital'::text])))
+    CONSTRAINT BioPay_web_events_source_chk CHECK ((source = ANY (ARRAY['pwa'::text, 'landing'::text, 'service-worker'::text]))),
+    CONSTRAINT BioPay_web_events_status_chk CHECK ((status = ANY (ARRAY['success'::text, 'dismissed'::text, 'error'::text, 'info'::text]))),
+    CONSTRAINT BioPay_web_events_type_chk CHECK ((event_type = ANY (ARRAY['install_prompt_impression'::text, 'install_prompt_result'::text, 'shortcut_saved'::text, 'shortcut_shared'::text, 'support_request'::text, 'notification_opt_in'::text, 'web_vital'::text])))
 );
 
 
 --
--- Name: biopay_web_push_subscriptions; Type: TABLE; Schema: public; Owner: -
+-- Name: BioPay_web_push_subscriptions; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.biopay_web_push_subscriptions (
+CREATE TABLE public.BioPay_web_push_subscriptions (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     actor_supabase_uid uuid,
     endpoint text NOT NULL,
@@ -11427,163 +11427,163 @@ ALTER TABLE ONLY public.app_config
 
 
 --
--- Name: biopay_embeddings biopay_embeddings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_embeddings BioPay_embeddings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_embeddings
-    ADD CONSTRAINT biopay_embeddings_pkey PRIMARY KEY (id);
-
-
---
--- Name: biopay_enrollment_audits biopay_enrollment_audits_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_enrollment_audits
-    ADD CONSTRAINT biopay_enrollment_audits_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.BioPay_embeddings
+    ADD CONSTRAINT BioPay_embeddings_pkey PRIMARY KEY (id);
 
 
 --
--- Name: biopay_events biopay_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_enrollment_audits BioPay_enrollment_audits_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_events
-    ADD CONSTRAINT biopay_events_pkey PRIMARY KEY (id);
-
-
---
--- Name: biopay_liveness_challenges biopay_liveness_challenges_nonce_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_liveness_challenges
-    ADD CONSTRAINT biopay_liveness_challenges_nonce_key UNIQUE (nonce);
+ALTER TABLE ONLY public.BioPay_enrollment_audits
+    ADD CONSTRAINT BioPay_enrollment_audits_pkey PRIMARY KEY (id);
 
 
 --
--- Name: biopay_liveness_challenges biopay_liveness_challenges_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_events BioPay_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_liveness_challenges
-    ADD CONSTRAINT biopay_liveness_challenges_pkey PRIMARY KEY (id);
-
-
---
--- Name: biopay_match_events biopay_match_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_match_events
-    ADD CONSTRAINT biopay_match_events_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.BioPay_events
+    ADD CONSTRAINT BioPay_events_pkey PRIMARY KEY (id);
 
 
 --
--- Name: biopay_match_rate_events biopay_match_rate_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_liveness_challenges BioPay_liveness_challenges_nonce_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_match_rate_events
-    ADD CONSTRAINT biopay_match_rate_events_pkey PRIMARY KEY (id);
-
-
---
--- Name: biopay_nfc_tokens biopay_nfc_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_nfc_tokens
-    ADD CONSTRAINT biopay_nfc_tokens_pkey PRIMARY KEY (token);
+ALTER TABLE ONLY public.BioPay_liveness_challenges
+    ADD CONSTRAINT BioPay_liveness_challenges_nonce_key UNIQUE (nonce);
 
 
 --
--- Name: biopay_payees biopay_payees_biopay_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_liveness_challenges BioPay_liveness_challenges_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_payees
-    ADD CONSTRAINT biopay_payees_biopay_id_key UNIQUE (biopay_id);
-
-
---
--- Name: biopay_payees biopay_payees_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_payees
-    ADD CONSTRAINT biopay_payees_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.BioPay_liveness_challenges
+    ADD CONSTRAINT BioPay_liveness_challenges_pkey PRIMARY KEY (id);
 
 
 --
--- Name: biopay_payees biopay_payees_supabase_uid_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_match_events BioPay_match_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_payees
-    ADD CONSTRAINT biopay_payees_supabase_uid_key UNIQUE (supabase_uid);
-
-
---
--- Name: biopay_payment_intents biopay_payment_intents_nonce_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_payment_intents
-    ADD CONSTRAINT biopay_payment_intents_nonce_key UNIQUE (nonce);
+ALTER TABLE ONLY public.BioPay_match_events
+    ADD CONSTRAINT BioPay_match_events_pkey PRIMARY KEY (id);
 
 
 --
--- Name: biopay_payment_intents biopay_payment_intents_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_match_rate_events BioPay_match_rate_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_payment_intents
-    ADD CONSTRAINT biopay_payment_intents_pkey PRIMARY KEY (id);
-
-
---
--- Name: biopay_profiles biopay_profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_profiles
-    ADD CONSTRAINT biopay_profiles_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.BioPay_match_rate_events
+    ADD CONSTRAINT BioPay_match_rate_events_pkey PRIMARY KEY (id);
 
 
 --
--- Name: biopay_profiles biopay_profiles_public_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_nfc_tokens BioPay_nfc_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_profiles
-    ADD CONSTRAINT biopay_profiles_public_id_key UNIQUE (public_id);
-
-
---
--- Name: biopay_revocations biopay_revocations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_revocations
-    ADD CONSTRAINT biopay_revocations_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.BioPay_nfc_tokens
+    ADD CONSTRAINT BioPay_nfc_tokens_pkey PRIMARY KEY (token);
 
 
 --
--- Name: biopay_user_preferences biopay_user_preferences_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_payees BioPay_payees_BioPay_id_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_user_preferences
-    ADD CONSTRAINT biopay_user_preferences_pkey PRIMARY KEY (supabase_uid);
-
-
---
--- Name: biopay_web_events biopay_web_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_web_events
-    ADD CONSTRAINT biopay_web_events_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.BioPay_payees
+    ADD CONSTRAINT BioPay_payees_BioPay_id_key UNIQUE (BioPay_id);
 
 
 --
--- Name: biopay_web_push_subscriptions biopay_web_push_subscriptions_endpoint_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_payees BioPay_payees_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_web_push_subscriptions
-    ADD CONSTRAINT biopay_web_push_subscriptions_endpoint_key UNIQUE (endpoint);
+ALTER TABLE ONLY public.BioPay_payees
+    ADD CONSTRAINT BioPay_payees_pkey PRIMARY KEY (id);
 
 
 --
--- Name: biopay_web_push_subscriptions biopay_web_push_subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_payees BioPay_payees_supabase_uid_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_web_push_subscriptions
-    ADD CONSTRAINT biopay_web_push_subscriptions_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.BioPay_payees
+    ADD CONSTRAINT BioPay_payees_supabase_uid_key UNIQUE (supabase_uid);
+
+
+--
+-- Name: BioPay_payment_intents BioPay_payment_intents_nonce_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_payment_intents
+    ADD CONSTRAINT BioPay_payment_intents_nonce_key UNIQUE (nonce);
+
+
+--
+-- Name: BioPay_payment_intents BioPay_payment_intents_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_payment_intents
+    ADD CONSTRAINT BioPay_payment_intents_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: BioPay_profiles BioPay_profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_profiles
+    ADD CONSTRAINT BioPay_profiles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: BioPay_profiles BioPay_profiles_public_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_profiles
+    ADD CONSTRAINT BioPay_profiles_public_id_key UNIQUE (public_id);
+
+
+--
+-- Name: BioPay_revocations BioPay_revocations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_revocations
+    ADD CONSTRAINT BioPay_revocations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: BioPay_user_preferences BioPay_user_preferences_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_user_preferences
+    ADD CONSTRAINT BioPay_user_preferences_pkey PRIMARY KEY (supabase_uid);
+
+
+--
+-- Name: BioPay_web_events BioPay_web_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_web_events
+    ADD CONSTRAINT BioPay_web_events_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: BioPay_web_push_subscriptions BioPay_web_push_subscriptions_endpoint_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_web_push_subscriptions
+    ADD CONSTRAINT BioPay_web_push_subscriptions_endpoint_key UNIQUE (endpoint);
+
+
+--
+-- Name: BioPay_web_push_subscriptions BioPay_web_push_subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_web_push_subscriptions
+    ADD CONSTRAINT BioPay_web_push_subscriptions_pkey PRIMARY KEY (id);
 
 
 --
@@ -12515,150 +12515,150 @@ ALTER TABLE ONLY public.xp_events
 
 
 --
--- Name: biopay_embedding_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: BioPay_embedding_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX biopay_embedding_idx ON public.biopay_embeddings USING ivfflat (embedding extensions.vector_cosine_ops) WITH (lists='64');
-
-
---
--- Name: biopay_embeddings_active_payee_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX biopay_embeddings_active_payee_idx ON public.biopay_embeddings USING btree (payee_id, created_at DESC) WHERE ((is_active = true) AND (revoked_at IS NULL));
+CREATE INDEX BioPay_embedding_idx ON public.BioPay_embeddings USING ivfflat (embedding extensions.vector_cosine_ops) WITH (lists='64');
 
 
 --
--- Name: biopay_embeddings_payee_id_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: BioPay_embeddings_active_payee_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX biopay_embeddings_payee_id_idx ON public.biopay_embeddings USING btree (payee_id);
-
-
---
--- Name: biopay_enrollment_audits_user_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX biopay_enrollment_audits_user_idx ON public.biopay_enrollment_audits USING btree (user_id, created_at DESC);
+CREATE INDEX BioPay_embeddings_active_payee_idx ON public.BioPay_embeddings USING btree (payee_id, created_at DESC) WHERE ((is_active = true) AND (revoked_at IS NULL));
 
 
 --
--- Name: biopay_events_actor_supabase_uid_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: BioPay_embeddings_payee_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX biopay_events_actor_supabase_uid_idx ON public.biopay_events USING btree (actor_supabase_uid);
-
-
---
--- Name: biopay_events_occurred_at_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX biopay_events_occurred_at_idx ON public.biopay_events USING btree (occurred_at DESC);
+CREATE INDEX BioPay_embeddings_payee_id_idx ON public.BioPay_embeddings USING btree (payee_id);
 
 
 --
--- Name: biopay_events_payee_id_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: BioPay_enrollment_audits_user_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX biopay_events_payee_id_idx ON public.biopay_events USING btree (payee_id);
-
-
---
--- Name: biopay_match_events_requester_user_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX biopay_match_events_requester_user_idx ON public.biopay_match_events USING btree (requester_user_id, created_at DESC);
+CREATE INDEX BioPay_enrollment_audits_user_idx ON public.BioPay_enrollment_audits USING btree (user_id, created_at DESC);
 
 
 --
--- Name: biopay_match_rate_events_requester_created_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: BioPay_events_actor_supabase_uid_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX biopay_match_rate_events_requester_created_idx ON public.biopay_match_rate_events USING btree (requester_user_id, created_at DESC);
-
-
---
--- Name: biopay_match_rate_events_scope_actor_created_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX biopay_match_rate_events_scope_actor_created_idx ON public.biopay_match_rate_events USING btree (scope, actor_key, created_at DESC);
+CREATE INDEX BioPay_events_actor_supabase_uid_idx ON public.BioPay_events USING btree (actor_supabase_uid);
 
 
 --
--- Name: biopay_nfc_tokens_expires_at_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: BioPay_events_occurred_at_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX biopay_nfc_tokens_expires_at_idx ON public.biopay_nfc_tokens USING btree (expires_at DESC);
-
-
---
--- Name: biopay_nfc_tokens_payee_id_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX biopay_nfc_tokens_payee_id_idx ON public.biopay_nfc_tokens USING btree (payee_id);
+CREATE INDEX BioPay_events_occurred_at_idx ON public.BioPay_events USING btree (occurred_at DESC);
 
 
 --
--- Name: biopay_payees_supabase_uid_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: BioPay_events_payee_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX biopay_payees_supabase_uid_idx ON public.biopay_payees USING btree (supabase_uid);
-
-
---
--- Name: biopay_profiles_public_id_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX biopay_profiles_public_id_idx ON public.biopay_profiles USING btree (public_id);
+CREATE INDEX BioPay_events_payee_id_idx ON public.BioPay_events USING btree (payee_id);
 
 
 --
--- Name: biopay_profiles_user_id_club_id_active_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: BioPay_match_events_requester_user_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX biopay_profiles_user_id_club_id_active_idx ON public.biopay_profiles USING btree (user_id, club_id) WHERE (deleted_at IS NULL);
-
-
---
--- Name: biopay_revocations_user_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX biopay_revocations_user_idx ON public.biopay_revocations USING btree (user_id, created_at DESC);
+CREATE INDEX BioPay_match_events_requester_user_idx ON public.BioPay_match_events USING btree (requester_user_id, created_at DESC);
 
 
 --
--- Name: biopay_web_events_actor_supabase_uid_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: BioPay_match_rate_events_requester_created_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX biopay_web_events_actor_supabase_uid_idx ON public.biopay_web_events USING btree (actor_supabase_uid);
-
-
---
--- Name: biopay_web_events_occurred_at_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX biopay_web_events_occurred_at_idx ON public.biopay_web_events USING btree (occurred_at DESC);
+CREATE INDEX BioPay_match_rate_events_requester_created_idx ON public.BioPay_match_rate_events USING btree (requester_user_id, created_at DESC);
 
 
 --
--- Name: biopay_web_events_type_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: BioPay_match_rate_events_scope_actor_created_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX biopay_web_events_type_idx ON public.biopay_web_events USING btree (event_type);
-
-
---
--- Name: biopay_web_push_subscriptions_actor_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX biopay_web_push_subscriptions_actor_idx ON public.biopay_web_push_subscriptions USING btree (actor_supabase_uid);
+CREATE INDEX BioPay_match_rate_events_scope_actor_created_idx ON public.BioPay_match_rate_events USING btree (scope, actor_key, created_at DESC);
 
 
 --
--- Name: biopay_web_push_subscriptions_last_seen_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: BioPay_nfc_tokens_expires_at_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX biopay_web_push_subscriptions_last_seen_idx ON public.biopay_web_push_subscriptions USING btree (last_seen_at DESC);
+CREATE INDEX BioPay_nfc_tokens_expires_at_idx ON public.BioPay_nfc_tokens USING btree (expires_at DESC);
+
+
+--
+-- Name: BioPay_nfc_tokens_payee_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX BioPay_nfc_tokens_payee_id_idx ON public.BioPay_nfc_tokens USING btree (payee_id);
+
+
+--
+-- Name: BioPay_payees_supabase_uid_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX BioPay_payees_supabase_uid_idx ON public.BioPay_payees USING btree (supabase_uid);
+
+
+--
+-- Name: BioPay_profiles_public_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX BioPay_profiles_public_id_idx ON public.BioPay_profiles USING btree (public_id);
+
+
+--
+-- Name: BioPay_profiles_user_id_club_id_active_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX BioPay_profiles_user_id_club_id_active_idx ON public.BioPay_profiles USING btree (user_id, club_id) WHERE (deleted_at IS NULL);
+
+
+--
+-- Name: BioPay_revocations_user_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX BioPay_revocations_user_idx ON public.BioPay_revocations USING btree (user_id, created_at DESC);
+
+
+--
+-- Name: BioPay_web_events_actor_supabase_uid_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX BioPay_web_events_actor_supabase_uid_idx ON public.BioPay_web_events USING btree (actor_supabase_uid);
+
+
+--
+-- Name: BioPay_web_events_occurred_at_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX BioPay_web_events_occurred_at_idx ON public.BioPay_web_events USING btree (occurred_at DESC);
+
+
+--
+-- Name: BioPay_web_events_type_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX BioPay_web_events_type_idx ON public.BioPay_web_events USING btree (event_type);
+
+
+--
+-- Name: BioPay_web_push_subscriptions_actor_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX BioPay_web_push_subscriptions_actor_idx ON public.BioPay_web_push_subscriptions USING btree (actor_supabase_uid);
+
+
+--
+-- Name: BioPay_web_push_subscriptions_last_seen_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX BioPay_web_push_subscriptions_last_seen_idx ON public.BioPay_web_push_subscriptions USING btree (last_seen_at DESC);
 
 
 --
@@ -12802,87 +12802,87 @@ CREATE INDEX idx_ai_content_status_active ON public.ai_content USING btree (stat
 
 
 --
--- Name: idx_biopay_enrollment_audits_club; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_BioPay_enrollment_audits_club; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_biopay_enrollment_audits_club ON public.biopay_enrollment_audits USING btree (club_id);
-
-
---
--- Name: idx_biopay_enrollment_audits_profile_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_biopay_enrollment_audits_profile_id ON public.biopay_enrollment_audits USING btree (profile_id);
+CREATE INDEX idx_BioPay_enrollment_audits_club ON public.BioPay_enrollment_audits USING btree (club_id);
 
 
 --
--- Name: idx_biopay_intents_club; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_BioPay_enrollment_audits_profile_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_biopay_intents_club ON public.biopay_payment_intents USING btree (club_id);
-
-
---
--- Name: idx_biopay_intents_nonce; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_biopay_intents_nonce ON public.biopay_payment_intents USING btree (nonce) WHERE (status = 'pending'::text);
+CREATE INDEX idx_BioPay_enrollment_audits_profile_id ON public.BioPay_enrollment_audits USING btree (profile_id);
 
 
 --
--- Name: idx_biopay_intents_user; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_BioPay_intents_club; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_biopay_intents_user ON public.biopay_payment_intents USING btree (user_id, created_at DESC);
-
-
---
--- Name: idx_biopay_liveness_challenges_open; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_biopay_liveness_challenges_open ON public.biopay_liveness_challenges USING btree (expires_at) WHERE (consumed_at IS NULL);
+CREATE INDEX idx_BioPay_intents_club ON public.BioPay_payment_intents USING btree (club_id);
 
 
 --
--- Name: idx_biopay_liveness_challenges_user_club_mode; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_BioPay_intents_nonce; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_biopay_liveness_challenges_user_club_mode ON public.biopay_liveness_challenges USING btree (user_id, club_id, mode, created_at DESC);
-
-
---
--- Name: idx_biopay_match_events_club; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_biopay_match_events_club ON public.biopay_match_events USING btree (club_id);
+CREATE INDEX idx_BioPay_intents_nonce ON public.BioPay_payment_intents USING btree (nonce) WHERE (status = 'pending'::text);
 
 
 --
--- Name: idx_biopay_match_events_matched_profile_id; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_BioPay_intents_user; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_biopay_match_events_matched_profile_id ON public.biopay_match_events USING btree (matched_profile_id);
-
-
---
--- Name: idx_biopay_profiles_club; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX idx_biopay_profiles_club ON public.biopay_profiles USING btree (club_id);
+CREATE INDEX idx_BioPay_intents_user ON public.BioPay_payment_intents USING btree (user_id, created_at DESC);
 
 
 --
--- Name: idx_biopay_revocations_club; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_BioPay_liveness_challenges_open; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_biopay_revocations_club ON public.biopay_revocations USING btree (club_id);
+CREATE INDEX idx_BioPay_liveness_challenges_open ON public.BioPay_liveness_challenges USING btree (expires_at) WHERE (consumed_at IS NULL);
 
 
 --
--- Name: idx_biopay_revocations_profile_id; Type: INDEX; Schema: public; Owner: -
+-- Name: idx_BioPay_liveness_challenges_user_club_mode; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX idx_biopay_revocations_profile_id ON public.biopay_revocations USING btree (profile_id);
+CREATE INDEX idx_BioPay_liveness_challenges_user_club_mode ON public.BioPay_liveness_challenges USING btree (user_id, club_id, mode, created_at DESC);
+
+
+--
+-- Name: idx_BioPay_match_events_club; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_BioPay_match_events_club ON public.BioPay_match_events USING btree (club_id);
+
+
+--
+-- Name: idx_BioPay_match_events_matched_profile_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_BioPay_match_events_matched_profile_id ON public.BioPay_match_events USING btree (matched_profile_id);
+
+
+--
+-- Name: idx_BioPay_profiles_club; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_BioPay_profiles_club ON public.BioPay_profiles USING btree (club_id);
+
+
+--
+-- Name: idx_BioPay_revocations_club; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_BioPay_revocations_club ON public.BioPay_revocations USING btree (club_id);
+
+
+--
+-- Name: idx_BioPay_revocations_profile_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_BioPay_revocations_profile_id ON public.BioPay_revocations USING btree (profile_id);
 
 
 --
@@ -14167,10 +14167,10 @@ CREATE TRIGGER trg_audit_vehicle_types AFTER INSERT OR DELETE OR UPDATE ON publi
 
 
 --
--- Name: biopay_profiles trg_biopay_profiles_updated; Type: TRIGGER; Schema: public; Owner: -
+-- Name: BioPay_profiles trg_BioPay_profiles_updated; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER trg_biopay_profiles_updated BEFORE UPDATE ON public.biopay_profiles FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+CREATE TRIGGER trg_BioPay_profiles_updated BEFORE UPDATE ON public.BioPay_profiles FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 
 --
@@ -14906,203 +14906,203 @@ ALTER TABLE ONLY public.ai_content
 
 
 --
--- Name: biopay_embeddings biopay_embeddings_payee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_embeddings BioPay_embeddings_payee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_embeddings
-    ADD CONSTRAINT biopay_embeddings_payee_id_fkey FOREIGN KEY (payee_id) REFERENCES public.biopay_payees(id) ON DELETE CASCADE;
-
-
---
--- Name: biopay_enrollment_audits biopay_enrollment_audits_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_enrollment_audits
-    ADD CONSTRAINT biopay_enrollment_audits_club_id_fkey FOREIGN KEY (club_id) REFERENCES public.african_football_clubs(id);
+ALTER TABLE ONLY public.BioPay_embeddings
+    ADD CONSTRAINT BioPay_embeddings_payee_id_fkey FOREIGN KEY (payee_id) REFERENCES public.BioPay_payees(id) ON DELETE CASCADE;
 
 
 --
--- Name: biopay_enrollment_audits biopay_enrollment_audits_profile_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_enrollment_audits BioPay_enrollment_audits_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_enrollment_audits
-    ADD CONSTRAINT biopay_enrollment_audits_profile_id_fkey FOREIGN KEY (profile_id) REFERENCES public.biopay_profiles(id) ON DELETE CASCADE;
-
-
---
--- Name: biopay_enrollment_audits biopay_enrollment_audits_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_enrollment_audits
-    ADD CONSTRAINT biopay_enrollment_audits_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.BioPay_enrollment_audits
+    ADD CONSTRAINT BioPay_enrollment_audits_club_id_fkey FOREIGN KEY (club_id) REFERENCES public.african_football_clubs(id);
 
 
 --
--- Name: biopay_events biopay_events_actor_supabase_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_enrollment_audits BioPay_enrollment_audits_profile_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_events
-    ADD CONSTRAINT biopay_events_actor_supabase_uid_fkey FOREIGN KEY (actor_supabase_uid) REFERENCES auth.users(id) ON DELETE SET NULL;
-
-
---
--- Name: biopay_events biopay_events_payee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_events
-    ADD CONSTRAINT biopay_events_payee_id_fkey FOREIGN KEY (payee_id) REFERENCES public.biopay_payees(id) ON DELETE SET NULL;
+ALTER TABLE ONLY public.BioPay_enrollment_audits
+    ADD CONSTRAINT BioPay_enrollment_audits_profile_id_fkey FOREIGN KEY (profile_id) REFERENCES public.BioPay_profiles(id) ON DELETE CASCADE;
 
 
 --
--- Name: biopay_liveness_challenges biopay_liveness_challenges_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_enrollment_audits BioPay_enrollment_audits_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_liveness_challenges
-    ADD CONSTRAINT biopay_liveness_challenges_club_id_fkey FOREIGN KEY (club_id) REFERENCES public.african_football_clubs(id) ON DELETE CASCADE;
-
-
---
--- Name: biopay_liveness_challenges biopay_liveness_challenges_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_liveness_challenges
-    ADD CONSTRAINT biopay_liveness_challenges_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.BioPay_enrollment_audits
+    ADD CONSTRAINT BioPay_enrollment_audits_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
 
 
 --
--- Name: biopay_match_events biopay_match_events_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_events BioPay_events_actor_supabase_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_match_events
-    ADD CONSTRAINT biopay_match_events_club_id_fkey FOREIGN KEY (club_id) REFERENCES public.african_football_clubs(id);
-
-
---
--- Name: biopay_match_events biopay_match_events_matched_profile_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_match_events
-    ADD CONSTRAINT biopay_match_events_matched_profile_id_fkey FOREIGN KEY (matched_profile_id) REFERENCES public.biopay_profiles(id) ON DELETE SET NULL;
+ALTER TABLE ONLY public.BioPay_events
+    ADD CONSTRAINT BioPay_events_actor_supabase_uid_fkey FOREIGN KEY (actor_supabase_uid) REFERENCES auth.users(id) ON DELETE SET NULL;
 
 
 --
--- Name: biopay_match_events biopay_match_events_requester_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_events BioPay_events_payee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_match_events
-    ADD CONSTRAINT biopay_match_events_requester_user_id_fkey FOREIGN KEY (requester_user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
-
-
---
--- Name: biopay_match_rate_events biopay_match_rate_events_requester_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_match_rate_events
-    ADD CONSTRAINT biopay_match_rate_events_requester_user_id_fkey FOREIGN KEY (requester_user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.BioPay_events
+    ADD CONSTRAINT BioPay_events_payee_id_fkey FOREIGN KEY (payee_id) REFERENCES public.BioPay_payees(id) ON DELETE SET NULL;
 
 
 --
--- Name: biopay_nfc_tokens biopay_nfc_tokens_actor_supabase_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_liveness_challenges BioPay_liveness_challenges_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_nfc_tokens
-    ADD CONSTRAINT biopay_nfc_tokens_actor_supabase_uid_fkey FOREIGN KEY (actor_supabase_uid) REFERENCES auth.users(id) ON DELETE SET NULL;
-
-
---
--- Name: biopay_nfc_tokens biopay_nfc_tokens_payee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_nfc_tokens
-    ADD CONSTRAINT biopay_nfc_tokens_payee_id_fkey FOREIGN KEY (payee_id) REFERENCES public.biopay_payees(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.BioPay_liveness_challenges
+    ADD CONSTRAINT BioPay_liveness_challenges_club_id_fkey FOREIGN KEY (club_id) REFERENCES public.african_football_clubs(id) ON DELETE CASCADE;
 
 
 --
--- Name: biopay_payees biopay_payees_supabase_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_liveness_challenges BioPay_liveness_challenges_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_payees
-    ADD CONSTRAINT biopay_payees_supabase_uid_fkey FOREIGN KEY (supabase_uid) REFERENCES auth.users(id);
-
-
---
--- Name: biopay_payment_intents biopay_payment_intents_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_payment_intents
-    ADD CONSTRAINT biopay_payment_intents_club_id_fkey FOREIGN KEY (club_id) REFERENCES public.african_football_clubs(id);
+ALTER TABLE ONLY public.BioPay_liveness_challenges
+    ADD CONSTRAINT BioPay_liveness_challenges_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
 
 
 --
--- Name: biopay_payment_intents biopay_payment_intents_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_match_events BioPay_match_events_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_payment_intents
-    ADD CONSTRAINT biopay_payment_intents_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
-
-
---
--- Name: biopay_profiles biopay_profiles_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_profiles
-    ADD CONSTRAINT biopay_profiles_club_id_fkey FOREIGN KEY (club_id) REFERENCES public.african_football_clubs(id);
+ALTER TABLE ONLY public.BioPay_match_events
+    ADD CONSTRAINT BioPay_match_events_club_id_fkey FOREIGN KEY (club_id) REFERENCES public.african_football_clubs(id);
 
 
 --
--- Name: biopay_profiles biopay_profiles_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_match_events BioPay_match_events_matched_profile_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_profiles
-    ADD CONSTRAINT biopay_profiles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
-
-
---
--- Name: biopay_revocations biopay_revocations_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_revocations
-    ADD CONSTRAINT biopay_revocations_club_id_fkey FOREIGN KEY (club_id) REFERENCES public.african_football_clubs(id);
+ALTER TABLE ONLY public.BioPay_match_events
+    ADD CONSTRAINT BioPay_match_events_matched_profile_id_fkey FOREIGN KEY (matched_profile_id) REFERENCES public.BioPay_profiles(id) ON DELETE SET NULL;
 
 
 --
--- Name: biopay_revocations biopay_revocations_profile_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_match_events BioPay_match_events_requester_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_revocations
-    ADD CONSTRAINT biopay_revocations_profile_id_fkey FOREIGN KEY (profile_id) REFERENCES public.biopay_profiles(id) ON DELETE CASCADE;
-
-
---
--- Name: biopay_revocations biopay_revocations_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_revocations
-    ADD CONSTRAINT biopay_revocations_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.BioPay_match_events
+    ADD CONSTRAINT BioPay_match_events_requester_user_id_fkey FOREIGN KEY (requester_user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
 
 
 --
--- Name: biopay_user_preferences biopay_user_preferences_supabase_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_match_rate_events BioPay_match_rate_events_requester_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_user_preferences
-    ADD CONSTRAINT biopay_user_preferences_supabase_uid_fkey FOREIGN KEY (supabase_uid) REFERENCES auth.users(id) ON DELETE CASCADE;
-
-
---
--- Name: biopay_web_events biopay_web_events_actor_supabase_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.biopay_web_events
-    ADD CONSTRAINT biopay_web_events_actor_supabase_uid_fkey FOREIGN KEY (actor_supabase_uid) REFERENCES auth.users(id) ON DELETE SET NULL;
+ALTER TABLE ONLY public.BioPay_match_rate_events
+    ADD CONSTRAINT BioPay_match_rate_events_requester_user_id_fkey FOREIGN KEY (requester_user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
--- Name: biopay_web_push_subscriptions biopay_web_push_subscriptions_actor_supabase_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: BioPay_nfc_tokens BioPay_nfc_tokens_actor_supabase_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.biopay_web_push_subscriptions
-    ADD CONSTRAINT biopay_web_push_subscriptions_actor_supabase_uid_fkey FOREIGN KEY (actor_supabase_uid) REFERENCES auth.users(id) ON DELETE SET NULL;
+ALTER TABLE ONLY public.BioPay_nfc_tokens
+    ADD CONSTRAINT BioPay_nfc_tokens_actor_supabase_uid_fkey FOREIGN KEY (actor_supabase_uid) REFERENCES auth.users(id) ON DELETE SET NULL;
+
+
+--
+-- Name: BioPay_nfc_tokens BioPay_nfc_tokens_payee_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_nfc_tokens
+    ADD CONSTRAINT BioPay_nfc_tokens_payee_id_fkey FOREIGN KEY (payee_id) REFERENCES public.BioPay_payees(id) ON DELETE CASCADE;
+
+
+--
+-- Name: BioPay_payees BioPay_payees_supabase_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_payees
+    ADD CONSTRAINT BioPay_payees_supabase_uid_fkey FOREIGN KEY (supabase_uid) REFERENCES auth.users(id);
+
+
+--
+-- Name: BioPay_payment_intents BioPay_payment_intents_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_payment_intents
+    ADD CONSTRAINT BioPay_payment_intents_club_id_fkey FOREIGN KEY (club_id) REFERENCES public.african_football_clubs(id);
+
+
+--
+-- Name: BioPay_payment_intents BioPay_payment_intents_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_payment_intents
+    ADD CONSTRAINT BioPay_payment_intents_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: BioPay_profiles BioPay_profiles_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_profiles
+    ADD CONSTRAINT BioPay_profiles_club_id_fkey FOREIGN KEY (club_id) REFERENCES public.african_football_clubs(id);
+
+
+--
+-- Name: BioPay_profiles BioPay_profiles_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_profiles
+    ADD CONSTRAINT BioPay_profiles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: BioPay_revocations BioPay_revocations_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_revocations
+    ADD CONSTRAINT BioPay_revocations_club_id_fkey FOREIGN KEY (club_id) REFERENCES public.african_football_clubs(id);
+
+
+--
+-- Name: BioPay_revocations BioPay_revocations_profile_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_revocations
+    ADD CONSTRAINT BioPay_revocations_profile_id_fkey FOREIGN KEY (profile_id) REFERENCES public.BioPay_profiles(id) ON DELETE CASCADE;
+
+
+--
+-- Name: BioPay_revocations BioPay_revocations_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_revocations
+    ADD CONSTRAINT BioPay_revocations_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: BioPay_user_preferences BioPay_user_preferences_supabase_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_user_preferences
+    ADD CONSTRAINT BioPay_user_preferences_supabase_uid_fkey FOREIGN KEY (supabase_uid) REFERENCES auth.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: BioPay_web_events BioPay_web_events_actor_supabase_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_web_events
+    ADD CONSTRAINT BioPay_web_events_actor_supabase_uid_fkey FOREIGN KEY (actor_supabase_uid) REFERENCES auth.users(id) ON DELETE SET NULL;
+
+
+--
+-- Name: BioPay_web_push_subscriptions BioPay_web_push_subscriptions_actor_supabase_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.BioPay_web_push_subscriptions
+    ADD CONSTRAINT BioPay_web_push_subscriptions_actor_supabase_uid_fkey FOREIGN KEY (actor_supabase_uid) REFERENCES auth.users(id) ON DELETE SET NULL;
 
 
 --
@@ -16499,231 +16499,231 @@ CREATE POLICY app_config_update_admin ON public.app_config FOR UPDATE TO authent
 
 
 --
--- Name: biopay_embeddings; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_embeddings; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_embeddings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_embeddings ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_embeddings biopay_embeddings_select_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_embeddings BioPay_embeddings_select_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_embeddings_select_own ON public.biopay_embeddings FOR SELECT USING ((EXISTS ( SELECT 1
-   FROM public.biopay_payees p
-  WHERE ((p.id = biopay_embeddings.payee_id) AND (p.supabase_uid = auth.uid())))));
+CREATE POLICY BioPay_embeddings_select_own ON public.BioPay_embeddings FOR SELECT USING ((EXISTS ( SELECT 1
+   FROM public.BioPay_payees p
+  WHERE ((p.id = BioPay_embeddings.payee_id) AND (p.supabase_uid = auth.uid())))));
 
 
 --
--- Name: biopay_enrollment_audits; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_enrollment_audits; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_enrollment_audits ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_enrollment_audits ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_enrollment_audits biopay_enrollment_audits_select_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_enrollment_audits BioPay_enrollment_audits_select_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_enrollment_audits_select_own ON public.biopay_enrollment_audits FOR SELECT USING (((auth.uid() = user_id) AND ((club_id)::text = public.requesting_club_id())));
+CREATE POLICY BioPay_enrollment_audits_select_own ON public.BioPay_enrollment_audits FOR SELECT USING (((auth.uid() = user_id) AND ((club_id)::text = public.requesting_club_id())));
 
 
 --
--- Name: biopay_events; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_events; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_events ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_events biopay_events_select_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_events BioPay_events_select_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_events_select_own ON public.biopay_events FOR SELECT USING (((actor_supabase_uid = auth.uid()) OR (EXISTS ( SELECT 1
-   FROM public.biopay_payees p
-  WHERE ((p.id = biopay_events.payee_id) AND (p.supabase_uid = auth.uid()))))));
+CREATE POLICY BioPay_events_select_own ON public.BioPay_events FOR SELECT USING (((actor_supabase_uid = auth.uid()) OR (EXISTS ( SELECT 1
+   FROM public.BioPay_payees p
+  WHERE ((p.id = BioPay_events.payee_id) AND (p.supabase_uid = auth.uid()))))));
 
 
 --
--- Name: biopay_payment_intents biopay_intents_select_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_payment_intents BioPay_intents_select_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_intents_select_own ON public.biopay_payment_intents FOR SELECT TO authenticated USING (((user_id = auth.uid()) AND ((club_id)::text = public.requesting_club_id())));
+CREATE POLICY BioPay_intents_select_own ON public.BioPay_payment_intents FOR SELECT TO authenticated USING (((user_id = auth.uid()) AND ((club_id)::text = public.requesting_club_id())));
 
 
 --
--- Name: biopay_payment_intents biopay_intents_update_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_payment_intents BioPay_intents_update_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_intents_update_own ON public.biopay_payment_intents FOR UPDATE TO authenticated USING (((user_id = auth.uid()) AND (status = 'pending'::text) AND ((club_id)::text = public.requesting_club_id()))) WITH CHECK ((user_id = auth.uid()));
+CREATE POLICY BioPay_intents_update_own ON public.BioPay_payment_intents FOR UPDATE TO authenticated USING (((user_id = auth.uid()) AND (status = 'pending'::text) AND ((club_id)::text = public.requesting_club_id()))) WITH CHECK ((user_id = auth.uid()));
 
 
 --
--- Name: biopay_liveness_challenges; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_liveness_challenges; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_liveness_challenges ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_liveness_challenges ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_match_events; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_match_events; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_match_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_match_events ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_match_events biopay_match_events_select_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_match_events BioPay_match_events_select_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_match_events_select_own ON public.biopay_match_events FOR SELECT USING (((auth.uid() = requester_user_id) AND ((club_id)::text = public.requesting_club_id())));
+CREATE POLICY BioPay_match_events_select_own ON public.BioPay_match_events FOR SELECT USING (((auth.uid() = requester_user_id) AND ((club_id)::text = public.requesting_club_id())));
 
 
 --
--- Name: biopay_match_rate_events; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_match_rate_events; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_match_rate_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_match_rate_events ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_match_rate_events biopay_match_rate_events_deny_anon; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_match_rate_events BioPay_match_rate_events_deny_anon; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_match_rate_events_deny_anon ON public.biopay_match_rate_events TO anon USING (false);
+CREATE POLICY BioPay_match_rate_events_deny_anon ON public.BioPay_match_rate_events TO anon USING (false);
 
 
 --
--- Name: biopay_match_rate_events biopay_match_rate_events_deny_authenticated; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_match_rate_events BioPay_match_rate_events_deny_authenticated; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_match_rate_events_deny_authenticated ON public.biopay_match_rate_events TO authenticated USING (false);
+CREATE POLICY BioPay_match_rate_events_deny_authenticated ON public.BioPay_match_rate_events TO authenticated USING (false);
 
 
 --
--- Name: biopay_match_rate_events biopay_match_rate_events_service_role; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_match_rate_events BioPay_match_rate_events_service_role; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_match_rate_events_service_role ON public.biopay_match_rate_events TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY BioPay_match_rate_events_service_role ON public.BioPay_match_rate_events TO service_role USING (true) WITH CHECK (true);
 
 
 --
--- Name: biopay_nfc_tokens; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_nfc_tokens; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_nfc_tokens ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_nfc_tokens ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_payees; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_payees; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_payees ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_payees ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_payees biopay_payees_select_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_payees BioPay_payees_select_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_payees_select_own ON public.biopay_payees FOR SELECT USING ((supabase_uid = auth.uid()));
+CREATE POLICY BioPay_payees_select_own ON public.BioPay_payees FOR SELECT USING ((supabase_uid = auth.uid()));
 
 
 --
--- Name: biopay_payees biopay_payees_update_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_payees BioPay_payees_update_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_payees_update_own ON public.biopay_payees FOR UPDATE USING ((supabase_uid = auth.uid())) WITH CHECK ((supabase_uid = auth.uid()));
+CREATE POLICY BioPay_payees_update_own ON public.BioPay_payees FOR UPDATE USING ((supabase_uid = auth.uid())) WITH CHECK ((supabase_uid = auth.uid()));
 
 
 --
--- Name: biopay_payment_intents; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_payment_intents; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_payment_intents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_payment_intents ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_profiles; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_profiles; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_profiles ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_profiles biopay_profiles_insert_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_profiles BioPay_profiles_insert_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_profiles_insert_own ON public.biopay_profiles FOR INSERT WITH CHECK (((auth.uid() = user_id) AND ((club_id)::text = public.requesting_club_id())));
+CREATE POLICY BioPay_profiles_insert_own ON public.BioPay_profiles FOR INSERT WITH CHECK (((auth.uid() = user_id) AND ((club_id)::text = public.requesting_club_id())));
 
 
 --
--- Name: biopay_profiles biopay_profiles_select_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_profiles BioPay_profiles_select_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_profiles_select_own ON public.biopay_profiles FOR SELECT USING (((auth.uid() = user_id) AND ((club_id)::text = public.requesting_club_id())));
+CREATE POLICY BioPay_profiles_select_own ON public.BioPay_profiles FOR SELECT USING (((auth.uid() = user_id) AND ((club_id)::text = public.requesting_club_id())));
 
 
 --
--- Name: biopay_profiles biopay_profiles_update_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_profiles BioPay_profiles_update_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_profiles_update_own ON public.biopay_profiles FOR UPDATE USING (((auth.uid() = user_id) AND ((club_id)::text = public.requesting_club_id()))) WITH CHECK (((auth.uid() = user_id) AND ((club_id)::text = public.requesting_club_id())));
+CREATE POLICY BioPay_profiles_update_own ON public.BioPay_profiles FOR UPDATE USING (((auth.uid() = user_id) AND ((club_id)::text = public.requesting_club_id()))) WITH CHECK (((auth.uid() = user_id) AND ((club_id)::text = public.requesting_club_id())));
 
 
 --
--- Name: biopay_revocations; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_revocations; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_revocations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_revocations ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_revocations biopay_revocations_select_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_revocations BioPay_revocations_select_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_revocations_select_own ON public.biopay_revocations FOR SELECT USING (((auth.uid() = user_id) AND ((club_id)::text = public.requesting_club_id())));
+CREATE POLICY BioPay_revocations_select_own ON public.BioPay_revocations FOR SELECT USING (((auth.uid() = user_id) AND ((club_id)::text = public.requesting_club_id())));
 
 
 --
--- Name: biopay_user_preferences; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_user_preferences; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_user_preferences ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_user_preferences ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_user_preferences biopay_user_preferences_insert_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_user_preferences BioPay_user_preferences_insert_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_user_preferences_insert_own ON public.biopay_user_preferences FOR INSERT WITH CHECK ((supabase_uid = auth.uid()));
+CREATE POLICY BioPay_user_preferences_insert_own ON public.BioPay_user_preferences FOR INSERT WITH CHECK ((supabase_uid = auth.uid()));
 
 
 --
--- Name: biopay_user_preferences biopay_user_preferences_select_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_user_preferences BioPay_user_preferences_select_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_user_preferences_select_own ON public.biopay_user_preferences FOR SELECT USING ((supabase_uid = auth.uid()));
+CREATE POLICY BioPay_user_preferences_select_own ON public.BioPay_user_preferences FOR SELECT USING ((supabase_uid = auth.uid()));
 
 
 --
--- Name: biopay_user_preferences biopay_user_preferences_update_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_user_preferences BioPay_user_preferences_update_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_user_preferences_update_own ON public.biopay_user_preferences FOR UPDATE USING ((supabase_uid = auth.uid())) WITH CHECK ((supabase_uid = auth.uid()));
+CREATE POLICY BioPay_user_preferences_update_own ON public.BioPay_user_preferences FOR UPDATE USING ((supabase_uid = auth.uid())) WITH CHECK ((supabase_uid = auth.uid()));
 
 
 --
--- Name: biopay_web_events; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_web_events; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_web_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_web_events ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_web_events biopay_web_events_select_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_web_events BioPay_web_events_select_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_web_events_select_own ON public.biopay_web_events FOR SELECT USING ((actor_supabase_uid = auth.uid()));
+CREATE POLICY BioPay_web_events_select_own ON public.BioPay_web_events FOR SELECT USING ((actor_supabase_uid = auth.uid()));
 
 
 --
--- Name: biopay_web_push_subscriptions; Type: ROW SECURITY; Schema: public; Owner: -
+-- Name: BioPay_web_push_subscriptions; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
-ALTER TABLE public.biopay_web_push_subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.BioPay_web_push_subscriptions ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: biopay_web_push_subscriptions biopay_web_push_subscriptions_select_own; Type: POLICY; Schema: public; Owner: -
+-- Name: BioPay_web_push_subscriptions BioPay_web_push_subscriptions_select_own; Type: POLICY; Schema: public; Owner: -
 --
 
-CREATE POLICY biopay_web_push_subscriptions_select_own ON public.biopay_web_push_subscriptions FOR SELECT USING ((actor_supabase_uid = auth.uid()));
+CREATE POLICY BioPay_web_push_subscriptions_select_own ON public.BioPay_web_push_subscriptions FOR SELECT USING ((actor_supabase_uid = auth.uid()));
 
 
 --

@@ -44,7 +44,7 @@ class ContributorLeaderboard extends StatelessWidget {
       children: [
         const AfriSectionHeader(
           title: 'Supporters',
-          subtitle: 'Top active aliases',
+          subtitle: 'Top active ',
           padding: EdgeInsets.zero,
         ),
         const SizedBox(height: SpacingTokens.spacing3),

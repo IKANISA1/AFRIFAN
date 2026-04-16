@@ -126,8 +126,8 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
     return <_PrivacyBadgeData>[
       _PrivacyBadgeData(
         icon: _showRealName && (_displayName?.isNotEmpty ?? false)
-            ? Icons.badge_rounded
-            : Icons.visibility_off_rounded,
+            ? AfriIcons.badge
+            : AfriIcons.visibilityOff,
         label: _showRealName && (_displayName?.isNotEmpty ?? false)
             ? 'Display Name On'
             : 'Alias Only',
@@ -136,15 +136,15 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
             : 'Leaderboards show your Fan ID or alias instead of your real name.',
       ),
       const _PrivacyBadgeData(
-        icon: Icons.phone_locked_rounded,
+        icon: AfriIcons.phone,
         label: 'Phone Hidden',
         description:
             'Your phone number stays server-side and is never shown to other supporters or club admins.',
       ),
       _PrivacyBadgeData(
         icon: _findableByPhone
-            ? Icons.person_search_rounded
-            : Icons.person_off_rounded,
+            ? AfriIcons.friend
+            : AfriIcons.profile,
         label: _findableByPhone
             ? 'Phone Discovery On'
             : 'Phone Discovery Off',
@@ -153,7 +153,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
             : 'Phone-based discovery is currently disabled on your profile.',
       ),
       _PrivacyBadgeData(
-        icon: _isVerified ? Icons.verified_rounded : Icons.pending_rounded,
+        icon: _isVerified ? AfriIcons.verified : AfriIcons.statusPending,
         label: _isVerified ? 'Verified' : 'Verification Pending',
         description: _isVerified
             ? 'Your phone identity is verified for FANZONE earning and social flows.'
@@ -323,7 +323,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  Icons.copy_rounded,
+                                  AfriIcons.copy,
                                   size: 16,
                                   color: ColorTokens.clubAccent,
                                 ),

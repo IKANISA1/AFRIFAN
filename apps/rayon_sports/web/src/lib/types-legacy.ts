@@ -290,7 +290,7 @@ export interface AdminContributionItem {
 export interface AdminContributionSnapshot {
   groups: AdminContributionGroup[];
   contributions: AdminContributionItem[];
-  aliases: Record<string, string>;
+  : Record<string, string>;
   monthlyTotal: number;
 }
 

@@ -1,12 +1,12 @@
-class BiopayLivenessChallenge {
-  const BiopayLivenessChallenge({
+class BioPayLivenessChallenge {
+  const BioPayLivenessChallenge({
     required this.token,
     required this.mode,
     required this.expiresAt,
   });
 
-  factory BiopayLivenessChallenge.fromApiResponse(Map<String, dynamic> data) {
-    return BiopayLivenessChallenge(
+  factory BioPayLivenessChallenge.fromApiResponse(Map<String, dynamic> data) {
+    return BioPayLivenessChallenge(
       token: data['token']?.toString() ?? '',
       mode: data['mode']?.toString() ?? 'payment',
       expiresAt:

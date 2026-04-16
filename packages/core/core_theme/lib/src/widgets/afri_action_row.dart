@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
+import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_press_feedback.dart';
@@ -45,9 +46,6 @@ class AfriActionRow extends StatelessWidget {
     return AfriPressFeedback(
       onTap: onTap,
       semanticsLabel: label,
-      semanticsHint: 'Open $label',
-      tooltip: label,
-      excludeChildSemantics: true,
       builder: (context, state) => ClayCard(
         padding: const EdgeInsets.all(SpacingTokens.tapPadding),
         child: Column(
@@ -56,14 +54,15 @@ class AfriActionRow extends StatelessWidget {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                Container(
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 140),
                   width: 38,
                   height: 38,
                   decoration: BoxDecoration(
                     color: accent.withValues(
                       alpha: state.isPressed ? 0.22 : 0.14,
                     ),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
                   ),
                   alignment: Alignment.center,
                   child: Icon(icon, size: 18, color: accent),
@@ -97,7 +96,11 @@ class AfriActionRow extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TypographyTokens.titleSmall(),
+              style: TypographyTokens.titleSmall().copyWith(
+                fontWeight: FontWeight.w900,
+                fontSize: 11,
+                letterSpacing: 0.5,
+              ),
             ),
           ],
         ),

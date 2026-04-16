@@ -12,12 +12,14 @@ class AfriStat {
     required this.value,
     this.icon,
     this.accentColor,
+    this.onTap,
   });
 
   final String label;
   final String value;
   final IconData? icon;
   final Color? accentColor;
+  final VoidCallback? onTap;
 }
 
 /// Horizontal row of 2–4 compact stat tiles with equal flex distribution.
@@ -74,7 +76,7 @@ class _StatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
+    final child = GlassCard(
       animate: false,
       padding: const EdgeInsets.all(SpacingTokens.spacing4),
       child: Column(
@@ -105,6 +107,14 @@ class _StatTile extends StatelessWidget {
           ),
         ],
       ),
+    );
+
+    if (stat.onTap == null) return child;
+
+    return GestureDetector(
+      onTap: stat.onTap,
+      behavior: HitTestBehavior.opaque,
+      child: child,
     );
   }
 }

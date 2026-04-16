@@ -45,7 +45,7 @@ export default function AdminConfigPage() {
   }, [access, client]);
 
   useEffect(() => {
-    if (client && access.hasAccess) load().catch(() => {});
+    if (client && access.hasAccess) load().catch(() => { });
   }, [access.hasAccess, client, load]);
 
   async function submit(e: React.FormEvent) {
@@ -90,14 +90,13 @@ export default function AdminConfigPage() {
       <AdminPageHeader
         eyebrow="CMS"
         title="App configuration"
-        description="Manage feature and experience flags that apply to the active club scope."
       />
 
       <form onSubmit={submit} className="glass-panel rounded-[28px] p-6 grid gap-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Key</span>
-            <input value={form.key} onChange={(e) => setForm({ ...form, key: e.target.value })} required disabled={form.isEditing} className="admin-input" placeholder="e.g. biopay_face_enabled" />
+            <input value={form.key} onChange={(e) => setForm({ ...form, key: e.target.value })} required disabled={form.isEditing} className="admin-input" placeholder="e.g. BioPay_face_enabled" />
           </label>
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Value</span>
@@ -132,7 +131,7 @@ export default function AdminConfigPage() {
             title="Configuration could not be loaded"
             description={loadError}
             onRetry={() => {
-              load().catch(() => {});
+              load().catch(() => { });
             }}
           />
         ) : entries.length === 0 ? (

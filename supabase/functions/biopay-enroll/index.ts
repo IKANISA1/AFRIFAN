@@ -9,8 +9,8 @@ import {
 import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { HttpError } from "../_shared/auth.ts";
 import { requireAppCheckToken } from "../_shared/app_check.ts";
-import { normalizeBiopayEmbedding } from "../_shared/biopay_embedding.ts";
-import { validateBiopayLivenessMetadata } from "../_shared/biopay_liveness.ts";
+import { normalizeBioPayEmbedding } from "../_shared/BioPay_embedding.ts";
+import { validateBioPayLivenessMetadata } from "../_shared/BioPay_liveness.ts";
 import {
   recordEdgeFunctionFailure,
   recordOperationalHealthEvent,
@@ -31,11 +31,11 @@ type EnrollRequest = {
 
 type AdminClientLike = ReturnType<typeof createAdminClient>;
 
-export type BiopayEnrollHandlerDependencies = {
+export type BioPayEnrollHandlerDependencies = {
   createAdminClient: () => AdminClientLike;
   validateRequest: typeof validateRequest;
   requireAppCheckToken: (request: Request) => Promise<string>;
-  validateLiveness: typeof validateBiopayLivenessMetadata;
+  validateLiveness: typeof validateBioPayLivenessMetadata;
   recordOperationalHealthEvent: (
     adminClient: AdminClientLike,
     event: Parameters<typeof recordOperationalHealthEvent>[1],
@@ -46,19 +46,19 @@ export type BiopayEnrollHandlerDependencies = {
   ) => Promise<void>;
 };
 
-const defaultDependencies: BiopayEnrollHandlerDependencies = {
+const defaultDependencies: BioPayEnrollHandlerDependencies = {
   createAdminClient,
   validateRequest,
   requireAppCheckToken,
-  validateLiveness: validateBiopayLivenessMetadata,
+  validateLiveness: validateBioPayLivenessMetadata,
   recordOperationalHealthEvent,
   recordEdgeFunctionFailure,
 };
 
-export function createBiopayEnrollHandler(
-  dependencies: Partial<BiopayEnrollHandlerDependencies> = {},
+export function createBioPayEnrollHandler(
+  dependencies: Partial<BioPayEnrollHandlerDependencies> = {},
 ) {
-  const deps: BiopayEnrollHandlerDependencies = {
+  const deps: BioPayEnrollHandlerDependencies = {
     ...defaultDependencies,
     ...dependencies,
   };
@@ -78,15 +78,15 @@ export function createBiopayEnrollHandler(
     try {
       const validated = await deps.validateRequest(request, { requireClubId: true });
       if (isErrorResponse(validated)) return validated;
-      
+
       const { userId, clubId } = validated;
       requesterUserId = userId;
 
       await deps.requireAppCheckToken(request);
 
       const body = await request.json() as EnrollRequest;
-      const embedding = normalizeBiopayEmbedding(body.embedding);
-      
+      const embedding = normalizeBioPayEmbedding(body.embedding);
+
       const numericClubId = Number(clubId);
 
       const liveness = await deps.validateLiveness(body.liveness, {
@@ -95,9 +95,9 @@ export function createBiopayEnrollHandler(
         clubId: numericClubId,
         mode: "enrollment",
       });
-      
+
       const { data, error } = await adminClient.rpc(
-        "biopay_upsert_enrollment_server",
+        "BioPay_upsert_enrollment_server",
         {
           p_requester_user_id: userId,
           p_club_id: numericClubId,
@@ -105,7 +105,7 @@ export function createBiopayEnrollHandler(
           p_route_type: body.route_type ?? null,
           p_recipient_value: body.recipient_value ?? null,
           p_country_code: body.country_code ?? "RW",
-          p_consent_version: body.consent_version ?? "biopay-v1",
+          p_consent_version: body.consent_version ?? "BioPay-v1",
           p_embedding: embedding,
           p_model_version: body.model_version ?? "mobilefacenet_int8_v1",
           p_quality_score: body.quality_score ?? null,
@@ -122,14 +122,14 @@ export function createBiopayEnrollHandler(
       }
 
       await deps.recordOperationalHealthEvent(adminClient, {
-        service: "biopay",
+        service: "BioPay",
         component: "enrollment",
         status: "ok",
         severity: "info",
         message: "BioPay enrollment completed.",
-        functionName: "biopay-enroll",
+        functionName: "BioPay-enroll",
         userId: userId,
-        subjectType: "biopay_profile",
+        subjectType: "BioPay_profile",
         subjectId: row.id?.toString() ?? null,
         metadata: {
           route_type: row.route_type ?? null,
@@ -149,13 +149,13 @@ export function createBiopayEnrollHandler(
       }
 
       await deps.recordEdgeFunctionFailure(adminClient, {
-        functionName: "biopay-enroll",
+        functionName: "BioPay-enroll",
         error,
-        issueCode: "biopay_enroll_failed",
+        issueCode: "BioPay_enroll_failed",
         userId: requesterUserId,
       });
-      
-      console.error("biopay-enroll failed:", error);
+
+      console.error("BioPay-enroll failed:", error);
       return jsonError(
         error instanceof Error ? error.message : "BioPay enrollment failed.",
         400,
@@ -165,7 +165,7 @@ export function createBiopayEnrollHandler(
 }
 
 if (import.meta.main) {
-  const handler = createBiopayEnrollHandler();
+  const handler = createBioPayEnrollHandler();
   Deno.serve((req: Request) => handler(req).then(
     (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
   ));

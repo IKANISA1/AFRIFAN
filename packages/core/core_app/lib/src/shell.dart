@@ -1,5 +1,10 @@
+import 'dart:async';
+
+import 'package:core_network/core_network.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -26,10 +31,27 @@ class AppShell extends StatelessWidget {
         .map((m) => m.tabRoute!)
         .toList();
 
+    // In release/profile builds, wrap each tab's content in an error boundary
+    // so a crash in one tab does not take down the entire shell.
+    final body = (kReleaseMode || kProfileMode)
+        ? AfriErrorBoundary(
+            onError: (error, stack) {
+              AfriLogger.error(
+                'AppShell',
+                'Caught tab-level widget error.',
+                error,
+                stack,
+              );
+              unawaited(CrashlyticsService.recordError(error, stack));
+            },
+            child: shell,
+          )
+        : shell;
+
     return Scaffold(
       backgroundColor: ColorTokens.background,
       extendBody: true,
-      body: shell,
+      body: body,
       bottomNavigationBar: AfriClubBottomNav(
         currentIndex: shell.currentIndex,
         onTap: (index) {

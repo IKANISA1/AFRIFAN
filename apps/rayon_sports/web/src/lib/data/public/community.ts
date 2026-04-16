@@ -38,9 +38,9 @@ function mapMembershipRow(row: Record<string, unknown>): MembershipPackage {
   const tierValue = safeString(row.tier).toLowerCase();
   const benefits = Array.isArray(row.benefits)
     ? row.benefits
-        .map((item) => safeString(item))
-        .filter(Boolean)
-        .slice(0, 4)
+      .map((item) => safeString(item))
+      .filter(Boolean)
+      .slice(0, 4)
     : [];
   const fallbackTier =
     fallbackMembershipPackages.find((entry) => entry.tier === tierValue) ??
@@ -71,12 +71,12 @@ function mapMembershipRow(row: Record<string, unknown>): MembershipPackage {
       benefits.length > 0
         ? benefits
         : description.split(/[.;]/).filter((item) => item.trim().length > 2)
-              .length > 0
+          .length > 0
           ? description
-              .split(/[.;]/)
-              .map((item) => item.trim())
-              .filter((item) => item.length > 2)
-              .slice(0, 4)
+            .split(/[.;]/)
+            .map((item) => item.trim())
+            .filter((item) => item.length > 2)
+            .slice(0, 4)
           : ["Priority access", "Supporter identity", "Club communications"],
   };
 }
@@ -102,7 +102,7 @@ function mapContributionGroupRow(
 ): ContributionGroup {
   return {
     id: toIdString(row.id, crypto.randomUUID()),
-    name: safeString(row.name, "Support circle"),
+    name: safeString(row.name, "Support Group"),
     description: safeString(
       row.description,
       "Supporters pooling funds around club activity.",
@@ -110,8 +110,8 @@ function mapContributionGroupRow(
     privacy: safeString(row.privacy) == "public" ? "public" : "private",
     groupType:
       safeString(row.group_type) == "project" ||
-      safeString(row.group_type) == "savings" ||
-      safeString(row.group_type) == "emergency"
+        safeString(row.group_type) == "savings" ||
+        safeString(row.group_type) == "emergency"
         ? (safeString(row.group_type) as ContributionGroup["groupType"])
         : "general",
     targetAmount: safeNumber(row.target_amount, 0),
@@ -134,9 +134,9 @@ function mapStandingRow(
   );
   const form = Array.isArray(row.form)
     ? row.form
-        .map((entry) => safeString(entry))
-        .filter(Boolean)
-        .slice(0, 5)
+      .map((entry) => safeString(entry))
+      .filter(Boolean)
+      .slice(0, 5)
     : [];
 
   return {
@@ -279,7 +279,7 @@ export const getStandings = cache(async function getStandings(): Promise<
         mapStandingRow(row, index, activeClub.slug),
       );
     }
-  } catch {}
+  } catch { }
 
   return fallbackStandings;
 });
@@ -305,7 +305,7 @@ export const getSquad = cache(async function getSquad(): Promise<
     if (scopedQuery.data && scopedQuery.data.length > 0) {
       return scopedQuery.data.map((row) => mapSquadRow(row));
     }
-  } catch {}
+  } catch { }
 
   return fallbackSquad;
 });

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { CheckCircle2, AlertTriangle, Info, X } from "lucide-react";
+import { CheckGroup2, AlertTriangle, Info, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type ToastVariant = "success" | "error" | "info";
@@ -25,7 +25,7 @@ export function showAdminToast(message: string, variant: ToastVariant = "info") 
 }
 
 const icons: Record<ToastVariant, typeof Info> = {
-  success: CheckCircle2,
+  success: CheckGroup2,
   error: AlertTriangle,
   info: Info,
 };

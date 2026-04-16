@@ -58,11 +58,13 @@ dependencies:
     path: ../../packages/features/feat_live
   feat_admin:
     path: ../../packages/features/feat_admin
+  app_registry:
+    path: ../../packages/app_registry
 
   # Third-party
   go_router: ^14.8.1
   supabase_flutter: ^2.12.2
-  google_fonts: ^6.2.1
+  google_fonts: ^8.0.2
   flutter_animate: ^4.5.2
   url_launcher: ^6.3.1
   intl: ^0.20.2
@@ -71,8 +73,6 @@ dependencies:
   firebase_core: ^4.5.0
 
 dev_dependencies:
-  core_modules:
-    path: ../../packages/core/core_modules
   integration_test:
     sdk: flutter
   flutter_test:
@@ -85,7 +85,7 @@ flutter:
   assets:
     - assets/crest/
     - assets/images/
-    - assets/models/biopay/
+    - assets/models/BioPay/
     - google_fonts/
 
 resolution: workspace

@@ -11,13 +11,13 @@ export async function generateMetadata() {
   const club = await getClubProfile();
   const copy = getSiteCopy(club.defaultLanguage);
   return buildPageMetadata({
-    title: copy.pages.circles.metaTitle(club),
-    description: copy.pages.circles.metaDescription(club),
-    path: "/circles",
+    title: copy.pages.Groups.metaTitle(club),
+    description: copy.pages.Groups.metaDescription(club),
+    path: "/Groups",
   });
 }
 
-export default async function CirclesPage() {
+export default async function GroupsPage() {
   const [club, groups, fanClubs] = await Promise.all([
     getClubProfile(),
     getContributionGroups(),
@@ -25,176 +25,105 @@ export default async function CirclesPage() {
   ]);
   const copy = getSiteCopy(club.defaultLanguage);
 
-  const fundedTotal = groups.reduce((total, group) => total + group.currentTotal, 0);
-  const totalMembers = groups.reduce((total, group) => total + group.memberCount, 0);
-
   return (
-    <div className="page-shell section-grid py-12">
-      <PageHero
-        eyebrow={copy.pages.circles.eyebrow}
-        title={copy.pages.circles.title}
-        description={copy.pages.circles.description(club)}
-        actions={
-          <>
-            <Link
-              href="/supporters"
-              className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
-            >
-              {copy.common.joinInFanApp}
-            </Link>
-            <Link
-              href="/fan-clubs"
-              className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              {copy.common.fanClubs}
-            </Link>
-          </>
-        }
-        stats={[
-          { label: copy.common.circles, value: groups.length.toString() },
-          { label: copy.common.members, value: formatCompactNumber(totalMembers) },
-          { label: copy.common.raised, value: formatCurrency(fundedTotal) },
-        ]}
-      />
-
-      <section className="grid gap-6 xl:grid-cols-[1.12fr_0.88fr]">
-        <div className="grid gap-5">
-          {groups.map((group) => (
-            <article
-              key={group.id}
-              className="glass-panel card-interactive rounded-[32px] p-6"
-            >
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-club-accent/15 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-club-accent">
-                      {group.groupType}
-                    </span>
-                    <span className="rounded-full border border-border-soft px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                      {group.privacy}
-                    </span>
-                  </div>
-                  <h2 className="mt-4 font-display text-4xl font-bold uppercase leading-none text-white">
-                    {group.name}
-                  </h2>
-                  <p className="mt-4 max-w-3xl text-sm leading-8 text-slate-300 sm:text-base">
-                    {group.description}
-                  </p>
-                </div>
-                <div className="rounded-[24px] border border-border-soft bg-black/20 px-5 py-4">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                    {copy.common.members}
-                  </p>
-                  <p className="mt-2 font-score text-5xl text-white">
-                    {group.memberCount}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-[22px] bg-white/5 p-4">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                    {copy.common.current}
-                  </p>
-                  <p className="mt-2 text-sm font-semibold text-white">
-                    {formatCurrency(group.currentTotal, group.currency)}
-                  </p>
-                </div>
-                <div className="rounded-[22px] bg-white/5 p-4">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                    {copy.common.target}
-                  </p>
-                  <p className="mt-2 text-sm font-semibold text-white">
-                    {formatCurrency(group.targetAmount, group.currency)}
-                  </p>
-                </div>
-                <div className="rounded-[22px] bg-white/5 p-4">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                    {copy.common.invite}
-                  </p>
-                  <p className="mt-2 text-sm font-semibold text-white">
-                    {group.inviteCode ?? copy.fanApp}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-5">
-                <ProgressBar
-                  value={group.currentTotal}
-                  max={group.targetAmount}
-                  label={copy.pages.circles.campaignProgress}
-                />
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <div className="grid gap-6">
-          <div className="glass-panel rounded-[32px] p-6">
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              {copy.pages.circles.whyEyebrow}
-            </p>
-            <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              {copy.pages.circles.whyTitle}
-            </h2>
-            <div className="mt-5 grid gap-4">
-              {[
-                "Circles turn supporter energy into visible collective action.",
-                "Live funding progress keeps every campaign legible.",
-                "The public page tells the story and the fan app handles the contribution.",
-              ].map((point) => (
-                <div
-                  key={point}
-                  className="rounded-[24px] border border-border-soft bg-white/5 p-4 text-sm leading-7 text-slate-300"
-                >
-                  {point}
-                </div>
-              ))}
-            </div>
-            <Link
-              href="/supporters"
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-club-accent px-5 py-3 font-semibold text-slate-950 transition hover:brightness-110"
-            >
-              {copy.common.supportACircle} <ArrowRight size={18} />
-            </Link>
+    <div className="bg-white min-h-screen pt-24 pb-20 lg:pt-32">
+      <div className="page-shell">
+        <header className="mb-16 border-b border-slate-100 pb-12">
+          <p className="text-xs font-bold uppercase tracking-[0.4em] text-[var(--club-primary)] mb-4">{copy.pages.Groups.eyebrow}</p>
+          <h1 className="font-display text-6xl font-black uppercase italic leading-none tracking-tighter text-slate-900 lg:text-9xl">
+            {copy.pages.Groups.title}
+          </h1>
+          <div className="mt-8 max-w-2xl text-lg font-medium text-slate-600">
+            {copy.pages.Groups.description(club)}
           </div>
+        </header>
 
-          <div className="glass-panel rounded-[32px] p-6">
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              {copy.pages.circles.bridgeEyebrow}
-            </p>
-            <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-              {copy.pages.circles.bridgeTitle}
-            </h2>
-            <div className="mt-5 grid gap-3">
-              {fanClubs.slice(0, 3).map((club) => (
-                <div
-                  key={club.id}
-                  className="rounded-[22px] border border-border-soft bg-white/5 p-4"
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-semibold text-white">{club.name}</p>
-                      <p className="mt-1 text-xs uppercase tracking-[0.22em] text-slate-300">
-                        {club.region}
-                      </p>
+        <div className="grid gap-12 lg:grid-cols-12">
+          <div className="lg:col-span-8 space-y-12">
+            {groups.map((group) => (
+              <article key={group.id} className="group relative overflow-hidden rounded-3xl border border-slate-100 bg-slate-50 p-10 transition-all hover:border-[var(--club-primary)]/20 hover:bg-white hover:shadow-2xl">
+                <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="max-w-xl">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="rounded-full bg-[var(--club-primary)] px-4 py-1 text-[10px] font-black uppercase tracking-widest text-white">
+                        {group.groupType}
+                      </span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{group.privacy}</span>
                     </div>
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-club-primary/16 text-club-accent">
-                      <Users size={18} />
-                    </span>
+                    <h2 className="font-display text-4xl font-black uppercase italic leading-none text-slate-900 mb-4">{group.name}</h2>
+                    <p className="text-base text-slate-600 leading-relaxed">{group.description}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">Backers</p>
+                    <p className="font-display text-5xl font-black italic text-[var(--club-primary)]">{group.memberCount}</p>
                   </div>
                 </div>
-              ))}
-            </div>
-            <Link
-              href="/fan-clubs"
-              className="mt-6 inline-flex items-center gap-2 rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8"
-            >
-              {copy.common.seeFanClubs} <ShieldCheck size={18} />
-            </Link>
+
+                <div className="mt-12 grid grid-cols-2 gap-8 border-t border-slate-200 pt-10">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Total Raised</p>
+                    <p className="text-3xl font-black text-slate-900 italic">{formatCurrency(group.currentTotal, group.currency)}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Campaign Goal</p>
+                    <p className="text-3xl font-black text-slate-900 italic">{formatCurrency(group.targetAmount, group.currency)}</p>
+                  </div>
+                </div>
+
+                <div className="mt-10">
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Mobilization Progress</p>
+                    <p className="text-[10px] font-black text-[var(--club-primary)] uppercase italic">{Math.round((group.currentTotal / group.targetAmount) * 100)}% Reached</p>
+                  </div>
+                  <div className="h-3 w-full bg-slate-200 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-[var(--club-primary)] transition-all duration-1000 ease-out"
+                      style={{ width: `${Math.round((group.currentTotal / group.targetAmount) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+
+                <Link href="/supporters" className="mt-10 block w-full rounded-xl bg-[var(--club-primary)] py-5 text-center text-xs font-black uppercase tracking-[0.3em] text-white transition-all hover:bg-[var(--club-primary-light)] active:scale-95">
+                  Back This Movement
+                </Link>
+              </article>
+            ))}
           </div>
+
+          <aside className="lg:col-span-4 space-y-8">
+            <div className="rounded-3xl bg-slate-900 p-10 text-white shadow-2xl">
+              <h3 className="font-display text-3xl font-black uppercase italic leading-none mb-6">Why Support?</h3>
+              <ul className="space-y-6">
+                {[
+                  { title: "Direct Impact", body: "100% of your contribution goes directly to the specified club project." },
+                  { title: "Collective Power", body: "Turn individual passion into visible matchday choreography and club heritage." },
+                  { title: "Member Status", body: "Backers earn exclusive digital badges and priority access to project events." }
+                ].map((item, i) => (
+                  <li key={i} className="border-b border-white/10 pb-6 last:border-0">
+                    <p className="text-[var(--club-accent)] text-xs font-black uppercase tracking-widest mb-2">{item.title}</p>
+                    <p className="text-sm text-white/60 leading-relaxed">{item.body}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="rounded-3xl border-2 border-slate-100 p-10">
+              <h3 className="font-display text-2xl font-black uppercase italic leading-none mb-6 text-slate-900">Chapter Network</h3>
+              <div className="space-y-4">
+                {fanClubs.map(ch => (
+                  <div key={ch.id} className="flex items-center justify-between py-3 border-b border-slate-100 last:border-0">
+                    <p className="text-sm font-bold text-slate-700 uppercase tracking-tight">{ch.name}</p>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{ch.region}</span>
+                  </div>
+                ))}
+              </div>
+              <Link href="/fan-clubs" className="mt-8 inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[var(--club-primary)] hover:translate-x-1 transition-transform">
+                Explore All Chapters <ArrowRight size={14} />
+              </Link>
+            </div>
+          </aside>
         </div>
-      </section>
+      </div>
     </div>
   );
 }

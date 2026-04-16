@@ -2,10 +2,10 @@ const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 const compactHeader = {
   alg: "HS256",
-  typ: "BIOPAY",
+  typ: "BioPay",
 };
 
-export type SignedBiopayTokenPayload = {
+export type SignedBioPayTokenPayload = {
   kind: string;
   v: number;
   exp: string;
@@ -16,12 +16,12 @@ export type SignedBiopayTokenPayload = {
 
 function requireSigningSecret(explicitSecret?: string): string {
   const value = explicitSecret?.trim() ||
-    Deno.env.get("BIOPAY_TOKEN_SIGNING_KEY")?.trim() ||
-    Deno.env.get("BIOPAY_HANDOFF_SIGNING_KEY")?.trim();
+    Deno.env.get("BioPay_TOKEN_SIGNING_KEY")?.trim() ||
+    Deno.env.get("BioPay_HANDOFF_SIGNING_KEY")?.trim();
 
   if (!value) {
     throw new Error(
-      "Missing environment variable: BIOPAY_TOKEN_SIGNING_KEY or BIOPAY_HANDOFF_SIGNING_KEY",
+      "Missing environment variable: BioPay_TOKEN_SIGNING_KEY or BioPay_HANDOFF_SIGNING_KEY",
     );
   }
 
@@ -61,7 +61,7 @@ async function importSigningKey(secret: string) {
   );
 }
 
-export function generateBiopayNonce(length = 24): string {
+export function generateBioPayNonce(length = 24): string {
   const bytes = new Uint8Array(length);
   crypto.getRandomValues(bytes);
   return Array.from(bytes)
@@ -69,8 +69,8 @@ export function generateBiopayNonce(length = 24): string {
     .join("");
 }
 
-export async function signBiopayToken(
-  payload: SignedBiopayTokenPayload,
+export async function signBioPayToken(
+  payload: SignedBioPayTokenPayload,
   options: { secret?: string } = {},
 ): Promise<string> {
   const secret = requireSigningSecret(options.secret);
@@ -90,10 +90,10 @@ export async function signBiopayToken(
   return `${unsignedToken}.${encodeBase64Url(new Uint8Array(signature))}`;
 }
 
-export async function verifyBiopayToken(
+export async function verifyBioPayToken(
   token: string,
   options: { secret?: string; expectedKind?: string } = {},
-): Promise<SignedBiopayTokenPayload> {
+): Promise<SignedBioPayTokenPayload> {
   const trimmed = token.trim();
   const segments = trimmed.split(".");
   if (segments.length != 3) {
@@ -116,13 +116,13 @@ export async function verifyBiopayToken(
   const header = JSON.parse(
     textDecoder.decode(decodeBase64Url(encodedHeader)),
   ) as Record<string, unknown>;
-  if (header["alg"] !== "HS256" || header["typ"] !== "BIOPAY") {
+  if (header["alg"] !== "HS256" || header["typ"] !== "BioPay") {
     throw new Error("Unsupported BioPay token header.");
   }
 
   const payload = JSON.parse(
     textDecoder.decode(decodeBase64Url(encodedPayload)),
-  ) as SignedBiopayTokenPayload;
+  ) as SignedBioPayTokenPayload;
   if (typeof payload.kind !== "string" || typeof payload.exp !== "string") {
     throw new Error("Invalid BioPay token payload.");
   }

@@ -133,14 +133,11 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
 IconData _iconForBadge(String badgeSlug) {
   final normalized = badgeSlug.toLowerCase();
   return switch (normalized) {
-    final value when value.contains('legend') =>
-      Icons.workspace_premium_rounded,
-    final value when value.contains('gold') => Icons.emoji_events_rounded,
-    final value when value.contains('silver') => Icons.bolt_rounded,
-    final value when value.contains('bronze') =>
-      Icons.local_fire_department_rounded,
-    final value when value.contains('streak') =>
-      Icons.local_fire_department_rounded,
-    _ => Icons.star_rounded,
+    final value when value.contains('legend') => AfriIcons.premium,
+    final value when value.contains('gold') => AfriIcons.rank,
+    final value when value.contains('silver') => AfriIcons.bolt,
+    final value when value.contains('bronze') => AfriIcons.streak,
+    final value when value.contains('streak') => AfriIcons.streak,
+    _ => AfriIcons.star,
   };
 }

@@ -171,14 +171,6 @@ class AuthRepository {
     }
   }
 
-  /// Build the safest local fallback profile for an existing session.
-  ///
-  /// Legacy helper retained for compatibility with older tests and flows.
-  /// Existing authenticated restore now fails closed instead of using this data.
-  Future<UserProfile?> restoreSessionFallbackProfile() async {
-    return null;
-  }
-
   // ─── Profile CRUD ───────────────────────────────────────────
 
   /// Update the user profile in Supabase.

@@ -190,7 +190,7 @@ class _PrivacySettingsScreenState
                       child: Column(
                         children: [
                           _GuaranteeRow(
-                            icon: Icons.phone_android_rounded,
+                            icon: AfriIcons.phone,
                             iconColor: ExternalBrandColors.whatsAppGreen,
                             title: 'Phone Number Hidden',
                             description:
@@ -203,7 +203,7 @@ class _PrivacySettingsScreenState
                             color: ColorTokens.ghostBorder,
                           ),
                           _GuaranteeRow(
-                            icon: Icons.shield_rounded,
+                            icon: AfriIcons.privacy,
                             iconColor: ColorTokens.clubAccent,
                             title: 'Anonymous Contributions',
                             description:
@@ -236,8 +236,8 @@ class _PrivacySettingsScreenState
                         children: [
                           _VisibilityToggle(
                             icon: _showRealName
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                                ? AfriIcons.visibility
+                                : AfriIcons.visibilityOff,
                             title: 'Show Real Name',
                             description:
                                 'If OFF, your Fan ID is displayed on leaderboards '
@@ -287,7 +287,7 @@ class _PrivacySettingsScreenState
                             ),
                             alignment: Alignment.center,
                             child: const Icon(
-                              Icons.lock_rounded,
+                              AfriIcons.lock,
                               color: ColorTokens.success,
                               size: 24,
                             ),

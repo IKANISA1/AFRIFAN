@@ -23,11 +23,11 @@ void main() {
     AfriCountryCatalog.withCountries(const <AfriCountry>[]);
   });
 
-  group('BiopayProfile', () {
-    late BiopayProfile profile;
+  group('BioPayProfile', () {
+    late BioPayProfile profile;
 
     setUp(() {
-      profile = BiopayProfile.fromJson(<String, dynamic>{
+      profile = BioPayProfile.fromJson(<String, dynamic>{
         'id': 'prof-1',
         'public_id': '483912',
         'user_id': 'user-abc',
@@ -36,7 +36,7 @@ void main() {
         'recipient_value': '0781234567',
         'country_code': 'RW',
         'active': true,
-        'consent_version': 'biopay-v1',
+        'consent_version': 'BioPay-v1',
         'consent_at': '2026-01-15T08:00:00.000Z',
         'created_at': '2026-01-15T08:00:00.000Z',
       });
@@ -50,7 +50,7 @@ void main() {
       expect(profile.recipientValue, '0781234567');
       expect(profile.countryCode, 'RW');
       expect(profile.active, true);
-      expect(profile.consentVersion, 'biopay-v1');
+      expect(profile.consentVersion, 'BioPay-v1');
     });
 
     test('routeLabel for phoneNumber route', () {
@@ -58,7 +58,7 @@ void main() {
     });
 
     test('routeLabel for code route', () {
-      final merchant = BiopayProfile.fromJson(<String, dynamic>{
+      final merchant = BioPayProfile.fromJson(<String, dynamic>{
         'id': 'p2',
         'public_id': '999',
         'user_id': 'u2',
@@ -67,7 +67,7 @@ void main() {
         'recipient_value': 'MERCH001',
         'country_code': 'RW',
         'active': true,
-        'consent_version': 'biopay-v1',
+        'consent_version': 'BioPay-v1',
       });
       expect(merchant.routeLabel, 'Merchant code');
     });
@@ -77,7 +77,7 @@ void main() {
     });
 
     test('publicAlias falls back to displayName when publicId empty', () {
-      final noId = BiopayProfile.fromJson(<String, dynamic>{
+      final noId = BioPayProfile.fromJson(<String, dynamic>{
         'id': 'p3',
         'public_id': '',
         'user_id': 'u3',
@@ -100,7 +100,7 @@ void main() {
     });
 
     test('maskedRecipientValue short values pass through', () {
-      final short = BiopayProfile.fromJson(<String, dynamic>{
+      final short = BioPayProfile.fromJson(<String, dynamic>{
         'id': 'p4',
         'public_id': 'x',
         'user_id': 'u4',
@@ -123,7 +123,7 @@ void main() {
     });
 
     test('defaults route_type to phoneNumber for unknown values', () {
-      final unknown = BiopayProfile.fromJson(<String, dynamic>{
+      final unknown = BioPayProfile.fromJson(<String, dynamic>{
         'id': 'p5',
         'public_id': 'x',
         'user_id': 'u5',
@@ -138,7 +138,7 @@ void main() {
     });
 
     test('handles null optional fields gracefully', () {
-      final minimal = BiopayProfile.fromJson(<String, dynamic>{
+      final minimal = BioPayProfile.fromJson(<String, dynamic>{
         'id': 'p6',
         'public_id': 'min',
         'user_id': 'u6',
@@ -148,15 +148,15 @@ void main() {
         'active': false,
       });
       expect(minimal.countryCode, isNotEmpty);
-      expect(minimal.consentVersion, 'biopay-v1');
+      expect(minimal.consentVersion, 'BioPay-v1');
       expect(minimal.consentAt, isNull);
       expect(minimal.revokedAt, isNull);
     });
   });
 
-  group('BiopayMatchResult', () {
+  group('BioPayMatchResult', () {
     test('fromApiResponse creates match result with profile', () {
-      final result = BiopayMatchResult.fromApiResponse(<String, dynamic>{
+      final result = BioPayMatchResult.fromApiResponse(<String, dynamic>{
         'match': true,
         'score': 0.95,
         'profile_id': 'prof-1',
@@ -168,7 +168,7 @@ void main() {
         'country_code': 'RW',
         'match_receipt': 'receipt-xyz',
         'match_receipt_expires_at': '2099-01-01T00:00:00.000Z',
-        'consent_version': 'biopay-v1',
+        'consent_version': 'BioPay-v1',
       });
 
       expect(result.match, true);
@@ -180,7 +180,7 @@ void main() {
     });
 
     test('fromApiResponse handles non-match', () {
-      final result = BiopayMatchResult.fromApiResponse(<String, dynamic>{
+      final result = BioPayMatchResult.fromApiResponse(<String, dynamic>{
         'match': false,
         'score': 0.35,
       });
@@ -192,7 +192,7 @@ void main() {
     });
 
     test('fromCacheJson restores cached result', () {
-      final original = BiopayMatchResult.fromApiResponse(<String, dynamic>{
+      final original = BioPayMatchResult.fromApiResponse(<String, dynamic>{
         'match': true,
         'score': 0.92,
         'profile_id': 'p1',
@@ -207,7 +207,7 @@ void main() {
 
       final json = original.toJson();
       json['cached'] = true;
-      final restored = BiopayMatchResult.fromCacheJson(json);
+      final restored = BioPayMatchResult.fromCacheJson(json);
 
       expect(restored.match, true);
       expect(restored.cached, true);
@@ -215,7 +215,7 @@ void main() {
     });
 
     test('copyWith updates cached flag', () {
-      final result = BiopayMatchResult.fromApiResponse(<String, dynamic>{
+      final result = BioPayMatchResult.fromApiResponse(<String, dynamic>{
         'match': true,
         'score': 0.9,
         'profile_id': 'p1',

@@ -8,7 +8,7 @@
 INSERT INTO public.home_banners (title, subtitle, badge_label, cta_label, route, sort_order, is_active)
 VALUES
   ('Buy tickets',     'Get matchday entry',              'NEW',   'Buy tickets',      '/tickets',    1, true),
-  ('Support circles', 'Pool funds for tifos and travel',  NULL,    'Support circles',  '/circles',    2, true),
+  ('Support Groups', 'Pool funds for tifos and travel',  NULL,    'Support Groups',  '/Groups',    2, true),
   ('Membership',      'Fan, Bronze, Gold, Platinum',     NULL,    'Membership tiers',  '/membership', 3, true),
   ('Club news',       'Latest stories and press',        NULL,    'Latest club news',  '/news',       4, true),
   ('Shop',            'New season gear and kits',        'DROP',  'Shop new drop',     '/shop',       5, true)
@@ -22,7 +22,7 @@ VALUES
     'hero_headline',
     'This is Gikundiro.',
     'The Beloved, live in the browser',
-    'Get tickets, follow live matches, back supporter circles, and join the Rayon Sports family — all from your browser.',
+    'Get tickets, follow live matches, back supporter Groups, and join the Rayon Sports family — all from your browser.',
     1, true, 'approved'
   )
 ON CONFLICT DO NOTHING;
@@ -62,7 +62,7 @@ VALUES
     'privacy_policy',
     'Supporter data with clear boundaries.',
     'Privacy',
-    'The Gikundiro web experience stores only the minimum supporter data required to run portal services such as membership, tickets, shop orders, and support circles. Sensitive payment and private contact details remain segmented from public profile data.
+    'The Gikundiro web experience stores only the minimum supporter data required to run portal services such as membership, tickets, shop orders, and support Groups. Sensitive payment and private contact details remain segmented from public profile data.
 
 We do not sell or share supporter data with third parties. Authentication is handled via Supabase Auth with industry-standard encryption. Session tokens are stored locally and expire after inactivity.
 
@@ -113,7 +113,7 @@ ON CONFLICT DO NOTHING;
 INSERT INTO public.ai_content (content_type, title, subtitle, body, sort_order, is_active, status)
 VALUES
   (
-    'biopay_info',
+    'BioPay_info',
     'Pay without reaching for your wallet.',
     'About BioPay',
     'BioPay links your supporter identity to biometric and contactless payment. Enrol in the native app, then pay at gates and vendor stalls with a glance or tap.',
@@ -125,10 +125,10 @@ ON CONFLICT DO NOTHING;
 
 INSERT INTO public.app_config (key, value, description, country)
 VALUES
-  ('biopay_face_enabled',   'false', 'Whether BioPay Face Scan is available on web', NULL),
-  ('biopay_nfc_enabled',    'false', 'Whether BioPay NFC Tap is available on web',   NULL),
-  ('biopay_qr_enabled',     'true',  'Whether BioPay QR code is available on web',   NULL),
-  ('biopay_scan_enabled',   'true',  'Whether BioPay Scan QR is available on web',   NULL),
+  ('BioPay_face_enabled',   'false', 'Whether BioPay Face Scan is available on web', NULL),
+  ('BioPay_nfc_enabled',    'false', 'Whether BioPay NFC Tap is available on web',   NULL),
+  ('BioPay_qr_enabled',     'true',  'Whether BioPay QR code is available on web',   NULL),
+  ('BioPay_scan_enabled',   'true',  'Whether BioPay Scan QR is available on web',   NULL),
   ('install_prompt_delay',  '45',    'Seconds before showing PWA install prompt',    NULL),
   ('default_currency',      'RWF',   'Default currency for pricing display',         'RW'),
   ('club_short_name',       'Rayon', 'Short display name for the club',              NULL),

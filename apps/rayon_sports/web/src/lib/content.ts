@@ -35,7 +35,7 @@ export const fallbackClubProfile: ClubProfile = {
   secondaryColorHex: rayonClub.secondaryColorHex,
   accentColorHex: rayonClub.accentColorHex,
   featureFlags: {
-    biopay: true,
+    BioPay: true,
     shop: true,
     fan_clubs: true,
     ticketing: true,
@@ -48,7 +48,7 @@ export const fallbackMatches: MatchItem[] = [
   {
     id: "featured-home-fixture",
     homeTeam: fallbackClubProfile.shortName,
-    awayTeam: "APR FC",
+    awayTeam: "Rayon Sports FC",
     competition: fallbackClubProfile.league,
     venue: "Club Stadium",
     matchDate: "2026-04-20T15:00:00.000Z",
@@ -86,7 +86,7 @@ export const fallbackMatches: MatchItem[] = [
     matchSummary:
       `${fallbackClubProfile.shortName} are pressing hard and controlling the decisive moments.`,
     liveEvents: [
-      { minute: "14'", event: "APR-style pressing goal from open play", side: "home" },
+      { minute: "14'", event: "Rayon Sports-style pressing goal from open play", side: "home" },
       { minute: "39'", event: "Mukundane levels from the spot", side: "away" },
       { minute: "61'", event: "Ndayishimiye curls home from range", side: "away" },
     ],
@@ -133,38 +133,38 @@ export const fallbackMatches: MatchItem[] = [
 export const fallbackNewsArticles: NewsArticle[] = [
   {
     id: "matchday-club-pulse",
-    title: `Matchday pulse: ${fallbackClubProfile.shortName} prepares for the next big crowd`,
+    title: `The Blue Wall: Preparing for Matchday at the Cathedral`,
     excerpt:
-      "Supporters' buses, early gates, and a full-day activation plan are locked in for the APR clash.",
+      "Witness the mobilization of Rwanda's most passionate fanbase as we prepare for the headline clash against Police FC.",
     content:
-      `${fallbackClubProfile.clubName} are building a full matchday program around the next headline fixture, from supporter hub activations to ticket scanning lanes and post-match access. The website gives fans one place to find kickoff details, gate timings, and the path into the supporter app before heading to the stadium.`,
+      `${fallbackClubProfile.clubName} is finalizing a world-class matchday experience for our supporters. From the choreographed Blue Wall tifo to enhanced hospitality in the Platinum Lounge, every detail is being refined to ensure matchday remains the heartbeat of Rwandan football. Gates open at 14:00. Arrive early, wear your colors, and be the twelfth man.`,
     category: "Matchday",
     coverImageUrl: "/media/stadium-hero.jpg",
-    publishedAt: "2026-04-03T07:00:00.000Z",
-    author: "Club Media",
+    publishedAt: "2026-04-15T07:00:00.000Z",
+    author: "Gikundiro Media",
   },
   {
-    id: "membership-gikundiro-circle",
-    title: "Membership is now digital-first across phone and web",
+    id: "membership-gikundiro-Group",
+    title: "Digital Fan Identity: Your Portal to the Beloved",
     excerpt:
-      "Fans can now manage tiers, supporter details, and ticket priority from the mobile supporter app.",
+      "Manage your membership, secure priority tickets, and join Support Circles through our new integrated digital platform.",
     content:
-      `The ${fallbackClubProfile.shortName} membership program now runs across the public website and the mobile supporter app. Supporters can activate a plan, review their tier, update their profile, and keep their fan identity in sync across devices.`,
+      `Being a member of ${fallbackClubProfile.shortName} is more than just a ticket—it's a digital-first identity. Our new fan portal allows supporters across Rwanda and the diaspora to manage their tiers, earn FET tokens, and fund community projects through Support Circles. Your fan card is now live in the supporter app. Access the future of fan engagement today.`,
     category: "Membership",
     coverImageUrl: "/media/stadium-hero-2.jpg",
-    publishedAt: "2026-04-01T10:15:00.000Z",
+    publishedAt: "2026-04-12T10:15:00.000Z",
     author: "Supporter Experience",
   },
   {
     id: "shop-blue-red-drop",
-    title: "New blue-and-red drop lands in the official shop",
+    title: "The 2026 Heritage Collection: Out Now",
     excerpt:
-      "Replica shirts, travel hoodies, and matchday scarves are now available in the club store.",
+      "The new home kit has arrived. A tribute to our 50-year legacy, built for the modern supporter.",
     content:
-      `The latest ${fallbackClubProfile.shortName} drop is live with home replicas, travel layers, and premium scarves. The shop experience in the web build mirrors the supporter app merchandise flow while improving product discovery and checkout clarity.`,
+      `Our 2026 Heritage Collection is officially live. Featuring the iconic cobalt blue with gold accents, the new home replica jersey combines breathable performance fabrics with the prestige of the Gikundiro crest. Available now in the official shop and selected retail partners across Kigali. Own the colors. Own the history.`,
     category: "Shop",
     coverImageUrl: "/media/stadium-hero.jpg",
-    publishedAt: "2026-03-30T12:30:00.000Z",
+    publishedAt: "2026-04-10T12:30:00.000Z",
     author: "Retail Desk",
   },
 ];
@@ -223,7 +223,7 @@ export const fallbackMembershipPackages: MembershipPackage[] = [
       "Digital fan card",
       "Fan app access",
       "News and match reminders",
-      "Support circles access",
+      "Support Groups access",
     ],
   },
   {
@@ -243,7 +243,7 @@ export const fallbackMembershipPackages: MembershipPackage[] = [
     id: "gold-heritage",
     tier: "gold",
     title: "Gold Heritage",
-    description: "Premium supporter access for the club's core circle.",
+    description: "Premium supporter access for the club's core Group.",
     sortOrder: 2,
     annualPrice: 50000,
     perks: [
@@ -311,7 +311,7 @@ export const fallbackContributionGroups: ContributionGroup[] = [
     id: "stadium-tifo-26",
     name: "Blue Wall Tifo Fund",
     description:
-      "Support a bigger home-end tifo package for the APR and continental nights.",
+      "Support a bigger home-end tifo package for the Rayon Sports and continental nights.",
     privacy: "public",
     groupType: "project",
     targetAmount: 2500000,
@@ -322,10 +322,10 @@ export const fallbackContributionGroups: ContributionGroup[] = [
     isActive: true,
   },
   {
-    id: "travel-circle-huye",
-    name: "Away Travel Circle",
+    id: "travel-Group-huye",
+    name: "Away Travel Group",
     description:
-      "Shared savings circle for buses, meals, and printed supporter materials.",
+      "Shared savings Group for buses, meals, and printed supporter materials.",
     privacy: "public",
     groupType: "savings",
     targetAmount: 900000,
@@ -383,7 +383,7 @@ export const fallbackSquad: SquadPlayer[] = [
 export const fallbackStandings: StandingRow[] = [
   {
     position: 1,
-    club: "APR FC",
+    club: "Rayon Sports FC",
     played: 24,
     goalDifference: 25,
     points: 54,
@@ -487,7 +487,7 @@ export const siteNavigation = [
   { href: "/fixtures", label: "Fixtures" },
   { href: "/tickets", label: "Tickets" },
   { href: "/membership", label: "Membership" },
-  { href: "/circles", label: "Circles" },
+  { href: "/Groups", label: "Groups" },
   { href: "/shop", label: "Shop" },
   { href: "/news", label: "News" },
   { href: "/squad", label: "Squad" },
@@ -517,7 +517,7 @@ export const footerNavigationGroups = [
     title: "Supporters",
     links: [
       { href: "/membership", label: "Membership" },
-      { href: "/circles", label: "Support Circles" },
+      { href: "/Groups", label: "Support Groups" },
       { href: "/fan-clubs", label: "Fan Clubs" },
       { href: resolveFanAppHref(), label: "Fan App" },
     ],
@@ -544,7 +544,7 @@ export const staticSearchItems: SearchIndexItem[] = [
   {
     id: "page-home",
     title: "Homepage",
-    description: "Live matchday, tickets, circles, and club storytelling.",
+    description: "Live matchday, tickets, Groups, and club storytelling.",
     href: "/",
     category: "Page",
     meta: "Overview",
@@ -574,11 +574,11 @@ export const staticSearchItems: SearchIndexItem[] = [
     meta: "Plans",
   },
   {
-    id: "page-circles",
-    title: "Support Circles",
+    id: "page-Groups",
+    title: "Support Groups",
     description:
       "Collective fan funding for tifos, away travel, and club projects.",
-    href: "/circles",
+    href: "/Groups",
     category: "Community",
     meta: "Funding",
   },

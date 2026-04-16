@@ -51,7 +51,7 @@ WHERE public_user_id IS NULL OR btrim(public_user_id) = '';
 DO $$
 DECLARE
   v_unmapped_club_ids text;
-  v_duplicate_aliases text;
+  v_duplicate_ text;
 BEGIN
   SELECT string_agg(club_id, ', ' ORDER BY club_id)
   INTO v_unmapped_club_ids
@@ -69,7 +69,7 @@ BEGIN
   END IF;
 
   SELECT string_agg(public_user_id, ', ' ORDER BY public_user_id)
-  INTO v_duplicate_aliases
+  INTO v_duplicate_
   FROM (
     SELECT public_user_id
     FROM public.profiles
@@ -78,10 +78,10 @@ BEGIN
     HAVING count(*) > 1
   ) duplicates;
 
-  IF v_duplicate_aliases IS NOT NULL THEN
+  IF v_duplicate_ IS NOT NULL THEN
     RAISE EXCEPTION
       'Cannot enforce unique public_user_id. Duplicate values: %',
-      v_duplicate_aliases;
+      v_duplicate_;
   END IF;
 END;
 $$;

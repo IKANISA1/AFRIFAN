@@ -134,7 +134,7 @@ class MatchDetailEmptyState extends StatelessWidget {
               style: TypographyTokens.bodyMedium(),
             ),
             const SizedBox(height: SpacingTokens.spacing6),
-            ClaymorphicButton(label: actionLabel, onPressed: onPressed),
+            AfriButton(label: actionLabel, onTap: onPressed),
           ],
         ),
       ),

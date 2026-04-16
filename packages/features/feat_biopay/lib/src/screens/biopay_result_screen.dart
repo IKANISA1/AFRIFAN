@@ -6,35 +6,35 @@ import '../biopay_tokens.dart';
 import '../models/biopay_task_result.dart';
 import '../widgets/biopay_reference_ui.dart';
 
-class BiopayResultScreen extends StatelessWidget {
-  const BiopayResultScreen({required this.args, super.key});
+class BioPayResultScreen extends StatelessWidget {
+  const BioPayResultScreen({required this.args, super.key});
 
-  final BiopayTaskResultArgs args;
+  final BioPayTaskResultArgs args;
 
   @override
   Widget build(BuildContext context) {
-    final isSuccess = args.tone == BiopayTaskResultTone.success;
+    final isSuccess = args.tone == BioPayTaskResultTone.success;
     final accent = switch (args.tone) {
-      BiopayTaskResultTone.success => biopayReferenceGreen,
-      BiopayTaskResultTone.error => Colors.red.shade500,
-      BiopayTaskResultTone.blocked => Colors.orange.shade500,
-      BiopayTaskResultTone.pending => biopayReferenceBlue,
+      BioPayTaskResultTone.success => BioPayReferenceGreen,
+      BioPayTaskResultTone.error => Colors.red.shade500,
+      BioPayTaskResultTone.blocked => Colors.orange.shade500,
+      BioPayTaskResultTone.pending => BioPayReferenceBlue,
     };
     final panelColor = switch (args.tone) {
-      BiopayTaskResultTone.success => BiopayTokens.successPanel,
-      BiopayTaskResultTone.error => BiopayTokens.errorPanel,
-      BiopayTaskResultTone.blocked => BiopayTokens.blockedPanel,
-      BiopayTaskResultTone.pending => BiopayTokens.pendingPanel,
+      BioPayTaskResultTone.success => BioPayTokens.successPanel,
+      BioPayTaskResultTone.error => BioPayTokens.errorPanel,
+      BioPayTaskResultTone.blocked => BioPayTokens.blockedPanel,
+      BioPayTaskResultTone.pending => BioPayTokens.pendingPanel,
     };
     final icon = switch (args.tone) {
-      BiopayTaskResultTone.success => Icons.check_rounded,
-      BiopayTaskResultTone.error => AfriIcons.close,
-      BiopayTaskResultTone.blocked => Icons.warning_rounded,
-      BiopayTaskResultTone.pending => Icons.schedule_rounded,
+      BioPayTaskResultTone.success => Icons.check_rounded,
+      BioPayTaskResultTone.error => AfriIcons.close,
+      BioPayTaskResultTone.blocked => Icons.warning_rounded,
+      BioPayTaskResultTone.pending => Icons.schedule_rounded,
     };
 
     return Scaffold(
-      backgroundColor: biopayReferenceBackground,
+      backgroundColor: BioPayReferenceBackground,
       body: GradientBackground(
         child: SafeArea(
           child: Padding(
@@ -45,7 +45,7 @@ class BiopayResultScreen extends StatelessWidget {
                   height: 52,
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: BiopayReferenceLightBackButton(
+                    child: BioPayReferenceLightBackButton(
                       onTap: () => context.go(args.primaryRoute),
                     ),
                   ),
@@ -67,17 +67,17 @@ class BiopayResultScreen extends StatelessWidget {
                       if (isSuccess)
                         Text(
                           'ENROLLMENT SUCCESS',
-                          style: biopayReferenceText(
+                          style: BioPayReferenceText(
                             fontSize: 15,
                             fontWeight: FontWeight.w800,
-                            color: biopayReferenceMuted,
+                            color: BioPayReferenceMuted,
                             letterSpacing: 2.2,
                           ),
                         ),
                       if (isSuccess) const SizedBox(height: 14),
                       Text(
                         args.title,
-                        style: biopayReferenceText(
+                        style: BioPayReferenceText(
                           fontSize: 34,
                           fontWeight: FontWeight.w900,
                         ),
@@ -87,16 +87,16 @@ class BiopayResultScreen extends StatelessWidget {
                         const SizedBox(height: 10),
                         Text(
                           args.message,
-                          style: biopayReferenceText(
+                          style: BioPayReferenceText(
                             fontSize: 22,
                             fontWeight: FontWeight.w800,
-                            color: BiopayTokens.mutedDark,
+                            color: BioPayTokens.mutedDark,
                           ),
                           textAlign: TextAlign.center,
                         ),
                       ],
                       const SizedBox(height: 42),
-                      BiopayReferencePrimaryButton(
+                      BioPayReferencePrimaryButton(
                         label: args.primaryLabel,
                         onTap: () => context.go(args.primaryRoute),
                       ),
@@ -107,10 +107,10 @@ class BiopayResultScreen extends StatelessWidget {
                           onPressed: () => context.go(args.secondaryRoute!),
                           child: Text(
                             args.secondaryLabel!,
-                            style: biopayReferenceText(
+                            style: BioPayReferenceText(
                               fontSize: 17,
                               fontWeight: FontWeight.w800,
-                              color: biopayReferenceMuted,
+                              color: BioPayReferenceMuted,
                             ),
                           ),
                         ),

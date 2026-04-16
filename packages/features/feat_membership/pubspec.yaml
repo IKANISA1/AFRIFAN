@@ -24,7 +24,7 @@ dependencies:
     path: ../feat_club
   go_router: ^14.8.1
   supabase_flutter: ^2.12.2
-  google_fonts: ^6.2.1
+  google_fonts: ^8.0.2
   flutter_animate: ^4.5.2
   flutter_riverpod: ^2.6.1
 

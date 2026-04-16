@@ -10,17 +10,17 @@ class MockFunctionsClient extends Mock implements FunctionsClient {}
 class MockGoTrueClient extends Mock implements GoTrueClient {}
 
 void main() {
-  group('BiopayRepository', () {
+  group('BioPayRepository', () {
     late MockSupabaseClient client;
     late MockFunctionsClient functionsClient;
     late MockGoTrueClient authClient;
-    late BiopayRepository repository;
+    late BioPayRepository repository;
 
     setUp(() {
       client = MockSupabaseClient();
       functionsClient = MockFunctionsClient();
       authClient = MockGoTrueClient();
-      repository = BiopayRepository(
+      repository = BioPayRepository(
         client: client,
         appCheckTokenProvider: () async => 'limited-use-token',
       );
@@ -65,7 +65,7 @@ void main() {
 
         final captured = verify(
           () => functionsClient.invoke(
-            'biopay-create-payment-intent',
+            'BioPay-create-payment-intent',
             headers: captureAny(named: 'headers'),
             body: captureAny(named: 'body'),
           ),
@@ -97,7 +97,7 @@ void main() {
 
         final captured = verify(
           () => functionsClient.invoke(
-            'biopay-create-payment-intent',
+            'BioPay-create-payment-intent',
             headers: captureAny(named: 'headers'),
             body: captureAny(named: 'body'),
           ),

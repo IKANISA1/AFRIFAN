@@ -410,7 +410,7 @@ class _PushNotificationsScreenState
                                   (group) => DropdownMenuItem<String>(
                                     value: group['id']?.toString(),
                                     child: Text(
-                                      group['name']?.toString() ?? 'Circle',
+                                      group['name']?.toString() ?? 'Group',
                                     ),
                                   ),
                                 )
@@ -421,7 +421,7 @@ class _PushNotificationsScreenState
                           if (_groups.isEmpty) ...[
                             const SizedBox(height: SpacingTokens.spacing2),
                             Text(
-                              'No active circles for group targeting.',
+                              'No active Groups for group targeting.',
                               style: TypographyTokens.bodySmall(),
                             ),
                           ],
@@ -508,16 +508,18 @@ class _PushNotificationsScreenState
                     body: bodyText,
                   ),
                   const SizedBox(height: SpacingTokens.spacing6),
-                  ClaymorphicButton(
+                  AfriButton(
                     label: _submitting
                         ? _scheduleMode == 'SCHEDULE'
-                              ? 'SCHEDULING'
-                              : 'SENDING'
+                              ? 'Scheduling…'
+                              : 'Sending…'
                         : _scheduleMode == 'SCHEDULE'
-                        ? 'SCHEDULE NOTIFICATION'
-                        : 'SEND NOTIFICATION',
-                    width: double.infinity,
-                    onPressed: _submitting ? null : _submitNotification,
+                        ? 'Schedule notification'
+                        : 'Send notification',
+                    fullWidth: true,
+                    isLoading: _submitting,
+                    onTap: _submitNotification,
+                    enabled: !_submitting,
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
                   TextButton.icon(

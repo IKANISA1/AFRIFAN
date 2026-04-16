@@ -1,3 +1,5 @@
+import 'package:app_registry/app_registry.dart';
+import 'package:club_rayon_sports/club_rayon_sports.dart';
 import 'package:core_app/bootstrap.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
@@ -32,6 +34,7 @@ void main() {
 
     await startRayonSportsApp(
       options: AfriClubBootstrapOptions(
+        modules: AppModuleRegistry.build(const RayonSportsConfig()),
         startupOptions: const AppStartupOptions.integrationTest(),
         authRepository: _FakeAuthRepository(
           restoreResult: const UserProfile(
@@ -50,10 +53,10 @@ void main() {
                 heroSlides: [
                   MatchSlide(
                     homeTeam: 'RAYON SPORTS',
-                    awayTeam: 'APR FC',
+                    awayTeam: 'Rayon Sports FC',
                     venue: 'AMAHORO STADIUM',
                     status: 'ON SALE',
-                    dateInfo: '12 APR • 18:00',
+                    dateInfo: '12 Rayon Sports • 18:00',
                     route: '/tickets',
                   ),
                 ],
@@ -101,6 +104,7 @@ void main() {
 
       await startRayonSportsApp(
         options: AfriClubBootstrapOptions(
+          modules: AppModuleRegistry.build(const RayonSportsConfig()),
           startupOptions: const AppStartupOptions.integrationTest(),
           authRepository: _FakeAuthRepository(
             restoreError: Exception('temporary profile hydration failure'),
@@ -112,10 +116,10 @@ void main() {
                   heroSlides: [
                     MatchSlide(
                       homeTeam: 'RAYON SPORTS',
-                      awayTeam: 'APR FC',
+                      awayTeam: 'Rayon Sports FC',
                       venue: 'AMAHORO STADIUM',
                       status: 'ON SALE',
-                      dateInfo: '12 APR • 18:00',
+                      dateInfo: '12 Rayon Sports • 18:00',
                       route: '/tickets',
                     ),
                   ],
@@ -162,6 +166,7 @@ void main() {
 
     await startRayonSportsApp(
       options: AfriClubBootstrapOptions(
+        modules: AppModuleRegistry.build(const RayonSportsConfig()),
         startupOptions: const AppStartupOptions.integrationTest(),
         authRepository: _FakeAuthRepository(
           restoreResult: const UserProfile(

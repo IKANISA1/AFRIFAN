@@ -6,7 +6,7 @@ import android.nfc.NdefRecord
 import android.nfc.cardemulation.HostApduService
 import android.os.Bundle
 
-class BiopayNfcHostApduService : HostApduService() {
+class BioPayNfcHostApduService : HostApduService() {
     private var selectedFile: SelectedFile = SelectedFile.NONE
 
     override fun processCommandApdu(commandApdu: ByteArray?, extras: Bundle?): ByteArray {
@@ -89,7 +89,7 @@ class BiopayNfcHostApduService : HostApduService() {
     }
 
     companion object {
-        const val PREFS_NAME = "biopay_nfc_hce"
+        const val PREFS_NAME = "BioPay_nfc_hce"
         const val KEY_ENABLED = "enabled"
         const val KEY_URI = "uri"
 

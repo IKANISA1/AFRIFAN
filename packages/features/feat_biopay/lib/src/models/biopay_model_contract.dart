@@ -7,8 +7,8 @@ import 'package:crypto/crypto.dart' as crypto;
 ///
 /// Validates the TFLite model asset against known expectations:
 /// SHA-256 checksum, tensor shapes, data types, and embedding size.
-class BiopayModelContract {
-  const BiopayModelContract({
+class BioPayModelContract {
+  const BioPayModelContract({
     required this.assetPath,
     required this.modelVersion,
     required this.sha256,
@@ -22,9 +22,9 @@ class BiopayModelContract {
   });
 
   static const modelAssetPath =
-      'assets/models/biopay/mobilefacenet_int8.tflite';
+      'assets/models/BioPay/mobilefacenet_int8.tflite';
   static const contractAssetPath =
-      'assets/models/biopay/mobilefacenet_int8.contract.json';
+      'assets/models/BioPay/mobilefacenet_int8.contract.json';
   static const defaultModelVersion = 'mobilefacenet_int8_v1';
   static const expectedInputShape = <int>[1, 112, 112, 3];
   static const expectedOutputShape = <int>[1, 192];
@@ -43,8 +43,8 @@ class BiopayModelContract {
   final int embeddingSize;
   final String? generatedAt;
 
-  factory BiopayModelContract.fromJson(Map<String, Object?> json) {
-    return BiopayModelContract(
+  factory BioPayModelContract.fromJson(Map<String, Object?> json) {
+    return BioPayModelContract(
       assetPath: _readRequiredString(json, 'asset_path'),
       modelVersion: _readRequiredString(json, 'model_version'),
       sha256: _readRequiredString(json, 'sha256'),
@@ -58,14 +58,14 @@ class BiopayModelContract {
     );
   }
 
-  factory BiopayModelContract.fromJsonString(String source) {
+  factory BioPayModelContract.fromJsonString(String source) {
     final decoded = jsonDecode(source);
     if (decoded is! Map<String, dynamic>) {
       throw const FormatException(
         'BioPay model contract must decode to a JSON object.',
       );
     }
-    return BiopayModelContract.fromJson(Map<String, Object?>.from(decoded));
+    return BioPayModelContract.fromJson(Map<String, Object?>.from(decoded));
   }
 
   static String computeSha256Hex(Uint8List bytes) {

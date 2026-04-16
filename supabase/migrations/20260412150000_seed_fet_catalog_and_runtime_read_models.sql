@@ -510,7 +510,7 @@ BEGIN
         "item_name": "Derby Prep Challenge",
         "fet_value": 600,
         "trigger_condition": "Complete three derby-week tasks.",
-        "activation_timing": "Derby week, five days before Rayon vs APR",
+        "activation_timing": "Derby week, five days before Rayon vs Rayon Sports",
         "description": "Special challenge bundle during derby week with three stacked tasks.",
         "badge_name": "⚔️",
         "implementation_notes": "Highest engagement week. Maximise with challenge stacking."

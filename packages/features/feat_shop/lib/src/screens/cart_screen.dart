@@ -246,11 +246,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
             ),
             const SizedBox(height: SpacingTokens.spacing5),
-            ClaymorphicButton(
+            AfriButton(
               label: 'I submitted the MOMO request',
-              preserveCase: true,
-              width: double.infinity,
-              onPressed: () => Navigator.of(context).pop(true),
+              fullWidth: true,
+              onTap: () => Navigator.of(context).pop(true),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             OutlinedButton(
@@ -319,10 +318,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       style: TypographyTokens.bodyMedium(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing6),
-                    ClaymorphicButton(
+                    AfriButton(
                       label: 'Back to shop',
-                      preserveCase: true,
-                      onPressed: () => context.go('/shop'),
+                      onTap: () => context.go('/shop'),
                     ),
                   ],
                 ),
@@ -439,17 +437,16 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     ),
                   ],
                   const SizedBox(height: SpacingTokens.spacing6),
-                  ClaymorphicButton(
+                  AfriButton(
                     label: paymentRouteBlocked
                         ? 'Payment route not ready'
                         : _submitting
                         ? 'Processing'
                         : 'Checkout via MOMO',
-                    preserveCase: true,
-                    width: double.infinity,
-                    onPressed: _submitting || paymentRouteBlocked
-                        ? null
-                        : () => _checkout(items, total),
+                    fullWidth: true,
+                    isLoading: _submitting,
+                    onTap: () => _checkout(items, total),
+                    enabled: !_submitting && !paymentRouteBlocked,
                   ),
                 ],
               ),

@@ -54,7 +54,7 @@ class _StatementDownloadScreenState
           .whereType<String>()
           .toSet()
           .toList(growable: false);
-      final aliases = <String, String>{};
+      final aliasMap = <String, String>{};
 
       if (userIds.isNotEmpty) {
         final profiles = await client
@@ -62,7 +62,7 @@ class _StatementDownloadScreenState
             .select('id, public_user_id')
             .inFilter('id', userIds);
         for (final profile in profiles) {
-          aliases[profile['id']?.toString() ?? ''] =
+          aliasMap[profile['id']?.toString() ?? ''] =
               profile['public_user_id']?.toString() ?? '000000';
         }
       }
@@ -76,7 +76,7 @@ class _StatementDownloadScreenState
                 row['created_at']?.toString() ?? '',
               );
               final alias =
-                  aliases[row['user_id']?.toString() ?? ''] ?? '000000';
+                  aliasMap[row['user_id']?.toString() ?? ''] ?? '000000';
               final status = row['status']?.toString() ?? 'pending';
               return _StatementEntry(
                 id: row['id']?.toString() ?? '',
@@ -94,7 +94,7 @@ class _StatementDownloadScreenState
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _error = 'Could not load statement entries for this circle.';
+        _error = 'Could not load statement entries for this Group.';
       });
     }
   }
@@ -263,10 +263,10 @@ class _StatementDownloadScreenState
                         children: [
                           Text(_error!, style: TypographyTokens.bodyMedium()),
                           const SizedBox(height: SpacingTokens.spacing3),
-                          ClaymorphicButton(
-                            label: 'TRY AGAIN',
-                            width: double.infinity,
-                            onPressed: _loadEntries,
+                          AfriButton(
+                            label: 'Try again',
+                            fullWidth: true,
+                            onTap: _loadEntries,
                           ),
                         ],
                       ),
@@ -328,7 +328,7 @@ class _StatementDownloadScreenState
                         Expanded(
                           child: _FormatCard(
                             label: 'PDF',
-                            icon: Icons.picture_as_pdf_rounded,
+                            icon: AfriIcons.pdf,
                             selected: _format == 'PDF',
                             onTap: () => setState(() => _format = 'PDF'),
                           ),
@@ -337,7 +337,7 @@ class _StatementDownloadScreenState
                         Expanded(
                           child: _FormatCard(
                             label: 'CSV',
-                            icon: Icons.table_chart_rounded,
+                            icon: AfriIcons.excel,
                             selected: _format == 'CSV',
                             onTap: () => setState(() => _format = 'CSV'),
                           ),
@@ -420,10 +420,12 @@ class _StatementDownloadScreenState
                       ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing6),
-                    ClaymorphicButton(
-                      label: _isExporting ? 'EXPORTING…' : 'DOWNLOAD',
-                      width: double.infinity,
-                      onPressed: _isExporting ? null : _downloadStatement,
+                    AfriButton(
+                      label: _isExporting ? 'Exporting…' : 'Download',
+                      fullWidth: true,
+                      isLoading: _isExporting,
+                      onTap: _downloadStatement,
+                      enabled: !_isExporting,
                     ),
                   ],
                 ],
@@ -460,7 +462,7 @@ class _DateInputCard extends StatelessWidget {
                 Expanded(
                   child: Text(value, style: TypographyTokens.bodyMedium()),
                 ),
-                const Icon(Icons.calendar_today_rounded, size: 18),
+                const Icon(AfriIcons.calendar, size: 18),
               ],
             ),
           ],

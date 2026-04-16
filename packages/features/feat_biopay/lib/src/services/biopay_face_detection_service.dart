@@ -8,11 +8,11 @@ import '../models/biopay_face_frame_analysis.dart';
 
 /// Face detection service — wraps Google ML Kit for BioPay.
 ///
-/// Produces [BiopayFaceFrameAnalysis] from camera image frames with
+/// Produces [BioPayFaceFrameAnalysis] from camera image frames with
 /// face count, brightness estimation, face-area ratio, head rotation,
 /// eye-open probabilities, and stability tracking.
-class BiopayFaceDetectionService {
-  BiopayFaceDetectionService({
+class BioPayFaceDetectionService {
+  BioPayFaceDetectionService({
     this.stableFramesRequired = 3,
     this.minFaceAreaRatio = 0.08,
     this.maxFaceAreaRatio = 0.60,
@@ -40,7 +40,7 @@ class BiopayFaceDetectionService {
   int? _lastStableTrackingId;
 
   /// Process a camera image and return face analysis.
-  Future<BiopayFaceFrameAnalysis> analyze(
+  Future<BioPayFaceFrameAnalysis> analyze(
     CameraImage image, {
     required int sensorOrientation,
     required CameraLensDirection lensDirection,
@@ -53,8 +53,8 @@ class BiopayFaceDetectionService {
 
     if (inputImage == null) {
       _stableCount = 0;
-      return const BiopayFaceFrameAnalysis(
-        guidance: BiopayFaceGuidance.searching,
+      return const BioPayFaceFrameAnalysis(
+        guidance: BioPayFaceGuidance.searching,
         faceCount: 0,
         brightness: 0,
         faceAreaRatio: 0,
@@ -70,8 +70,8 @@ class BiopayFaceDetectionService {
     if (faces.isEmpty) {
       _stableCount = 0;
       _lastStableTrackingId = null;
-      return BiopayFaceFrameAnalysis(
-        guidance: BiopayFaceGuidance.searching,
+      return BioPayFaceFrameAnalysis(
+        guidance: BioPayFaceGuidance.searching,
         faceCount: 0,
         brightness: brightness,
         faceAreaRatio: 0,
@@ -82,8 +82,8 @@ class BiopayFaceDetectionService {
 
     if (faces.length > 1) {
       _stableCount = 0;
-      return BiopayFaceFrameAnalysis(
-        guidance: BiopayFaceGuidance.multipleFaces,
+      return BioPayFaceFrameAnalysis(
+        guidance: BioPayFaceGuidance.multipleFaces,
         faceCount: faces.length,
         brightness: brightness,
         faceAreaRatio: 0,
@@ -99,8 +99,8 @@ class BiopayFaceDetectionService {
     // Brightness check
     if (brightness < brightnessLow) {
       _stableCount = 0;
-      return BiopayFaceFrameAnalysis(
-        guidance: BiopayFaceGuidance.tooDark,
+      return BioPayFaceFrameAnalysis(
+        guidance: BioPayFaceGuidance.tooDark,
         face: face,
         faceCount: 1,
         brightness: brightness,
@@ -115,8 +115,8 @@ class BiopayFaceDetectionService {
 
     if (brightness > brightnessHigh) {
       _stableCount = 0;
-      return BiopayFaceFrameAnalysis(
-        guidance: BiopayFaceGuidance.tooBright,
+      return BioPayFaceFrameAnalysis(
+        guidance: BioPayFaceGuidance.tooBright,
         face: face,
         faceCount: 1,
         brightness: brightness,
@@ -132,8 +132,8 @@ class BiopayFaceDetectionService {
     // Face too far
     if (faceAreaRatio < minFaceAreaRatio) {
       _stableCount = 0;
-      return BiopayFaceFrameAnalysis(
-        guidance: BiopayFaceGuidance.tooFar,
+      return BioPayFaceFrameAnalysis(
+        guidance: BioPayFaceGuidance.tooFar,
         face: face,
         faceCount: 1,
         brightness: brightness,
@@ -150,8 +150,8 @@ class BiopayFaceDetectionService {
     final absYaw = (face.headEulerAngleY ?? 0).abs();
     if (absYaw > headTurnBlockThreshold) {
       _stableCount = 0;
-      return BiopayFaceFrameAnalysis(
-        guidance: BiopayFaceGuidance.headTurned,
+      return BioPayFaceFrameAnalysis(
+        guidance: BioPayFaceGuidance.headTurned,
         face: face,
         faceCount: 1,
         brightness: brightness,
@@ -169,8 +169,8 @@ class BiopayFaceDetectionService {
     final rightEye = face.rightEyeOpenProbability ?? 1.0;
     if (leftEye < 0.4 && rightEye < 0.4) {
       _stableCount = 0;
-      return BiopayFaceFrameAnalysis(
-        guidance: BiopayFaceGuidance.eyesClosed,
+      return BioPayFaceFrameAnalysis(
+        guidance: BioPayFaceGuidance.eyesClosed,
         face: face,
         faceCount: 1,
         brightness: brightness,
@@ -194,10 +194,10 @@ class BiopayFaceDetectionService {
 
     final isStable = _stableCount >= stableFramesRequired;
 
-    return BiopayFaceFrameAnalysis(
+    return BioPayFaceFrameAnalysis(
       guidance: isStable
-          ? BiopayFaceGuidance.stable
-          : BiopayFaceGuidance.searching,
+          ? BioPayFaceGuidance.stable
+          : BioPayFaceGuidance.searching,
       face: face,
       faceCount: 1,
       brightness: brightness,

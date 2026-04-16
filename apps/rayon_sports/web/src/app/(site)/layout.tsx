@@ -1,10 +1,9 @@
 import type { ReactNode } from "react";
+import { GlobalNav } from "@/components/nav/global-nav";
 import { MatchRibbon } from "@/components/match-ribbon";
 import { AppBottomNav } from "@/components/app-bottom-nav";
-import { FloatingSearchButton } from "@/components/floating-search-button";
 import { FocusOnRouteChange } from "@/components/focus-on-route-change";
 import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
 import { getClubProfile, getMatches } from "@/lib/data/public";
 import { buildClubThemeStyle } from "@/lib/club-theme";
 import { getSiteChromeCopy } from "@/lib/site-copy";
@@ -54,26 +53,28 @@ export default async function SiteLayout({
       <div className="club-site-grid" aria-hidden="true" />
       <a
         href="#main-content"
-        className={`sr-only fixed left-4 top-4 z-[80] ${ui.buttonPrimary} px-4 py-2 text-sm focus:not-sr-only`}
+        className={`sr-only fixed left-4 top-4 z-[120] ${ui.buttonPrimary} px-4 py-2 text-sm focus:not-sr-only`}
       >
         Skip to content
       </a>
 
-      <MatchRibbon match={nextMatch} copy={copy} />
-      <SiteHeader club={club} copy={copy} />
+      <GlobalNav
+        club={club}
+        copy={copy}
+        ribbon={<MatchRibbon match={nextMatch} copy={copy} />}
+      />
       <script dangerouslySetInnerHTML={{ __html: publicSwBootstrap }} />
 
       <main
         id="main-content"
         tabIndex={-1}
-        className="relative z-[1] flex-1 pb-16 outline-none md:pb-0"
+        className="relative z-[1] flex-1 outline-none"
       >
         {children}
       </main>
 
       <SiteFooter club={club} copy={copy} />
       <FocusOnRouteChange targetId="main-content" />
-      <FloatingSearchButton label={copy.search} />
       <AppBottomNav copy={copy} />
     </div>
   );

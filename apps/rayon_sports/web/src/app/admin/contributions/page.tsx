@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { CircleDollarSign, Coins, Users } from "lucide-react";
+import { GroupDollarSign, Coins, Users } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
@@ -22,8 +22,8 @@ import { ContributionGroupList } from "./_components/group-list";
 const emptySnapshot: AdminContributionSnapshot = {
   groups: [],
   contributions: [],
-  aliases: {},
-  monthlyTotal: 0,
+  : { },
+monthlyTotal: 0,
 };
 
 export default function AdminContributionsPage() {
@@ -63,7 +63,7 @@ export default function AdminContributionsPage() {
     if (client == null || !access.hasAccess) {
       return;
     }
-    loadMonitor().catch(() => {});
+    loadMonitor().catch(() => { });
   }, [access.hasAccess, client, loadMonitor]);
 
   function beginEdit(group: AdminContributionGroup) {
@@ -90,7 +90,7 @@ export default function AdminContributionsPage() {
       showAdminToast(`${group.name} removed.`, "success");
     } catch (caught) {
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not remove support circle.",
+        caught instanceof Error ? caught.message : "Could not remove support Group.",
         "error",
       );
     }
@@ -110,7 +110,6 @@ export default function AdminContributionsPage() {
       <AdminPageHeader
         eyebrow="Funding"
         title="Contributions"
-        description="Track groups, inflows, participation, and progress without leaving the queue."
       />
 
       <div className="grid gap-5 md:grid-cols-4">
@@ -121,12 +120,12 @@ export default function AdminContributionsPage() {
           icon={Coins}
         />
         <AdminStateCard
-          label="Active circles"
+          label="Active Groups"
           value={
             loading ? "..." : snapshot.groups.filter((g) => !g.isClosed).length.toString()
           }
           helper="Currently visible."
-          icon={CircleDollarSign}
+          icon={GroupDollarSign}
         />
         <AdminStateCard
           label="Contributors"
@@ -160,7 +159,7 @@ export default function AdminContributionsPage() {
             title="Contribution monitoring could not be loaded"
             description={loadError}
             onRetry={() => {
-              loadMonitor().catch(() => {});
+              loadMonitor().catch(() => { });
             }}
           />
         ) : (
@@ -174,10 +173,10 @@ export default function AdminContributionsPage() {
             loading={loading}
             onEdit={beginEdit}
             onDelete={(group) => {
-              removeGroup(group).catch(() => {});
+              removeGroup(group).catch(() => { });
             }}
             onExportExcel={() => {
-              exportExcel().catch(() => {});
+              exportExcel().catch(() => { });
             }}
           />
         )}

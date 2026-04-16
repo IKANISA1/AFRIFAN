@@ -7,9 +7,11 @@ import { MatchPoll } from "@/components/engagement/match-poll";
 import { MotmVoting } from "@/components/engagement/motm-voting";
 import { ScorePrediction } from "@/components/engagement/score-prediction";
 import { MatchLineups } from "@/components/engagement/match-lineups";
+import { MatchTimeline } from "@/components/engagement/match-timeline";
+import { LiveTableContext } from "@/components/engagement/live-table-context";
 import { NotificationOptInCard } from "@/components/pwa/notification-opt-in-card";
 import { ShareActionButton } from "@/components/pwa/share-action-button";
-import { getClubProfile, getMatchById, getMatches } from "@/lib/data/public";
+import { getClubProfile, getMatchById, getMatches, getStandings } from "@/lib/data/public";
 import {
   buildMatchJsonLd,
   buildPageMetadata,
@@ -47,10 +49,11 @@ export default async function FixtureDetailPage({
   params: Promise<{ matchId: string }>;
 }) {
   const { matchId } = await params;
-  const [club, match, matches] = await Promise.all([
+  const [club, match, matches, standings] = await Promise.all([
     getClubProfile(),
     getMatchById(matchId),
     getMatches(),
+    getStandings(),
   ]);
 
   if (match == null) {
@@ -64,254 +67,155 @@ export default async function FixtureDetailPage({
   const result = isResultMatch(match.matchStatus);
 
   return (
-    <div className="page-shell section-grid py-12">
+    <div className="bg-[var(--club-primary)] min-h-screen pt-24 pb-20 lg:pt-32">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: renderJsonLdScriptContent(buildMatchJsonLd(match)),
         }}
       />
-      <section className="glass-panel-elevated overflow-hidden rounded-[38px]">
-        <div className="grid gap-8 lg:grid-cols-[1.02fr_0.98fr]">
-          <div className="p-6 sm:p-8">
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-              {match.competition}
-            </p>
-            <h1 className="mt-4 font-display text-6xl font-bold uppercase leading-none text-white text-balance">
-              {match.homeTeam}
-              <span className="block text-white/70">vs {match.awayTeam}</span>
-            </h1>
-            <div className="mt-5 flex flex-wrap gap-2">
-              <span className={live ? "badge-live" : result ? "badge-fulltime" : "badge-scheduled"}>
-                {formatMatchStatusLabel(match.matchStatus)}
-              </span>
-              <span className="rounded-full border border-border-soft bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                {formatDateTime(match.matchDate)}
-              </span>
-              <span className="rounded-full border border-border-soft bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-200">
-                {match.venue}
-              </span>
+      
+      <div className="page-shell">
+        {/* Elite Scoreboard Header */}
+        <section className="relative overflow-hidden rounded-[40px] border border-white/10 bg-black/40 p-8 shadow-2xl lg:p-16">
+          <div className="absolute inset-0 opacity-20 grayscale mix-blend-overlay">
+             <Image src="/media/stadium-hero.jpg" alt="Stadium" fill className="object-cover" />
+          </div>
+          
+          <div className="relative z-10 flex flex-col items-center justify-between gap-12 lg:flex-row">
+            <div className="flex flex-1 flex-col items-center gap-6 text-center lg:items-end lg:text-right">
+              <div className="h-24 w-24 rounded-full bg-white p-2 lg:h-32 lg:w-32 shadow-2xl">
+                <div className="h-full w-full rounded-full border-4 border-dashed border-slate-100 flex items-center justify-center">
+                  <span className="font-black text-slate-200">CREST</span>
+                </div>
+              </div>
+              <div>
+                <h2 className="font-display text-4xl font-black uppercase italic tracking-tighter text-white lg:text-6xl">{match.homeTeam}</h2>
+                <p className="mt-2 text-xs font-black uppercase tracking-[0.4em] text-[var(--club-accent)]">Home Team</p>
+              </div>
             </div>
-            <p className="mt-6 max-w-3xl text-sm leading-8 text-slate-300 sm:text-base">
-              {match.matchSummary}
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/supporters"
-                className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
-              >
-                Continue in fan app
-              </Link>
-              <Link
-                href="/fixtures"
-                className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-              >
-                Back to fixtures
-              </Link>
-              <ShareActionButton
-                title={`${match.homeTeam} vs ${match.awayTeam}`}
-                text={match.matchSummary ?? `${match.competition} at ${match.venue}.`}
-                url={`/fixtures/${match.id}`}
-                className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-              />
+
+            <div className="flex flex-col items-center justify-center gap-4">
+               <div className="rounded-full bg-white/10 px-6 py-2 backdrop-blur-xl border border-white/20">
+                 <span className={cn(
+                   "text-[10px] font-black uppercase tracking-[0.3em]",
+                   live ? "text-rose-500 animate-pulse" : "text-white/60"
+                 )}>
+                   {live ? `${match.liveMinute}' LIVE` : formatMatchStatusLabel(match.matchStatus)}
+                 </span>
+               </div>
+               <p className="font-display text-8xl font-black italic tracking-tighter text-white lg:text-[10rem]">
+                 {live || result ? `${match.homeScore}-${match.awayScore}` : "VS"}
+               </p>
+               <time className="text-xs font-bold uppercase tracking-widest text-white/40">
+                 {formatDateTime(match.matchDate)}
+               </time>
+            </div>
+
+            <div className="flex flex-1 flex-col items-center gap-6 text-center lg:items-start lg:text-left">
+              <div className="h-24 w-24 rounded-full bg-white p-2 lg:h-32 lg:w-32 shadow-2xl">
+                <div className="h-full w-full rounded-full border-4 border-dashed border-slate-100 flex items-center justify-center">
+                  <span className="font-black text-slate-200">CREST</span>
+                </div>
+              </div>
+              <div>
+                <h2 className="font-display text-4xl font-black uppercase italic tracking-tighter text-white lg:text-6xl">{match.awayTeam}</h2>
+                <p className="mt-2 text-xs font-black uppercase tracking-[0.4em] text-[var(--club-accent)]">Away Team</p>
+              </div>
             </div>
           </div>
+        </section>
 
-          <div className="img-zoom relative min-h-[20rem]">
-            <Image
-              src={match.imageUrl ?? "/media/stadium-hero.jpg"}
-              alt={`${match.homeTeam} vs ${match.awayTeam}`}
-              fill
-              sizes="(min-width: 1024px) 48vw, 100vw"
-              className="object-cover"
+        <div className="mt-12 grid gap-8 lg:grid-cols-12">
+          {/* Main Content Area */}
+          <div className="lg:col-span-8 space-y-12">
+            {/* Timeline */}
+            <section>
+              <div className="mb-8 flex items-center justify-between border-b border-white/10 pb-4">
+                <h3 className="font-display text-3xl font-black uppercase italic text-white tracking-tight">Match Timeline</h3>
+                <span className="text-[10px] font-black text-[var(--club-accent)] uppercase tracking-widest italic">Live Updates</span>
+              </div>
+              <MatchTimeline events={match.liveEvents} homeTeam={match.homeTeam} awayTeam={match.awayTeam} />
+            </section>
+
+            {/* Lineups */}
+            <MatchLineups 
+              home={{
+                teamName: match.homeTeam,
+                formation: "4-3-3",
+                manager: "Julien Mette",
+                color: club.primaryColorHex,
+                startingXI: [
+                  { id: "h1", name: "Hategekimana", number: 1, position: "GK" },
+                  { id: "h2", name: "Nshutinamagara", number: 22, position: "DEF" },
+                  { id: "h3", name: "Ndayishimiye", number: 4, position: "DEF" },
+                  { id: "h4", name: "Rwatubyaye", number: 15, position: "DEF", isCaptain: true },
+                  { id: "h5", name: "Iradukunda", number: 3, position: "DEF" },
+                  { id: "h6", name: "Muhire", number: 8, position: "MID" },
+                  { id: "h7", name: "Kwizera", number: 10, position: "MID" },
+                  { id: "h8", name: "Niyonzima", number: 21, position: "MID" },
+                  { id: "h9", name: "Luvumbu", number: 11, position: "FWD" },
+                  { id: "h10", name: "Mussaa", number: 27, position: "FWD" },
+                  { id: "h11", name: "Willy", number: 9, position: "FWD" },
+                ],
+                subs: [
+                  { id: "s1", name: "Khaled", number: 31, position: "GK" },
+                  { id: "s2", name: "Bimenyimana", number: 14, position: "MID" },
+                  { id: "s3", name: "Hakizimana", number: 7, position: "FWD" }
+                ]
+              }}
+              away={{
+                teamName: match.awayTeam,
+                formation: "4-2-3-1",
+                manager: "Away Coach",
+                startingXI: [
+                  { id: "a1", name: "Ntwali", number: 1, position: "GK" },
+                  { id: "a2", name: "Omborenga", number: 25, position: "DEF" },
+                  { id: "a3", name: "Buregeya", number: 5, position: "DEF", isCaptain: true },
+                  { id: "a4", name: "Manzi", number: 4, position: "DEF" },
+                  { id: "a5", name: "Ishimwe", number: 2, position: "DEF" },
+                  { id: "a6", name: "Ruboneka", number: 8, position: "MID" },
+                  { id: "a7", name: "Mugisha", number: 20, position: "MID" },
+                  { id: "a8", name: "Bizimana", number: 10, position: "MID" },
+                  { id: "a9", name: "Niyibizi", number: 11, position: "FWD" },
+                  { id: "a10", name: "Byiringiro", number: 14, position: "FWD" },
+                  { id: "a11", name: "Mugunga", number: 19, position: "FWD" },
+                ],
+                subs: [
+                  { id: "as1", name: "Mutabaruka", number: 30, position: "GK" },
+                  { id: "as2", name: "Nshuti", number: 9, position: "FWD" },
+                  { id: "as3", name: "Tuyisenge", number: 3, position: "DEF" }
+                ]
+              }}
             />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_30%,rgba(3,10,24,0.72)_100%)]" />
-            <div className="absolute bottom-5 right-5 rounded-[26px] border border-white/10 bg-[#0a1628]/82 px-5 py-4 text-center backdrop-blur-xl">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                Score
-              </p>
-              <p className="mt-2 font-score text-6xl text-white" aria-live="polite">
-                {live || result
-                  ? `${match.homeScore}-${match.awayScore}`
-                  : formatCurrency(match.generalPrice)}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="space-y-6">
-          <div className="glass-panel rounded-[32px] p-6">
-            <p className="font-display text-4xl font-bold uppercase leading-none text-white">
-              Match detail
-            </p>
-            <div className="mt-5 grid gap-4 sm:grid-cols-3">
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
-                  Kickoff
-                </p>
-                <p className="mt-2 text-sm text-slate-200">
-                  {formatDateTime(match.matchDate)}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
-                  Venue
-                </p>
-                <p className="mt-2 text-sm text-slate-200">{match.venue}</p>
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
-                  Match status
-                </p>
-                <p className="mt-2 text-sm text-slate-200">
-                  {formatMatchStatusLabel(match.matchStatus)}
-                </p>
-              </div>
-            </div>
-            <p className="mt-6 text-sm leading-7 text-slate-300">
-              {match.matchSummary}
-            </p>
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          <div className="glass-panel rounded-[32px] p-6">
-            <p className="font-display text-4xl font-bold uppercase leading-none">
-              Ticketing
-            </p>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-[24px] border border-border-soft bg-white/6 p-5">
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
-                  General
-                </p>
-                <p className="mt-3 font-display text-3xl font-bold uppercase">
-                  {formatCurrency(match.generalPrice)}
-                </p>
-              </div>
-              <div className="rounded-[24px] border border-border-soft bg-white/6 p-5">
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-300">
-                  VIP
-                </p>
-                <p className="mt-3 font-display text-3xl font-bold uppercase">
-                  {formatCurrency(match.vipPrice)}
-                </p>
-              </div>
-            </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/supporters"
-                className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
-              >
-                Continue in fan app
-              </Link>
-              <Link
-                href={`/fixtures/${match.id}`}
-                className="rounded-full border border-border-soft px-5 py-3 font-semibold text-white transition hover:bg-white/8"
-              >
-                Refresh match page
-              </Link>
-            </div>
           </div>
 
-          <NotificationOptInCard
-            surface="site"
-            path={`/fixtures/${match.id}`}
-            title="Turn on live match alerts."
-            description="Enable browser notifications after you have opened a real match context, so goals, kickoff updates, and ticketing reminders can reach you without forcing first-load permission prompts."
-          />
+          {/* Sidebar Area */}
+          <aside className="lg:col-span-4 space-y-8">
+            <LiveTableContext standings={standings} currentClub={club.shortName} />
 
-          <div className="glass-panel rounded-[32px] p-6">
-            <p className="font-display text-4xl font-bold uppercase leading-none">
-              Live events
-            </p>
-            <div className="mt-5 grid gap-3">
-              {match.liveEvents.length > 0 ? (
-                match.liveEvents.map((event) => (
-                  <div
-                    key={`${event.minute}-${event.event}`}
-                    className="rounded-[22px] border border-border-soft bg-white/6 p-4"
-                  >
-                    <p className="font-mono text-xs uppercase tracking-[0.2em] text-club-accent">
-                      {event.minute} • {event.side}
-                    </p>
-                    <p className="mt-2 text-sm text-slate-200">{event.event}</p>
+            <div className="glass-panel rounded-[32px] p-8 bg-[var(--club-accent)] text-[var(--club-primary)]">
+               <p className="text-[10px] font-black uppercase tracking-[0.3em] mb-4">Tickets & Access</p>
+               <h3 className="font-display text-3xl font-black uppercase italic leading-none mb-6">Experience the<br/>Magic live.</h3>
+               <div className="space-y-4 mb-8">
+                  <div className="flex justify-between border-b border-black/10 pb-2">
+                    <span className="text-xs font-bold uppercase">General Admission</span>
+                    <span className="font-black italic">{formatCurrency(match.generalPrice)}</span>
                   </div>
-                ))
-              ) : (
-                <p className="text-sm leading-7 text-slate-300">
-                  Live events will appear here when the admin desk updates the
-                  match feed.
-                </p>
-              )}
+                  <div className="flex justify-between border-b border-black/10 pb-2">
+                    <span className="text-xs font-bold uppercase">Platinum VIP</span>
+                    <span className="font-black italic">{formatCurrency(match.vipPrice)}</span>
+                  </div>
+               </div>
+               <Link href="/supporters" className="block w-full rounded-xl bg-[var(--club-primary)] py-4 text-center text-xs font-black uppercase tracking-widest text-white shadow-xl transition-transform hover:scale-[1.02] active:scale-95">
+                 Continue to Checkout
+               </Link>
             </div>
-          </div>
 
-          <MatchLineups 
-            home={{
-              teamName: match.homeTeam,
-              formation: "4-3-3",
-              manager: "Julien Mette",
-              startingXI: [
-                { id: "h1", name: "Hategekimana", number: 1, position: "GK" },
-                { id: "h2", name: "Nshutinamagara", number: 22, position: "DEF" },
-                { id: "h3", name: "Ndayishimiye", number: 4, position: "DEF" },
-                { id: "h4", name: "Rwatubyaye", number: 15, position: "DEF", isCaptain: true },
-                { id: "h5", name: "Iradukunda", number: 3, position: "DEF" },
-                { id: "h6", name: "Muhire", number: 8, position: "MID" },
-                { id: "h7", name: "Kwizera", number: 10, position: "MID" },
-                { id: "h8", name: "Niyonzima", number: 21, position: "MID" },
-                { id: "h9", name: "Luvumbu", number: 11, position: "FWD" },
-                { id: "h10", name: "Mussaa", number: 27, position: "FWD" },
-                { id: "h11", name: "Willy", number: 9, position: "FWD" },
-              ],
-              subs: [
-                { id: "s1", name: "Khaled", number: 31, position: "GK" },
-                { id: "s2", name: "Bimenyimana", number: 14, position: "MID" },
-                { id: "s3", name: "Hakizimana", number: 7, position: "FWD" }
-              ]
-            }}
-            away={{
-              teamName: match.awayTeam,
-              formation: "4-2-3-1",
-              manager: "Away Coach",
-              startingXI: [
-                { id: "a1", name: "Ntwali", number: 1, position: "GK" },
-                { id: "a2", name: "Omborenga", number: 25, position: "DEF" },
-                { id: "a3", name: "Buregeya", number: 5, position: "DEF", isCaptain: true },
-                { id: "a4", name: "Manzi", number: 4, position: "DEF" },
-                { id: "a5", name: "Ishimwe", number: 2, position: "DEF" },
-                { id: "a6", name: "Ruboneka", number: 8, position: "MID" },
-                { id: "a7", name: "Mugisha", number: 20, position: "MID" },
-                { id: "a8", name: "Bizimana", number: 10, position: "MID" },
-                { id: "a9", name: "Niyibizi", number: 11, position: "FWD" },
-                { id: "a10", name: "Byiringiro", number: 14, position: "FWD" },
-                { id: "a11", name: "Mugunga", number: 19, position: "FWD" },
-              ],
-              subs: [
-                { id: "as1", name: "Mutabaruka", number: 30, position: "GK" },
-                { id: "as2", name: "Nshuti", number: 9, position: "FWD" },
-                { id: "as3", name: "Tuyisenge", number: 3, position: "DEF" }
-              ]
-            }}
-          />
-
-          {/* ── Fan engagement hub ── */}
-          <div className="glass-panel rounded-[32px] p-6">
-            <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
-              Fan engagement
-            </p>
-            <h2 className="mt-3 font-display text-3xl font-bold uppercase leading-none text-white sm:text-4xl">
-              Get involved
-            </h2>
-            <p className="mt-3 text-sm leading-7 text-slate-300">
-              Predict scores, vote for your man of the match, and share your opinion. Earn FET for every interaction.
-            </p>
-
-            <div className="mt-6 grid gap-5">
-              {/* Score prediction — shown for upcoming/live matches */}
-              {!result && (
+            <div className="glass-panel rounded-[32px] p-8">
+               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--club-accent)] mb-4">Get Involved</p>
+               <h3 className="font-display text-2xl font-black uppercase italic leading-none text-white mb-6">Predict the outcome</h3>
+               {!result && (
                 <ScorePrediction
                   matchId={match.id}
                   homeTeam={match.homeTeam}
@@ -319,62 +223,15 @@ export default async function FixtureDetailPage({
                   locked={live}
                 />
               )}
-
-              {/* MotM voting — shown for live/completed matches */}
-              {(live || result) && (
-                <MotmVoting
-                  matchId={match.id}
-                  open={live || result}
-                  candidates={[
-                    { id: "p1", name: "Mugiraneza", position: "Forward", number: 9 },
-                    { id: "p2", name: "Ndayisaba", position: "Midfielder", number: 8 },
-                    { id: "p3", name: "Nshimiyimana", position: "Defender", number: 4 },
-                    { id: "p4", name: "Manzi", position: "Goalkeeper", number: 1 },
-                    { id: "p5", name: "Habimana", position: "Midfielder", number: 10 },
-                    { id: "p6", name: "Uwimana", position: "Forward", number: 11 },
-                  ]}
-                />
-              )}
-
-              {/* Quick poll — always available */}
-              <MatchPoll
-                pollId={`poll-${match.id}`}
-                question="Who controls the midfield today?"
-                options={[
-                  { id: "home", label: match.homeTeam, votes: 156 },
-                  { id: "away", label: match.awayTeam, votes: 89 },
-                  { id: "even", label: "Evenly matched", votes: 42 },
-                ]}
-              />
             </div>
-          </div>
 
-          {relatedMatches.length > 0 ? (
-            <div className="space-y-6">
-              <div className="glass-panel rounded-[32px] p-6">
-                <p className="font-mono text-xs uppercase tracking-[0.24em] text-club-accent">
-                  Related matches
-                </p>
-                <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-                  Keep the supporter moving
-                </h2>
-                <p className="mt-4 text-sm leading-7 text-slate-300">
-                  Match detail leads straight into the next step: another
-                  fixture, a ticketed game, or the latest result.
-                </p>
-              </div>
-              <div className="grid gap-5">
-                {relatedMatches.map((relatedMatch) => (
-                  <MatchCard
-                    key={relatedMatch.id}
-                    match={relatedMatch}
-                    clubName={club.shortName}
-                    clubLogoUrl={club.officialLogoUrl}
-                  />
-                ))}
-              </div>
-            </div>
-          ) : null}
+            <NotificationOptInCard
+              surface="site"
+              path={`/fixtures/${match.id}`}
+              title="Never miss a goal."
+              description="Enable browser notifications to get real-time goal alerts and matchday updates directly from the Cathedral."
+            />
+          </aside>
         </div>
       </div>
     </div>

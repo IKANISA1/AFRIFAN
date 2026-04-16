@@ -1,8 +1,8 @@
 import 'package:core_utils/core_utils.dart';
 
 /// Draft payload for enrolling a face into BioPay.
-class BiopayEnrollmentDraft {
-  const BiopayEnrollmentDraft({
+class BioPayEnrollmentDraft {
+  const BioPayEnrollmentDraft({
     required this.displayName,
     required this.routeType,
     required this.recipientValue,
@@ -16,7 +16,7 @@ class BiopayEnrollmentDraft {
   final String countryCode;
   final String consentVersion;
 
-  /// Build the payload for the `biopay-enroll` edge function.
+  /// Build the payload for the `BioPay-enroll` edge function.
   Map<String, Object?> toPayload(
     List<double> embedding, {
     Map<String, Object?>? liveness,

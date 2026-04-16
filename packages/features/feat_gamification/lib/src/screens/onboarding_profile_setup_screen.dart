@@ -248,7 +248,7 @@ class _OnboardingProfileSetupScreenState
                 // ── Complete button ──
                 AfriButton(
                       label: _isSaving ? 'Saving…' : 'Complete setup',
-                      icon: _isSaving ? null : AfriIcons.checkCircle,
+                      icon: _isSaving ? null : AfriIcons.checkGroup,
                       onTap: _isSaving ? () {} : () => _handleComplete(),
                     )
                     .animate(delay: 400.ms)

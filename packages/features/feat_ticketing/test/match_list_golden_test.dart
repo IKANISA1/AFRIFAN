@@ -34,7 +34,7 @@ void main() {
               ClubMatch(
                 id: 'fixture-1',
                 homeTeam: 'Rayon Sports',
-                awayTeam: 'APR',
+                awayTeam: 'Rayon Sports',
                 competition: 'National League',
                 venue: 'Amahoro Stadium',
                 matchDate: DateTime(2026, 4, 18, 18),

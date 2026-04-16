@@ -9,8 +9,15 @@ import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
+import '../providers/fet_wallet_provider.dart';
 import '../widgets/fet_split_model.dart';
+import '../widgets/fet_wallet_widgets.dart';
 
+/// FET Wallet screen — balance, transfers, redemptions, and transaction history.
+///
+/// Uses [FetWalletNotifier] via Riverpod for wallet data state.
+/// Keeps `ConsumerStatefulWidget` for interactive form controllers and
+/// search debounce timer.
 class FetWalletScreen extends ConsumerStatefulWidget {
   const FetWalletScreen({super.key});
 
@@ -27,21 +34,16 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
   final TextEditingController _redeemNoteController = TextEditingController();
   final Random _random = Random();
 
-  FetWalletSummary? _wallet;
-  List<FetWalletTransaction> _transactions = const <FetWalletTransaction>[];
   List<FetWalletSupporter> _supporterMatches = const <FetWalletSupporter>[];
   FetWalletSupporter? _selectedSupporter;
-  bool _isLoading = true;
   bool _isSubmittingTransfer = false;
   bool _isSubmittingRedemption = false;
   bool _isSearching = false;
-  String? _error;
   Timer? _searchDebounce;
 
   @override
   void initState() {
     super.initState();
-    _loadWallet();
     _searchController.addListener(_handleSearchChanged);
   }
 
@@ -55,36 +57,6 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     _redeemAmountController.dispose();
     _redeemNoteController.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadWallet() async {
-    try {
-      final repository = ref.read(fetRepositoryProvider);
-      final results = await Future.wait<Object?>([
-        repository.loadWallet(),
-        repository.loadWalletTransactions(limit: 40),
-      ]);
-
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        _wallet = results[0] as FetWalletSummary?;
-        _transactions = results[1] as List<FetWalletTransaction>;
-        _isLoading = false;
-        _error = null;
-      });
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        _isLoading = false;
-        _error = 'Wallet data is temporarily unavailable.';
-      });
-    }
   }
 
   void _handleSearchChanged() {
@@ -167,7 +139,8 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
         _selectedSupporter = null;
         _supporterMatches = const <FetWalletSupporter>[];
       });
-      await _loadWallet();
+      // Refresh wallet data after successful transfer.
+      await ref.read(fetWalletProvider.notifier).refresh();
       _showMessage(
         result.alreadyProcessed
             ? 'That transfer was already processed.'
@@ -218,7 +191,8 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
 
       _redeemAmountController.clear();
       _redeemNoteController.clear();
-      await _loadWallet();
+      // Refresh wallet data after successful redemption.
+      await ref.read(fetWalletProvider.notifier).refresh();
       _showMessage(
         result.alreadyProcessed
             ? 'That redemption was already processed.'
@@ -257,44 +231,6 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     ).formatPlain(value);
   }
 
-  String _formatCounterparty(FetWalletTransaction transaction) {
-    final displayName = transaction.counterpartyDisplayName;
-    final alias = transaction.counterpartyPublicUserId;
-    if (displayName != null && displayName.trim().isNotEmpty) {
-      return alias != null && alias.trim().isNotEmpty
-          ? '$displayName · #$alias'
-          : displayName;
-    }
-    if (alias != null && alias.trim().isNotEmpty) {
-      return '#$alias';
-    }
-    return 'Supporter';
-  }
-
-  Color _transactionColor(FetWalletTransaction transaction) {
-    return transaction.direction == FetWalletEntryDirection.credit
-        ? ColorTokens.success
-        : ColorTokens.warning;
-  }
-
-  IconData _transactionIcon(FetWalletTransaction transaction) {
-    switch (transaction.entryType) {
-      case 'transfer_in':
-        return Icons.call_received_rounded;
-      case 'transfer_out':
-        return Icons.call_made_rounded;
-      case 'redeem':
-        return Icons.redeem_rounded;
-      case 'admin_adjustment':
-        return Icons.tune_rounded;
-      case 'opening_balance':
-        return Icons.account_balance_wallet_rounded;
-      case 'earn':
-      default:
-        return Icons.stars_rounded;
-    }
-  }
-
   void _showOverflow() {
     showAfriActionSheet(
       context: context,
@@ -313,7 +249,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
         AfriSheetAction(
           icon: AfriIcons.refresh,
           label: 'Refresh',
-          onTap: _loadWallet,
+          onTap: () => ref.read(fetWalletProvider.notifier).refresh(),
         ),
       ],
     );
@@ -321,7 +257,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final wallet = _wallet;
+    final asyncWallet = ref.watch(fetWalletProvider);
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -347,406 +283,326 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           ),
         ],
       ),
-      body: _isLoading
-          ? const Padding(
-              padding: EdgeInsets.all(SpacingTokens.spacing6),
-              child: AfriSkeletonList(),
-            )
-          : _error != null
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                child: AfriStateView.offline(
-                  title: 'Wallet unavailable',
-                  message: _error!,
-                  actionLabel: 'Retry',
-                  onAction: _loadWallet,
+      body: asyncWallet.when(
+        loading: () => const Padding(
+          padding: EdgeInsets.all(SpacingTokens.spacing6),
+          child: AfriSkeletonList(),
+        ),
+        error: (_, __) => Center(
+          child: Padding(
+            padding: const EdgeInsets.all(SpacingTokens.spacing6),
+            child: AfriStateView.offline(
+              title: 'Wallet unavailable',
+              message: 'Wallet data is temporarily unavailable.',
+              actionLabel: 'Retry',
+              onAction: () => ref.read(fetWalletProvider.notifier).refresh(),
+            ),
+          ),
+        ),
+        data: (snapshot) => _buildContent(snapshot),
+      ),
+    );
+  }
+
+  Widget _buildContent(FetWalletSnapshot snapshot) {
+    final wallet = snapshot.wallet;
+    final transactions = snapshot.transactions;
+
+    return RefreshIndicator(
+      onRefresh: () => ref.read(fetWalletProvider.notifier).refresh(),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(
+          SpacingTokens.spacing6,
+          SpacingTokens.spacing4,
+          SpacingTokens.spacing6,
+          SpacingTokens.spacing12,
+        ),
+        children: [
+          EliteCard(
+            backgroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            child: Column(
+              children: [
+                const Text(
+                  'CURRENT BALANCE',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.black38,
+                    letterSpacing: 1.5,
+                  ),
                 ),
-              ),
-            )
-          : RefreshIndicator(
-              onRefresh: _loadWallet,
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.spacing6,
-                  SpacingTokens.spacing4,
-                  SpacingTokens.spacing6,
-                  SpacingTokens.spacing12,
+                const SizedBox(height: 12),
+                Text(
+                  '${_formatFet(wallet?.balance ?? 0)} FET',
+                  style: const TextStyle(
+                    fontFamily: 'Display',
+                    fontSize: 48,
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.black,
+                    height: 1,
+                  ),
                 ),
-                children: [
-                  GlassCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                '${_formatFet(wallet?.balance ?? 0)} FET',
-                                style: TypographyTokens.metricValue(
-                                  ColorTokens.clubAccent,
-                                ),
-                              ),
-                            ),
-                            AfriInfoChip(
-                              label: (wallet?.tier ?? 'fan').toUpperCase(),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing4),
-                        AfriStatRow(
-                          compact: true,
-                          stats: [
-                            AfriStat(
-                              label: 'Weekly',
-                              value: '+${_formatFet(wallet?.weeklyEarned ?? 0)}',
-                              accentColor: ColorTokens.success,
-                            ),
-                            AfriStat(
-                              label: 'Monthly',
-                              value: '+${_formatFet(wallet?.monthlyEarned ?? 0)}',
-                              accentColor: ColorTokens.primaryContainer,
-                            ),
-                            AfriStat(
-                              label: 'Spent',
-                              value: _formatFet(wallet?.lifetimeSpent ?? 0),
-                              accentColor: ColorTokens.warning,
-                            ),
-                          ],
-                        ),
-                      ],
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: ColorTokens.clubAccent.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    (wallet?.tier ?? 'fan').toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      color: ColorTokens.clubAccent,
+                      letterSpacing: 1,
                     ),
                   ),
-                  if ((wallet?.legacyBalanceGap ?? 0) > 0) ...[
-                    const SizedBox(height: SpacingTokens.spacing4),
-                    GlassCard(
-                      animate: false,
-                      child: Row(
-                        children: [
-                          const Icon(Icons.info_outline_rounded),
-                          const SizedBox(width: SpacingTokens.spacing3),
-                          Expanded(
-                            child: Text(
-                              '${_formatFet(wallet!.legacyBalanceGap)} FET comes from older rewards before wallet history was enabled.',
-                              style: TypographyTokens.bodyMedium(),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildEliteStat('WEEKLY', '+${_formatFet(wallet?.weeklyEarned ?? 0)}'),
+                    _buildEliteStat('MONTHLY', '+${_formatFet(wallet?.monthlyEarned ?? 0)}'),
+                    _buildEliteStat('SPENT', _formatFet(wallet?.lifetimeSpent ?? 0)),
                   ],
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  FetSplitModel(
-                    currentTier: wallet?.tier ?? 'supporter',
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing5),
-                  AfriSectionCard(
-                    title: 'Transfer',
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AfriInputField(
-                          key: const ValueKey<String>('wallet-transfer-search'),
-                          controller: _searchController,
-                          label: 'Search supporter',
-                          suffixIcon: _isSearching
-                              ? const Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: SizedBox(
-                                    height: 16,
-                                    width: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  ),
-                                )
-                              : (_searchController.text.isEmpty
-                                    ? const Icon(AfriIcons.search)
-                                    : IconButton(
-                                        onPressed: () {
-                                          _searchController.clear();
-                                          setState(() {
-                                            _selectedSupporter = null;
-                                            _supporterMatches =
-                                                const <FetWalletSupporter>[];
-                                          });
-                                        },
-                                        icon: const Icon(AfriIcons.close),
-                                      )),
-                        ),
-                        if (_selectedSupporter != null) ...[
-                          const SizedBox(height: SpacingTokens.listItemGap),
-                          _SelectedSupporterTile(
-                            supporter: _selectedSupporter!,
-                            onClear: () {
-                              setState(() {
-                                _selectedSupporter = null;
-                              });
-                            },
-                          ),
-                        ] else if (_supporterMatches.isNotEmpty) ...[
-                          const SizedBox(height: SpacingTokens.listItemGap),
-                          ..._supporterMatches.map(
-                            (supporter) => ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              dense: true,
-                              title: Text(supporter.displayName),
-                              subtitle: Text(
-                                '#${supporter.publicUserId ?? '000000'} · ${supporter.tier.toUpperCase()}',
-                              ),
-                              trailing: const Icon(Icons.north_east_rounded),
-                              onTap: () {
-                                _searchController.text = supporter.displayName;
-                                setState(() {
-                                  _selectedSupporter = supporter;
-                                  _supporterMatches =
-                                      const <FetWalletSupporter>[];
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                        const SizedBox(height: SpacingTokens.listItemGap),
-                        AfriInputField(
-                          key: const ValueKey<String>('wallet-transfer-amount'),
-                          controller: _transferAmountController,
-                          keyboardType: TextInputType.number,
-                          label: 'Amount',
-                          prefixText: 'FET ',
-                        ),
-                        const SizedBox(height: SpacingTokens.listItemGap),
-                        AfriInputField(
-                          controller: _transferNoteController,
-                          label: 'Note (optional)',
-                          maxLines: 2,
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing4),
-                        AfriButton(
-                          key: const ValueKey<String>(
-                            'wallet-transfer-submit',
-                          ),
-                          label: _isSubmittingTransfer ? 'Sending…' : 'Send FET',
-                          onTap: _submitTransfer,
-                          isLoading: _isSubmittingTransfer,
-                          enabled: !_isSubmittingTransfer,
-                        ),
-                      ],
+                ),
+              ],
+            ),
+          ),
+          if ((wallet?.legacyBalanceGap ?? 0) > 0) ...[
+            const SizedBox(height: SpacingTokens.spacing4),
+            GlassCard(
+              animate: false,
+              child: Row(
+                children: [
+                  const Icon(AfriIcons.statusInfo),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: Text(
+                      '${_formatFet(wallet!.legacyBalanceGap)} FET comes from older rewards before wallet history was enabled.',
+                      style: TypographyTokens.bodyMedium(),
                     ),
                   ),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  AfriSectionCard(
-                    title: 'Redeem',
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AfriInputField(
-                          key: const ValueKey<String>('wallet-redeem-amount'),
-                          controller: _redeemAmountController,
-                          keyboardType: TextInputType.number,
-                          label: 'Amount',
-                          prefixText: 'FET ',
-                        ),
-                        const SizedBox(height: SpacingTokens.listItemGap),
-                        AfriInputField(
-                          controller: _redeemNoteController,
-                          label: 'Note',
-                          maxLines: 2,
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing4),
-                        AfriButton(
-                          key: const ValueKey<String>('wallet-redeem-submit'),
-                          label: _isSubmittingRedemption
-                              ? 'Submitting…'
-                              : 'Redeem FET',
-                          onTap: _submitRedemption,
-                          isLoading: _isSubmittingRedemption,
-                          enabled: !_isSubmittingRedemption,
-                          variant: AfriButtonVariant.secondary,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: SpacingTokens.sectionGap),
-                  AfriSectionHeader(
-                    title: 'Activity',
-                    trailing: Text(
-                      '${_transactions.length}',
-                      style: TypographyTokens.labelSmall(
-                        ColorTokens.onSurfaceVariant,
-                      ),
-                    ),
-                    padding: EdgeInsets.zero,
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing3),
-                  if (_transactions.isEmpty)
-                    GlassCard(
-                      animate: false,
-                      child: Text(
-                        'Wallet activity appears here once you start earning, sending, or redeeming FET.',
-                        style: TypographyTokens.bodyMedium(),
-                      ),
-                    )
-                  else
-                    ..._transactions.map(
-                      (transaction) => Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: SpacingTokens.spacing3,
-                        ),
-                        child: GlassCard(
-                          animate: false,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 44,
-                                width: 44,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _transactionColor(
-                                    transaction,
-                                  ).withValues(alpha: 0.18),
-                                ),
-                                child: Icon(
-                                  _transactionIcon(transaction),
-                                  color: _transactionColor(transaction),
-                                ),
-                              ),
-                              const SizedBox(width: SpacingTokens.spacing3),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      transaction.headline,
-                                      style: TypographyTokens.bodyLarge()
-                                          .copyWith(
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                    ),
-                                    if (transaction.counterpartyUserId != null)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: SpacingTokens.spacing1,
-                                        ),
-                                        child: Text(
-                                          _formatCounterparty(transaction),
-                                          style: TypographyTokens.bodySmall(
-                                            ColorTokens.onSurfaceVariant,
-                                          ),
-                                        ),
-                                      ),
-                                    if (transaction.note != null)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: SpacingTokens.spacing1,
-                                        ),
-                                        child: Text(
-                                          transaction.note!,
-                                          style: TypographyTokens.bodySmall(
-                                            ColorTokens.onSurfaceVariant,
-                                          ),
-                                        ),
-                                      ),
-                                    const SizedBox(
-                                      height: SpacingTokens.spacing1,
-                                    ),
-                                    Text(
-                                      transaction.createdAt == null
-                                          ? 'Just now'
-                                          : AfriDateFormatter.timeAgo(
-                                              transaction.createdAt!,
-                                            ),
-                                      style: TypographyTokens.bodySmall(
-                                        ColorTokens.onSurfaceVariant,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: SpacingTokens.spacing3),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    '${transaction.direction == FetWalletEntryDirection.debit ? '-' : '+'}${_formatFet(transaction.amount)}',
-                                    style: TypographyTokens.monolithFont(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w800,
-                                      color: _transactionColor(transaction),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: SpacingTokens.spacing1,
-                                  ),
-                                  Text(
-                                    'Bal. ${_formatFet(transaction.balanceAfter)}',
-                                    style: TypographyTokens.bodySmall(
-                                      ColorTokens.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
                 ],
               ),
             ),
-    );
-  }
-}
-
-// _MetricPill removed — replaced by AfriStatRow(compact: true)
-
-class _SelectedSupporterTile extends StatelessWidget {
-  const _SelectedSupporterTile({
-    required this.supporter,
-    required this.onClear,
-  });
-
-  final FetWalletSupporter supporter;
-  final VoidCallback onClear;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(SpacingTokens.spacing3),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
-        color: ColorTokens.surfaceContainerHigh,
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.person_pin_circle_rounded),
-          const SizedBox(width: SpacingTokens.spacing3),
-          Expanded(
+          ],
+          const SizedBox(height: SpacingTokens.spacing4),
+          FetSplitModel(
+            currentTier: wallet?.tier ?? 'supporter',
+          ),
+          const SizedBox(height: SpacingTokens.spacing5),
+          AfriSectionCard(
+            title: 'Transfer',
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  supporter.displayName,
-                  style: TypographyTokens.bodyLarge().copyWith(
-                    fontWeight: FontWeight.w700,
+                AfriInputField(
+                  key: const ValueKey<String>('wallet-transfer-search'),
+                  controller: _searchController,
+                  label: 'Search supporter',
+                  suffixIcon: _isSearching
+                      ? const Padding(
+                          padding: EdgeInsets.all(12),
+                          child: SizedBox(
+                            height: 16,
+                            width: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          ),
+                        )
+                      : (_searchController.text.isEmpty
+                            ? const Icon(AfriIcons.search)
+                            : IconButton(
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() {
+                                    _selectedSupporter = null;
+                                    _supporterMatches =
+                                        const <FetWalletSupporter>[];
+                                  });
+                                },
+                                icon: const Icon(AfriIcons.close),
+                              )),
+                ),
+                if (_selectedSupporter != null) ...[
+                  const SizedBox(height: SpacingTokens.listItemGap),
+                  WalletSelectedSupporterTile(
+                    supporter: _selectedSupporter!,
+                    onClear: () {
+                      setState(() {
+                        _selectedSupporter = null;
+                      });
+                    },
+                  ),
+                ] else if (_supporterMatches.isNotEmpty) ...[
+                  const SizedBox(height: SpacingTokens.listItemGap),
+                  ..._supporterMatches.map(
+                    (supporter) => ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                      title: Text(supporter.displayName),
+                      subtitle: Text(
+                        '#${supporter.publicUserId ?? '000000'} · ${supporter.tier.toUpperCase()}',
+                      ),
+                      trailing: const Icon(AfriIcons.out),
+                      onTap: () {
+                        _searchController.text = supporter.displayName;
+                        setState(() {
+                          _selectedSupporter = supporter;
+                          _supporterMatches =
+                              const <FetWalletSupporter>[];
+                        });
+                      },
+                    ),
+                  ),
+                ],
+                const SizedBox(height: SpacingTokens.listItemGap),
+                AfriInputField(
+                  key: const ValueKey<String>('wallet-transfer-amount'),
+                  controller: _transferAmountController,
+                  keyboardType: TextInputType.number,
+                  label: 'Amount',
+                  prefixText: 'FET ',
+                ),
+                const SizedBox(height: SpacingTokens.listItemGap),
+                AfriInputField(
+                  controller: _transferNoteController,
+                  label: 'Note (optional)',
+                  maxLines: 2,
+                ),
+                const SizedBox(height: SpacingTokens.spacing4),
+                EliteButton(
+                  key: const ValueKey<String>(
+                    'wallet-transfer-submit',
+                  ),
+                  label: _isSubmittingTransfer ? 'Sending…' : 'Send FET',
+                  onTap: _submitTransfer,
+                  isLoading: _isSubmittingTransfer,
+                  enabled: !_isSubmittingTransfer,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          AfriSectionCard(
+            title: 'Redeem',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AfriInputField(
+                  key: const ValueKey<String>('wallet-redeem-amount'),
+                  controller: _redeemAmountController,
+                  keyboardType: TextInputType.number,
+                  label: 'Amount',
+                  prefixText: 'FET ',
+                ),
+                const SizedBox(height: SpacingTokens.listItemGap),
+                AfriInputField(
+                  controller: _redeemNoteController,
+                  label: 'Note',
+                  maxLines: 2,
+                ),
+                const SizedBox(height: SpacingTokens.spacing4),
+                EliteButton(
+                  key: const ValueKey<String>('wallet-redeem-submit'),
+                  label: _isSubmittingRedemption
+                      ? 'Submitting…'
+                      : 'Redeem FET',
+                  onTap: _submitRedemption,
+                  isLoading: _isSubmittingRedemption,
+                  enabled: !_isSubmittingRedemption,
+                  variant: EliteButtonVariant.secondary,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: SpacingTokens.sectionGap),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(
+              children: [
+                const Text(
+                  'ACTIVITY',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white38,
+                    letterSpacing: 2,
                   ),
                 ),
-                Text(
-                  '#${supporter.publicUserId ?? '000000'} • ${supporter.tier.toUpperCase()}',
-                  style: TypographyTokens.bodySmall(
-                    ColorTokens.onSurfaceVariant,
+                const Spacer(),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.white10,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    '${transactions.length}',
+                    style: const TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white70,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          IconButton(
-            onPressed: onClear,
-            icon: const Icon(AfriIcons.close),
-            tooltip: 'Clear supporter',
-          ),
+          if (transactions.isEmpty)
+            EliteCard(
+              child: Text(
+                'Wallet activity appears here once you start earning, sending, or redeeming FET.',
+                style: TypographyTokens.bodyMedium(),
+              ),
+            )
+          else
+            ...transactions.map(
+              (transaction) => Padding(
+                padding: const EdgeInsets.only(
+                  bottom: SpacingTokens.spacing3,
+                ),
+                child: WalletTransactionRow(
+                  transaction: transaction,
+                  formatFet: _formatFet,
+                ),
+              ),
+            ),
         ],
       ),
+    );
+  }
+
+  Widget _buildEliteStat(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 8,
+            fontWeight: FontWeight.w900,
+            color: Colors.black26,
+            letterSpacing: 1,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+            color: Colors.black,
+            letterSpacing: -0.5,
+          ),
+        ),
+      ],
     );
   }
 }

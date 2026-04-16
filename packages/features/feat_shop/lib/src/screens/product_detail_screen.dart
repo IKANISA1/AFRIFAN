@@ -317,6 +317,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       if (imageUrl != null && imageUrl.isNotEmpty)
                         CachedNetworkImage(
                           imageUrl: imageUrl,
+                          cacheManager: AfriImageCacheManager.instance,
                           fit: BoxFit.cover,
                           placeholder: (_, __) =>
                               Container(color: ColorTokens.surfaceContainerLow),
@@ -573,10 +574,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  ClaymorphicButton(
-                                    label: 'ADD TO CART',
+                                  AfriButton(
+                                    label: 'Add to cart',
                                     icon: Icons.shopping_bag_outlined,
-                                    onPressed: inStock ? _addToCart : null,
+                                    onTap: _addToCart,
+                                    enabled: inStock,
                                   ),
                                   const SizedBox(
                                     height: SpacingTokens.spacing2,

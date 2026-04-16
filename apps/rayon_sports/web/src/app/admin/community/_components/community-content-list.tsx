@@ -21,7 +21,6 @@ export function CommunityContentList({
   return (
     <AdminSurface
       title="Chapter directory"
-      description="Regional chapters, visibility, and engagement health."
       flush
     >
       {loading ? (

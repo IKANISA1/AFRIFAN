@@ -54,12 +54,11 @@ Future<bool> showSmsPermissionModal(BuildContext context) async {
                     onChanged: (value) => setState(() => allowReading = value),
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
-                  ClaymorphicButton(
-                    label: 'ENABLE',
-                    width: double.infinity,
-                    onPressed: allowReading
-                        ? () => Navigator.of(context).pop(true)
-                        : null,
+                  AfriButton(
+                    label: 'Enable',
+                    fullWidth: true,
+                    onTap: () => Navigator.of(context).pop(true),
+                    enabled: allowReading,
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
                   OutlinedButton(

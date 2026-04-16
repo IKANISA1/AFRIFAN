@@ -1,5 +1,5 @@
 -- ============================================================================
--- Zambia Super League 2025/26 — Real fixtures (Apr–May 2026)
+-- ZSL 2025/26 — Real fixtures (Rayon Sports–May 2026)
 -- Adds missing teams + inserts all remaining fixtures
 -- ============================================================================
 
@@ -15,7 +15,7 @@ BEGIN
   FROM football.seasons WHERE slug = 'zambia-super-league-2026';
 
   IF v_competition_id IS NULL OR v_season_id IS NULL THEN
-    RAISE EXCEPTION 'Zambia Super League competition or season not found.';
+    RAISE EXCEPTION 'ZSL competition or season not found.';
   END IF;
 
   -- ── Upsert additional teams not in initial seed ──
@@ -65,17 +65,17 @@ BEGIN
   -- ── Fixtures ──
   WITH fixture_values (match_date, home_slug, away_slug) AS (
     VALUES
-      -- April 15
+      -- Rayon Sportsil 15
       ('2026-04-15', 'nkwazi-fc', 'napsa-stars'),
       ('2026-04-15', 'nkana-fc', 'mines-united-zm'),
       ('2026-04-15', 'mutondo-stars', 'green-eagles-zm'),
-      -- April 16
+      -- Rayon Sportsil 16
       ('2026-04-16', 'kabwe-warriors', 'power-dynamos'),
       ('2026-04-16', 'prison-leopards', 'nchanga-rangers'),
       ('2026-04-16', 'maestro-united-zm', 'green-buffaloes'),
       ('2026-04-16', 'konkola-blades', 'mufulira-wanderers'),
       ('2026-04-16', 'kansanshi-dynamos', 'zesco-united'),
-      -- April 18
+      -- Rayon Sportsil 18
       ('2026-04-18', 'zanaco-fc', 'mines-united-zm'),
       ('2026-04-18', 'konkola-blades', 'power-dynamos'),
       ('2026-04-18', 'green-eagles-zm', 'mufulira-wanderers'),
@@ -85,7 +85,7 @@ BEGIN
       ('2026-04-18', 'kabwe-warriors', 'napsa-stars'),
       ('2026-04-18', 'kansanshi-dynamos', 'green-buffaloes'),
       ('2026-04-18', 'nkwazi-fc', 'zesco-united'),
-      -- April 22
+      -- Rayon Sportsil 22
       ('2026-04-22', 'nkwazi-fc', 'power-dynamos'),
       ('2026-04-22', 'nchanga-rangers', 'kabwe-warriors'),
       ('2026-04-22', 'zesco-united', 'nkana-fc'),
@@ -96,7 +96,7 @@ BEGIN
       ('2026-04-22', 'mines-united-zm', 'konkola-blades'),
       ('2026-04-22', 'napsa-stars', 'zanaco-fc'),
       ('2026-04-22', 'red-arrows-zm', 'green-eagles-zm'),
-      -- April 29
+      -- Rayon Sportsil 29
       ('2026-04-29', 'red-arrows-zm', 'konkola-blades'),
       ('2026-04-29', 'napsa-stars', 'nkana-fc'),
       ('2026-04-29', 'nchanga-rangers', 'nkwazi-fc'),

@@ -10,7 +10,7 @@ Gikundiro, the official Rayon Sports FC app for fans.
 Welcome to Gikundiro, the official Rayon Sports FC fan app and your all-in-one digital companion for Rwanda's most decorated football club.
 
 🏟️ LIVE MATCH CENTER
-Follow every match through the live match center with real-time score updates, match status, commentary, and matchday content from Amahoro Stadium and beyond.
+Follow every match through the live match center with score tracking, matchday content, and live updates when available from Amahoro Stadium and beyond.
 
 🎫 DIGITAL TICKETING
 Purchase match tickets directly from the app. Skip the queues with digital entry via QR code and manage all your tickets in one place.
@@ -22,7 +22,7 @@ Join the official Rayon Sports FC digital membership program. Access exclusive b
 Compete with other fans through challenges and leaderboards. Climb the rankings, unlock badges, and earn FET rewards for your dedication.
 
 💰 CONTRIBUTIONS
-Support your club through transparent digital contributions. Join support circles, track group contributions, and see how your support makes a difference.
+Support your club through transparent digital contributions. Join support Groups, track group contributions, and see how your support makes a difference.
 
 🛍️ OFFICIAL SHOP
 Browse and purchase official Rayon Sports FC merchandise including jerseys, scarves, and accessories.
@@ -34,7 +34,7 @@ FEATURES AT A GLANCE:
 • Dark mode with stunning glassmorphism design
 • Secure authentication & data protection
 • Mobile money (MoMo) integration for Rwanda
-• Live match updates and fixtures
+• Live match tracking and fixtures
 • Digital e-tickets with QR entry
 
 "Gikundiro" — because every supporter is part of the family.

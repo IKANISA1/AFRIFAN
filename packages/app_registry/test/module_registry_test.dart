@@ -12,7 +12,7 @@ void main() {
     test('filters disabled modules from club feature flags', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: false,
+          hasBioPay: false,
           hasFanClubs: false,
           hasShop: false,
           hasTicketing: false,
@@ -37,7 +37,7 @@ void main() {
     test('keeps enabled modules in registry order', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: true,
+          hasBioPay: true,
           hasFanClubs: true,
           hasShop: true,
           hasTicketing: true,
@@ -50,7 +50,7 @@ void main() {
           'home',
           'live',
           'fanzone',
-          'biopay',
+          'BioPay',
           'settings',
           'onboarding',
           'membership',
@@ -68,7 +68,7 @@ void main() {
     test('all 12 modules have unique featureKeys', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: true,
+          hasBioPay: true,
           hasFanClubs: true,
           hasShop: true,
           hasTicketing: true,
@@ -85,7 +85,7 @@ void main() {
     setUp(() {
       modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: true,
+          hasBioPay: true,
           hasFanClubs: true,
           hasShop: true,
           hasTicketing: true,
@@ -109,8 +109,8 @@ void main() {
       expect(modules.any((m) => m.tabRoute?.path == '/live'), isFalse);
     });
 
-    test('biopay tab exists at /biopay', () {
-      expect(modules.any((m) => m.tabRoute?.path == '/biopay'), isTrue);
+    test('BioPay tab exists at /BioPay', () {
+      expect(modules.any((m) => m.tabRoute?.path == '/BioPay'), isTrue);
     });
 
     test('has exactly 3 bottom nav tabs (Home, BioPay, Settings)', () {
@@ -161,7 +161,7 @@ void main() {
     setUp(() {
       modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: true,
+          hasBioPay: true,
           hasFanClubs: true,
           hasShop: true,
           hasTicketing: true,
@@ -221,7 +221,7 @@ void main() {
     setUp(() {
       modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: true,
+          hasBioPay: true,
           hasFanClubs: true,
           hasShop: true,
           hasTicketing: true,
@@ -256,7 +256,7 @@ void main() {
         shellBuilder: (_, __) => const SizedBox.shrink(),
       );
       final tabPaths = router.tabs.map((t) => t.path).toSet();
-      expect(tabPaths, containsAll(['/home', '/settings', '/biopay']));
+      expect(tabPaths, containsAll(['/home', '/settings', '/BioPay']));
       expect(tabPaths, isNot(contains('/fanzone')));
       expect(tabPaths, isNot(contains('/live')));
       expect(router.tabs, hasLength(3));
@@ -264,17 +264,17 @@ void main() {
   });
 
   group('Feature flag gating', () {
-    test('disabling biopay removes biopay module', () {
+    test('disabling BioPay removes BioPay module', () {
       final config = _FakeClubConfig(
-        hasBiopay: false, hasFanClubs: true, hasShop: true, hasTicketing: true,
+        hasBioPay: false, hasFanClubs: true, hasShop: true, hasTicketing: true,
       );
       final mods = AppModuleRegistry.build(config);
-      expect(mods.any((m) => m.featureKey == 'biopay'), isFalse);
+      expect(mods.any((m) => m.featureKey == 'BioPay'), isFalse);
     });
 
     test('disabling fan_clubs removes fan_clubs module', () {
       final config = _FakeClubConfig(
-        hasBiopay: true, hasFanClubs: false, hasShop: true, hasTicketing: true,
+        hasBioPay: true, hasFanClubs: false, hasShop: true, hasTicketing: true,
       );
       final mods = AppModuleRegistry.build(config);
       expect(mods.any((m) => m.featureKey == 'fan_clubs'), isFalse);
@@ -282,7 +282,7 @@ void main() {
 
     test('disabling shop removes shop module', () {
       final config = _FakeClubConfig(
-        hasBiopay: true, hasFanClubs: true, hasShop: false, hasTicketing: true,
+        hasBioPay: true, hasFanClubs: true, hasShop: false, hasTicketing: true,
       );
       final mods = AppModuleRegistry.build(config);
       expect(mods.any((m) => m.featureKey == 'shop'), isFalse);
@@ -290,7 +290,7 @@ void main() {
 
     test('disabling ticketing removes ticketing module', () {
       final config = _FakeClubConfig(
-        hasBiopay: true, hasFanClubs: true, hasShop: true, hasTicketing: false,
+        hasBioPay: true, hasFanClubs: true, hasShop: true, hasTicketing: false,
       );
       final mods = AppModuleRegistry.build(config);
       expect(mods.any((m) => m.featureKey == 'ticketing'), isFalse);
@@ -298,7 +298,7 @@ void main() {
 
     test('core modules survive when optional features disabled', () {
       final config = _FakeClubConfig(
-        hasBiopay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
+        hasBioPay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
       );
       final mods = AppModuleRegistry.build(config);
       expect(mods.any((m) => m.featureKey == 'home'), isTrue);
@@ -314,7 +314,7 @@ void main() {
     test('provides /splash, /onboarding, /auth/phone', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
+          hasBioPay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
         ),
       );
       final m = modules.firstWhere((m) => m.featureKey == 'onboarding');
@@ -327,7 +327,7 @@ void main() {
     test('/admin has CMS, matches, contributions, notifications, sms-monitor sub-routes', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
+          hasBioPay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
         ),
       );
       final m = modules.firstWhere((m) => m.featureKey == 'admin');
@@ -348,7 +348,7 @@ void main() {
     test('/contribute has projects, groups, create, join, group/:groupId sub-routes', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
+          hasBioPay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
         ),
       );
       final m = modules.firstWhere((m) => m.featureKey == 'contributions');
@@ -364,7 +364,7 @@ void main() {
     test('group/:groupId has chat, settings, statement sub-routes', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
+          hasBioPay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
         ),
       );
       final m = modules.firstWhere((m) => m.featureKey == 'contributions');
@@ -385,7 +385,7 @@ void main() {
     test('/shop has cart and product/:productId sub-routes', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: false, hasFanClubs: false, hasShop: true, hasTicketing: false,
+          hasBioPay: false, hasFanClubs: false, hasShop: true, hasTicketing: false,
         ),
       );
       final m = modules.firstWhere((m) => m.featureKey == 'shop');
@@ -403,7 +403,7 @@ void main() {
     test('provides /tickets, /my-tickets, /e-ticket/:id', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: false, hasFanClubs: false, hasShop: false, hasTicketing: true,
+          hasBioPay: false, hasFanClubs: false, hasShop: false, hasTicketing: true,
         ),
       );
       final m = modules.firstWhere((m) => m.featureKey == 'ticketing');
@@ -414,7 +414,7 @@ void main() {
     test('/tickets has detail/:id and map/:id sub-routes', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: false, hasFanClubs: false, hasShop: false, hasTicketing: true,
+          hasBioPay: false, hasFanClubs: false, hasShop: false, hasTicketing: true,
         ),
       );
       final m = modules.firstWhere((m) => m.featureKey == 'ticketing');
@@ -434,7 +434,7 @@ void main() {
     setUp(() {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: true, hasFanClubs: true, hasShop: true, hasTicketing: true,
+          hasBioPay: true, hasFanClubs: true, hasShop: true, hasTicketing: true,
         ),
       );
       fanzone = modules.firstWhere((m) => m.featureKey == 'fanzone');
@@ -480,13 +480,13 @@ void main() {
   });
 
   group('BioPay routes', () {
-    test('/biopay has all expected sub-routes', () {
+    test('/BioPay has all expected sub-routes', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: true, hasFanClubs: false, hasShop: false, hasTicketing: false,
+          hasBioPay: true, hasFanClubs: false, hasShop: false, hasTicketing: false,
         ),
       );
-      final m = modules.firstWhere((m) => m.featureKey == 'biopay');
+      final m = modules.firstWhere((m) => m.featureKey == 'BioPay');
       final subPaths = m.routes.whereType<GoRoute>().map(
         (r) => r.path,
       ).toSet();
@@ -501,7 +501,7 @@ void main() {
     test('/settings has edit-profile, notifications, privacy sub-routes', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
+          hasBioPay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
         ),
       );
       final m = modules.firstWhere((m) => m.featureKey == 'settings');
@@ -514,7 +514,7 @@ void main() {
     test('settings provides /profile_setup standalone route', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
+          hasBioPay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
         ),
       );
       final m = modules.firstWhere((m) => m.featureKey == 'settings');
@@ -530,7 +530,7 @@ void main() {
     test('provides /membership, /membership/fans, /membership/tier/:tierId', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
+          hasBioPay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
         ),
       );
       final m = modules.firstWhere((m) => m.featureKey == 'membership');
@@ -543,7 +543,7 @@ void main() {
     test('/fan-clubs has create and :clubId sub-routes', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: false, hasFanClubs: true, hasShop: false, hasTicketing: false,
+          hasBioPay: false, hasFanClubs: true, hasShop: false, hasTicketing: false,
         ),
       );
       final m = modules.firstWhere((m) => m.featureKey == 'fan_clubs');
@@ -561,7 +561,7 @@ void main() {
     test('/live has news/:articleId sub-route', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
-          hasBiopay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
+          hasBioPay: false, hasFanClubs: false, hasShop: false, hasTicketing: false,
         ),
       );
       final m = modules.firstWhere((m) => m.featureKey == 'live');
@@ -577,13 +577,13 @@ void main() {
 
 class _FakeClubConfig implements ClubConfig {
   const _FakeClubConfig({
-    required this.hasBiopay,
+    required this.hasBioPay,
     required this.hasFanClubs,
     required this.hasShop,
     required this.hasTicketing,
   });
 
-  @override final bool hasBiopay;
+  @override final bool hasBioPay;
   @override final bool hasFanClubs;
   @override final bool hasShop;
   @override final bool hasTicketing;
@@ -604,7 +604,7 @@ class _FakeClubConfig implements ClubConfig {
   @override bool get hasChat => false;
   @override bool get hasSmsLedger => false;
   @override Map<String, bool> get features => <String, bool>{
-    'biopay': hasBiopay,
+    'BioPay': hasBioPay,
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,

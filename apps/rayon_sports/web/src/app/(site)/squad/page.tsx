@@ -18,117 +18,66 @@ export async function generateMetadata() {
 export default async function SquadPage() {
   const [club, squad] = await Promise.all([getClubProfile(), getSquad()]);
   const copy = getSiteCopy(club.defaultLanguage);
-  const grouped = {
-    goalkeepers: squad.filter((player) => player.role.toLowerCase().includes("keeper")),
-    defenders: squad.filter((player) =>
-      /back|defender/.test(player.role.toLowerCase()),
-    ),
-    midfielders: squad.filter((player) => player.role.toLowerCase().includes("mid")),
-    attackers: squad.filter(
-      (player) =>
-        /wing|forward|striker/.test(player.role.toLowerCase()) ||
-        !/keeper|back|defender|mid/.test(player.role.toLowerCase()),
-    ),
-  };
-  const uniqueNationalities = new Set(squad.map((player) => player.nationality)).size;
+  
+  const positions = [
+    { key: 'goalkeepers', label: copy.pages.squad.goalkeepers, filter: (p: SquadPlayer) => p.role.toLowerCase().includes("keeper") },
+    { key: 'defenders', label: copy.pages.squad.defenders, filter: (p: SquadPlayer) => /back|defender/.test(p.role.toLowerCase()) },
+    { key: 'midfielders', label: copy.pages.squad.midfielders, filter: (p: SquadPlayer) => p.role.toLowerCase().includes("mid") },
+    { key: 'attackers', label: copy.pages.squad.attackers, filter: (p: SquadPlayer) => /wing|forward|striker/.test(p.role.toLowerCase()) || !/keeper|back|defender|mid/.test(p.role.toLowerCase()) },
+  ];
 
   return (
-    <div className="page-shell section-grid py-12">
-      <PageHero
-        eyebrow={copy.pages.squad.eyebrow}
-        title={copy.pages.squad.title}
-        description={copy.pages.squad.description(club)}
-        actions={
-          <>
-            <Link
-              href="/fixtures"
-              className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
-            >
-              {copy.common.nextFixtures}
-            </Link>
-            <Link
-              href="/news"
-              className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              {copy.common.playerStories}
-            </Link>
-          </>
-        }
-        stats={[
-          { label: copy.common.players, value: squad.length.toString() },
-          { label: copy.common.nationalities, value: uniqueNationalities.toString() },
-          {
-            label: copy.common.coreUnits,
-            value: "4",
-          },
-        ]}
-      />
-
-      <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {squad.map((player) => (
-            <article
-              key={player.id}
-              className="glass-panel card-interactive rounded-[30px] p-6"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="font-display text-3xl font-bold uppercase leading-none text-white">
-                    {player.name}
-                  </p>
-                  <p className="mt-2 text-sm uppercase tracking-[0.24em] text-club-accent">
-                    {player.role}
-                  </p>
-                </div>
-                <span className="font-score text-6xl font-bold uppercase text-white/80">
-                  {player.number}
-                </span>
-              </div>
-              <p className="mt-4 text-sm uppercase tracking-[0.2em] text-slate-300">
-                {player.nationality}
-              </p>
-              <p className="mt-4 text-sm leading-7 text-slate-300">{player.bio}</p>
-            </article>
-          ))}
-        </div>
-
-        <div className="glass-panel rounded-[30px] p-6">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-            {copy.pages.squad.unitView}
-          </p>
-          <h2 className="mt-3 font-display text-4xl font-bold uppercase text-white">
-            {copy.pages.squad.tacticalShape}
-          </h2>
-          <div className="mt-5 grid gap-4">
-            {[
-              { title: copy.pages.squad.goalkeepers, count: grouped.goalkeepers.length, icon: ShieldCheck },
-              { title: copy.pages.squad.defenders, count: grouped.defenders.length, icon: ShieldCheck },
-              { title: copy.pages.squad.midfielders, count: grouped.midfielders.length, icon: Zap },
-              { title: copy.pages.squad.attackers, count: grouped.attackers.length, icon: ArrowRight },
-            ].map(({ title, count, icon: Icon }) => (
-              <div
-                key={title}
-                className="rounded-[24px] border border-border-soft bg-white/5 p-4"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-club-primary/16 text-club-accent">
-                      <Icon size={18} />
-                    </span>
-                    <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white">
-                      {title}
-                    </p>
-                  </div>
-                  <span className="font-score text-4xl text-white">{count}</span>
-                </div>
-              </div>
-            ))}
+    <div className="bg-[var(--club-primary)] min-h-screen pt-24 pb-20 lg:pt-32">
+      <div className="page-shell">
+        <header className="mb-16 lg:mb-24">
+          <p className="text-xs font-bold uppercase tracking-[0.4em] text-[var(--club-accent)] mb-4">{copy.pages.squad.eyebrow}</p>
+          <h1 className="font-display text-6xl font-black uppercase italic leading-none tracking-tighter text-white lg:text-9xl">
+            {copy.pages.squad.title}
+          </h1>
+          <div className="mt-8 max-w-2xl text-lg font-medium text-white/60">
+            {copy.pages.squad.description(club)}
           </div>
-          <p className="mt-5 text-sm leading-7 text-slate-300">
-            {copy.pages.squad.rosterNote}
-          </p>
+        </header>
+
+        <div className="space-y-24">
+          {positions.map((pos) => {
+            const players = squad.filter(pos.filter);
+            if (players.length === 0) return null;
+
+            return (
+              <section key={pos.key}>
+                <div className="flex items-end justify-between mb-8 border-b border-white/10 pb-4">
+                  <h2 className="font-display text-3xl font-black uppercase italic text-white tracking-tight">{pos.label}</h2>
+                  <span className="text-[var(--club-accent)] font-mono text-sm font-bold tracking-widest">{players.length} Players</span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-8">
+                  {players.map((player) => (
+                    <article key={player.id} className="group relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 aspect-[3/4] transition-all hover:border-[var(--club-accent)]/50">
+                      {/* Player Image Placeholder with gradient */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
+                      
+                      {/* Big Number Background */}
+                      <div className="absolute top-4 right-4 pointer-events-none opacity-10 group-hover:opacity-20 transition-opacity">
+                        <span className="font-display text-8xl font-black italic leading-none text-white">{player.number}</span>
+                      </div>
+
+                      <div className="absolute bottom-6 left-6 right-6">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--club-accent)] mb-1">{player.role}</p>
+                        <h3 className="font-display text-2xl font-black uppercase italic leading-none text-white mb-2">{player.name}</h3>
+                        <div className="h-0.5 w-0 bg-[var(--club-accent)] transition-all duration-500 group-hover:w-12" />
+                        <div className="mt-4 overflow-hidden max-h-0 opacity-0 group-hover:max-h-20 group-hover:opacity-100 transition-all duration-500">
+                           <p className="text-xs text-white/60 leading-relaxed line-clamp-2">{player.bio}</p>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            );
+          })}
         </div>
-      </section>
+      </div>
     </div>
   );
 }

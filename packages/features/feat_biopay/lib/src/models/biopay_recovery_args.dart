@@ -1,7 +1,7 @@
-enum BiopayRecoveryIssue { camera, deviceAuth, nfc, feature }
+enum BioPayRecoveryIssue { camera, deviceAuth, nfc, feature }
 
-class BiopayRecoveryArgs {
-  const BiopayRecoveryArgs({
+class BioPayRecoveryArgs {
+  const BioPayRecoveryArgs({
     required this.issue,
     required this.title,
     required this.message,
@@ -11,7 +11,7 @@ class BiopayRecoveryArgs {
     this.secondaryRoute,
   });
 
-  final BiopayRecoveryIssue issue;
+  final BioPayRecoveryIssue issue;
   final String title;
   final String message;
   final String primaryLabel;

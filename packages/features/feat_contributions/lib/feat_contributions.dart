@@ -1,4 +1,4 @@
-/// AFRICLUB feat_contributions — Contribution circles, MOMO payments.
+/// AFRICLUB feat_contributions — Contribution Groups, MOMO payments.
 library;
 
 export 'src/contributions_module.dart';

@@ -6,8 +6,10 @@ import 'package:core_utils/core_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'bootstrap.dart';
 import 'deferred_feature_initializer.dart';
 
 class AppStartupOptions {
@@ -41,7 +43,7 @@ class AppStartupOptions {
   final Future<void> Function(ClubConfig config)? deferredBackendOverride;
 
   /// Feature-specific initialization callbacks injected by the app entry point.
-  /// This decouples core_app from feature packages (biopay, sms_ledger, etc.).
+  /// This decouples core_app from feature packages (BioPay, sms_ledger, etc.).
   final DeferredFeatureInitializer featureInitializer;
 }
 
@@ -55,6 +57,11 @@ class AppStartupCoordinator {
 
   Future<void> initialize(ClubConfig config) async {
     ColorTokens.init(config.colors);
+
+    // The app ships bundled fonts in each club's google_fonts/ directory.
+    // Disable runtime fetching to prevent unnecessary network calls on first
+    // launch — critical on slow/metered African mobile networks.
+    GoogleFonts.config.allowRuntimeFetching = false;
 
     if (options.configureDeviceChrome) {
       await _configureDeviceChrome();
@@ -127,7 +134,7 @@ class AppStartupCoordinator {
     await CrashlyticsService.initialize();
     await ConnectivityService.initialize();
 
-    if (kReleaseMode && config.hasBiopay) {
+    if (kReleaseMode && config.hasBioPay) {
       if (!firebaseReady) {
         throw StateError(
           'BioPay-enabled release builds require Firebase initialization.',
@@ -149,6 +156,9 @@ class AppStartupCoordinator {
         client: SupabaseClientFactory.client,
       ).recordPayloadOrThrow,
     );
+    
+    // E-001: Flush any errors that were logged locally before Supabase was ready.
+    await flushPendingPreInitErrors();
   }
 
   Future<void> _initializeDeferredBackend(ClubConfig config) async {

@@ -1,19 +1,13 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
 
-/// Unified Social Hub — two-tab layout (Friends / Club Fan Zone).
-///
-/// Mirrors the fanafrika `SocialHub.tsx` — combines friends list with search,
-/// challenge CTAs, club fan zone leaderboard, and club identity card.
-///
-/// All data is loaded dynamically from the FET repository — no demo data.
 class SocialHubScreen extends ConsumerStatefulWidget {
   const SocialHubScreen({super.key});
 
@@ -43,98 +37,59 @@ class _SocialHubScreenState extends ConsumerState<SocialHubScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      body: GradientBackground(
-        child: SafeArea(
-          child: NestedScrollView(
-            physics: const BouncingScrollPhysics(),
-            headerSliverBuilder: (context, innerBoxScrolled) => [
-              // ── Header ──
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    SpacingTokens.spacing4,
-                    SpacingTokens.spacing4,
-                    SpacingTokens.spacing6,
-                    0,
-                  ),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () => context.pop(),
-                        icon: const Icon(AfriIcons.back),
-                      ),
-                      const SizedBox(width: SpacingTokens.spacing2),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'COMMUNITY',
-                              style: TypographyTokens.editorialFont(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                                color: ColorTokens.onSurfaceVariant,
-                                letterSpacing: 1.6,
-                              ),
-                            ),
-                            Text(
-                              'SOCIAL HUB',
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 1.6,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // ── Tab Bar ──
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _TabBarDelegate(
-                  tabBar: TabBar(
-                    controller: _tabController,
-                    isScrollable: false,
-                    indicatorColor: ColorTokens.clubAccent,
-                    indicatorWeight: 2.5,
-                    labelColor: ColorTokens.clubAccent,
-                    unselectedLabelColor: ColorTokens.onSurfaceVariant,
-                    labelStyle: TypographyTokens.editorialFont(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.0,
-                    ),
-                    dividerColor: Colors.transparent,
-                    tabs: const [
-                      Tab(text: 'FRIENDS'),
-                      Tab(text: 'CLUB FAN ZONE'),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-            body: TabBarView(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(
+          'Social Hub',
+          style: TypographyTokens.monolithFont(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.0,
+          ),
+        ),
+        leading: IconButton(
+          onPressed: () => context.pop(),
+          icon: const Icon(AfriIcons.back),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(48),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              SpacingTokens.screenPadding,
+              0,
+              SpacingTokens.screenPadding,
+              SpacingTokens.spacing2,
+            ),
+            child: TabBar(
               controller: _tabController,
-              children: [
-                _FriendsTab(searchController: _searchController),
-                const _ClubFanZoneTab(),
+              indicatorColor: ColorTokens.clubAccent,
+              indicatorWeight: 2.5,
+              labelColor: ColorTokens.clubAccent,
+              unselectedLabelColor: ColorTokens.onSurfaceVariant,
+              labelStyle: TypographyTokens.editorialFont(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.0,
+              ),
+              dividerColor: Colors.transparent,
+              tabs: const [
+                Tab(text: 'Friends'),
+                Tab(text: 'Club'),
               ],
             ),
           ),
         ),
       ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _FriendsTab(searchController: _searchController),
+          const _ClubFanZoneTab(),
+        ],
+      ),
     );
   }
 }
-
-// ═══════════════════════════════════════════════════════════════════
-// FRIENDS TAB — loads real supporters from FET leaderboard
-// ═══════════════════════════════════════════════════════════════════
 
 class _FriendsTab extends ConsumerStatefulWidget {
   const _FriendsTab({required this.searchController});
@@ -146,31 +101,46 @@ class _FriendsTab extends ConsumerStatefulWidget {
 }
 
 class _FriendsTabState extends ConsumerState<_FriendsTab> {
-  List<FetLeaderboardRow> _supporters = const <FetLeaderboardRow>[];
+  List<FetFriendProfile> _friends = const <FetFriendProfile>[];
   bool _isLoading = true;
   String? _error;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    widget.searchController.addListener(_handleSearchChanged);
+    unawaited(_load());
+  }
+
+  @override
+  void dispose() {
+    widget.searchController.removeListener(_handleSearchChanged);
+    super.dispose();
+  }
+
+  void _handleSearchChanged() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _load() async {
     try {
-      final leaders = await ref
+      final friends = await ref
           .read(fetRepositoryProvider)
-          .loadLeaderboard(limit: 20);
-      if (!mounted) return;
+          .loadFriends(limit: 20);
+      if (!mounted) {
+        return;
+      }
       setState(() {
-        _supporters = leaders
-            .where((entry) => !entry.isCurrentUser)
-            .toList(growable: false);
+        _friends = friends;
         _isLoading = false;
         _error = null;
       });
     } catch (_) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _isLoading = false;
         _error = 'Supporters are temporarily unavailable.';
@@ -201,182 +171,140 @@ class _FriendsTabState extends ConsumerState<_FriendsTab> {
       );
     }
 
-    return ListView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
-      children: [
-        // ── Search + Add Friend ──
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing3,
-                ),
-                decoration: BoxDecoration(
-                  color: ColorTokens.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(14),
-                  border: BorderTokens.ghost(),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      AfriIcons.search,
-                      size: 18,
-                      color: ColorTokens.onSurfaceVariant,
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing2),
-                    Expanded(
-                      child: TextField(
-                        controller: widget.searchController,
-                        decoration: InputDecoration(
-                          hintText: 'Search friends...',
-                          hintStyle:
-                              TypographyTokens.bodyMedium().copyWith(
-                            color: ColorTokens.onSurfaceVariant,
-                          ),
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                          ),
-                        ),
-                        style: TypographyTokens.bodyMedium(),
-                      ),
-                    ),
-                  ],
+    final query = widget.searchController.text.trim().toLowerCase();
+    final visibleFriends = query.isEmpty
+        ? _friends
+        : _friends
+              .where((friend) {
+                final haystack =
+                    '${friend.displayName} ${friend.publicUserId ?? ''} ${friend.tier}'
+                        .toLowerCase();
+                return haystack.contains(query);
+              })
+              .toList(growable: false);
+
+    return RefreshIndicator(
+      onRefresh: _load,
+      color: ColorTokens.clubAccent,
+      child: ListView(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: AfriInputField(
+                  controller: widget.searchController,
+                  hint: 'Search your friends',
+                  prefixIcon: AfriIcons.search,
+                  onChanged: (_) {},
                 ),
               ),
-            ),
-            const SizedBox(width: SpacingTokens.spacing2),
-            GestureDetector(
-              onTap: () {
-                HapticFeedback.lightImpact();
-                context.push('/fanzone/friends');
-              },
-              child: Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color:
-                      ColorTokens.clubAccent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(14),
-                  border: BorderTokens.all(
-                    color: ColorTokens.clubAccent
-                        .withValues(alpha: 0.25),
-                  ),
-                ),
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.person_add_rounded,
-                  size: 22,
-                  color: ColorTokens.clubAccent,
-                ),
+              const SizedBox(width: SpacingTokens.spacing3),
+              AfriButton(
+                onTap: () => context.push('/fanzone/friends'),
+                label: 'Browse',
+                variant: AfriButtonVariant.ghost,
+                fullWidth: false,
               ),
-            ),
-          ],
-        )
-            .animate()
-            .fadeIn(duration: 300.ms)
-            .slideY(begin: 0.04, end: 0, duration: 300.ms),
-
-        const SizedBox(height: SpacingTokens.spacing5),
-
-        if (_supporters.isEmpty)
-          const AfriEmptyView(
-            compact: true,
-            title: 'No supporters found',
-            message:
-                'Top supporters and friends will appear here as the community grows.',
-          )
-        else
-          // ── Friends List ──
-          ClayCard(
-            child: Column(
-              children: _supporters.asMap().entries.map((entry) {
-                final index = entry.key;
-                final supporter = entry.value;
-                final accuracy =
-                    '${supporter.totalFet} FET · ${supporter.tier}';
-                return Column(
-                  children: [
-                    if (index > 0)
-                      Divider(
-                        height: 1,
-                        color: ColorTokens.ghostBorder,
-                      ),
-                    _FriendRow(
-                      name: supporter.displayName,
-                      accuracy: accuracy,
-                      isOnline: false, // Real online status requires presence
-                      onChallenge: () {
-                        HapticFeedback.lightImpact();
-                        context.push('/fanzone/challenge');
-                      },
-                    ),
-                  ],
-                );
-              }).toList(),
-            ),
+            ],
           ),
-      ],
+          const SizedBox(height: SpacingTokens.spacing4),
+          AfriSectionCard(
+            title: 'Your friends',
+            trailingLabel: 'View all',
+            onTrailingTap: () => context.push('/fanzone/friends'),
+            child: visibleFriends.isEmpty
+                ? AfriEmptyView(
+                    compact: true,
+                    title: query.isEmpty ? 'No friends yet' : 'No matches',
+                    message: query.isEmpty
+                        ? 'Browse supporters to start challenges.'
+                        : 'Try another name or supporter ID.',
+                    icon: query.isEmpty
+                        ? AfriIcons.users
+                        : AfriIcons.search,
+                  )
+                : Column(
+                    children: visibleFriends
+                        .asMap()
+                        .entries
+                        .map((entry) {
+                          final friend = entry.value;
+                          return Column(
+                            children: [
+                              if (entry.key > 0)
+                                Divider(
+                                  height: 1,
+                                  color: ColorTokens.ghostBorder,
+                                ),
+                              _FriendRow(
+                                name: friend.displayName,
+                                details: _friendDetails(friend),
+                                isOnline: friend.isOnline,
+                                onChallenge: () {
+                                  unawaited(
+                                    context.push(
+                                      '/fanzone/challenge?opponent=${friend.userId}',
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        })
+                        .toList(growable: false),
+                  ),
+          ),
+        ],
+      ),
     );
+  }
+
+  String _friendDetails(FetFriendProfile friend) {
+    final parts = <String>[
+      if (friend.publicUserId != null) '#${friend.publicUserId}',
+      friend.tier.toUpperCase(),
+      '${friend.balance} FET',
+    ];
+    return parts.join(' · ');
   }
 }
 
 class _FriendRow extends StatelessWidget {
   const _FriendRow({
     required this.name,
-    required this.accuracy,
+    required this.details,
     required this.isOnline,
     required this.onChallenge,
   });
 
   final String name;
-  final String accuracy;
+  final String details;
   final bool isOnline;
   final VoidCallback onChallenge;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.spacing1,
-        vertical: SpacingTokens.spacing3,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing3),
       child: Row(
         children: [
-          Stack(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: ColorTokens.surfaceContainerHigh,
-                ),
-                alignment: Alignment.center,
-                child: const Text('👤', style: TextStyle(fontSize: 18)),
-              ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: isOnline
-                        ? ColorTokens.success
-                        : ColorTokens.onSurfaceVariant,
-                    border: Border.all(
-                      color: ColorTokens.surfaceContainer,
-                      width: 2,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: ColorTokens.surfaceContainerLow,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              name.characters.first.toUpperCase(),
+              style: TypographyTokens.titleSmall(),
+            ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
           Expanded(
@@ -384,62 +312,29 @@ class _FriendRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(name, style: TypographyTokens.titleSmall()),
-                Text(
-                  accuracy,
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: ColorTokens.onSurfaceVariant,
-                    letterSpacing: 1.2,
-                  ),
-                ),
+                const SizedBox(height: 2),
+                Text(details, style: TypographyTokens.bodySmall()),
               ],
             ),
           ),
-          AfriPressFeedback(
-            onTap: onChallenge,
-            builder: (context, state) => Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: SpacingTokens.spacing3,
-                vertical: SpacingTokens.spacing2,
-              ),
-              decoration: BoxDecoration(
-                color: state.isPressed
-                    ? ColorTokens.clubAccent.withValues(alpha: 0.2)
-                    : ColorTokens.surfaceContainerHigh,
-                borderRadius: BorderRadius.circular(10),
-                border: BorderTokens.ghost(),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.sports_esports_rounded,
-                    size: 14,
-                    color: ColorTokens.clubAccent,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Challenge',
-                    style: TypographyTokens.editorialFont(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: ColorTokens.clubAccent,
-                    ),
-                  ),
-                ],
-              ),
+          if (isOnline) ...[
+            Text(
+              'Online',
+              style: TypographyTokens.labelSmall(ColorTokens.success),
             ),
+            const SizedBox(width: SpacingTokens.spacing3),
+          ],
+          AfriButton(
+            onTap: onChallenge,
+            label: 'Challenge',
+            variant: AfriButtonVariant.ghost,
+            fullWidth: false,
           ),
         ],
       ),
     );
   }
 }
-
-// ═══════════════════════════════════════════════════════════════════
-// CLUB FAN ZONE TAB — loads real club leaderboard from FET repository
-// ═══════════════════════════════════════════════════════════════════
 
 class _ClubFanZoneTab extends ConsumerStatefulWidget {
   const _ClubFanZoneTab();
@@ -457,28 +352,33 @@ class _ClubFanZoneTabState extends ConsumerState<_ClubFanZoneTab> {
   @override
   void initState() {
     super.initState();
-    _load();
+    unawaited(_load());
   }
 
   Future<void> _load() async {
     try {
-      final repo = ref.read(fetRepositoryProvider);
-      final leaders = await repo.loadLeaderboard(limit: 25);
-      if (!mounted) return;
+      final leaders = await ref
+          .read(fetRepositoryProvider)
+          .loadLeaderboard(limit: 25);
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _fans = leaders;
         _currentUserEntry = leaders.cast<FetLeaderboardRow?>().firstWhere(
-              (entry) => entry?.isCurrentUser == true,
-              orElse: () => null,
-            );
+          (entry) => entry?.isCurrentUser == true,
+          orElse: () => null,
+        );
         _isLoading = false;
         _error = null;
       });
     } catch (_) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _isLoading = false;
-        _error = 'Club fan zone is temporarily unavailable.';
+        _error = 'Club standings are temporarily unavailable.';
       });
     }
   }
@@ -497,7 +397,7 @@ class _ClubFanZoneTabState extends ConsumerState<_ClubFanZoneTab> {
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing6),
           child: AfriStateView.offline(
-            title: 'Fan zone unavailable',
+            title: 'Club standings unavailable',
             message: _error!,
             actionLabel: 'Retry',
             onAction: _load,
@@ -508,139 +408,80 @@ class _ClubFanZoneTabState extends ConsumerState<_ClubFanZoneTab> {
 
     final userEntry = _currentUserEntry;
 
-    return ListView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(SpacingTokens.spacing6),
-      children: [
-        // ── Club Identity Card ──
-        Container(
-          padding: const EdgeInsets.all(SpacingTokens.spacing6),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                ColorTokens.surfaceContainerLow,
-                ColorTokens.surfaceContainerHigh,
-              ],
-            ),
-            borderRadius: ShapeTokens.cardRadius,
-            border: BorderTokens.ghost(),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: ColorTokens.surfaceContainer,
-                  border: BorderTokens.ghost(),
-                ),
-                alignment: Alignment.center,
-                child: const Text('🦅', style: TextStyle(fontSize: 32)),
-              ),
-              const SizedBox(width: SpacingTokens.spacing4),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'CLUB FANS',
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      userEntry != null
-                          ? 'You are ranked #${userEntry.rank} among club fans.'
-                          : 'Join the leaderboard by earning FET.',
-                      style: TypographyTokens.bodySmall(),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        )
-            .animate()
-            .fadeIn(duration: 400.ms)
-            .slideY(begin: 0.04, end: 0, duration: 400.ms),
-
-        const SizedBox(height: SpacingTokens.spacing6),
-
-        // ── Fan Leaderboard ──
-        Text(
-          'FAN LEADERBOARD',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.2,
-          ),
+    return RefreshIndicator(
+      onRefresh: _load,
+      color: ColorTokens.clubAccent,
+      child: ListView(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
         ),
-        const SizedBox(height: SpacingTokens.spacing3),
-
-        if (_fans.isEmpty)
-          const AfriEmptyView(
-            compact: true,
-            title: 'No fans ranked yet',
-            message: 'The fan leaderboard will populate as members earn FET.',
-          )
-        else
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        children: [
           ClayCard(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ..._fans.take(10).map((fan) {
-                  final index = _fans.indexOf(fan);
-                  return Column(
-                    children: [
-                      if (index > 0)
-                        Divider(
-                          height: 1,
-                          color: ColorTokens.ghostBorder,
-                        ),
-                      _FanLeaderboardRow(
-                        rank: fan.rank,
-                        name: fan.displayName,
-                        points: '${fan.totalFet} FET',
-                        isMe: fan.isCurrentUser,
-                      ),
-                    ],
-                  );
-                }),
-                if (userEntry != null &&
-                    userEntry.rank > 10)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: SpacingTokens.spacing2,
-                    ),
-                    width: double.infinity,
-                    color: ColorTokens.surfaceContainerHigh,
-                    alignment: Alignment.center,
-                    child: Text(
-                      '···',
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: ColorTokens.onSurfaceVariant,
-                      ),
-                    ),
+                Text(
+                  'Club standing',
+                  style: TypographyTokens.labelSmall(
+                    ColorTokens.onSurfaceVariant,
                   ),
-                if (userEntry != null &&
-                    userEntry.rank > 10)
-                  _FanLeaderboardRow(
-                    rank: userEntry.rank,
-                    name: userEntry.displayName,
-                    points: '${userEntry.totalFet} FET',
-                    isMe: true,
+                ),
+                const SizedBox(height: SpacingTokens.spacing2),
+                Text(
+                  userEntry == null ? 'Unranked' : '#${userEntry.rank}',
+                  style: TypographyTokens.monolithFont(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w900,
+                    color: ColorTokens.clubAccent,
                   ),
+                ),
+                const SizedBox(height: SpacingTokens.spacing2),
+                Text(
+                  userEntry == null
+                      ? 'Earn FET to appear in the club table.'
+                      : '${userEntry.totalFet} FET earned so far.',
+                  style: TypographyTokens.bodyMedium(),
+                ),
               ],
             ),
           ),
-      ],
+          const SizedBox(height: SpacingTokens.spacing4),
+          AfriSectionCard(
+            title: 'Leaderboard',
+            child: _fans.isEmpty
+                ? const AfriEmptyView(
+                    compact: true,
+                    title: 'No rankings yet',
+                    message: 'The club table will update as fans earn FET.',
+                    icon: AfriIcons.leaderboard,
+                  )
+                : Column(
+                    children: _fans
+                        .take(10)
+                        .map((fan) {
+                          final index = _fans.indexOf(fan);
+                          return Column(
+                            children: [
+                              if (index > 0)
+                                Divider(
+                                  height: 1,
+                                  color: ColorTokens.ghostBorder,
+                                ),
+                              _FanLeaderboardRow(
+                                rank: fan.rank,
+                                name: fan.displayName,
+                                points: '${fan.totalFet} FET',
+                                isMe: fan.isCurrentUser,
+                              ),
+                            ],
+                          );
+                        })
+                        .toList(growable: false),
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -661,18 +502,17 @@ class _FanLeaderboardRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.spacing1,
-        vertical: SpacingTokens.spacing3,
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing3),
+      decoration: BoxDecoration(
+        color: isMe ? ColorTokens.clubAccent.withValues(alpha: 0.06) : null,
+        borderRadius: BorderRadius.circular(16),
       ),
-      color: isMe ? ColorTokens.clubAccent.withValues(alpha: 0.06) : null,
       child: Row(
         children: [
           SizedBox(
-            width: 24,
+            width: 32,
             child: Text(
-              '$rank',
-              textAlign: TextAlign.center,
+              '#$rank',
               style: TypographyTokens.monolithFont(
                 fontSize: 14,
                 fontWeight: FontWeight.w800,
@@ -681,17 +521,6 @@ class _FanLeaderboardRow extends StatelessWidget {
                     : ColorTokens.onSurfaceVariant,
               ),
             ),
-          ),
-          const SizedBox(width: SpacingTokens.spacing3),
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: ColorTokens.surfaceContainerHigh,
-            ),
-            alignment: Alignment.center,
-            child: const Text('👤', style: TextStyle(fontSize: 14)),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
           Expanded(
@@ -714,32 +543,4 @@ class _FanLeaderboardRow extends StatelessWidget {
       ),
     );
   }
-}
-
-// ── Tab bar delegate ───────────────────────────────────────────────────
-
-class _TabBarDelegate extends SliverPersistentHeaderDelegate {
-  const _TabBarDelegate({required this.tabBar});
-
-  final TabBar tabBar;
-
-  @override
-  double get minExtent => tabBar.preferredSize.height;
-  @override
-  double get maxExtent => tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      color: ColorTokens.background,
-      child: tabBar,
-    );
-  }
-
-  @override
-  bool shouldRebuild(_TabBarDelegate oldDelegate) => false;
 }

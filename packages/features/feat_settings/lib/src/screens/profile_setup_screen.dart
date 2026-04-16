@@ -7,7 +7,7 @@ class ProfileSetupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasBiopay = ClubConfigScope.maybeOf(context)?.hasBiopay ?? false;
+    final hasBioPay = ClubConfigScope.maybeOf(context)?.hasBioPay ?? false;
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -75,14 +75,13 @@ class ProfileSetupScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing8),
-              ClaymorphicButton(
-                label: hasBiopay ? 'Open Face ID setup' : 'Back to Settings',
-                preserveCase: true,
-                width: double.infinity,
-                onPressed: () =>
-                    context.go(hasBiopay ? '/biopay/register' : '/settings'),
+              AfriButton(
+                label: hasBioPay ? 'Open Face ID setup' : 'Back to Settings',
+                fullWidth: true,
+                onTap: () =>
+                    context.go(hasBioPay ? '/BioPay/register' : '/settings'),
               ),
-              if (hasBiopay) ...[
+              if (hasBioPay) ...[
                 const SizedBox(height: SpacingTokens.spacing4),
                 TextButton(
                   onPressed: () => context.go('/settings'),

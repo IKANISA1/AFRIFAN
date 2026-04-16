@@ -118,7 +118,7 @@ class _ArcPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
+      Rect.fromGroup(center: center, radius: radius),
       (135 * pi / 180), // Start at bottom-left
       (270 * pi / 180), // 270 degree sweep
       false,
@@ -133,7 +133,7 @@ class _ArcPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
+      Rect.fromGroup(center: center, radius: radius),
       (135 * pi / 180),
       (270 * progress * pi / 180),
       false,

@@ -19,7 +19,7 @@
 -dontwarn org.tensorflow.**
 
 # ── NFC Host Card Emulation Service ──
--keep class rw.gikundiro.app.BiopayNfcHostApduService { *; }
+-keep class rw.gikundiro.app.BioPayNfcHostApduService { *; }
 -keep class rw.gikundiro.app.MainActivity { *; }
 
 # ── Supabase / GoTrue / PostgREST ──

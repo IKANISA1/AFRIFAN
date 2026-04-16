@@ -11,18 +11,18 @@ import '../services/biopay_auth_gate_service.dart';
 import '../services/biopay_payment_handoff_service.dart';
 import '../widgets/biopay_reference_ui.dart';
 
-class BiopayPaymentReviewScreen extends ConsumerStatefulWidget {
-  const BiopayPaymentReviewScreen({required this.args, super.key});
+class BioPayPaymentReviewScreen extends ConsumerStatefulWidget {
+  const BioPayPaymentReviewScreen({required this.args, super.key});
 
-  final BiopayPaymentReviewArgs args;
+  final BioPayPaymentReviewArgs args;
 
   @override
-  ConsumerState<BiopayPaymentReviewScreen> createState() =>
-      _BiopayPaymentReviewScreenState();
+  ConsumerState<BioPayPaymentReviewScreen> createState() =>
+      _BioPayPaymentReviewScreenState();
 }
 
-class _BiopayPaymentReviewScreenState
-    extends ConsumerState<BiopayPaymentReviewScreen> {
+class _BioPayPaymentReviewScreenState
+    extends ConsumerState<BioPayPaymentReviewScreen> {
   bool _isSubmitting = false;
   String? _error;
 
@@ -36,24 +36,24 @@ class _BiopayPaymentReviewScreenState
 
     try {
       final gate = await ref
-          .read(biopayAuthGateServiceProvider)
-          .authorize(BiopayAuthAction.paymentHandoff);
+          .read(BioPayAuthGateServiceProvider)
+          .authorize(BioPayAuthAction.paymentHandoff);
 
       if (!mounted) return;
 
       if (!gate.isAuthorized) {
-        if (gate.status == BiopayAuthGateStatus.unavailable ||
-            gate.status == BiopayAuthGateStatus.lockedOut) {
+        if (gate.status == BioPayAuthGateStatus.unavailable ||
+            gate.status == BioPayAuthGateStatus.lockedOut) {
           context.push(
-            '/biopay/recovery',
-            extra: const BiopayRecoveryArgs(
-              issue: BiopayRecoveryIssue.deviceAuth,
+            '/BioPay/recovery',
+            extra: const BioPayRecoveryArgs(
+              issue: BioPayRecoveryIssue.deviceAuth,
               title: 'Device Auth Required',
               message: 'Set up device security first.',
               primaryLabel: 'Back',
-              primaryRoute: '/biopay',
+              primaryRoute: '/BioPay',
               secondaryLabel: 'Retry',
-              secondaryRoute: '/biopay/profile',
+              secondaryRoute: '/BioPay/profile',
             ),
           );
         } else {
@@ -62,8 +62,8 @@ class _BiopayPaymentReviewScreenState
         return;
       }
 
-      final handoffService = ref.read(biopayPaymentHandoffServiceProvider);
-      final repository = ref.read(biopayRepositoryProvider);
+      final handoffService = ref.read(BioPayPaymentHandoffServiceProvider);
+      final repository = ref.read(BioPayRepositoryProvider);
       bool launched;
 
       if (args.matchResult != null) {
@@ -100,21 +100,21 @@ class _BiopayPaymentReviewScreenState
       }
 
       context.go(
-        '/biopay/result',
-        extra: const BiopayTaskResultArgs(
-          tone: BiopayTaskResultTone.success,
+        '/BioPay/result',
+        extra: const BioPayTaskResultArgs(
+          tone: BioPayTaskResultTone.success,
           title: 'Payment Opened',
           message: 'Complete the transfer in your payment app.',
           primaryLabel: 'Done',
-          primaryRoute: '/biopay',
+          primaryRoute: '/BioPay',
           secondaryLabel: 'Cancel',
-          secondaryRoute: '/biopay',
+          secondaryRoute: '/BioPay',
         ),
       );
     } catch (error) {
       if (!mounted) return;
       setState(() {
-        _error = error.toString();
+        _error = _userFriendlyError(error);
         _isSubmitting = false;
       });
       return;
@@ -133,7 +133,7 @@ class _BiopayPaymentReviewScreenState
         widget.args.maskedRecipientValue;
 
     return Scaffold(
-      backgroundColor: biopayReferenceBackground,
+      backgroundColor: BioPayReferenceBackground,
       body: GradientBackground(
         child: SafeArea(
           child: Padding(
@@ -144,8 +144,8 @@ class _BiopayPaymentReviewScreenState
                   height: 52,
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: BiopayReferenceLightBackButton(
-                      onTap: () => context.go('/biopay'),
+                    child: BioPayReferenceLightBackButton(
+                      onTap: () => context.go('/BioPay'),
                     ),
                   ),
                 ),
@@ -155,13 +155,13 @@ class _BiopayPaymentReviewScreenState
                     children: [
                       Text(
                         displayValue,
-                        style: biopayReferenceText(
+                        style: BioPayReferenceText(
                           fontSize: 26,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
                       const SizedBox(height: 36),
-                      BiopayReferencePrimaryButton(
+                      BioPayReferencePrimaryButton(
                         label: _isSubmitting ? 'Opening Dialer' : 'Tap to Dial',
                         onTap: _isSubmitting ? null : _submit,
                       ),
@@ -169,13 +169,13 @@ class _BiopayPaymentReviewScreenState
                       TextButton(
                         onPressed: _isSubmitting
                             ? null
-                            : () => context.go('/biopay'),
+                            : () => context.go('/BioPay'),
                         child: Text(
                           'Cancel',
-                          style: biopayReferenceText(
+                          style: BioPayReferenceText(
                             fontSize: 18,
                             fontWeight: FontWeight.w800,
-                            color: biopayReferenceMuted,
+                            color: BioPayReferenceMuted,
                           ),
                         ),
                       ),
@@ -183,10 +183,10 @@ class _BiopayPaymentReviewScreenState
                         const SizedBox(height: 12),
                         Text(
                           _error!,
-                          style: biopayReferenceText(
+                          style: BioPayReferenceText(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            color: Colors.red.shade600,
+                            color: Colors.red.shade500,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -200,5 +200,30 @@ class _BiopayPaymentReviewScreenState
         ),
       ),
     );
+  }
+
+  static String _userFriendlyError(Object error) {
+    final raw = error.toString().toLowerCase();
+    if (raw.contains('attestation') || raw.contains('app check')) {
+      return 'Device verification failed. Restart the app and try again.';
+    }
+    if (raw.contains('timeout') || raw.contains('timed out')) {
+      return 'The request timed out. Check your connection and try again.';
+    }
+    if (raw.contains('socket') ||
+        raw.contains('network') ||
+        raw.contains('connection')) {
+      return 'Network error. Check your internet connection and try again.';
+    }
+    if (raw.contains('permission') || raw.contains('denied')) {
+      return 'Permission denied. Ensure the app has the required access.';
+    }
+    if (raw.contains('payment') && raw.contains('route')) {
+      return 'No payment method is configured for this club yet.';
+    }
+    if (raw.contains('not found') || raw.contains('does not exist')) {
+      return 'Payment could not be processed. Try again later.';
+    }
+    return 'Something went wrong. Please try again or contact support.';
   }
 }

@@ -40,7 +40,7 @@ void main() {
         expect(profile.isAdmin, isFalse);
       });
 
-      test('handles legacy field aliases (phone, full_name, country)', () {
+      test('handles legacy field  (phone, full_name, country)', () {
         final profile = UserProfile.fromJson({
           'id': 'user-2',
           'club_id': '1',

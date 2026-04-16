@@ -13,22 +13,22 @@ import '../models/biopay_model_contract.dart';
 ///
 /// Handles model loading, platform-aware hardware acceleration
 /// (CoreML on iOS, CPU elsewhere), and L2-normalized embedding output.
-class BiopayEmbeddingService {
-  BiopayEmbeddingService({String? modelAssetPath, String? contractAssetPath})
-    : _modelAssetPath = modelAssetPath ?? BiopayModelContract.modelAssetPath,
+class BioPayEmbeddingService {
+  BioPayEmbeddingService({String? modelAssetPath, String? contractAssetPath})
+    : _modelAssetPath = modelAssetPath ?? BioPayModelContract.modelAssetPath,
       _contractAssetPath =
-          contractAssetPath ?? BiopayModelContract.contractAssetPath;
+          contractAssetPath ?? BioPayModelContract.contractAssetPath;
 
   final String _modelAssetPath;
   final String _contractAssetPath;
 
   Interpreter? _interpreter;
-  BiopayModelContract? _contract;
+  BioPayModelContract? _contract;
   String? _modelIssue;
 
   bool get isLoaded => _interpreter != null;
   String? get modelIssue => _modelIssue;
-  int get embeddingSize => BiopayModelContract.expectedEmbeddingSize;
+  int get embeddingSize => BioPayModelContract.expectedEmbeddingSize;
 
   // ─── Lifecycle ──────────────────────────────────────────────
 
@@ -38,13 +38,13 @@ class BiopayEmbeddingService {
     try {
       // Load and validate the contract
       final contractJson = await rootBundle.loadString(_contractAssetPath);
-      _contract = BiopayModelContract.fromJsonString(contractJson);
+      _contract = BioPayModelContract.fromJsonString(contractJson);
 
       final contractIssue = _contract!.validateStaticExpectations();
       if (contractIssue != null) {
         _modelIssue = contractIssue;
         AfriLogger.warn(
-          'BiopayEmbeddingService',
+          'BioPayEmbeddingService',
           'Contract issue: $contractIssue',
         );
         return;
@@ -60,7 +60,7 @@ class BiopayEmbeddingService {
       final bytesIssue = _contract!.validateModelBytes(bytesData);
       if (bytesIssue != null) {
         _modelIssue = bytesIssue;
-        AfriLogger.warn('BiopayEmbeddingService', 'Model issue: $bytesIssue');
+        AfriLogger.warn('BioPayEmbeddingService', 'Model issue: $bytesIssue');
         return;
       }
 
@@ -81,17 +81,17 @@ class BiopayEmbeddingService {
       );
       if (tensorIssue != null) {
         _modelIssue = tensorIssue;
-        AfriLogger.warn('BiopayEmbeddingService', 'Tensor issue: $tensorIssue');
+        AfriLogger.warn('BioPayEmbeddingService', 'Tensor issue: $tensorIssue');
         _interpreter?.close();
         _interpreter = null;
         return;
       }
 
       _modelIssue = null;
-      AfriLogger.info('BiopayEmbeddingService', 'Model loaded successfully.');
+      AfriLogger.info('BioPayEmbeddingService', 'Model loaded successfully.');
     } catch (error, stack) {
       _modelIssue = 'Failed to load BioPay model: $error';
-      AfriLogger.error('BiopayEmbeddingService', 'Load error', error, stack);
+      AfriLogger.error('BioPayEmbeddingService', 'Load error', error, stack);
     }
   }
 
@@ -108,7 +108,7 @@ class BiopayEmbeddingService {
       throw StateError('BioPay model is not loaded. Call loadModel() first.');
     }
 
-    const outputShape = BiopayModelContract.expectedOutputShape;
+    const outputShape = BioPayModelContract.expectedOutputShape;
     final outputBuffer = List.generate(
       outputShape[0],
       (_) => List<double>.filled(outputShape[1], 0),
@@ -116,7 +116,7 @@ class BiopayEmbeddingService {
 
     _interpreter!.run(
       inputTensor.buffer.asFloat32List().reshape(
-        BiopayModelContract.expectedInputShape,
+        BioPayModelContract.expectedInputShape,
       ),
       outputBuffer,
     );
@@ -169,20 +169,20 @@ class BiopayEmbeddingService {
         try {
           options.addDelegate(CoreMlDelegate());
           AfriLogger.info(
-            'BiopayEmbeddingService',
+            'BioPayEmbeddingService',
             'Using CoreML delegate (iOS).',
           );
           return;
         } catch (_) {
           AfriLogger.info(
-            'BiopayEmbeddingService',
+            'BioPayEmbeddingService',
             'CoreML unavailable, using CPU.',
           );
         }
       }
     } catch (_) {
       AfriLogger.info(
-        'BiopayEmbeddingService',
+        'BioPayEmbeddingService',
         'Delegate setup failed, using CPU.',
       );
     }

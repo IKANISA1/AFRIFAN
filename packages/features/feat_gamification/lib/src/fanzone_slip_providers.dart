@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'models/fanzone_slip_models.dart';
 import 'models/prediction_models.dart';
 import 'prediction_providers.dart';
+import 'repositories/prediction_repository.dart';
 
 final fanzoneSlipProvider =
     NotifierProvider<FanzoneSlipController, FanzoneSlipState>(

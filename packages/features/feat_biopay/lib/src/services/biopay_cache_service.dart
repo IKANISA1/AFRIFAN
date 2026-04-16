@@ -26,12 +26,12 @@ class _CachedMatchEntry {
 ///
 /// Stores recent results keyed by (ownerUserId, profileId) with TTL expiry.
 /// Persistent device storage is intentionally avoided for privacy reasons.
-class BiopayCacheService {
-  BiopayCacheService({OpenHiveBox<dynamic>? openBox, DeleteHiveBox? deleteBox})
+class BioPayCacheService {
+  BioPayCacheService({OpenHiveBox<dynamic>? openBox, DeleteHiveBox? deleteBox})
     : _openBox = openBox,
       _deleteBox = deleteBox;
 
-  static const boxName = 'biopay_match_cache_v1';
+  static const boxName = 'BioPay_match_cache_v1';
   static final Map<String, _CachedMatchEntry> _sharedEntries =
       <String, _CachedMatchEntry>{};
   static bool _legacyPersistentCachePurged = false;
@@ -42,7 +42,7 @@ class BiopayCacheService {
   Future<void> storeMatch(
     String ownerUserId,
     List<double> embedding,
-    BiopayMatchResult result, {
+    BioPayMatchResult result, {
     Duration ttl = const Duration(hours: 24),
   }) async {
     final profileId = result.profile?.id;
@@ -58,13 +58,13 @@ class BiopayCacheService {
     );
   }
 
-  Future<BiopayMatchResult?> findNearestMatch(
+  Future<BioPayMatchResult?> findNearestMatch(
     List<double> embedding, {
     required String ownerUserId,
     double similarityThreshold = 0.96,
   }) async {
     final now = DateTime.now().toUtc();
-    BiopayMatchResult? bestMatch;
+    BioPayMatchResult? bestMatch;
     var bestScore = similarityThreshold;
 
     final expiredKeys = <String>[];
@@ -83,7 +83,7 @@ class BiopayCacheService {
       final score = _cosineSimilarity(embedding, cached.embedding);
       if (score >= bestScore) {
         bestScore = score;
-        bestMatch = BiopayMatchResult.fromCacheJson(cached.payload);
+        bestMatch = BioPayMatchResult.fromCacheJson(cached.payload);
       }
     }
 
@@ -160,7 +160,7 @@ class BiopayCacheService {
 
   // ─── Payload ──────────────────────────────────────────────
 
-  Map<String, Object?> _buildCachePayload(BiopayMatchResult result) {
+  Map<String, Object?> _buildCachePayload(BioPayMatchResult result) {
     final profile = result.profile;
     return <String, Object?>{
       'match': result.match,

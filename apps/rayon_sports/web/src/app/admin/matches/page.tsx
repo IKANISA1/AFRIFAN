@@ -1,12 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { CalendarDays, Radio, Ticket } from "lucide-react";
+import { Plus, CalendarDays, Radio, Ticket } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
-import { AdminStateCard } from "@/components/admin/admin-state-card";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { KPISummaryRibbon, KPITile } from "@/components/admin/kpi-summary-ribbon";
+import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
-import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   deleteAdminMatch,
@@ -24,129 +25,113 @@ export default function AdminMatchesPage() {
   const [filter, setFilter] = useState("ALL");
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const loadMatches = useCallback(async () => {
-    if (client == null) {
-      return;
-    }
-
+    if (client == null) return;
     setLoading(true);
     try {
       setMatches(await getAdminMatches(client, access));
       setLoadError(null);
     } catch (caught) {
-      const message =
-        caught instanceof Error ? caught.message : "Could not load matches.";
+      const message = caught instanceof Error ? caught.message : "Could not load matches.";
       setLoadError(message);
-      showAdminToast(
-        message,
-        "error",
-      );
+      showAdminToast(message, "error");
     } finally {
       setLoading(false);
     }
   }, [access, client]);
 
   useEffect(() => {
-    if (client == null || !access.hasAccess) {
-      return;
-    }
+    if (client == null || !access.hasAccess) return;
     loadMatches().catch(() => {});
   }, [access.hasAccess, client, loadMatches]);
 
   function beginEdit(match: AdminMatchItem) {
     setForm(matchToFormState(match));
-    showAdminToast(`Editing ${match.homeTeam} vs ${match.awayTeam}.`, "info");
+    setDrawerOpen(true);
+  }
+
+  function beginCreate() {
+    setForm(emptyMatchForm);
+    setDrawerOpen(true);
   }
 
   async function removeMatch(match: AdminMatchItem) {
-    if (client == null) {
-      return;
-    }
-    if (
-      !confirmAdminDestructiveAction({
-        subject: `${match.homeTeam} vs ${match.awayTeam}`,
-        detail: "The selected fixture and its admin configuration will be removed.",
-      })
-    ) {
-      return;
-    }
+    if (client == null) return;
+    if (!confirmAdminDestructiveAction({
+      subject: `${match.homeTeam} vs ${match.awayTeam}`,
+      detail: "The selected fixture and its admin configuration will be removed.",
+    })) return;
 
     try {
       await deleteAdminMatch(client, access, match.id);
       await loadMatches();
-      showAdminToast(
-        `${match.homeTeam} vs ${match.awayTeam} removed.`,
-        "success",
-      );
+      showAdminToast(`${match.homeTeam} vs ${match.awayTeam} removed.`, "success");
     } catch (caught) {
-      showAdminToast(
-        caught instanceof Error ? caught.message : "Could not remove fixture.",
-        "error",
-      );
+      showAdminToast(caught instanceof Error ? caught.message : "Could not remove fixture.", "error");
     }
   }
 
   return (
-    <div className="section-grid">
+    <div className="section-grid !gap-6">
       <AdminPageHeader
         eyebrow="Matchday"
         title="Matches"
-        description="Fixtures, ticket state, live status, and capacity in one operational view."
+        actions={
+          <button
+            onClick={beginCreate}
+            className="admin-action-button !bg-[var(--admin-zinc-100)] !text-[var(--admin-zinc-950)] hover:!bg-white"
+          >
+            <Plus size={16} />
+            <span>Create fixture</span>
+          </button>
+        }
       />
 
-      <div className="grid gap-5 md:grid-cols-3">
-        <AdminStateCard
-          label="Matches"
-          value={loading ? "..." : matches.length.toString()}
-          helper="Club-scoped fixtures."
-          icon={CalendarDays}
-        />
-        <AdminStateCard
-          label="On sale"
-          value={loading ? "..." : matches.filter((match) => match.isOnSale).length.toString()}
-          helper="Active ticket sales."
-          icon={Ticket}
-        />
-        <AdminStateCard
-          label="Live now"
-          value={loading ? "..." : matches.filter((match) => match.matchStatus === "live").length.toString()}
-          helper="Pushing live updates."
-          icon={Radio}
-        />
-      </div>
+      <KPISummaryRibbon>
+        <KPITile label="Total fixtures" value={loading ? "..." : matches.length.toString()} />
+        <KPITile label="On sale" value={loading ? "..." : matches.filter(m => m.isOnSale).length.toString()} />
+        <KPITile label="Live matches" value={loading ? "..." : matches.filter(m => m.matchStatus === "live").length.toString()} />
+        <KPITile label="Club" value={activeClub?.shortName ?? "Scope"} />
+      </KPISummaryRibbon>
 
-      <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+      {loadError && !loading ? (
+        <AdminErrorState
+          title="Fixtures could not be loaded"
+          description={loadError}
+          onRetry={() => { loadMatches().catch(() => {}); }}
+        />
+      ) : (
+        <MatchList
+          matches={matches}
+          currencyCode={activeClub?.currencyCode ?? "USD"}
+          filter={filter}
+          setFilter={setFilter}
+          loading={loading}
+          onEdit={beginEdit}
+          onDelete={(match) => { removeMatch(match).catch(() => {}); }}
+        />
+      )}
+
+      <AdminActionDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        title={form.id ? "Edit fixture" : "Create fixture"}
+      >
         <MatchForm
           form={form}
           setForm={setForm}
           emptyForm={emptyMatchForm}
           client={client}
           access={access}
-          onSaved={loadMatches}
+          onSaved={() => {
+            setDrawerOpen(false);
+            loadMatches().catch(() => {});
+          }}
+          onCancel={() => setDrawerOpen(false)}
         />
-        {loadError && !loading ? (
-          <AdminErrorState
-            title="Fixtures could not be loaded"
-            description={loadError}
-            onRetry={() => {
-              loadMatches().catch(() => {});
-            }}
-          />
-        ) : (
-          <MatchList
-            matches={matches}
-            currencyCode={activeClub?.currencyCode ?? "USD"}
-            filter={filter}
-            setFilter={setFilter}
-            loading={loading}
-            onEdit={beginEdit}
-            onDelete={(match) => {
-              removeMatch(match).catch(() => {});
-            }}
-          />
-        )}
-      </div>
+      </AdminActionDrawer>
     </div>
   );
 }

@@ -1,12 +1,23 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
-/// Home summary metrics — using shared AfriStatRow for consistency.
+/// Home summary metrics — FET balance and supporter rank.
+///
+/// Both tiles are tappable: FET opens the fan leaderboard (by FET),
+/// Rank opens the supporter leaderboard (by contribution).
 class StatsRow extends StatelessWidget {
   final int globalFet;
   final int fanRank;
+  final VoidCallback? onFetTap;
+  final VoidCallback? onRankTap;
 
-  const StatsRow({super.key, this.globalFet = 42880, this.fanRank = 12});
+  const StatsRow({
+    super.key,
+    this.globalFet = 0,
+    this.fanRank = 0,
+    this.onFetTap,
+    this.onRankTap,
+  });
 
   String _formatFet(int fet) {
     if (fet >= 1000) {
@@ -31,12 +42,14 @@ class StatsRow extends StatelessWidget {
           label: 'FET',
           value: _formatFet(globalFet),
           icon: AfriIcons.earn,
+          onTap: onFetTap,
         ),
         AfriStat(
           label: 'Rank',
           value: '#${fanRank.toString().padLeft(3, '0')}',
           icon: AfriIcons.rank,
           accentColor: ColorTokens.clubAccent,
+          onTap: onRankTap,
         ),
       ],
     );

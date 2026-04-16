@@ -456,6 +456,29 @@ class ClubRepository {
     return row['id'] as String;
   }
 
+  /// Check the payment verification status of a recorded contribution.
+  ///
+  /// Returns `'pending'`, `'verified'`, or `'failed'`.
+  Future<String> getContributionPaymentStatus(String contributionId) async {
+    final row = await _client
+        .from('group_contributions')
+        .select('status, payment_status')
+        .eq('id', contributionId)
+        .maybeSingle();
+    if (row == null) return 'pending';
+    // Prefer the explicit payment_status column if populated.
+    final paymentStatus = row['payment_status']?.toString().trim();
+    if (paymentStatus != null &&
+        paymentStatus.isNotEmpty &&
+        paymentStatus != 'pending_verification') {
+      return paymentStatus; // 'verified' or 'failed'
+    }
+    final status = row['status']?.toString().trim().toLowerCase();
+    if (status == 'confirmed' || status == 'verified') return 'verified';
+    if (status == 'failed' || status == 'rejected') return 'failed';
+    return 'pending';
+  }
+
   /// Preview an invite code (no auth required for the RPC).
   Future<Map<String, dynamic>?> previewInvite(String inviteCode) async {
     try {

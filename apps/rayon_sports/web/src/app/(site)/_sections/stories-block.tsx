@@ -9,7 +9,7 @@ import type { Story } from "@/components/engagement/stories-carousel";
  */
 const DEMO_STORIES: Story[] = [
   {
-    id: "matchday-apr",
+    id: "matchday-Rayon Sports",
     title: "Matchday",
     thumbnail: "/media/stadium-hero.jpg",
     viewed: false,
@@ -76,7 +76,7 @@ const DEMO_STORIES: Story[] = [
         durationMs: 5000,
         eyebrow: "Travel update",
         caption: "Supporter travel plans are live for the next away day",
-        cta: { label: "Join travel circle", href: "/circles" },
+        cta: { label: "Join travel Group", href: "/Groups" },
       },
     ],
   },

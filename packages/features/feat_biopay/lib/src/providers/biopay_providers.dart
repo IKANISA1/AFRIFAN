@@ -24,42 +24,42 @@ final supabaseClientProvider = core_network.supabaseClientProvider;
 // ─── Repository ───────────────────────────────────────────────
 
 /// BioPay repository provider.
-final biopayRepositoryProvider = Provider<BiopayRepository>((ref) {
-  return BiopayRepository(client: ref.watch(supabaseClientProvider));
+final BioPayRepositoryProvider = Provider<BioPayRepository>((ref) {
+  return BioPayRepository(client: ref.watch(supabaseClientProvider));
 });
 
 // ─── Services ─────────────────────────────────────────────────
 
 /// Payment handoff service.
-final biopayPaymentHandoffServiceProvider =
-    Provider<BiopayPaymentHandoffService>((ref) {
-      return const BiopayPaymentHandoffService();
+final BioPayPaymentHandoffServiceProvider =
+    Provider<BioPayPaymentHandoffService>((ref) {
+      return const BioPayPaymentHandoffService();
     });
 
 /// Auth gate service.
-final biopayAuthGateServiceProvider = Provider<BiopayAuthGateService>((ref) {
-  return BiopayAuthGateService();
+final BioPayAuthGateServiceProvider = Provider<BioPayAuthGateService>((ref) {
+  return BioPayAuthGateService();
 });
 
-final biopayNfcHceServiceProvider = Provider<BiopayNfcHceService>((ref) {
-  return BiopayNfcHceService.instance;
+final BioPayNfcHceServiceProvider = Provider<BioPayNfcHceService>((ref) {
+  return BioPayNfcHceService.instance;
 });
 
-final biopayNfcServiceProvider = Provider<BiopayNfcService>((ref) {
-  return BiopayNfcService();
+final BioPayNfcServiceProvider = Provider<BioPayNfcService>((ref) {
+  return BioPayNfcService();
 });
 
 /// Cache service.
-final biopayCacheServiceProvider = Provider<BiopayCacheService>((ref) {
-  return BiopayCacheService(
+final BioPayCacheServiceProvider = Provider<BioPayCacheService>((ref) {
+  return BioPayCacheService(
     openBox: <T>(String name) async => Hive.openBox<T>(name),
     deleteBox: Hive.deleteBoxFromDisk,
   );
 });
 
 /// Embedding service (singleton lifecycle).
-final biopayEmbeddingServiceProvider = Provider<BiopayEmbeddingService>((ref) {
-  final service = BiopayEmbeddingService();
+final BioPayEmbeddingServiceProvider = Provider<BioPayEmbeddingService>((ref) {
+  final service = BioPayEmbeddingService();
   ref.onDispose(() => service.dispose());
   return service;
 });
@@ -67,26 +67,26 @@ final biopayEmbeddingServiceProvider = Provider<BiopayEmbeddingService>((ref) {
 // ─── Config ───────────────────────────────────────────────────
 
 /// BioPay match threshold from app_config.
-final biopayMatchThresholdProvider = FutureProvider<double>((ref) async {
+final BioPayMatchThresholdProvider = FutureProvider<double>((ref) async {
   final client = ref.watch(supabaseClientProvider);
   final configRepo = AppConfigRepository(client: client);
-  final value = await configRepo.getValue(AppConfigKeys.biopayMatchThreshold);
+  final value = await configRepo.getValue(AppConfigKeys.BioPayMatchThreshold);
   return double.tryParse(value ?? '') ?? 0.78;
 });
 
 /// BioPay cache TTL from app_config.
-final biopayCacheTtlHoursProvider = FutureProvider<int>((ref) async {
+final BioPayCacheTtlHoursProvider = FutureProvider<int>((ref) async {
   final client = ref.watch(supabaseClientProvider);
   final configRepo = AppConfigRepository(client: client);
-  final value = await configRepo.getValue(AppConfigKeys.biopayCacheTtlHours);
+  final value = await configRepo.getValue(AppConfigKeys.BioPayCacheTtlHours);
   return int.tryParse(value ?? '') ?? 24;
 });
 
 /// BioPay feature enabled flag.
-final biopayEnabledProvider = FutureProvider<bool>((ref) async {
+final BioPayEnabledProvider = FutureProvider<bool>((ref) async {
   final client = ref.watch(supabaseClientProvider);
   final configRepo = AppConfigRepository(client: client);
-  final value = await configRepo.getValue(AppConfigKeys.biopayEnabled);
+  final value = await configRepo.getValue(AppConfigKeys.BioPayEnabled);
   if (value == null) return true;
   return value.toLowerCase() == 'true' || value == '1';
 });
@@ -94,14 +94,14 @@ final biopayEnabledProvider = FutureProvider<bool>((ref) async {
 // ─── User Profile ─────────────────────────────────────────────
 
 /// Current user's BioPay profile (if enrolled).
-final biopayProfileProvider = FutureProvider<BiopayProfile?>((ref) async {
-  final repo = ref.watch(biopayRepositoryProvider);
+final BioPayProfileProvider = FutureProvider<BioPayProfile?>((ref) async {
+  final repo = ref.watch(BioPayRepositoryProvider);
   return repo.fetchCurrentUserProfile();
 });
 
 /// Model asset validation issue (null = healthy).
-final biopayModelAssetIssueProvider = FutureProvider<String?>((ref) async {
-  final service = ref.watch(biopayEmbeddingServiceProvider);
+final BioPayModelAssetIssueProvider = FutureProvider<String?>((ref) async {
+  final service = ref.watch(BioPayEmbeddingServiceProvider);
   if (!service.isLoaded) {
     await service.loadModel();
   }
@@ -109,18 +109,18 @@ final biopayModelAssetIssueProvider = FutureProvider<String?>((ref) async {
 });
 
 /// Stable frames required before capture.
-final biopayStableFramesProvider = FutureProvider<int>((ref) async {
+final BioPayStableFramesProvider = FutureProvider<int>((ref) async {
   final client = ref.watch(supabaseClientProvider);
   final configRepo = AppConfigRepository(client: client);
-  final value = await configRepo.getValue(AppConfigKeys.biopayStableFrames);
+  final value = await configRepo.getValue(AppConfigKeys.BioPayStableFrames);
   return int.tryParse(value ?? '') ?? 3;
 });
 
 /// Face detection service (singleton lifecycle).
-final biopayFaceDetectionServiceProvider = Provider<BiopayFaceDetectionService>(
+final BioPayFaceDetectionServiceProvider = Provider<BioPayFaceDetectionService>(
   (ref) {
-    final stableFrames = ref.watch(biopayStableFramesProvider).valueOrNull ?? 3;
-    final service = BiopayFaceDetectionService(
+    final stableFrames = ref.watch(BioPayStableFramesProvider).valueOrNull ?? 3;
+    final service = BioPayFaceDetectionService(
       stableFramesRequired: stableFrames,
     );
     ref.onDispose(() => service.close());
@@ -129,8 +129,8 @@ final biopayFaceDetectionServiceProvider = Provider<BiopayFaceDetectionService>(
 );
 
 /// Face alignment service.
-final biopayFaceAlignmentServiceProvider = Provider<BiopayFaceAlignmentService>(
+final BioPayFaceAlignmentServiceProvider = Provider<BioPayFaceAlignmentService>(
   (ref) {
-    return BiopayFaceAlignmentService();
+    return BioPayFaceAlignmentService();
   },
 );

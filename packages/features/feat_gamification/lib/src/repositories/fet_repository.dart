@@ -44,6 +44,40 @@ class FetRepository {
         .toList(growable: false);
   }
 
+  Future<List<FetPartnerOffer>> loadPartnerOffers({
+    bool includeInactive = false,
+    int limit = 500,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const <FetPartnerOffer>[];
+    }
+
+    final result = await SafeRpc.call(
+      'fet_get_partner_offers',
+      params: <String, dynamic>{
+        'p_club_id': scope.clubId,
+        'p_include_inactive': includeInactive,
+        'p_limit': limit,
+      },
+      tag: _tag,
+    );
+
+    if (!result.isSuccess || result.data is! List) {
+      return const <FetPartnerOffer>[];
+    }
+
+    final rows = (result.data as List)
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
+
+    return rows
+        .map(FetPartnerOffer.fromJson)
+        .where((offer) => includeInactive || offer.isActive)
+        .toList(growable: false);
+  }
+
   Future<List<FetLeaderboardRow>> loadLeaderboard({int limit = 25}) async {
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
@@ -66,6 +100,143 @@ class FetRepository {
         .toList(growable: false);
 
     return rows.map(FetLeaderboardRow.fromJson).toList(growable: false);
+  }
+
+  Future<List<FetFriendProfile>> loadFriends({
+    int limit = 20,
+    String? search,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const <FetFriendProfile>[];
+    }
+
+    final result = await SafeRpc.call(
+      'fet_get_friends',
+      params: <String, dynamic>{
+        'p_club_id': scope.clubId,
+        'p_limit': limit,
+        'p_search': search,
+      },
+      tag: _tag,
+    );
+
+    if (!result.isSuccess || result.data is! List) {
+      return const <FetFriendProfile>[];
+    }
+
+    final rows = (result.data as List)
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
+
+    return rows.map(FetFriendProfile.fromJson).toList(growable: false);
+  }
+
+  Future<List<FetFriendProfile>> searchSupporters(
+    String query, {
+    int limit = 8,
+  }) async {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) {
+      return const <FetFriendProfile>[];
+    }
+
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const <FetFriendProfile>[];
+    }
+
+    final result = await SafeRpc.call(
+      'fet_search_supporters',
+      params: <String, dynamic>{
+        'p_query': trimmed,
+        'p_club_id': scope.clubId,
+        'p_limit': limit,
+      },
+      tag: _tag,
+    );
+
+    if (!result.isSuccess || result.data is! List) {
+      return const <FetFriendProfile>[];
+    }
+
+    final rows = (result.data as List)
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
+
+    return rows.map(FetFriendProfile.fromJson).toList(growable: false);
+  }
+
+  Future<FetFriendActionResult> requestFriend({
+    required String targetUserId,
+    String? note,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const FetFriendActionResult(
+        status: 'error',
+        message: 'Club context is required.',
+      );
+    }
+
+    final result = await SafeRpc.call(
+      'fet_request_friend',
+      params: <String, dynamic>{
+        'p_target_user_id': targetUserId,
+        'p_club_id': scope.clubId,
+        'p_note': note,
+      },
+      tag: _tag,
+      maxAttempts: 1,
+    );
+
+    if (!result.isSuccess || result.data is! Map) {
+      return FetFriendActionResult(
+        status: 'error',
+        message: result.error ?? 'Could not send the friend request.',
+      );
+    }
+
+    return FetFriendActionResult.fromJson(
+      Map<String, dynamic>.from(result.data as Map),
+    );
+  }
+
+  Future<FetFriendActionResult> respondToFriendRequest({
+    required String friendshipId,
+    required String action,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const FetFriendActionResult(
+        status: 'error',
+        message: 'Club context is required.',
+      );
+    }
+
+    final result = await SafeRpc.call(
+      'fet_respond_friend_request',
+      params: <String, dynamic>{
+        'p_friendship_id': friendshipId,
+        'p_action': action,
+        'p_club_id': scope.clubId,
+      },
+      tag: _tag,
+      maxAttempts: 1,
+    );
+
+    if (!result.isSuccess || result.data is! Map) {
+      return FetFriendActionResult(
+        status: 'error',
+        message: result.error ?? 'Could not update the friend request.',
+      );
+    }
+
+    return FetFriendActionResult.fromJson(
+      Map<String, dynamic>.from(result.data as Map),
+    );
   }
 
   Future<List<FetRewardOption>> loadRewardStoreItems() async {
@@ -93,6 +264,74 @@ class FetRepository {
     } catch (_) {
       return RewardStoreContent.loadFallbackOptions();
     }
+  }
+
+  Future<FetRewardRedemptionResult> redeemReward({
+    required String rewardItemId,
+    String? note,
+    String? idempotencyKey,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const FetRewardRedemptionResult(
+        status: 'error',
+        message: 'Club context is required.',
+      );
+    }
+
+    final result = await SafeRpc.call(
+      'fet_redeem_reward',
+      params: <String, dynamic>{
+        'p_reward_item_id': rewardItemId,
+        'p_note': note,
+        'p_idempotency_key': idempotencyKey,
+        'p_club_id': scope.clubId,
+      },
+      tag: _tag,
+      maxAttempts: 1,
+    );
+
+    if (!result.isSuccess || result.data is! Map) {
+      return FetRewardRedemptionResult(
+        status: 'error',
+        message: result.error ?? 'Could not redeem this reward.',
+      );
+    }
+
+    return FetRewardRedemptionResult.fromJson(
+      Map<String, dynamic>.from(result.data as Map),
+    );
+  }
+
+  Future<List<FetRewardRedemption>> loadRewardRedemptions({
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const <FetRewardRedemption>[];
+    }
+
+    final result = await SafeRpc.call(
+      'fet_get_reward_redemptions',
+      params: <String, dynamic>{
+        'p_limit': limit,
+        'p_offset': offset,
+        'p_club_id': scope.clubId,
+      },
+      tag: _tag,
+    );
+
+    if (!result.isSuccess || result.data is! List) {
+      return const <FetRewardRedemption>[];
+    }
+
+    final rows = (result.data as List)
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
+
+    return rows.map(FetRewardRedemption.fromJson).toList(growable: false);
   }
 
   Future<FetExperienceContext> loadExperienceContext({

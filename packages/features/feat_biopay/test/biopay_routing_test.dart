@@ -12,14 +12,14 @@ void main() {
       'unenrolled user goes straight to face scan when tapping face scan',
       (tester) async {
         final router = GoRouter(
-          initialLocation: '/biopay',
+          initialLocation: '/BioPay',
           routes: [
             GoRoute(
-              path: '/biopay',
+              path: '/BioPay',
               builder: (context, state) => const BioPayScreen(),
             ),
             GoRoute(
-              path: '/biopay/scan',
+              path: '/BioPay/scan',
               builder: (context, state) =>
                   const Scaffold(body: Text('Scan Route')),
             ),
@@ -33,8 +33,8 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
-              biopayProfileProvider.overrideWith((ref) => null),
-              biopayEnabledProvider.overrideWith((ref) => true),
+              BioPayProfileProvider.overrideWith((ref) => null),
+              BioPayEnabledProvider.overrideWith((ref) => true),
               currentUserProvider.overrideWith(
                 (ref) => const UserProfile(
                   id: 'user-1',
@@ -64,14 +64,14 @@ void main() {
       tester,
     ) async {
       final router = GoRouter(
-        initialLocation: '/biopay',
+        initialLocation: '/BioPay',
         routes: [
           GoRoute(
-            path: '/biopay',
+            path: '/BioPay',
             builder: (context, state) => const BioPayScreen(),
           ),
           GoRoute(
-            path: '/biopay/profile',
+            path: '/BioPay/profile',
             builder: (context, state) =>
                 const Scaffold(body: Text('Profile Route')),
           ),
@@ -85,8 +85,8 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            biopayProfileProvider.overrideWith(
-              (ref) => const BiopayProfile(
+            BioPayProfileProvider.overrideWith(
+              (ref) => const BioPayProfile(
                 publicId: '483912',
                 id: 'id1',
                 userId: 'user1',
@@ -98,7 +98,7 @@ void main() {
                 consentVersion: 'v1',
               ),
             ),
-            biopayEnabledProvider.overrideWith((ref) => true),
+            BioPayEnabledProvider.overrideWith((ref) => true),
             currentUserProvider.overrideWith(
               (ref) => const UserProfile(
                 id: 'user-1',
@@ -127,14 +127,14 @@ void main() {
       tester,
     ) async {
       final router = GoRouter(
-        initialLocation: '/biopay',
+        initialLocation: '/BioPay',
         routes: [
           GoRoute(
-            path: '/biopay',
+            path: '/BioPay',
             builder: (context, state) => const BioPayScreen(),
           ),
           GoRoute(
-            path: '/biopay/scan',
+            path: '/BioPay/scan',
             builder: (context, state) =>
                 const Scaffold(body: Text('Scan Route')),
           ),
@@ -148,8 +148,8 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            biopayProfileProvider.overrideWith(
-              (ref) => const BiopayProfile(
+            BioPayProfileProvider.overrideWith(
+              (ref) => const BioPayProfile(
                 publicId: '483912',
                 id: 'id1',
                 userId: 'user1',
@@ -161,7 +161,7 @@ void main() {
                 consentVersion: 'v1',
               ),
             ), // even if enrolled
-            biopayEnabledProvider.overrideWith((ref) => true),
+            BioPayEnabledProvider.overrideWith((ref) => true),
             currentUserProvider.overrideWith(
               (ref) => const UserProfile(
                 id: 'user-1',
@@ -194,14 +194,14 @@ void main() {
               builder: (context, state) => Scaffold(
                 body: Center(
                   child: FilledButton(
-                    onPressed: () => context.push('/biopay'),
+                    onPressed: () => context.push('/BioPay'),
                     child: const Text('Open BioPay'),
                   ),
                 ),
               ),
             ),
             GoRoute(
-              path: '/biopay',
+              path: '/BioPay',
               builder: (context, state) => const BioPayScreen(),
             ),
           ],
@@ -214,8 +214,8 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
-              biopayProfileProvider.overrideWith((ref) => null),
-              biopayEnabledProvider.overrideWith((ref) => true),
+              BioPayProfileProvider.overrideWith((ref) => null),
+              BioPayEnabledProvider.overrideWith((ref) => true),
               currentUserProvider.overrideWith(
                 (ref) => const UserProfile(
                   id: 'user-1',

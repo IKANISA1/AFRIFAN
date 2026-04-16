@@ -1,10 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { KeyRound, ShieldCheck, UserPlus, Users } from "lucide-react";
+import { Plus, Search, Trash2, KeyRound, ShieldCheck, UserPlus, Users } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
-import { AdminStateCard } from "@/components/admin/admin-state-card";
+import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
+import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
+import { AdminDataGrid } from "@/components/admin/admin-data-grid";
+import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
+import { KPISummaryRibbon, KPITile } from "@/components/admin/kpi-summary-ribbon";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
@@ -35,14 +39,10 @@ const roleOptions: Array<{
 
 function roleBadgeTone(role: AdminAssignableRole) {
   switch (role) {
-    case "super_admin":
-      return "border-amber-400/30 bg-amber-500/12 text-amber-200";
-    case "admin":
-      return "border-sky-400/30 bg-sky-500/12 text-sky-200";
-    case "club_admin":
-      return "border-emerald-400/30 bg-emerald-500/12 text-emerald-200";
-    case "club_moderator":
-      return "border-violet-400/30 bg-violet-500/12 text-violet-200";
+    case "super_admin": return "accent" as const;
+    case "admin": return "info" as const;
+    case "club_admin": return "success" as const;
+    case "club_moderator": return "neutral" as const;
   }
 }
 
@@ -58,14 +58,12 @@ export default function AdminAccessPage() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<"lookup" | "assign" | "revoke" | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const selectedRole = roleOptions.find((entry) => entry.value === role) ?? roleOptions[0];
 
   const loadAssignments = useCallback(async () => {
-    if (client == null) {
-      return;
-    }
-
+    if (client == null) return;
     setLoading(true);
     try {
       const nextAssignments = await getAdminRoleAssignments(client, access, {
@@ -74,10 +72,7 @@ export default function AdminAccessPage() {
       setAssignments(nextAssignments);
       setLoadError(null);
     } catch (caught) {
-      const message =
-        caught instanceof Error
-          ? caught.message
-          : "Could not load admin role assignments.";
+      const message = caught instanceof Error ? caught.message : "Could not load admin role assignments.";
       setLoadError(message);
       showAdminToast(message, "error");
     } finally {
@@ -86,31 +81,19 @@ export default function AdminAccessPage() {
   }, [access, client, showInactive]);
 
   useEffect(() => {
-    if (activeClub?.id && !clubId) {
-      setClubId(activeClub.id);
-    }
+    if (activeClub?.id && !clubId) setClubId(activeClub.id);
   }, [activeClub?.id, clubId]);
 
   useEffect(() => {
-    if (client == null || !access.hasAccess || !access.isSuperAdmin) {
-      return;
-    }
-
+    if (client == null || !access.hasAccess || !access.isSuperAdmin) return;
     loadAssignments().catch(() => {});
   }, [access.hasAccess, access.isSuperAdmin, client, loadAssignments]);
 
   const summary = useMemo(() => {
     const activeAssignments = assignments.filter((assignment) => assignment.isActive);
-    const platformAssignments = activeAssignments.filter(
-      (assignment) =>
-        assignment.role === "admin" || assignment.role === "super_admin",
-    );
-    const clubScopedAssignments = activeAssignments.filter(
-      (assignment) => assignment.clubId != null,
-    );
-    const clubsTouched = new Set(
-      clubScopedAssignments.map((assignment) => assignment.clubId).filter(Boolean),
-    );
+    const platformAssignments = activeAssignments.filter(a => a.role === "admin" || a.role === "super_admin");
+    const clubScopedAssignments = activeAssignments.filter(a => a.clubId != null);
+    const clubsTouched = new Set(clubScopedAssignments.map(a => a.clubId).filter(Boolean));
 
     return {
       total: activeAssignments.length,
@@ -121,10 +104,7 @@ export default function AdminAccessPage() {
   }, [assignments]);
 
   async function handleLookup() {
-    if (client == null) {
-      return;
-    }
-
+    if (client == null) return;
     setBusyAction("lookup");
     try {
       const nextCandidate = await findAdminUserCandidate(client, access, lookupInput);
@@ -132,22 +112,15 @@ export default function AdminAccessPage() {
       showAdminToast(`Loaded ${nextCandidate.fullName}.`, "success");
     } catch (caught) {
       setCandidate(null);
-      showAdminToast(
-        caught instanceof Error ? caught.message : "Could not find that user.",
-        "error",
-      );
+      showAdminToast(caught instanceof Error ? caught.message : "Could not find that user.", "error");
     } finally {
       setBusyAction(null);
     }
   }
 
   async function handleAssign() {
-    if (client == null || candidate == null) {
-      return;
-    }
-
+    if (client == null || candidate == null) return;
     setBusyAction("assign");
-    showAdminToast("Saving admin assignment...", "info");
     try {
       await assignAdminRole(client, access, {
         userId: candidate.userId,
@@ -157,43 +130,32 @@ export default function AdminAccessPage() {
       });
       showAdminToast("Admin assignment saved.", "success");
       setNotes("");
+      setCandidate(null);
+      setLookupInput("");
+      setDrawerOpen(false);
       await loadAssignments();
     } catch (caught) {
-      showAdminToast(
-        caught instanceof Error ? caught.message : "Could not save admin assignment.",
-        "error",
-      );
+      showAdminToast(caught instanceof Error ? caught.message : "Could not save admin assignment.", "error");
     } finally {
       setBusyAction(null);
     }
   }
 
   async function handleRevoke(assignment: AdminRoleAssignment) {
-    if (client == null) {
-      return;
-    }
-
-    if (
-      !confirmAdminDestructiveAction({
-        action: "Revoke",
-        subject: `${assignment.userName} (${formatAdminRoleLabel(assignment.role)})`,
-        detail: "This admin assignment will be disabled immediately.",
-      })
-    ) {
-      return;
-    }
+    if (client == null) return;
+    if (!confirmAdminDestructiveAction({
+      action: "Revoke",
+      subject: `${assignment.userName} (${formatAdminRoleLabel(assignment.role)})`,
+      detail: "This admin assignment will be disabled immediately.",
+    })) return;
 
     setBusyAction("revoke");
-    showAdminToast(`Revoking ${assignment.userName}...`, "info");
     try {
       await revokeAdminRole(client, access, assignment.id);
       showAdminToast("Admin assignment revoked.", "success");
       await loadAssignments();
     } catch (caught) {
-      showAdminToast(
-        caught instanceof Error ? caught.message : "Could not revoke admin assignment.",
-        "error",
-      );
+      showAdminToast(caught instanceof Error ? caught.message : "Could not revoke admin assignment.", "error");
     } finally {
       setBusyAction(null);
     }
@@ -202,321 +164,246 @@ export default function AdminAccessPage() {
   if (!access.isSuperAdmin) {
     return (
       <div className="section-grid">
-        <AdminPageHeader
-          eyebrow="Access"
-          title="Admin access management"
-          description="This workspace is limited to platform administrators."
-        />
-        <AdminErrorState
-          title="Platform admin access is required"
-          description="Only platform administrators can add or revoke admin assignments."
-        />
+        <AdminPageHeader eyebrow="Access" title="Admin access management" />
+        <AdminErrorState title="Platform admin access is required" description="Only platform administrators can add or revoke admin assignments." />
       </div>
     );
   }
 
   return (
-    <div className="section-grid">
+    <div className="section-grid !gap-6">
       <AdminPageHeader
-        eyebrow="Access"
-        title="Admin access management"
-        description="Add new admins, scope club roles, and revoke assignments without dropping into SQL."
+        eyebrow="Governance"
+        title="Role management"
+        meta={
+          <>
+            <AdminStatusBadge
+              label="Secure access"
+              tone="success"
+            />
+            <span className="admin-meta-chip">
+              {summary.total} Active admins
+            </span>
+          </>
+        }
+        actions={
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="admin-action-button !bg-club-accent !text-white"
+          >
+            <UserPlus size={16} />
+            <span>Grant access</span>
+          </button>
+        }
       />
 
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-        <AdminStateCard
-          label="Active assignments"
-          value={loading ? "..." : summary.total.toString()}
-          helper="Current admin grants."
-          icon={KeyRound}
-        />
-        <AdminStateCard
-          label="Platform admins"
-          value={loading ? "..." : summary.platform.toString()}
-          helper="Cross-club operators."
-          icon={ShieldCheck}
-        />
-        <AdminStateCard
-          label="Club-scoped"
-          value={loading ? "..." : summary.clubScoped.toString()}
-          helper="Assignments limited to one club."
-          icon={Users}
-        />
-        <AdminStateCard
-          label="Clubs touched"
-          value={loading ? "..." : summary.clubsTouched.toString()}
-          helper="Distinct scoped clubs."
-          icon={UserPlus}
-        />
+      <KPISummaryRibbon>
+        <KPITile label="Platform admins" value={loading ? "..." : summary.platform.toString()} icon={ShieldCheck} />
+        <KPITile label="Club-scoped" value={loading ? "..." : summary.clubScoped.toString()} icon={Users} />
+        <KPITile label="Clubs touched" value={loading ? "..." : summary.clubsTouched.toString()} />
+      </KPISummaryRibbon>
+
+      <div className="admin-surface">
+        <AdminFilterBar
+          actions={
+            <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[var(--admin-zinc-500)] cursor-pointer hover:text-[var(--admin-zinc-300)] transition-colors">
+              <input
+                type="checkbox"
+                checked={showInactive}
+                onChange={(event) => setShowInactive(event.target.checked)}
+                className="rounded border-[var(--admin-border)] bg-[var(--admin-zinc-950)] text-club-accent focus:ring-club-accent"
+              />
+              Show revoked
+            </label>
+          }
+        >
+          <div className="flex items-center gap-2 rounded-lg border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] px-3 py-1.5 text-sm text-[var(--admin-zinc-400)]">
+            <Search size={14} />
+            <span className="text-[11px] uppercase tracking-wider">Administrator list</span>
+          </div>
+        </AdminFilterBar>
+
+        {loadError && !loading ? (
+          <div className="p-8">
+            <AdminErrorState title="Could not load assignments" description={loadError} onRetry={() => { loadAssignments().catch(() => {}); }} />
+          </div>
+        ) : null}
+
+        <AdminDataGrid
+          columns={[
+            { key: "user", label: "User / Administrator" },
+            { key: "role", label: "Permission Role" },
+            { key: "scope", label: "Operational Scope" },
+            { key: "granted", label: "Authorized On" },
+            { key: "actions", label: "", className: "w-24" },
+          ]}
+        >
+          {loading ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <tr key={i}>
+                <td colSpan={5} className="p-4">
+                  <Skeleton className="skeleton-text h-4 w-full" />
+                </td>
+              </tr>
+            ))
+          ) : assignments.length === 0 ? (
+            <tr>
+              <td colSpan={5} className="p-12 text-center text-sm text-[var(--admin-zinc-500)]">
+                No admin assignments found.
+              </td>
+            </tr>
+          ) : (
+            assignments.map((assignment) => (
+              <tr key={assignment.id} className={cn(!assignment.isActive && "opacity-60 grayscale-[0.5]")}>
+                <td>
+                  <div className="space-y-0.5">
+                    <p className="admin-row-title">{assignment.userName}</p>
+                    <p className="admin-row-copy">{assignment.userPhone ?? assignment.userEmail ?? "No contact verified"}</p>
+                  </div>
+                </td>
+                <td>
+                  <AdminStatusBadge
+                    label={formatAdminRoleLabel(assignment.role)}
+                    tone={roleBadgeTone(assignment.role)}
+                  />
+                  {!assignment.isActive && (
+                    <span className="ml-2 text-[9px] uppercase font-bold text-rose-500 bg-rose-500/10 px-1.5 py-0.5 rounded">Revoked</span>
+                  )}
+                </td>
+                <td>
+                  <div className="space-y-0.5">
+                    <p className="text-sm font-medium text-[var(--admin-zinc-100)]">{assignment.clubName ?? "Platform scope"}</p>
+                    {assignment.publicUserId && (
+                      <p className="text-[10px] uppercase font-bold text-[var(--admin-zinc-500)] tracking-tighter">ID: {assignment.publicUserId}</p>
+                    )}
+                  </div>
+                </td>
+                <td>
+                  <div className="space-y-0.5 text-xs text-[var(--admin-zinc-400)]">
+                    <p className="font-medium text-[var(--admin-zinc-300)]">{new Date(assignment.grantedAt).toLocaleDateString("en-RW", { month: "short", day: "numeric", year: "numeric" })}</p>
+                    <p className="text-[10px]">by {assignment.grantedByName ?? "system"}</p>
+                  </div>
+                </td>
+                <td className="text-right">
+                  {assignment.isActive ? (
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => handleRevoke(assignment).catch(() => {})}
+                        className="admin-action-button admin-action-button-danger"
+                        title="Revoke access"
+                      >
+                        <Trash2 size={13} />
+                        Revoke
+                      </button>
+                    </div>
+                  ) : null}
+                </td>
+              </tr>
+            ))
+          )}
+        </AdminDataGrid>
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[0.92fr_1.08fr]">
-        <article className="glass-panel rounded-[32px] p-6">
-          <div className="space-y-2">
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-club-accent">
-              Add admin
-            </p>
-            <h2 className="font-display text-3xl font-bold uppercase text-white">
-              Resolve a user, then assign access
-            </h2>
-            <p className="text-sm leading-7 text-slate-300">
-              Search by phone number, email, or user UUID. Club-scoped roles require an explicit club.
-            </p>
+      <AdminActionDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        title="Grant operational access"
+        footer={
+          <div className="flex gap-3">
+            <button
+              onClick={() => handleAssign().catch(() => {})}
+              disabled={busyAction != null || candidate == null || (selectedRole.requiresClub && !clubId)}
+              className="admin-action-button flex-1 !bg-club-accent !text-white"
+            >
+              {busyAction === "assign" ? "Granting access..." : "Confirm access"}
+            </button>
+            <button
+              onClick={() => setDrawerOpen(false)}
+              className="admin-action-button flex-1"
+            >
+              Cancel
+            </button>
           </div>
-
-          <div className="mt-6 grid gap-4">
-            <label className="grid gap-2 text-sm text-slate-300">
-              User identifier
-              <div className="flex flex-col gap-3 sm:flex-row">
+        }
+      >
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--admin-zinc-500)]">User identity</p>
+            <label className="grid gap-2">
+              <div className="flex gap-2">
                 <input
                   value={lookupInput}
-                  onChange={(event) => setLookupInput(event.target.value)}
-                  placeholder="+2507..., admin@example.com, or user uuid"
+                  onChange={(e) => setLookupInput(e.target.value)}
+                  placeholder="Phone, email, or UUID..."
                   className="admin-input flex-1"
                 />
                 <button
-                  type="button"
                   onClick={() => handleLookup().catch(() => {})}
-                  disabled={busyAction != null || lookupInput.trim().length === 0}
-                  className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light disabled:opacity-60"
+                  disabled={busyAction != null || !lookupInput.trim()}
+                  className="admin-action-button !h-auto aspect-square"
                 >
-                  {busyAction === "lookup" ? "Looking up…" : "Find user"}
+                  <Search size={14} />
                 </button>
               </div>
             </label>
 
             {candidate ? (
-              <div className="rounded-[24px] border border-white/8 bg-white/4 p-4">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="text-lg font-semibold text-white">{candidate.fullName}</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-400">
-                      {candidate.publicUserId ? `User ${candidate.publicUserId}` : candidate.userId}
-                    </p>
-                  </div>
-                  {candidate.isPlatformAdmin ? (
-                    <span className="rounded-full border border-amber-400/30 bg-amber-500/12 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-200">
-                      Platform admin
-                    </span>
-                  ) : null}
-                </div>
-                <div className="mt-4 grid gap-2 text-sm text-slate-300">
-                  <p>{candidate.phone ?? "No phone on profile"}</p>
-                  <p>{candidate.email ?? "No email on auth record"}</p>
-                  {!candidate.hasProfile ? (
-                    <p className="text-amber-200">
-                      This account exists in auth but does not have a matching public profile row yet.
-                    </p>
-                  ) : null}
+              <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+                <p className="font-bold text-white text-lg">{candidate.fullName}</p>
+                <p className="text-[10px] text-emerald-400/60 font-mono tracking-tighter mt-1">{candidate.userId}</p>
+                <div className="mt-4 grid gap-1 text-xs font-medium text-[var(--admin-zinc-400)]">
+                  <p>{candidate.phone ?? "No phone"}</p>
+                  <p>{candidate.email ?? "No email"}</p>
                 </div>
               </div>
-            ) : null}
+            ) : (
+               <div className="p-8 text-center rounded-xl border border-dashed border-[var(--admin-border)]">
+                 <p className="text-xs text-[var(--admin-zinc-500)]">Search for a registered user to assign them an administrative role.</p>
+               </div>
+            )}
+          </div>
 
-            <label className="grid gap-2 text-sm text-slate-300">
-              Role
+          <div className="space-y-4 pt-6 border-t border-[var(--admin-border)]">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--admin-zinc-500)]">Permission profile</p>
+            <label className="grid gap-2 text-sm font-semibold text-[var(--admin-zinc-100)]">
+              Assign role
               <select
                 value={role}
-                onChange={(event) => setRole(event.target.value as AdminAssignableRole)}
+                onChange={(e) => setRole(e.target.value as AdminAssignableRole)}
                 className="admin-input"
               >
-                {roleOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
+                {roleOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </label>
 
-            {selectedRole.requiresClub ? (
-              <label className="grid gap-2 text-sm text-slate-300">
+            {selectedRole.requiresClub && (
+              <label className="grid gap-2 text-sm font-semibold text-[var(--admin-zinc-100)]">
                 Club scope
                 <select
                   value={clubId}
-                  onChange={(event) => setClubId(event.target.value)}
+                  onChange={(e) => setClubId(e.target.value)}
                   className="admin-input"
                 >
-                  {clubOptions.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.shortName || option.clubName}
-                    </option>
+                  {clubOptions.map((o) => (
+                    <option key={o.id} value={o.id}>{o.shortName || o.clubName}</option>
                   ))}
                 </select>
               </label>
-            ) : null}
+            )}
 
-            <label className="grid gap-2 text-sm text-slate-300">
-              Notes
+            <label className="grid gap-2 text-sm font-semibold text-[var(--admin-zinc-100)]">
+              Governance notes
               <textarea
                 value={notes}
-                onChange={(event) => setNotes(event.target.value)}
+                onChange={(e) => setNotes(e.target.value)}
                 rows={4}
-                placeholder="Why is this assignment being granted?"
-                className="admin-input min-h-28"
+                placeholder="Reason for granting access (required for audit logs)..."
+                className="admin-input min-h-24"
               />
             </label>
-
-            <div className="flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={() => handleAssign().catch(() => {})}
-                disabled={
-                  busyAction != null ||
-                  candidate == null ||
-                  (selectedRole.requiresClub && !clubId)
-                }
-                className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light disabled:opacity-60"
-              >
-                {busyAction === "assign" ? "Saving…" : "Grant admin role"}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setCandidate(null);
-                  setLookupInput("");
-                  setNotes("");
-                }}
-                className="rounded-full border border-border-soft px-5 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/8"
-              >
-                Clear
-              </button>
-            </div>
           </div>
-        </article>
-
-        <article className="glass-panel rounded-[32px] p-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-club-accent">
-                Current assignments
-              </p>
-              <h2 className="mt-2 font-display text-3xl font-bold uppercase text-white">
-                Role grants across the workspace
-              </h2>
-            </div>
-            <label className="flex items-center gap-2 rounded-full border border-border-soft bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-300">
-              <input
-                type="checkbox"
-                checked={showInactive}
-                onChange={(event) => setShowInactive(event.target.checked)}
-              />
-              Show revoked
-            </label>
-          </div>
-
-          {loadError && !loading ? (
-            <AdminErrorState
-              className="mt-6"
-              title="Assignments could not be loaded"
-              description={loadError}
-              onRetry={() => {
-                loadAssignments().catch(() => {});
-              }}
-            />
-          ) : null}
-
-          <div className="mt-6 space-y-3">
-            {loading ? (
-              Array.from({ length: 4 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4"
-                >
-                  <div className="skeleton h-5 w-40 rounded-xl" />
-                  <div className="skeleton-text mt-3 h-3 w-56" />
-                  <div className="skeleton-text mt-3 h-3 w-48" />
-                </div>
-              ))
-            ) : null}
-
-            {!loading && assignments.length === 0 ? (
-              <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">
-                No admin assignments matched the current filter.
-              </p>
-            ) : null}
-
-            {!loading &&
-              assignments.map((assignment) => (
-                <article
-                  key={assignment.id}
-                  className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4"
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-lg font-semibold text-white">
-                          {assignment.userName}
-                        </p>
-                        <span
-                          className={cn(
-                            "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]",
-                            roleBadgeTone(assignment.role),
-                          )}
-                        >
-                          {formatAdminRoleLabel(assignment.role)}
-                        </span>
-                        {!assignment.isActive ? (
-                          <span className="rounded-full border border-white/10 bg-white/8 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-300">
-                            Revoked
-                          </span>
-                        ) : null}
-                      </div>
-                      <p className="mt-2 text-sm text-slate-300">
-                        {assignment.userPhone ?? "No phone"}{" "}
-                        {assignment.userEmail ? `• ${assignment.userEmail}` : ""}
-                      </p>
-                      <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-400">
-                        <span className="rounded-full border border-white/10 bg-black/10 px-3 py-1.5">
-                          {assignment.clubName ?? "Platform scope"}
-                        </span>
-                        {assignment.publicUserId ? (
-                          <span className="rounded-full border border-white/10 bg-black/10 px-3 py-1.5">
-                            User {assignment.publicUserId}
-                          </span>
-                        ) : null}
-                        {assignment.partnerName ? (
-                          <span className="rounded-full border border-white/10 bg-black/10 px-3 py-1.5">
-                            {assignment.partnerName}
-                          </span>
-                        ) : null}
-                      </div>
-                    </div>
-
-                    {assignment.isActive ? (
-                      <button
-                        type="button"
-                        onClick={() => handleRevoke(assignment).catch(() => {})}
-                        disabled={busyAction != null}
-                        className="rounded-full border border-rose-400/30 bg-rose-500/10 px-4 py-2 text-sm font-semibold text-rose-100 transition hover:bg-rose-500/15 disabled:opacity-60"
-                      >
-                        Revoke
-                      </button>
-                    ) : null}
-                  </div>
-
-                  <div className="mt-4 grid gap-2 text-sm text-slate-400 sm:grid-cols-2">
-                    <p>
-                      Granted {new Date(assignment.grantedAt).toLocaleString("en-RW", {
-                        month: "short",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                    <p>
-                      Granted by {assignment.grantedByName ?? assignment.grantedBy ?? "system"}
-                    </p>
-                  </div>
-
-                  {assignment.notes ? (
-                    <p className="mt-3 rounded-[18px] border border-white/8 bg-black/10 px-3 py-2 text-sm leading-6 text-slate-300">
-                      {assignment.notes}
-                    </p>
-                  ) : null}
-                </article>
-              ))}
-          </div>
-        </article>
-      </div>
+        </div>
+      </AdminActionDrawer>
     </div>
   );
 }

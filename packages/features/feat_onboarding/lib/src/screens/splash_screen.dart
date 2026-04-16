@@ -33,7 +33,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (currentState is AuthInitial) {
       try {
         await authNotifier.restore().timeout(
-          const Duration(seconds: 10),
+          const Duration(seconds: 15),
         );
       } catch (_) {
         // Timeout or restore failure — proceed to navigation logic below
@@ -106,6 +106,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                     : _SplashFallbackBadge(label: RuntimeBranding.appInitials))
                 .animate()
                 .scale(duration: 500.ms, curve: Curves.easeOutBack),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  ColorTokens.onSurface.withValues(alpha: 0.6),
+                ),
+              ),
+            )
+                .animate(delay: 800.ms)
+                .fadeIn(duration: 400.ms),
           ],
         ),
       ),
@@ -124,7 +137,7 @@ class _SplashFallbackBadge extends StatelessWidget {
       width: 180,
       height: 180,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.15),
+        color: ColorTokens.onSurface.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(40),
       ),
       alignment: Alignment.center,
@@ -132,12 +145,12 @@ class _SplashFallbackBadge extends StatelessWidget {
         label,
         style:
             Theme.of(context).textTheme.displaySmall?.copyWith(
-              color: Colors.white,
+              color: ColorTokens.onSurface,
               fontWeight: FontWeight.w800,
               letterSpacing: 2,
             ) ??
-            const TextStyle(
-              color: Colors.white,
+            TextStyle(
+              color: ColorTokens.onSurface,
               fontSize: 48,
               fontWeight: FontWeight.w800,
               letterSpacing: 2,

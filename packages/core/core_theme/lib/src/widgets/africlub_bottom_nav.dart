@@ -32,17 +32,17 @@ class AfriClubBottomNav extends StatelessWidget {
         bottomPadding + SpacingTokens.spacing4,
       ),
       child: Container(
-        height: 72,
+        height: 64,
         decoration: BoxDecoration(
-          color: ColorTokens.surfaceContainerLowest.withValues(alpha: 0.96),
-          borderRadius: BorderRadius.circular(ShapeTokens.radiusXl),
+          color: ColorTokens.surface,
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
           border: BorderTokens.ghost(width: BorderTokens.standard),
           boxShadow: [
             BoxShadow(
-              color: ColorTokens.ambientShadow.withValues(alpha: 0.20),
-              blurRadius: 24,
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 20,
               spreadRadius: -10,
-              offset: const Offset(0, 12),
+              offset: const Offset(0, 10),
             ),
           ],
         ),
@@ -103,48 +103,31 @@ class _NavItem extends StatelessWidget {
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeOut,
       height: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        color: isActive ? ColorTokens.primaryTint(0.16) : Colors.transparent,
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
-        border: isFocused
-            ? BorderTokens.focusAll(
-                color: ColorTokens.primaryContainer,
-                opacity: 0.9,
-              )
-            : null,
+        color: isActive ? ColorTokens.clubAccent : Colors.transparent,
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
       ),
-      child: Row(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             isActive ? activeIcon : icon,
             size: 20,
-            color: isActive
-                ? ColorTokens.primaryContainer
-                : ColorTokens.onSurfaceVariant,
+            color: isActive ? Colors.black : Colors.white38,
           ),
-          if (isActive)
-            Flexible(
-              child: AnimatedSize(
-                duration: const Duration(milliseconds: 180),
-                curve: Curves.easeOut,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: SpacingTokens.spacing2,
-                  ),
-                  child: Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TypographyTokens.labelSmall(
-                      ColorTokens.primaryContainer,
-                    ),
-                  ),
-                ),
-              ),
+          const SizedBox(height: 2),
+          Text(
+            label.toUpperCase(),
+            maxLines: 1,
+            style: TextStyle(
+              fontSize: 8,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.5,
+              color: isActive ? Colors.black : Colors.white38,
             ),
+          ),
         ],
       ),
     );

@@ -131,7 +131,6 @@ export default function AdminGamificationPage() {
       <AdminPageHeader
         eyebrow="Gamification"
         title="Fan Engagement Tokens"
-        description="Manage reward definitions, activation state, and generic versus club-specific catalog entries."
       />
 
       <div className="grid gap-5 md:grid-cols-4">

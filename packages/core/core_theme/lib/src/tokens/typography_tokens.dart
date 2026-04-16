@@ -278,7 +278,7 @@ class TypographyTokens {
         letterSpacing: 0.3,
       );
 
-  // ── Semantic aliases ──
+  // ── Semantic  ──
 
   /// Section title — medium-weight heading for card and list sections.
   static TextStyle sectionTitle([Color? color]) => utilityFont(

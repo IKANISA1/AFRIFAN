@@ -35,10 +35,10 @@ export default async function FanClubsPage() {
         actions={
           <>
             <Link
-              href="/circles"
+              href="/Groups"
               className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
             >
-              {copy.common.exploreCircles}
+              {copy.common.exploreGroups}
             </Link>
             <Link
               href="/supporters"
@@ -51,7 +51,7 @@ export default async function FanClubsPage() {
         stats={[
           { label: copy.common.chapters, value: fanClubs.length.toString() },
           { label: copy.common.members, value: formatCompactNumber(totalMembers) },
-          { label: copy.common.circles, value: groups.length.toString() },
+          { label: copy.common.Groups, value: groups.length.toString() },
         ]}
       />
 
@@ -101,7 +101,7 @@ export default async function FanClubsPage() {
         </div>
         <div className="glass-panel rounded-[30px] p-6">
           <p className="font-display text-4xl font-bold uppercase leading-none">
-            {copy.pages.fanClubs.activeSupportCircles}
+            {copy.pages.fanClubs.activeSupportGroups}
           </p>
           <div className="mt-5 grid gap-4">
             {groups.map((group) => (
@@ -130,10 +130,10 @@ export default async function FanClubsPage() {
             ))}
           </div>
           <Link
-            href="/circles"
+            href="/Groups"
             className="mt-6 inline-flex rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
           >
-            {copy.common.supportACircle}
+            {copy.common.supportAGroup}
           </Link>
           <Link
             href="/supporters"

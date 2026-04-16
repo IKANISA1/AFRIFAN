@@ -13,9 +13,9 @@ import '../models/biopay_model_contract.dart';
 /// Handles camera format conversion (NV21/YUV420/BGRA8888),
 /// rotation correction, face crop with margins, head-roll correction,
 /// and pixel normalization to [-1, 1] range.
-class BiopayFaceAlignmentService {
-  static int get inputWidth => BiopayModelContract.expectedInputShape[1];
-  static int get inputHeight => BiopayModelContract.expectedInputShape[2];
+class BioPayFaceAlignmentService {
+  static int get inputWidth => BioPayModelContract.expectedInputShape[1];
+  static int get inputHeight => BioPayModelContract.expectedInputShape[2];
 
   Future<Float32List> extractAlignedFaceTensor({
     required CameraImage frame,

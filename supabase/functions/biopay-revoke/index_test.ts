@@ -1,7 +1,7 @@
 import { HttpError } from "../_shared/auth.ts";
 import {
-  type BiopayRevokeHandlerDependencies,
-  createBiopayRevokeHandler,
+  type BioPayRevokeHandlerDependencies,
+  createBioPayRevokeHandler,
 } from "./index.ts";
 
 function assertEquals<T>(actual: T, expected: T, message: string): void {
@@ -11,7 +11,7 @@ function assertEquals<T>(actual: T, expected: T, message: string): void {
 }
 
 function buildRequest() {
-  return new Request("https://example.com/functions/v1/biopay-revoke", {
+  return new Request("https://example.com/functions/v1/BioPay-revoke", {
     method: "POST",
     headers: {
       authorization: "Bearer test-token",
@@ -22,7 +22,7 @@ function buildRequest() {
   });
 }
 
-function buildDeps(): BiopayRevokeHandlerDependencies {
+function buildDeps(): BioPayRevokeHandlerDependencies {
   return {
     createAdminClient: () =>
       ({
@@ -42,7 +42,7 @@ function buildDeps(): BiopayRevokeHandlerDependencies {
           };
         },
       }) as unknown as ReturnType<
-        BiopayRevokeHandlerDependencies["createAdminClient"]
+        BioPayRevokeHandlerDependencies["createAdminClient"]
       >,
     createUserClient: () =>
       ({
@@ -55,7 +55,7 @@ function buildDeps(): BiopayRevokeHandlerDependencies {
           }),
         },
       }) as unknown as ReturnType<
-        BiopayRevokeHandlerDependencies["createUserClient"]
+        BioPayRevokeHandlerDependencies["createUserClient"]
       >,
     requireAppCheckToken: async () => "fresh-token",
     recordOperationalHealthEvent: async () => undefined,
@@ -63,8 +63,8 @@ function buildDeps(): BiopayRevokeHandlerDependencies {
   };
 }
 
-Deno.test("biopay-revoke rejects requests without valid App Check attestation", async () => {
-  const handler = createBiopayRevokeHandler({
+Deno.test("BioPay-revoke rejects requests without valid App Check attestation", async () => {
+  const handler = createBioPayRevokeHandler({
     ...buildDeps(),
     requireAppCheckToken: async () => {
       throw new HttpError(401, "Device attestation required.");
@@ -82,8 +82,8 @@ Deno.test("biopay-revoke rejects requests without valid App Check attestation", 
   );
 });
 
-Deno.test("biopay-revoke succeeds when App Check attestation is valid", async () => {
-  const handler = createBiopayRevokeHandler(buildDeps());
+Deno.test("BioPay-revoke succeeds when App Check attestation is valid", async () => {
+  const handler = createBioPayRevokeHandler(buildDeps());
   const response = await handler(buildRequest());
   const payload = await response.json();
 

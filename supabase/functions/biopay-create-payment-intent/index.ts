@@ -10,14 +10,14 @@ import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
 import { HttpError } from "../_shared/auth.ts";
 import { requireAppCheckToken } from "../_shared/app_check.ts";
 import {
-  buildBiopayPaymentCode,
-  resolveBiopayPaymentRouting,
-  type BiopayPaymentRouting,
-} from "../_shared/biopay_payment.ts";
+  buildBioPayPaymentCode,
+  resolveBioPayPaymentRouting,
+  type BioPayPaymentRouting,
+} from "../_shared/BioPay_payment.ts";
 import {
-  type SignedBiopayTokenPayload,
-  verifyBiopayToken,
-} from "../_shared/biopay_signed_token.ts";
+  type SignedBioPayTokenPayload,
+  verifyBioPayToken,
+} from "../_shared/BioPay_signed_token.ts";
 import {
   recordEdgeFunctionFailure,
   recordOperationalHealthEvent,
@@ -29,7 +29,7 @@ type CreateIntentRequest = {
   amount?: number;
 };
 
-type MatchReceiptPayload = SignedBiopayTokenPayload & {
+type MatchReceiptPayload = SignedBioPayTokenPayload & {
   requester_user_id?: unknown;
   profile_public_id?: unknown;
   score?: unknown;
@@ -56,14 +56,14 @@ type IntentRow = {
 
 type AdminClientLike = ReturnType<typeof createAdminClient> | any;
 
-export type BiopayCreatePaymentIntentDependencies = {
+export type BioPayCreatePaymentIntentDependencies = {
   createAdminClient: () => AdminClientLike;
   validateRequest: typeof validateRequest;
   requireAppCheckToken: (request: Request) => Promise<string>;
-  verifyBiopayToken: (
+  verifyBioPayToken: (
     token: string,
     options: { expectedKind: string },
-  ) => Promise<SignedBiopayTokenPayload>;
+  ) => Promise<SignedBioPayTokenPayload>;
   resolvePaymentRouting: (
     adminClient: AdminClientLike,
     options: {
@@ -71,7 +71,7 @@ export type BiopayCreatePaymentIntentDependencies = {
       countryCode?: string | null;
       routeType?: string | null;
     },
-  ) => Promise<BiopayPaymentRouting>;
+  ) => Promise<BioPayPaymentRouting>;
   buildPaymentCode: (options: {
     paymentTemplate: string;
     routeType: string;
@@ -100,23 +100,23 @@ function generateNonce(): string {
 
 const INTENT_TTL_SECONDS = 300;
 
-const defaultDependencies: BiopayCreatePaymentIntentDependencies = {
+const defaultDependencies: BioPayCreatePaymentIntentDependencies = {
   createAdminClient,
   validateRequest,
   requireAppCheckToken,
-  verifyBiopayToken,
-  resolvePaymentRouting: resolveBiopayPaymentRouting,
-  buildPaymentCode: buildBiopayPaymentCode,
+  verifyBioPayToken,
+  resolvePaymentRouting: resolveBioPayPaymentRouting,
+  buildPaymentCode: buildBioPayPaymentCode,
   recordOperationalHealthEvent,
   recordEdgeFunctionFailure,
   generateNonce,
   now: () => new Date(),
 };
 
-export function createBiopayCreatePaymentIntentHandler(
-  dependencies: Partial<BiopayCreatePaymentIntentDependencies> = {},
+export function createBioPayCreatePaymentIntentHandler(
+  dependencies: Partial<BioPayCreatePaymentIntentDependencies> = {},
 ) {
-  const deps: BiopayCreatePaymentIntentDependencies = {
+  const deps: BioPayCreatePaymentIntentDependencies = {
     ...defaultDependencies,
     ...dependencies,
   };
@@ -136,7 +136,7 @@ export function createBiopayCreatePaymentIntentHandler(
     try {
       const validated = await deps.validateRequest(request);
       if (isErrorResponse(validated)) return validated;
-      
+
       const { userId } = validated;
       requesterUserId = userId;
 
@@ -148,11 +148,11 @@ export function createBiopayCreatePaymentIntentHandler(
         return jsonError("match_receipt is required.", 400);
       }
       const requestedAmount = typeof body.amount === "number" &&
-          Number.isFinite(body.amount) && body.amount > 0
+        Number.isFinite(body.amount) && body.amount > 0
         ? Math.trunc(body.amount)
         : null;
 
-      const receipt = await deps.verifyBiopayToken(matchReceipt, {
+      const receipt = await deps.verifyBioPayToken(matchReceipt, {
         expectedKind: "match_receipt",
       }) as MatchReceiptPayload;
       if (receipt.requester_user_id?.toString() != userId) {
@@ -166,7 +166,7 @@ export function createBiopayCreatePaymentIntentHandler(
       const matchScore = Number(receipt.score ?? 0);
 
       const { data: profile, error: profileError } = await adminClient
-        .from("biopay_profiles")
+        .from("BioPay_profiles")
         .select(
           "id, user_id, club_id, recipient_value, route_type, display_name, public_id, country_code",
         )
@@ -179,7 +179,7 @@ export function createBiopayCreatePaymentIntentHandler(
       }
 
       await adminClient
-        .from("biopay_payment_intents")
+        .from("BioPay_payment_intents")
         .update({ status: "cancelled" })
         .eq("user_id", userId)
         .eq("status", "pending");
@@ -202,7 +202,7 @@ export function createBiopayCreatePaymentIntentHandler(
       ).toISOString();
 
       const { data: intent, error: insertError } = await adminClient
-        .from("biopay_payment_intents")
+        .from("BioPay_payment_intents")
         .insert({
           user_id: userId,
           club_id: profile.club_id,
@@ -225,14 +225,14 @@ export function createBiopayCreatePaymentIntentHandler(
       }
 
       await deps.recordOperationalHealthEvent(adminClient, {
-        service: "biopay",
+        service: "BioPay",
         component: "payment_intent",
         status: "ok",
         severity: "info",
         message: "Payment intent created.",
-        functionName: "biopay-create-payment-intent",
+        functionName: "BioPay-create-payment-intent",
         userId: userId,
-        subjectType: "biopay_payment_intent",
+        subjectType: "BioPay_payment_intent",
         subjectId: intent.id,
         metadata: {
           profile_public_id: profilePublicId,
@@ -272,12 +272,12 @@ export function createBiopayCreatePaymentIntentHandler(
       }
 
       await deps.recordEdgeFunctionFailure(adminClient, {
-        functionName: "biopay-create-payment-intent",
+        functionName: "BioPay-create-payment-intent",
         error,
-        issueCode: "biopay_create_intent_failed",
+        issueCode: "BioPay_create_intent_failed",
         userId: requesterUserId,
       });
-      console.error("biopay-create-payment-intent failed:", error);
+      console.error("BioPay-create-payment-intent failed:", error);
       return jsonError(
         error instanceof Error
           ? error.message
@@ -289,7 +289,7 @@ export function createBiopayCreatePaymentIntentHandler(
 }
 
 if (import.meta.main) {
-  const handler = createBiopayCreatePaymentIntentHandler();
+  const handler = createBioPayCreatePaymentIntentHandler();
   Deno.serve((req: Request) => handler(req).then(
     (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
   ));

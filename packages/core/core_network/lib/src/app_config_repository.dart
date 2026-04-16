@@ -5,10 +5,10 @@ import 'club_scope.dart';
 /// Centralized key constants for the `app_config` table.
 abstract final class AppConfigKeys {
   // BioPay
-  static const biopayEnabled = 'feature_biopay_enabled';
-  static const biopayMatchThreshold = 'biopay_match_threshold';
-  static const biopayCacheTtlHours = 'biopay_cache_ttl_hours';
-  static const biopayStableFrames = 'biopay_stable_frames';
+  static const BioPayEnabled = 'feature_BioPay_enabled';
+  static const BioPayMatchThreshold = 'BioPay_match_threshold';
+  static const BioPayCacheTtlHours = 'BioPay_cache_ttl_hours';
+  static const BioPayStableFrames = 'BioPay_stable_frames';
 
   // Feature flags
   static const featureFlagsPrefix = 'feature_';

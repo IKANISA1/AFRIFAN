@@ -43,7 +43,6 @@ linter:
     - unawaited_futures
     - discarded_futures
     - unnecessary_to_list_in_spreads
-    - use_if_null_to_convert_nulls
     - noop_primitive_operations
 
 analyzer:

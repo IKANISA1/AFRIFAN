@@ -11,36 +11,36 @@ import '../models/biopay_payment_intent.dart';
 import '../models/biopay_profile.dart';
 import '../services/biopay_rate_limiter.dart';
 
-typedef BiopayAppCheckTokenProvider = Future<String> Function();
+typedef BioPayAppCheckTokenProvider = Future<String> Function();
 
 /// Central repository for BioPay backend operations.
 ///
 /// Interacts with Supabase edge functions:
-/// - `biopay-enroll` — register a new face
-/// - `biopay-match` — search for a matching face
-/// - `biopay-revoke` — deactivate an enrollment
-/// - `biopay-create-payment-intent` — generate a server-issued payment intent
-class BiopayRepository {
-  BiopayRepository({
+/// - `BioPay-enroll` — register a new face
+/// - `BioPay-match` — search for a matching face
+/// - `BioPay-revoke` — deactivate an enrollment
+/// - `BioPay-create-payment-intent` — generate a server-issued payment intent
+class BioPayRepository {
+  BioPayRepository({
     required SupabaseClient client,
     OperationalHealthService? healthService,
-    BiopayRateLimiter? rateLimiter,
-    BiopayAppCheckTokenProvider? appCheckTokenProvider,
+    BioPayRateLimiter? rateLimiter,
+    BioPayAppCheckTokenProvider? appCheckTokenProvider,
   }) : _client = client,
        _healthService =
            healthService ?? OperationalHealthService(client: client),
-       _rateLimiter = rateLimiter ?? BiopayRateLimiter(),
+       _rateLimiter = rateLimiter ?? BioPayRateLimiter(),
        _appCheckTokenProvider =
            appCheckTokenProvider ??
            (() =>
                AppCheckService.requireLimitedUseToken(featureName: 'BioPay'));
 
-  static const _tag = 'BiopayRepository';
+  static const _tag = 'BioPayRepository';
 
   final SupabaseClient _client;
   final OperationalHealthService _healthService;
-  final BiopayRateLimiter _rateLimiter;
-  final BiopayAppCheckTokenProvider _appCheckTokenProvider;
+  final BioPayRateLimiter _rateLimiter;
+  final BioPayAppCheckTokenProvider _appCheckTokenProvider;
 
   Future<Map<String, String>> _buildAttestedHeaders() async {
     final token = await _appCheckTokenProvider();
@@ -49,7 +49,7 @@ class BiopayRepository {
 
   // ─── Enrollment ─────────────────────────────────────────────
 
-  Future<BiopayLivenessChallenge> createLivenessChallenge({
+  Future<BioPayLivenessChallenge> createLivenessChallenge({
     required String mode,
   }) async {
     final userId = _client.auth.currentUser?.id;
@@ -62,15 +62,15 @@ class BiopayRepository {
     try {
       final headers = await _buildAttestedHeaders();
       final response = await _invokeFunction(
-        'biopay-create-liveness-challenge',
+        'BioPay-create-liveness-challenge',
         body: <String, dynamic>{'mode': mode},
         headers: headers,
       );
       final data = _extractDataEnvelope(
         response,
-        'biopay-create-liveness-challenge',
+        'BioPay-create-liveness-challenge',
       );
-      return BiopayLivenessChallenge.fromApiResponse(data);
+      return BioPayLivenessChallenge.fromApiResponse(data);
     } catch (error) {
       await _recordFailure('create_liveness_challenge', error, userId: userId);
       rethrow;
@@ -80,9 +80,9 @@ class BiopayRepository {
   // ─── Enrollment ─────────────────────────────────────────────
 
   /// Enroll a new face with the given embedding and draft data.
-  Future<BiopayProfile> enroll({
+  Future<BioPayProfile> enroll({
     required List<double> embedding,
-    required BiopayEnrollmentDraft draft,
+    required BioPayEnrollmentDraft draft,
     Map<String, Object?>? livenessMetadata,
   }) async {
     final userId = _client.auth.currentUser?.id;
@@ -105,15 +105,15 @@ class BiopayRepository {
     try {
       final headers = await _buildAttestedHeaders();
       final response = await _invokeFunction(
-        'biopay-enroll',
+        'BioPay-enroll',
         body: <String, dynamic>{
           ...draft.toPayload(embedding, liveness: livenessMetadata),
         },
         headers: headers,
       );
 
-      final data = _extractDataEnvelope(response, 'biopay-enroll');
-      return BiopayProfile.fromJson(data);
+      final data = _extractDataEnvelope(response, 'BioPay-enroll');
+      return BioPayProfile.fromJson(data);
     } catch (error) {
       await _recordFailure('enroll', error, userId: userId);
       rethrow;
@@ -123,7 +123,7 @@ class BiopayRepository {
   // ─── Matching ───────────────────────────────────────────────
 
   /// Match a face embedding against enrolled profiles.
-  Future<BiopayMatchResult> match({
+  Future<BioPayMatchResult> match({
     required List<double> embedding,
     double? threshold,
     Map<String, Object?>? livenessMetadata,
@@ -145,7 +145,7 @@ class BiopayRepository {
     try {
       final headers = await _buildAttestedHeaders();
       final response = await _invokeFunction(
-        'biopay-match',
+        'BioPay-match',
         body: <String, dynamic>{
           'embedding': embedding,
           if (threshold != null) 'threshold': threshold,
@@ -156,8 +156,8 @@ class BiopayRepository {
         headers: headers,
       );
 
-      final data = _extractDataEnvelope(response, 'biopay-match');
-      return BiopayMatchResult.fromApiResponse(data);
+      final data = _extractDataEnvelope(response, 'BioPay-match');
+      return BioPayMatchResult.fromApiResponse(data);
     } catch (error) {
       await _recordFailure('match', error, userId: userId);
       rethrow;
@@ -176,11 +176,11 @@ class BiopayRepository {
     try {
       final headers = await _buildAttestedHeaders();
       final response = await _invokeFunction(
-        'biopay-revoke',
+        'BioPay-revoke',
         body: <String, dynamic>{if (reason != null) 'reason': reason},
         headers: headers,
       );
-      _extractDataEnvelope(response, 'biopay-revoke');
+      _extractDataEnvelope(response, 'BioPay-revoke');
     } catch (error) {
       await _recordFailure('revoke', error, userId: userId);
       rethrow;
@@ -190,7 +190,7 @@ class BiopayRepository {
   // ─── Payment Intent ─────────────────────────────────────────
 
   /// Create a server-issued payment intent bound to a biometric match.
-  Future<BiopayPaymentIntent> createPaymentIntent({
+  Future<BioPayPaymentIntent> createPaymentIntent({
     required String matchReceipt,
     int? amount,
   }) async {
@@ -211,7 +211,7 @@ class BiopayRepository {
     try {
       final headers = await _buildAttestedHeaders();
       final response = await _invokeFunction(
-        'biopay-create-payment-intent',
+        'BioPay-create-payment-intent',
         body: <String, dynamic>{
           'match_receipt': matchReceipt,
           if (amount != null) 'amount': amount,
@@ -221,9 +221,9 @@ class BiopayRepository {
 
       final data = _extractDataEnvelope(
         response,
-        'biopay-create-payment-intent',
+        'BioPay-create-payment-intent',
       );
-      return BiopayPaymentIntent.fromApiResponse(data);
+      return BioPayPaymentIntent.fromApiResponse(data);
     } catch (error) {
       await _recordFailure('create_payment_intent', error, userId: userId);
       rethrow;
@@ -232,7 +232,7 @@ class BiopayRepository {
 
   // ─── QR / NFC Handoff ──────────────────────────────────────
 
-  Future<BiopayHandoffToken> createHandoffToken({
+  Future<BioPayHandoffToken> createHandoffToken({
     required String channel,
     int? amount,
     String? reference,
@@ -250,7 +250,7 @@ class BiopayRepository {
     try {
       final headers = await _buildAttestedHeaders();
       final response = await _invokeFunction(
-        'biopay-create-handoff-token',
+        'BioPay-create-handoff-token',
         body: <String, dynamic>{
           'channel': channel,
           if (amount != null) 'amount': amount,
@@ -267,26 +267,26 @@ class BiopayRepository {
 
       final data = _extractDataEnvelope(
         response,
-        'biopay-create-handoff-token',
+        'BioPay-create-handoff-token',
       );
-      return BiopayHandoffToken.fromApiResponse(data);
+      return BioPayHandoffToken.fromApiResponse(data);
     } catch (error) {
       await _recordFailure('create_handoff_token', error, userId: userId);
       rethrow;
     }
   }
 
-  Future<BiopayHandoffResolution> resolveHandoffToken({
+  Future<BioPayHandoffResolution> resolveHandoffToken({
     required String token,
   }) async {
     try {
       final response = await _invokeFunction(
-        'biopay-resolve-handoff',
+        'BioPay-resolve-handoff',
         body: <String, dynamic>{'token': token},
         maxAttempts: 3,
       );
-      final data = _extractDataEnvelope(response, 'biopay-resolve-handoff');
-      return BiopayHandoffResolution.fromApiResponse(data);
+      final data = _extractDataEnvelope(response, 'BioPay-resolve-handoff');
+      return BioPayHandoffResolution.fromApiResponse(data);
     } catch (error) {
       await _recordFailure('resolve_handoff_token', error);
       rethrow;
@@ -296,7 +296,7 @@ class BiopayRepository {
   // ─── Profile Query ──────────────────────────────────────────
 
   /// Fetch the current user's BioPay profile (if enrolled).
-  Future<BiopayProfile?> fetchCurrentUserProfile() async {
+  Future<BioPayProfile?> fetchCurrentUserProfile() async {
     final userId = _client.auth.currentUser?.id;
     if (userId == null || userId.isEmpty) return null;
 
@@ -319,7 +319,7 @@ class BiopayRepository {
       final row = result.data;
 
       if (row != null) {
-        return BiopayProfile.fromJson(Map<String, dynamic>.from(row));
+        return BioPayProfile.fromJson(Map<String, dynamic>.from(row));
       }
       return null;
     } catch (_) {
@@ -411,7 +411,7 @@ class BiopayRepository {
   }) async {
     try {
       await _healthService.recordEvent(
-        service: 'biopay',
+        service: 'BioPay',
         component: operation,
         message: error.toString(),
         status: OperationalHealthStatus.error,
@@ -422,7 +422,7 @@ class BiopayRepository {
         },
       );
     } catch (_) {
-      AfriLogger.warn('BiopayRepository', 'Failed to record health event.');
+      AfriLogger.warn('BioPayRepository', 'Failed to record health event.');
     }
   }
 }

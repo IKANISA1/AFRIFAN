@@ -28,12 +28,14 @@ final currentUserProvider = Provider<UserProfile?>((ref) {
   final user = auth.user;
   if (user == null) return null;
 
-  final hasAdminAccess = auth.adminAccess.hasAnyAdminAccess;
-  if (!hasAdminAccess || user.isAdmin) {
+  // Only create a new UserProfile when the isAdmin flag actually needs to change.
+  // This prevents unnecessary downstream rebuilds from identity changes.
+  final shouldBeAdmin = auth.adminAccess.hasAnyAdminAccess;
+  if (user.isAdmin == shouldBeAdmin) {
     return user;
   }
 
-  return user.copyWith(isAdmin: true);
+  return user.copyWith(isAdmin: shouldBeAdmin);
 });
 
 /// Whether the user is currently authenticated.

@@ -43,7 +43,7 @@ export function HeroSection({
   heroDescription,
 }: HeroSectionProps) {
   const copy = getSiteCopy(club.defaultLanguage);
-  const heroCircle = contributionGroups[0] ?? null;
+  const heroGroup = contributionGroups[0] ?? null;
   const premiumTier =
     membershipPackages.find((entry) => entry.tier === "platinum") ??
     membershipPackages[membershipPackages.length - 1] ??
@@ -54,9 +54,8 @@ export function HeroSection({
     : club.league;
   const matchSummary = featuredMatch
     ? isLiveMatch(featuredMatch.matchStatus)
-      ? `${featuredMatch.homeScore} - ${featuredMatch.awayScore}${
-          featuredMatch.liveMinute != null ? ` • ${featuredMatch.liveMinute}'` : ""
-        }`
+      ? `${featuredMatch.homeScore} - ${featuredMatch.awayScore}${featuredMatch.liveMinute != null ? ` • ${featuredMatch.liveMinute}'` : ""
+      }`
       : isResultMatch(featuredMatch.matchStatus)
         ? `${featuredMatch.homeScore} - ${featuredMatch.awayScore} final score`
         : `${formatDateTime(featuredMatch.matchDate)} • ${featuredMatch.venue}`
@@ -69,7 +68,7 @@ export function HeroSection({
         title={heroHeadline || `This is ${club.nickname || club.shortName}.`}
         description={
           heroDescription ||
-          "Tickets, membership, supporter circles, and live matchday coverage in one club-branded experience."
+          "Tickets, membership, supporter Groups, and live matchday coverage in one club-branded experience."
         }
         actions={
           <>
@@ -141,9 +140,9 @@ export function HeroSection({
             <div className={`${ui.panelInset} rounded-[24px] p-4 sm:p-5`}>
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className={ui.kicker}>Support circles</p>
+                  <p className={ui.kicker}>Support Groups</p>
                   <h2 className="mt-3 font-display text-2xl font-bold uppercase leading-none tracking-[-0.05em] text-white">
-                    {heroCircle?.name ?? "Back the next tifo push"}
+                    {heroGroup?.name ?? "Back the next tifo push"}
                   </h2>
                 </div>
                 {premiumTier ? (
@@ -153,43 +152,43 @@ export function HeroSection({
                 ) : null}
               </div>
               <p className="mt-4 text-sm leading-7 text-slate-300">
-                {heroCircle?.description ??
+                {heroGroup?.description ??
                   "Supporters pool money for tifos, away travel, and community projects across the club ecosystem."}
               </p>
-              {heroCircle ? (
+              {heroGroup ? (
                 <div className="mt-4 space-y-3">
                   <div className="grid grid-cols-3 gap-2 text-sm text-white">
                     <div className="rounded-2xl border border-white/8 bg-black/15 p-3">
                       <p className={ui.meta}>Current</p>
                       <p className="mt-2 font-semibold">
-                        {formatCurrency(heroCircle.currentTotal, heroCircle.currency)}
+                        {formatCurrency(heroGroup.currentTotal, heroGroup.currency)}
                       </p>
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-black/15 p-3">
                       <p className={ui.meta}>Target</p>
                       <p className="mt-2 font-semibold">
-                        {formatCurrency(heroCircle.targetAmount, heroCircle.currency)}
+                        {formatCurrency(heroGroup.targetAmount, heroGroup.currency)}
                       </p>
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-black/15 p-3">
                       <p className={ui.meta}>Members</p>
-                      <p className="mt-2 font-semibold">{heroCircle.memberCount}</p>
+                      <p className="mt-2 font-semibold">{heroGroup.memberCount}</p>
                     </div>
                   </div>
                   <ProgressBar
-                    value={heroCircle.currentTotal}
-                    max={heroCircle.targetAmount}
-                    label="Circle progress"
+                    value={heroGroup.currentTotal}
+                    max={heroGroup.targetAmount}
+                    label="Group progress"
                   />
                 </div>
               ) : null}
               <div className="mt-4 flex flex-wrap gap-2">
                 <Link
-                  href="/circles"
+                  href="/Groups"
                   prefetch={false}
                   className={`${ui.buttonSecondary} min-h-10 px-4 py-2 text-sm`}
                 >
-                  {copy.supportCircles} <ArrowRight size={14} />
+                  {copy.supportGroups} <ArrowRight size={14} />
                 </Link>
                 <Link
                   href="/fan-clubs"

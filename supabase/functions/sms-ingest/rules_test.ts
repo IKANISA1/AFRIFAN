@@ -10,7 +10,7 @@ import {
   parseReceivedAt,
 } from "./rules.ts";
 
-Deno.test("isApprovedSender accepts supported Mobile Money aliases only", () => {
+Deno.test("isApprovedSender accepts supported Mobile Money  only", () => {
   assertEquals(isApprovedSender("M-Money"), true);
   assertEquals(isApprovedSender("MTN MoMo Rwanda"), true);
   assertEquals(isApprovedSender("mobile_money"), true);

@@ -78,9 +78,9 @@ const sidebarSections = [
   {
     title: "Supporters",
     items: [
-      "/admin/community",
-      "/admin/contributions",
       "/admin/membership",
+      "/admin/tickets",
+      "/admin/community",
       "/admin/shop",
     ],
   },
@@ -94,6 +94,7 @@ const sidebarSections = [
       "/admin/gamification",
       "/admin/gamification/wallet",
       "/admin/settings",
+      "/admin/settings/audit",
     ],
   },
 ];
@@ -147,19 +148,23 @@ function AdminAuthCard() {
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [status, setStatus] = useState<string | null>(null);
+  const [showContactPopup, setShowContactPopup] = useState(false);
 
   async function handlePhoneSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setStatus("Sending code");
+    setStatus("Sending code via WhatsApp...");
+    setShowContactPopup(false);
 
     try {
       await requestPhoneCode(phone);
       setCode("");
-      setStatus("Code sent");
+      setStatus("WhatsApp code sent");
     } catch (caught) {
-      setStatus(
-        caught instanceof Error ? caught.message : "Could not send code.",
-      );
+      const errorMessage = caught instanceof Error ? caught.message : "Could not send code.";
+      setStatus(errorMessage);
+      if (errorMessage.toLowerCase().includes("access denied") || errorMessage.toLowerCase().includes("not recognized")) {
+        setShowContactPopup(true);
+      }
     }
   }
 
@@ -180,7 +185,39 @@ function AdminAuthCard() {
   const activePhone = pendingPhone ?? (phone.trim() || null);
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center px-4 py-12 relative">
+      {showContactPopup && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className={`${ui.panelElevated} w-full max-w-sm rounded-[32px] border-[1.2px] p-6 sm:p-8 text-center`}>
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366]/10 text-[#25D366]">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.031 0C5.405 0 0 5.413 0 12.046C0 14.167 0.553 16.236 1.583 18.056L0.519 21.93L4.492 20.887C6.262 21.83 8.248 22.33 12.029 22.33C18.653 22.33 24.058 16.917 24.058 10.286C24.058 3.654 18.653 0 12.031 0ZM18.423 15.65C18.158 16.398 17.126 17.067 16.326 17.228C15.776 17.337 14.982 17.433 12.185 16.268C8.611 14.779 6.275 11.134 6.061 10.85C5.847 10.566 4.3 8.016 4.3 5.385C4.3 2.753 5.568 1.488 5.86 1.189C6.151 0.89 6.643 0.767 7.108 0.767C7.257 0.767 7.391 0.774 7.51 0.781C7.868 0.8 8.077 0.831 8.314 1.408C8.611 2.128 9.336 3.916 9.426 4.103C9.515 4.29 9.605 4.526 9.485 4.764C9.366 5.002 9.277 5.111 9.098 5.321C8.919 5.532 8.75 5.679 8.571 5.903C8.402 6.113 8.213 6.34 8.421 6.699C8.63 7.058 9.348 8.23 10.347 9.135C11.635 10.302 12.748 10.67 13.14 10.835C13.531 11 13.784 10.971 14.004 10.742C14.223 10.513 14.862 9.771 15.113 9.422C15.364 9.073 15.602 9.117 15.96 9.251C16.318 9.385 18.218 10.323 18.576 10.502C18.934 10.681 19.172 10.771 19.261 10.92C19.351 11.069 19.351 11.758 19.086 12.506H18.423Z" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-bold text-white mb-2">Access Denied</h2>
+            <p className="text-slate-300 text-sm mb-6">
+              This number is not registered as an admin. Contact the system administrator via WhatsApp to request access.
+            </p>
+            <div className="flex flex-col gap-3">
+              <a
+                href="https://wa.me/250788767816"
+                target="_blank"
+                rel="norenoopener"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-bold text-white transition-opacity hover:bg-[#20bd5a]"
+              >
+                Message +250 788 767 816
+              </a>
+              <button
+                type="button"
+                onClick={() => setShowContactPopup(false)}
+                className="text-sm font-semibold text-slate-400 hover:text-white transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="w-full max-w-xl">
         <div
           className={`${ui.panelElevated} overflow-hidden rounded-[36px] border-[1.2px] p-6 sm:p-8`}
@@ -489,63 +526,29 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <aside
           className={cn(
             "hidden shrink-0 xl:block",
-            sidebarCollapsed ? "w-[96px]" : "w-[304px]",
+            sidebarCollapsed ? "w-[64px]" : "w-[260px]",
+            "transition-all duration-300"
           )}
         >
-          <div className="sticky top-0 flex h-screen flex-col border-r border-[var(--admin-border)] bg-[linear-gradient(180deg,rgba(22,18,56,0.98),rgba(13,10,39,0.99))] px-4 py-5 shadow-[20px_0_60px_-42px_rgba(5,4,16,0.96)]">
-            <div className="flex items-center justify-between gap-3 border-b border-white/8 pb-5">
-              <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-[linear-gradient(135deg,#6C63FF,#8781FF)] text-base font-bold text-white">
+          <div className="sticky top-0 flex h-screen flex-col border-r border-[var(--admin-border)] bg-[var(--admin-zinc-950)] px-3 py-4">
+            <div className="flex items-center justify-between gap-3 border-b border-[var(--admin-border)] pb-4 mb-4">
+              {!sidebarCollapsed ? (
+                <div className="flex items-center gap-2 px-1">
+                  <div className="flex h-8 w-8 items-center justify-center rounded bg-[var(--admin-zinc-100)] text-xs font-bold text-[var(--admin-zinc-950)]">
+                    AC
+                  </div>
+                  <p className="font-bold text-sm tracking-tight text-[var(--admin-zinc-100)]">
+                    AFRICLUB
+                  </p>
+                </div>
+              ) : (
+                <div className="flex h-8 w-8 mx-auto items-center justify-center rounded bg-[var(--admin-zinc-100)] text-[10px] font-bold text-[var(--admin-zinc-950)]">
                   AC
                 </div>
-                {!sidebarCollapsed ? (
-                  <div className="min-w-0">
-                    <p className="font-display text-xl font-bold uppercase tracking-[-0.05em] text-white">
-                      AFRICLUB
-                    </p>
-                    <p className="text-xs uppercase tracking-[0.22em] text-slate-400">
-                      Central admin
-                    </p>
-                  </div>
-                ) : null}
-              </div>
-              <button
-                type="button"
-                onClick={() => setSidebarCollapsed((value) => !value)}
-                className={`${ui.iconButton} h-10 w-10 p-0 text-slate-300`}
-                aria-label={
-                  sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"
-                }
-              >
-                {sidebarCollapsed ? (
-                  <PanelLeftOpen size={18} />
-                ) : (
-                  <PanelLeftClose size={18} />
-                )}
-              </button>
+              )}
             </div>
 
-            {!sidebarCollapsed ? (
-              <div className="mt-5 rounded-[24px] border border-white/10 bg-white/[0.04] p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="admin-page-eyebrow">Workspace</p>
-                  <AdminStatusBadge
-                    label={formatAdminRoleLabel(access.role)}
-                    tone={roleTone(access.role)}
-                  />
-                </div>
-                <p className="mt-3 text-sm font-semibold text-white">
-                  {activeClubLabel}
-                </p>
-                <p className="mt-1 text-xs text-slate-400">
-                  {access.canSelectClub
-                    ? "Centralized control for all assigned clubs."
-                    : "Single-club control lane."}
-                </p>
-              </div>
-            ) : null}
-
-            <div className="mt-5 flex-1 overflow-y-auto pr-1 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto custom-scrollbar">
               <SidebarNavigation
                 pathname={pathname}
                 selectedClubId={selectedClubId}
@@ -553,161 +556,93 @@ export function AdminShell({ children }: { children: ReactNode }) {
               />
             </div>
 
-            {!sidebarCollapsed ? (
-              <div className="mt-5 rounded-[24px] border border-white/10 bg-white/[0.04] p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-white">
+            <div className="mt-4 border-t border-[var(--admin-border)] pt-4">
+              {!sidebarCollapsed ? (
+                <div className="space-y-3">
+                  <div className="px-2">
+                    <p className="text-[11px] font-medium text-[var(--admin-zinc-100)] truncate">
                       {sessionIdentity}
                     </p>
-                    <p className="mt-1 text-xs text-slate-400">
-                      {access.assignmentCount} assignment
-                      {access.assignmentCount === 1 ? "" : "s"}
+                    <p className="text-[10px] text-[var(--admin-zinc-500)] mt-0.5">
+                      {formatAdminRoleLabel(access.role)}
                     </p>
                   </div>
-                  <span className="rounded-full bg-white/8 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-300">
-                    {access.canSelectClub ? "Multi-club" : "Scoped"}
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => signOut().catch(() => {})}
+                    className="w-full text-left px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-rose-500 hover:text-rose-400 transition-colors"
+                  >
+                    Sign out
+                  </button>
                 </div>
+              ) : (
                 <button
                   type="button"
                   onClick={() => signOut().catch(() => {})}
-                  className={`${ui.buttonSecondary} mt-4 w-full hover:border-rose-400/30 hover:text-rose-200`}
+                  className="w-full flex justify-center text-rose-500 hover:text-rose-400"
+                  aria-label="Sign out"
                 >
-                  Sign out
+                  <X size={18} />
                 </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => signOut().catch(() => {})}
-                className={`${ui.iconButton} mt-5 h-11 w-11 self-center p-0 text-slate-300 hover:border-rose-400/30 hover:text-rose-200`}
-                aria-label="Sign out"
-              >
-                <X size={18} />
-              </button>
-            )}
+              )}
+            </div>
           </div>
         </aside>
 
         <div className="min-w-0 flex-1">
-          <div className="sticky top-0 z-20 px-4 py-4 sm:px-6 lg:px-8">
-            <div
-              className={`${ui.panel} rounded-[30px] border-[1.2px] px-4 py-4 sm:px-5`}
-            >
-              <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-                <div className="flex flex-wrap items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setSidebarCollapsed((value) => !value)}
-                    className={`${ui.iconButton} hidden h-11 w-11 p-0 text-slate-300 xl:inline-flex`}
-                    aria-label={
-                      sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"
-                    }
-                  >
-                    {sidebarCollapsed ? (
-                      <PanelLeftOpen size={18} />
-                    ) : (
-                      <PanelLeftClose size={18} />
-                    )}
-                  </button>
-                  <div>
-                    <p className="admin-page-eyebrow">Command center</p>
-                    <div className="mt-1 flex flex-wrap items-center gap-2">
-                      <p className="font-display text-[1.7rem] font-bold uppercase tracking-[-0.05em] text-white">
-                        {activeItem?.label ?? "Workspace"}
-                      </p>
-                      <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-300">
-                        {formattedDate}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-3 xl:items-end">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div className="hidden items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-3 xl:flex">
-                      <Search size={16} className="text-slate-400" />
-                      <span className="text-sm text-slate-300">
-                        Search platform
-                      </span>
-                      <kbd className="inline-flex h-6 items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2 font-mono text-[10px] font-semibold text-slate-400">
-                        <Command size={10} />K
-                      </kbd>
-                    </div>
-
-                    {access.canSelectClub && clubOptions.length > 1 ? (
-                      <label className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-slate-200">
-                        <Sparkles size={15} className="text-club-accent" />
-                        <select
-                          value={selectedClubId ?? ""}
-                          onChange={(event) => {
-                            setClubScope(event.target.value).catch(() => {});
-                          }}
-                          disabled={switchingClub}
-                          className="bg-transparent font-semibold text-white outline-none disabled:opacity-60"
-                        >
-                          {clubOptions.map((club) => (
-                            <option
-                              key={club.id}
-                              value={club.id}
-                              className="bg-[#141133]"
-                            >
-                              {club.clubName}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                    ) : (
-                      <span className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white">
-                        {activeClubLabel}
-                      </span>
-                    )}
-
-                    <AdminStatusBadge
-                      label={formatAdminRoleLabel(access.role)}
-                      tone={roleTone(access.role)}
-                    />
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.18em] text-slate-400">
-                    <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">
-                      {access.canSelectClub
-                        ? "Centralized admin"
-                        : "Club admin"}
-                    </span>
-                    <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">
-                      {activeClub?.clubSlug ?? "club-scope"}
-                    </span>
-                    <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">
-                      {activeClub?.currencyCode ?? "USD"}
-                    </span>
-                  </div>
+          <header className="sticky top-0 z-20 border-b border-[var(--admin-border)] bg-[var(--admin-zinc-950)/80] backdrop-blur-md px-4 py-3 sm:px-6 lg:px-8">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+              <div className="flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => setSidebarCollapsed((v) => !v)}
+                  className="hidden xl:block text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-100)]"
+                >
+                  {sidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+                </button>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-sm font-bold text-[var(--admin-zinc-100)] uppercase tracking-wider">
+                    {activeItem?.label ?? "Workspace"}
+                  </h1>
+                  <span className="text-[10px] text-[var(--admin-zinc-500)] font-medium">
+                    / {formattedDate}
+                  </span>
                 </div>
               </div>
 
-              {notice ? (
-                <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm text-slate-200">
-                  {switchingClub
-                    ? "Refreshing the workspace for the selected club..."
-                    : notice}
-                </div>
-              ) : null}
-              {error ? (
-                <div className="mt-4 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-                  {error}
-                </div>
-              ) : null}
+              <div className="flex items-center gap-3">
+                {access.canSelectClub && clubOptions.length > 1 ? (
+                  <select
+                    value={selectedClubId ?? ""}
+                    onChange={(e) => setClubScope(e.target.value).catch(() => {})}
+                    disabled={switchingClub}
+                    className="bg-[var(--admin-zinc-900)] border border-[var(--admin-border)] rounded-md px-3 py-1.5 text-xs font-semibold text-[var(--admin-zinc-100)] outline-none"
+                  >
+                    {clubOptions.map((club) => (
+                      <option key={club.id} value={club.id}>{club.clubName}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <span className="text-xs font-semibold text-[var(--admin-zinc-400)]">
+                    {activeClubLabel}
+                  </span>
+                )}
+                <AdminStatusBadge
+                  label={formatAdminRoleLabel(access.role)}
+                  tone={roleTone(access.role)}
+                />
+              </div>
             </div>
-          </div>
+          </header>
 
-          <main id="admin-main-content" className="px-4 pb-28 sm:px-6 lg:px-8">
-            <div className="mx-auto flex max-w-[1480px] flex-col gap-6">
+          <main id="admin-main-content" className="p-4 sm:p-6 lg:p-8">
+            <div className="mx-auto max-w-full">
               {children}
             </div>
           </main>
         </div>
       </div>
+
 
       <AdminMobileNav
         pathname={pathname}
@@ -748,7 +683,7 @@ function AdminMobileNav({
   return (
     <>
       <nav
-        className={`fixed inset-x-0 bottom-0 z-30 pb-[env(safe-area-inset-bottom)] xl:hidden ${ui.shellBar}`}
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--admin-border)] bg-[var(--admin-zinc-950)] pb-[env(safe-area-inset-bottom)] xl:hidden"
         aria-label="Admin mobile navigation"
       >
         <div className="mx-auto flex max-w-md items-stretch justify-around px-3 pt-2">
@@ -761,20 +696,13 @@ function AdminMobileNav({
                 key={item.href}
                 href={withAdminClubScope(item.href, selectedClubId)}
                 aria-current={active ? "page" : undefined}
-                className={cn(active ? ui.navTabActive : ui.navTab)}
+                className={cn(
+                  "flex flex-col items-center gap-1 p-2 transition-colors",
+                  active ? "text-[var(--admin-zinc-100)]" : "text-[var(--admin-zinc-500)]"
+                )}
               >
-                <Icon size={22} strokeWidth={active ? 2.2 : 1.6} />
-                <span
-                  className={cn(
-                    "leading-none",
-                    active
-                      ? ui.kicker
-                      : "text-[11px] uppercase tracking-[0.2em]",
-                  )}
-                >
-                  {item.label}
-                </span>
-                {active ? <span className={ui.navIndicator} /> : null}
+                <Icon size={20} />
+                <span className="text-[9px] font-bold uppercase tracking-wider">{item.label}</span>
               </Link>
             );
           })}
@@ -782,11 +710,14 @@ function AdminMobileNav({
           <button
             type="button"
             onClick={() => setSheetOpen(true)}
-            className={cn(sheetOpen ? ui.navTabActive : ui.navTab)}
+            className={cn(
+              "flex flex-col items-center gap-1 p-2",
+              sheetOpen ? "text-[var(--admin-zinc-100)]" : "text-[var(--admin-zinc-500)]"
+            )}
             aria-label="Show more admin options"
           >
-            <MoreHorizontal size={22} strokeWidth={1.6} />
-            <span className="leading-none">More</span>
+            <MoreHorizontal size={20} />
+            <span className="text-[9px] font-bold uppercase tracking-wider">More</span>
           </button>
         </div>
       </nav>
@@ -799,30 +730,28 @@ function AdminMobileNav({
           aria-label="More admin options"
         >
           <div
-            className={`absolute inset-0 ${ui.drawerScrim}`}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setSheetOpen(false)}
-            onKeyDown={(event) => event.key === "Escape" && setSheetOpen(false)}
           />
           <div
-            className={`${ui.panel} absolute inset-x-0 bottom-0 rounded-t-[30px] p-5 pb-[calc(env(safe-area-inset-bottom)+1rem)]`}
+            className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-xl bg-[var(--admin-zinc-900)] p-5 pb-[calc(env(safe-area-inset-bottom)+1rem)] border-t border-[var(--admin-border)]"
           >
-            <div className="flex items-center justify-between pb-4">
-              <p className="text-base font-semibold text-white">More</p>
+            <div className="flex items-center justify-between pb-4 border-b border-[var(--admin-border)] mb-4">
+              <p className="text-sm font-bold uppercase tracking-widest text-[var(--admin-zinc-400)]">Menu</p>
               <button
                 type="button"
                 onClick={() => setSheetOpen(false)}
-                className={`${ui.iconButton} h-10 w-10 p-2 text-slate-300`}
-                aria-label="Close"
+                className="text-[var(--admin-zinc-500)]"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="space-y-5">
+            <div className="space-y-6">
               {overflowSections.map((section) => (
                 <div key={section.title}>
-                  <p className="admin-nav-section-label">{section.title}</p>
-                  <div className="grid gap-1.5">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--admin-zinc-600)] mb-3">{section.title}</p>
+                  <div className="grid gap-1">
                     {section.items.map((href) => {
                       const item = resolveNavItem(href);
                       const Icon = navIcons[href] ?? LayoutDashboard;
@@ -833,13 +762,12 @@ function AdminMobileNav({
                           key={href}
                           href={withAdminClubScope(href, selectedClubId)}
                           onClick={() => setSheetOpen(false)}
-                          aria-current={active ? "page" : undefined}
                           className={cn(
-                            "admin-nav-link",
-                            active && "admin-nav-link-active",
+                            "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                            active ? "bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-100)]" : "text-[var(--admin-zinc-400)] hover:bg-[var(--admin-zinc-800)]"
                           )}
                         >
-                          <Icon size={18} className="text-club-accent" />
+                          <Icon size={18} className="text-[var(--admin-zinc-500)]" />
                           {item.label}
                         </Link>
                       );
@@ -855,7 +783,7 @@ function AdminMobileNav({
                 setSheetOpen(false);
                 onSignOut();
               }}
-              className={`${ui.buttonSecondary} mt-5 w-full hover:border-rose-400/30 hover:text-rose-200`}
+              className="mt-8 w-full rounded-lg border border-rose-500/20 bg-rose-500/5 py-3 text-sm font-bold uppercase tracking-wider text-rose-500"
             >
               Sign out
             </button>

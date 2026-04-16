@@ -1,4 +1,4 @@
--- Auto-generated: DR Congo Linafoot, Zambia Super League, Rwanda Premier League
+-- Auto-generated: DR Congo Linafoot, ZSL, Rwanda Premier League
 
 -- ══════════════════════════════════════════════════════════════════
 -- DR Congo Linafoot Ligue 1
@@ -229,11 +229,11 @@ WHERE f.competition_id = 'ec0e015c-f2bd-41d0-8e53-69176b661a30'
 ON CONFLICT DO NOTHING;
 
 -- ══════════════════════════════════════════════════════════════════
--- Zambia Super League
+-- ZSL
 -- ══════════════════════════════════════════════════════════════════
 
 INSERT INTO football.competitions (id, slug, name, short_name, competition_kind, region, country_code, country_name, organizer, gender, is_active)
-VALUES ('93aace28-df45-4450-89d2-0bccc38f8405', 'zambia-super-league-2026', 'Zambia Super League', 'ZSL', 'league', 'africa', 'ZM', 'Zambia', 'FAZ', 'male', true)
+VALUES ('93aace28-df45-4450-89d2-0bccc38f8405', 'zambia-super-league-2026', 'ZSL', 'ZSL', 'league', 'africa', 'ZM', 'Zambia', 'FAZ', 'male', true)
 ON CONFLICT (slug) DO NOTHING;
 
 INSERT INTO football.seasons (id, competition_id, slug, label, year_start, year_end, starts_on, ends_on, status, is_active)
@@ -479,7 +479,7 @@ INSERT INTO football.teams (id, slug, name, short_name, team_type, country_code,
 VALUES ('e84cf217-d70b-4b32-8e8d-8adc76c68daf', 'etincelles-fc', 'Etincelles FC', 'ETI', 'club', 'RW', 'Rwanda', true)
 ON CONFLICT (slug) DO NOTHING;
 INSERT INTO football.teams (id, slug, name, short_name, team_type, country_code, country_name, is_active)
-VALUES ('13065788-8055-4cf5-80a4-b313a71fc4e6', 'apr-fc', 'APR FC', 'APR', 'club', 'RW', 'Rwanda', true)
+VALUES ('13065788-8055-4cf5-80a4-b313a71fc4e6', 'Rayon Sports-fc', 'Rayon Sports FC', 'Rayon Sports', 'club', 'RW', 'Rwanda', true)
 ON CONFLICT (slug) DO NOTHING;
 INSERT INTO football.teams (id, slug, name, short_name, team_type, country_code, country_name, is_active)
 VALUES ('e4d5d7dc-b704-4f3c-8974-12e9a558a74d', 'gicumbi-fc', 'Gicumbi FC', 'GIC', 'club', 'RW', 'Rwanda', true)

@@ -7,7 +7,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterFragmentActivity() {
-    private val nfcHceChannel = "africlub/biopay_nfc_hce"
+    private val nfcHceChannel = "africlub/BioPay_nfc_hce"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -30,24 +30,24 @@ class MainActivity : FlutterFragmentActivity() {
                             result.error("invalid_uri", "uri is required", null)
                         } else {
                             val prefs = getSharedPreferences(
-                                BiopayNfcHostApduService.PREFS_NAME,
+                                BioPayNfcHostApduService.PREFS_NAME,
                                 MODE_PRIVATE
                             )
                             prefs.edit()
-                                .putString(BiopayNfcHostApduService.KEY_URI, uri)
-                                .putBoolean(BiopayNfcHostApduService.KEY_ENABLED, true)
+                                .putString(BioPayNfcHostApduService.KEY_URI, uri)
+                                .putBoolean(BioPayNfcHostApduService.KEY_ENABLED, true)
                                 .apply()
                             result.success(null)
                         }
                     }
                     "stopPaymentRequest" -> {
                         val prefs = getSharedPreferences(
-                            BiopayNfcHostApduService.PREFS_NAME,
+                            BioPayNfcHostApduService.PREFS_NAME,
                             MODE_PRIVATE
                         )
                         prefs.edit()
-                            .putBoolean(BiopayNfcHostApduService.KEY_ENABLED, false)
-                            .remove(BiopayNfcHostApduService.KEY_URI)
+                            .putBoolean(BioPayNfcHostApduService.KEY_ENABLED, false)
+                            .remove(BioPayNfcHostApduService.KEY_URI)
                             .apply()
                         result.success(null)
                     }
@@ -62,16 +62,16 @@ class MainActivity : FlutterFragmentActivity() {
     }
 
     private fun isPaymentRequestActive(): Boolean {
-        val prefs = getSharedPreferences(BiopayNfcHostApduService.PREFS_NAME, MODE_PRIVATE)
-        return prefs.getBoolean(BiopayNfcHostApduService.KEY_ENABLED, false) &&
-            !prefs.getString(BiopayNfcHostApduService.KEY_URI, null).isNullOrBlank()
+        val prefs = getSharedPreferences(BioPayNfcHostApduService.PREFS_NAME, MODE_PRIVATE)
+        return prefs.getBoolean(BioPayNfcHostApduService.KEY_ENABLED, false) &&
+            !prefs.getString(BioPayNfcHostApduService.KEY_URI, null).isNullOrBlank()
     }
 
     private fun getPaymentRequestUri(): String? {
         if (!isPaymentRequestActive()) {
             return null
         }
-        val prefs = getSharedPreferences(BiopayNfcHostApduService.PREFS_NAME, MODE_PRIVATE)
-        return prefs.getString(BiopayNfcHostApduService.KEY_URI, null)
+        val prefs = getSharedPreferences(BioPayNfcHostApduService.PREFS_NAME, MODE_PRIVATE)
+        return prefs.getString(BioPayNfcHostApduService.KEY_URI, null)
     }
 }

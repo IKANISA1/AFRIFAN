@@ -316,10 +316,10 @@ class _FixtureSettlementScreenState
             if (!isSettled)
               Align(
                 alignment: Alignment.centerRight,
-                child: ClaymorphicButton(
-                  label: 'ENTER RESULT',
-                  width: 180,
-                  onPressed: () => _settleFixture(fixture),
+                child: AfriButton(
+                  label: 'Enter result',
+                  onTap: () => _settleFixture(fixture),
+                  fullWidth: false,
                 ),
               )
             else
@@ -402,10 +402,10 @@ class _FixtureSettlementScreenState
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing5),
-            ClaymorphicButton(
-              label: 'RETRY',
-              width: double.infinity,
-              onPressed: _loadFixtures,
+            AfriButton(
+              label: 'Retry',
+              fullWidth: true,
+              onTap: _loadFixtures,
             ),
           ],
         ),
@@ -671,12 +671,12 @@ class _SettlementSheetState extends State<_SettlementSheet> {
           const SizedBox(height: SpacingTokens.spacing6),
 
           // Settle button
-          ClaymorphicButton(
+          AfriButton(
             label: _status == 'finished'
-                ? 'SETTLE & GRADE PREDICTIONS'
-                : 'UPDATE STATUS',
-            width: double.infinity,
-            onPressed: _submit,
+                ? 'Settle & grade predictions'
+                : 'Update status',
+            fullWidth: true,
+            onTap: _submit,
           ),
           const SizedBox(height: SpacingTokens.spacing4),
         ],

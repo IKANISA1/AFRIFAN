@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
@@ -123,33 +124,42 @@ class AfriSectionCard extends StatelessWidget {
       );
     }
 
-    return Container(
-      padding: const EdgeInsets.all(SpacingTokens.cardPadding),
-      decoration: BoxDecoration(
-        color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: ColorTokens.ghostBorder,
-          width: 1.0,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: ColorTokens.glassBlurSigma / 2,
+          sigmaY: ColorTokens.glassBlurSigma / 2,
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+        child: Container(
+          padding: const EdgeInsets.all(SpacingTokens.cardPadding),
+          decoration: BoxDecoration(
+            color: ColorTokens.surfaceContainerHigh.withValues(alpha: 0.6),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: ColorTokens.ghostBorder,
+              width: 1.0,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(title, style: TypographyTokens.sectionTitle()),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(title, style: TypographyTokens.sectionTitle()),
+                  ),
+                  if (trailingWidget != null) ...[
+                    const SizedBox(width: SpacingTokens.spacing3),
+                    trailingWidget,
+                  ],
+                ],
               ),
-              if (trailingWidget != null) ...[
-                const SizedBox(width: SpacingTokens.spacing3),
-                trailingWidget,
-              ],
+              const SizedBox(height: SpacingTokens.spacing4),
+              child,
             ],
           ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          child,
-        ],
+        ),
       ),
     );
   }

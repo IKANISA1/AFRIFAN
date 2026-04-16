@@ -125,16 +125,16 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.article_outlined,
+                      AfriIcons.article,
                       size: 56,
                       color: ColorTokens.onSurfaceVariant,
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
                     Text(_error ?? 'Article unavailable'),
                     const SizedBox(height: SpacingTokens.spacing4),
-                    ClaymorphicButton(
-                      label: 'BACK',
-                      onPressed: () => context.pop(),
+                    AfriButton(
+                      label: 'Back',
+                      onTap: () => context.pop(),
                     ),
                   ],
                 ),

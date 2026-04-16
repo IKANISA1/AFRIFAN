@@ -1,729 +1,1900 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark" data-currency-code="RWF" data-currency-symbol="RWF" data-currency-name="Rwandan Francs">
+<html lang="en" data-theme="dark" data-currency-code="RWF" data-currency-symbol="RWF"
+  data-currency-name="Rwandan Francs">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#04081A">
-<title>Rayon Sports FC  Gikundiro</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=Libre+Baskerville:ital@1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css">
-<!-- Inline critical-path styles removed — see css/main.css -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#04081A">
+  <title>Rayon Sports FC Gikundiro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=Libre+Baskerville:ital@1&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <!-- Inline critical-path styles removed — see css/main.css -->
 </head>
+
 <body>
 
-<!-- ??????????? LOADER ??????????? -->
-<div id="loader">
-  <div class="ldr-ring">
-    <svg viewBox="0 0 90 90" fill="none"><circle cx="45" cy="45" r="40" stroke="rgba(201,168,76,.25)" stroke-width="1.5"/><path d="M45 5 A40 40 0 0 1 85 45" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round"/></svg>
-    <div class="ldr-crest-inner">
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M18 3L21 13H31L23 18.5L26 28L18 23L10 28L13 18.5L5 13H15Z" fill="#C9A84C"/></svg>
-    </div>
-  </div>
-  <div class="ldr-name">RAYON SPORTS</div>
-  <div class="ldr-sub">Gikundiro  Est. 1968</div>
-  <div class="ldr-bar"><div class="ldr-fill" id="ldr-fill"></div></div>
-</div>
-
-<!-- ??????????? NAV ??????????? -->
-<nav id="nav">
-  <a class="nav-logo" href="#hero">
-    <div class="nav-crest">
-      <svg width="20" height="20" viewBox="0 0 36 36" fill="none"><path d="M18 3L21 13H31L23 18.5L26 28L18 23L10 28L13 18.5L5 13H15Z" fill="#C9A84C"/></svg>
-    </div>
-    <div>
-      <div class="nav-brand">RAYON SPORTS FC</div>
-      <div class="nav-tagline">Kigali  Est. 1968</div>
-    </div>
-  </a>
-  <ul class="nav-links">
-    <li><a href="#match">Match</a></li>
-    <li><a href="#table">Table</a></li>
-    <li><a href="#squad">Squad</a></li>
-    <li><a href="#videos">Videos</a></li>
-    <li><a href="#shop">Shop</a></li>
-    <li><a href="#membership">Membership</a></li>
-    <li><a href="#tickets">Tickets</a></li>
-    <li><a href="#history">History</a></li>
-  </ul>
-  <div class="nav-right">
-    <button class="nav-btn" onclick="toggleTheme()" title="Toggle theme">
-      <svg id="theme-ico" width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 1V2M8 14V15M1 8H2M14 8H15M3.05 3.05L3.76 3.76M12.24 12.24L12.95 12.95M3.05 12.95L3.76 12.24M12.24 3.76L12.95 3.05M8 5C6.34 5 5 6.34 5 8C5 9.66 6.34 11 8 11C9.66 11 11 9.66 11 8C11 6.34 9.66 5 8 5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-    </button>
-    <button class="nav-btn" onclick="openCart()">
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M1 1H3L4.68 8.39C4.77 8.77 5.08 9.05 5.47 9.05H12.77C13.15 9.05 13.46 8.78 13.56 8.41L14.83 4H3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="12.5" r="1" fill="currentColor"/><circle cx="12" cy="12.5" r="1" fill="currentColor"/></svg>
-      <div class="cart-badge" id="cart-badge">0</div>
-    </button>
-    <button class="nav-cta" onclick="openMembership('Gold','15,000')">Join Club</button>
-  </div>
-</nav>
-
-<!-- ??????????? HERO ??????????? -->
-<div id="hero">
-  <div class="hero-bg"></div>
-  <canvas id="hero-canvas"></canvas>
-  <div class="hero-content">
-    <div class="pretag"><div class="pretag-line"></div><span>Rwanda Premier League  202425 Season</span></div>
-    <h1 class="hero-h">
-      <span class="ln1">RAYON</span>
-      <span class="ln2">SPORTS</span>
-      <span class="ln3">F.C.</span>
-    </h1>
-    <p class="hero-p">56 years of passion. 8 million fans. One heartbeat.<br>GIKUNDIRO  the favorites, forever.</p>
-    <div class="hero-btns">
-      <button class="btn-p" onclick="location.href='#squad'">Meet the Squad ?</button>
-      <button class="btn-s" onclick="location.href='#match'">Live Match Centre</button>
-    </div>
-    <div class="hero-stats">
-      <div class="hstat"><div class="hstat-n">9<em>?</em></div><div class="hstat-l">League Titles</div></div>
-      <div class="hstat"><div class="hstat-n">8<em>M</em></div><div class="hstat-l">Fans</div></div>
-      <div class="hstat"><div class="hstat-n">56</div><div class="hstat-l">Years</div></div>
-      <div class="hstat"><div class="hstat-n">1<em>st</em></div><div class="hstat-l">CECAFA Cup</div></div>
-    </div>
-  </div>
-  <div class="match-badge">
-    <div class="mb-lbl"><div class="live-dot"></div> Latest Result  RPL Matchday 22</div>
-    <div class="mb-score-row">
-      <div class="mb-team">
-        <div class="mb-badge" style="background:var(--blue);border:2px solid var(--gold)">RS</div>
-        <div class="mb-name">Rayon Sports</div>
-      </div>
-      <div style="text-align:center">
-        <div class="mb-score">0  0</div>
-        <div class="mb-comp">Full Time</div>
-      </div>
-      <div class="mb-team">
-        <div class="mb-badge" style="background:var(--mid);border:1px solid var(--border)">APR</div>
-        <div class="mb-name">APR FC</div>
-      </div>
-    </div>
-    <div class="mb-meta">
-      <div><strong>Amahoro</strong>Venue</div>
-      <div style="text-align:center"><strong>~25,000</strong>Attendance</div>
-      <div style="text-align:right"><strong style="color:#5580E8">2nd</strong>Position</div>
-    </div>
-  </div>
-</div>
-
-<!-- ??????????? TICKER ??????????? -->
-<div class="ticker">
-  <div class="ticker-track" id="ticker-track">
-    <div class="tick"><span class="tick-dot"></span>Rayon Sports 00 APR FC  Full Time</div>
-    <div class="tick"><span class="tick-dot"></span>Rwanda Premier League  Rayon Sports 2nd Place  50pts</div>
-    <div class="tick"><span class="tick-dot"></span>Rayon Sports WFC  FERWAFA Super Cup Champions 2024</div>
-    <div class="tick"><span class="tick-dot"></span>Ngagne Fall  14 Goals This Season  Top Scorer</div>
-    <div class="tick"><span class="tick-dot"></span>GIKUNDIRO  8 Million Fans  Rwanda's Largest Club</div>
-    <div class="tick"><span class="tick-dot"></span>9? Rwanda Premier League  9? Rwanda Cup  CECAFA Winners</div>
-    <div class="tick"><span class="tick-dot"></span>Rayon Sports 00 APR FC  Full Time</div>
-    <div class="tick"><span class="tick-dot"></span>Rwanda Premier League  Rayon Sports 2nd Place  50pts</div>
-    <div class="tick"><span class="tick-dot"></span>Rayon Sports WFC  FERWAFA Super Cup Champions 2024</div>
-    <div class="tick"><span class="tick-dot"></span>Ngagne Fall  14 Goals This Season  Top Scorer</div>
-    <div class="tick"><span class="tick-dot"></span>GIKUNDIRO  8 Million Fans  Rwanda's Largest Club</div>
-    <div class="tick"><span class="tick-dot"></span>9? Rwanda Premier League  9? Rwanda Cup  CECAFA Winners</div>
-  </div>
-</div>
-
-<!-- ??????????? STATS BAR ??????????? -->
-<div class="stats-bar">
-  <div class="stats-row">
-    <div class="stat-blk anim"><div class="n">9<em>?</em></div><div class="l">Premier League</div></div>
-    <div class="stat-blk anim"><div class="n">9<em>?</em></div><div class="l">Rwanda Cup</div></div>
-    <div class="stat-blk anim"><div class="n">56</div><div class="l">Years History</div></div>
-    <div class="stat-blk anim"><div class="n">8<em>M</em></div><div class="l">Fan Base</div></div>
-    <div class="stat-blk anim"><div class="n">1<em>st</em></div><div class="l">CECAFA Cup</div></div>
-    <div class="stat-blk anim"><div class="n">52</div><div class="l">Fan Groups</div></div>
-  </div>
-</div>
-
-<!-- ??????????? LIVE MATCH CENTRE ??????????? -->
-<section id="match">
-  <div class="sec-pre"><div class="sec-pre-line"></div><span>Live Match Centre</span></div>
-  <div class="sec-h">MATCH<br>CENTRE</div>
-  <div class="mc-score-hero anim">
-    <div class="mc-teams">
-      <div class="mc-team"><div class="mc-badge home">RS</div><div class="mc-name">Rayon Sports</div></div>
-      <div style="text-align:center">
-        <div class="mc-score">0  0</div>
-        <div class="mc-status"><div class="live-dot"></div> Full Time  MD 22</div>
-      </div>
-      <div class="mc-team"><div class="mc-badge away">APR</div><div class="mc-name">APR FC</div></div>
-    </div>
-    <div style="font-size:10.5px;color:var(--muted);letter-spacing:.8px">Rwanda Premier League  Amahoro National Stadium  10 March 2025</div>
-  </div>
-  <div class="tabs">
-    <button class="tab on" data-panel="overview">Overview</button>
-    <button class="tab" data-panel="lineups">Lineups</button>
-    <button class="tab" data-panel="timeline">Timeline</button>
-    <button class="tab" data-panel="stats">Stats</button>
-  </div>
-  <div class="panel on" id="panel-overview">
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:520px;margin:0 auto">
-      <div class="pst anim"><div class="pst-n">52%</div><div class="pst-l">Possession</div></div>
-      <div class="pst anim"><div class="pst-n">9</div><div class="pst-l">Shots</div></div>
-      <div class="pst anim"><div class="pst-n">3</div><div class="pst-l">On Target</div></div>
-      <div class="pst anim"><div class="pst-n">4</div><div class="pst-l">Corners</div></div>
-      <div class="pst anim"><div class="pst-n">12</div><div class="pst-l">Fouls</div></div>
-      <div class="pst anim"><div class="pst-n">3</div><div class="pst-l">Yellow Cards</div></div>
-    </div>
-  </div>
-  <div class="panel" id="panel-lineups">
-    <div class="lineup-cols">
-      <div>
-        <div class="col-hd">Rayon Sports  4-3-3</div>
-        <div class="lp-row"><div class="lp-num">29</div><div class="lp-name">K. Ndayisenga</div><div class="lp-pos">GK</div></div>
-        <div class="lp-row"><div class="lp-num">2</div><div class="lp-name">J. Ngarambe</div><div class="lp-pos">RB</div></div>
-        <div class="lp-row"><div class="lp-num">5</div><div class="lp-name">S. Nyandwi</div><div class="lp-pos">CB</div></div>
-        <div class="lp-row"><div class="lp-num">4</div><div class="lp-name">Y. Rwigema</div><div class="lp-pos">CB</div></div>
-        <div class="lp-row"><div class="lp-num">3</div><div class="lp-name">E. Nsabimana</div><div class="lp-pos">LB</div></div>
-        <div class="lp-row"><div class="lp-num">8</div><div class="lp-name">K. Muhire</div><div class="lp-pos">CM</div></div>
-        <div class="lp-row"><div class="lp-num">6</div><div class="lp-name">F. Mugheni</div><div class="lp-pos">DM</div></div>
-        <div class="lp-row"><div class="lp-num">11</div><div class="lp-name">N. Bayama</div><div class="lp-pos">CAM</div></div>
-        <div class="lp-row"><div class="lp-num">7</div><div class="lp-name">S. O. Jimoh</div><div class="lp-pos">RW</div></div>
-        <div class="lp-row"><div class="lp-num">9</div><div class="lp-name">N. Fall</div><div class="lp-pos">ST</div></div>
-        <div class="lp-row"><div class="lp-num">10</div><div class="lp-name">C. Hakuzimana</div><div class="lp-pos">LW</div></div>
-      </div>
-      <div>
-        <div class="col-hd">APR FC  4-4-2</div>
-        <div class="lp-row"><div class="lp-num">1</div><div class="lp-name">A. Mpitabakana</div><div class="lp-pos">GK</div></div>
-        <div class="lp-row"><div class="lp-num">4</div><div class="lp-name">B. Manishimwe</div><div class="lp-pos">RB</div></div>
-        <div class="lp-row"><div class="lp-num">5</div><div class="lp-name">D. Iradukunda</div><div class="lp-pos">CB</div></div>
-        <div class="lp-row"><div class="lp-num">6</div><div class="lp-name">P. Niyomwungeri</div><div class="lp-pos">CB</div></div>
-        <div class="lp-row"><div class="lp-num">3</div><div class="lp-name">A. Rutsindura</div><div class="lp-pos">LB</div></div>
-        <div class="lp-row"><div class="lp-num">8</div><div class="lp-name">F. Niyigena</div><div class="lp-pos">RM</div></div>
-        <div class="lp-row"><div class="lp-num">10</div><div class="lp-name">T. Kanzira</div><div class="lp-pos">CM</div></div>
-        <div class="lp-row"><div class="lp-num">7</div><div class="lp-name">C. Mbarushimana</div><div class="lp-pos">CM</div></div>
-        <div class="lp-row"><div class="lp-num">11</div><div class="lp-name">E. Hakuzimana</div><div class="lp-pos">LM</div></div>
-        <div class="lp-row"><div class="lp-num">9</div><div class="lp-name">A. Djuma</div><div class="lp-pos">ST</div></div>
-        <div class="lp-row"><div class="lp-num">22</div><div class="lp-name">H. Ndahiro</div><div class="lp-pos">ST</div></div>
-      </div>
-    </div>
-  </div>
-  <div class="panel" id="panel-timeline">
-    <div>
-      <div class="tl-row anim"><div class="tl-min">3'</div><div class="tl-ico ico-y">?</div><div><div class="tl-txt">F. Mugheni  Yellow Card</div><div class="tl-sub">Rayon Sports</div></div></div>
-      <div class="tl-row anim"><div class="tl-min">28'</div><div class="tl-ico ico-s">?</div><div><div class="tl-txt">Substitution  Rayon Sports</div><div class="tl-sub">Muhire OFF ? Hakuzimana ON</div></div></div>
-      <div class="tl-row anim"><div class="tl-min">44'</div><div class="tl-ico ico-y">?</div><div><div class="tl-txt">D. Iradukunda  Yellow Card</div><div class="tl-sub">APR FC</div></div></div>
-      <div class="tl-row anim"><div class="tl-min">62'</div><div class="tl-ico ico-s">?</div><div><div class="tl-txt">Substitution  APR FC</div><div class="tl-sub">Ndahiro OFF ? Nkurunziza ON</div></div></div>
-      <div class="tl-row anim"><div class="tl-min">71'</div><div class="tl-ico ico-g">?</div><div><div class="tl-txt">GOAL DISALLOWED  Offside</div><div class="tl-sub">N. Fall  Rayon Sports</div></div></div>
-      <div class="tl-row anim"><div class="tl-min">88'</div><div class="tl-ico ico-s">?</div><div><div class="tl-txt">Substitution  Rayon Sports</div><div class="tl-sub">Jimoh OFF ? Bayama ON</div></div></div>
-      <div class="tl-row anim"><div class="tl-min">90'</div><div class="tl-ico ico-y">?</div><div><div class="tl-txt">N. Fall  Yellow Card</div><div class="tl-sub">Rayon Sports</div></div></div>
-    </div>
-  </div>
-  <div class="panel" id="panel-stats">
-    <div class="stat-bars">
-      <div class="sb-row anim"><div class="sb-val">52%</div><div class="sb-label">Possession</div><div class="sb-track"><div class="sb-fill" style="width:52%"></div></div><div class="sb-val">48%</div></div>
-      <div class="sb-row anim"><div class="sb-val">9</div><div class="sb-label">Total Shots</div><div class="sb-track"><div class="sb-fill" style="width:60%"></div></div><div class="sb-val">6</div></div>
-      <div class="sb-row anim"><div class="sb-val">3</div><div class="sb-label">On Target</div><div class="sb-track"><div class="sb-fill" style="width:50%"></div></div><div class="sb-val">3</div></div>
-      <div class="sb-row anim"><div class="sb-val">4</div><div class="sb-label">Corners</div><div class="sb-track"><div class="sb-fill" style="width:44%"></div></div><div class="sb-val">5</div></div>
-      <div class="sb-row anim"><div class="sb-val">12</div><div class="sb-label">Fouls</div><div class="sb-track"><div class="sb-fill" style="width:48%"></div></div><div class="sb-val">13</div></div>
-      <div class="sb-row anim"><div class="sb-val">82%</div><div class="sb-label">Pass Acc.</div><div class="sb-track"><div class="sb-fill" style="width:82%"></div></div><div class="sb-val">79%</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ??????????? LEAGUE TABLE ??????????? -->
-<section id="table">
-  <div class="sec-row">
-    <div>
-      <div class="sec-pre"><div class="sec-pre-line"></div><span>202425 Season</span></div>
-      <div class="sec-h">LEAGUE<br>TABLE</div>
-    </div>
-  </div>
-  <table class="lg-tbl">
-    <thead><tr><th style="width:38px">Pos</th><th>Club</th><th style="text-align:center">P</th><th style="text-align:center">W</th><th style="text-align:center">D</th><th style="text-align:center">L</th><th style="text-align:center">GD</th><th style="text-align:center">Pts</th><th>Form</th></tr></thead>
-    <tbody>
-      <tr class="anim"><td class="pos gold">1</td><td><div class="tcell"><div class="tdot" style="background:#E74C3C"></div>APR FC</div></td><td style="text-align:center">25</td><td style="text-align:center">18</td><td style="text-align:center">4</td><td style="text-align:center">3</td><td style="text-align:center">+32</td><td class="pts">58</td><td><div class="form-row"><div class="fw">W</div><div class="fw">W</div><div class="fd">D</div><div class="fw">W</div><div class="fw">W</div></div></td></tr>
-      <tr class="my-team anim"><td class="pos gold">2</td><td><div class="tcell"><div class="tdot" style="background:var(--blue)"></div><strong>Rayon Sports</strong></div></td><td style="text-align:center">25</td><td style="text-align:center">15</td><td style="text-align:center">5</td><td style="text-align:center">5</td><td style="text-align:center">+22</td><td class="pts">50</td><td><div class="form-row"><div class="fd">D</div><div class="fw">W</div><div class="fl">L</div><div class="fw">W</div><div class="fd">D</div></div></td></tr>
-      <tr class="anim"><td class="pos gold">3</td><td><div class="tcell"><div class="tdot" style="background:var(--muted)"></div>Mukura VS</div></td><td style="text-align:center">25</td><td style="text-align:center">13</td><td style="text-align:center">5</td><td style="text-align:center">7</td><td style="text-align:center">+11</td><td class="pts">44</td><td><div class="form-row"><div class="fl">L</div><div class="fw">W</div><div class="fw">W</div><div class="fd">D</div><div class="fw">W</div></div></td></tr>
-      <tr class="anim"><td class="pos">4</td><td><div class="tcell"><div class="tdot" style="background:var(--muted)"></div>AS Kigali</div></td><td style="text-align:center">25</td><td style="text-align:center">11</td><td style="text-align:center">7</td><td style="text-align:center">7</td><td style="text-align:center">+6</td><td class="pts">40</td><td><div class="form-row"><div class="fw">W</div><div class="fd">D</div><div class="fd">D</div><div class="fl">L</div><div class="fw">W</div></div></td></tr>
-      <tr class="anim"><td class="pos">5</td><td><div class="tcell"><div class="tdot" style="background:var(--muted)"></div>Bugesera FC</div></td><td style="text-align:center">25</td><td style="text-align:center">10</td><td style="text-align:center">6</td><td style="text-align:center">9</td><td style="text-align:center">+2</td><td class="pts">36</td><td><div class="form-row"><div class="fd">D</div><div class="fl">L</div><div class="fw">W</div><div class="fw">W</div><div class="fl">L</div></div></td></tr>
-      <tr class="anim"><td class="pos">6</td><td><div class="tcell"><div class="tdot" style="background:var(--muted)"></div>Etincelles FC</div></td><td style="text-align:center">25</td><td style="text-align:center">9</td><td style="text-align:center">5</td><td style="text-align:center">11</td><td style="text-align:center">-5</td><td class="pts">32</td><td><div class="form-row"><div class="fl">L</div><div class="fl">L</div><div class="fw">W</div><div class="fd">D</div><div class="fw">W</div></div></td></tr>
-      <tr class="anim"><td class="pos">7</td><td><div class="tcell"><div class="tdot" style="background:var(--muted)"></div>Gasogi United</div></td><td style="text-align:center">25</td><td style="text-align:center">7</td><td style="text-align:center">6</td><td style="text-align:center">12</td><td style="text-align:center">-14</td><td class="pts">27</td><td><div class="form-row"><div class="fl">L</div><div class="fw">W</div><div class="fl">L</div><div class="fl">L</div><div class="fd">D</div></div></td></tr>
-      <tr class="anim"><td class="pos">8</td><td><div class="tcell"><div class="tdot" style="background:#E74C3C"></div>Police FC</div></td><td style="text-align:center">25</td><td style="text-align:center">4</td><td style="text-align:center">5</td><td style="text-align:center">16</td><td style="text-align:center">-28</td><td class="pts">17</td><td><div class="form-row"><div class="fl">L</div><div class="fl">L</div><div class="fd">D</div><div class="fl">L</div><div class="fl">L</div></div></td></tr>
-    </tbody>
-  </table>
-</section>
-
-<!-- ??????????? NEWS ??????????? -->
-<section id="news">
-  <div class="sec-row">
-    <div><div class="sec-pre"><div class="sec-pre-line"></div><span>Latest News</span></div><div class="sec-h">GIKUNDIRO<br>NEWS</div></div>
-    <button class="btn-s">All News ?</button>
-  </div>
-  <div class="news-g">
-    <div class="nc feat anim">
-      <div class="nc-img"><div class="nc-img-inner" style="background:linear-gradient(135deg,#0A1F5C,#1A4DC4 45%,#0D1530);height:100%;min-height:220px;position:relative;display:flex;align-items:center;justify-content:center"><svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 560 320" fill="none"><rect x="180" y="60" width="200" height="200" rx="1" stroke="rgba(255,255,255,.06)"/><line x1="180" y1="160" x2="380" y2="160" stroke="rgba(255,255,255,.06)"/><line x1="280" y1="60" x2="280" y2="260" stroke="rgba(255,255,255,.06)"/><circle cx="280" cy="160" r="35" stroke="rgba(255,255,255,.06)"/><ellipse cx="280" cy="160" rx="240" ry="155" stroke="rgba(255,255,255,.04)"/><rect x="130" y="117" width="50" height="86" stroke="rgba(201,168,76,.22)"/><rect x="380" y="117" width="50" height="86" stroke="rgba(201,168,76,.22)"/></svg></div></div>
-      <div class="nc-body"><span class="tag tag-b">Match Report</span><div class="nc-h">Derby stalemate: Rayon Sports and APR FC battle to goalless draw at Amahoro in a bruising capital encounter</div><div class="nc-meta">10 March 2025  Rwanda Premier League  5 min read</div></div>
-    </div>
-    <div class="nc anim"><div class="nc-img"><div class="nc-img-inner" style="background:linear-gradient(135deg,#1E2840,#0D1530);height:100%;min-height:120px;display:flex;align-items:center;justify-content:center;font-size:44px">??</div></div><div class="nc-body"><span class="tag tag-g">Squad Update</span><div class="nc-h">Ngagne Fall tops scorers with 14 goals  Senegalese striker takes RPL by storm</div><div class="nc-meta">5 March 2025</div></div></div>
-    <div class="nc anim"><div class="nc-img"><div class="nc-img-inner" style="background:linear-gradient(135deg,#1A0A0A,#3A1010);height:100%;min-height:120px;display:flex;align-items:center;justify-content:center;font-size:44px">??</div></div><div class="nc-body"><span class="tag tag-r">CAF Update</span><div class="nc-h">Rayon Sports plots CAF Confederation Cup campaign for next season</div><div class="nc-meta">1 March 2025</div></div></div>
-    <div class="nc anim"><div class="nc-img"><div class="nc-img-inner" style="background:linear-gradient(135deg,#0A1F5C,#0D1530);height:100%;min-height:120px;display:flex;align-items:center;justify-content:center;font-size:44px">???</div></div><div class="nc-body"><span class="tag tag-b">Academy</span><div class="nc-h">SKOL partnership funds new training ground &amp; academy facility</div><div class="nc-meta">24 Feb 2025</div></div></div>
-    <div class="nc anim"><div class="nc-img"><div class="nc-img-inner" style="background:linear-gradient(135deg,#0A2010,#0D2A18);height:100%;min-height:120px;display:flex;align-items:center;justify-content:center;font-size:44px">??</div></div><div class="nc-body"><span class="tag tag-gr">Women's FC</span><div class="nc-h">WFC clinch Super Cup in dominant 5-2 victory over AS Kigali</div><div class="nc-meta">27 Sep 2024</div></div></div>
-  </div>
-</section>
-
-<!-- ??????????? VIDEOS ??????????? -->
-<section id="videos">
-  <div class="sec-row">
-    <div><div class="sec-pre"><div class="sec-pre-line"></div><span>Media Hub</span></div><div class="sec-h">VIDEOS &amp;<br>HIGHLIGHTS</div></div>
-    <button class="btn-s">View All ?</button>
-  </div>
-  <div class="vid-g">
-    <div class="vc anim" onclick="openVideo('Match Highlights: Rayon Sports 30 APR FC','Match Report  23 Feb 2025')"><div class="vc-thumb"><div class="vc-thumb-img" style="background:linear-gradient(135deg,#0033A0,#0A1F5C);font-size:42px">?</div><div class="vc-overlay"><div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div></div><div class="vc-dur">3:42</div></div><div class="vc-body"><div class="vc-cat">Match Highlights</div><div class="vc-title">Rayon Sports 30 APR FC  Dominant Derby Victory</div><div class="vc-date">23 February 2025</div></div></div>
-    <div class="vc anim" onclick="openVideo('Ngagne Fall: Season Special','Player Feature  March 2025')"><div class="vc-thumb"><div class="vc-thumb-img" style="background:linear-gradient(135deg,#1F0A0A,#3A1218);font-size:42px">??</div><div class="vc-overlay"><div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div></div><div class="vc-dur">6:15</div></div><div class="vc-body"><div class="vc-cat">Player Feature</div><div class="vc-title">Ngagne Fall: The Senegalese striker taking Rwanda by storm</div><div class="vc-date">5 March 2025</div></div></div>
-    <div class="vc anim" onclick="openVideo('WFC Super Cup Final Highlights','Women\'s Football  Sep 2024')"><div class="vc-thumb"><div class="vc-thumb-img" style="background:linear-gradient(135deg,#0A2010,#0D2A18);font-size:42px">??</div><div class="vc-overlay"><div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div></div><div class="vc-dur">5:02</div></div><div class="vc-body"><div class="vc-cat">Women's Football</div><div class="vc-title">WFC Super Cup Final: 52 Demolition of AS Kigali</div><div class="vc-date">27 September 2024</div></div></div>
-    <div class="vc anim" onclick="openVideo('Inside Rayon Sports Pre-Season 2025','Behind the Scenes  Jan 2025')"><div class="vc-thumb"><div class="vc-thumb-img" style="background:linear-gradient(135deg,#0D1530,#1E2840);font-size:42px">???</div><div class="vc-overlay"><div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div></div><div class="vc-dur">8:30</div></div><div class="vc-body"><div class="vc-cat">Behind the Scenes</div><div class="vc-title">Inside Rayon: Pre-season training camp 2025</div><div class="vc-date">18 January 2025</div></div></div>
-    <div class="vc anim" onclick="openVideo('Post-Match Press Conference  Rayon 00 APR','Coach Media  10 Mar 2025')"><div class="vc-thumb"><div class="vc-thumb-img" style="background:linear-gradient(135deg,#1A1A2E,#0D1530);font-size:42px">???</div><div class="vc-overlay"><div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div></div><div class="vc-dur">12:04</div></div><div class="vc-body"><div class="vc-cat">Press Conference</div><div class="vc-title">Coach post-match: "We deserved more than a draw today"</div><div class="vc-date">10 March 2025</div></div></div>
-    <div class="vc anim" onclick="openVideo('Top 5 Goals: January 2025','Goal of the Month')"><div class="vc-thumb"><div class="vc-thumb-img" style="background:linear-gradient(135deg,#1F1800,#2A2000);font-size:42px">??</div><div class="vc-overlay"><div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div></div><div class="vc-dur">2:18</div></div><div class="vc-body"><div class="vc-cat">Goal of the Month</div><div class="vc-title">January's finest: Top 5 goals from Rayon Sports</div><div class="vc-date">1 February 2025</div></div></div>
-  </div>
-</section>
-
-<!-- ??????????? FIXTURES ??????????? -->
-<section id="fixtures" style="background:var(--bg2)">
-  <div class="sec-row">
-    <div><div class="sec-pre"><div class="sec-pre-line"></div><span>Schedule</span></div><div class="sec-h">FIXTURES &amp;<br>RESULTS</div></div>
-  </div>
-  <div class="tabs" style="margin-bottom:28px">
-    <button class="tab on" data-ftab="results">Recent Results</button>
-    <button class="tab" data-ftab="upcoming">Upcoming</button>
-  </div>
-  <div id="ftab-results">
-    <div class="fix-list">
-      <div class="fix w anim"><div class="fix-date">23 Feb 2025</div><div class="fix-tm home-tm">Rayon Sports</div><div class="fix-score-box"><div class="fix-score">3  0</div></div><div class="fix-tm">APR FC</div><div class="res-badge rw">Win</div></div>
-      <div class="fix d anim"><div class="fix-date">10 Mar 2025</div><div class="fix-tm home-tm">Rayon Sports</div><div class="fix-score-box"><div class="fix-score">0  0</div></div><div class="fix-tm">APR FC</div><div class="res-badge rd">Draw</div></div>
-      <div class="fix l anim"><div class="fix-date">17 May 2025</div><div class="fix-tm home-tm">Bugesera FC</div><div class="fix-score-box"><div class="fix-score">2  0</div></div><div class="fix-tm">Rayon Sports</div><div class="res-badge rl">Loss</div></div>
-      <div class="fix w anim"><div class="fix-date">28 Jan 2025</div><div class="fix-tm home-tm">Rayon Sports</div><div class="fix-score-box"><div class="fix-score">2  1</div></div><div class="fix-tm">AS Kigali</div><div class="res-badge rw">Win</div></div>
-      <div class="fix w anim"><div class="fix-date">14 Dec 2024</div><div class="fix-tm home-tm">Rayon Sports</div><div class="fix-score-box"><div class="fix-score">2  0</div></div><div class="fix-tm">Mukura VS</div><div class="res-badge rw">Win</div></div>
-    </div>
-  </div>
-  <div id="ftab-upcoming" style="display:none">
-    <div class="fix-list">
-      <div class="fix anim"><div class="fix-date">22 Mar 2025<br><span style="color:var(--gold);font-weight:700">15:00</span></div><div class="fix-tm home-tm">Rayon Sports</div><div class="fix-score-box"><div class="fix-score" style="font-size:13px;letter-spacing:2px">vs</div></div><div class="fix-tm">Etincelles FC</div><div style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:1px">RPL</div></div>
-      <div class="fix anim"><div class="fix-date">29 Mar 2025<br><span style="color:var(--gold);font-weight:700">16:00</span></div><div class="fix-tm home-tm">Gasogi United</div><div class="fix-score-box"><div class="fix-score" style="font-size:13px;letter-spacing:2px">vs</div></div><div class="fix-tm">Rayon Sports</div><div style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:1px">RPL  Away</div></div>
-      <div class="fix anim"><div class="fix-date">5 Apr 2025<br><span style="color:var(--gold);font-weight:700">15:00</span></div><div class="fix-tm home-tm">Rayon Sports</div><div class="fix-score-box"><div class="fix-score" style="font-size:13px;letter-spacing:2px">vs</div></div><div class="fix-tm">Police FC</div><div style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:1px">RPL</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ??????????? SQUAD ??????????? -->
-<section id="squad">
-  <div class="sec-pre"><div class="sec-pre-line"></div><span>202425 Season</span></div>
-  <div class="sec-h">THE SQUAD</div>
-  <p class="sec-p">Click any player to view their full profile, season stats and career history.</p>
-  <div class="squad-filter">
-    <button class="sf on" data-pos="all">All</button>
-    <button class="sf" data-pos="gk">Goalkeepers</button>
-    <button class="sf" data-pos="def">Defenders</button>
-    <button class="sf" data-pos="mid">Midfielders</button>
-    <button class="sf" data-pos="fwd">Forwards</button>
-  </div>
-  <div class="squad-g" id="squad-grid"></div>
-</section>
-
-<!-- ??????????? FAN WALL ??????????? -->
-<section id="fanwall">
-  <div class="sec-row">
-    <div><div class="sec-pre"><div class="sec-pre-line"></div><span>Community</span></div><div class="sec-h">FAN<br>WALL</div></div>
-    <button class="btn-s">Submit Your Post ?</button>
-  </div>
-  <div class="fan-featured anim">
-    <div class="fan-av-lg" style="background:linear-gradient(135deg,var(--blue),#1A4DC4)">JM</div>
-    <div>
-      <div class="fan-crown">? Fan of the Match</div>
-      <div class="fan-pname">Jean-Marie Nkurunziza</div>
-      <div class="fan-pgrp">GIKUNDIRO Kigali Ultras  Supporter Group #1</div>
-      <div class="fan-ptxt">"Forty years watching this club and the passion never fades. The derby today was heart-stopping  we deserved a winner. Title number 10 is coming, I can feel it in the Amahoro air. GIKUNDIRO forever! ??"</div>
-      <div class="fan-acts">
-        <button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>847</span> Likes</button>
-        <button class="fan-act">?? 142 Comments</button>
-        <button class="fan-act">? Share</button>
-      </div>
-    </div>
-  </div>
-  <div class="fan-g">
-    <div class="fan-card anim"><div class="fan-card-hd"><div class="fan-av" style="background:linear-gradient(135deg,#0A1F5C,#1A4DC4)">AK</div><div><div style="font-size:12.5px;font-weight:800;color:var(--text)">Alice K.</div><div style="font-size:9.5px;color:var(--muted)">Southern Province Fan Group</div></div></div><div style="font-size:13px;color:var(--text2);line-height:1.6">"Drove 3 hours from Huye to watch the derby. Worth every kilometre. Rayon Sports is not just a club, it is our identity. Gikundiro! ??"</div><div class="fan-acts"><button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>312</span></button><button class="fan-act">?? 28</button></div></div>
-    <div class="fan-card anim"><div class="fan-card-hd"><div class="fan-av" style="background:linear-gradient(135deg,#1F0A0A,#4A1010)">PM</div><div><div style="font-size:12.5px;font-weight:800;color:var(--text)">Patrick M.</div><div style="font-size:9.5px;color:var(--muted)">GIKUNDIRO Diaspora  London</div></div></div><div style="font-size:13px;color:var(--text2);line-height:1.6">"Watching from London at 3am. Didn't sleep, didn't care. Fall was robbed of that goal. Next match we go all in! ??"</div><div class="fan-acts"><button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>489</span></button><button class="fan-act">?? 67</button></div></div>
-    <div class="fan-card anim"><div class="fan-card-hd"><div class="fan-av" style="background:linear-gradient(135deg,#0A2010,#0D3015)">GU</div><div><div style="font-size:12.5px;font-weight:800;color:var(--text)">Grace U.</div><div style="font-size:9.5px;color:var(--muted)">Rayon Sports WFC Fan Club</div></div></div><div style="font-size:13px;color:var(--text2);line-height:1.6">"So proud of the women's team! That 5-2 Super Cup win gave me goosebumps. The future is so bright. ??"</div><div class="fan-acts"><button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>276</span></button><button class="fan-act">?? 34</button></div></div>
-    <div class="fan-card anim"><div class="fan-card-hd"><div class="fan-av" style="background:linear-gradient(135deg,#1A1040,#2A1860)">DI</div><div><div style="font-size:12.5px;font-weight:800;color:var(--text)">David I.</div><div style="font-size:9.5px;color:var(--muted)">Nyanza Original Fan Club</div></div></div><div style="font-size:13px;color:var(--text2);line-height:1.6">"Born in Nyanza, where Rayon Sports was born. This club runs in my blood. Title number 10 is our destiny! ??"</div><div class="fan-acts"><button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>193</span></button><button class="fan-act">?? 19</button></div></div>
-    <div class="fan-card anim"><div class="fan-card-hd"><div class="fan-av" style="background:linear-gradient(135deg,#1F1200,#2A1800)">SW</div><div><div style="font-size:12.5px;font-weight:800;color:var(--text)">Sarah W.</div><div style="font-size:9.5px;color:var(--muted)">East Africa GIKUNDIRO Network</div></div></div><div style="font-size:13px;color:var(--text2);line-height:1.6">"Following Rayon from Nairobi. The only Rwandan club with a proper East Africa following. Keep representing! ??"</div><div class="fan-acts"><button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>154</span></button><button class="fan-act">?? 22</button></div></div>
-    <div class="fan-card anim"><div class="fan-card-hd"><div class="fan-av" style="background:linear-gradient(135deg,#100A1F,#1A1230)">RN</div><div><div style="font-size:12.5px;font-weight:800;color:var(--text)">Robert N.</div><div style="font-size:9.5px;color:var(--muted)">Junior GIKUNDIRO  U-18</div></div></div><div style="font-size:13px;color:var(--text2);line-height:1.6">"My first ever Rayon match today. The atmosphere at Amahoro was incredible. I'm a fan for life now. ???"</div><div class="fan-acts"><button class="fan-act" onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">?? <span>88</span></button><button class="fan-act">?? 11</button></div></div>
-  </div>
-</section>
-
-<!-- ??????????? SHOP ??????????? -->
-<section id="shop" style="background:var(--bg2)">
-  <div class="sec-pre"><div class="sec-pre-line"></div><span>Official Club Store</span></div>
-  <div class="sec-h">CLUB SHOP</div>
-  <p class="sec-p">Customise your jersey and wear your GIKUNDIRO pride. Official merchandise available now.</p>
-  <div class="shop-layout">
-    <div class="jersey-box anim">
-      <div class="jb-head">JERSEY BUILDER</div>
-      <div class="jb-preview">
-        <svg id="jb-svg" width="190" height="210" viewBox="0 0 190 210" fill="none">
-          <path id="jb-sl" d="M62 25L30 48L10 42L5 84L46 90L46 66L70 44Z" fill="#FFFFFF"/>
-          <path id="jb-sr" d="M128 25L160 48L180 42L185 84L144 90L144 66L120 44Z" fill="#FFFFFF"/>
-          <path id="jb-body" d="M62 25Q95 12 128 25L144 66L144 195L46 195L46 66Z" fill="#0033A0"/>
-          <path d="M76 25Q95 32 114 25L111 15Q95 6 79 15Z" fill="#C9A84C"/>
-          <circle cx="74" cy="65" r="12" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.25)" stroke-width=".5"/>
-          <text x="74" y="69" text-anchor="middle" font-family="Bebas Neue" font-size="8" fill="white" letter-spacing="1">RS</text>
-          <text id="jb-numtxt" x="95" y="142" text-anchor="middle" font-family="Bebas Neue" font-size="50" fill="white" opacity=".92">9</text>
-          <text id="jb-nametxt" x="95" y="176" text-anchor="middle" font-family="Manrope" font-size="11" fill="white" font-weight="700" letter-spacing="2.5">FALL</text>
+  <!-- ??????????? LOADER ??????????? -->
+  <div id="loader">
+    <div class="ldr-ring">
+      <svg viewBox="0 0 90 90" fill="none">
+        <Group cx="45" cy="45" r="40" stroke="rgba(201,168,76,.25)" stroke-width="1.5" />
+        <path d="M45 5 A40 40 0 0 1 85 45" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+      <div class="ldr-crest-inner">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <path d="M18 3L21 13H31L23 18.5L26 28L18 23L10 28L13 18.5L5 13H15Z" fill="#C9A84C" />
         </svg>
       </div>
-      <div class="jb-ctrl">
-        <div class="jb-field"><div class="jb-lbl">Body Colour</div><div class="color-row">
-          <div class="color-chip on" style="background:#0033A0" onclick="setJerseyCol(this,'body','#0033A0')"></div>
-          <div class="color-chip" style="background:#1A1A2E" onclick="setJerseyCol(this,'body','#1A1A2E')"></div>
-          <div class="color-chip" style="background:#fff;border:1px solid #ccc" onclick="setJerseyCol(this,'body','#FFFFFF')"></div>
-          <div class="color-chip" style="background:#7B0000" onclick="setJerseyCol(this,'body','#7B0000')"></div>
-          <div class="color-chip" style="background:#0A2A0A" onclick="setJerseyCol(this,'body','#0A2A0A')"></div>
-        </div></div>
-        <div class="jb-field"><div class="jb-lbl">Sleeve Colour</div><div class="color-row">
-          <div class="color-chip on" style="background:#fff;border:1px solid #ccc" onclick="setJerseyCol(this,'sleeve','#FFFFFF')"></div>
-          <div class="color-chip" style="background:#0033A0" onclick="setJerseyCol(this,'sleeve','#0033A0')"></div>
-          <div class="color-chip" style="background:#C9A84C" onclick="setJerseyCol(this,'sleeve','#C9A84C')"></div>
-          <div class="color-chip" style="background:#111" onclick="setJerseyCol(this,'sleeve','#111111')"></div>
-          <div class="color-chip" style="background:#C0392B" onclick="setJerseyCol(this,'sleeve','#C0392B')"></div>
-        </div></div>
-        <div class="jb-field"><div class="jb-lbl">Your Name</div><input class="jb-inp" id="jb-name" maxlength="12" placeholder="YOUR NAME" value="FALL" oninput="updateJersey()"></div>
-        <div class="jb-field"><div class="jb-lbl">Squad Number</div><input class="jb-inp" id="jb-num" type="number" min="1" max="99" value="9" oninput="updateJersey()"></div>
-        <div class="jb-field"><div class="jb-lbl">Size</div><div class="size-row">
-          <button class="size-btn" onclick="setSz(this)">XS</button><button class="size-btn" onclick="setSz(this)">S</button><button class="size-btn on" onclick="setSz(this)">M</button><button class="size-btn" onclick="setSz(this)">L</button><button class="size-btn" onclick="setSz(this)">XL</button><button class="size-btn" onclick="setSz(this)">XXL</button>
-        </div></div>
-        <button class="btn-p" style="width:100%;justify-content:center" onclick="addJersey()">Add Custom Jersey  <span data-currency-code-amount="45000"></span></button>
-      </div>
     </div>
-    <div>
-      <div style="font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:18px;padding-bottom:7px;border-bottom:.5px solid var(--borderg)">Official Merchandise</div>
-      <div class="shop-products">
-        <div class="product-row anim" onclick="addProd('Home Kit 202425','home-kit','M',45000)"><div class="prod-img" style="background:linear-gradient(135deg,var(--blue-p),var(--mid))">?</div><div><div class="prod-name">Home Kit 202425</div><div class="prod-type">Official Match Jersey  Blue/White</div><div class="prod-price" data-currency-code-amount="45000"></div></div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button></div>
-        <div class="product-row anim" onclick="addProd('Away Kit 202425','away-kit','M',45000)"><div class="prod-img" style="background:linear-gradient(135deg,#1A1A1A,var(--mid))">??</div><div><div class="prod-name">Away Kit 202425</div><div class="prod-type">Official Match Jersey  White/Gold</div><div class="prod-price" data-currency-code-amount="45000"></div></div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button></div>
-        <div class="product-row anim" onclick="addProd('Training Top 2025','training','M',22000)"><div class="prod-img" style="background:linear-gradient(135deg,var(--mid),var(--bg3))">??</div><div><div class="prod-name">Training Top 2025</div><div class="prod-type">Performance Training Wear</div><div class="prod-price" data-currency-code-amount="22000"></div></div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button></div>
-        <div class="product-row anim" onclick="addProd('GIKUNDIRO Scarf','scarf','One Size',8000)"><div class="prod-img" style="background:linear-gradient(135deg,#0033A0,#C9A84C)">??</div><div><div class="prod-name">GIKUNDIRO Scarf</div><div class="prod-type">Supporter Scarf  Blue &amp; Gold</div><div class="prod-price" data-currency-code-amount="8000"></div></div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button></div>
-        <div class="product-row anim" onclick="addProd('Club Cap','cap','One Size',7500)"><div class="prod-img" style="background:linear-gradient(135deg,var(--blue),#1A4DC4)">??</div><div><div class="prod-name">Rayon Sports Cap</div><div class="prod-type">Snapback  Embroidered Crest</div><div class="prod-price" data-currency-code-amount="7500"></div></div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button></div>
-      </div>
+    <div class="ldr-name">RAYON SPORTS</div>
+    <div class="ldr-sub">Gikundiro Est. 1968</div>
+    <div class="ldr-bar">
+      <div class="ldr-fill" id="ldr-fill"></div>
     </div>
   </div>
-</section>
 
-<!-- ??????????? MEMBERSHIP ??????????? -->
-<section id="membership">
-  <div class="sec-pre"><div class="sec-pre-line"></div><span>Fan Membership</span></div>
-  <div class="sec-h">JOIN<br>GIKUNDIRO</div>
-  <p class="sec-p">Become an official member. Member-owned, people-powered  your contribution builds this club.</p>
-  <div class="mem-g">
-    <div class="mem-card anim">
-      <div class="mem-badge mb-b">Blue Member</div>
-      <div class="mem-tier">BLUE</div>
-      <div class="mem-price">5,000</div>
-      <div class="mem-per"><span data-currency-code-text></span> per month  ~USD 4</div>
-      <ul class="mem-feats">
-        <li>Official digital membership card</li>
-        <li>10% discount in Club Shop</li>
-        <li>Priority match ticket access</li>
-        <li>Monthly club newsletter</li>
-        <li>Access to fan community forum</li>
-      </ul>
-      <button class="btn-s" style="width:100%;justify-content:center" onclick="openMembership('Blue','5,000')">Join Blue ?</button>
+  <!-- ??????????? NAV ??????????? -->
+  <nav id="nav">
+    <a class="nav-logo" href="#hero">
+      <div class="nav-crest">
+        <svg width="20" height="20" viewBox="0 0 36 36" fill="none">
+          <path d="M18 3L21 13H31L23 18.5L26 28L18 23L10 28L13 18.5L5 13H15Z" fill="#C9A84C" />
+        </svg>
+      </div>
+      <div>
+        <div class="nav-brand">RAYON SPORTS FC</div>
+        <div class="nav-tagline">Kigali Est. 1968</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#match">Match</a></li>
+      <li><a href="#table">Table</a></li>
+      <li><a href="#squad">Squad</a></li>
+      <li><a href="#videos">Videos</a></li>
+      <li><a href="#shop">Shop</a></li>
+      <li><a href="#membership">Membership</a></li>
+      <li><a href="#tickets">Tickets</a></li>
+      <li><a href="#history">History</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nav-btn" onclick="toggleTheme()" title="Toggle theme">
+        <svg id="theme-ico" width="15" height="15" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M8 1V2M8 14V15M1 8H2M14 8H15M3.05 3.05L3.76 3.76M12.24 12.24L12.95 12.95M3.05 12.95L3.76 12.24M12.24 3.76L12.95 3.05M8 5C6.34 5 5 6.34 5 8C5 9.66 6.34 11 8 11C9.66 11 11 9.66 11 8C11 6.34 9.66 5 8 5Z"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+      <button class="nav-btn" onclick="openCart()">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+          <path d="M1 1H3L4.68 8.39C4.77 8.77 5.08 9.05 5.47 9.05H12.77C13.15 9.05 13.46 8.78 13.56 8.41L14.83 4H3.5"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <Group cx="6" cy="12.5" r="1" fill="currentColor" />
+          <Group cx="12" cy="12.5" r="1" fill="currentColor" />
+        </svg>
+        <div class="cart-badge" id="cart-badge">0</div>
+      </button>
+      <button class="nav-cta" onclick="openMembership('Gold','15,000')">Join Club</button>
     </div>
-    <div class="mem-card featured anim">
-      <div class="mem-popular">Most Popular</div>
-      <div class="mem-badge mb-g">Gold Member</div>
-      <div class="mem-tier">GOLD</div>
-      <div class="mem-price">15,000</div>
-      <div class="mem-per"><span data-currency-code-text></span> per month  ~USD 11</div>
-      <ul class="mem-feats">
-        <li>Physical gold membership card</li>
-        <li>20% discount in Club Shop</li>
-        <li>Guaranteed match day tickets</li>
-        <li>Stadium tour access  2? per year</li>
-        <li>Exclusive Gold member events</li>
-        <li>Player meet &amp; greet  1? per season</li>
-        <li>Vote in club governance decisions</li>
-      </ul>
-      <button class="btn-g" style="width:100%;justify-content:center" onclick="openMembership('Gold','15,000')">Join Gold ?</button>
-    </div>
-    <div class="mem-card anim">
-      <div class="mem-badge mb-p">Platinum Elite</div>
-      <div class="mem-tier">PLATINUM</div>
-      <div class="mem-price">40,000</div>
-      <div class="mem-per"><span data-currency-code-text></span> per month  ~USD 29</div>
-      <ul class="mem-feats">
-        <li>Engraved platinum membership card</li>
-        <li>30% discount in Club Shop</li>
-        <li>VIP hospitality on select matches</li>
-        <li>Unlimited stadium tours</li>
-        <li>Signed squad jersey each season</li>
-        <li>Pre-match tunnel access  2? season</li>
-        <li>Board meeting observer rights</li>
-        <li>Dedicated concierge support</li>
-      </ul>
-      <button class="btn-p" style="width:100%;justify-content:center" onclick="openMembership('Platinum','40,000')">Join Platinum ?</button>
-    </div>
-  </div>
-</section>
+  </nav>
 
-<!-- ??????????? TICKETS ??????????? -->
-<section id="tickets" style="background:var(--bg2)">
-  <div class="sec-pre"><div class="sec-pre-line"></div><span>Match Day</span></div>
-  <div class="sec-h">BUY<br>TICKETS</div>
-  <div class="ticket-steps">
-    <div class="tstep on" data-s="1"><div class="tstep-num">1</div><div class="tstep-lbl">Select Match</div></div>
-    <div class="tstep" data-s="2"><div class="tstep-num">2</div><div class="tstep-lbl">Choose Seat</div></div>
-    <div class="tstep" data-s="3"><div class="tstep-num">3</div><div class="tstep-lbl">Checkout</div></div>
-  </div>
-  <div class="tpanel on" id="tp1">
-    <div class="match-picker">
-      <div class="mpick" onclick="pickMatch(this,'Rayon Sports vs Etincelles FC','22 Mar 2025',2000)"><div class="mpick-date">22 Mar 2025<br><strong style="color:var(--gold)">15:00</strong></div><div><div class="mpick-match">Rayon Sports vs Etincelles FC</div><div class="mpick-comp">Rwanda Premier League  Matchday 23</div></div><div><div class="mpick-price">From <span data-currency-code-amount="2000"></span></div><div style="font-size:9px;color:var(--muted);text-align:right;margin-top:3px">Good availability</div></div></div>
-      <div class="mpick" onclick="pickMatch(this,'Gasogi United vs Rayon Sports','29 Mar 2025',1500)"><div class="mpick-date">29 Mar 2025<br><strong style="color:var(--gold)">16:00</strong></div><div><div class="mpick-match">Gasogi United vs Rayon Sports</div><div class="mpick-comp">Rwanda Premier League  Matchday 24  Away</div></div><div><div class="mpick-price">From <span data-currency-code-amount="1500"></span></div><div style="font-size:9px;color:var(--muted);text-align:right;margin-top:3px">Limited availability</div></div></div>
-      <div class="mpick" onclick="pickMatch(this,'Rayon Sports vs Police FC','5 Apr 2025',2000)"><div class="mpick-date">5 Apr 2025<br><strong style="color:var(--gold)">15:00</strong></div><div><div class="mpick-match">Rayon Sports vs Police FC</div><div class="mpick-comp">Rwanda Premier League  Matchday 25</div></div><div><div class="mpick-price">From <span data-currency-code-amount="2000"></span></div><div style="font-size:9px;color:var(--muted);text-align:right;margin-top:3px">Good availability</div></div></div>
-    </div>
-  </div>
-  <div class="tpanel" id="tp2">
-    <div style="font-family:var(--font-d);font-size:20px;letter-spacing:2px;color:var(--text);margin-bottom:26px" id="tp2-title"></div>
-    <div class="seat-layout">
-      <svg id="seat-svg" viewBox="0 0 380 280">
-        <ellipse cx="190" cy="140" rx="185" ry="135" fill="var(--bg3)" stroke="var(--border)" stroke-width="1"/>
-        <ellipse cx="190" cy="140" rx="128" ry="85" fill="var(--bg2)" stroke="var(--border)" stroke-width=".5"/>
-        <rect x="132" y="90" width="116" height="100" fill="#1A3A1A" stroke="rgba(255,255,255,0.12)"/>
-        <line x1="132" y1="140" x2="248" y2="140" stroke="rgba(255,255,255,.16)" stroke-width=".5"/>
-        <line x1="190" y1="90" x2="190" y2="190" stroke="rgba(255,255,255,.16)" stroke-width=".5"/>
-        <ellipse cx="190" cy="140" rx="20" ry="15" fill="none" stroke="rgba(255,255,255,.18)" stroke-width=".5"/>
-        <rect x="132" y="96" width="24" height="36" fill="none" stroke="rgba(255,255,255,.26)" stroke-width=".5"/>
-        <rect x="224" y="96" width="24" height="36" fill="none" stroke="rgba(255,255,255,.26)" stroke-width=".5"/>
-        <rect x="132" y="148" width="24" height="36" fill="none" stroke="rgba(255,255,255,.26)" stroke-width=".5"/>
-        <rect x="224" y="148" width="24" height="36" fill="none" stroke="rgba(255,255,255,.26)" stroke-width=".5"/>
-        <path id="z-north" d="M76 14 A168 168 0 0 1 304 14 L278 50 A128 128 0 0 0 102 50 Z" fill="rgba(0,51,160,.28)" stroke="rgba(0,51,160,.55)" stroke-width="1" style="cursor:pointer" onclick="pickZone('north','North Stand',2000,3500)"/>
-        <path id="z-south" d="M76 266 A168 168 0 0 0 304 266 L278 230 A128 128 0 0 1 102 230 Z" fill="rgba(0,51,160,.28)" stroke="rgba(0,51,160,.55)" stroke-width="1" style="cursor:pointer" onclick="pickZone('south','South Stand',2000,3500)"/>
-        <path id="z-west" d="M5 76 A168 168 0 0 0 5 204 L40 186 A128 128 0 0 1 40 94 Z" fill="rgba(201,168,76,.12)" stroke="rgba(201,168,76,.38)" stroke-width="1" style="cursor:pointer" onclick="pickZone('west','West Stand VIP',5000,8000)"/>
-        <path id="z-east" d="M375 76 A168 168 0 0 1 375 204 L340 186 A128 128 0 0 0 340 94 Z" fill="rgba(201,168,76,.12)" stroke="rgba(201,168,76,.38)" stroke-width="1" style="cursor:pointer" onclick="pickZone('east','East Stand VIP',5000,8000)"/>
-        <text x="190" y="13" text-anchor="middle" fill="rgba(255,255,255,.42)" font-size="8" font-family="Manrope" font-weight="700" letter-spacing="2">NORTH</text>
-        <text x="190" y="278" text-anchor="middle" fill="rgba(255,255,255,.42)" font-size="8" font-family="Manrope" font-weight="700" letter-spacing="2">SOUTH</text>
-        <text x="10" y="142" fill="rgba(201,168,76,.6)" font-size="7" font-family="Manrope" font-weight="700" transform="rotate(-90 10 142)" text-anchor="middle">VIP W</text>
-        <text x="370" y="140" fill="rgba(201,168,76,.6)" font-size="7" font-family="Manrope" font-weight="700" transform="rotate(90 370 140)" text-anchor="middle">VIP E</text>
-      </svg>
-      <div class="seat-info-col">
-        <div style="font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:10px">Stadium Legend</div>
-        <div class="seat-legend-itm"><div class="sleg-dot" style="background:rgba(0,51,160,.4);border:1px solid rgba(0,51,160,.65)"></div>General Stand  From <span data-currency-code-amount="2000"></span></div>
-        <div class="seat-legend-itm"><div class="sleg-dot" style="background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.48)"></div>VIP Stand  From <span data-currency-code-amount="5000"></span></div>
-        <div class="seat-selection" id="seat-selection">
-          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700">Select a Stand</div>
-          <div style="font-size:11.5px;color:var(--text2);margin-top:5px;line-height:1.5">Click a section on the stadium map to view pricing and proceed.</div>
+  <!-- ??????????? HERO ??????????? -->
+  <div id="hero">
+    <div class="hero-bg"></div>
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-content">
+      <div class="pretag">
+        <div class="pretag-line"></div><span>Rwanda Premier League 202425 Season</span>
+      </div>
+      <h1 class="hero-h">
+        <span class="ln1">RAYON</span>
+        <span class="ln2">SPORTS</span>
+        <span class="ln3">F.C.</span>
+      </h1>
+      <p class="hero-p">56 years of passion. 8 million fans. One heartbeat.<br>GIKUNDIRO the favorites, forever.</p>
+      <div class="hero-btns">
+        <button class="btn-p" onclick="location.href='#squad'">Meet the Squad ?</button>
+        <button class="btn-s" onclick="location.href='#match'">Live Match Centre</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat">
+          <div class="hstat-n">9<em>?</em></div>
+          <div class="hstat-l">League Titles</div>
         </div>
-        <button class="btn-p" id="tp2-proceed" style="width:100%;justify-content:center;opacity:.4" disabled onclick="goToCheckout()">Continue to Checkout ?</button>
-      </div>
-    </div>
-  </div>
-  <div class="tpanel" id="tp3">
-    <div style="max-width:460px">
-      <div id="checkout-order" style="background:var(--bg3);border:1px solid var(--borderg);padding:22px;margin-bottom:22px">
-        <div style="font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px">Order Summary</div>
-        <div id="order-txt" style="font-size:13.5px;color:var(--text2);line-height:1.8"></div>
-      </div>
-      <div class="form-field"><div class="f-lbl">Full Name</div><input class="f-inp" placeholder="Jean-Marie Nkurunziza"></div>
-      <div class="form-field"><div class="f-lbl">Email Address</div><input class="f-inp" type="email" placeholder="email@example.com"></div>
-      <div class="form-field"><div class="f-lbl">Phone (MTN / Airtel)</div><input class="f-inp" type="tel" placeholder="+250 7XX XXX XXX"></div>
-      <div class="form-field"><div class="f-lbl">Number of Tickets</div><input class="f-inp" type="number" min="1" max="10" value="1" id="tkt-qty" oninput="refreshOrder()"></div>
-      <div class="form-field"><div class="f-lbl">Payment Method</div><select class="f-inp"><option>MTN MoMo</option><option>Airtel Money</option><option>Bank Card</option></select></div>
-      <button class="btn-g" style="width:100%;justify-content:center;margin-top:6px" onclick="confirmOrder()">Complete Purchase ?</button>
-    </div>
-  </div>
-</section>
-
-<!-- ??????????? HONOURS ??????????? -->
-<section id="honours">
-  <div class="sec-pre"><div class="sec-pre-line"></div><span>Honours Board</span></div>
-  <div class="sec-h">A LEGACY<br>OF GLORY</div>
-  <div class="trophy-g">
-    <div class="tr-card anim"><span class="tr-ico">??</span><div class="tr-n">9</div><div class="tr-name">Rwanda Premier League</div><div class="tr-sub">Most recently 201819</div></div>
-    <div class="tr-card anim"><span class="tr-ico">??</span><div class="tr-n">9</div><div class="tr-name">Rwanda National Cup</div><div class="tr-sub">Most recently 2023</div></div>
-    <div class="tr-card anim"><span class="tr-ico">??</span><div class="tr-n">1</div><div class="tr-name">CECAFA Clubs' Cup</div><div class="tr-sub">East African glory</div></div>
-    <div class="tr-card anim"><span class="tr-ico">??</span><div class="tr-n">9</div><div class="tr-name">Peace Cup</div><div class="tr-sub">Coupe de la Paix</div></div>
-    <div class="tr-card anim"><span class="tr-ico">???</span><div class="tr-n">3</div><div class="tr-name">Agaciro Cup</div><div class="tr-sub">Cup of Dignity</div></div>
-    <div class="tr-card anim"><span class="tr-ico">?</span><div class="tr-n">2</div><div class="tr-name">Intwali Cup</div><div class="tr-sub">Cup of the Brave</div></div>
-  </div>
-</section>
-
-<!-- ??????????? HISTORY ??????????? -->
-<section id="history" style="background:var(--bg2)">
-  <div class="sec-pre"><div class="sec-pre-line"></div><span>Club Heritage</span></div>
-  <div class="sec-h">56 YEARS<br>OF GIKUNDIRO</div>
-  <div class="hist-layout">
-    <div>
-      <p class="hist-p">Founded in May 1968 in Nyanza, Rwanda's Southern Province, Rayon Sports FC is the oldest and most beloved football institution in the country. Long before Rwanda's modern football landscape took shape, Rayon Sports was laying foundations  the traditions, the rivalries, the culture that define Rwandan football today.</p>
-      <div class="hist-quote"><div class="hq-txt">"We are probably the only club in Rwanda that is not attached to any political institution. We are a club of the people  that is our greatest strength."</div><div class="hq-attr">Patrick Namenye  General Secretary, Rayon Sports FC</div></div>
-      <p class="hist-p">The club's unique political neutrality has been central to its mass appeal. Revenue comes from 52 fan groups making monthly contributions  a community-funded model unique in Rwandan football. With over 8 million supporters representing approximately 80% of all football fans in Rwanda, Rayon Sports is not merely a club but a national institution.</p>
-      <p class="hist-p">The most recent Premier League title came in 201819  the hunt for a 10th championship defines the current era, as the club seeks to convert its overwhelming popular support into sustained on-pitch dominance.</p>
-    </div>
-    <div class="hist-tl">
-      <div class="htl-itm anim"><div class="htl-yr">1968</div><div><div class="htl-evt">Founded in Nyanza</div><div class="htl-det">Club legally formed. First chapter of a 56-year legacy begins in Southern Province.</div></div></div>
-      <div class="htl-itm anim"><div class="htl-yr">1976</div><div><div class="htl-evt">First Peace Cup Title</div><div class="htl-det">Coupe de 5 Juillet  first of many domestic cup triumphs.</div></div></div>
-      <div class="htl-itm anim"><div class="htl-yr">1986</div><div><div class="htl-evt">Relocate to Kigali</div><div class="htl-det">Moved to the capital for greater opportunity and infrastructure.</div></div></div>
-      <div class="htl-itm anim"><div class="htl-yr">1998</div><div><div class="htl-evt">Historic League &amp; Cup Double</div><div class="htl-det">One of only two clubs in Rwandan history to achieve the domestic double.</div></div></div>
-      <div class="htl-itm anim"><div class="htl-yr">2010s</div><div><div class="htl-evt">CECAFA &amp; Continental Football</div><div class="htl-det">First CECAFA Clubs' Cup. East African continental presence established.</div></div></div>
-      <div class="htl-itm anim"><div class="htl-yr">201819</div><div><div class="htl-evt">Most Recent League Title</div><div class="htl-det">9th Premier League championship. The quest for #10 continues.</div></div></div>
-      <div class="htl-itm anim"><div class="htl-yr">2024</div><div><div class="htl-evt">WFC Super Cup Glory</div><div class="htl-det">Women's team claim FERWAFA Super Cup with dominant 5-2 victory.</div></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ??????????? STADIUM ??????????? -->
-<section id="stadium">
-  <div class="stad-layout">
-    <div>
-      <div class="sec-pre"><div class="sec-pre-line"></div><span>Home Ground</span></div>
-      <div class="sec-h">STADE<br>AMAHORO</div>
-      <p class="sec-p">Our fortress in Kigali. Amahoro  meaning "peace"  is where GIKUNDIRO roars. 25,000 voices as one.</p>
-      <div class="stad-specs">
-        <div class="spec anim"><div class="spec-v">25,000</div><div class="spec-k">Capacity</div></div>
-        <div class="spec anim"><div class="spec-v">Kigali</div><div class="spec-k">City</div></div>
-        <div class="spec anim"><div class="spec-v">1987</div><div class="spec-k">Built</div></div>
-        <div class="spec anim"><div class="spec-v">Natural</div><div class="spec-k">Pitch Type</div></div>
-      </div>
-    </div>
-    <div class="stad-visual anim">
-      <div class="stad-inner">
-        <svg class="pitch-svg" viewBox="0 0 400 260" fill="none"><rect x="2" y="2" width="396" height="256" rx="2" stroke="rgba(255,255,255,.38)" stroke-width="1.5"/><line x1="200" y1="2" x2="200" y2="258" stroke="rgba(255,255,255,.28)"/><circle cx="200" cy="130" r="40" stroke="rgba(255,255,255,.28)"/><circle cx="200" cy="130" r="4" fill="rgba(255,255,255,.38)"/><rect x="2" y="80" width="50" height="100" stroke="rgba(255,255,255,.28)"/><rect x="2" y="105" width="18" height="50" stroke="rgba(255,255,255,.28)"/><rect x="348" y="80" width="50" height="100" stroke="rgba(255,255,255,.28)"/><rect x="380" y="105" width="18" height="50" stroke="rgba(255,255,255,.28)"/><rect x="60" y="2" width="280" height="256" stroke="rgba(255,255,255,.1)"/></svg>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ??????????? PARTNERS ??????????? -->
-<div class="partners-bar">
-  <div class="partners-lbl">Official Partners &amp; Sponsors</div>
-  <div class="partners-list">
-    <div class="partner">SKOL</div>
-    <div class="partner">FERWAFA</div>
-    <div class="partner">CECAFA</div>
-    <div class="partner">CAF</div>
-    <div class="partner">MTN RWANDA</div>
-    <div class="partner">BK ARENA</div>
-    <div class="partner">RWANDA TOURISM</div>
-  </div>
-</div>
-
-<!-- ??????????? FOOTER ??????????? -->
-<footer>
-  <div class="footer-top">
-    <div>
-      <div class="footer-mark">RS</div>
-      <div class="footer-bn">RAYON SPORTS FC</div>
-      <span class="footer-bt">Gikundiro  Est. 1968  Kigali, Rwanda</span>
-      <p class="footer-desc">Member-owned, people-powered. Driven by the passion of over 8 million fans. Rwanda's most beloved club  forever the favorites.</p>
-    </div>
-    <div>
-      <div class="footer-col-h">Club</div>
-      <ul class="footer-lnks"><li><a href="#">About the Club</a></li><li><a href="#">History &amp; Honours</a></li><li><a href="#stadium">Stadium</a></li><li><a href="#">Academy</a></li><li><a href="#">Women's FC</a></li><li><a href="#">Foundation</a></li></ul>
-    </div>
-    <div>
-      <div class="footer-col-h">Match Day</div>
-      <ul class="footer-lnks"><li><a href="#fixtures">Fixtures &amp; Results</a></li><li><a href="#table">League Table</a></li><li><a href="#tickets">Buy Tickets</a></li><li><a href="#match">Match Centre</a></li><li><a href="#videos">Video Hub</a></li></ul>
-    </div>
-    <div>
-      <div class="footer-col-h">Fan Zone</div>
-      <ul class="footer-lnks"><li><a href="#membership">Membership</a></li><li><a href="#fanwall">Fan Wall</a></li><li><a href="#shop">Club Shop</a></li><li><a href="#">Press &amp; Media</a></li><li><a href="#">Contact Us</a></li><li><a href="/privacy">Privacy Policy</a></li><li><a href="/terms">Terms &amp; Conditions</a></li></ul>
-    </div>
-  </div>
-  <div class="footer-bot">
-    <div class="footer-copy">&copy; 2025 Rayon Sports FC. All rights reserved. Kigali, Rwanda. &middot; <a href="/privacy" style="color:inherit;text-decoration:underline;opacity:.6">Privacy Policy</a> &middot; <a href="/terms" style="color:inherit;text-decoration:underline;opacity:.6">Terms &amp; Conditions</a></div>
-    <div class="socials">
-      <a class="soc-btn" href="#">TW</a><a class="soc-btn" href="#">IG</a><a class="soc-btn" href="#">FB</a><a class="soc-btn" href="#">YT</a>
-    </div>
-  </div>
-</footer>
-
-<!-- ??????????? MOBILE NAV ??????????? -->
-<nav class="mob-nav">
-  <div class="mob-nav-inner">
-    <a class="mnav on" href="#hero"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9L10 3L17 9V18H13V13H7V18H3Z"/></svg><span class="mnav-lbl">Home</span></a>
-    <a class="mnav" href="#match"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="7"/><path d="M10 6V10L13 12"/></svg><span class="mnav-lbl">Match</span></a>
-    <a class="mnav" href="#squad"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7.5" cy="6" r="2.5"/><path d="M2 17C2 14.24 4.69 13 7.5 13"/><circle cx="14" cy="8" r="2.5"/><path d="M10 17C10 15.24 11.79 14 14 14C16.21 14 18 15.24 18 17"/></svg><span class="mnav-lbl">Squad</span></a>
-    <a class="mnav" href="#shop"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 3H16L14 11H6L4 3Z"/><circle cx="7" cy="15.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="13" cy="15.5" r="1.2" fill="currentColor" stroke="none"/></svg><span class="mnav-lbl">Shop</span></a>
-    <button class="mnav" onclick="toggleMore()"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="11" y="2" width="7" height="7" rx="1"/><rect x="2" y="11" width="7" height="7" rx="1"/><rect x="11" y="11" width="7" height="7" rx="1"/></svg><span class="mnav-lbl">More</span></button>
-  </div>
-</nav>
-
-<!-- ??????????? MORE DRAWER ??????????? -->
-<div class="more-drawer" id="more-drawer">
-  <div class="more-g">
-    <a class="more-itm" href="#table" onclick="closeMore()"><div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="16" height="2"/><rect x="2" y="9" width="16" height="2"/><rect x="2" y="13" width="16" height="2"/></svg></div><span>Table</span></a>
-    <a class="more-itm" href="#videos" onclick="closeMore()"><div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="4" width="12" height="12" rx="1"/><path d="M14 7L18 5V15L14 13"/></svg></div><span>Videos</span></a>
-    <a class="more-itm" href="#fanwall" onclick="closeMore()"><div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 10C18 14.42 14.42 18 10 18C8.72 18 7.51 17.68 6.45 17.11L2 18L2.89 13.55C2.32 12.49 2 11.28 2 10C2 5.58 5.58 2 10 2C14.42 2 18 5.58 18 10Z"/></svg></div><span>Fan Wall</span></a>
-    <a class="more-itm" href="#membership" onclick="closeMore()"><div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 2L12.5 7.5H18L13.5 11L15.5 17L10 13.5L4.5 17L6.5 11L2 7.5H7.5Z"/></svg></div><span>Membership</span></a>
-    <a class="more-itm" href="#tickets" onclick="closeMore()"><div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="6" width="18" height="8" rx="1"/><path d="M6 6V4M14 6V4M6 14V16M14 14V16"/></svg></div><span>Tickets</span></a>
-    <a class="more-itm" href="#history" onclick="closeMore()"><div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 6V10L7 13"/></svg></div><span>History</span></a>
-  </div>
-</div>
-
-<!-- ??????????? PLAYER MODAL ??????????? -->
-<div class="modal-bg" id="player-modal-bg" onclick="closePM(event)">
-  <div class="player-modal" id="player-modal">
-    <button class="modal-x" onclick="closePMBtn()">?</button>
-    <div class="pm-header">
-      <div class="pm-vis"><div class="pm-emoji" id="pm-emoji">?</div><div class="pm-bignum" id="pm-bignum">9</div></div>
-      <div class="pm-info">
-        <div class="pm-pos-lbl" id="pm-pos">Forward</div>
-        <div class="pm-name" id="pm-name">Ngagne Fall</div>
-        <div class="bio-grid">
-          <div class="bio-f"><div class="bio-k">Nationality</div><div class="bio-v" id="pm-nat">???? Senegal</div></div>
-          <div class="bio-f"><div class="bio-k">Date of Birth</div><div class="bio-v" id="pm-dob">12 Mar 1997</div></div>
-          <div class="bio-f"><div class="bio-k">Height</div><div class="bio-v" id="pm-ht">1.82m</div></div>
-          <div class="bio-f"><div class="bio-k">Preferred Foot</div><div class="bio-v" id="pm-ft">Right</div></div>
-          <div class="bio-f"><div class="bio-k">Squad Number</div><div class="bio-v" id="pm-squad">#9</div></div>
-          <div class="bio-f"><div class="bio-k">At Club Since</div><div class="bio-v" id="pm-since">2023</div></div>
+        <div class="hstat">
+          <div class="hstat-n">8<em>M</em></div>
+          <div class="hstat-l">Fans</div>
+        </div>
+        <div class="hstat">
+          <div class="hstat-n">56</div>
+          <div class="hstat-l">Years</div>
+        </div>
+        <div class="hstat">
+          <div class="hstat-n">1<em>st</em></div>
+          <div class="hstat-l">CECAFA Cup</div>
         </div>
       </div>
     </div>
-    <div class="pm-body">
-      <div class="pm-section">202425 Season Stats</div>
-      <div class="pstats-g" id="pm-stats"></div>
-      <div class="pm-section">Career History</div>
-      <div id="pm-career"></div>
+    <div class="match-badge">
+      <div class="mb-lbl">
+        <div class="live-dot"></div> Latest Result RPL Matchday 22
+      </div>
+      <div class="mb-score-row">
+        <div class="mb-team">
+          <div class="mb-badge" style="background:var(--blue);border:2px solid var(--gold)">RS</div>
+          <div class="mb-name">Rayon Sports</div>
+        </div>
+        <div style="text-align:center">
+          <div class="mb-score">0 0</div>
+          <div class="mb-comp">Full Time</div>
+        </div>
+        <div class="mb-team">
+          <div class="mb-badge" style="background:var(--mid);border:1px solid var(--border)">Rayon Sports</div>
+          <div class="mb-name">Rayon Sports FC</div>
+        </div>
+      </div>
+      <div class="mb-meta">
+        <div><strong>Amahoro</strong>Venue</div>
+        <div style="text-align:center"><strong>~25,000</strong>Attendance</div>
+        <div style="text-align:right"><strong style="color:#5580E8">2nd</strong>Position</div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ??????????? VIDEO MODAL ??????????? -->
-<div class="modal-bg" id="video-modal-bg" onclick="closeVM(event)">
-  <div class="vid-modal">
-    <button class="modal-x" style="top:8px;right:8px" onclick="closeVMBtn()">?</button>
-    <div class="vp-area" onclick="playVid()">
-      <div class="vp-bg" style="background:linear-gradient(135deg,#0033A0,#04081A)"></div>
-      <div class="vp-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none"><path d="M5 3L15 9L5 15V3Z" fill="#0033A0"/></svg></div>
-      <div class="vp-prog"><div class="vp-fill" id="vp-fill"></div></div>
+  <!-- ??????????? TICKER ??????????? -->
+  <div class="ticker">
+    <div class="ticker-track" id="ticker-track">
+      <div class="tick"><span class="tick-dot"></span>Rayon Sports 00 Rayon Sports FC Full Time</div>
+      <div class="tick"><span class="tick-dot"></span>Rwanda Premier League Rayon Sports 2nd Place 50pts</div>
+      <div class="tick"><span class="tick-dot"></span>Rayon Sports WFC FERWAFA Super Cup Champions 2024</div>
+      <div class="tick"><span class="tick-dot"></span>Ngagne Fall 14 Goals This Season Top Scorer</div>
+      <div class="tick"><span class="tick-dot"></span>GIKUNDIRO 8 Million Fans Rwanda's Largest Club</div>
+      <div class="tick"><span class="tick-dot"></span>9? Rwanda Premier League 9? Rwanda Cup CECAFA Winners</div>
+      <div class="tick"><span class="tick-dot"></span>Rayon Sports 00 Rayon Sports FC Full Time</div>
+      <div class="tick"><span class="tick-dot"></span>Rwanda Premier League Rayon Sports 2nd Place 50pts</div>
+      <div class="tick"><span class="tick-dot"></span>Rayon Sports WFC FERWAFA Super Cup Champions 2024</div>
+      <div class="tick"><span class="tick-dot"></span>Ngagne Fall 14 Goals This Season Top Scorer</div>
+      <div class="tick"><span class="tick-dot"></span>GIKUNDIRO 8 Million Fans Rwanda's Largest Club</div>
+      <div class="tick"><span class="tick-dot"></span>9? Rwanda Premier League 9? Rwanda Cup CECAFA Winners</div>
     </div>
-    <div class="vm-body"><div class="vm-title" id="vm-title">Match Highlights</div><div class="vm-meta" id="vm-meta">Rayon Sports FC  Official</div></div>
   </div>
-</div>
 
-<!-- ??????????? CART DRAWER ??????????? -->
-<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
-<div class="cart-drawer" id="cart-drawer">
-  <div class="cart-hd"><div class="cart-hd-title">YOUR BAG</div><button class="cart-x" onclick="closeCart()">?</button></div>
-  <div class="cart-items" id="cart-items"></div>
-  <div class="cart-ft">
-    <div class="cart-total-row"><div class="cart-total-lbl">Total</div><div class="cart-total-amt" id="cart-total" data-currency-code-amount="0"></div></div>
-    <button class="btn-g" style="width:100%;justify-content:center">Checkout via MoMo ?</button>
+  <!-- ??????????? STATS BAR ??????????? -->
+  <div class="stats-bar">
+    <div class="stats-row">
+      <div class="stat-blk anim">
+        <div class="n">9<em>?</em></div>
+        <div class="l">Premier League</div>
+      </div>
+      <div class="stat-blk anim">
+        <div class="n">9<em>?</em></div>
+        <div class="l">Rwanda Cup</div>
+      </div>
+      <div class="stat-blk anim">
+        <div class="n">56</div>
+        <div class="l">Years History</div>
+      </div>
+      <div class="stat-blk anim">
+        <div class="n">8<em>M</em></div>
+        <div class="l">Fan Base</div>
+      </div>
+      <div class="stat-blk anim">
+        <div class="n">1<em>st</em></div>
+        <div class="l">CECAFA Cup</div>
+      </div>
+      <div class="stat-blk anim">
+        <div class="n">52</div>
+        <div class="l">Fan Groups</div>
+      </div>
+    </div>
   </div>
-</div>
 
-<!-- ??????????? MEMBERSHIP MODAL ??????????? -->
-<div class="modal-bg" id="mem-modal-bg" onclick="closeMemBg(event)">
-  <div class="mem-modal">
-    <button class="modal-x" onclick="closeMem()">?</button>
-    <div class="sec-pre" style="margin-bottom:8px"><div class="sec-pre-line"></div><span>Membership Signup</span></div>
-    <div style="font-family:var(--font-d);font-size:26px;letter-spacing:2px;color:var(--text);margin-bottom:3px" id="mem-title">Join Gold</div>
-    <div style="font-size:12.5px;color:var(--muted);margin-bottom:22px" id="mem-sub" data-membership-price="15000"></div>
-    <div class="form-field"><div class="f-lbl">Full Name</div><input class="f-inp" placeholder="Full name"></div>
-    <div class="form-field"><div class="f-lbl">Email Address</div><input class="f-inp" type="email" placeholder="email@example.com"></div>
-    <div class="form-field"><div class="f-lbl">Phone Number</div><input class="f-inp" type="tel" placeholder="+250 7XX XXX XXX"></div>
-    <div class="form-field"><div class="f-lbl">Payment</div><select class="f-inp"><option>MTN MoMo</option><option>Airtel Money</option><option>Bank Transfer</option></select></div>
-    <button class="btn-g" style="width:100%;justify-content:center;margin-top:6px" onclick="completeMem()">Confirm Membership ?</button>
+  <!-- ??????????? LIVE MATCH CENTRE ??????????? -->
+  <section id="match">
+    <div class="sec-pre">
+      <div class="sec-pre-line"></div><span>Live Match Centre</span>
+    </div>
+    <div class="sec-h">MATCH<br>CENTRE</div>
+    <div class="mc-score-hero anim">
+      <div class="mc-teams">
+        <div class="mc-team">
+          <div class="mc-badge home">RS</div>
+          <div class="mc-name">Rayon Sports</div>
+        </div>
+        <div style="text-align:center">
+          <div class="mc-score">0 0</div>
+          <div class="mc-status">
+            <div class="live-dot"></div> Full Time MD 22
+          </div>
+        </div>
+        <div class="mc-team">
+          <div class="mc-badge away">Rayon Sports</div>
+          <div class="mc-name">Rayon Sports FC</div>
+        </div>
+      </div>
+      <div style="font-size:10.5px;color:var(--muted);letter-spacing:.8px">Rwanda Premier League Amahoro National
+        Stadium 10 March 2025</div>
+    </div>
+    <div class="tabs">
+      <button class="tab on" data-panel="overview">Overview</button>
+      <button class="tab" data-panel="lineups">Lineups</button>
+      <button class="tab" data-panel="timeline">Timeline</button>
+      <button class="tab" data-panel="stats">Stats</button>
+    </div>
+    <div class="panel on" id="panel-overview">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:520px;margin:0 auto">
+        <div class="pst anim">
+          <div class="pst-n">52%</div>
+          <div class="pst-l">Possession</div>
+        </div>
+        <div class="pst anim">
+          <div class="pst-n">9</div>
+          <div class="pst-l">Shots</div>
+        </div>
+        <div class="pst anim">
+          <div class="pst-n">3</div>
+          <div class="pst-l">On Target</div>
+        </div>
+        <div class="pst anim">
+          <div class="pst-n">4</div>
+          <div class="pst-l">Corners</div>
+        </div>
+        <div class="pst anim">
+          <div class="pst-n">12</div>
+          <div class="pst-l">Fouls</div>
+        </div>
+        <div class="pst anim">
+          <div class="pst-n">3</div>
+          <div class="pst-l">Yellow Cards</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" id="panel-lineups">
+      <div class="lineup-cols">
+        <div>
+          <div class="col-hd">Rayon Sports 4-3-3</div>
+          <div class="lp-row">
+            <div class="lp-num">29</div>
+            <div class="lp-name">K. Ndayisenga</div>
+            <div class="lp-pos">GK</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">2</div>
+            <div class="lp-name">J. Ngarambe</div>
+            <div class="lp-pos">RB</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">5</div>
+            <div class="lp-name">S. Nyandwi</div>
+            <div class="lp-pos">CB</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">4</div>
+            <div class="lp-name">Y. Rwigema</div>
+            <div class="lp-pos">CB</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">3</div>
+            <div class="lp-name">E. Nsabimana</div>
+            <div class="lp-pos">LB</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">8</div>
+            <div class="lp-name">K. Muhire</div>
+            <div class="lp-pos">CM</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">6</div>
+            <div class="lp-name">F. Mugheni</div>
+            <div class="lp-pos">DM</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">11</div>
+            <div class="lp-name">N. Bayama</div>
+            <div class="lp-pos">CAM</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">7</div>
+            <div class="lp-name">S. O. Jimoh</div>
+            <div class="lp-pos">RW</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">9</div>
+            <div class="lp-name">N. Fall</div>
+            <div class="lp-pos">ST</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">10</div>
+            <div class="lp-name">C. Hakuzimana</div>
+            <div class="lp-pos">LW</div>
+          </div>
+        </div>
+        <div>
+          <div class="col-hd">Rayon Sports FC 4-4-2</div>
+          <div class="lp-row">
+            <div class="lp-num">1</div>
+            <div class="lp-name">A. Mpitabakana</div>
+            <div class="lp-pos">GK</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">4</div>
+            <div class="lp-name">B. Manishimwe</div>
+            <div class="lp-pos">RB</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">5</div>
+            <div class="lp-name">D. Iradukunda</div>
+            <div class="lp-pos">CB</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">6</div>
+            <div class="lp-name">P. Niyomwungeri</div>
+            <div class="lp-pos">CB</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">3</div>
+            <div class="lp-name">A. Rutsindura</div>
+            <div class="lp-pos">LB</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">8</div>
+            <div class="lp-name">F. Niyigena</div>
+            <div class="lp-pos">RM</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">10</div>
+            <div class="lp-name">T. Kanzira</div>
+            <div class="lp-pos">CM</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">7</div>
+            <div class="lp-name">C. Mbarushimana</div>
+            <div class="lp-pos">CM</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">11</div>
+            <div class="lp-name">E. Hakuzimana</div>
+            <div class="lp-pos">LM</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">9</div>
+            <div class="lp-name">A. Djuma</div>
+            <div class="lp-pos">ST</div>
+          </div>
+          <div class="lp-row">
+            <div class="lp-num">22</div>
+            <div class="lp-name">H. Ndahiro</div>
+            <div class="lp-pos">ST</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" id="panel-timeline">
+      <div>
+        <div class="tl-row anim">
+          <div class="tl-min">3'</div>
+          <div class="tl-ico ico-y">?</div>
+          <div>
+            <div class="tl-txt">F. Mugheni Yellow Card</div>
+            <div class="tl-sub">Rayon Sports</div>
+          </div>
+        </div>
+        <div class="tl-row anim">
+          <div class="tl-min">28'</div>
+          <div class="tl-ico ico-s">?</div>
+          <div>
+            <div class="tl-txt">Substitution Rayon Sports</div>
+            <div class="tl-sub">Muhire OFF ? Hakuzimana ON</div>
+          </div>
+        </div>
+        <div class="tl-row anim">
+          <div class="tl-min">44'</div>
+          <div class="tl-ico ico-y">?</div>
+          <div>
+            <div class="tl-txt">D. Iradukunda Yellow Card</div>
+            <div class="tl-sub">Rayon Sports FC</div>
+          </div>
+        </div>
+        <div class="tl-row anim">
+          <div class="tl-min">62'</div>
+          <div class="tl-ico ico-s">?</div>
+          <div>
+            <div class="tl-txt">Substitution Rayon Sports FC</div>
+            <div class="tl-sub">Ndahiro OFF ? Nkurunziza ON</div>
+          </div>
+        </div>
+        <div class="tl-row anim">
+          <div class="tl-min">71'</div>
+          <div class="tl-ico ico-g">?</div>
+          <div>
+            <div class="tl-txt">GOAL DISALLOWED Offside</div>
+            <div class="tl-sub">N. Fall Rayon Sports</div>
+          </div>
+        </div>
+        <div class="tl-row anim">
+          <div class="tl-min">88'</div>
+          <div class="tl-ico ico-s">?</div>
+          <div>
+            <div class="tl-txt">Substitution Rayon Sports</div>
+            <div class="tl-sub">Jimoh OFF ? Bayama ON</div>
+          </div>
+        </div>
+        <div class="tl-row anim">
+          <div class="tl-min">90'</div>
+          <div class="tl-ico ico-y">?</div>
+          <div>
+            <div class="tl-txt">N. Fall Yellow Card</div>
+            <div class="tl-sub">Rayon Sports</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" id="panel-stats">
+      <div class="stat-bars">
+        <div class="sb-row anim">
+          <div class="sb-val">52%</div>
+          <div class="sb-label">Possession</div>
+          <div class="sb-track">
+            <div class="sb-fill" style="width:52%"></div>
+          </div>
+          <div class="sb-val">48%</div>
+        </div>
+        <div class="sb-row anim">
+          <div class="sb-val">9</div>
+          <div class="sb-label">Total Shots</div>
+          <div class="sb-track">
+            <div class="sb-fill" style="width:60%"></div>
+          </div>
+          <div class="sb-val">6</div>
+        </div>
+        <div class="sb-row anim">
+          <div class="sb-val">3</div>
+          <div class="sb-label">On Target</div>
+          <div class="sb-track">
+            <div class="sb-fill" style="width:50%"></div>
+          </div>
+          <div class="sb-val">3</div>
+        </div>
+        <div class="sb-row anim">
+          <div class="sb-val">4</div>
+          <div class="sb-label">Corners</div>
+          <div class="sb-track">
+            <div class="sb-fill" style="width:44%"></div>
+          </div>
+          <div class="sb-val">5</div>
+        </div>
+        <div class="sb-row anim">
+          <div class="sb-val">12</div>
+          <div class="sb-label">Fouls</div>
+          <div class="sb-track">
+            <div class="sb-fill" style="width:48%"></div>
+          </div>
+          <div class="sb-val">13</div>
+        </div>
+        <div class="sb-row anim">
+          <div class="sb-val">82%</div>
+          <div class="sb-label">Pass Acc.</div>
+          <div class="sb-track">
+            <div class="sb-fill" style="width:82%"></div>
+          </div>
+          <div class="sb-val">79%</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ??????????? LEAGUE TABLE ??????????? -->
+  <section id="table">
+    <div class="sec-row">
+      <div>
+        <div class="sec-pre">
+          <div class="sec-pre-line"></div><span>202425 Season</span>
+        </div>
+        <div class="sec-h">LEAGUE<br>TABLE</div>
+      </div>
+    </div>
+    <table class="lg-tbl">
+      <thead>
+        <tr>
+          <th style="width:38px">Pos</th>
+          <th>Club</th>
+          <th style="text-align:center">P</th>
+          <th style="text-align:center">W</th>
+          <th style="text-align:center">D</th>
+          <th style="text-align:center">L</th>
+          <th style="text-align:center">GD</th>
+          <th style="text-align:center">Pts</th>
+          <th>Form</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="anim">
+          <td class="pos gold">1</td>
+          <td>
+            <div class="tcell">
+              <div class="tdot" style="background:#E74C3C"></div>Rayon Sports FC
+            </div>
+          </td>
+          <td style="text-align:center">25</td>
+          <td style="text-align:center">18</td>
+          <td style="text-align:center">4</td>
+          <td style="text-align:center">3</td>
+          <td style="text-align:center">+32</td>
+          <td class="pts">58</td>
+          <td>
+            <div class="form-row">
+              <div class="fw">W</div>
+              <div class="fw">W</div>
+              <div class="fd">D</div>
+              <div class="fw">W</div>
+              <div class="fw">W</div>
+            </div>
+          </td>
+        </tr>
+        <tr class="my-team anim">
+          <td class="pos gold">2</td>
+          <td>
+            <div class="tcell">
+              <div class="tdot" style="background:var(--blue)"></div><strong>Rayon Sports</strong>
+            </div>
+          </td>
+          <td style="text-align:center">25</td>
+          <td style="text-align:center">15</td>
+          <td style="text-align:center">5</td>
+          <td style="text-align:center">5</td>
+          <td style="text-align:center">+22</td>
+          <td class="pts">50</td>
+          <td>
+            <div class="form-row">
+              <div class="fd">D</div>
+              <div class="fw">W</div>
+              <div class="fl">L</div>
+              <div class="fw">W</div>
+              <div class="fd">D</div>
+            </div>
+          </td>
+        </tr>
+        <tr class="anim">
+          <td class="pos gold">3</td>
+          <td>
+            <div class="tcell">
+              <div class="tdot" style="background:var(--muted)"></div>Mukura VS
+            </div>
+          </td>
+          <td style="text-align:center">25</td>
+          <td style="text-align:center">13</td>
+          <td style="text-align:center">5</td>
+          <td style="text-align:center">7</td>
+          <td style="text-align:center">+11</td>
+          <td class="pts">44</td>
+          <td>
+            <div class="form-row">
+              <div class="fl">L</div>
+              <div class="fw">W</div>
+              <div class="fw">W</div>
+              <div class="fd">D</div>
+              <div class="fw">W</div>
+            </div>
+          </td>
+        </tr>
+        <tr class="anim">
+          <td class="pos">4</td>
+          <td>
+            <div class="tcell">
+              <div class="tdot" style="background:var(--muted)"></div>AS Kigali
+            </div>
+          </td>
+          <td style="text-align:center">25</td>
+          <td style="text-align:center">11</td>
+          <td style="text-align:center">7</td>
+          <td style="text-align:center">7</td>
+          <td style="text-align:center">+6</td>
+          <td class="pts">40</td>
+          <td>
+            <div class="form-row">
+              <div class="fw">W</div>
+              <div class="fd">D</div>
+              <div class="fd">D</div>
+              <div class="fl">L</div>
+              <div class="fw">W</div>
+            </div>
+          </td>
+        </tr>
+        <tr class="anim">
+          <td class="pos">5</td>
+          <td>
+            <div class="tcell">
+              <div class="tdot" style="background:var(--muted)"></div>Bugesera FC
+            </div>
+          </td>
+          <td style="text-align:center">25</td>
+          <td style="text-align:center">10</td>
+          <td style="text-align:center">6</td>
+          <td style="text-align:center">9</td>
+          <td style="text-align:center">+2</td>
+          <td class="pts">36</td>
+          <td>
+            <div class="form-row">
+              <div class="fd">D</div>
+              <div class="fl">L</div>
+              <div class="fw">W</div>
+              <div class="fw">W</div>
+              <div class="fl">L</div>
+            </div>
+          </td>
+        </tr>
+        <tr class="anim">
+          <td class="pos">6</td>
+          <td>
+            <div class="tcell">
+              <div class="tdot" style="background:var(--muted)"></div>Etincelles FC
+            </div>
+          </td>
+          <td style="text-align:center">25</td>
+          <td style="text-align:center">9</td>
+          <td style="text-align:center">5</td>
+          <td style="text-align:center">11</td>
+          <td style="text-align:center">-5</td>
+          <td class="pts">32</td>
+          <td>
+            <div class="form-row">
+              <div class="fl">L</div>
+              <div class="fl">L</div>
+              <div class="fw">W</div>
+              <div class="fd">D</div>
+              <div class="fw">W</div>
+            </div>
+          </td>
+        </tr>
+        <tr class="anim">
+          <td class="pos">7</td>
+          <td>
+            <div class="tcell">
+              <div class="tdot" style="background:var(--muted)"></div>Gasogi United
+            </div>
+          </td>
+          <td style="text-align:center">25</td>
+          <td style="text-align:center">7</td>
+          <td style="text-align:center">6</td>
+          <td style="text-align:center">12</td>
+          <td style="text-align:center">-14</td>
+          <td class="pts">27</td>
+          <td>
+            <div class="form-row">
+              <div class="fl">L</div>
+              <div class="fw">W</div>
+              <div class="fl">L</div>
+              <div class="fl">L</div>
+              <div class="fd">D</div>
+            </div>
+          </td>
+        </tr>
+        <tr class="anim">
+          <td class="pos">8</td>
+          <td>
+            <div class="tcell">
+              <div class="tdot" style="background:#E74C3C"></div>Police FC
+            </div>
+          </td>
+          <td style="text-align:center">25</td>
+          <td style="text-align:center">4</td>
+          <td style="text-align:center">5</td>
+          <td style="text-align:center">16</td>
+          <td style="text-align:center">-28</td>
+          <td class="pts">17</td>
+          <td>
+            <div class="form-row">
+              <div class="fl">L</div>
+              <div class="fl">L</div>
+              <div class="fd">D</div>
+              <div class="fl">L</div>
+              <div class="fl">L</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ??????????? NEWS ??????????? -->
+  <section id="news">
+    <div class="sec-row">
+      <div>
+        <div class="sec-pre">
+          <div class="sec-pre-line"></div><span>Latest News</span>
+        </div>
+        <div class="sec-h">GIKUNDIRO<br>NEWS</div>
+      </div>
+      <button class="btn-s">All News ?</button>
+    </div>
+    <div class="news-g">
+      <div class="nc feat anim">
+        <div class="nc-img">
+          <div class="nc-img-inner"
+            style="background:linear-gradient(135deg,#0A1F5C,#1A4DC4 45%,#0D1530);height:100%;min-height:220px;position:relative;display:flex;align-items:center;justify-content:center">
+            <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 560 320" fill="none">
+              <rect x="180" y="60" width="200" height="200" rx="1" stroke="rgba(255,255,255,.06)" />
+              <line x1="180" y1="160" x2="380" y2="160" stroke="rgba(255,255,255,.06)" />
+              <line x1="280" y1="60" x2="280" y2="260" stroke="rgba(255,255,255,.06)" />
+              <Group cx="280" cy="160" r="35" stroke="rgba(255,255,255,.06)" />
+              <ellipse cx="280" cy="160" rx="240" ry="155" stroke="rgba(255,255,255,.04)" />
+              <rect x="130" y="117" width="50" height="86" stroke="rgba(201,168,76,.22)" />
+              <rect x="380" y="117" width="50" height="86" stroke="rgba(201,168,76,.22)" />
+            </svg>
+          </div>
+        </div>
+        <div class="nc-body"><span class="tag tag-b">Match Report</span>
+          <div class="nc-h">Derby stalemate: Rayon Sports and Rayon Sports FC battle to goalless draw at Amahoro in a
+            bruising
+            capital encounter</div>
+          <div class="nc-meta">10 March 2025 Rwanda Premier League 5 min read</div>
+        </div>
+      </div>
+      <div class="nc anim">
+        <div class="nc-img">
+          <div class="nc-img-inner"
+            style="background:linear-gradient(135deg,#1E2840,#0D1530);height:100%;min-height:120px;display:flex;align-items:center;justify-content:center;font-size:44px">
+            ??</div>
+        </div>
+        <div class="nc-body"><span class="tag tag-g">Squad Update</span>
+          <div class="nc-h">Ngagne Fall tops scorers with 14 goals Senegalese striker takes RPL by storm</div>
+          <div class="nc-meta">5 March 2025</div>
+        </div>
+      </div>
+      <div class="nc anim">
+        <div class="nc-img">
+          <div class="nc-img-inner"
+            style="background:linear-gradient(135deg,#1A0A0A,#3A1010);height:100%;min-height:120px;display:flex;align-items:center;justify-content:center;font-size:44px">
+            ??</div>
+        </div>
+        <div class="nc-body"><span class="tag tag-r">CAF Update</span>
+          <div class="nc-h">Rayon Sports plots CAF Confederation Cup campaign for next season</div>
+          <div class="nc-meta">1 March 2025</div>
+        </div>
+      </div>
+      <div class="nc anim">
+        <div class="nc-img">
+          <div class="nc-img-inner"
+            style="background:linear-gradient(135deg,#0A1F5C,#0D1530);height:100%;min-height:120px;display:flex;align-items:center;justify-content:center;font-size:44px">
+            ???</div>
+        </div>
+        <div class="nc-body"><span class="tag tag-b">Academy</span>
+          <div class="nc-h">SKOL partnership funds new training ground &amp; academy facility</div>
+          <div class="nc-meta">24 Feb 2025</div>
+        </div>
+      </div>
+      <div class="nc anim">
+        <div class="nc-img">
+          <div class="nc-img-inner"
+            style="background:linear-gradient(135deg,#0A2010,#0D2A18);height:100%;min-height:120px;display:flex;align-items:center;justify-content:center;font-size:44px">
+            ??</div>
+        </div>
+        <div class="nc-body"><span class="tag tag-gr">Women's FC</span>
+          <div class="nc-h">WFC clinch Super Cup in dominant 5-2 victory over AS Kigali</div>
+          <div class="nc-meta">27 Sep 2024</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ??????????? VIDEOS ??????????? -->
+  <section id="videos">
+    <div class="sec-row">
+      <div>
+        <div class="sec-pre">
+          <div class="sec-pre-line"></div><span>Media Hub</span>
+        </div>
+        <div class="sec-h">VIDEOS &amp;<br>HIGHLIGHTS</div>
+      </div>
+      <button class="btn-s">View All ?</button>
+    </div>
+    <div class="vid-g">
+      <div class="vc anim"
+        onclick="openVideo('Match Highlights: Rayon Sports 30 Rayon Sports FC','Match Report  23 Feb 2025')">
+        <div class="vc-thumb">
+          <div class="vc-thumb-img" style="background:linear-gradient(135deg,#0033A0,#0A1F5C);font-size:42px">?</div>
+          <div class="vc-overlay">
+            <div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none">
+                <path d="M5 3L15 9L5 15V3Z" fill="#0033A0" />
+              </svg></div>
+          </div>
+          <div class="vc-dur">3:42</div>
+        </div>
+        <div class="vc-body">
+          <div class="vc-cat">Match Highlights</div>
+          <div class="vc-title">Rayon Sports 30 Rayon Sports FC Dominant Derby Victory</div>
+          <div class="vc-date">23 February 2025</div>
+        </div>
+      </div>
+      <div class="vc anim" onclick="openVideo('Ngagne Fall: Season Special','Player Feature  March 2025')">
+        <div class="vc-thumb">
+          <div class="vc-thumb-img" style="background:linear-gradient(135deg,#1F0A0A,#3A1218);font-size:42px">??</div>
+          <div class="vc-overlay">
+            <div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none">
+                <path d="M5 3L15 9L5 15V3Z" fill="#0033A0" />
+              </svg></div>
+          </div>
+          <div class="vc-dur">6:15</div>
+        </div>
+        <div class="vc-body">
+          <div class="vc-cat">Player Feature</div>
+          <div class="vc-title">Ngagne Fall: The Senegalese striker taking Rwanda by storm</div>
+          <div class="vc-date">5 March 2025</div>
+        </div>
+      </div>
+      <div class="vc anim" onclick="openVideo('WFC Super Cup Final Highlights','Women\'s Football  Sep 2024')">
+        <div class="vc-thumb">
+          <div class="vc-thumb-img" style="background:linear-gradient(135deg,#0A2010,#0D2A18);font-size:42px">??</div>
+          <div class="vc-overlay">
+            <div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none">
+                <path d="M5 3L15 9L5 15V3Z" fill="#0033A0" />
+              </svg></div>
+          </div>
+          <div class="vc-dur">5:02</div>
+        </div>
+        <div class="vc-body">
+          <div class="vc-cat">Women's Football</div>
+          <div class="vc-title">WFC Super Cup Final: 52 Demolition of AS Kigali</div>
+          <div class="vc-date">27 September 2024</div>
+        </div>
+      </div>
+      <div class="vc anim" onclick="openVideo('Inside Rayon Sports Pre-Season 2025','Behind the Scenes  Jan 2025')">
+        <div class="vc-thumb">
+          <div class="vc-thumb-img" style="background:linear-gradient(135deg,#0D1530,#1E2840);font-size:42px">???</div>
+          <div class="vc-overlay">
+            <div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none">
+                <path d="M5 3L15 9L5 15V3Z" fill="#0033A0" />
+              </svg></div>
+          </div>
+          <div class="vc-dur">8:30</div>
+        </div>
+        <div class="vc-body">
+          <div class="vc-cat">Behind the Scenes</div>
+          <div class="vc-title">Inside Rayon: Pre-season training camp 2025</div>
+          <div class="vc-date">18 January 2025</div>
+        </div>
+      </div>
+      <div class="vc anim"
+        onclick="openVideo('Post-Match Press Conference  Rayon 00 Rayon Sports','Coach Media  10 Mar 2025')">
+        <div class="vc-thumb">
+          <div class="vc-thumb-img" style="background:linear-gradient(135deg,#1A1A2E,#0D1530);font-size:42px">???</div>
+          <div class="vc-overlay">
+            <div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none">
+                <path d="M5 3L15 9L5 15V3Z" fill="#0033A0" />
+              </svg></div>
+          </div>
+          <div class="vc-dur">12:04</div>
+        </div>
+        <div class="vc-body">
+          <div class="vc-cat">Press Conference</div>
+          <div class="vc-title">Coach post-match: "We deserved more than a draw today"</div>
+          <div class="vc-date">10 March 2025</div>
+        </div>
+      </div>
+      <div class="vc anim" onclick="openVideo('Top 5 Goals: January 2025','Goal of the Month')">
+        <div class="vc-thumb">
+          <div class="vc-thumb-img" style="background:linear-gradient(135deg,#1F1800,#2A2000);font-size:42px">??</div>
+          <div class="vc-overlay">
+            <div class="vc-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none">
+                <path d="M5 3L15 9L5 15V3Z" fill="#0033A0" />
+              </svg></div>
+          </div>
+          <div class="vc-dur">2:18</div>
+        </div>
+        <div class="vc-body">
+          <div class="vc-cat">Goal of the Month</div>
+          <div class="vc-title">January's finest: Top 5 goals from Rayon Sports</div>
+          <div class="vc-date">1 February 2025</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ??????????? FIXTURES ??????????? -->
+  <section id="fixtures" style="background:var(--bg2)">
+    <div class="sec-row">
+      <div>
+        <div class="sec-pre">
+          <div class="sec-pre-line"></div><span>Schedule</span>
+        </div>
+        <div class="sec-h">FIXTURES &amp;<br>RESULTS</div>
+      </div>
+    </div>
+    <div class="tabs" style="margin-bottom:28px">
+      <button class="tab on" data-ftab="results">Recent Results</button>
+      <button class="tab" data-ftab="upcoming">Upcoming</button>
+    </div>
+    <div id="ftab-results">
+      <div class="fix-list">
+        <div class="fix w anim">
+          <div class="fix-date">23 Feb 2025</div>
+          <div class="fix-tm home-tm">Rayon Sports</div>
+          <div class="fix-score-box">
+            <div class="fix-score">3 0</div>
+          </div>
+          <div class="fix-tm">Rayon Sports FC</div>
+          <div class="res-badge rw">Win</div>
+        </div>
+        <div class="fix d anim">
+          <div class="fix-date">10 Mar 2025</div>
+          <div class="fix-tm home-tm">Rayon Sports</div>
+          <div class="fix-score-box">
+            <div class="fix-score">0 0</div>
+          </div>
+          <div class="fix-tm">Rayon Sports FC</div>
+          <div class="res-badge rd">Draw</div>
+        </div>
+        <div class="fix l anim">
+          <div class="fix-date">17 May 2025</div>
+          <div class="fix-tm home-tm">Bugesera FC</div>
+          <div class="fix-score-box">
+            <div class="fix-score">2 0</div>
+          </div>
+          <div class="fix-tm">Rayon Sports</div>
+          <div class="res-badge rl">Loss</div>
+        </div>
+        <div class="fix w anim">
+          <div class="fix-date">28 Jan 2025</div>
+          <div class="fix-tm home-tm">Rayon Sports</div>
+          <div class="fix-score-box">
+            <div class="fix-score">2 1</div>
+          </div>
+          <div class="fix-tm">AS Kigali</div>
+          <div class="res-badge rw">Win</div>
+        </div>
+        <div class="fix w anim">
+          <div class="fix-date">14 Dec 2024</div>
+          <div class="fix-tm home-tm">Rayon Sports</div>
+          <div class="fix-score-box">
+            <div class="fix-score">2 0</div>
+          </div>
+          <div class="fix-tm">Mukura VS</div>
+          <div class="res-badge rw">Win</div>
+        </div>
+      </div>
+    </div>
+    <div id="ftab-upcoming" style="display:none">
+      <div class="fix-list">
+        <div class="fix anim">
+          <div class="fix-date">22 Mar 2025<br><span style="color:var(--gold);font-weight:700">15:00</span></div>
+          <div class="fix-tm home-tm">Rayon Sports</div>
+          <div class="fix-score-box">
+            <div class="fix-score" style="font-size:13px;letter-spacing:2px">vs</div>
+          </div>
+          <div class="fix-tm">Etincelles FC</div>
+          <div style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:1px">RPL</div>
+        </div>
+        <div class="fix anim">
+          <div class="fix-date">29 Mar 2025<br><span style="color:var(--gold);font-weight:700">16:00</span></div>
+          <div class="fix-tm home-tm">Gasogi United</div>
+          <div class="fix-score-box">
+            <div class="fix-score" style="font-size:13px;letter-spacing:2px">vs</div>
+          </div>
+          <div class="fix-tm">Rayon Sports</div>
+          <div style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:1px">RPL Away</div>
+        </div>
+        <div class="fix anim">
+          <div class="fix-date">5 Rayon Sports 2025<br><span style="color:var(--gold);font-weight:700">15:00</span>
+          </div>
+          <div class="fix-tm home-tm">Rayon Sports</div>
+          <div class="fix-score-box">
+            <div class="fix-score" style="font-size:13px;letter-spacing:2px">vs</div>
+          </div>
+          <div class="fix-tm">Police FC</div>
+          <div style="font-size:9px;color:var(--gold);font-weight:700;letter-spacing:1px">RPL</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ??????????? SQUAD ??????????? -->
+  <section id="squad">
+    <div class="sec-pre">
+      <div class="sec-pre-line"></div><span>202425 Season</span>
+    </div>
+    <div class="sec-h">THE SQUAD</div>
+    <p class="sec-p">Click any player to view their full profile, season stats and career history.</p>
+    <div class="squad-filter">
+      <button class="sf on" data-pos="all">All</button>
+      <button class="sf" data-pos="gk">Goalkeepers</button>
+      <button class="sf" data-pos="def">Defenders</button>
+      <button class="sf" data-pos="mid">Midfielders</button>
+      <button class="sf" data-pos="fwd">Forwards</button>
+    </div>
+    <div class="squad-g" id="squad-grid"></div>
+  </section>
+
+  <!-- ??????????? FAN WALL ??????????? -->
+  <section id="fanwall">
+    <div class="sec-row">
+      <div>
+        <div class="sec-pre">
+          <div class="sec-pre-line"></div><span>Community</span>
+        </div>
+        <div class="sec-h">FAN<br>WALL</div>
+      </div>
+      <button class="btn-s">Submit Your Post ?</button>
+    </div>
+    <div class="fan-featured anim">
+      <div class="fan-av-lg" style="background:linear-gradient(135deg,var(--blue),#1A4DC4)">JM</div>
+      <div>
+        <div class="fan-crown">? Fan of the Match</div>
+        <div class="fan-pname">Jean-Marie Nkurunziza</div>
+        <div class="fan-pgrp">GIKUNDIRO Kigali Ultras Supporter Group #1</div>
+        <div class="fan-ptxt">"Forty years watching this club and the passion never fades. The derby today was
+          heart-stopping we deserved a winner. Title number 10 is coming, I can feel it in the Amahoro air. GIKUNDIRO
+          forever! ??"</div>
+        <div class="fan-acts">
+          <button class="fan-act"
+            onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">??
+            <span>847</span> Likes</button>
+          <button class="fan-act">?? 142 Comments</button>
+          <button class="fan-act">? Share</button>
+        </div>
+      </div>
+    </div>
+    <div class="fan-g">
+      <div class="fan-card anim">
+        <div class="fan-card-hd">
+          <div class="fan-av" style="background:linear-gradient(135deg,#0A1F5C,#1A4DC4)">AK</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:var(--text)">Alice K.</div>
+            <div style="font-size:9.5px;color:var(--muted)">Southern Province Fan Group</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">"Drove 3 hours from Huye to watch the derby.
+          Worth every kilometre. Rayon Sports is not just a club, it is our identity. Gikundiro! ??"</div>
+        <div class="fan-acts"><button class="fan-act"
+            onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">??
+            <span>312</span></button><button class="fan-act">?? 28</button></div>
+      </div>
+      <div class="fan-card anim">
+        <div class="fan-card-hd">
+          <div class="fan-av" style="background:linear-gradient(135deg,#1F0A0A,#4A1010)">PM</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:var(--text)">Patrick M.</div>
+            <div style="font-size:9.5px;color:var(--muted)">GIKUNDIRO Diaspora London</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">"Watching from London at 3am. Didn't sleep,
+          didn't care. Fall was robbed of that goal. Next match we go all in! ??"</div>
+        <div class="fan-acts"><button class="fan-act"
+            onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">??
+            <span>489</span></button><button class="fan-act">?? 67</button></div>
+      </div>
+      <div class="fan-card anim">
+        <div class="fan-card-hd">
+          <div class="fan-av" style="background:linear-gradient(135deg,#0A2010,#0D3015)">GU</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:var(--text)">Grace U.</div>
+            <div style="font-size:9.5px;color:var(--muted)">Rayon Sports WFC Fan Club</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">"So proud of the women's team! That 5-2 Super Cup
+          win gave me goosebumps. The future is so bright. ??"</div>
+        <div class="fan-acts"><button class="fan-act"
+            onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">??
+            <span>276</span></button><button class="fan-act">?? 34</button></div>
+      </div>
+      <div class="fan-card anim">
+        <div class="fan-card-hd">
+          <div class="fan-av" style="background:linear-gradient(135deg,#1A1040,#2A1860)">DI</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:var(--text)">David I.</div>
+            <div style="font-size:9.5px;color:var(--muted)">Nyanza Original Fan Club</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">"Born in Nyanza, where Rayon Sports was born.
+          This club runs in my blood. Title number 10 is our destiny! ??"</div>
+        <div class="fan-acts"><button class="fan-act"
+            onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">??
+            <span>193</span></button><button class="fan-act">?? 19</button></div>
+      </div>
+      <div class="fan-card anim">
+        <div class="fan-card-hd">
+          <div class="fan-av" style="background:linear-gradient(135deg,#1F1200,#2A1800)">SW</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:var(--text)">Sarah W.</div>
+            <div style="font-size:9.5px;color:var(--muted)">East Africa GIKUNDIRO Network</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">"Following Rayon from Nairobi. The only Rwandan
+          club with a proper East Africa following. Keep representing! ??"</div>
+        <div class="fan-acts"><button class="fan-act"
+            onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">??
+            <span>154</span></button><button class="fan-act">?? 22</button></div>
+      </div>
+      <div class="fan-card anim">
+        <div class="fan-card-hd">
+          <div class="fan-av" style="background:linear-gradient(135deg,#100A1F,#1A1230)">RN</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:var(--text)">Robert N.</div>
+            <div style="font-size:9.5px;color:var(--muted)">Junior GIKUNDIRO U-18</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">"My first ever Rayon match today. The atmosphere
+          at Amahoro was incredible. I'm a fan for life now. ???"</div>
+        <div class="fan-acts"><button class="fan-act"
+            onclick="this.querySelector('span').textContent=parseInt(this.querySelector('span').textContent)+1">??
+            <span>88</span></button><button class="fan-act">?? 11</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ??????????? SHOP ??????????? -->
+  <section id="shop" style="background:var(--bg2)">
+    <div class="sec-pre">
+      <div class="sec-pre-line"></div><span>Official Club Store</span>
+    </div>
+    <div class="sec-h">CLUB SHOP</div>
+    <p class="sec-p">Customise your jersey and wear your GIKUNDIRO pride. Official merchandise available now.</p>
+    <div class="shop-layout">
+      <div class="jersey-box anim">
+        <div class="jb-head">JERSEY BUILDER</div>
+        <div class="jb-preview">
+          <svg id="jb-svg" width="190" height="210" viewBox="0 0 190 210" fill="none">
+            <path id="jb-sl" d="M62 25L30 48L10 42L5 84L46 90L46 66L70 44Z" fill="#FFFFFF" />
+            <path id="jb-sr" d="M128 25L160 48L180 42L185 84L144 90L144 66L120 44Z" fill="#FFFFFF" />
+            <path id="jb-body" d="M62 25Q95 12 128 25L144 66L144 195L46 195L46 66Z" fill="#0033A0" />
+            <path d="M76 25Q95 32 114 25L111 15Q95 6 79 15Z" fill="#C9A84C" />
+            <Group cx="74" cy="65" r="12" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.25)"
+              stroke-width=".5" />
+            <text x="74" y="69" text-anchor="middle" font-family="Bebas Neue" font-size="8" fill="white"
+              letter-spacing="1">RS</text>
+            <text id="jb-numtxt" x="95" y="142" text-anchor="middle" font-family="Bebas Neue" font-size="50"
+              fill="white" opacity=".92">9</text>
+            <text id="jb-nametxt" x="95" y="176" text-anchor="middle" font-family="Manrope" font-size="11" fill="white"
+              font-weight="700" letter-spacing="2.5">FALL</text>
+          </svg>
+        </div>
+        <div class="jb-ctrl">
+          <div class="jb-field">
+            <div class="jb-lbl">Body Colour</div>
+            <div class="color-row">
+              <div class="color-chip on" style="background:#0033A0" onclick="setJerseyCol(this,'body','#0033A0')"></div>
+              <div class="color-chip" style="background:#1A1A2E" onclick="setJerseyCol(this,'body','#1A1A2E')"></div>
+              <div class="color-chip" style="background:#fff;border:1px solid #ccc"
+                onclick="setJerseyCol(this,'body','#FFFFFF')"></div>
+              <div class="color-chip" style="background:#7B0000" onclick="setJerseyCol(this,'body','#7B0000')"></div>
+              <div class="color-chip" style="background:#0A2A0A" onclick="setJerseyCol(this,'body','#0A2A0A')"></div>
+            </div>
+          </div>
+          <div class="jb-field">
+            <div class="jb-lbl">Sleeve Colour</div>
+            <div class="color-row">
+              <div class="color-chip on" style="background:#fff;border:1px solid #ccc"
+                onclick="setJerseyCol(this,'sleeve','#FFFFFF')"></div>
+              <div class="color-chip" style="background:#0033A0" onclick="setJerseyCol(this,'sleeve','#0033A0')"></div>
+              <div class="color-chip" style="background:#C9A84C" onclick="setJerseyCol(this,'sleeve','#C9A84C')"></div>
+              <div class="color-chip" style="background:#111" onclick="setJerseyCol(this,'sleeve','#111111')"></div>
+              <div class="color-chip" style="background:#C0392B" onclick="setJerseyCol(this,'sleeve','#C0392B')"></div>
+            </div>
+          </div>
+          <div class="jb-field">
+            <div class="jb-lbl">Your Name</div><input class="jb-inp" id="jb-name" maxlength="12" placeholder="YOUR NAME"
+              value="FALL" oninput="updateJersey()">
+          </div>
+          <div class="jb-field">
+            <div class="jb-lbl">Squad Number</div><input class="jb-inp" id="jb-num" type="number" min="1" max="99"
+              value="9" oninput="updateJersey()">
+          </div>
+          <div class="jb-field">
+            <div class="jb-lbl">Size</div>
+            <div class="size-row">
+              <button class="size-btn" onclick="setSz(this)">XS</button><button class="size-btn"
+                onclick="setSz(this)">S</button><button class="size-btn on" onclick="setSz(this)">M</button><button
+                class="size-btn" onclick="setSz(this)">L</button><button class="size-btn"
+                onclick="setSz(this)">XL</button><button class="size-btn" onclick="setSz(this)">XXL</button>
+            </div>
+          </div>
+          <button class="btn-p" style="width:100%;justify-content:center" onclick="addJersey()">Add Custom Jersey <span
+              data-currency-code-amount="45000"></span></button>
+        </div>
+      </div>
+      <div>
+        <div
+          style="font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:18px;padding-bottom:7px;border-bottom:.5px solid var(--borderg)">
+          Official Merchandise</div>
+        <div class="shop-products">
+          <div class="product-row anim" onclick="addProd('Home Kit 202425','home-kit','M',45000)">
+            <div class="prod-img" style="background:linear-gradient(135deg,var(--blue-p),var(--mid))">?</div>
+            <div>
+              <div class="prod-name">Home Kit 202425</div>
+              <div class="prod-type">Official Match Jersey Blue/White</div>
+              <div class="prod-price" data-currency-code-amount="45000"></div>
+            </div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button>
+          </div>
+          <div class="product-row anim" onclick="addProd('Away Kit 202425','away-kit','M',45000)">
+            <div class="prod-img" style="background:linear-gradient(135deg,#1A1A1A,var(--mid))">??</div>
+            <div>
+              <div class="prod-name">Away Kit 202425</div>
+              <div class="prod-type">Official Match Jersey White/Gold</div>
+              <div class="prod-price" data-currency-code-amount="45000"></div>
+            </div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button>
+          </div>
+          <div class="product-row anim" onclick="addProd('Training Top 2025','training','M',22000)">
+            <div class="prod-img" style="background:linear-gradient(135deg,var(--mid),var(--bg3))">??</div>
+            <div>
+              <div class="prod-name">Training Top 2025</div>
+              <div class="prod-type">Performance Training Wear</div>
+              <div class="prod-price" data-currency-code-amount="22000"></div>
+            </div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button>
+          </div>
+          <div class="product-row anim" onclick="addProd('GIKUNDIRO Scarf','scarf','One Size',8000)">
+            <div class="prod-img" style="background:linear-gradient(135deg,#0033A0,#C9A84C)">??</div>
+            <div>
+              <div class="prod-name">GIKUNDIRO Scarf</div>
+              <div class="prod-type">Supporter Scarf Blue &amp; Gold</div>
+              <div class="prod-price" data-currency-code-amount="8000"></div>
+            </div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button>
+          </div>
+          <div class="product-row anim" onclick="addProd('Club Cap','cap','One Size',7500)">
+            <div class="prod-img" style="background:linear-gradient(135deg,var(--blue),#1A4DC4)">??</div>
+            <div>
+              <div class="prod-name">Rayon Sports Cap</div>
+              <div class="prod-type">Snapback Embroidered Crest</div>
+              <div class="prod-price" data-currency-code-amount="7500"></div>
+            </div><button class="btn-p" style="padding:9px 14px;font-size:9px">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ??????????? MEMBERSHIP ??????????? -->
+  <section id="membership">
+    <div class="sec-pre">
+      <div class="sec-pre-line"></div><span>Fan Membership</span>
+    </div>
+    <div class="sec-h">JOIN<br>GIKUNDIRO</div>
+    <p class="sec-p">Become an official member. Member-owned, people-powered your contribution builds this club.</p>
+    <div class="mem-g">
+      <div class="mem-card anim">
+        <div class="mem-badge mb-b">Blue Member</div>
+        <div class="mem-tier">BLUE</div>
+        <div class="mem-price">5,000</div>
+        <div class="mem-per"><span data-currency-code-text></span> per month ~USD 4</div>
+        <ul class="mem-feats">
+          <li>Official digital membership card</li>
+          <li>10% discount in Club Shop</li>
+          <li>Priority match ticket access</li>
+          <li>Monthly club newsletter</li>
+          <li>Access to fan community forum</li>
+        </ul>
+        <button class="btn-s" style="width:100%;justify-content:center" onclick="openMembership('Blue','5,000')">Join
+          Blue ?</button>
+      </div>
+      <div class="mem-card featured anim">
+        <div class="mem-popular">Most Popular</div>
+        <div class="mem-badge mb-g">Gold Member</div>
+        <div class="mem-tier">GOLD</div>
+        <div class="mem-price">15,000</div>
+        <div class="mem-per"><span data-currency-code-text></span> per month ~USD 11</div>
+        <ul class="mem-feats">
+          <li>Physical gold membership card</li>
+          <li>20% discount in Club Shop</li>
+          <li>Guaranteed match day tickets</li>
+          <li>Stadium tour access 2? per year</li>
+          <li>Exclusive Gold member events</li>
+          <li>Player meet &amp; greet 1? per season</li>
+          <li>Vote in club governance decisions</li>
+        </ul>
+        <button class="btn-g" style="width:100%;justify-content:center" onclick="openMembership('Gold','15,000')">Join
+          Gold ?</button>
+      </div>
+      <div class="mem-card anim">
+        <div class="mem-badge mb-p">Platinum Elite</div>
+        <div class="mem-tier">PLATINUM</div>
+        <div class="mem-price">40,000</div>
+        <div class="mem-per"><span data-currency-code-text></span> per month ~USD 29</div>
+        <ul class="mem-feats">
+          <li>Engraved platinum membership card</li>
+          <li>30% discount in Club Shop</li>
+          <li>VIP hospitality on select matches</li>
+          <li>Unlimited stadium tours</li>
+          <li>Signed squad jersey each season</li>
+          <li>Pre-match tunnel access 2? season</li>
+          <li>Board meeting observer rights</li>
+          <li>Dedicated concierge support</li>
+        </ul>
+        <button class="btn-p" style="width:100%;justify-content:center"
+          onclick="openMembership('Platinum','40,000')">Join Platinum ?</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ??????????? TICKETS ??????????? -->
+  <section id="tickets" style="background:var(--bg2)">
+    <div class="sec-pre">
+      <div class="sec-pre-line"></div><span>Match Day</span>
+    </div>
+    <div class="sec-h">BUY<br>TICKETS</div>
+    <div class="ticket-steps">
+      <div class="tstep on" data-s="1">
+        <div class="tstep-num">1</div>
+        <div class="tstep-lbl">Select Match</div>
+      </div>
+      <div class="tstep" data-s="2">
+        <div class="tstep-num">2</div>
+        <div class="tstep-lbl">Choose Seat</div>
+      </div>
+      <div class="tstep" data-s="3">
+        <div class="tstep-num">3</div>
+        <div class="tstep-lbl">Checkout</div>
+      </div>
+    </div>
+    <div class="tpanel on" id="tp1">
+      <div class="match-picker">
+        <div class="mpick" onclick="pickMatch(this,'Rayon Sports vs Etincelles FC','22 Mar 2025',2000)">
+          <div class="mpick-date">22 Mar 2025<br><strong style="color:var(--gold)">15:00</strong></div>
+          <div>
+            <div class="mpick-match">Rayon Sports vs Etincelles FC</div>
+            <div class="mpick-comp">Rwanda Premier League Matchday 23</div>
+          </div>
+          <div>
+            <div class="mpick-price">From <span data-currency-code-amount="2000"></span></div>
+            <div style="font-size:9px;color:var(--muted);text-align:right;margin-top:3px">Good availability</div>
+          </div>
+        </div>
+        <div class="mpick" onclick="pickMatch(this,'Gasogi United vs Rayon Sports','29 Mar 2025',1500)">
+          <div class="mpick-date">29 Mar 2025<br><strong style="color:var(--gold)">16:00</strong></div>
+          <div>
+            <div class="mpick-match">Gasogi United vs Rayon Sports</div>
+            <div class="mpick-comp">Rwanda Premier League Matchday 24 Away</div>
+          </div>
+          <div>
+            <div class="mpick-price">From <span data-currency-code-amount="1500"></span></div>
+            <div style="font-size:9px;color:var(--muted);text-align:right;margin-top:3px">Limited availability</div>
+          </div>
+        </div>
+        <div class="mpick" onclick="pickMatch(this,'Rayon Sports vs Police FC','5 Rayon Sports 2025',2000)">
+          <div class="mpick-date">5 Rayon Sports 2025<br><strong style="color:var(--gold)">15:00</strong></div>
+          <div>
+            <div class="mpick-match">Rayon Sports vs Police FC</div>
+            <div class="mpick-comp">Rwanda Premier League Matchday 25</div>
+          </div>
+          <div>
+            <div class="mpick-price">From <span data-currency-code-amount="2000"></span></div>
+            <div style="font-size:9px;color:var(--muted);text-align:right;margin-top:3px">Good availability</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tpanel" id="tp2">
+      <div style="font-family:var(--font-d);font-size:20px;letter-spacing:2px;color:var(--text);margin-bottom:26px"
+        id="tp2-title"></div>
+      <div class="seat-layout">
+        <svg id="seat-svg" viewBox="0 0 380 280">
+          <ellipse cx="190" cy="140" rx="185" ry="135" fill="var(--bg3)" stroke="var(--border)" stroke-width="1" />
+          <ellipse cx="190" cy="140" rx="128" ry="85" fill="var(--bg2)" stroke="var(--border)" stroke-width=".5" />
+          <rect x="132" y="90" width="116" height="100" fill="#1A3A1A" stroke="rgba(255,255,255,0.12)" />
+          <line x1="132" y1="140" x2="248" y2="140" stroke="rgba(255,255,255,.16)" stroke-width=".5" />
+          <line x1="190" y1="90" x2="190" y2="190" stroke="rgba(255,255,255,.16)" stroke-width=".5" />
+          <ellipse cx="190" cy="140" rx="20" ry="15" fill="none" stroke="rgba(255,255,255,.18)" stroke-width=".5" />
+          <rect x="132" y="96" width="24" height="36" fill="none" stroke="rgba(255,255,255,.26)" stroke-width=".5" />
+          <rect x="224" y="96" width="24" height="36" fill="none" stroke="rgba(255,255,255,.26)" stroke-width=".5" />
+          <rect x="132" y="148" width="24" height="36" fill="none" stroke="rgba(255,255,255,.26)" stroke-width=".5" />
+          <rect x="224" y="148" width="24" height="36" fill="none" stroke="rgba(255,255,255,.26)" stroke-width=".5" />
+          <path id="z-north" d="M76 14 A168 168 0 0 1 304 14 L278 50 A128 128 0 0 0 102 50 Z" fill="rgba(0,51,160,.28)"
+            stroke="rgba(0,51,160,.55)" stroke-width="1" style="cursor:pointer"
+            onclick="pickZone('north','North Stand',2000,3500)" />
+          <path id="z-south" d="M76 266 A168 168 0 0 0 304 266 L278 230 A128 128 0 0 1 102 230 Z"
+            fill="rgba(0,51,160,.28)" stroke="rgba(0,51,160,.55)" stroke-width="1" style="cursor:pointer"
+            onclick="pickZone('south','South Stand',2000,3500)" />
+          <path id="z-west" d="M5 76 A168 168 0 0 0 5 204 L40 186 A128 128 0 0 1 40 94 Z" fill="rgba(201,168,76,.12)"
+            stroke="rgba(201,168,76,.38)" stroke-width="1" style="cursor:pointer"
+            onclick="pickZone('west','West Stand VIP',5000,8000)" />
+          <path id="z-east" d="M375 76 A168 168 0 0 1 375 204 L340 186 A128 128 0 0 0 340 94 Z"
+            fill="rgba(201,168,76,.12)" stroke="rgba(201,168,76,.38)" stroke-width="1" style="cursor:pointer"
+            onclick="pickZone('east','East Stand VIP',5000,8000)" />
+          <text x="190" y="13" text-anchor="middle" fill="rgba(255,255,255,.42)" font-size="8" font-family="Manrope"
+            font-weight="700" letter-spacing="2">NORTH</text>
+          <text x="190" y="278" text-anchor="middle" fill="rgba(255,255,255,.42)" font-size="8" font-family="Manrope"
+            font-weight="700" letter-spacing="2">SOUTH</text>
+          <text x="10" y="142" fill="rgba(201,168,76,.6)" font-size="7" font-family="Manrope" font-weight="700"
+            transform="rotate(-90 10 142)" text-anchor="middle">VIP W</text>
+          <text x="370" y="140" fill="rgba(201,168,76,.6)" font-size="7" font-family="Manrope" font-weight="700"
+            transform="rotate(90 370 140)" text-anchor="middle">VIP E</text>
+        </svg>
+        <div class="seat-info-col">
+          <div
+            style="font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:10px">
+            Stadium Legend</div>
+          <div class="seat-legend-itm">
+            <div class="sleg-dot" style="background:rgba(0,51,160,.4);border:1px solid rgba(0,51,160,.65)"></div>General
+            Stand From <span data-currency-code-amount="2000"></span>
+          </div>
+          <div class="seat-legend-itm">
+            <div class="sleg-dot" style="background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.48)"></div>VIP
+            Stand From <span data-currency-code-amount="5000"></span>
+          </div>
+          <div class="seat-selection" id="seat-selection">
+            <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700">
+              Select a Stand</div>
+            <div style="font-size:11.5px;color:var(--text2);margin-top:5px;line-height:1.5">Click a section on the
+              stadium map to view pricing and proceed.</div>
+          </div>
+          <button class="btn-p" id="tp2-proceed" style="width:100%;justify-content:center;opacity:.4" disabled
+            onclick="goToCheckout()">Continue to Checkout ?</button>
+        </div>
+      </div>
+    </div>
+    <div class="tpanel" id="tp3">
+      <div style="max-width:460px">
+        <div id="checkout-order"
+          style="background:var(--bg3);border:1px solid var(--borderg);padding:22px;margin-bottom:22px">
+          <div
+            style="font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px">
+            Order Summary</div>
+          <div id="order-txt" style="font-size:13.5px;color:var(--text2);line-height:1.8"></div>
+        </div>
+        <div class="form-field">
+          <div class="f-lbl">Full Name</div><input class="f-inp" placeholder="Jean-Marie Nkurunziza">
+        </div>
+        <div class="form-field">
+          <div class="f-lbl">Email Address</div><input class="f-inp" type="email" placeholder="email@example.com">
+        </div>
+        <div class="form-field">
+          <div class="f-lbl">Phone (MTN / Airtel)</div><input class="f-inp" type="tel" placeholder="+250 7XX XXX XXX">
+        </div>
+        <div class="form-field">
+          <div class="f-lbl">Number of Tickets</div><input class="f-inp" type="number" min="1" max="10" value="1"
+            id="tkt-qty" oninput="refreshOrder()">
+        </div>
+        <div class="form-field">
+          <div class="f-lbl">Payment Method</div><select class="f-inp">
+            <option>MTN MoMo</option>
+            <option>Airtel Money</option>
+            <option>Bank Card</option>
+          </select>
+        </div>
+        <button class="btn-g" style="width:100%;justify-content:center;margin-top:6px" onclick="confirmOrder()">Complete
+          Purchase ?</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ??????????? HONOURS ??????????? -->
+  <section id="honours">
+    <div class="sec-pre">
+      <div class="sec-pre-line"></div><span>Honours Board</span>
+    </div>
+    <div class="sec-h">A LEGACY<br>OF GLORY</div>
+    <div class="trophy-g">
+      <div class="tr-card anim"><span class="tr-ico">??</span>
+        <div class="tr-n">9</div>
+        <div class="tr-name">Rwanda Premier League</div>
+        <div class="tr-sub">Most recently 201819</div>
+      </div>
+      <div class="tr-card anim"><span class="tr-ico">??</span>
+        <div class="tr-n">9</div>
+        <div class="tr-name">Rwanda National Cup</div>
+        <div class="tr-sub">Most recently 2023</div>
+      </div>
+      <div class="tr-card anim"><span class="tr-ico">??</span>
+        <div class="tr-n">1</div>
+        <div class="tr-name">CECAFA Clubs' Cup</div>
+        <div class="tr-sub">East African glory</div>
+      </div>
+      <div class="tr-card anim"><span class="tr-ico">??</span>
+        <div class="tr-n">9</div>
+        <div class="tr-name">Peace Cup</div>
+        <div class="tr-sub">Coupe de la Paix</div>
+      </div>
+      <div class="tr-card anim"><span class="tr-ico">???</span>
+        <div class="tr-n">3</div>
+        <div class="tr-name">Agaciro Cup</div>
+        <div class="tr-sub">Cup of Dignity</div>
+      </div>
+      <div class="tr-card anim"><span class="tr-ico">?</span>
+        <div class="tr-n">2</div>
+        <div class="tr-name">Intwali Cup</div>
+        <div class="tr-sub">Cup of the Brave</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ??????????? HISTORY ??????????? -->
+  <section id="history" style="background:var(--bg2)">
+    <div class="sec-pre">
+      <div class="sec-pre-line"></div><span>Club Heritage</span>
+    </div>
+    <div class="sec-h">56 YEARS<br>OF GIKUNDIRO</div>
+    <div class="hist-layout">
+      <div>
+        <p class="hist-p">Founded in May 1968 in Nyanza, Rwanda's Southern Province, Rayon Sports FC is the oldest and
+          most beloved football institution in the country. Long before Rwanda's modern football landscape took shape,
+          Rayon Sports was laying foundations the traditions, the rivalries, the culture that define Rwandan football
+          today.</p>
+        <div class="hist-quote">
+          <div class="hq-txt">"We are probably the only club in Rwanda that is not attached to any political
+            institution. We are a club of the people that is our greatest strength."</div>
+          <div class="hq-attr">Patrick Namenye General Secretary, Rayon Sports FC</div>
+        </div>
+        <p class="hist-p">The club's unique political neutrality has been central to its mass appeal. Revenue comes from
+          52 fan groups making monthly contributions a community-funded model unique in Rwandan football. With over 8
+          million supporters representing approximately 80% of all football fans in Rwanda, Rayon Sports is not merely a
+          club but a national institution.</p>
+        <p class="hist-p">The most recent Premier League title came in 201819 the hunt for a 10th championship defines
+          the current era, as the club seeks to convert its overwhelming popular support into sustained on-pitch
+          dominance.</p>
+      </div>
+      <div class="hist-tl">
+        <div class="htl-itm anim">
+          <div class="htl-yr">1968</div>
+          <div>
+            <div class="htl-evt">Founded in Nyanza</div>
+            <div class="htl-det">Club legally formed. First chapter of a 56-year legacy begins in Southern Province.
+            </div>
+          </div>
+        </div>
+        <div class="htl-itm anim">
+          <div class="htl-yr">1976</div>
+          <div>
+            <div class="htl-evt">First Peace Cup Title</div>
+            <div class="htl-det">Coupe de 5 Juillet first of many domestic cup triumphs.</div>
+          </div>
+        </div>
+        <div class="htl-itm anim">
+          <div class="htl-yr">1986</div>
+          <div>
+            <div class="htl-evt">Relocate to Kigali</div>
+            <div class="htl-det">Moved to the capital for greater opportunity and infrastructure.</div>
+          </div>
+        </div>
+        <div class="htl-itm anim">
+          <div class="htl-yr">1998</div>
+          <div>
+            <div class="htl-evt">Historic League &amp; Cup Double</div>
+            <div class="htl-det">One of only two clubs in Rwandan history to achieve the domestic double.</div>
+          </div>
+        </div>
+        <div class="htl-itm anim">
+          <div class="htl-yr">2010s</div>
+          <div>
+            <div class="htl-evt">CECAFA &amp; Continental Football</div>
+            <div class="htl-det">First CECAFA Clubs' Cup. East African continental presence established.</div>
+          </div>
+        </div>
+        <div class="htl-itm anim">
+          <div class="htl-yr">201819</div>
+          <div>
+            <div class="htl-evt">Most Recent League Title</div>
+            <div class="htl-det">9th Premier League championship. The quest for #10 continues.</div>
+          </div>
+        </div>
+        <div class="htl-itm anim">
+          <div class="htl-yr">2024</div>
+          <div>
+            <div class="htl-evt">WFC Super Cup Glory</div>
+            <div class="htl-det">Women's team claim FERWAFA Super Cup with dominant 5-2 victory.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ??????????? STADIUM ??????????? -->
+  <section id="stadium">
+    <div class="stad-layout">
+      <div>
+        <div class="sec-pre">
+          <div class="sec-pre-line"></div><span>Home Ground</span>
+        </div>
+        <div class="sec-h">STADE<br>AMAHORO</div>
+        <p class="sec-p">Our fortress in Kigali. Amahoro meaning "peace" is where GIKUNDIRO roars. 25,000 voices as one.
+        </p>
+        <div class="stad-specs">
+          <div class="spec anim">
+            <div class="spec-v">25,000</div>
+            <div class="spec-k">Capacity</div>
+          </div>
+          <div class="spec anim">
+            <div class="spec-v">Kigali</div>
+            <div class="spec-k">City</div>
+          </div>
+          <div class="spec anim">
+            <div class="spec-v">1987</div>
+            <div class="spec-k">Built</div>
+          </div>
+          <div class="spec anim">
+            <div class="spec-v">Natural</div>
+            <div class="spec-k">Pitch Type</div>
+          </div>
+        </div>
+      </div>
+      <div class="stad-visual anim">
+        <div class="stad-inner">
+          <svg class="pitch-svg" viewBox="0 0 400 260" fill="none">
+            <rect x="2" y="2" width="396" height="256" rx="2" stroke="rgba(255,255,255,.38)" stroke-width="1.5" />
+            <line x1="200" y1="2" x2="200" y2="258" stroke="rgba(255,255,255,.28)" />
+            <Group cx="200" cy="130" r="40" stroke="rgba(255,255,255,.28)" />
+            <Group cx="200" cy="130" r="4" fill="rgba(255,255,255,.38)" />
+            <rect x="2" y="80" width="50" height="100" stroke="rgba(255,255,255,.28)" />
+            <rect x="2" y="105" width="18" height="50" stroke="rgba(255,255,255,.28)" />
+            <rect x="348" y="80" width="50" height="100" stroke="rgba(255,255,255,.28)" />
+            <rect x="380" y="105" width="18" height="50" stroke="rgba(255,255,255,.28)" />
+            <rect x="60" y="2" width="280" height="256" stroke="rgba(255,255,255,.1)" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ??????????? PARTNERS ??????????? -->
+  <div class="partners-bar">
+    <div class="partners-lbl">Official Partners &amp; Sponsors</div>
+    <div class="partners-list">
+      <div class="partner">SKOL</div>
+      <div class="partner">FERWAFA</div>
+      <div class="partner">CECAFA</div>
+      <div class="partner">CAF</div>
+      <div class="partner">MTN RWANDA</div>
+      <div class="partner">BK ARENA</div>
+      <div class="partner">RWANDA TOURISM</div>
+    </div>
   </div>
-</div>
 
-<script src="js/brand.js"></script>
-<script src="js/app.js"></script>
+  <!-- ??????????? FOOTER ??????????? -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <div class="footer-mark">RS</div>
+        <div class="footer-bn">RAYON SPORTS FC</div>
+        <span class="footer-bt">Gikundiro Est. 1968 Kigali, Rwanda</span>
+        <p class="footer-desc">Member-owned, people-powered. Driven by the passion of over 8 million fans. Rwanda's most
+          beloved club forever the favorites.</p>
+      </div>
+      <div>
+        <div class="footer-col-h">Club</div>
+        <ul class="footer-lnks">
+          <li><a href="#">About the Club</a></li>
+          <li><a href="#">History &amp; Honours</a></li>
+          <li><a href="#stadium">Stadium</a></li>
+          <li><a href="#">Academy</a></li>
+          <li><a href="#">Women's FC</a></li>
+          <li><a href="#">Foundation</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Match Day</div>
+        <ul class="footer-lnks">
+          <li><a href="#fixtures">Fixtures &amp; Results</a></li>
+          <li><a href="#table">League Table</a></li>
+          <li><a href="#tickets">Buy Tickets</a></li>
+          <li><a href="#match">Match Centre</a></li>
+          <li><a href="#videos">Video Hub</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Fan Zone</div>
+        <ul class="footer-lnks">
+          <li><a href="#membership">Membership</a></li>
+          <li><a href="#fanwall">Fan Wall</a></li>
+          <li><a href="#shop">Club Shop</a></li>
+          <li><a href="#">Press &amp; Media</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms &amp; Conditions</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bot">
+      <div class="footer-copy">&copy; 2025 Rayon Sports FC. All rights reserved. Kigali, Rwanda. &middot; <a
+          href="/privacy" style="color:inherit;text-decoration:underline;opacity:.6">Privacy Policy</a> &middot; <a
+          href="/terms" style="color:inherit;text-decoration:underline;opacity:.6">Terms &amp; Conditions</a></div>
+      <div class="socials">
+        <a class="soc-btn" href="#">TW</a><a class="soc-btn" href="#">IG</a><a class="soc-btn" href="#">FB</a><a
+          class="soc-btn" href="#">YT</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ??????????? MOBILE NAV ??????????? -->
+  <nav class="mob-nav">
+    <div class="mob-nav-inner">
+      <a class="mnav on" href="#hero"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round">
+          <path d="M3 9L10 3L17 9V18H13V13H7V18H3Z" />
+        </svg><span class="mnav-lbl">Home</span></a>
+      <a class="mnav" href="#match"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round">
+          <Group cx="10" cy="10" r="7" />
+          <path d="M10 6V10L13 12" />
+        </svg><span class="mnav-lbl">Match</span></a>
+      <a class="mnav" href="#squad"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round">
+          <Group cx="7.5" cy="6" r="2.5" />
+          <path d="M2 17C2 14.24 4.69 13 7.5 13" />
+          <Group cx="14" cy="8" r="2.5" />
+          <path d="M10 17C10 15.24 11.79 14 14 14C16.21 14 18 15.24 18 17" />
+        </svg><span class="mnav-lbl">Squad</span></a>
+      <a class="mnav" href="#shop"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round">
+          <path d="M4 3H16L14 11H6L4 3Z" />
+          <Group cx="7" cy="15.5" r="1.2" fill="currentColor" stroke="none" />
+          <Group cx="13" cy="15.5" r="1.2" fill="currentColor" stroke="none" />
+        </svg><span class="mnav-lbl">Shop</span></a>
+      <button class="mnav" onclick="toggleMore()"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor"
+          stroke-width="1.5">
+          <rect x="2" y="2" width="7" height="7" rx="1" />
+          <rect x="11" y="2" width="7" height="7" rx="1" />
+          <rect x="2" y="11" width="7" height="7" rx="1" />
+          <rect x="11" y="11" width="7" height="7" rx="1" />
+        </svg><span class="mnav-lbl">More</span></button>
+    </div>
+  </nav>
+
+  <!-- ??????????? MORE DRAWER ??????????? -->
+  <div class="more-drawer" id="more-drawer">
+    <div class="more-g">
+      <a class="more-itm" href="#table" onclick="closeMore()">
+        <div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+            stroke-width="1.5">
+            <rect x="2" y="5" width="16" height="2" />
+            <rect x="2" y="9" width="16" height="2" />
+            <rect x="2" y="13" width="16" height="2" />
+          </svg></div><span>Table</span>
+      </a>
+      <a class="more-itm" href="#videos" onclick="closeMore()">
+        <div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round">
+            <rect x="2" y="4" width="12" height="12" rx="1" />
+            <path d="M14 7L18 5V15L14 13" />
+          </svg></div><span>Videos</span>
+      </a>
+      <a class="more-itm" href="#fanwall" onclick="closeMore()">
+        <div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round">
+            <path
+              d="M18 10C18 14.42 14.42 18 10 18C8.72 18 7.51 17.68 6.45 17.11L2 18L2.89 13.55C2.32 12.49 2 11.28 2 10C2 5.58 5.58 2 10 2C14.42 2 18 5.58 18 10Z" />
+          </svg></div><span>Fan Wall</span>
+      </a>
+      <a class="more-itm" href="#membership" onclick="closeMore()">
+        <div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round">
+            <path d="M10 2L12.5 7.5H18L13.5 11L15.5 17L10 13.5L4.5 17L6.5 11L2 7.5H7.5Z" />
+          </svg></div><span>Membership</span>
+      </a>
+      <a class="more-itm" href="#tickets" onclick="closeMore()">
+        <div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round">
+            <rect x="1" y="6" width="18" height="8" rx="1" />
+            <path d="M6 6V4M14 6V4M6 14V16M14 14V16" />
+          </svg></div><span>Tickets</span>
+      </a>
+      <a class="more-itm" href="#history" onclick="closeMore()">
+        <div class="more-ico"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round">
+            <Group cx="10" cy="10" r="8" />
+            <path d="M10 6V10L7 13" />
+          </svg></div><span>History</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ??????????? PLAYER MODAL ??????????? -->
+  <div class="modal-bg" id="player-modal-bg" onclick="closePM(event)">
+    <div class="player-modal" id="player-modal">
+      <button class="modal-x" onclick="closePMBtn()">?</button>
+      <div class="pm-header">
+        <div class="pm-vis">
+          <div class="pm-emoji" id="pm-emoji">?</div>
+          <div class="pm-bignum" id="pm-bignum">9</div>
+        </div>
+        <div class="pm-info">
+          <div class="pm-pos-lbl" id="pm-pos">Forward</div>
+          <div class="pm-name" id="pm-name">Ngagne Fall</div>
+          <div class="bio-grid">
+            <div class="bio-f">
+              <div class="bio-k">Nationality</div>
+              <div class="bio-v" id="pm-nat">???? Senegal</div>
+            </div>
+            <div class="bio-f">
+              <div class="bio-k">Date of Birth</div>
+              <div class="bio-v" id="pm-dob">12 Mar 1997</div>
+            </div>
+            <div class="bio-f">
+              <div class="bio-k">Height</div>
+              <div class="bio-v" id="pm-ht">1.82m</div>
+            </div>
+            <div class="bio-f">
+              <div class="bio-k">Preferred Foot</div>
+              <div class="bio-v" id="pm-ft">Right</div>
+            </div>
+            <div class="bio-f">
+              <div class="bio-k">Squad Number</div>
+              <div class="bio-v" id="pm-squad">#9</div>
+            </div>
+            <div class="bio-f">
+              <div class="bio-k">At Club Since</div>
+              <div class="bio-v" id="pm-since">2023</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pm-body">
+        <div class="pm-section">202425 Season Stats</div>
+        <div class="pstats-g" id="pm-stats"></div>
+        <div class="pm-section">Career History</div>
+        <div id="pm-career"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ??????????? VIDEO MODAL ??????????? -->
+  <div class="modal-bg" id="video-modal-bg" onclick="closeVM(event)">
+    <div class="vid-modal">
+      <button class="modal-x" style="top:8px;right:8px" onclick="closeVMBtn()">?</button>
+      <div class="vp-area" onclick="playVid()">
+        <div class="vp-bg" style="background:linear-gradient(135deg,#0033A0,#04081A)"></div>
+        <div class="vp-play"><svg viewBox="0 0 18 18" width="18" height="18" fill="none">
+            <path d="M5 3L15 9L5 15V3Z" fill="#0033A0" />
+          </svg></div>
+        <div class="vp-prog">
+          <div class="vp-fill" id="vp-fill"></div>
+        </div>
+      </div>
+      <div class="vm-body">
+        <div class="vm-title" id="vm-title">Match Highlights</div>
+        <div class="vm-meta" id="vm-meta">Rayon Sports FC Official</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ??????????? CART DRAWER ??????????? -->
+  <div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-hd">
+      <div class="cart-hd-title">YOUR BAG</div><button class="cart-x" onclick="closeCart()">?</button>
+    </div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-ft">
+      <div class="cart-total-row">
+        <div class="cart-total-lbl">Total</div>
+        <div class="cart-total-amt" id="cart-total" data-currency-code-amount="0"></div>
+      </div>
+      <button class="btn-g" style="width:100%;justify-content:center">Checkout via MoMo ?</button>
+    </div>
+  </div>
+
+  <!-- ??????????? MEMBERSHIP MODAL ??????????? -->
+  <div class="modal-bg" id="mem-modal-bg" onclick="closeMemBg(event)">
+    <div class="mem-modal">
+      <button class="modal-x" onclick="closeMem()">?</button>
+      <div class="sec-pre" style="margin-bottom:8px">
+        <div class="sec-pre-line"></div><span>Membership Signup</span>
+      </div>
+      <div style="font-family:var(--font-d);font-size:26px;letter-spacing:2px;color:var(--text);margin-bottom:3px"
+        id="mem-title">Join Gold</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-bottom:22px" id="mem-sub" data-membership-price="15000">
+      </div>
+      <div class="form-field">
+        <div class="f-lbl">Full Name</div><input class="f-inp" placeholder="Full name">
+      </div>
+      <div class="form-field">
+        <div class="f-lbl">Email Address</div><input class="f-inp" type="email" placeholder="email@example.com">
+      </div>
+      <div class="form-field">
+        <div class="f-lbl">Phone Number</div><input class="f-inp" type="tel" placeholder="+250 7XX XXX XXX">
+      </div>
+      <div class="form-field">
+        <div class="f-lbl">Payment</div><select class="f-inp">
+          <option>MTN MoMo</option>
+          <option>Airtel Money</option>
+          <option>Bank Transfer</option>
+        </select>
+      </div>
+      <button class="btn-g" style="width:100%;justify-content:center;margin-top:6px" onclick="completeMem()">Confirm
+        Membership ?</button>
+    </div>
+  </div>
+
+  <script src="js/brand.js"></script>
+  <script src="js/app.js"></script>
 </body>
+
 </html>

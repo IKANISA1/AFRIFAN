@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import '../biopay_tokens.dart';
 import 'biopay_reference_ui.dart';
 
-enum BiopayScannerTone { searching, ready, blocked, error }
+enum BioPayScannerTone { searching, ready, blocked, error }
 
-class BiopayScannerShell extends StatelessWidget {
-  const BiopayScannerShell({
+class BioPayScannerShell extends StatelessWidget {
+  const BioPayScannerShell({
     required this.isCameraReady,
     required this.statusLabel,
     required this.helperText,
@@ -25,7 +25,7 @@ class BiopayScannerShell extends StatelessWidget {
   final bool isCameraReady;
   final String statusLabel;
   final String helperText;
-  final BiopayScannerTone tone;
+  final BioPayScannerTone tone;
   final Widget? footer;
   final int sampleCount;
   final int totalSamples;
@@ -33,8 +33,8 @@ class BiopayScannerShell extends StatelessWidget {
 
   Color _frameColor() {
     return switch (tone) {
-      BiopayScannerTone.ready => BiopayTokens.scannerReady,
-      BiopayScannerTone.error => Colors.red.shade400,
+      BioPayScannerTone.ready => BioPayTokens.scannerReady,
+      BioPayScannerTone.error => Colors.red.shade400,
       _ => Colors.white.withValues(alpha: 0.32),
     };
   }
@@ -79,7 +79,7 @@ class BiopayScannerShell extends StatelessWidget {
           left: 0,
           right: 0,
           bottom: MediaQuery.of(context).padding.bottom + 110,
-          child: Center(child: BiopayReferenceStatusPill(label: statusLabel)),
+          child: Center(child: BioPayReferenceStatusPill(label: statusLabel)),
         ),
         if (helperLabel.isNotEmpty)
           Positioned(
@@ -89,7 +89,7 @@ class BiopayScannerShell extends StatelessWidget {
             child: Text(
               helperLabel,
               textAlign: TextAlign.center,
-              style: biopayReferenceText(
+              style: BioPayReferenceText(
                 fontSize: 13,
                 fontWeight: FontWeight.w800,
                 color: Colors.white.withValues(alpha: 0.52),

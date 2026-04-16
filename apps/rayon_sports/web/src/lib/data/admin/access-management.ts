@@ -59,7 +59,7 @@ async function getAuthEmailMap(
   return new Map(entries);
 }
 
-function mapRoleAssignment(
+function mRayon SportsoleAssignment(
   row: Record<string, unknown>,
   usersById: Map<string, Record<string, unknown>>,
   clubsById: Map<string, string>,
@@ -139,15 +139,15 @@ export async function getAdminRoleAssignments(
   const [usersResponse, clubsResponse, partnersResponse, authEmails] = await Promise.all([
     userIds.length > 0
       ? client
-          .from("users")
-          .select("id, full_name, phone, public_user_id")
-          .in("id", userIds)
+        .from("users")
+        .select("id, full_name, phone, public_user_id")
+        .in("id", userIds)
       : Promise.resolve({ data: [], error: null }),
     clubIds.length > 0
       ? client
-          .from("african_football_clubs")
-          .select("id, club_name")
-          .in("id", clubIds.map((value) => Number(value)))
+        .from("african_football_clubs")
+        .select("id, club_name")
+        .in("id", clubIds.map((value) => Number(value)))
       : Promise.resolve({ data: [], error: null }),
     partnerIds.length > 0
       ? client.from("partners").select("id, name").in("id", partnerIds)
@@ -182,7 +182,7 @@ export async function getAdminRoleAssignments(
   );
 
   return rows.map((row) =>
-    mapRoleAssignment(row, usersById, clubsById, partnersById, authEmails),
+    mRayon SportsoleAssignment(row, usersById, clubsById, partnersById, authEmails),
   );
 }
 

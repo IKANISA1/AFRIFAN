@@ -52,18 +52,22 @@ class QuickActionsGrid extends StatelessWidget {
 
   IconData _resolveActionIcon(HomeQuickAction action) {
     return switch (action.iconKey.trim()) {
+      'groups' => AfriIcons.groups,
       'predict' => AfriIcons.predict,
+      'tickets' => AfriIcons.tickets,
+      'shop' => AfriIcons.shop,
+      'members' => AfriIcons.members,
       'myPicks' => AfriIcons.myPicks,
       'live' => AfriIcons.live,
       'leaderboard' => AfriIcons.leaderboard,
       'wallet' => AfriIcons.wallet,
-      'tickets' => AfriIcons.tickets,
-      'contribute' => AfriIcons.contribute,
+      'contribute' => AfriIcons.groups,
       'league' => AfriIcons.league,
       'clubZone' => AfriIcons.clubZone,
       'notifications' => AfriIcons.notifications,
       'history' => AfriIcons.history,
       'rewards' => AfriIcons.rewards,
+      'offers' => AfriIcons.offers,
       'membership' => AfriIcons.membership,
       _ => _fallbackIconForRoute(action.route),
     };
@@ -77,7 +81,8 @@ class QuickActionsGrid extends StatelessWidget {
     if (normalized.contains('/leaderboard')) return AfriIcons.leaderboard;
     if (normalized.contains('/wallet')) return AfriIcons.wallet;
     if (normalized.contains('/tickets')) return AfriIcons.tickets;
-    if (normalized.contains('/contribute')) return AfriIcons.contribute;
+    if (normalized.contains('/fanzone/offers')) return AfriIcons.offers;
+    if (normalized.contains('/contribute')) return AfriIcons.groups;
     return AfriIcons.chevronRight;
   }
 }

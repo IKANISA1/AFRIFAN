@@ -10,14 +10,14 @@ void main() {
       module = BioPayModule();
     });
 
-    test('featureKey is biopay', () {
-      expect(module.featureKey, 'biopay');
+    test('featureKey is BioPay', () {
+      expect(module.featureKey, 'BioPay');
     });
 
-    test('has tab route at /biopay', () {
+    test('has tab route at /BioPay', () {
       final tab = module.tabRoute;
       expect(tab, isNotNull);
-      expect(tab!.path, '/biopay');
+      expect(tab!.path, '/BioPay');
       expect(tab.label, isNotEmpty);
     });
 
@@ -94,11 +94,11 @@ void main() {
     });
 
     test('isEnabled returns false when explicitly disabled', () {
-      expect(module.isEnabled({'biopay': false}), isFalse);
+      expect(module.isEnabled({'BioPay': false}), isFalse);
     });
 
     test('isEnabled returns true when explicitly enabled', () {
-      expect(module.isEnabled({'biopay': true}), isTrue);
+      expect(module.isEnabled({'BioPay': true}), isTrue);
     });
   });
 }

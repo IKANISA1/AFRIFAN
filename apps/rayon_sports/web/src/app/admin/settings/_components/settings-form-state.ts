@@ -26,7 +26,7 @@ export type SettingsForm = {
 };
 
 export const defaultFeatureFlags: FeatureFlags = {
-  biopay: true,
+  BioPay: true,
   chat: true,
   fan_clubs: true,
   shop: true,

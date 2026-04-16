@@ -40,7 +40,7 @@ describe("public data", () => {
     const { fallbackClubProfile } = await import("@/lib/content");
 
     const match = await getMatchById("featured-home-fixture");
-    const article = await getNewsArticleById("membership-gikundiro-circle");
+    const article = await getNewsArticleById("membership-gikundiro-Group");
     const product = await getProductById("replica-home-26");
 
     expect(match?.homeTeam).toBe(fallbackClubProfile.shortName);

@@ -1,4 +1,5 @@
 import 'package:club_maranatha/club_maranatha.dart';
+import 'package:app_registry/app_registry.dart';
 import 'package:core_app/bootstrap.dart';
 
 void main() async {

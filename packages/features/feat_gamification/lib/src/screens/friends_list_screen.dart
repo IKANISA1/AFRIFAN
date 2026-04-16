@@ -18,8 +18,8 @@ class FriendsListScreen extends ConsumerStatefulWidget {
 class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
   final TextEditingController _controller = TextEditingController();
   Timer? _debounce;
-  List<FetLeaderboardRow> _leaders = const <FetLeaderboardRow>[];
-  List<FetWalletSupporter> _matches = const <FetWalletSupporter>[];
+  List<FetFriendProfile> _friends = const <FetFriendProfile>[];
+  List<FetFriendProfile> _matches = const <FetFriendProfile>[];
   bool _isLoading = true;
   bool _isSearching = false;
   String? _error;
@@ -27,7 +27,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
   @override
   void initState() {
     super.initState();
-    _load();
+    unawaited(_load());
     _controller.addListener(_onQueryChanged);
   }
 
@@ -41,14 +41,14 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
 
   Future<void> _load() async {
     try {
-      final leaders = await ref
+      final friends = await ref
           .read(fetRepositoryProvider)
-          .loadLeaderboard(limit: 12);
+          .loadFriends(limit: 12);
       if (!mounted) {
         return;
       }
       setState(() {
-        _leaders = leaders;
+        _friends = friends;
         _isLoading = false;
         _error = null;
       });
@@ -68,11 +68,12 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
     _debounce?.cancel();
     if (query.length < 2) {
       setState(() {
-        _matches = const <FetWalletSupporter>[];
+        _matches = const <FetFriendProfile>[];
         _isSearching = false;
       });
       return;
     }
+
     _debounce = Timer(const Duration(milliseconds: 250), () async {
       setState(() {
         _isSearching = true;
@@ -80,7 +81,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
       try {
         final matches = await ref
             .read(fetRepositoryProvider)
-            .findSupporters(query);
+            .searchSupporters(query);
         if (!mounted) {
           return;
         }
@@ -93,27 +94,107 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
           return;
         }
         setState(() {
-          _matches = const <FetWalletSupporter>[];
+          _matches = const <FetFriendProfile>[];
           _isSearching = false;
         });
       }
     });
   }
 
+  Future<void> _refreshVisibleData() async {
+    final query = _controller.text.trim();
+    if (query.length >= 2) {
+      setState(() {
+        _isSearching = true;
+      });
+      try {
+        final matches = await ref
+            .read(fetRepositoryProvider)
+            .searchSupporters(query);
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          _matches = matches;
+          _isSearching = false;
+        });
+      } catch (_) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          _matches = const <FetFriendProfile>[];
+          _isSearching = false;
+        });
+      }
+      return;
+    }
+
+    await _load();
+  }
+
+  String _actionLabel(FetFriendProfile supporter) {
+    if (supporter.isFriend) {
+      return 'Challenge';
+    }
+    if (supporter.hasPendingIncoming) {
+      return 'Accept';
+    }
+    if (supporter.hasPendingOutgoing) {
+      return 'Pending';
+    }
+    return 'Add';
+  }
+
+  Future<void> _handlePrimaryAction(FetFriendProfile supporter) async {
+    if (supporter.isFriend) {
+      unawaited(
+        context.push('/fanzone/challenge?opponent=${supporter.userId}'),
+      );
+      return;
+    }
+
+    if (supporter.hasPendingOutgoing) {
+      return;
+    }
+
+    final repo = ref.read(fetRepositoryProvider);
+    final result =
+        supporter.hasPendingIncoming && supporter.friendshipId != null
+        ? await repo.respondToFriendRequest(
+            friendshipId: supporter.friendshipId!,
+            action: 'accepted',
+          )
+        : await repo.requestFriend(targetUserId: supporter.userId);
+
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(result.message.isNotEmpty ? result.message : 'Done.'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+    unawaited(_refreshVisibleData());
+  }
+
   @override
   Widget build(BuildContext context) {
     final searchMode = _controller.text.trim().length >= 2;
+    final visibleSupporters = searchMode ? _matches : _friends;
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          'FRIENDS & FANS',
+          'Friends',
           style: TypographyTokens.monolithFont(
             fontSize: 20,
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
+            letterSpacing: 1.0,
           ),
         ),
         leading: IconButton(
@@ -138,103 +219,137 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
                 ),
               ),
             )
-          : ListView(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
-              children: [
-                AfriInputField(
-                  controller: _controller,
-                  hint: 'Search supporter alias or name',
-                  prefixIcon: AfriIcons.search,
-                  onChanged: (_) {},
+          : RefreshIndicator(
+              onRefresh: _refreshVisibleData,
+              color: ColorTokens.clubAccent,
+              child: ListView(
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
                 ),
-                const SizedBox(height: SpacingTokens.spacing4),
-                if (_isSearching) const LinearProgressIndicator(minHeight: 4),
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(
-                  searchMode ? 'Search results' : 'Top supporters',
-                  style: TypographyTokens.sectionTitle(),
-                ),
-                const SizedBox(height: SpacingTokens.spacing3),
-                ...(searchMode
-                    ? _matches.map<Widget>((supporter) {
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: SpacingTokens.spacing3,
-                          ),
-                          child: GlassCard(
-                            animate: false,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                children: [
+                  AfriInputField(
+                    controller: _controller,
+                    hint: 'Search supporter alias or ID',
+                    prefixIcon: AfriIcons.search,
+                    onChanged: (_) {},
+                  ),
+                  if (_isSearching) ...[
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    const LinearProgressIndicator(minHeight: 3),
+                  ],
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  AfriSectionCard(
+                    title: searchMode ? 'Results' : 'Your friends',
+                    child: visibleSupporters.isEmpty
+                        ? AfriEmptyView(
+                            compact: true,
+                            title: searchMode
+                                ? 'No supporters found'
+                                : 'No friends yet',
+                            message: searchMode
+                                ? 'Try another name or supporter ID.'
+                                : 'Search for supporters to build your network.',
+                            icon: searchMode
+                                ? AfriIcons.search
+                                : Icons.people_outline_rounded,
+                          )
+                        : Column(
+                            children: visibleSupporters
+                                .asMap()
+                                .entries
+                                .map((entry) {
+                                  final supporter = entry.value;
+                                  return Column(
                                     children: [
-                                      Text(
-                                        supporter.displayName,
-                                        style: TypographyTokens.titleSmall(),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        '#${supporter.publicUserId ?? '000000'} · ${supporter.tier.toUpperCase()}',
-                                        style: TypographyTokens.bodySmall(),
+                                      if (entry.key > 0)
+                                        Divider(
+                                          height: 1,
+                                          color: ColorTokens.ghostBorder,
+                                        ),
+                                      _SupporterRow(
+                                        name: supporter.displayName,
+                                        details: _supporterDetails(supporter),
+                                        isOnline: supporter.isOnline,
+                                        actionLabel: searchMode
+                                            ? _actionLabel(supporter)
+                                            : 'Challenge',
+                                        actionEnabled:
+                                            !supporter.hasPendingOutgoing,
+                                        onAction: () =>
+                                            _handlePrimaryAction(supporter),
                                       ),
                                     ],
-                                  ),
-                                ),
-                                Text(
-                                  '${supporter.balance} FET',
-                                  style: TypographyTokens.monolithFont(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w800,
-                                    color: ColorTokens.clubAccent,
-                                  ),
-                                ),
-                              ],
-                            ),
+                                  );
+                                })
+                                .toList(growable: false),
                           ),
-                        );
-                      })
-                    : _leaders.map<Widget>((entry) {
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: SpacingTokens.spacing3,
-                          ),
-                          child: GlassCard(
-                            animate: false,
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 28,
-                                  child: Text(
-                                    '#${entry.rank}',
-                                    style: TypographyTokens.monolithFont(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    entry.displayName,
-                                    style: TypographyTokens.titleSmall(),
-                                  ),
-                                ),
-                                Text(
-                                  '${entry.totalFet} FET',
-                                  style: TypographyTokens.monolithFont(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w800,
-                                    color: ColorTokens.clubAccent,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      })),
+                  ),
+                ],
+              ),
+            ),
+    );
+  }
+
+  String _supporterDetails(FetFriendProfile supporter) {
+    final parts = <String>[
+      if (supporter.publicUserId != null) '#${supporter.publicUserId}',
+      supporter.tier.toUpperCase(),
+      '${supporter.balance} FET',
+    ];
+    return parts.join(' · ');
+  }
+}
+
+class _SupporterRow extends StatelessWidget {
+  const _SupporterRow({
+    required this.name,
+    required this.details,
+    required this.isOnline,
+    required this.actionLabel,
+    required this.actionEnabled,
+    required this.onAction,
+  });
+
+  final String name;
+  final String details;
+  final bool isOnline;
+  final String actionLabel;
+  final bool actionEnabled;
+  final VoidCallback onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing3),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: TypographyTokens.titleSmall()),
+                const SizedBox(height: 2),
+                Text(details, style: TypographyTokens.bodySmall()),
               ],
             ),
+          ),
+          if (isOnline) ...[
+            Text(
+              'Online',
+              style: TypographyTokens.labelSmall(ColorTokens.success),
+            ),
+            const SizedBox(width: SpacingTokens.spacing3),
+          ],
+          AfriButton(
+            onTap: onAction,
+            label: actionLabel,
+            enabled: actionEnabled,
+            variant: AfriButtonVariant.ghost,
+            fullWidth: false,
+          ),
+        ],
+      ),
     );
   }
 }

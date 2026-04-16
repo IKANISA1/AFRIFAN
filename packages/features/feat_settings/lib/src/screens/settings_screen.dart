@@ -51,143 +51,168 @@ class SettingsScreen extends ConsumerWidget {
               92.0 + SpacingTokens.sectionGap,
             ),
             children: [
-              const AfriSectionHeader(
-                title: 'Settings',
-                padding: EdgeInsets.zero,
+              Text(
+                'THE BELOVED',
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: ColorTokens.clubAccent, letterSpacing: 2),
               ),
-              const SizedBox(height: SpacingTokens.spacing4),
+              const Text(
+                'SETTINGS',
+                style: TextStyle(fontFamily: 'Display', fontSize: 32, fontWeight: FontWeight.w900, fontStyle: FontStyle.italic, color: Colors.white, height: 1),
+              ),
+              const SizedBox(height: 24),
 
               // ── Profile card ──
-              GlassCard(
-                animate: false,
-                child: Row(
+              EliteCard(
+                backgroundColor: Colors.white,
+                padding: const EdgeInsets.all(24),
+                child: Column(
                   children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: ColorTokens.primaryTint(0.16),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      alignment: Alignment.center,
-                      child: const Icon(AfriIcons.profile),
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing4),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(alias, style: TypographyTokens.headlineSmall()),
-                          const SizedBox(height: SpacingTokens.spacing1),
-                          AfriInfoChip(
-                            label: profile?.isAdmin == true
-                                ? 'Admin'
-                                : 'Supporter',
+                    Row(
+                      children: [
+                        Container(
+                          width: 56,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
                           ),
-                        ],
-                      ),
+                          alignment: Alignment.center,
+                          child: const Icon(AfriIcons.profile, color: Colors.black),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                alias, 
+                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.black, letterSpacing: -0.5)
+                              ),
+                              const SizedBox(height: 2),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  (profile?.isAdmin == true ? 'Admin' : 'Supporter').toUpperCase(),
+                                  style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Colors.black54),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Container(height: 1, color: Colors.black.withValues(alpha: 0.05)),
+                    const SizedBox(height: 20),
+                    EliteButton(
+                      label: 'Membership Details',
+                      onTap: () => context.push('/membership'),
+                      variant: EliteButtonVariant.primary,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: SpacingTokens.sectionGap),
+              const SizedBox(height: 32),
+
+              // ── Heritage ──
+              _buildEliteSection('HERITAGE', [
+                AfriListRow(
+                  icon: AfriIcons.history,
+                  title: 'History & Honors',
+                  onTap: () => context.push('/history'),
+                ),
+                AfriListRow(
+                  icon: Icons.auto_awesome_rounded,
+                  title: 'Hall of Fame',
+                  onTap: () {},
+                ),
+              ]),
+
+              const SizedBox(height: 24),
 
               // ── Account ──
-              AfriSection(
-                title: 'Account',
-                child: Column(
-                  children: [
-                    AfriListRow(
-                      icon: AfriIcons.profile,
-                      title: 'Edit profile',
-                      onTap: () => context.push('/settings/edit-profile'),
-                    ),
-                    const SizedBox(height: SpacingTokens.listItemGap),
-                    AfriListRow(
-                      icon: AfriIcons.notifications,
-                      title: 'Notifications',
-                      onTap: () => context.push('/settings/notifications'),
-                    ),
-                  ],
+              _buildEliteSection('ACCOUNT', [
+                AfriListRow(
+                  icon: AfriIcons.profile,
+                  title: 'Edit profile',
+                  onTap: () => context.push('/settings/edit-profile'),
                 ),
-              ),
-              const SizedBox(height: SpacingTokens.sectionGap),
+                AfriListRow(
+                  icon: AfriIcons.notifications,
+                  title: 'Notifications',
+                  onTap: () => context.push('/settings/notifications'),
+                ),
+              ]),
 
-              // ── Privacy ──
-              AfriSection(
-                title: 'Privacy',
-                child: AfriListRow(
-                  icon: AfriIcons.privacy,
-                  title: 'Privacy controls',
-                  onTap: () => context.push('/settings/privacy'),
-                ),
-              ),
-              const SizedBox(height: SpacingTokens.sectionGap),
+              const SizedBox(height: 24),
 
               // ── Support ──
-              AfriSection(
-                title: 'Support',
-                child: Column(
-                  children: [
-                    AfriListRow(
-                      icon: AfriIcons.help,
-                      title: 'Help & Support',
-                      onTap: () =>
-                          _openWhatsApp(context, supportWhatsApp.valueOrNull),
-                    ),
-                    if (AppLinks.hasTerms || AppLinks.hasPrivacyPolicy) ...[
-                      const SizedBox(height: SpacingTokens.listItemGap),
-                      AfriListRow(
-                        icon: AfriIcons.terms,
-                        title: 'Terms & Privacy',
-                        onTap: () {
-                          final uri =
-                              AppLinks.termsUri ?? AppLinks.privacyPolicyUri;
-                          if (uri != null) {
-                            unawaited(
-                              launchExternalUri(
-                                context,
-                                uri,
-                                failureMessage:
-                                    'Could not open the legal document.',
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ],
+              _buildEliteSection('SUPPORT', [
+                AfriListRow(
+                  icon: AfriIcons.help,
+                  title: 'Help & Support',
+                  onTap: () => _openWhatsApp(context, supportWhatsApp.valueOrNull),
                 ),
-              ),
-              const SizedBox(height: SpacingTokens.sectionGap),
+                AfriListRow(
+                  icon: AfriIcons.privacy,
+                  title: 'Privacy Policy',
+                  onTap: () {},
+                ),
+              ]),
+
+              const SizedBox(height: 32),
 
               // ── Account actions ──
               if (profile?.isAdmin == true)
                 Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: SpacingTokens.listItemGap,
-                  ),
-                  child: AfriListRow(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: EliteButton(
+                    label: 'Admin Workspace',
+                    onTap: () => _openAdminWorkspace(context, ref),
+                    variant: EliteButtonVariant.secondary,
                     icon: AfriIcons.admin,
-                    title: 'Admin workspace',
-                    onTap: () => context.push('/admin'),
                   ),
                 ),
-              AfriListRow(
-                icon: AfriIcons.logout,
-                title: 'Sign out',
+              
+              EliteButton(
+                label: 'Sign Out',
                 onTap: () async {
                   final confirmed = await showSignOutConfirmationSheet(context);
                   if (!confirmed) return;
                   await ref.read(authStateProvider.notifier).signOut();
                   if (!context.mounted) return;
-                  context.go('/splash');
+                  context.go('/onboarding');
                 },
+                variant: EliteButtonVariant.outline,
+                icon: AfriIcons.logout,
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildEliteSection(String title, List<Widget> children) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Text(
+            title,
+            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.white38, letterSpacing: 2),
+          ),
+        ),
+        ...children.map((child) => Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: child,
+        )),
+      ],
     );
   }
 
@@ -211,5 +236,70 @@ class SettingsScreen extends ConsumerWidget {
       uri,
       failureMessage: 'Could not open WhatsApp.',
     );
+  }
+
+  Future<void> _openAdminWorkspace(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final session = ref.read(supabaseClientProvider).auth.currentUser;
+    if (session == null) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Session expired. Please sign in again.')),
+      );
+      return;
+    }
+
+    final confirmed = await _showAdminConfirmation(context);
+    if (!confirmed || !context.mounted) return;
+    unawaited(context.push('/admin'));
+  }
+
+  Future<bool> _showAdminConfirmation(BuildContext context) async {
+    final result = await showModalBottomSheet<bool>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => EliteCard(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(AfriIcons.admin, color: ColorTokens.warning, size: 48),
+            const SizedBox(height: 16),
+            const Text(
+              'ADMIN ACCESS',
+              style: TextStyle(fontFamily: 'Display', fontSize: 24, fontWeight: FontWeight.w900, fontStyle: FontStyle.italic, color: Colors.white),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'You are entering the admin workspace with elevated permissions. Actions taken here affect all supporters.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14, color: Colors.white60, height: 1.5),
+            ),
+            const SizedBox(height: 32),
+            Row(
+              children: [
+                Expanded(
+                  child: EliteButton(
+                    label: 'Cancel',
+                    variant: EliteButtonVariant.outline,
+                    onTap: () => Navigator.of(context).pop(false),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: EliteButton(
+                    label: 'Continue',
+                    onTap: () => Navigator.of(context).pop(true),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    return result == true;
   }
 }

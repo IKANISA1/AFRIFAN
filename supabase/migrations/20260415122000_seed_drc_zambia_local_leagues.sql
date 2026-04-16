@@ -1,5 +1,5 @@
 -- ============================================================================
--- DRC Linafoot (Premier League) & Zambia Super League — Real teams + standings
+-- DRC Linafoot (Premier League) & ZSL — Real teams + standings
 -- Enriches existing shell competitions with actual data
 -- ============================================================================
 
@@ -12,13 +12,13 @@ DECLARE
 BEGIN
   -- ── Resolve DRC ──
   SELECT id INTO v_drc_competition_id
-  FROM football.competitions WHERE slug = 'drc-premier-league';
+  FROM football.competitions WHERE slug = 'Linafoot';
 
   SELECT id INTO v_drc_season_id
-  FROM football.seasons WHERE slug = 'drc-premier-league-2026';
+  FROM football.seasons WHERE slug = 'Linafoot-2026';
 
   IF v_drc_competition_id IS NULL OR v_drc_season_id IS NULL THEN
-    RAISE EXCEPTION 'DRC Premier League competition or season missing.';
+    RAISE EXCEPTION 'Linafoot competition or season missing.';
   END IF;
 
   -- ── Resolve Zambia ──
@@ -29,7 +29,7 @@ BEGIN
   FROM football.seasons WHERE slug = 'zambia-super-league-2026';
 
   IF v_zm_competition_id IS NULL OR v_zm_season_id IS NULL THEN
-    RAISE EXCEPTION 'Zambia Super League competition or season missing.';
+    RAISE EXCEPTION 'ZSL competition or season missing.';
   END IF;
 
   -- Update season metadata
@@ -182,7 +182,7 @@ BEGIN
     metadata = std.metadata || EXCLUDED.metadata;
 
   -- ═══════════════════════════════════════════════════════════════════════
-  -- ZAMBIA SUPER LEAGUE — 16 teams
+  -- ZSL — 16 teams
   -- ═══════════════════════════════════════════════════════════════════════
 
   WITH team_values (slug, name, short_name, city, founded_year, note, source_club_slug) AS (

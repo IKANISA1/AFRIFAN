@@ -39,21 +39,21 @@ class _GroupPrivacySettingsSheetState
       _PrivacyOptionData(
         value: 'PUBLIC',
         title: 'PUBLIC',
-        description: 'Anyone can see the circle and request to join.',
-        icon: Icons.public_rounded,
+        description: 'Anyone can see the Group and request to join.',
+        icon: AfriIcons.public,
       ),
       _PrivacyOptionData(
         value: 'FRIENDS OF MEMBERS',
         title: 'FRIENDS OF MEMBERS',
         description:
             'Only supporters connected to members can join via invite.',
-        icon: Icons.groups_rounded,
+        icon: AfriIcons.clubZone,
       ),
       _PrivacyOptionData(
         value: 'PRIVATE',
         title: 'PRIVATE',
         description: 'Invite code and approval are both required.',
-        icon: Icons.lock_rounded,
+        icon: AfriIcons.lock,
       ),
     ];
 
@@ -73,7 +73,7 @@ class _GroupPrivacySettingsSheetState
         ),
         const SizedBox(height: SpacingTokens.spacing4),
         Text(
-          'CIRCLE PRIVACY',
+          'Group PRIVACY',
           style: TypographyTokens.monolithFont(
             fontSize: 26,
             fontWeight: FontWeight.w800,
@@ -82,7 +82,7 @@ class _GroupPrivacySettingsSheetState
         ),
         const SizedBox(height: SpacingTokens.spacing2),
         Text(
-          'Choose who can discover this circle and request to join.',
+          'Choose who can discover this Group and request to join.',
           style: TypographyTokens.bodyMedium(),
         ),
         const SizedBox(height: SpacingTokens.spacing4),
@@ -130,10 +130,10 @@ class _GroupPrivacySettingsSheetState
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing4),
-        ClaymorphicButton(
-          label: 'SAVE',
-          width: double.infinity,
-          onPressed: () => Navigator.of(context).pop(_value),
+        AfriButton(
+          label: 'Save',
+          fullWidth: true,
+          onTap: () => Navigator.of(context).pop(_value),
         ),
       ],
     );

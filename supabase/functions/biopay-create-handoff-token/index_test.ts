@@ -2,13 +2,13 @@ import { assertEquals } from "https://deno.land/std@0.208.0/assert/mod.ts";
 
 import { HttpError } from "../_shared/auth.ts";
 import {
-  type BiopayCreateHandoffTokenDependencies,
-  createBiopayCreateHandoffTokenHandler,
+  type BioPayCreateHandoffTokenDependencies,
+  createBioPayCreateHandoffTokenHandler,
 } from "./index.ts";
 
 function buildRequest(overrides: Record<string, unknown> = {}) {
   return new Request(
-    "https://example.com/functions/v1/biopay-create-handoff-token",
+    "https://example.com/functions/v1/BioPay-create-handoff-token",
     {
       method: "POST",
       headers: {
@@ -30,7 +30,7 @@ function buildDependencies(options: {
   profile?: Record<string, unknown> | null;
   identity?: Record<string, unknown> | null;
 } = {}): {
-  deps: BiopayCreateHandoffTokenDependencies;
+  deps: BioPayCreateHandoffTokenDependencies;
   state: {
     signedPayload: Record<string, unknown> | null;
   };
@@ -60,17 +60,17 @@ function buildDependencies(options: {
     }
     : options.identity;
 
-  const deps: BiopayCreateHandoffTokenDependencies = {
+  const deps: BioPayCreateHandoffTokenDependencies = {
     createAdminClient: () =>
       ({
         from: (table: string) => {
-          const data = table == "biopay_profiles"
+          const data = table == "BioPay_profiles"
             ? profile
             : table == "profiles"
-            ? identity
-            : null;
+              ? identity
+              : null;
           if (
-            data === null && table != "biopay_profiles" && table != "profiles"
+            data === null && table != "BioPay_profiles" && table != "profiles"
           ) {
             throw new Error(`Unexpected table in handoff test: ${table}`);
           }
@@ -83,7 +83,7 @@ function buildDependencies(options: {
           };
         },
       }) as unknown as ReturnType<
-        BiopayCreateHandoffTokenDependencies["createAdminClient"]
+        BioPayCreateHandoffTokenDependencies["createAdminClient"]
       >,
     validateRequest: async () =>
       ({
@@ -92,7 +92,7 @@ function buildDependencies(options: {
         supabase: {},
       }) as never,
     requireAppCheckToken: async () => "fresh-token",
-    signBiopayToken: async (payload) => {
+    signBioPayToken: async (payload) => {
       state.signedPayload = payload;
       return "signed-handoff-token";
     },
@@ -113,9 +113,9 @@ function buildDependencies(options: {
   return { deps, state };
 }
 
-Deno.test("biopay-create-handoff-token rejects requests without valid App Check attestation", async () => {
+Deno.test("BioPay-create-handoff-token rejects requests without valid App Check attestation", async () => {
   const { deps } = buildDependencies();
-  const handler = createBiopayCreateHandoffTokenHandler({
+  const handler = createBioPayCreateHandoffTokenHandler({
     ...deps,
     requireAppCheckToken: async () => {
       throw new HttpError(401, "Device attestation required.");
@@ -129,9 +129,9 @@ Deno.test("biopay-create-handoff-token rejects requests without valid App Check 
   assertEquals(payload.error, "Device attestation required.");
 });
 
-Deno.test("biopay-create-handoff-token creates a signed QR handoff token", async () => {
+Deno.test("BioPay-create-handoff-token creates a signed QR handoff token", async () => {
   const { deps, state } = buildDependencies();
-  const handler = createBiopayCreateHandoffTokenHandler(deps);
+  const handler = createBioPayCreateHandoffTokenHandler(deps);
 
   const response = await handler(buildRequest());
   const payload = await response.json();
@@ -151,7 +151,7 @@ Deno.test("biopay-create-handoff-token creates a signed QR handoff token", async
   assertEquals(payload.data.currency_symbol, "FRw");
 });
 
-Deno.test("biopay-create-handoff-token accepts a manual route when no enrollment exists", async () => {
+Deno.test("BioPay-create-handoff-token accepts a manual route when no enrollment exists", async () => {
   const { deps, state } = buildDependencies({
     profile: null,
     identity: {
@@ -162,7 +162,7 @@ Deno.test("biopay-create-handoff-token accepts a manual route when no enrollment
       country_code: "RW",
     },
   });
-  const handler = createBiopayCreateHandoffTokenHandler(deps);
+  const handler = createBioPayCreateHandoffTokenHandler(deps);
 
   const response = await handler(buildRequest({
     route_type: "code",

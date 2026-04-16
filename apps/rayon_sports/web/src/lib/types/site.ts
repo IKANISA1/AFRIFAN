@@ -189,6 +189,7 @@ export interface HomeBanner {
   imageUrl: string | null;
   sortOrder: number;
   isActive: boolean;
+  distribution: "web" | "app" | "both";
 }
 
 export interface CmsContent {
@@ -203,6 +204,7 @@ export interface CmsContent {
   ctaLabel: string;
   sortOrder: number;
   isActive: boolean;
+  distribution: "web" | "app" | "both";
 }
 
 export interface AppConfigEntry {

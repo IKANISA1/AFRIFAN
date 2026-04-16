@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,6 +57,10 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isLoading && _snapshot.status == LatestIntelStatus.empty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -89,18 +94,7 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
           ),
         );
       case LatestIntelStatus.empty:
-        return const Padding(
-          padding: EdgeInsets.symmetric(horizontal: SpacingTokens.spacing6),
-          child: GlassCard(
-            animate: false,
-            child: AfriEmptyView(
-              compact: true,
-              title: 'No news yet',
-              message: 'Club updates appear here when published.',
-              icon: Icons.article_outlined,
-            ),
-          ),
-        );
+        return const SizedBox.shrink();
       case LatestIntelStatus.error:
         return Padding(
           padding: const EdgeInsets.symmetric(
@@ -189,6 +183,7 @@ class _IntelCard extends StatelessWidget {
                     child: imageUrl != null && imageUrl.isNotEmpty
                         ? CachedNetworkImage(
                             imageUrl: imageUrl,
+                            cacheManager: AfriImageCacheManager.instance,
                             fit: BoxFit.cover,
                             placeholder: (_, __) =>
                                 _GradientFallback(primaryColor: primaryColor),

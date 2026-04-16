@@ -126,7 +126,7 @@ export const getSiteSearchIndex = cache(async function getSiteSearchIndex(): Pro
       id: `group-${group.id}`,
       title: group.name,
       description: group.description,
-      href: "/circles",
+      href: "/Groups",
       category: "Community" as const,
       meta: group.groupType,
     })),

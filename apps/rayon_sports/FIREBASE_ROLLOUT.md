@@ -65,7 +65,7 @@ It is ignored by git.
 
 ```bash
 FIREBASE_ENV_FILE=supabase/.env.firebase.local \
-  bash tools/scripts/validate_biopay_firebase.sh rayon_sports
+  bash tools/scripts/validate_BioPay_firebase.sh rayon_sports
 ```
 
 Expected result:

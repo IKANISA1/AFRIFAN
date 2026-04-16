@@ -22,6 +22,7 @@ function mapBanner(row: Record<string, unknown>): HomeBanner {
     imageUrl: safeString(row.image_url) || null,
     sortOrder: Number(row.sort_order ?? 0),
     isActive: row.is_active !== false,
+    distribution: (row.distribution as any) || "both",
   };
 }
 
@@ -50,10 +51,11 @@ export async function saveAdminBanner(
     imageUrl?: string;
     sortOrder?: number;
     isActive?: boolean;
-  },
-) {
-  const clubId = requireAdminClubId(_access, "save home banners");
-  const payload: Record<string, unknown> = {
+    distribution?: "web" | "app" | "both";
+    },
+    ) {
+    const clubId = requireAdminClubId(_access, "save home banners");
+    const payload: Record<string, unknown> = {
     club_id: clubId,
     title: input.title.trim(),
     subtitle: safeString(input.subtitle) || null,
@@ -63,7 +65,8 @@ export async function saveAdminBanner(
     image_url: safeString(input.imageUrl) || null,
     sort_order: safeNumber(input.sortOrder, 0),
     is_active: input.isActive !== false,
-  };
+    distribution: input.distribution || "both",
+    };
 
   if (input.id) {
     const { error } = await client
@@ -105,6 +108,7 @@ function mapContent(row: Record<string, unknown>): CmsContent {
     ctaLabel: safeString(row.cta_label, ""),
     sortOrder: Number(row.sort_order ?? 0),
     isActive: row.is_active !== false,
+    distribution: (row.distribution as any) || "both",
   };
 }
 
@@ -136,6 +140,7 @@ export async function saveAdminContentBlock(
     ctaLabel?: string;
     sortOrder?: number;
     isActive?: boolean;
+    distribution?: "web" | "app" | "both";
   },
 ) {
   const clubId = requireAdminClubId(_access, "save CMS content blocks");
@@ -151,6 +156,7 @@ export async function saveAdminContentBlock(
     cta_label: safeString(input.ctaLabel) || null,
     sort_order: safeNumber(input.sortOrder, 0),
     is_active: input.isActive !== false,
+    distribution: input.distribution || "both",
     status: "approved",
   };
 

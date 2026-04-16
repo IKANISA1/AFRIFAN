@@ -25,7 +25,7 @@ If the business decision is that standalone BioPay becomes the long-term source 
 Current recommendation:
 - Do not replace AFRICLUB BioPay with the standalone app directly.
 - Use the standalone app as a future upstream product source only after extracting a shared package and aligning runtime contracts.
-- If the immediate requirement is "make BioPay look and feel exactly like the standalone app", port the standalone UI contract into AFRICLUB's `feat_biopay` package instead of importing the standalone host app wholesale.
+- If the immediate requirement is "make BioPay look and feel exactly like the standalone app", port the standalone UI contract into AFRICLUB's `feat_BioPay` package instead of importing the standalone host app wholesale.
 
 ## Scope Of Analysis
 
@@ -47,24 +47,24 @@ Repository reading:
 - Standalone BioPay Flutter mobile app, FastAPI backend, Supabase migrations, and platform integration files
 
 Automated verification run:
-- `flutter test packages/features/feat_biopay/test`
-- `deno test --allow-env supabase/functions/biopay-match/index_test.ts`
+- `flutter test packages/features/feat_BioPay/test`
+- `deno test --allow-env supabase/functions/BioPay-match/index_test.ts`
 - `python3 -m pytest /Volumes/PRO-G40/BioPay/backend/tests -q`
 - `cd /Volumes/PRO-G40/BioPay/mobile && flutter test`
 
 Observed sizing and distribution:
-- AFRICLUB `feat_biopay` source: 8,108 LOC
+- AFRICLUB `feat_BioPay` source: 8,108 LOC
 - Standalone BioPay mobile source: 4,223 LOC
-- Standalone `biopay_app.dart`: 2,573 LOC
-- Standalone `biopay_services.dart`: 1,381 LOC
-- AFRICLUB `feat_biopay` is referenced by 20 club app `pubspec.yaml` files
+- Standalone `BioPay_app.dart`: 2,573 LOC
+- Standalone `BioPay_services.dart`: 1,381 LOC
+- AFRICLUB `feat_BioPay` is referenced by 20 club app `pubspec.yaml` files
 
 ## What AFRICLUB BioPay Is Today
 
 ### Packaging and reuse
 
 AFRICLUB BioPay is already designed as a reusable white-label feature package:
-- `packages/features/feat_biopay/...`
+- `packages/features/feat_BioPay/...`
 - It is consumed by 20 club apps across the suite.
 
 This is a critical property. BioPay in AFRICLUB is not "Rayon-only". It already sits in the shared product layer.
@@ -72,7 +72,7 @@ This is a critical property. BioPay in AFRICLUB is not "Rayon-only". It already 
 ### UX contract
 
 AFRICLUB BioPay is a club-branded "hub" experience with clear receive/pay segmentation:
-- `BIOPAY`
+- `BioPay`
 - `PAY OR RECEIVE`
 - `RECEIVE`
 - `PAY`
@@ -84,10 +84,10 @@ AFRICLUB BioPay is a club-branded "hub" experience with clear receive/pay segmen
 - `SCAN NFC`
 
 Evidence:
-- [biopay_screen.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_biopay/lib/src/screens/biopay_screen.dart#L11)
-- [biopay_screen.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_biopay/lib/src/screens/biopay_screen.dart#L54)
-- [biopay_screen.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_biopay/lib/src/screens/biopay_screen.dart#L145)
-- [biopay_screen.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_biopay/lib/src/screens/biopay_screen.dart#L198)
+- [BioPay_screen.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_BioPay/lib/src/screens/BioPay_screen.dart#L11)
+- [BioPay_screen.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_BioPay/lib/src/screens/BioPay_screen.dart#L54)
+- [BioPay_screen.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_BioPay/lib/src/screens/BioPay_screen.dart#L145)
+- [BioPay_screen.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_BioPay/lib/src/screens/BioPay_screen.dart#L198)
 
 ### Runtime and security model
 
@@ -96,10 +96,10 @@ AFRICLUB BioPay operations run through a centralized repository that talks to Su
 - enrollment, matching, revoke, and payment-intent creation all use attested calls
 
 Evidence:
-- [biopay_repository.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_biopay/lib/src/repositories/biopay_repository.dart#L16)
-- [biopay_repository.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_biopay/lib/src/repositories/biopay_repository.dart#L43)
-- [biopay_repository.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_biopay/lib/src/repositories/biopay_repository.dart#L80)
-- [biopay_repository.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_biopay/lib/src/repositories/biopay_repository.dart#L123)
+- [BioPay_repository.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_BioPay/lib/src/repositories/BioPay_repository.dart#L16)
+- [BioPay_repository.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_BioPay/lib/src/repositories/BioPay_repository.dart#L43)
+- [BioPay_repository.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_BioPay/lib/src/repositories/BioPay_repository.dart#L80)
+- [BioPay_repository.dart](/Volumes/PRO-G40/AFRICLUB/packages/features/feat_BioPay/lib/src/repositories/BioPay_repository.dart#L123)
 
 The Edge Functions explicitly require App Check and bind behavior to club metadata:
 - enrollment validates App Check and liveness before RPC
@@ -107,17 +107,17 @@ The Edge Functions explicitly require App Check and bind behavior to club metada
 - handoff token issuance requires App Check and produces signed short-lived resolver tokens
 
 Evidence:
-- [biopay-enroll/index.ts](/Volumes/PRO-G40/AFRICLUB/supabase/functions/biopay-enroll/index.ts#L69)
-- [biopay-enroll/index.ts](/Volumes/PRO-G40/AFRICLUB/supabase/functions/biopay-enroll/index.ts#L105)
-- [biopay-match/index.ts](/Volumes/PRO-G40/AFRICLUB/supabase/functions/biopay-match/index.ts#L240)
-- [biopay-match/index.ts](/Volumes/PRO-G40/AFRICLUB/supabase/functions/biopay-match/index.ts#L276)
-- [biopay-create-handoff-token/index.ts](/Volumes/PRO-G40/AFRICLUB/supabase/functions/biopay-create-handoff-token/index.ts#L110)
-- [biopay-create-handoff-token/index.ts](/Volumes/PRO-G40/AFRICLUB/supabase/functions/biopay-create-handoff-token/index.ts#L146)
+- [BioPay-enroll/index.ts](/Volumes/PRO-G40/AFRICLUB/supabase/functions/BioPay-enroll/index.ts#L69)
+- [BioPay-enroll/index.ts](/Volumes/PRO-G40/AFRICLUB/supabase/functions/BioPay-enroll/index.ts#L105)
+- [BioPay-match/index.ts](/Volumes/PRO-G40/AFRICLUB/supabase/functions/BioPay-match/index.ts#L240)
+- [BioPay-match/index.ts](/Volumes/PRO-G40/AFRICLUB/supabase/functions/BioPay-match/index.ts#L276)
+- [BioPay-create-handoff-token/index.ts](/Volumes/PRO-G40/AFRICLUB/supabase/functions/BioPay-create-handoff-token/index.ts#L110)
+- [BioPay-create-handoff-token/index.ts](/Volumes/PRO-G40/AFRICLUB/supabase/functions/BioPay-create-handoff-token/index.ts#L146)
 
 ### Data model
 
 AFRICLUB uses a country-agnostic, route-based model:
-- `biopay_profiles`
+- `BioPay_profiles`
 - `public_id`
 - `user_id`
 - `route_type`
@@ -127,10 +127,10 @@ AFRICLUB uses a country-agnostic, route-based model:
 - 192-dimensional embeddings
 
 Evidence:
-- [20260330160000_biopay_foundation.sql](/Volumes/PRO-G40/AFRICLUB/supabase/migrations/20260330160000_biopay_foundation.sql#L18)
-- [20260330160000_biopay_foundation.sql](/Volumes/PRO-G40/AFRICLUB/supabase/migrations/20260330160000_biopay_foundation.sql#L35)
-- [20260330160000_biopay_foundation.sql](/Volumes/PRO-G40/AFRICLUB/supabase/migrations/20260330160000_biopay_foundation.sql#L135)
-- [20260330160000_biopay_foundation.sql](/Volumes/PRO-G40/AFRICLUB/supabase/migrations/20260330160000_biopay_foundation.sql#L151)
+- [20260330160000_BioPay_foundation.sql](/Volumes/PRO-G40/AFRICLUB/supabase/migrations/20260330160000_BioPay_foundation.sql#L18)
+- [20260330160000_BioPay_foundation.sql](/Volumes/PRO-G40/AFRICLUB/supabase/migrations/20260330160000_BioPay_foundation.sql#L35)
+- [20260330160000_BioPay_foundation.sql](/Volumes/PRO-G40/AFRICLUB/supabase/migrations/20260330160000_BioPay_foundation.sql#L135)
+- [20260330160000_BioPay_foundation.sql](/Volumes/PRO-G40/AFRICLUB/supabase/migrations/20260330160000_BioPay_foundation.sql#L151)
 
 This is materially aligned with white-label club distribution because payment routing is abstracted instead of hardcoded to one MoMo convention.
 
@@ -138,13 +138,13 @@ This is materially aligned with white-label club distribution because payment ro
 
 AFRICLUB supports more than simple NFC tag read/write. It also supports Android Host Card Emulation style phone-to-phone receive behavior:
 - `MainActivity` exposes a method channel for HCE support and request activation
-- `BiopayNfcHostApduService` emulates an NDEF-capable endpoint and returns the signed request URI
+- `BioPayNfcHostApduService` emulates an NDEF-capable endpoint and returns the signed request URI
 
 Evidence:
 - [MainActivity.kt](/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/android/app/src/main/kotlin/rw/ikanisa/rayon_sports/MainActivity.kt#L9)
 - [MainActivity.kt](/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/android/app/src/main/kotlin/rw/ikanisa/rayon_sports/MainActivity.kt#L27)
-- [BiopayNfcHostApduService.kt](/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/android/app/src/main/kotlin/rw/ikanisa/rayon_sports/BiopayNfcHostApduService.kt#L9)
-- [BiopayNfcHostApduService.kt](/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/android/app/src/main/kotlin/rw/ikanisa/rayon_sports/BiopayNfcHostApduService.kt#L55)
+- [BioPayNfcHostApduService.kt](/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/android/app/src/main/kotlin/rw/ikanisa/rayon_sports/BioPayNfcHostApduService.kt#L9)
+- [BioPayNfcHostApduService.kt](/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/android/app/src/main/kotlin/rw/ikanisa/rayon_sports/BioPayNfcHostApduService.kt#L55)
 
 ## What Standalone BioPay Is Today
 
@@ -174,7 +174,7 @@ The standalone mobile app home screen is a direct tile-based application shell:
 - `Admin`
 
 Evidence:
-- [biopay_app.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/biopay_app.dart#L689)
+- [BioPay_app.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/BioPay_app.dart#L689)
 
 This is not the same interaction model as AFRICLUB’s "PAY OR RECEIVE" hub.
 
@@ -183,10 +183,10 @@ This is not the same interaction model as AFRICLUB’s "PAY OR RECEIVE" hub.
 Standalone BioPay mobile calls a separate API base URL using `dio`, authenticates with a Supabase bearer token, and does not attach App Check headers. It also still exposes a mock fallback compile-time flag.
 
 Evidence:
-- [biopay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/biopay_services.dart#L22)
-- [biopay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/biopay_services.dart#L49)
-- [biopay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/biopay_services.dart#L149)
-- [biopay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/biopay_services.dart#L164)
+- [BioPay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/BioPay_services.dart#L22)
+- [BioPay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/BioPay_services.dart#L49)
+- [BioPay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/BioPay_services.dart#L149)
+- [BioPay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/BioPay_services.dart#L164)
 
 The backend is a standalone FastAPI service that uses a Supabase service-role admin client.
 
@@ -199,37 +199,37 @@ Evidence:
 ### Data model
 
 Standalone BioPay is USSD-string-first:
-- `biopay_payees`
-- `biopay_id`
+- `BioPay_payees`
+- `BioPay_id`
 - `display_name`
 - `ussd_string`
 - `supabase_uid`
 - `embedding vector(128)`
 
 Evidence:
-- [202604010001_biopay_pgvector.sql](/Volumes/PRO-G40/BioPay/supabase/migrations/202604010001_biopay_pgvector.sql#L16)
-- [202604010001_biopay_pgvector.sql](/Volumes/PRO-G40/BioPay/supabase/migrations/202604010001_biopay_pgvector.sql#L29)
-- [202604010001_biopay_pgvector.sql](/Volumes/PRO-G40/BioPay/supabase/migrations/202604010001_biopay_pgvector.sql#L76)
-- [202604010001_biopay_pgvector.sql](/Volumes/PRO-G40/BioPay/supabase/migrations/202604010001_biopay_pgvector.sql#L137)
+- [202604010001_BioPay_pgvector.sql](/Volumes/PRO-G40/BioPay/supabase/migrations/202604010001_BioPay_pgvector.sql#L16)
+- [202604010001_BioPay_pgvector.sql](/Volumes/PRO-G40/BioPay/supabase/migrations/202604010001_BioPay_pgvector.sql#L29)
+- [202604010001_BioPay_pgvector.sql](/Volumes/PRO-G40/BioPay/supabase/migrations/202604010001_BioPay_pgvector.sql#L76)
+- [202604010001_BioPay_pgvector.sql](/Volumes/PRO-G40/BioPay/supabase/migrations/202604010001_BioPay_pgvector.sql#L137)
 
 ### Platform behavior
 
 Standalone Android uses `FlutterFragmentActivity`, which is better aligned with some biometric/auth plugin integration patterns.
 
 Evidence:
-- [MainActivity.kt](/Volumes/PRO-G40/BioPay/mobile/android/app/src/main/kotlin/com/biopay/mobile/MainActivity.kt#L1)
+- [MainActivity.kt](/Volumes/PRO-G40/BioPay/mobile/android/app/src/main/kotlin/com/BioPay/mobile/MainActivity.kt#L1)
 
 ### NFC behavior
 
 Standalone BioPay NFC is centered on NDEF read/write token exchange:
-- write `application/biopay+json`
+- write `application/BioPay+json`
 - read payment tokens from NFC payloads
 - no Android Host Card Emulation service was found
 
 Evidence:
-- [biopay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/biopay_services.dart#L1137)
-- [biopay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/biopay_services.dart#L1144)
-- [biopay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/biopay_services.dart#L1215)
+- [BioPay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/BioPay_services.dart#L1137)
+- [BioPay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/BioPay_services.dart#L1144)
+- [BioPay_services.dart](/Volumes/PRO-G40/BioPay/mobile/lib/src/BioPay_services.dart#L1215)
 
 ## Comparative Matrix
 
@@ -341,19 +341,19 @@ If standalone BioPay must become the maintained source of truth, use this model:
 ### Upstream structure
 
 Refactor `/Volumes/PRO-G40/BioPay` into:
-- `packages/biopay_flutter`
-- `packages/biopay_contract`
-- `apps/biopay_mobile`
+- `packages/BioPay_flutter`
+- `packages/BioPay_contract`
+- `apps/BioPay_mobile`
 - `backend/` only if the dedicated API remains strategically necessary
 
 Where:
-- `packages/biopay_flutter` holds the shared Flutter UI, flows, state, domain logic, and device integrations
-- `packages/biopay_contract` holds DTOs, route/channel enums, token payloads, and integration interfaces
-- `apps/biopay_mobile` is only the standalone host app
+- `packages/BioPay_flutter` holds the shared Flutter UI, flows, state, domain logic, and device integrations
+- `packages/BioPay_contract` holds DTOs, route/channel enums, token payloads, and integration interfaces
+- `apps/BioPay_mobile` is only the standalone host app
 
 Then AFRICLUB consumes:
-- `biopay_flutter`
-- optionally `biopay_contract`
+- `BioPay_flutter`
+- optionally `BioPay_contract`
 
 This is the only credible path to "future updates in BioPay automatically reflect here".
 
@@ -377,7 +377,7 @@ If the FastAPI backend must remain:
 ### UI strategy
 
 If the requirement is that BioPay in AFRICLUB must look exactly like standalone BioPay:
-- port the standalone screen contract into `packages/features/feat_biopay`
+- port the standalone screen contract into `packages/features/feat_BioPay`
 - preserve AFRICLUB theming hooks, kill switches, localization, and host navigation integration
 - do not embed the standalone app shell inside AFRICLUB
 
@@ -401,9 +401,9 @@ Recommended answer:
 ### Phase 1. Extract reusable upstream package from standalone
 
 In `/Volumes/PRO-G40/BioPay`:
-- move reusable mobile code out of `mobile/lib/src/biopay_app.dart`
+- move reusable mobile code out of `mobile/lib/src/BioPay_app.dart`
 - split UI, state, services, and device integrations into a package
-- isolate app-shell-specific routing and bootstrapping in `apps/biopay_mobile`
+- isolate app-shell-specific routing and bootstrapping in `apps/BioPay_mobile`
 
 Deliverable:
 - a published or git-consumable Flutter package
@@ -453,7 +453,7 @@ This gives Rayon and other clubs the same BioPay interaction model without losin
 
 In AFRICLUB:
 - keep the backend adapter stable
-- swap current `feat_biopay` screens for the upstream shared package screens
+- swap current `feat_BioPay` screens for the upstream shared package screens
 - preserve host routes and deep-link entry points where required
 - keep current App Check and Edge Function security boundary intact
 
@@ -539,4 +539,4 @@ The immediate next deliverable should be a concrete extraction and integration s
 - upstream package boundaries
 - AFRICLUB adapter interfaces
 - schema/token alignment
-- rollout sequence for replacing the current `feat_biopay` UI with the standalone BioPay experience
+- rollout sequence for replacing the current `feat_BioPay` UI with the standalone BioPay experience

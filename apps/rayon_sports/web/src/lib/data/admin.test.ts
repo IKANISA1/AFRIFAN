@@ -184,15 +184,15 @@ describe("admin data helpers", () => {
         },
       ],
       contributions: [],
-      aliases: {},
-      monthlyTotal: 550000,
+      : { },
+    monthlyTotal: 550000,
     });
 
-    expect(headers).toContain("Name");
-    expect(headers).toContain("Total (RWF)");
-    expect(rows.length).toBe(1);
-    expect(rows[0][0]).toBe("Blue Wall Fund");
-    expect(rows[0][1]).toBe("project");
-    expect(rows[0][2]).toBe(550000);
-  });
+  expect(headers).toContain("Name");
+  expect(headers).toContain("Total (RWF)");
+  expect(rows.length).toBe(1);
+  expect(rows[0][0]).toBe("Blue Wall Fund");
+  expect(rows[0][1]).toBe("project");
+  expect(rows[0][2]).toBe(550000);
+});
 });

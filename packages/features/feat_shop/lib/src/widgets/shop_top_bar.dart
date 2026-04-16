@@ -74,7 +74,7 @@ class ShopTopBar extends StatelessWidget {
                     alignment: Alignment.center,
                     child: Text(
                       '$cartItemCount',
-                      style: TypographyTokens.labelSmall(Colors.white),
+                      style: TypographyTokens.labelSmall(ColorTokens.onSurface),
                     ),
                   ),
                 ),

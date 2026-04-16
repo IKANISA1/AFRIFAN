@@ -9,7 +9,7 @@ but embedding generation and server enrollment/matching will remain unavailable.
 
 After placing the `.tflite` file, generate the contract with:
 
-- `dart tool/biopay_model_contract.dart --generate`
+- `dart tool/BioPay_model_contract.dart --generate`
 
 Release readiness validates the contract when a BioPay model is bundled for a
 release. If either the model or contract file is present, the check must pass

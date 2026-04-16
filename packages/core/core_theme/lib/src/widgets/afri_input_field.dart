@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../extensions.dart';
 import '../tokens/border_tokens.dart';
@@ -31,6 +32,8 @@ class AfriInputField extends StatelessWidget {
     this.keyboardType,
     this.textCapitalization = TextCapitalization.none,
     this.maxLines = 1,
+    this.maxLength,
+    this.maxLengthEnforcement,
     this.readOnly = false,
     this.enabled = true,
     this.obscureText = false,
@@ -50,6 +53,8 @@ class AfriInputField extends StatelessWidget {
   final TextInputType? keyboardType;
   final TextCapitalization textCapitalization;
   final int maxLines;
+  final int? maxLength;
+  final MaxLengthEnforcement? maxLengthEnforcement;
   final bool readOnly;
   final bool enabled;
   final bool obscureText;
@@ -76,6 +81,17 @@ class AfriInputField extends StatelessWidget {
       focusNode: focusNode,
       autofocus: autofocus,
       textInputAction: textInputAction,
+      maxLength: maxLength,
+      maxLengthEnforcement:
+          maxLengthEnforcement ?? MaxLengthEnforcement.enforced,
+      buildCounter: maxLength != null
+          ? (context, {
+              required currentLength,
+              required isFocused,
+              required maxLength,
+            }) =>
+              null
+          : null,
       style: TypographyTokens.bodyLarge(colors.primaryText),
       decoration: InputDecoration(
         labelText: label,

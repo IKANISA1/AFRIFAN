@@ -174,7 +174,7 @@ class _TierDetailData {
   factory _TierDetailData.fallback(FanTier tier) {
     return switch (tier) {
       FanTier.platinum => const _TierDetailData(
-        title: 'PLATINUM CIRCLE',
+        title: 'PLATINUM Group',
         subtitle: 'VIP supporter access and top-tier benefits.',
         description: '',
         benefits: <String>[
@@ -282,7 +282,7 @@ class _PerkCard extends StatelessWidget {
               child: Row(
                 children: [
                   const Icon(
-                    Icons.check_circle_rounded,
+                    AfriIcons.checkGroup,
                     color: ColorTokens.success,
                     size: 18,
                   ),

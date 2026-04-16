@@ -1,4 +1,4 @@
-# feat_biopay
+# feat_BioPay
 
 Canonical BioPay implementation for AFRICLUB.
 

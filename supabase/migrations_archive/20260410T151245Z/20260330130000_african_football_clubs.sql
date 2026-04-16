@@ -248,7 +248,7 @@ values
    'Legacy club with massive historical following.'),
 
   -- #32
-  ('APR FC', 'Rwanda', '🇷🇼', 'RW',
+  ('Rayon Sports FC', 'Rwanda', '🇷🇼', 'RW',
    14000000, 0.50, 0.25, 1750000,
    'Army-backed; massive resources.'),
 

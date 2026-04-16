@@ -60,11 +60,12 @@ class CheckoutBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: SpacingTokens.spacing3),
-              ClaymorphicButton(
+              AfriButton(
                 label: 'Checkout',
-                preserveCase: true,
                 icon: Icons.arrow_forward_rounded,
-                onPressed: onCheckout,
+                onTap: onCheckout ?? () {},
+                fullWidth: false,
+                enabled: onCheckout != null,
               ),
             ],
           ),

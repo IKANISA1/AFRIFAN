@@ -69,7 +69,7 @@ function FatProgressRing({
     <div className="relative flex h-36 w-36 items-center justify-center sm:h-40 sm:w-40">
       <svg className="absolute inset-0 -rotate-90" viewBox="0 0 120 120">
         {/* Background ring */}
-        <circle
+        <Group
           cx="60"
           cy="60"
           r="52"
@@ -79,7 +79,7 @@ function FatProgressRing({
           strokeWidth="6"
         />
         {/* Progress ring */}
-        <circle
+        <Group
           cx="60"
           cy="60"
           r="52"

@@ -4,15 +4,26 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../models/fet_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
-
-/// Enhanced leaderboard with multi-tab (All / Weekly / Monthly),
-/// podium display, and pinned "Your Rank" row.
+import '../providers/leaderboard_provider.dart';
+import '../repositories/prediction_repository.dart';
+import '../widgets/leaderboard_widgets.dart';
+/// Dual-tab leaderboard: FET ranking (fans) and Supporters ranking.
 ///
-/// Mirrors the fanafrika reference `Leaderboard.tsx`.
+/// Uses [FetLeaderboardNotifier] and [SupporterLeaderboardNotifier] via
+/// Riverpod for async state management. Keeps `ConsumerStatefulWidget`
+/// only for the TabController's vsync requirement.
+///
+/// Accepts an optional `tab` query parameter:
+///   - `?tab=fet` — opens on the FET tab (default)
+///   - `?tab=supporters` — opens on the Supporters tab
 class LeaderboardScreen extends ConsumerStatefulWidget {
-  const LeaderboardScreen({super.key});
+  const LeaderboardScreen({super.key, this.initialTab});
+
+  /// Optional initial tab from deep-link query parameter.
+  final String? initialTab;
 
   @override
   ConsumerState<LeaderboardScreen> createState() => _LeaderboardScreenState();
@@ -20,256 +31,95 @@ class LeaderboardScreen extends ConsumerStatefulWidget {
 
 class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
     with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
+  late final TabController _topTabController;
 
-  List<PredictionLeaderboardEntry> _rows = const <PredictionLeaderboardEntry>[];
-  bool _isLoading = true;
-  String? _error;
+  /// Local-only UI state for the period filter chip selection.
+  int _fetPeriodIndex = 0; // 0=all, 1=weekly, 2=monthly
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-    _tabController.addListener(() {
-      if (!_tabController.indexIsChanging) {
-        _loadLeaderboard();
-      }
+    final initialIndex = widget.initialTab == 'supporters' ? 1 : 0;
+    _topTabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: initialIndex,
+    );
+    _topTabController.addListener(() {
+      if (!_topTabController.indexIsChanging) setState(() {});
     });
-    _loadLeaderboard();
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _topTabController.dispose();
     super.dispose();
   }
 
-  String get _currentPeriod {
-    return switch (_tabController.index) {
+  String get _currentFetPeriod {
+    return switch (_fetPeriodIndex) {
       1 => 'weekly',
       2 => 'monthly',
       _ => 'all',
     };
   }
 
-  Future<void> _loadLeaderboard() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final repo = ref.read(predictionRepositoryProvider);
-      final leaderboard = await repo.loadLeaderboard(
-        limit: 25,
-        period: _currentPeriod,
-      );
-
-      if (!mounted) return;
-      setState(() {
-        _rows = leaderboard;
-        _isLoading = false;
-        _error = null;
-      });
-    } catch (_) {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _error = 'Leaderboard is temporarily unavailable.';
-      });
-    }
-  }
-
-  PredictionLeaderboardEntry? get _currentUserEntry {
-    final userId = ref.read(predictionRepositoryProvider).currentUserId;
-    if (userId == null || userId.isEmpty) return null;
-    return _rows.cast<PredictionLeaderboardEntry?>().firstWhere(
-      (e) => e?.userId == userId,
-      orElse: () => null,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final podium = _rows.take(3).toList(growable: false);
-    final userEntry = _currentUserEntry;
-
     return Scaffold(
       backgroundColor: ColorTokens.background,
       body: GradientBackground(
         child: SafeArea(
-          child: NestedScrollView(
-            physics: const BouncingScrollPhysics(),
-            headerSliverBuilder: (context, innerBoxScrolled) => [
-              // ── App bar ──
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    SpacingTokens.spacing4,
-                    SpacingTokens.spacing4,
-                    SpacingTokens.spacing6,
-                    0,
-                  ),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () => context.pop(),
-                        icon: const Icon(AfriIcons.back),
+          child: Column(
+            children: [
+              // ── Header ──
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  SpacingTokens.spacing4,
+                  SpacingTokens.spacing4,
+                  SpacingTokens.spacing6,
+                  0,
+                ),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () => context.pop(),
+                      icon: const Icon(AfriIcons.back),
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing2),
+                    Text(
+                      'LEADERBOARD',
+                      style: TypographyTokens.monolithFont(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.6,
                       ),
-                      const SizedBox(width: SpacingTokens.spacing2),
-                      Text(
-                        'LEADERBOARD',
-                        style: TypographyTokens.monolithFont(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 1.6,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
 
-              // ── Podium ──
-              if (!_isLoading && _error == null && podium.isNotEmpty)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      SpacingTokens.spacing6,
-                      SpacingTokens.spacing4,
-                      SpacingTokens.spacing6,
-                      SpacingTokens.spacing4,
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          child: _PodiumCard(
-                            entry: podium.length > 1 ? podium[1] : null,
-                          ),
-                        ),
-                        const SizedBox(width: SpacingTokens.spacing3),
-                        Expanded(
-                          child: _PodiumCard(
-                            entry: podium.first,
-                            featured: true,
-                          ),
-                        ),
-                        const SizedBox(width: SpacingTokens.spacing3),
-                        Expanded(
-                          child: _PodiumCard(
-                            entry: podium.length > 2 ? podium[2] : null,
-                          ),
-                        ),
-                      ],
-                    )
-                        .animate()
-                        .fadeIn(duration: 400.ms)
-                        .slideY(begin: 0.04, end: 0, duration: 400.ms),
-                  ),
+              // ── Top-level tabs: FET / SUPPORTERS ──
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: SpacingTokens.spacing6,
+                  vertical: SpacingTokens.spacing3,
                 ),
-
-              // ── Pinned "Your Rank" row ──
-              if (userEntry != null)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: SpacingTokens.spacing6,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.all(SpacingTokens.spacing3),
-                      decoration: BoxDecoration(
-                        color:
-                            ColorTokens.clubAccent.withValues(alpha: 0.10),
-                        borderRadius: BorderRadius.circular(16),
-                        border: BorderTokens.all(
-                          color: ColorTokens.clubAccent
-                              .withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 44,
-                            child: Text(
-                              '#${userEntry.rank.toString().padLeft(2, '0')}',
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w800,
-                                color: ColorTokens.clubAccent,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: SpacingTokens.spacing3),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      userEntry.displayName,
-                                      style:
-                                          TypographyTokens.titleSmall(),
-                                    ),
-                                    const SizedBox(
-                                      width: SpacingTokens.spacing2,
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 6,
-                                        vertical: 2,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: ColorTokens.clubAccent,
-                                        borderRadius:
-                                            BorderRadius.circular(4),
-                                      ),
-                                      child: Text(
-                                        'YOU',
-                                        style:
-                                            TypographyTokens.editorialFont(
-                                          fontSize: 9,
-                                          fontWeight: FontWeight.w800,
-                                          color: ColorTokens.background,
-                                          letterSpacing: 1.2,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  '${userEntry.winRate.toStringAsFixed(1)}% accuracy · ${userEntry.wins} wins',
-                                  style: TypographyTokens.bodySmall(),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Text(
-                            '+${userEntry.totalFetEarned} FET',
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              color: ColorTokens.clubAccent,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: ColorTokens.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                ),
-
-              // ── Tab bar ──
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _TabBarDelegate(
-                  tabBar: TabBar(
-                    controller: _tabController,
+                  padding: const EdgeInsets.all(3),
+                  child: TabBar(
+                    controller: _topTabController,
                     isScrollable: false,
-                    indicatorColor: ColorTokens.clubAccent,
-                    indicatorWeight: 2.5,
-                    labelColor: ColorTokens.clubAccent,
+                    indicator: BoxDecoration(
+                      color: ColorTokens.clubAccent,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelColor: ColorTokens.background,
                     unselectedLabelColor: ColorTokens.onSurfaceVariant,
                     labelStyle: TypographyTokens.editorialFont(
                       fontSize: 13,
@@ -277,278 +127,291 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
                       letterSpacing: 1.0,
                     ),
                     dividerColor: Colors.transparent,
+                    splashFactory: NoSplash.splashFactory,
                     tabs: const [
-                      Tab(text: 'ALL TIME'),
-                      Tab(text: 'WEEKLY'),
-                      Tab(text: 'MONTHLY'),
+                      Tab(text: 'FET RANKING'),
+                      Tab(text: 'SUPPORTERS'),
                     ],
                   ),
                 ),
               ),
-            ],
-            body: _isLoading
-                ? const Padding(
-                    padding: EdgeInsets.all(SpacingTokens.spacing6),
-                    child: AfriSkeletonList(),
-                  )
-                : _error != null
-                ? Center(
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.all(SpacingTokens.spacing6),
-                      child: AfriStateView.offline(
-                        title: 'Leaderboard unavailable',
-                        message: _error!,
-                        actionLabel: 'Retry',
-                        onAction: _loadLeaderboard,
-                      ),
-                    ),
-                  )
-                : _rows.isEmpty
-                ? const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(SpacingTokens.spacing6),
-                      child: AfriEmptyView(
-                        title: 'No ranks yet',
-                        message:
-                            'The board fills as predictions settle.',
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.all(
-                      SpacingTokens.spacing6,
-                    ),
-                    itemCount: _rows.length,
-                    itemBuilder: (context, index) {
-                      final entry = _rows[index];
-                      final currentUserId = ref.read(predictionRepositoryProvider).currentUserId;
-                      final isMe =
-                          currentUserId != null &&
-                          currentUserId.isNotEmpty &&
-                          entry.userId == currentUserId;
 
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: SpacingTokens.spacing3,
-                        ),
-                        child: Container(
-                          padding: const EdgeInsets.all(
-                            SpacingTokens.spacing3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: isMe
-                                ? ColorTokens.clubAccent
-                                    .withValues(alpha: 0.10)
-                                : ColorTokens.surfaceContainerLow,
-                            borderRadius: BorderRadius.circular(16),
-                            border: isMe
-                                ? BorderTokens.all(
-                                    color: ColorTokens.clubAccent
-                                        .withValues(alpha: 0.3),
-                                  )
-                                : BorderTokens.ghost(),
-                          ),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 44,
-                                child: Text(
-                                  '#${entry.rank.toString().padLeft(2, '0')}',
-                                  style: TypographyTokens.monolithFont(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w800,
-                                    color: entry.rank <= 3
-                                        ? ColorTokens.clubAccent
-                                        : ColorTokens.onSurface,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: SpacingTokens.spacing3,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          entry.displayName,
-                                          style: TypographyTokens
-                                              .titleSmall(),
-                                        ),
-                                        if (isMe) ...[
-                                          const SizedBox(
-                                            width:
-                                                SpacingTokens.spacing2,
-                                          ),
-                                          Container(
-                                            padding:
-                                                const EdgeInsets
-                                                    .symmetric(
-                                              horizontal: 6,
-                                              vertical: 2,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: ColorTokens
-                                                  .clubAccent,
-                                              borderRadius:
-                                                  BorderRadius
-                                                      .circular(4),
-                                            ),
-                                            child: Text(
-                                              'YOU',
-                                              style: TypographyTokens
-                                                  .editorialFont(
-                                                fontSize: 9,
-                                                fontWeight:
-                                                    FontWeight.w800,
-                                                color: ColorTokens
-                                                    .background,
-                                                letterSpacing: 1.2,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ],
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      '${entry.winRate.toStringAsFixed(1)}% accuracy · ${entry.wins} wins',
-                                      style:
-                                          TypographyTokens.bodySmall(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    '+${entry.totalFetEarned} FET',
-                                    style:
-                                        TypographyTokens.monolithFont(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w800,
-                                      color: ColorTokens.clubAccent,
-                                    ),
-                                  ),
-                                  Text(
-                                    '${entry.totalSettled} settled',
-                                    style:
-                                        TypographyTokens.bodySmall(),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                          .animate(delay: (index * 40).ms)
-                          .fadeIn(duration: 200.ms)
-                          .slideY(
-                            begin: 0.03,
-                            end: 0,
-                            duration: 200.ms,
-                          );
-                    },
-                  ),
+              // ── Tab content ──
+              Expanded(
+                child: TabBarView(
+                  controller: _topTabController,
+                  children: [
+                    _buildFetTab(),
+                    _buildSupporterTab(),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
-}
 
-// ── Supporting widgets ─────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════
+  // FET RANKING TAB
+  // ═══════════════════════════════════════════════════════════════════════
 
-class _TabBarDelegate extends SliverPersistentHeaderDelegate {
-  const _TabBarDelegate({required this.tabBar});
-
-  final TabBar tabBar;
-
-  @override
-  double get minExtent => tabBar.preferredSize.height;
-  @override
-  double get maxExtent => tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      color: ColorTokens.background,
-      child: tabBar,
+  Widget _buildFetTab() {
+    return Column(
+      children: [
+        // Period filter chips
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.spacing6,
+          ),
+          child: Row(
+            children: [
+              LeaderboardPeriodChip(
+                label: 'ALL TIME',
+                selected: _fetPeriodIndex == 0,
+                onTap: () => _selectFetPeriod(0),
+              ),
+              const SizedBox(width: SpacingTokens.spacing2),
+              LeaderboardPeriodChip(
+                label: 'WEEKLY',
+                selected: _fetPeriodIndex == 1,
+                onTap: () => _selectFetPeriod(1),
+              ),
+              const SizedBox(width: SpacingTokens.spacing2),
+              LeaderboardPeriodChip(
+                label: 'MONTHLY',
+                selected: _fetPeriodIndex == 2,
+                onTap: () => _selectFetPeriod(2),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: SpacingTokens.spacing3),
+        Expanded(child: _buildFetContent()),
+      ],
     );
   }
 
-  @override
-  bool shouldRebuild(_TabBarDelegate oldDelegate) => false;
-}
-
-class _PodiumCard extends StatelessWidget {
-  const _PodiumCard({required this.entry, this.featured = false});
-
-  final PredictionLeaderboardEntry? entry;
-  final bool featured;
-
-  String get _medal {
-    if (entry == null) return '';
-    return switch (entry!.rank) {
-      1 => '🥇',
-      2 => '🥈',
-      3 => '🥉',
-      _ => '',
-    };
+  void _selectFetPeriod(int index) {
+    if (_fetPeriodIndex == index) return;
+    setState(() => _fetPeriodIndex = index);
+    // The provider is keyed by period — switching index triggers a new watch.
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      animate: false,
-      child: Column(
-        children: [
-          if (_medal.isNotEmpty)
-            Text(_medal, style: const TextStyle(fontSize: 28)),
-          if (_medal.isEmpty) const SizedBox(height: 28),
-          const SizedBox(height: SpacingTokens.spacing2),
-          Text(
-            entry == null
-                ? '--'
-                : '#${entry!.rank.toString().padLeft(2, '0')}',
-            style: TypographyTokens.monolithFont(
-              fontSize: featured ? 28 : 22,
-              fontWeight: FontWeight.w800,
-              color: featured
-                  ? ColorTokens.clubAccent
-                  : ColorTokens.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: SpacingTokens.spacing2),
-          Text(
-            entry?.displayName ?? 'No rank',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TypographyTokens.bodyMedium(),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: SpacingTokens.spacing2),
-          Text(
-            entry == null ? '0 FET' : '+${entry!.totalFetEarned} FET',
-            style: TypographyTokens.monolithFont(
-              fontSize: featured ? 22 : 18,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.clubAccent,
-            ),
-          ),
-        ],
+  Widget _buildFetContent() {
+    final period = _currentFetPeriod;
+    final asyncFet = ref.watch(fetLeaderboardProvider(period));
+
+    return asyncFet.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.all(SpacingTokens.spacing6),
+        child: AfriSkeletonList(),
       ),
+      error: (_, __) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(SpacingTokens.spacing6),
+          child: AfriStateView.offline(
+            title: 'Leaderboard unavailable',
+            message: 'Leaderboard is temporarily unavailable.',
+            actionLabel: 'Retry',
+            onAction: () =>
+                ref.read(fetLeaderboardProvider(period).notifier).refresh(),
+          ),
+        ),
+      ),
+      data: (snapshot) {
+        if (snapshot.rows.isEmpty) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(SpacingTokens.spacing6),
+              child: AfriEmptyView(
+                title: 'No ranks yet',
+                message: 'The board fills as predictions settle.',
+              ),
+            ),
+          );
+        }
+
+        final podium = snapshot.rows.take(3).toList(growable: false);
+        final currentUserId =
+            ref.read(predictionRepositoryProvider).currentUserId;
+        final userEntry = currentUserId == null || currentUserId.isEmpty
+            ? null
+            : snapshot.rows.cast<PredictionLeaderboardEntry?>().firstWhere(
+                  (e) => e?.userId == currentUserId,
+                  orElse: () => null,
+                );
+
+        return ListView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.spacing6,
+          ),
+          children: [
+            // Podium
+            if (podium.isNotEmpty)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: FetPodiumCard(
+                      entry: podium.length > 1 ? podium[1] : null,
+                    ),
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: FetPodiumCard(
+                      entry: podium.first,
+                      featured: true,
+                    ),
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: FetPodiumCard(
+                      entry: podium.length > 2 ? podium[2] : null,
+                    ),
+                  ),
+                ],
+              )
+                  .animate()
+                  .fadeIn(duration: 400.ms)
+                  .slideY(begin: 0.04, end: 0, duration: 400.ms),
+            const SizedBox(height: SpacingTokens.spacing4),
+
+            // Pinned user row
+            if (userEntry != null) FetUserRow(entry: userEntry),
+
+            if (userEntry != null)
+              const SizedBox(height: SpacingTokens.spacing3),
+
+            // Full list
+            for (int i = 0; i < snapshot.rows.length; i++)
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: SpacingTokens.spacing3,
+                ),
+                child: FetListRow(
+                  entry: snapshot.rows[i],
+                  isMe: currentUserId != null &&
+                      currentUserId.isNotEmpty &&
+                      snapshot.rows[i].userId == currentUserId,
+                ),
+              )
+                  .animate(delay: (i * 40).ms)
+                  .fadeIn(duration: 200.ms)
+                  .slideY(begin: 0.03, end: 0, duration: 200.ms),
+          ],
+        );
+      },
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // SUPPORTERS TAB
+  // ═══════════════════════════════════════════════════════════════════════
+
+  Widget _buildSupporterTab() {
+    final asyncSupporter = ref.watch(supporterLeaderboardProvider);
+
+    return asyncSupporter.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.all(SpacingTokens.spacing6),
+        child: AfriSkeletonList(),
+      ),
+      error: (_, __) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(SpacingTokens.spacing6),
+          child: AfriStateView.offline(
+            title: 'Rankings unavailable',
+            message: 'Supporter rankings are temporarily unavailable.',
+            actionLabel: 'Retry',
+            onAction: () =>
+                ref.read(supporterLeaderboardProvider.notifier).refresh(),
+          ),
+        ),
+      ),
+      data: (snapshot) {
+        if (snapshot.rows.isEmpty) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(SpacingTokens.spacing6),
+              child: AfriEmptyView(
+                title: 'No supporters yet',
+                message: 'Supporter rankings update with contributions.',
+              ),
+            ),
+          );
+        }
+
+        final podium = snapshot.rows.take(3).toList(growable: false);
+        final currentUser = snapshot.rows
+            .cast<FetLeaderboardRow?>()
+            .firstWhere(
+              (e) => e?.isCurrentUser == true,
+              orElse: () => null,
+            );
+
+        return ListView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.spacing6,
+          ),
+          children: [
+            // Podium
+            if (podium.isNotEmpty)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: SupporterPodiumCard(
+                      entry: podium.length > 1 ? podium[1] : null,
+                    ),
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: SupporterPodiumCard(
+                      entry: podium.first,
+                      featured: true,
+                    ),
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: SupporterPodiumCard(
+                      entry: podium.length > 2 ? podium[2] : null,
+                    ),
+                  ),
+                ],
+              )
+                  .animate()
+                  .fadeIn(duration: 400.ms)
+                  .slideY(begin: 0.04, end: 0, duration: 400.ms),
+            const SizedBox(height: SpacingTokens.spacing4),
+
+            // Pinned user row
+            if (currentUser != null)
+              SupporterUserRow(entry: currentUser),
+
+            if (currentUser != null)
+              const SizedBox(height: SpacingTokens.spacing3),
+
+            // Full list
+            for (int i = 0; i < snapshot.rows.length; i++)
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: SpacingTokens.spacing3,
+                ),
+                child: SupporterListRow(
+                  entry: snapshot.rows[i],
+                  isMe: snapshot.rows[i].isCurrentUser,
+                ),
+              )
+                  .animate(delay: (i * 40).ms)
+                  .fadeIn(duration: 200.ms)
+                  .slideY(begin: 0.03, end: 0, duration: 200.ms),
+          ],
+        );
+      },
     );
   }
 }

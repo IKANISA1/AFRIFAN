@@ -25,6 +25,7 @@ dependencies:
   hive: ^2.2.3
   http: ^1.2.2
   supabase_flutter: ^2.12.2
+  flutter_cache_manager: ^3.3.1
 
 resolution: workspace
 

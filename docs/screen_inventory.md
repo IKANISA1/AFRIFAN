@@ -59,7 +59,7 @@ Mobile onboarding screen 1 of 3. Full-bleed dark navy gradient background with a
 <details><summary>1.3 Onboarding — Slide 2</summary>
 
 ```
-Mobile onboarding screen 2 of 3. Dark navy background. Top area shows three glassmorphic cards floating: one shows FET badge, one shows a ticket QR code, one shows a MOMO contribution circle. Headline: "Fan membership. Tickets. Contributions." in Space Grotesk 36sp white. Subtext: "Earn FET, buy match tickets, and contribute to club projects — all in one place." Pagination dots ○ ● ○. Red "Next" button.
+Mobile onboarding screen 2 of 3. Dark navy background. Top area shows three glassmorphic cards floating: one shows FET badge, one shows a ticket QR code, one shows a MOMO contribution Group. Headline: "Fan membership. Tickets. Contributions." in Space Grotesk 36sp white. Subtext: "Earn FET, buy match tickets, and contribute to club projects — all in one place." Pagination dots ○ ● ○. Red "Next" button.
 ```
 </details>
 
@@ -88,7 +88,7 @@ Mobile profile setup screen. Dark navy background. Top: large progress bar "Step
 <details><summary>2.1 Home Screen</summary>
 
 ```
-Mobile football club homescreen. Dark navy gradient. Scrollable feed. TOP ZONE: full-width glassmorphic hero card — Rayon Sports crest left, opponent crest right, match countdown "2d 14h" in Space Grotesk 40sp gold, "NEXT MATCH" chip, status PRE-MATCH mint. ZONE 2: horizontal quick actions rail — 6 claymorphic icon chips (red pill-shaped): Tickets · Shop · Contribute · Games · Membership · Fan Clubs. ZONE 3: admin banner carousel with dots. ZONE 4: "My Active Circles" horizontal scroll — 2 partial glass cards with progress rings. ZONE 5: Gamification teaser — alias "483912" FET arc, "Bronze · 2,340 FET", mini leaderboard. ZONE 6: Club news feed — 2 image-first cards. Bottom: 3-tab nav bar (Home active red, BioPay, Settings).
+Mobile football club homescreen. Dark navy gradient. Scrollable feed. TOP ZONE: full-width glassmorphic hero card — Rayon Sports crest left, opponent crest right, match countdown "2d 14h" in Space Grotesk 40sp gold, "NEXT MATCH" chip, status PRE-MATCH mint. ZONE 2: horizontal quick actions rail — 6 claymorphic icon chips (red pill-shaped): Tickets · Shop · Contribute · Games · Membership · Fan Clubs. ZONE 3: admin banner carousel with dots. ZONE 4: "My Active Groups" horizontal scroll — 2 partial glass cards with progress rings. ZONE 5: Gamification teaser — alias "483912" FET arc, "Bronze · 2,340 FET", mini leaderboard. ZONE 6: Club news feed — 2 image-first cards. Bottom: 3-tab nav bar (Home active red, BioPay, Settings).
 ```
 </details>
 
@@ -114,7 +114,7 @@ Mobile match fixtures list screen. Dark navy. Header: back arrow, "Tickets" Spac
 <details><summary>2.2b Match Detail / Buy Ticket</summary>
 
 ```
-Mobile match ticket purchase screen. Dark navy. Large glassmorphic hero: Rayon Sports vs APR FC crests, date "Sat 5 Apr 2026", time "16:00", stadium name. Zone selector cards: 4 options (VIP Gold, Tribune Red, East Stand, Standing) with prices, selected = red border glow. Quantity stepper. Bottom: total price Space Grotesk 32sp gold, "Pay via MOMO" red full-width button.
+Mobile match ticket purchase screen. Dark navy. Large glassmorphic hero: Rayon Sports vs Rayon Sports FC crests, date "Sat 5 Rayon Sports 2026", time "16:00", stadium name. Zone selector cards: 4 options (VIP Gold, Tribune Red, East Stand, Standing) with prices, selected = red border glow. Quantity stepper. Bottom: total price Space Grotesk 32sp gold, "Pay via MOMO" red full-width button.
 ```
 </details>
 
@@ -159,7 +159,7 @@ Mobile club merchandise shop. Dark navy. Header "Club Shop" + cart icon with bad
 <details><summary>2.3b Product Detail</summary>
 
 ```
-Mobile product detail — Rayon Sports football kit. Dark navy. Large product image full-width (dots for swipe). Product name Space Grotesk 28sp, price gold, rating stars, category chip. Size selector: S M L XL glass pills (selected = red). Color circles. Description expandable. "Add to Cart" red full-width button. "Pay with MOMO" secondary glass outline button.
+Mobile product detail — Rayon Sports football kit. Dark navy. Large product image full-width (dots for swipe). Product name Space Grotesk 28sp, price gold, rating stars, category chip. Size selector: S M L XL glass pills (selected = red). Color Groups. Description expandable. "Add to Cart" red full-width button. "Pay with MOMO" secondary glass outline button.
 ```
 </details>
 
@@ -185,7 +185,7 @@ Mobile shopping cart. Dark navy. Header "Your Cart" + count. Cart items: thumbna
 <details><summary>2.4a Gamification Hub</summary>
 
 ```
-Mobile gamification screen. Dark navy. Large header: stadium arc, alias "483912" JetBrains Mono, rank "#47 of 12,400 fans". FET arc progress circle red arc 2340/5000 FET. Tier badge: BRONZE chip. Quick nav: FET HISTORY · CHALLENGES · LEADERBOARD · BADGES · STREAKS. Featured challenge card. Recent activity feed.
+Mobile gamification screen. Dark navy. Large header: stadium arc, alias "483912" JetBrains Mono, rank "#47 of 12,400 fans". FET arc progress Group red arc 2340/5000 FET. Tier badge: BRONZE chip. Quick nav: FET HISTORY · CHALLENGES · LEADERBOARD · BADGES · STREAKS. Featured challenge card. Recent activity feed.
 ```
 </details>
 
@@ -225,7 +225,7 @@ Mobile activity streak screen. Dark navy. Large "14 days" Space Grotesk 56sp gol
 |---|--------|-----|--------|------|--------|-----------|
 | 2.5a | Contributions Hub | contribute | `feat_contributions` | `contributions_hub_screen.dart` | ✅ | `contribution_groups` |
 | 2.5b | Club Projects List | contribute | `feat_contributions` | `club_projects_screen.dart` | ✅ | `contribution_groups` |
-| 2.5c | My Circles | contribute | `feat_contributions` | `groups_screen.dart` | ✅ | `contribution_groups` |
+| 2.5c | My Groups | contribute | `feat_contributions` | `groups_screen.dart` | ✅ | `contribution_groups` |
 | 2.5d | Group Detail | contribute | `feat_contributions` | `group_detail_screen.dart` | ✅ | `contribution_groups`, `transactions` |
 | 2.5e | Create Group | contribute | `feat_contributions` | `create_group_screen.dart` | ✅ | `contribution_groups` |
 | 2.5f | Group Chat | contribute | `feat_contributions` | `group_chat_screen.dart` | ✅ | `group_messages` |
@@ -235,7 +235,7 @@ Mobile activity streak screen. Dark navy. Large "14 days" Space Grotesk 56sp gol
 <details><summary>2.5a Contributions Hub</summary>
 
 ```
-Mobile contributions hub. Dark navy. Header "Contribute". Three large category cards: 1) CLUB PROJECTS red glass, crest, progress, "Support the Club" CTA. 2) MY CIRCLES teal glass, count. 3) COMMUNITY purple glass. "Start a Circle" red FAB.
+Mobile contributions hub. Dark navy. Header "Contribute". Three large category cards: 1) CLUB PROJECTS red glass, crest, progress, "Support the Club" CTA. 2) MY Groups teal glass, count. 3) COMMUNITY purple glass. "Start a Group" red FAB.
 ```
 </details>
 
@@ -246,10 +246,10 @@ Mobile club contribution projects list. Dark navy. Each project card glassmorphi
 ```
 </details>
 
-<details><summary>2.5c My Circles</summary>
+<details><summary>2.5c My Groups</summary>
 
 ```
-Mobile "My Circles" contribution groups. Dark navy. Header + create button. Cards: group name bold, type chip, privacy icon, small progress ring, member count, last activity. Empty state: illustration + red CTA.
+Mobile "My Groups" contribution groups. Dark navy. Header + create button. Cards: group name bold, type chip, privacy icon, small progress ring, member count, last activity. Empty state: illustration + red CTA.
 ```
 </details>
 
@@ -263,21 +263,21 @@ Mobile contribution group detail. Dark navy. Header: group name + PRIVATE chip. 
 <details><summary>2.5e Create Group</summary>
 
 ```
-Mobile create contribution circle form. Dark navy. Header "New Circle". Fields: Group Name, Description, Target Amount FRw, Deadline, Privacy pills (PUBLIC · MEMBERS · PRIVATE), MOMO input. Allow Chat toggle. Live preview card. "Create Circle" red button.
+Mobile create contribution Group form. Dark navy. Header "New Group". Fields: Group Name, Description, Target Amount FRw, Deadline, Privacy pills (PUBLIC · MEMBERS · PRIVATE), MOMO input. Allow Chat toggle. Live preview card. "Create Group" red button.
 ```
 </details>
 
 <details><summary>2.5f Group Chat</summary>
 
 ```
-Mobile group chat inside contribution circle. Dark navy. Chat bubbles: sent right dark red glass, received left dark navy glass. Alias chip JetBrains Mono gold above each bubble. Transaction notification: full-width mint green bar "483912 contributed FRw 5,000". Text input bar bottom: glass, red send circle, emoji left.
+Mobile group chat inside contribution Group. Dark navy. Chat bubbles: sent right dark red glass, received left dark navy glass. Alias chip JetBrains Mono gold above each bubble. Transaction notification: full-width mint green bar "483912 contributed FRw 5,000". Text input bar bottom: glass, red send Group, emoji left.
 ```
 </details>
 
 <details><summary>2.5g Group Settings</summary>
 
 ```
-Mobile group settings creator-only. Dark navy. Fields: Name, Privacy pills, Target, Deadline, MOMO masked editable. Danger zone red-border card: "Close Circle" orange, "Delete Circle" red. Download Statement button PDF/CSV. "Save Changes" red button.
+Mobile group settings creator-only. Dark navy. Fields: Name, Privacy pills, Target, Deadline, MOMO masked editable. Danger zone red-border card: "Close Group" orange, "Delete Group" red. Download Statement button PDF/CSV. "Save Changes" red button.
 ```
 </details>
 
@@ -371,16 +371,16 @@ Mobile news article. Dark navy. Back arrow + "Club News". Hero image full-width.
 
 | # | Screen | Tag | Module | File | Status | DB Tables |
 |---|--------|-----|--------|------|--------|-----------|
-| 3.1 | BioPay Hub | biopay · bottom nav | `feat_biopay` | `biopay_screen.dart` | ✅ | `face_registrations` |
-| 3.2 | BioPay Manage | biopay · manage | `feat_biopay` | `biopay_manage_screen.dart` | ✅ | `face_registrations` |
-| 3.3 | QR Receive Screen | biopay · qr | `feat_biopay` | `biopay_qr_screen.dart` | ✅ | `users` |
-| 3.4 | QR Pay Scan | biopay · qr · scan | `feat_biopay` | `biopay_qr_scan_screen.dart` | ✅ | `users` |
-| 3.5 | NFC Receive & Pay | biopay · nfc | `feat_biopay` | `biopay_nfc_screen.dart` | ✅ | `users` |
-| 3.6 | Face ID Registration | biopay · setup | `feat_biopay` | `biopay_register_screen.dart` | ✅ | `face_registrations` |
-| 3.7 | Face Capture / Face Match | biopay · scan | `feat_biopay` | `biopay_scan_screen.dart` | ✅ | `face_registrations` |
-| 3.8 | Payment Review | biopay · review | `feat_biopay` | `biopay_payment_review_screen.dart` | ✅ | `biopay_payment_intents` |
-| 3.9 | Payment Result | biopay · result | `feat_biopay` | `biopay_result_screen.dart` | ✅ | `biopay_payment_intents` |
-| 3.10 | Recovery / Help | biopay · recovery | `feat_biopay` | `biopay_recovery_screen.dart` | ✅ | — |
+| 3.1 | BioPay Hub | BioPay · bottom nav | `feat_BioPay` | `BioPay_screen.dart` | ✅ | `face_registrations` |
+| 3.2 | BioPay Manage | BioPay · manage | `feat_BioPay` | `BioPay_manage_screen.dart` | ✅ | `face_registrations` |
+| 3.3 | QR Receive Screen | BioPay · qr | `feat_BioPay` | `BioPay_qr_screen.dart` | ✅ | `users` |
+| 3.4 | QR Pay Scan | BioPay · qr · scan | `feat_BioPay` | `BioPay_qr_scan_screen.dart` | ✅ | `users` |
+| 3.5 | NFC Receive & Pay | BioPay · nfc | `feat_BioPay` | `BioPay_nfc_screen.dart` | ✅ | `users` |
+| 3.6 | Face ID Registration | BioPay · setup | `feat_BioPay` | `BioPay_register_screen.dart` | ✅ | `face_registrations` |
+| 3.7 | Face Capture / Face Match | BioPay · scan | `feat_BioPay` | `BioPay_scan_screen.dart` | ✅ | `face_registrations` |
+| 3.8 | Payment Review | BioPay · review | `feat_BioPay` | `BioPay_payment_review_screen.dart` | ✅ | `BioPay_payment_intents` |
+| 3.9 | Payment Result | BioPay · result | `feat_BioPay` | `BioPay_result_screen.dart` | ✅ | `BioPay_payment_intents` |
+| 3.10 | Recovery / Help | BioPay · recovery | `feat_BioPay` | `BioPay_recovery_screen.dart` | ✅ | — |
 
 <details><summary>3.1 BioPay Hub</summary>
 
@@ -420,7 +420,7 @@ Mobile BioPay NFC screen. Dark navy. Shared receive/pay task surface. Receive ca
 <details><summary>3.6 Face ID Registration</summary>
 
 ```
-Mobile face ID enrollment. Dark navy. Step indicator ① POSITION ② ANGLES ③ CONFIRM red highlight. Camera preview dark rectangle, face oval guide red dashed. Instructions: look straight, good lighting, remove glasses. Liveness "Blink when ready". Progress 0/5 angles. Large red circle capture button. Privacy: "No photos stored."
+Mobile face ID enrollment. Dark navy. Step indicator ① POSITION ② ANGLES ③ CONFIRM red highlight. Camera preview dark rectangle, face oval guide red dashed. Instructions: look straight, good lighting, remove glasses. Liveness "Blink when ready". Progress 0/5 angles. Large red Group capture button. Privacy: "No photos stored."
 ```
 </details>
 
@@ -468,7 +468,7 @@ Mobile BioPay recovery screen. Dark navy. Guidance for camera, device-auth, NFC,
 <details><summary>4.1 Settings Home</summary>
 
 ```
-Mobile settings screen. Dark navy. Header "Settings". Profile summary glassmorphic: alias "483912" JetBrains Mono gold large, BRONZE tier badge, MOMO linked chip. Grouped settings glass cards: ACCOUNT (Edit Profile, MOMO, Notifications, Language), BIOPAY (Face ID, NFC, QR), PRIVACY (Alias, Visibility, Data), SUPPORT (Help, Bug, Rate), ABOUT (Version, Terms, Privacy). Bottom nav Settings active.
+Mobile settings screen. Dark navy. Header "Settings". Profile summary glassmorphic: alias "483912" JetBrains Mono gold large, BRONZE tier badge, MOMO linked chip. Grouped settings glass cards: ACCOUNT (Edit Profile, MOMO, Notifications, Language), BioPay (Face ID, NFC, QR), PRIVACY (Alias, Visibility, Data), SUPPORT (Help, Bug, Rate), ABOUT (Version, Terms, Privacy). Bottom nav Settings active.
 ```
 </details>
 
@@ -522,7 +522,7 @@ Mobile about screen. Dark navy. Large crest + "Rayon Sports FC" Space Grotesk 32
 <details><summary>5.1 Admin Dashboard</summary>
 
 ```
-Mobile admin dashboard. Dark navy. Header "Club Admin — Rayon Sports" + logout. Stats row 4 glassmorphic cards: Total Users · Active Circles · Transactions Today · Tickets Sold — numbers Space Grotesk gold. Quick actions: Manage CMS · Create Match · Send Notification · Reports. Recent activity feed.
+Mobile admin dashboard. Dark navy. Header "Club Admin — Rayon Sports" + logout. Stats row 4 glassmorphic cards: Total Users · Active Groups · Transactions Today · Tickets Sold — numbers Space Grotesk gold. Quick actions: Manage CMS · Create Match · Send Notification · Reports. Recent activity feed.
 ```
 </details>
 
@@ -569,8 +569,8 @@ Mobile notification composer admin. Dark navy. Audience: ALL / BY TIER chips / B
 | 6.7 | Ticket Purchase Confirm | sheet · tickets | `feat_ticketing` | `ticketing_overlays.dart` | ✅ | `tickets` |
 | 6.8 | Delete Account Confirm | modal · danger | `feat_settings` | `settings_overlays.dart` | ✅ | `users` |
 | 6.9 | SMS Permission Modal | modal · permission | `feat_contributions` | `contribution_overlays.dart` | ✅ | — |
-| 6.10 | Face Liveness Prompt | overlay · biopay | `feat_biopay` | `biopay_overlays.dart` | ✅ | — |
-| 6.11 | NFC Pairing Sheet | sheet · biopay | `feat_biopay` | `biopay_overlays.dart` | ✅ | — |
+| 6.10 | Face Liveness Prompt | overlay · BioPay | `feat_BioPay` | `BioPay_overlays.dart` | ✅ | — |
+| 6.11 | NFC Pairing Sheet | sheet · BioPay | `feat_BioPay` | `BioPay_overlays.dart` | ✅ | — |
 | 6.12 | Filter & Sort Sheet | sheet · global | `core_theme` | `afri_filter_sheet.dart` | ✅ | — |
 | 6.13 | Notification Permission | modal · permission | `feat_settings` | `settings_overlays.dart` | ✅ | — |
 | 6.14 | Sign Out Confirm | sheet · auth | `feat_settings` | `settings_overlays.dart` | ✅ | — |
@@ -593,7 +593,7 @@ Mobile MOMO USSD confirmation sheet 35% height. Dark navy. Title "Launching MOMO
 <details><summary>6.3 Contribution Success</summary>
 
 ```
-Mobile contribution success modal. Dark navy center. Animated mint green circle + white checkmark bounce. "Contribution Sent!" Space Grotesk 36sp. Amount gold. Group name. "+50 FET earned" red claymorphic badge. "View Ledger" outlined + "Done" red buttons. Red/gold confetti particles.
+Mobile contribution success modal. Dark navy center. Animated mint green Group + white checkmark bounce. "Contribution Sent!" Space Grotesk 36sp. Amount gold. Group name. "+50 FET earned" red claymorphic badge. "View Ledger" outlined + "Done" red buttons. Red/gold confetti particles.
 ```
 </details>
 
@@ -614,7 +614,7 @@ Mobile badge earned modal. Dark navy overlay. Circular claymorphic badge expandi
 <details><summary>6.6 Group Invite Code</summary>
 
 ```
-Mobile share group invite bottom sheet 50% height. Dark navy. Header "Invite to Circle". Invite code "RF-4829-XK" JetBrains Mono 36sp gold on dark glass card. QR code of invite link 200pt. Share row: WhatsApp green · Copy Link · More. "Code valid for 7 days" note.
+Mobile share group invite bottom sheet 50% height. Dark navy. Header "Invite to Group". Invite code "RF-4829-XK" JetBrains Mono 36sp gold on dark glass card. QR code of invite link 200pt. Share row: WhatsApp green · Copy Link · More. "Code valid for 7 days" note.
 ```
 </details>
 
@@ -677,7 +677,7 @@ Mobile sign out confirmation sheet 35% height. Dark navy. "Sign out?" Space Grot
 <details><summary>6.15 Group Privacy Settings</summary>
 
 ```
-Mobile group privacy settings sheet 50% height. Dark navy. Header "Circle Privacy". Three option cards: PUBLIC globe "Anyone can join"; FRIENDS people "Invitees only"; PRIVATE lock "Invite code + approval". Selected = red border glow. "Save" red button.
+Mobile group privacy settings sheet 50% height. Dark navy. Header "Group Privacy". Three option cards: PUBLIC globe "Anyone can join"; FRIENDS people "Invitees only"; PRIVATE lock "Invite code + approval". Selected = red border glow. "Save" red button.
 ```
 </details>
 
@@ -724,7 +724,7 @@ Mobile group privacy settings sheet 50% height. Dark navy. Header "Circle Privac
 | `feat_membership` | 2 | 0 | 2 |
 | `feat_fan_clubs` | 3 | 0 | 3 |
 | `feat_live` | 2 | 0 | 2 |
-| `feat_biopay` | 5 | 2 | 7 |
+| `feat_BioPay` | 5 | 2 | 7 |
 | `feat_settings` | 6 | 4 | 10 |
 | `feat_admin` | 5 | 0 | 5 |
 | `core_theme` | 0 | 1 | 1 |

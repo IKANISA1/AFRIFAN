@@ -34,36 +34,28 @@ export async function getAdminDashboardSnapshot(
   if (typeof window !== "undefined") {
     return requestAdminApi<AdminDashboardSnapshot>("dashboard");
   }
-  const now = new Date();
-  const startOfDay = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
-  ).toISOString();
-  const endOfDay = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1),
-  ).toISOString();
   const newsTable = await resolveNewsTable(client);
   const clubId = adminClubIdOrNull(access);
+  
   if (clubId == null) {
     return {
       metrics: {
-        totalUsers: 0,
-        activeGroups: 0,
-        transactionsToday: 0,
-        ticketsSold: 0,
+        activeUsers: 0,
+        pendingVerifications: 0,
+        activeSupportCircles: 0,
+        recentTicketSales: 0,
+        totalFans: 0,
+        ticketRevenue: 0,
       },
       activity: [],
     };
   }
+
   const auditHasClubId = await hasColumn(client, "admin_audit_log", "club_id");
 
-  const [totalUsers, activeGroups, transactionsToday, ticketsSold, auditFeed, recentNews] =
+  const [analyticsResponse, activeGroupsCount, pendingTicketsCount, auditFeed, recentNews] =
     await Promise.all([
-      safeCount(
-        client
-          .from("profiles")
-          .select("id", { count: "exact", head: true })
-          .eq("club_id", clubId),
-      ),
+      client.rpc("get_club_fan_analytics", { p_club_id: clubId }),
       safeCount(
         client
           .from("contribution_groups")
@@ -73,16 +65,9 @@ export async function getAdminDashboardSnapshot(
       ),
       safeCount(
         client
-          .from("contributions")
-          .select("id", { count: "exact", head: true })
-          .gte("created_at", startOfDay)
-          .lt("created_at", endOfDay)
-          .eq("club_id", clubId),
-      ),
-      safeCount(
-        client
           .from("tickets")
           .select("id", { count: "exact", head: true })
+          .eq("status", "pending")
           .eq("club_id", clubId),
       ),
       auditHasClubId
@@ -100,6 +85,16 @@ export async function getAdminDashboardSnapshot(
         .order("created_at", { ascending: false })
         .limit(3),
     ]);
+
+  const analytics = analyticsResponse.data as any;
+  const metrics: AdminDashboardMetrics = {
+    activeUsers: analytics?.total_fans ?? 0,
+    pendingVerifications: pendingTicketsCount, // fallback for now
+    activeSupportCircles: activeGroupsCount,
+    recentTicketSales: analytics?.total_tickets_sold ?? 0,
+    totalFans: analytics?.total_fans ?? 0,
+    ticketRevenue: analytics?.ticket_revenue ?? 0,
+  };
 
   const activity: AdminActivityRecord[] = [];
 
@@ -129,12 +124,7 @@ export async function getAdminDashboardSnapshot(
   }
 
   return {
-    metrics: {
-      totalUsers,
-      activeGroups,
-      transactionsToday,
-      ticketsSold,
-    } satisfies AdminDashboardMetrics,
+    metrics,
     activity: activity.slice(0, 6),
   };
 }

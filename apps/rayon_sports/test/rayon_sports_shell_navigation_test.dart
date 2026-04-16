@@ -1,6 +1,6 @@
+import 'package:app_registry/app_registry.dart';
 import 'package:club_rayon_sports/club_rayon_sports.dart';
 import 'package:core_app/core_app.dart';
-import 'package:core_modules/core_modules.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
@@ -54,10 +54,10 @@ void main() {
                   heroSlides: [
                     MatchSlide(
                       homeTeam: 'RAYON SPORTS',
-                      awayTeam: 'APR FC',
+                      awayTeam: 'Rayon Sports FC',
                       venue: 'KIGALI PELE STADIUM',
                       status: 'ON SALE',
-                      dateInfo: '12 APR • 18:00',
+                      dateInfo: '12 Rayon Sports • 18:00',
                       route: '/tickets',
                     ),
                   ],
@@ -123,10 +123,10 @@ void main() {
                   heroSlides: [
                     MatchSlide(
                       homeTeam: 'RAYON SPORTS',
-                      awayTeam: 'APR FC',
+                      awayTeam: 'Rayon Sports FC',
                       venue: 'KIGALI PELE STADIUM',
                       status: 'ON SALE',
-                      dateInfo: '12 APR • 18:00',
+                      dateInfo: '12 Rayon Sports • 18:00',
                       route: '/tickets',
                     ),
                   ],

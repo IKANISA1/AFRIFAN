@@ -64,7 +64,7 @@ class CanonYaoundeConfig implements ClubConfig {
   List<String> get supportedLanguages => const ['fr', 'en'];
 
   @override
-  bool get hasBiopay => false;
+  bool get hasBioPay => false;
 
   @override
   bool get hasFanClubs => true;
@@ -93,7 +93,7 @@ class CanonYaoundeConfig implements ClubConfig {
 
   @override
   Map<String, bool> get features => {
-    'biopay': hasBiopay,
+    'BioPay': hasBioPay,
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,

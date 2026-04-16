@@ -154,7 +154,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
               ref={inputRef}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search fixtures, news, products, circles, or pages"
+              placeholder="Search fixtures, news, products, Groups, or pages"
               className="flex-1 bg-transparent text-base text-white outline-none placeholder:text-slate-500"
             />
             <button
@@ -224,14 +224,14 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                   No results
                 </p>
                 <p className="mt-3 text-sm leading-7 text-slate-300">
-                  Try “APR”, “membership”, “circle”, or “shop”.
+                  Try “Rayon Sports”, “membership”, “Group”, or “shop”.
                 </p>
               </div>
             )}
           </div>
 
           <div className="flex flex-wrap gap-2 px-5 py-4">
-            {["Fixtures", "Tickets", "Membership", "Circles", "Shop"].map(
+            {["Fixtures", "Tickets", "Membership", "Groups", "Shop"].map(
               (token) => (
                 <button
                   key={token}

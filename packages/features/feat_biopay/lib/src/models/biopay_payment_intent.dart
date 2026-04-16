@@ -7,8 +7,8 @@ import 'biopay_money.dart';
 ///
 /// White-label: stores `paymentCode` (not USSD-specific) so that
 /// non-USSD payment methods (deep links, bank transfers) work too.
-class BiopayPaymentIntent {
-  const BiopayPaymentIntent({
+class BioPayPaymentIntent {
+  const BioPayPaymentIntent({
     required this.intentId,
     required this.nonce,
     required this.paymentCode,
@@ -25,8 +25,8 @@ class BiopayPaymentIntent {
     this.senderName,
   });
 
-  factory BiopayPaymentIntent.fromApiResponse(Map<String, dynamic> data) {
-    return BiopayPaymentIntent(
+  factory BioPayPaymentIntent.fromApiResponse(Map<String, dynamic> data) {
+    return BioPayPaymentIntent(
       intentId: data['intent_id']?.toString() ?? '',
       nonce: data['nonce']?.toString() ?? '',
       paymentCode:
@@ -97,7 +97,7 @@ class BiopayPaymentIntent {
 
   String? get formattedAmount => amount == null
       ? null
-      : formatBiopayAmount(
+      : formatBioPayAmount(
           amount: amount!,
           currencySymbol: currencySymbol,
           currencyCode: currencyCode,

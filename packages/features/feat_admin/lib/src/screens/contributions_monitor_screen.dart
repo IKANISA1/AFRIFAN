@@ -20,7 +20,7 @@ class _ContributionsMonitorScreenState
 
   List<Map<String, dynamic>> _groups = const <Map<String, dynamic>>[];
   List<Map<String, dynamic>> _contributions = const <Map<String, dynamic>>[];
-  Map<String, String> _aliases = const <String, String>{};
+  Map<String, String> _aliasMap = const <String, String>{};
   bool _isLoading = true;
   String? _error;
   String _selectedFilter = 'ALL';
@@ -76,7 +76,7 @@ class _ContributionsMonitorScreenState
           .toSet()
           .toList(growable: false);
 
-      final aliases = <String, String>{};
+      final aliasMap = <String, String>{};
       if (creatorIds.isNotEmpty) {
         try {
           var profilesQuery = client
@@ -89,7 +89,7 @@ class _ContributionsMonitorScreenState
             final id = profile['id']?.toString();
             final alias = profile['public_user_id']?.toString();
             if (id != null && alias != null && alias.isNotEmpty) {
-              aliases[id] = alias;
+              aliasMap[id] = alias;
             }
           }
         } catch (_) {
@@ -101,7 +101,7 @@ class _ContributionsMonitorScreenState
       setState(() {
         _groups = groups;
         _contributions = contributions;
-        _aliases = aliases;
+        _aliasMap = aliasMap;
         _isLoading = false;
         _error = null;
       });
@@ -166,7 +166,7 @@ class _ContributionsMonitorScreenState
   }
 
   String _creatorAlias(String? creatorId) {
-    final value = creatorId == null ? null : _aliases[creatorId];
+    final value = creatorId == null ? null : _aliasMap[creatorId];
     return value == null || value.isEmpty ? '000000' : value;
   }
 
@@ -204,7 +204,7 @@ class _ContributionsMonitorScreenState
         );
         final lastActivity = _lastActivityForGroup(groupId);
         return [
-          group['name']?.toString() ?? 'Circle',
+          group['name']?.toString() ?? 'Group',
           group['group_type']?.toString() ?? 'general',
           '$total',
           '$target',
@@ -305,7 +305,7 @@ class _ContributionsMonitorScreenState
                   const SizedBox(height: SpacingTokens.spacing4),
                   if (_filteredGroups.isEmpty)
                     const _AdminMonitorState(
-                      title: 'No active circles',
+                      title: 'No active Groups',
                       body: 'Groups will appear when created.',
                       actionLabel: null,
                     )
@@ -336,7 +336,7 @@ class _ContributionsMonitorScreenState
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      (group['name']?.toString() ?? 'Circle')
+                                      (group['name']?.toString() ?? 'Group')
                                           .toUpperCase(),
                                       style: TypographyTokens.titleLarge()
                                           .copyWith(
@@ -377,10 +377,11 @@ class _ContributionsMonitorScreenState
                       );
                     }),
                   const SizedBox(height: SpacingTokens.spacing3),
-                  ClaymorphicButton(
-                    label: 'EXPORT REPORT',
-                    width: double.infinity,
-                    onPressed: _filteredGroups.isEmpty ? null : _exportReport,
+                  AfriButton(
+                    label: 'Export report',
+                    fullWidth: true,
+                    onTap: _exportReport,
+                    enabled: _filteredGroups.isNotEmpty,
                   ),
                 ],
               ),
@@ -459,10 +460,10 @@ class _AdminMonitorState extends StatelessWidget {
             ),
             if (actionLabel != null && onPressed != null) ...[
               const SizedBox(height: SpacingTokens.spacing5),
-              ClaymorphicButton(
+              AfriButton(
                 label: actionLabel!,
-                width: double.infinity,
-                onPressed: onPressed,
+                fullWidth: true,
+                onTap: onPressed!,
               ),
             ],
           ],

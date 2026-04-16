@@ -361,7 +361,7 @@ with service_seed as (
         'cool',
         'group-savings',
         'Group Savings',
-        'Community saving circles and goals',
+        'Community saving Groups and goals',
         '🤝',
         'community',
         'Open Group Savings',
@@ -622,7 +622,7 @@ join (
     ('la-liga', 'Featured', 30),
     ('uefa-champions-league', 'Featured', 40),
     ('rwanda-premier-league', 'Local', 50),
-    ('drc-premier-league', 'Local', 60),
+    ('Linafoot', 'Local', 60),
     ('zambia-super-league', 'Local', 70)
 ) as seed(slug, highlight_label, sort_order)
   on seed.slug = c.slug

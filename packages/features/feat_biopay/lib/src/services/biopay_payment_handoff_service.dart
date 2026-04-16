@@ -21,8 +21,8 @@ enum PaymentHandoffMethod {
 ///
 /// Supports USSD dialing (MoMo/M-Pesa), deep links (Revolut/bank),
 /// and server-issued payment intents.
-class BiopayPaymentHandoffService {
-  const BiopayPaymentHandoffService();
+class BioPayPaymentHandoffService {
+  const BioPayPaymentHandoffService();
 
   // ─── USSD Dialing ─────────────────────────────────────────
 
@@ -54,7 +54,7 @@ class BiopayPaymentHandoffService {
   }
 
   /// Build a dial URI for a specific profile.
-  Uri buildProfileDialUri(BiopayProfile profile) {
+  Uri buildProfileDialUri(BioPayProfile profile) {
     return buildDialUri(
       routeType: profile.routeType,
       recipientValue: profile.recipientValue,
@@ -65,12 +65,12 @@ class BiopayPaymentHandoffService {
   // ─── Payment Execution ────────────────────────────────────
 
   /// Initiate payment handoff for a matched profile.
-  Future<bool> payProfile(BiopayProfile profile) async {
+  Future<bool> payProfile(BioPayProfile profile) async {
     return _launchUri(buildProfileDialUri(profile));
   }
 
   /// Initiate payment handoff for a match result.
-  Future<bool> payMatch(BiopayMatchResult result) async {
+  Future<bool> payMatch(BioPayMatchResult result) async {
     final profile = result.profile;
     if (profile == null) return false;
     return payProfile(profile);
@@ -80,7 +80,7 @@ class BiopayPaymentHandoffService {
   ///
   /// Supports both USSD and deep link payment methods based
   /// on the intent's paymentMethod field.
-  Future<bool> payIntent(BiopayPaymentIntent intent) async {
+  Future<bool> payIntent(BioPayPaymentIntent intent) async {
     if (intent.isExpired) return false;
     return _launchUri(intent.launchUri);
   }

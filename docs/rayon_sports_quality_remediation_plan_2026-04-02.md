@@ -250,7 +250,7 @@ Move from smoke checks to realistic route, interaction, degraded-state, and user
 ### Primary file targets
 
 - `apps/rayon_sports/integration_test/rayon_sports_smoke_test.dart`
-- `apps/rayon_sports/test/rayon_sports_biopay_host_test.dart`
+- `apps/rayon_sports/test/rayon_sports_BioPay_host_test.dart`
 - `packages/features/feat_home/test/home_widgets_test.dart`
 - `packages/features/feat_settings/test/settings_screens_test.dart`
 - `packages/core/core_app/test/bootstrap_architecture_test.dart`

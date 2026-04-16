@@ -182,12 +182,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                   ),
                                 ),
                               )
-                            : ClaymorphicButton(
+                            : AfriButton(
                                 label: _currentPage == slides.length - 1
-                                    ? 'GET STARTED'
-                                    : 'NEXT',
-                                width: double.infinity,
-                                onPressed: _currentPage == slides.length - 1
+                                    ? 'Get started'
+                                    : 'Next',
+                                fullWidth: true,
+                                onTap: _currentPage == slides.length - 1
                                     ? _handleGetStarted
                                     : () {
                                         _pageController.nextPage(
@@ -329,7 +329,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                               child: Icon(
                                 icon,
                                 size: isCompact ? 44 : 52,
-                                color: Colors.white,
+                                color: ColorTokens.onSurface,
                               ),
                             ),
                           ),

@@ -134,7 +134,7 @@ void main() {
       final group = ContributionGroup.fromJson({
         'id': 'g-1',
         'creator_id': 'u-1',
-        'name': 'Test Circle',
+        'name': 'Test Group',
         'description': 'Testing',
         'group_type': 'savings',
         'privacy': 'private',
@@ -144,7 +144,7 @@ void main() {
       });
 
       final insert = group.toInsertJson();
-      expect(insert['name'], 'Test Circle');
+      expect(insert['name'], 'Test Group');
       expect(insert['group_type'], 'savings');
       expect(insert['privacy'], 'private');
       expect(insert['target_amount'], 100000);
@@ -157,7 +157,7 @@ void main() {
       final group = ContributionGroup(
         id: 'g-2',
         creatorId: 'u-2',
-        name: 'Code Circle',
+        name: 'Code Group',
         paymentRecipient: '123456',
         paymentRecipientType: PaymentRecipientType.code,
         createdAt: DateTime(2026),

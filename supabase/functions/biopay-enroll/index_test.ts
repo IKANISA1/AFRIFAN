@@ -1,13 +1,13 @@
 import { HttpError } from "../_shared/auth.ts";
-import { BIOPAY_EMBEDDING_LENGTH } from "../_shared/biopay_embedding.ts";
+import { BioPay_EMBEDDING_LENGTH } from "../_shared/BioPay_embedding.ts";
 import {
-  type BiopayEnrollHandlerDependencies,
-  createBiopayEnrollHandler,
+  type BioPayEnrollHandlerDependencies,
+  createBioPayEnrollHandler,
 } from "./index.ts";
 
 function buildLivenessEvidence() {
   return {
-    version: "biopay-liveness-v1",
+    version: "BioPay-liveness-v1",
     mode: "enrollment",
     result: "passed",
     completed_at: new Date().toISOString(),
@@ -25,7 +25,7 @@ function assertEquals<T>(actual: T, expected: T, message: string): void {
 }
 
 function buildRequest() {
-  return new Request("https://example.com/functions/v1/biopay-enroll", {
+  return new Request("https://example.com/functions/v1/BioPay-enroll", {
     method: "POST",
     headers: {
       authorization: "Bearer test-token",
@@ -38,7 +38,7 @@ function buildRequest() {
       recipient_value: "0781234567",
       country_code: "RW",
       embedding: Array.from(
-        { length: BIOPAY_EMBEDDING_LENGTH },
+        { length: BioPay_EMBEDDING_LENGTH },
         (_, index) => index / 1000,
       ),
       liveness: buildLivenessEvidence(),
@@ -46,7 +46,7 @@ function buildRequest() {
   });
 }
 
-function buildDeps(): BiopayEnrollHandlerDependencies {
+function buildDeps(): BioPayEnrollHandlerDependencies {
   return {
     createAdminClient: () =>
       ({
@@ -67,7 +67,7 @@ function buildDeps(): BiopayEnrollHandlerDependencies {
           };
         },
       }) as unknown as ReturnType<
-        BiopayEnrollHandlerDependencies["createAdminClient"]
+        BioPayEnrollHandlerDependencies["createAdminClient"]
       >,
     createUserClient: () =>
       ({
@@ -80,7 +80,7 @@ function buildDeps(): BiopayEnrollHandlerDependencies {
           }),
         },
       }) as unknown as ReturnType<
-        BiopayEnrollHandlerDependencies["createUserClient"]
+        BioPayEnrollHandlerDependencies["createUserClient"]
       >,
     requireAppCheckToken: async () => "fresh-token",
     validateLiveness: async (input) => input as Record<string, unknown>,
@@ -89,8 +89,8 @@ function buildDeps(): BiopayEnrollHandlerDependencies {
   };
 }
 
-Deno.test("biopay-enroll rejects requests without valid App Check attestation", async () => {
-  const handler = createBiopayEnrollHandler({
+Deno.test("BioPay-enroll rejects requests without valid App Check attestation", async () => {
+  const handler = createBioPayEnrollHandler({
     ...buildDeps(),
     requireAppCheckToken: async () => {
       throw new HttpError(401, "Device attestation required.");
@@ -108,9 +108,9 @@ Deno.test("biopay-enroll rejects requests without valid App Check attestation", 
   );
 });
 
-Deno.test("biopay-enroll succeeds when App Check attestation is valid", async () => {
+Deno.test("BioPay-enroll succeeds when App Check attestation is valid", async () => {
   let capturedArgs: Record<string, unknown> | null = null;
-  const instrumented = createBiopayEnrollHandler({
+  const instrumented = createBioPayEnrollHandler({
     ...buildDeps(),
     createAdminClient: () =>
       ({
@@ -132,7 +132,7 @@ Deno.test("biopay-enroll succeeds when App Check attestation is valid", async ()
           };
         },
       }) as unknown as ReturnType<
-        BiopayEnrollHandlerDependencies["createAdminClient"]
+        BioPayEnrollHandlerDependencies["createAdminClient"]
       >,
   });
   const response = await instrumented(buildRequest());

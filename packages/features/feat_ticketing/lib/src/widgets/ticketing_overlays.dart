@@ -90,25 +90,21 @@ class _TicketPurchaseConfirmSheet extends StatelessWidget {
         ),
         const SizedBox(height: SpacingTokens.spacing4),
         Text(
-          'Confirm only after the MOMO prompt opens on your device.',
+          'Only confirm below if you completed the MoMo payment on your phone.',
           style: TypographyTokens.bodySmall(),
         ),
         const SizedBox(height: SpacingTokens.spacing5),
-        ClaymorphicButton(
-          label: 'CONFIRM & LAUNCH MOMO',
-          width: double.infinity,
-          onPressed: () => Navigator.of(context).pop(true),
+        AfriButton(
+          label: 'I completed payment',
+          fullWidth: true,
+          onTap: () => Navigator.of(context).pop(true),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
-        OutlinedButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          style: OutlinedButton.styleFrom(
-            minimumSize: const Size(double.infinity, 56),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
-            ),
-          ),
-          child: const Text('BACK'),
+        AfriButton(
+          label: 'I did not pay',
+          variant: AfriButtonVariant.outline,
+          fullWidth: true,
+          onTap: () => Navigator.of(context).pop(false),
         ),
       ],
     );

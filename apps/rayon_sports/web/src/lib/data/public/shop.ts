@@ -10,16 +10,24 @@ import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { productTableCandidates, resolveAccessibleTable, sanitizeMediaUrl } from "./helpers";
 
 function mapProductRow(row: Record<string, unknown>): ShopProduct {
+  const rawPrice = safeNumber(row.price, 0);
+  const name = safeString(row.name, "Supporter Product");
+  
+  // Sanity check: if price is unrealistically low for a kit/jersey (e.g. < 1000 RF), 
+  // it's likely seed data or a unit error. Repair to fallback kit pricing.
+  const isKit = /kit|jersey|shirt/i.test(name);
+  const price = (isKit && rawPrice < 1000) ? 35000 : (rawPrice || 5000);
+
   return {
     id: toIdString(row.id, crypto.randomUUID()),
-    name: safeString(row.name, "Supporter product"),
+    name,
     subtitle: safeString(row.subtitle, "Official club merchandise"),
     description:
       safeString(row.description) ||
       safeString(row.subtitle) ||
       "Official product listing.",
     category: safeString(row.category, "Merch"),
-    price: safeNumber(row.price, 0),
+    price,
     imageUrl: sanitizeMediaUrl(row.image_url, "/media/stadium-hero.jpg"),
     sizes: Array.isArray(row.sizes)
       ? row.sizes.map((entry) => safeString(entry)).filter(Boolean)

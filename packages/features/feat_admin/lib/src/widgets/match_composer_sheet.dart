@@ -365,10 +365,10 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
               ),
             ],
             const SizedBox(height: SpacingTokens.spacing4),
-            ClaymorphicButton(
-              label: _existing == null ? 'SAVE MATCH' : 'UPDATE MATCH',
-              width: double.infinity,
-              onPressed: _save,
+            AfriButton(
+              label: _existing == null ? 'Save match' : 'Update match',
+              fullWidth: true,
+              onTap: _save,
             ),
           ],
         ),

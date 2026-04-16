@@ -38,7 +38,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       final client = ref.read(supabaseClientProvider);
       final scope = await ClubScopeResolver(client: client).requireResolved();
       if (scope.clubId == null) {
-        throw StateError('Contribution circles require a numeric club scope.');
+        throw StateError('Contribution Groups require a numeric club scope.');
       }
       final groupRow = await client
           .from('contribution_groups')
@@ -51,7 +51,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
         if (mounted) {
           setState(() {
             _loading = false;
-            _error = 'Circle not found';
+            _error = 'Group not found';
           });
         }
         return;
@@ -70,14 +70,14 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           .toSet()
           .toList(growable: false);
 
-      final aliases = <String, String>{};
+      final aliasMap = <String, String>{};
       if (userIds.isNotEmpty) {
         final profiles = await client
             .from('profiles')
             .select('id, public_user_id')
             .inFilter('id', userIds);
         for (final profile in profiles) {
-          aliases[profile['id']?.toString() ?? ''] =
+          aliasMap[profile['id']?.toString() ?? ''] =
               profile['public_user_id']?.toString() ?? '000000';
         }
       }
@@ -89,7 +89,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
         _ledger = contributions
             .map((entry) {
               final userId = entry['user_id']?.toString() ?? '';
-              final alias = aliases[userId] ?? '000000';
+              final alias = aliasMap[userId] ?? '000000';
               return <String, dynamic>{
                 'alias': '#$alias',
                 'amount': (entry['amount'] as num?)?.toInt() ?? 0,
@@ -107,10 +107,19 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       if (mounted) {
         setState(() {
           _loading = false;
-          _error = 'Could not load this circle right now.';
+          _error = 'Could not load this Group right now.';
         });
       }
     }
+  }
+
+  String _humanizeStatus(String? raw) {
+    return switch (raw?.toLowerCase().trim()) {
+      'confirmed' => 'CONFIRMED',
+      'rejected' || 'failed' => 'FAILED',
+      'pending' || '' || null => 'PROCESSING',
+      final other => other!.toUpperCase(),
+    };
   }
 
   @override
@@ -122,7 +131,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     final progress = targetAmount > 0
         ? (currentTotal / targetAmount).clamp(0.0, 1.0)
         : 0.0;
-    final title = group?['name']?.toString() ?? 'CIRCLE';
+    final title = group?['name']?.toString() ?? 'Group';
     final description = group?['description']?.toString();
     final privacy = group?['privacy']?.toString() ?? 'private';
     final memberCount = (group?['member_count'] as num?)?.toInt() ?? 0;
@@ -156,7 +165,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
               inviteCode: group?['invite_code']?.toString(),
               groupName: title,
             ),
-            icon: const Icon(Icons.ios_share_rounded),
+            icon: const Icon(AfriIcons.shareIos),
           ),
         ],
       ),
@@ -167,8 +176,8 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
             )
           : _error != null || group == null
           ? _GroupState(
-              title: _error ?? 'Circle unavailable',
-              body: 'Try returning to your circles and opening it again.',
+              title: _error ?? 'Group unavailable',
+              body: 'Try returning to your Groups and opening it again.',
               onPressed: () => context.go('/contribute/groups'),
             )
           : RefreshIndicator(
@@ -227,10 +236,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                             ],
                           ),
                           const SizedBox(height: SpacingTokens.spacing5),
-                          ClaymorphicButton(
-                            label: 'CONTRIBUTE NOW',
-                            width: double.infinity,
-                            onPressed: () => showMomoAmountEntrySheet(
+                          AfriButton(
+                            label: 'Contribute now',
+                            fullWidth: true,
+                            onTap: () => showMomoAmountEntrySheet(
                               context,
                               title: title,
                               groupId: widget.groupId,
@@ -285,7 +294,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                       GlassCard(
                         animate: false,
                         child: Text(
-                          'No contributions have been recorded for this circle yet.',
+                          'No contributions have been recorded for this Group yet.',
                           style: TypographyTokens.bodyMedium(),
                         ),
                       ),
@@ -300,7 +309,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                             (entry['amount'] as num?)?.toInt() ?? 0,
                           ),
                           time:
-                              '${entry['time']?.toString() ?? 'just now'}  •  ${(entry['status']?.toString() ?? 'pending').toUpperCase()}',
+                              '${entry['time']?.toString() ?? 'just now'}  •  ${_humanizeStatus(entry['status']?.toString())}',
                         ),
                       );
                     }),
@@ -350,7 +359,7 @@ class _GroupState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.group_work_outlined,
+              AfriIcons.groups,
               size: 56,
               color: ColorTokens.onSurfaceVariant,
             ),
@@ -363,7 +372,7 @@ class _GroupState extends StatelessWidget {
               style: TypographyTokens.bodyMedium(),
             ),
             const SizedBox(height: SpacingTokens.spacing6),
-            ClaymorphicButton(label: 'Back to Circles', onPressed: onPressed),
+            AfriButton(label: 'Back to groups', onTap: onPressed),
           ],
         ),
       ),

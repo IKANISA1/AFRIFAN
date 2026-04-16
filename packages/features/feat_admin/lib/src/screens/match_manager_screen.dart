@@ -273,10 +273,10 @@ class _MatchManagerScreenState extends ConsumerState<MatchManagerScreen> {
                       );
                     }),
                   const SizedBox(height: SpacingTokens.spacing3),
-                  ClaymorphicButton(
-                    label: 'CREATE MATCH',
-                    width: double.infinity,
-                    onPressed: _openComposer,
+                  AfriButton(
+                    label: 'Create match',
+                    fullWidth: true,
+                    onTap: _openComposer,
                   ),
                 ],
               ),
@@ -374,10 +374,10 @@ class _StateCard extends StatelessWidget {
             ),
             if (actionLabel != null && onPressed != null) ...[
               const SizedBox(height: SpacingTokens.spacing5),
-              ClaymorphicButton(
+              AfriButton(
                 label: actionLabel!,
-                width: double.infinity,
-                onPressed: onPressed,
+                fullWidth: true,
+                onTap: onPressed!,
               ),
             ],
           ],

@@ -1,5 +1,5 @@
 -- ============================================================================
--- DRC Linafoot 2025/26 — Real fixtures (Apr–May 2026)
+-- DRC Linafoot 2025/26 — Real fixtures (Rayon Sports–May 2026)
 -- Adds missing teams + inserts all remaining fixtures
 -- ============================================================================
 
@@ -9,13 +9,13 @@ DECLARE
   v_season_id uuid;
 BEGIN
   SELECT id INTO v_competition_id
-  FROM football.competitions WHERE slug = 'drc-premier-league';
+  FROM football.competitions WHERE slug = 'Linafoot';
 
   SELECT id INTO v_season_id
-  FROM football.seasons WHERE slug = 'drc-premier-league-2026';
+  FROM football.seasons WHERE slug = 'Linafoot-2026';
 
   IF v_competition_id IS NULL OR v_season_id IS NULL THEN
-    RAISE EXCEPTION 'DRC Premier League competition or season not found.';
+    RAISE EXCEPTION 'Linafoot competition or season not found.';
   END IF;
 
   -- ── Upsert additional teams not in initial seed ──
@@ -74,33 +74,33 @@ BEGIN
   -- ── Fixtures ──
   WITH fixture_values (match_date, home_slug, away_slug) AS (
     VALUES
-      -- April 14
+      -- Rayon Sportsil 14
       ('2026-04-14', 'malole-fc', 'fc-blessing'),
       ('2026-04-14', 'fc-les-aigles-du-congo', 'fc-celeste'),
-      -- April 15
+      -- Rayon Sportsil 15
       ('2026-04-15', 'as-new-soger', 'tp-mazembe'),
       ('2026-04-15', 'cs-don-bosco', 'st-eloi-lupopo'),
-      -- April 18
+      -- Rayon Sportsil 18
       ('2026-04-18', 'as-vita-club', 'dc-motema-pembe'),
       ('2026-04-18', 'as-maniema-union', 'fc-les-aigles-du-congo'),
       ('2026-04-18', 'lubumbashi-sport', 'cs-don-bosco'),
-      -- April 19
+      -- Rayon Sportsil 19
       ('2026-04-19', 'st-eloi-lupopo', 'tp-mazembe'),
       ('2026-04-19', 'as-dauphins-noirs', 'fc-celeste'),
       ('2026-04-19', 'fc-simba-kolwezi', 'js-groupe-bazano'),
-      -- April 22
+      -- Rayon Sportsil 22
       ('2026-04-22', 'tp-mazembe', 'lubumbashi-sport'),
       ('2026-04-22', 'dc-motema-pembe', 'as-maniema-union'),
       ('2026-04-22', 'fc-blessing', 'fc-simba-kolwezi'),
-      -- April 25
+      -- Rayon Sportsil 25
       ('2026-04-25', 'fc-les-aigles-du-congo', 'as-vita-club'),
       ('2026-04-25', 'cs-don-bosco', 'as-new-soger'),
       ('2026-04-25', 'st-eloi-lupopo', 'malole-fc'),
-      -- April 26
+      -- Rayon Sportsil 26
       ('2026-04-26', 'fc-celeste', 'dc-motema-pembe'),
       ('2026-04-26', 'as-maniema-union', 'as-dauphins-noirs'),
       ('2026-04-26', 'js-groupe-bazano', 'us-panda-b52'),
-      -- April 29
+      -- Rayon Sportsil 29
       ('2026-04-29', 'as-vita-club', 'as-maniema-union'),
       ('2026-04-29', 'tp-mazembe', 'cs-don-bosco'),
       ('2026-04-29', 'fc-les-aigles-du-congo', 'dc-motema-pembe'),

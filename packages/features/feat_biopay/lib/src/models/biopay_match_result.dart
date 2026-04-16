@@ -3,8 +3,8 @@ import 'package:core_utils/core_utils.dart' as jh;
 import 'biopay_profile.dart';
 
 /// Result of a face match operation.
-class BiopayMatchResult {
-  const BiopayMatchResult({
+class BioPayMatchResult {
+  const BioPayMatchResult({
     required this.match,
     required this.score,
     this.profile,
@@ -15,24 +15,24 @@ class BiopayMatchResult {
 
   final bool match;
   final double score;
-  final BiopayProfile? profile;
+  final BioPayProfile? profile;
   final bool cached;
   final String? matchReceipt;
   final DateTime? matchReceiptExpiresAt;
 
-  factory BiopayMatchResult.fromApiResponse(Map<String, dynamic> json) {
+  factory BioPayMatchResult.fromApiResponse(Map<String, dynamic> json) {
     final match = jh.asBool(json['match']);
     final score = jh.asDouble(json['score']);
     if (!match) {
-      return BiopayMatchResult(match: false, score: score);
+      return BioPayMatchResult(match: false, score: score);
     }
 
-    return BiopayMatchResult(
+    return BioPayMatchResult(
       match: true,
       score: score,
       matchReceipt: jh.asStringOrNull(json['match_receipt']),
       matchReceiptExpiresAt: jh.parseDateTime(json['match_receipt_expires_at']),
-      profile: BiopayProfile.fromJson(<String, dynamic>{
+      profile: BioPayProfile.fromJson(<String, dynamic>{
         'id': json['profile_id'],
         'public_id': json['public_id'],
         'user_id': json['user_id'],
@@ -41,7 +41,7 @@ class BiopayMatchResult {
         'recipient_value': json['recipient_value'],
         'country_code': json['country_code'],
         'active': true,
-        'consent_version': json['consent_version'] ?? 'biopay-v1',
+        'consent_version': json['consent_version'] ?? 'BioPay-v1',
         'consent_at': json['consent_at'],
         'created_at': json['created_at'],
         'updated_at': json['updated_at'],
@@ -49,8 +49,8 @@ class BiopayMatchResult {
     );
   }
 
-  factory BiopayMatchResult.fromCacheJson(Map<String, dynamic> json) {
-    return BiopayMatchResult(
+  factory BioPayMatchResult.fromCacheJson(Map<String, dynamic> json) {
+    return BioPayMatchResult(
       match: jh.asBool(json['match']),
       score: jh.asDouble(json['score']),
       cached: jh.asBool(json['cached']),
@@ -58,7 +58,7 @@ class BiopayMatchResult {
       matchReceiptExpiresAt: jh.parseDateTime(json['match_receipt_expires_at']),
       profile: jh.asMapOrNull(json['profile']) == null
           ? null
-          : BiopayProfile.fromJson(jh.asMap(json['profile'])),
+          : BioPayProfile.fromJson(jh.asMap(json['profile'])),
     );
   }
 
@@ -73,8 +73,8 @@ class BiopayMatchResult {
     };
   }
 
-  BiopayMatchResult copyWith({bool? cached}) {
-    return BiopayMatchResult(
+  BioPayMatchResult copyWith({bool? cached}) {
+    return BioPayMatchResult(
       match: match,
       score: score,
       profile: profile,

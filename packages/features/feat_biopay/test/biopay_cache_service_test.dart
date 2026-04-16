@@ -3,12 +3,12 @@ import 'package:feat_biopay/feat_biopay.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('BiopayCacheService', () {
+  group('BioPayCacheService', () {
     test('stores and retrieves match results in memory only', () async {
-      final service = BiopayCacheService();
+      final service = BioPayCacheService();
       await service.clear();
 
-      const profile = BiopayProfile(
+      const profile = BioPayProfile(
         id: 'profile-1',
         publicId: '483912',
         userId: 'user-1',
@@ -17,9 +17,9 @@ void main() {
         recipientValue: '0781234567',
         countryCode: 'RW',
         active: true,
-        consentVersion: 'biopay-v1',
+        consentVersion: 'BioPay-v1',
       );
-      const result = BiopayMatchResult(
+      const result = BioPayMatchResult(
         match: true,
         score: 0.99,
         profile: profile,
@@ -43,10 +43,10 @@ void main() {
     });
 
     test('scopes entries to the owning user and clears by owner id', () async {
-      final service = BiopayCacheService();
+      final service = BioPayCacheService();
       await service.clear();
 
-      const profileA = BiopayProfile(
+      const profileA = BioPayProfile(
         id: 'profile-a',
         publicId: '111111',
         userId: 'user-a',
@@ -55,9 +55,9 @@ void main() {
         recipientValue: '0781000001',
         countryCode: 'RW',
         active: true,
-        consentVersion: 'biopay-v1',
+        consentVersion: 'BioPay-v1',
       );
-      const profileB = BiopayProfile(
+      const profileB = BioPayProfile(
         id: 'profile-b',
         publicId: '222222',
         userId: 'user-b',
@@ -66,19 +66,19 @@ void main() {
         recipientValue: '0781000002',
         countryCode: 'RW',
         active: true,
-        consentVersion: 'biopay-v1',
+        consentVersion: 'BioPay-v1',
       );
 
       await service.storeMatch('owner-a', const <double>[
         1,
         0,
         0,
-      ], const BiopayMatchResult(match: true, score: 0.98, profile: profileA));
+      ], const BioPayMatchResult(match: true, score: 0.98, profile: profileA));
       await service.storeMatch('owner-b', const <double>[
         0,
         1,
         0,
-      ], const BiopayMatchResult(match: true, score: 0.98, profile: profileB));
+      ], const BioPayMatchResult(match: true, score: 0.98, profile: profileB));
 
       await service.clear(ownerUserId: 'owner-a');
 
@@ -101,7 +101,7 @@ void main() {
       'purges legacy persistent cache through the configured deletion hook',
       () async {
         var deletedBoxName = '';
-        final service = BiopayCacheService(
+        final service = BioPayCacheService(
           deleteBox: (name) async {
             deletedBoxName = name;
           },
@@ -109,7 +109,7 @@ void main() {
 
         await service.purgeLegacyPersistentCache(force: true);
 
-        expect(deletedBoxName, BiopayCacheService.boxName);
+        expect(deletedBoxName, BioPayCacheService.boxName);
       },
     );
   });

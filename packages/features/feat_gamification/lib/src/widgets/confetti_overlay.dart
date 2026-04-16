@@ -55,7 +55,7 @@ class _ConfettiBurstState extends State<_ConfettiBurst> {
         dy: sin(angle) * speed - 60, // bias upward
         size: 6 + _random.nextDouble() * 8,
         color: _colors[_random.nextInt(_colors.length)],
-        isCircle: _random.nextBool(),
+        isGroup: _random.nextBool(),
       );
     });
 
@@ -85,9 +85,9 @@ class _ConfettiBurstState extends State<_ConfettiBurst> {
                 height: p.size,
                 decoration: BoxDecoration(
                   color: p.color,
-                  shape: p.isCircle ? BoxShape.circle : BoxShape.rectangle,
+                  shape: p.isGroup ? BoxShape.circle : BoxShape.rectangle,
                   borderRadius:
-                      p.isCircle ? null : BorderRadius.circular(2),
+                      p.isGroup ? null : BorderRadius.circular(2),
                 ),
               )
                   .animate(delay: delay)
@@ -114,12 +114,12 @@ class _Particle {
     required this.dy,
     required this.size,
     required this.color,
-    required this.isCircle,
+    required this.isGroup,
   });
 
   final double dx;
   final double dy;
   final double size;
   final Color color;
-  final bool isCircle;
+  final bool isGroup;
 }

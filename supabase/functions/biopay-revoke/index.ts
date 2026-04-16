@@ -21,7 +21,7 @@ type RevokeRequest = {
 
 type AdminClientLike = ReturnType<typeof createAdminClient>;
 
-export type BiopayRevokeHandlerDependencies = {
+export type BioPayRevokeHandlerDependencies = {
   createAdminClient: () => AdminClientLike;
   validateRequest: typeof validateRequest;
   requireAppCheckToken: (request: Request) => Promise<string>;
@@ -35,7 +35,7 @@ export type BiopayRevokeHandlerDependencies = {
   ) => Promise<void>;
 };
 
-const defaultDependencies: BiopayRevokeHandlerDependencies = {
+const defaultDependencies: BioPayRevokeHandlerDependencies = {
   createAdminClient,
   validateRequest,
   requireAppCheckToken,
@@ -43,10 +43,10 @@ const defaultDependencies: BiopayRevokeHandlerDependencies = {
   recordEdgeFunctionFailure,
 };
 
-export function createBiopayRevokeHandler(
-  dependencies: Partial<BiopayRevokeHandlerDependencies> = {},
+export function createBioPayRevokeHandler(
+  dependencies: Partial<BioPayRevokeHandlerDependencies> = {},
 ) {
-  const deps: BiopayRevokeHandlerDependencies = {
+  const deps: BioPayRevokeHandlerDependencies = {
     ...defaultDependencies,
     ...dependencies,
   };
@@ -66,7 +66,7 @@ export function createBiopayRevokeHandler(
     try {
       const validated = await deps.validateRequest(request, { requireClubId: true });
       if (isErrorResponse(validated)) return validated;
-      
+
       const { userId, clubId } = validated;
       requesterUserId = userId;
 
@@ -76,7 +76,7 @@ export function createBiopayRevokeHandler(
       const numericClubId = Number(clubId);
 
       const { data, error } = await adminClient.rpc(
-        "biopay_revoke_profile_server",
+        "BioPay_revoke_profile_server",
         {
           p_requester_user_id: userId,
           p_club_id: numericClubId,
@@ -94,14 +94,14 @@ export function createBiopayRevokeHandler(
       }
 
       await deps.recordOperationalHealthEvent(adminClient, {
-        service: "biopay",
+        service: "BioPay",
         component: "revocation",
         status: "ok",
         severity: "info",
         message: "BioPay enrollment revoked.",
-        functionName: "biopay-revoke",
+        functionName: "BioPay-revoke",
         userId: userId,
-        subjectType: "biopay_profile",
+        subjectType: "BioPay_profile",
         subjectId: row.profile_id?.toString() ?? null,
         metadata: {
           public_id: row.public_id ?? null,
@@ -119,12 +119,12 @@ export function createBiopayRevokeHandler(
       }
 
       await deps.recordEdgeFunctionFailure(adminClient, {
-        functionName: "biopay-revoke",
+        functionName: "BioPay-revoke",
         error,
-        issueCode: "biopay_revoke_failed",
+        issueCode: "BioPay_revoke_failed",
         userId: requesterUserId,
       });
-      console.error("biopay-revoke failed:", error);
+      console.error("BioPay-revoke failed:", error);
       return jsonError(
         error instanceof Error ? error.message : "BioPay revocation failed.",
         400,
@@ -134,7 +134,7 @@ export function createBiopayRevokeHandler(
 }
 
 if (import.meta.main) {
-  const handler = createBiopayRevokeHandler();
+  const handler = createBioPayRevokeHandler();
   Deno.serve((req: Request) => handler(req).then(
     (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
   ));

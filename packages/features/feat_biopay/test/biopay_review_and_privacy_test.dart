@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('BioPay privacy surfaces', () {
     test('profile exposes alias-first public values', () {
-      const profile = BiopayProfile(
+      const profile = BioPayProfile(
         id: 'profile-1',
         publicId: '483912',
         userId: 'user-1',
@@ -16,7 +16,7 @@ void main() {
         recipientValue: '0781234567',
         countryCode: 'RW',
         active: true,
-        consentVersion: 'biopay-v1',
+        consentVersion: 'BioPay-v1',
       );
 
       expect(profile.formattedAlias, '483-912');
@@ -26,7 +26,7 @@ void main() {
     testWidgets('handoff review renders the clean tap-to-dial confirmation', (
       tester,
     ) async {
-      final resolution = BiopayHandoffResolution(
+      final resolution = BioPayHandoffResolution(
         displayName: 'Marie Uwase',
         publicId: '483912',
         routeType: PaymentRecipientType.phoneNumber,
@@ -41,9 +41,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
-            home: BiopayPaymentReviewScreen(
-              args: BiopayPaymentReviewArgs.handoff(
-                source: BiopayReviewSource.qrScan,
+            home: BioPayPaymentReviewScreen(
+              args: BioPayPaymentReviewArgs.handoff(
+                source: BioPayReviewSource.qrScan,
                 handoffResolution: resolution,
               ),
             ),
@@ -63,7 +63,7 @@ void main() {
     testWidgets('face match review keeps the minimal confirmation layout', (
       tester,
     ) async {
-      const profile = BiopayProfile(
+      const profile = BioPayProfile(
         id: 'profile-1',
         publicId: '483912',
         userId: 'user-1',
@@ -72,10 +72,10 @@ void main() {
         recipientValue: '0781234567',
         countryCode: 'RW',
         active: true,
-        consentVersion: 'biopay-v1',
+        consentVersion: 'BioPay-v1',
       );
 
-      const matchResult = BiopayMatchResult(
+      const matchResult = BioPayMatchResult(
         match: true,
         score: 0.97,
         profile: profile,
@@ -85,8 +85,8 @@ void main() {
       await tester.pumpWidget(
         const ProviderScope(
           child: MaterialApp(
-            home: BiopayPaymentReviewScreen(
-              args: BiopayPaymentReviewArgs.faceMatch(matchResult: matchResult),
+            home: BioPayPaymentReviewScreen(
+              args: BioPayPaymentReviewArgs.faceMatch(matchResult: matchResult),
             ),
           ),
         ),

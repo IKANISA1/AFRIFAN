@@ -5,7 +5,7 @@ import '../tokens/color_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_bottom_sheet.dart';
-import 'claymorphic_button.dart';
+import 'afri_button.dart';
 import 'glass_card.dart';
 
 class AfriFilterOption {
@@ -229,10 +229,10 @@ Future<AfriFilterSortResult?> showAfriFilterSortSheet({
                 ),
                 const SizedBox(height: SpacingTokens.spacing5),
               ],
-              ClaymorphicButton(
-                label: 'APPLY FILTERS',
-                width: double.infinity,
-                onPressed: () => Navigator.of(context).pop(
+              AfriButton(
+                label: 'Apply filters',
+                fullWidth: true,
+                onTap: () => Navigator.of(context).pop(
                   AfriFilterSortResult(
                     sortBy: sortBy,
                     selectedTypes: selectedTypes,

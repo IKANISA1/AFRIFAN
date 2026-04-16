@@ -177,7 +177,7 @@ class SafeRpc {
     String tag = 'SafeRpc',
     String description = 'query',
     Duration? timeout,
-    int maxAttempts = 1,
+    int maxAttempts = 2,
     Duration? backoffBase,
   }) async {
     final effectiveTimeout = timeout ?? _timeout;

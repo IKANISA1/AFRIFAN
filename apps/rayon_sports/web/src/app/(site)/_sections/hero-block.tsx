@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HeroSection } from "@/components/hero-section";
+import { EliteHero } from "@/components/home/elite-hero";
 import {
   getClubProfile,
   getContributionGroups,
@@ -12,7 +12,7 @@ import {
 
 const fallbackQuickLinks = [
   { href: "/tickets", label: "Buy tickets" },
-  { href: "/circles", label: "Support circles" },
+  { href: "/Groups", label: "Support Groups" },
   { href: "/membership", label: "Membership tiers" },
   { href: "/news", label: "Latest club news" },
   { href: "/shop", label: "Shop new drop" },
@@ -22,17 +22,11 @@ export async function HeroBlock() {
   const [
     club,
     matches,
-    fanClubs,
-    contributionGroups,
-    membershipPackages,
     banners,
     heroCms,
   ] = await Promise.all([
     getClubProfile(),
     getMatches(),
-    getFanClubs(),
-    getContributionGroups(),
-    getMembershipPackages(),
     getHomeBanners(),
     getCmsContentBlock("hero_headline"),
   ]);
@@ -51,16 +45,13 @@ export async function HeroBlock() {
       : fallbackQuickLinks;
 
   return (
-    <>
-      <HeroSection
+    <div className="space-y-12">
+      <EliteHero
         club={club}
         featuredMatch={featuredMatch}
-        contributionGroups={contributionGroups}
-        fanClubs={fanClubs}
-        membershipPackages={membershipPackages}
-        heroTagline={heroCms?.subtitle || undefined}
-        heroHeadline={heroCms?.title || undefined}
-        heroDescription={heroCms?.body || undefined}
+        tagline={heroCms?.subtitle || undefined}
+        headline={heroCms?.title || undefined}
+        description={heroCms?.body || undefined}
       />
 
       <div className="page-shell flex flex-wrap gap-3">
@@ -75,6 +66,6 @@ export async function HeroBlock() {
           </Link>
         ))}
       </div>
-    </>
+    </div>
   );
 }

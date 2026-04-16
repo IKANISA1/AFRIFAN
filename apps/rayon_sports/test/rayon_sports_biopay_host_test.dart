@@ -1,6 +1,6 @@
+import 'package:app_registry/app_registry.dart';
 import 'package:club_rayon_sports/club_rayon_sports.dart';
 import 'package:core_app/core_app.dart';
-import 'package:core_modules/core_modules.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
@@ -20,9 +20,9 @@ void main() {
     });
 
     test('module registry keeps BioPay enabled for the Gikundiro release', () {
-      expect(config.hasBiopay, isTrue);
+      expect(config.hasBioPay, isTrue);
       expect(
-        modules.where((module) => module.featureKey == 'biopay'),
+        modules.where((module) => module.featureKey == 'BioPay'),
         isNotEmpty,
       );
       expect(

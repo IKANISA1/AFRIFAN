@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,7 +12,9 @@ import '../prediction_providers.dart';
 import '../widgets/market_option_pill.dart';
 
 class FriendChallengeScreen extends ConsumerStatefulWidget {
-  const FriendChallengeScreen({super.key});
+  const FriendChallengeScreen({super.key, this.selectedOpponentUserId});
+
+  final String? selectedOpponentUserId;
 
   @override
   ConsumerState<FriendChallengeScreen> createState() =>
@@ -19,33 +22,32 @@ class FriendChallengeScreen extends ConsumerStatefulWidget {
 }
 
 class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
-  List<FetLeaderboardRow> _supporters = const <FetLeaderboardRow>[];
+  List<FetFriendProfile> _friends = const <FetFriendProfile>[];
   List<_ChallengeFixture> _fixtures = const <_ChallengeFixture>[];
-  FetLeaderboardRow? _selectedSupporter;
+  FetFriendProfile? _selectedSupporter;
   _ChallengeFixture? _selectedFixture;
   String? _selectedOutcome;
   bool _isLoading = true;
+  bool _isSubmitting = false;
   String? _error;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    unawaited(_load());
   }
 
   Future<void> _load() async {
     try {
       final predictionRepo = ref.read(predictionRepositoryProvider);
       final fetRepo = ref.read(fetRepositoryProvider);
-      final leaders = await fetRepo.loadLeaderboard(limit: 8);
+      final friends = await fetRepo.loadFriends(limit: 24);
       final now = DateTime.now();
       final weekLater = now.add(const Duration(days: 7));
-      final dateFrom = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-      final dateTo = '${weekLater.year}-${weekLater.month.toString().padLeft(2, '0')}-${weekLater.day.toString().padLeft(2, '0')}';
 
       final fixtures = await predictionRepo.loadFixturesByDate(
-        dateFrom: dateFrom,
-        dateTo: dateTo,
+        dateFrom: now,
+        dateTo: weekLater,
         status: 'scheduled',
         limit: 5,
       );
@@ -54,6 +56,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
           (fixture) => predictionRepo.loadFixtureMarkets(fixture.id),
         ),
       );
+
       final challengeFixtures = <_ChallengeFixture>[];
       for (var index = 0; index < fixtures.length; index++) {
         final market = marketResults[index].cast<FixtureMarket?>().firstWhere(
@@ -69,15 +72,26 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
           );
         }
       }
+
       if (!mounted) {
         return;
       }
+
+      final acceptedFriends = friends
+          .where((friend) => friend.isFriend)
+          .toList(growable: false);
+      final initialSupporter = acceptedFriends
+          .cast<FetFriendProfile?>()
+          .firstWhere(
+            (friend) => friend?.userId == widget.selectedOpponentUserId,
+            orElse: () =>
+                acceptedFriends.isEmpty ? null : acceptedFriends.first,
+          );
+
       setState(() {
-        _supporters = leaders
-            .where((entry) => !entry.isCurrentUser)
-            .toList(growable: false);
+        _friends = acceptedFriends;
         _fixtures = challengeFixtures;
-        _selectedSupporter = _supporters.isEmpty ? null : _supporters.first;
+        _selectedSupporter = initialSupporter;
         _selectedFixture = challengeFixtures.isEmpty
             ? null
             : challengeFixtures.first;
@@ -95,27 +109,71 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
     }
   }
 
-  Future<void> _copyInvite() async {
+  Future<void> _sendChallenge() async {
     final supporter = _selectedSupporter;
     final fixture = _selectedFixture;
     final outcome = _selectedOutcome;
-    if (supporter == null || fixture == null || outcome == null) {
+    if (supporter == null ||
+        fixture == null ||
+        outcome == null ||
+        _isSubmitting) {
       return;
     }
 
-    final text =
-        'FANZONE challenge: @${supporter.supporterAlias} take me on in ${fixture.fixture.homeTeamShort} vs ${fixture.fixture.awayTeamShort}. '
-        'I’m backing ${outcome.toUpperCase()} on ${fixture.market.marketShortName.isEmpty ? fixture.market.marketName : fixture.market.marketShortName}.';
-    await Clipboard.setData(ClipboardData(text: text));
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    final result = await ref
+        .read(predictionRepositoryProvider)
+        .createFriendChallenge(
+          opponentUserId: supporter.userId,
+          fixtureMarketId: fixture.market.fixtureMarketId,
+          selectedOutcome: outcome,
+          message:
+              'FANZONE head-to-head on ${fixture.fixture.homeTeamShort} vs ${fixture.fixture.awayTeamShort}',
+        );
+
     if (!mounted) {
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Challenge invite copied to clipboard.'),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+
+    if (result.isSuccess) {
+      await showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Challenge sent'),
+          content: Text(
+            result.message.isEmpty
+                ? 'Your challenge is waiting for a response.'
+                : result.message,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            result.message.isEmpty
+                ? 'Could not send the challenge right now.'
+                : result.message,
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+
+    if (mounted) {
+      setState(() {
+        _isSubmitting = false;
+      });
+    }
   }
 
   @override
@@ -125,11 +183,11 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          'FRIEND CHALLENGE',
+          'Challenge',
           style: TypographyTokens.monolithFont(
             fontSize: 20,
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
+            letterSpacing: 1.0,
           ),
         ),
         leading: IconButton(
@@ -150,14 +208,17 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
             onTap:
                 _selectedSupporter != null &&
                     _selectedFixture != null &&
-                    _selectedOutcome != null
-                ? _copyInvite
+                    _selectedOutcome != null &&
+                    !_isSubmitting
+                ? _sendChallenge
                 : () {},
-            label: 'Copy Challenge Invite',
+            label: _isSubmitting ? 'Sending...' : 'Send challenge',
             enabled:
                 _selectedSupporter != null &&
                 _selectedFixture != null &&
-                _selectedOutcome != null,
+                _selectedOutcome != null &&
+                !_isSubmitting,
+            isLoading: _isSubmitting,
           ),
         ),
       ),
@@ -178,148 +239,236 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
                 ),
               ),
             )
-          : ListView(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
-              children: [
-                ClayCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'HEAD-TO-HEAD INVITE',
-                        style: TypographyTokens.titleLarge(),
-                      ),
-                      const SizedBox(height: SpacingTokens.spacing3),
-                      Text(
-                        'Choose a supporter, pick a fixture, and generate a direct FANZONE challenge invite.',
-                        style: TypographyTokens.bodyMedium(),
-                      ),
-                    ],
-                  ),
+          : RefreshIndicator(
+              onRefresh: _load,
+              color: ColorTokens.clubAccent,
+              child: ListView(
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
                 ),
-                const SizedBox(height: SpacingTokens.spacing4),
-                ClayCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('SUPPORTER', style: TypographyTokens.titleLarge()),
-                      const SizedBox(height: SpacingTokens.spacing3),
-                      Wrap(
+                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                children: [
+                  if (_friends.isEmpty)
+                    AfriSectionCard(
+                      title: 'Supporter',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Add friends before sending a challenge.',
+                            style: TypographyTokens.bodyMedium(),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          AfriButton(
+                            onTap: () => context.push('/fanzone/friends'),
+                            label: 'Find friends',
+                            variant: AfriButtonVariant.secondary,
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    AfriSectionCard(
+                      title: 'Supporter',
+                      child: Wrap(
                         spacing: SpacingTokens.spacing2,
                         runSpacing: SpacingTokens.spacing2,
-                        children: _supporters
+                        children: _friends
                             .map((supporter) {
-                              final selected =
+                              final isSelected =
                                   supporter.userId ==
                                   _selectedSupporter?.userId;
-                              return AfriPressFeedback(
-                                onTap: () => setState(
-                                  () => _selectedSupporter = supporter,
-                                ),
-                                builder: (context, _) => Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: SpacingTokens.spacing3,
-                                    vertical: SpacingTokens.spacing2,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: selected
-                                        ? ColorTokens.clubAccent.withValues(
-                                            alpha: 0.16,
-                                          )
-                                        : ColorTokens.surfaceContainerHigh,
-                                    borderRadius: BorderRadius.circular(999),
-                                  ),
-                                  child: Text(
-                                    supporter.displayName,
-                                    style: TypographyTokens.labelSmall(
-                                      selected
-                                          ? ColorTokens.clubAccent
-                                          : ColorTokens.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ),
+                              final label = supporter.publicUserId == null
+                                  ? supporter.displayName
+                                  : '${supporter.displayName} · #${supporter.publicUserId}';
+                              return _SelectionChip(
+                                label: label,
+                                isSelected: isSelected,
+                                onTap: () {
+                                  setState(() {
+                                    _selectedSupporter = supporter;
+                                  });
+                                },
                               );
                             })
                             .toList(growable: false),
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: SpacingTokens.spacing4),
-                ClayCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('FIXTURE', style: TypographyTokens.titleLarge()),
-                      const SizedBox(height: SpacingTokens.spacing3),
-                      ..._fixtures.map((fixture) {
-                        final selected =
-                            fixture.fixture.id == _selectedFixture?.fixture.id;
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: SpacingTokens.spacing3,
-                          ),
-                          child: AfriPressFeedback(
-                            onTap: () => setState(() {
-                              _selectedFixture = fixture;
-                              _selectedOutcome = null;
-                            }),
-                            builder: (context, _) => GlassCard(
-                              animate: false,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      fixture.fixture.fixtureLabel,
-                                      style: TypographyTokens.titleSmall(),
-                                    ),
-                                  ),
-                                  Text(
-                                    selected ? 'Selected' : 'Open',
-                                    style: TypographyTokens.labelSmall(
-                                      selected
-                                          ? ColorTokens.clubAccent
-                                          : ColorTokens.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-                if (_selectedFixture != null) ...[
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  ClayCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('YOUR PICK', style: TypographyTokens.titleLarge()),
-                        const SizedBox(height: SpacingTokens.spacing3),
-                        Wrap(
-                          spacing: SpacingTokens.spacing2,
-                          runSpacing: SpacingTokens.spacing2,
-                          children: _selectedFixture!.market.outcomes
-                              .map((outcome) {
-                                return MarketOptionPill(
-                                  label: outcome.label,
-                                  isSelected: _selectedOutcome == outcome.key,
-                                  onTap: () => setState(() {
-                                    _selectedOutcome = outcome.key;
-                                  }),
-                                );
-                              })
-                              .toList(growable: false),
-                        ),
-                      ],
                     ),
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  AfriSectionCard(
+                    title: 'Fixture',
+                    child: _fixtures.isEmpty
+                        ? const AfriEmptyView(
+                            compact: true,
+                            title: 'No fixtures available',
+                            message: 'Come back when a new round opens.',
+                            icon: AfriIcons.fixture,
+                          )
+                        : Column(
+                            children: _fixtures
+                                .asMap()
+                                .entries
+                                .map((entry) {
+                                  final fixture = entry.value;
+                                  final isSelected =
+                                      fixture.fixture.id ==
+                                      _selectedFixture?.fixture.id;
+                                  return Column(
+                                    children: [
+                                      if (entry.key > 0)
+                                        Divider(
+                                          height: 1,
+                                          color: ColorTokens.ghostBorder,
+                                        ),
+                                      _FixtureRow(
+                                        fixtureLabel:
+                                            fixture.fixture.fixtureLabel,
+                                        competitionLabel:
+                                            fixture.fixture.competitionName,
+                                        kickoffLabel: _kickoffLabel(
+                                          fixture.fixture.kickoffAt,
+                                        ),
+                                        isSelected: isSelected,
+                                        onTap: () {
+                                          setState(() {
+                                            _selectedFixture = fixture;
+                                            _selectedOutcome = null;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                })
+                                .toList(growable: false),
+                          ),
+                  ),
+                  if (_selectedFixture != null) ...[
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    AfriSectionCard(
+                      title: 'Pick',
+                      child: Wrap(
+                        spacing: SpacingTokens.spacing2,
+                        runSpacing: SpacingTokens.spacing2,
+                        children: _selectedFixture!.market.outcomes
+                            .map((outcome) {
+                              return MarketOptionPill(
+                                label: outcome.label,
+                                isSelected: _selectedOutcome == outcome.key,
+                                onTap: () {
+                                  setState(() {
+                                    _selectedOutcome = outcome.key;
+                                  });
+                                },
+                              );
+                            })
+                            .toList(growable: false),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+    );
+  }
+
+  String _kickoffLabel(DateTime? value) {
+    if (value == null) {
+      return 'Kickoff TBD';
+    }
+    final local = value.toLocal();
+    return '${local.day}/${local.month} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+  }
+}
+
+class _SelectionChip extends StatelessWidget {
+  const _SelectionChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return AfriPressFeedback(
+      onTap: onTap,
+      builder: (context, _) => Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: SpacingTokens.spacing3,
+          vertical: SpacingTokens.spacing2,
+        ),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? ColorTokens.clubAccent.withValues(alpha: 0.12)
+              : ColorTokens.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(
+            color: isSelected
+                ? ColorTokens.clubAccent.withValues(alpha: 0.35)
+                : ColorTokens.ghostBorder,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TypographyTokens.labelSmall(
+            isSelected ? ColorTokens.clubAccent : ColorTokens.onSurfaceVariant,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FixtureRow extends StatelessWidget {
+  const _FixtureRow({
+    required this.fixtureLabel,
+    required this.competitionLabel,
+    required this.kickoffLabel,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String fixtureLabel;
+  final String competitionLabel;
+  final String kickoffLabel;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return AfriPressFeedback(
+      onTap: onTap,
+      builder: (context, _) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing3),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(fixtureLabel, style: TypographyTokens.titleSmall()),
+                  const SizedBox(height: 2),
+                  Text(
+                    '$competitionLabel · $kickoffLabel',
+                    style: TypographyTokens.bodySmall(),
                   ),
                 ],
-              ],
+              ),
             ),
+            Text(
+              isSelected ? 'Selected' : 'Choose',
+              style: TypographyTokens.labelSmall(
+                isSelected
+                    ? ColorTokens.clubAccent
+                    : ColorTokens.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

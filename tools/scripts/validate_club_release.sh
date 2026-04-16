@@ -215,8 +215,8 @@ if hits:
 PY
 
 CLUB_CONFIG_PATH="$(find "$ROOT/packages/clubs" -path "*club_${APP_SLUG}/lib/src/*config.dart" | head -n 1)"
-if [ -n "$CLUB_CONFIG_PATH" ] && rg -q "bool get hasBiopay => true;" "$CLUB_CONFIG_PATH"; then
-  bash "$ROOT/tools/scripts/validate_biopay_firebase.sh" "$APP_SLUG"
+if [ -n "$CLUB_CONFIG_PATH" ] && rg -q "bool get hasBioPay => true;" "$CLUB_CONFIG_PATH"; then
+  bash "$ROOT/tools/scripts/validate_BioPay_firebase.sh" "$APP_SLUG"
   if [ -z "$ANDROID_MAIN_ACTIVITY" ] || ! rg -q "FlutterFragmentActivity" "$ANDROID_MAIN_ACTIVITY"; then
     echo "BioPay-enabled club must host Android on FlutterFragmentActivity." >&2
     echo "Update MainActivity for $APP_SLUG before release." >&2

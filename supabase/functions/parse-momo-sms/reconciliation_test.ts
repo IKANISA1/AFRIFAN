@@ -324,7 +324,7 @@ Deno.test("reconcileParsedSms confirms matched Rayon ticket references", async (
         purchased_at: "2026-03-11T14:58:00.000Z",
         rs_matches: {
           home_team: "Rayon Sports FC",
-          away_team: "APR FC",
+          away_team: "Rayon Sports FC",
           competition: "League",
           venue: "Amahoro Stadium",
           match_date: "2026-03-20",
@@ -713,7 +713,7 @@ Deno.test("reconcileParsedSms degrades cleanly when RPCs and WhatsApp delivery f
           purchased_at: "2026-03-11T14:58:00.000Z",
           rs_matches: {
             home_team: "Rayon Sports FC",
-            away_team: "APR FC",
+            away_team: "Rayon Sports FC",
             competition: "League",
             venue: "Amahoro Stadium",
             match_date: "2026-03-20",
@@ -811,7 +811,7 @@ Deno.test("reconcileParsedSms keeps Rayon ticket replays idempotent", async () =
         purchased_at: "2026-03-11T14:58:00.000Z",
         rs_matches: {
           home_team: "Rayon Sports FC",
-          away_team: "APR FC",
+          away_team: "Rayon Sports FC",
           competition: "League",
           venue: "Amahoro Stadium",
           match_date: "2026-03-20",

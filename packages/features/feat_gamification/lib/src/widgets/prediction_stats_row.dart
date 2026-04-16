@@ -27,7 +27,7 @@ class PredictionStatsRow extends StatelessWidget {
           child: _StatBox(
             value: '$totalPredictions',
             label: 'PREDICTIONS',
-            icon: Icons.sports_esports_rounded,
+            icon: AfriIcons.predict,
           ),
         ),
         const SizedBox(width: SpacingTokens.spacing2),
@@ -35,7 +35,7 @@ class PredictionStatsRow extends StatelessWidget {
           child: _StatBox(
             value: '${accuracy.toStringAsFixed(1)}%',
             label: 'ACCURACY',
-            icon: Icons.gps_fixed_rounded,
+            icon: AfriIcons.versus,
             highlight: true,
           ),
         ),
@@ -44,7 +44,7 @@ class PredictionStatsRow extends StatelessWidget {
           child: _StatBox(
             value: '$fetEarned',
             label: 'FET EARNED',
-            icon: Icons.toll_rounded,
+            icon: AfriIcons.earn,
           ),
         ),
         const SizedBox(width: SpacingTokens.spacing2),
@@ -52,7 +52,7 @@ class PredictionStatsRow extends StatelessWidget {
           child: _StatBox(
             value: '#$rank',
             label: 'RANK',
-            icon: Icons.leaderboard_rounded,
+            icon: AfriIcons.leaderboard,
           ),
         ),
       ],

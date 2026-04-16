@@ -10,29 +10,28 @@ import { safeString, toIdString } from "@/lib/utils";
 import { newsTableCandidates, resolveAccessibleTable, sanitizeMediaUrl } from "./helpers";
 
 function mapNewsRow(row: Record<string, unknown>): NewsArticle {
-  const content =
+  const rawContent =
     safeString(row.content) ||
     safeString(row.body) ||
     safeString(row.summary) ||
-    safeString(row.excerpt) ||
-    "Club article body not available yet.";
+    safeString(row.excerpt);
+
+  const content = rawContent || "No detailed content available for this update.";
+  
   const excerptCandidate =
     safeString(row.excerpt) ||
     safeString(row.summary) ||
-    safeString(content)
-      .replace(/\s+/g, " ")
-      .slice(0, 180)
-      .trim();
+    (rawContent ? safeString(rawContent).replace(/\s+/g, " ").slice(0, 180).trim() : null);
 
   return {
     id:
       safeString(row.slug) ||
       safeString(row.article_id) ||
       toIdString(row.id, crypto.randomUUID()),
-    title: safeString(row.title, "Club update"),
-    excerpt: excerptCandidate || "Official club update.",
+    title: safeString(row.title, "Club Update"),
+    excerpt: excerptCandidate || "Official club update from Gikundiro Media.",
     content,
-    category: safeString(row.category, "Club"),
+    category: safeString(row.category, "General"),
     coverImageUrl: sanitizeMediaUrl(
       safeString(row.cover_image_url) || safeString(row.image_url),
       "/media/stadium-hero.jpg",
@@ -41,7 +40,7 @@ function mapNewsRow(row: Record<string, unknown>): NewsArticle {
       row.published_at,
       safeString(row.created_at, new Date().toISOString()),
     ),
-    author: safeString(row.author_name, "Club Media"),
+    author: safeString(row.author_name, "Gikundiro Media"),
   };
 }
 

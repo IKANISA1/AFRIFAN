@@ -30,9 +30,9 @@ void main() {
     AfriCountryCatalog.withCountries(const <AfriCountry>[_testCountry]);
   });
 
-  group('resolveBiopayId', () {
+  group('resolveBioPayId', () {
     test('prefers enrolled BioPay profile id', () {
-      const profile = BiopayProfile(
+      const profile = BioPayProfile(
         id: 'profile-1',
         publicId: '483912',
         userId: 'user-1',
@@ -45,19 +45,19 @@ void main() {
       );
       const user = UserProfile(id: 'user-1', clubId: '24');
 
-      expect(resolveBiopayId(profile, user), '483912');
+      expect(resolveBioPayId(profile, user), '483912');
     });
 
     test('falls back to null when there is no trustworthy id to show', () {
       const user = UserProfile(id: 'user-1', clubId: '24');
 
-      expect(resolveBiopayId(null, user), isNull);
+      expect(resolveBioPayId(null, user), isNull);
     });
   });
 
-  group('resolveBiopayRouteValue', () {
+  group('resolveBioPayRouteValue', () {
     test('uses the saved BioPay profile route for the matching type', () {
-      const profile = BiopayProfile(
+      const profile = BioPayProfile(
         id: 'profile-1',
         publicId: '483912',
         userId: 'user-1',
@@ -75,7 +75,7 @@ void main() {
       );
 
       expect(
-        resolveBiopayRouteValue(
+        resolveBioPayRouteValue(
           PaymentRecipientType.phoneNumber,
           profile,
           user,
@@ -92,7 +92,7 @@ void main() {
       );
 
       expect(
-        resolveBiopayRouteValue(PaymentRecipientType.phoneNumber, null, user),
+        resolveBioPayRouteValue(PaymentRecipientType.phoneNumber, null, user),
         isNull,
       );
     });
@@ -106,8 +106,8 @@ void main() {
         displayName: 'Blue Army',
       );
 
-      expect(biopayEnrollmentAlias(user), 'Blue Army');
-      expect(biopayEnrollmentAlias(null), 'Supporter');
+      expect(BioPayEnrollmentAlias(user), 'Blue Army');
+      expect(BioPayEnrollmentAlias(null), 'Supporter');
     });
 
     test('keeps merchant code enrollment empty until the user enters one', () {
@@ -118,7 +118,7 @@ void main() {
       );
 
       expect(
-        initialBiopayRecipientValue(
+        initialBioPayRecipientValue(
           PaymentRecipientType.code,
           null,
           user,
@@ -129,7 +129,7 @@ void main() {
     });
 
     test('can reuse a saved BioPay route during Face ID enrollment', () {
-      const profile = BiopayProfile(
+      const profile = BioPayProfile(
         id: 'profile-1',
         publicId: '483912',
         userId: 'user-1',
@@ -142,7 +142,7 @@ void main() {
       );
 
       expect(
-        initialBiopayRecipientValue(
+        initialBioPayRecipientValue(
           PaymentRecipientType.phoneNumber,
           profile,
           null,
@@ -156,7 +156,7 @@ void main() {
   group('recipient validation', () {
     test('validates and normalizes mobile money numbers', () {
       expect(
-        validateBiopayRecipient(
+        validateBioPayRecipient(
           routeType: PaymentRecipientType.phoneNumber,
           value: '0788123456',
           country: _testCountry,
@@ -164,7 +164,7 @@ void main() {
         isNull,
       );
       expect(
-        normalizeBiopayRecipient(
+        normalizeBioPayRecipient(
           routeType: PaymentRecipientType.phoneNumber,
           value: '+250788123456',
           country: _testCountry,
@@ -175,7 +175,7 @@ void main() {
 
     test('requires a merchant code when using code routing', () {
       expect(
-        validateBiopayRecipient(
+        validateBioPayRecipient(
           routeType: PaymentRecipientType.code,
           value: ' ',
           country: _testCountry,

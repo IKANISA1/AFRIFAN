@@ -20,7 +20,7 @@ const CONTENT_TYPES = [
   "terms",
   "contact_support",
   "section_heading",
-  "biopay_info",
+  "BioPay_info",
   "portal_hero",
   "general",
 ] as const;
@@ -37,6 +37,7 @@ const emptyForm = {
   ctaLabel: "",
   sortOrder: 0,
   isActive: true,
+  distribution: "both" as "web" | "app" | "both",
 };
 
 export default function AdminContentBlocksPage() {
@@ -63,7 +64,7 @@ export default function AdminContentBlocksPage() {
   }, [access, client]);
 
   useEffect(() => {
-    if (client && access.hasAccess) load().catch(() => {});
+    if (client && access.hasAccess) load().catch(() => { });
   }, [access.hasAccess, client, load]);
 
   async function submit(e: React.FormEvent) {
@@ -82,6 +83,7 @@ export default function AdminContentBlocksPage() {
         ctaLabel: form.ctaLabel,
         sortOrder: form.sortOrder,
         isActive: form.isActive,
+        distribution: form.distribution,
       });
       setForm(emptyForm);
       await load();
@@ -116,7 +118,6 @@ export default function AdminContentBlocksPage() {
       <AdminPageHeader
         eyebrow="CMS"
         title="Content blocks"
-        description="Maintain reusable content sections, legal copy, and call-to-action blocks for the active club."
       />
 
       <form onSubmit={submit} className="glass-panel rounded-[28px] p-6 grid gap-4">
@@ -132,12 +133,20 @@ export default function AdminContentBlocksPage() {
             <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required className="admin-input" />
           </label>
           <label className="grid gap-1">
-            <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Subtitle</span>
-            <input value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} className="admin-input" />
+            <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Distribution</span>
+            <select value={form.distribution} onChange={(e) => setForm({ ...form, distribution: e.target.value as any })} className="admin-input">
+              <option value="both">Both (Web & App)</option>
+              <option value="web">Website only</option>
+              <option value="app">Mobile App only</option>
+            </select>
           </label>
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Icon emoji</span>
             <input value={form.iconEmoji} onChange={(e) => setForm({ ...form, iconEmoji: e.target.value })} className="admin-input" placeholder="📰" />
+          </label>
+          <label className="grid gap-1 sm:col-span-2">
+            <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Subtitle</span>
+            <input value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} className="admin-input" />
           </label>
           <label className="grid gap-1 sm:col-span-2">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Body</span>
@@ -187,7 +196,7 @@ export default function AdminContentBlocksPage() {
             title="Content blocks could not be loaded"
             description={loadError}
             onRetry={() => {
-              load().catch(() => {});
+              load().catch(() => { });
             }}
           />
         ) : filtered.length === 0 ? (
@@ -197,16 +206,22 @@ export default function AdminContentBlocksPage() {
             {filtered.map((b) => (
               <div key={b.id} className="rounded-[20px] border border-border-soft bg-white/5 p-4">
                 <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
                       {b.isActive ? <Eye size={14} className="text-emerald-400" /> : <EyeOff size={14} className="text-slate-500" />}
                       <span className="rounded-full bg-club-primary/20 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-blue-200">{b.contentType.replace(/_/g, " ")}</span>
+                      <span className={cn(
+                        "rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider",
+                        b.distribution === "both" ? "bg-slate-500/20 text-slate-300" :
+                        b.distribution === "web" ? "bg-indigo-500/20 text-indigo-300" :
+                        "bg-amber-500/20 text-amber-300"
+                      )}>{b.distribution}</span>
                       <p className="font-semibold text-white truncate">{b.title}</p>
                     </div>
                     <p className="mt-1 text-xs text-slate-400 line-clamp-2">{b.body || "—"}</p>
                   </div>
                   <div className="flex shrink-0 gap-2">
-                    <button onClick={() => setForm({ id: b.id, contentType: b.contentType, title: b.title, subtitle: b.subtitle, body: b.body, rationale: b.rationale, iconEmoji: b.iconEmoji, ctaAction: b.ctaAction, ctaLabel: b.ctaLabel, sortOrder: b.sortOrder, isActive: b.isActive })} className="rounded-full border border-border-soft p-2 text-slate-300 hover:bg-white/10">
+                    <button onClick={() => setForm({ id: b.id, contentType: b.contentType, title: b.title, subtitle: b.subtitle, body: b.body, rationale: b.rationale, iconEmoji: b.iconEmoji, ctaAction: b.ctaAction, ctaLabel: b.ctaLabel, sortOrder: b.sortOrder, isActive: b.isActive, distribution: b.distribution })} className="rounded-full border border-border-soft p-2 text-slate-300 hover:bg-white/10">
                       <Edit3 size={14} />
                     </button>
                     <button onClick={() => remove(b.id)} className="rounded-full border border-red-500/30 p-2 text-red-400 hover:bg-red-500/10">

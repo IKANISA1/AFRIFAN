@@ -17,7 +17,7 @@ const translations = {
     fanApp: "Fan app",
     openFanApp: "Open fan app",
     buyTickets: "Buy tickets",
-    supportCircles: "Support circles",
+    supportGroups: "Support Groups",
     home: "Home",
     tickets: "Tickets",
     membership: "Membership",
@@ -28,7 +28,7 @@ const translations = {
       languages: "Languages",
       channels: "Channels",
       club: "Club",
-      circles: "Circles",
+      Groups: "Groups",
       members: "Members",
       raised: "Raised",
       chapters: "Chapters",
@@ -62,18 +62,18 @@ const translations = {
       surface: "Surface",
       mobile: "Mobile",
       web: "Web",
-      bioPay: "BioPay",
+      BioPay: "BioPay",
       current: "Current",
       target: "Target",
       invite: "Invite",
       position: "Position",
       global: "Global",
-      searchPlaceholder: "Search fixtures, news, circles, or shop",
+      searchPlaceholder: "Search fixtures, news, Groups, or shop",
       searchIntro:
         "Fixtures, matchday details, supporter products, membership tiers, and club news.",
       findItFast: "Find it fast.",
       noResults: "No results",
-      trySearchHint: "Try fixtures, tickets, membership, circles, or shop.",
+      trySearchHint: "Try fixtures, tickets, membership, Groups, or shop.",
       matchdaySchedule: "Matchday schedule",
       membershipStories: "Membership stories",
       featuredStory: "Featured story",
@@ -95,10 +95,10 @@ const translations = {
       activateMembershipInFanApp: "Activate membership in fan app",
       unlockPriorityAccess: "Unlock priority access",
       ticketPriority: "Ticket priority",
-      exploreCircles: "Explore circles",
+      exploreGroups: "Explore Groups",
       fanClubs: "Fan clubs",
       seeFanClubs: "See fan clubs",
-      supportACircle: "Support a circle",
+      supportAGroup: "Support a Group",
       joinFromFanApp: "Join from fan app",
       backToHomepage: "Back to homepage",
       backToFixtures: "Back to fixtures",
@@ -118,15 +118,15 @@ const translations = {
       tournament: "Tournament",
     },
     pages: {
-      circles: {
-        metaTitle: (club: ClubCopyContext) => `${club.shortName} supporter circles`,
+      Groups: {
+        metaTitle: (club: ClubCopyContext) => `${club.shortName} supporter Groups`,
         metaDescription: (club: ClubCopyContext) =>
-          `Official ${club.shortName} supporter circles for tifos, away travel, club campaigns, and community fundraising.`,
-        eyebrow: "Support circles",
-        title: "Supporter circles and live campaigns.",
+          `Official ${club.shortName} supporter Groups for tifos, away travel, club campaigns, and community fundraising.`,
+        eyebrow: "Support Groups",
+        title: "Supporter Groups and live campaigns.",
         description: (club: ClubCopyContext) =>
-          `Back tifos, away travel, and club projects through official ${club.shortName} supporter circles.`,
-        whyEyebrow: "Why circles matter",
+          `Back tifos, away travel, and club projects through official ${club.shortName} supporter Groups.`,
+        whyEyebrow: "Why Groups matter",
         whyTitle: "Back the campaign together",
         bridgeEyebrow: "Community bridge",
         bridgeTitle: "Chapters that amplify every campaign",
@@ -155,7 +155,7 @@ const translations = {
         title: "Supporter chapters across the club footprint.",
         description: (club: ClubCopyContext) =>
           `Discover official fan clubs, chapter activity, and the supporter network behind every ${club.shortName} matchday.`,
-        activeSupportCircles: "Active support circles",
+        activeSupportGroups: "Active support Groups",
         rating: "rating",
         events: "events",
       },
@@ -228,7 +228,7 @@ const translations = {
         eyebrow: "Privacy",
         fallbackTitle: "Supporter data with clear boundaries.",
         fallbackBody:
-          "The club web experience stores only the minimum supporter data required to run website and fan app services such as membership, tickets, shop orders, and support circles. Sensitive payment and private contact details remain segmented from public profile data.",
+          "The club web experience stores only the minimum supporter data required to run website and fan app services such as membership, tickets, shop orders, and support Groups. Sensitive payment and private contact details remain segmented from public profile data.",
       },
       results: {
         metaTitle: (club: ClubCopyContext) => `${club.shortName} results`,
@@ -249,7 +249,7 @@ const translations = {
       searchPage: {
         metaTitle: "Search",
         metaDescription:
-          "Search fixtures, tickets, membership, circles, shop, and club news.",
+          "Search fixtures, tickets, membership, Groups, shop, and club news.",
       },
       shop: {
         metaTitle: (club: ClubCopyContext) => `${club.shortName} shop`,
@@ -372,7 +372,7 @@ const translations = {
     fanApp: "App supporters",
     openFanApp: "Ouvrir l'app",
     buyTickets: "Billetterie",
-    supportCircles: "Cercles de soutien",
+    supportGroups: "Cercles de soutien",
     home: "Accueil",
     tickets: "Billets",
     membership: "Adhésion",
@@ -383,7 +383,7 @@ const translations = {
       languages: "Langues",
       channels: "Canaux",
       club: "Club",
-      circles: "Cercles",
+      Groups: "Cercles",
       members: "Membres",
       raised: "Collecté",
       chapters: "Chapitres",
@@ -417,7 +417,7 @@ const translations = {
       surface: "Surface",
       mobile: "Mobile",
       web: "Web",
-      bioPay: "BioPay",
+      BioPay: "BioPay",
       current: "Actuel",
       target: "Objectif",
       invite: "Invitation",
@@ -450,10 +450,10 @@ const translations = {
       activateMembershipInFanApp: "Activer l'adhésion dans l'app",
       unlockPriorityAccess: "Débloquer l'accès prioritaire",
       ticketPriority: "Priorité billetterie",
-      exploreCircles: "Explorer les cercles",
+      exploreGroups: "Explorer les cercles",
       fanClubs: "Clubs de supporters",
       seeFanClubs: "Voir les clubs",
-      supportACircle: "Soutenir un cercle",
+      supportAGroup: "Soutenir un cercle",
       joinFromFanApp: "Rejoindre depuis l'app",
       backToHomepage: "Retour à l'accueil",
       backToFixtures: "Retour aux matchs",
@@ -473,7 +473,7 @@ const translations = {
       tournament: "Tournoi",
     },
     pages: {
-      circles: {
+      Groups: {
         metaTitle: (club: ClubCopyContext) => `Cercles de soutien ${club.shortName}`,
         metaDescription: (club: ClubCopyContext) =>
           `Cercles officiels de ${club.shortName} pour tifos, déplacements et campagnes du club.`,
@@ -510,7 +510,7 @@ const translations = {
         title: "Des chapitres supporters à travers l'écosystème du club.",
         description: (club: ClubCopyContext) =>
           `Découvrez les fan clubs officiels, l'activité des chapitres et le réseau qui porte chaque match de ${club.shortName}.`,
-        activeSupportCircles: "Cercles de soutien actifs",
+        activeSupportGroups: "Cercles de soutien actifs",
         rating: "note",
         events: "événements",
       },
@@ -727,7 +727,7 @@ const translations = {
     fanApp: "App y'abafana",
     openFanApp: "Fungura app",
     buyTickets: "Gura itike",
-    supportCircles: "Amatsinda y'inkunga",
+    supportGroups: "Amatsinda y'inkunga",
     home: "Ahabanza",
     tickets: "Itike",
     membership: "Ubunyamuryango",
@@ -738,7 +738,7 @@ const translations = {
       languages: "Indimi",
       channels: "Imiyoboro",
       club: "Ikipe",
-      circles: "Amatsinda",
+      Groups: "Amatsinda",
       members: "Abanyamuryango",
       raised: "Byakusanyijwe",
       chapters: "Amashami",
@@ -772,7 +772,7 @@ const translations = {
       surface: "Urubuga",
       mobile: "Mobile",
       web: "Web",
-      bioPay: "BioPay",
+      BioPay: "BioPay",
       current: "Ubu",
       target: "Intego",
       invite: "Invitation",
@@ -805,10 +805,10 @@ const translations = {
       activateMembershipInFanApp: "Koresha ubunyamuryango muri app",
       unlockPriorityAccess: "Fungura uburyo bw'ibanze",
       ticketPriority: "Icyihutirwa ku itike",
-      exploreCircles: "Sura amatsinda",
+      exploreGroups: "Sura amatsinda",
       fanClubs: "Clubs z'abafana",
       seeFanClubs: "Reba clubs z'abafana",
-      supportACircle: "Tera inkunga itsinda",
+      supportAGroup: "Tera inkunga itsinda",
       joinFromFanApp: "Injiramo ukoresheje app",
       backToHomepage: "Subira ahabanza",
       backToFixtures: "Subira ku mikino",
@@ -828,7 +828,7 @@ const translations = {
       tournament: "Irushanwa",
     },
     pages: {
-      circles: {
+      Groups: {
         metaTitle: (club: ClubCopyContext) => `Amatsinda y'inkunga ya ${club.shortName}`,
         metaDescription: (club: ClubCopyContext) =>
           `Amatsinda y'inkunga yemewe ya ${club.shortName} yo gufasha tifos, ingendo n'ibikorwa by'ikipe.`,
@@ -865,7 +865,7 @@ const translations = {
         title: "Amashami y'abafana mu rugendo rwose rw'ikipe.",
         description: (club: ClubCopyContext) =>
           `Menya fan clubs zemewe, ibikorwa by'amashami n'umuyoboro w'abafana ushyigikira buri mukino wa ${club.shortName}.`,
-        activeSupportCircles: "Amatsinda y'inkunga akora",
+        activeSupportGroups: "Amatsinda y'inkunga akora",
         rating: "amanota",
         events: "ibikorwa",
       },
@@ -1082,7 +1082,7 @@ const translations = {
     fanApp: "App ya mashabiki",
     openFanApp: "Fungua app",
     buyTickets: "Nunua tiketi",
-    supportCircles: "Mizunguko ya msaada",
+    supportGroups: "Mizunguko ya msaada",
     home: "Nyumbani",
     tickets: "Tiketi",
     membership: "Uanachama",
@@ -1093,7 +1093,7 @@ const translations = {
       languages: "Lugha",
       channels: "Njia",
       club: "Klabu",
-      circles: "Mizunguko",
+      Groups: "Mizunguko",
       members: "Wanachama",
       raised: "Kilichokusanywa",
       chapters: "Matawi",
@@ -1127,7 +1127,7 @@ const translations = {
       surface: "Uso",
       mobile: "Simu",
       web: "Tovuti",
-      bioPay: "BioPay",
+      BioPay: "BioPay",
       current: "Sasa",
       target: "Lengo",
       invite: "Mwaliko",
@@ -1160,10 +1160,10 @@ const translations = {
       activateMembershipInFanApp: "Washa uanachama kwenye app",
       unlockPriorityAccess: "Fungua upendeleo wa mwanzo",
       ticketPriority: "Kipaumbele cha tiketi",
-      exploreCircles: "Chunguza mizunguko",
+      exploreGroups: "Chunguza mizunguko",
       fanClubs: "Vilabu vya mashabiki",
       seeFanClubs: "Tazama vilabu vya mashabiki",
-      supportACircle: "Saidia mzunguko",
+      supportAGroup: "Saidia mzunguko",
       joinFromFanApp: "Jiunge kutoka app",
       backToHomepage: "Rudi mwanzo",
       backToFixtures: "Rudi kwenye mechi",
@@ -1183,7 +1183,7 @@ const translations = {
       tournament: "Mashindano",
     },
     pages: {
-      circles: {
+      Groups: {
         metaTitle: (club: ClubCopyContext) => `Mizunguko ya msaada ya ${club.shortName}`,
         metaDescription: (club: ClubCopyContext) =>
           `Mizunguko rasmi ya ${club.shortName} kwa tifos, safari za ugenini na kampeni za klabu.`,
@@ -1220,7 +1220,7 @@ const translations = {
         title: "Matawi ya mashabiki katika mfumo mzima wa klabu.",
         description: (club: ClubCopyContext) =>
           `Gundua vilabu rasmi vya mashabiki, shughuli za matawi na mtandao wa mashabiki unaobeba kila matchday ya ${club.shortName}.`,
-        activeSupportCircles: "Mizunguko ya msaada iliyo hai",
+        activeSupportGroups: "Mizunguko ya msaada iliyo hai",
         rating: "ukadiriaji",
         events: "matukio",
       },
@@ -1441,7 +1441,7 @@ export type SiteChromeCopy = Pick<
   | "fanApp"
   | "openFanApp"
   | "buyTickets"
-  | "supportCircles"
+  | "supportGroups"
   | "home"
   | "tickets"
   | "membership"
@@ -1471,7 +1471,7 @@ export function getSiteChromeCopy(
     fanApp: copy.fanApp,
     openFanApp: copy.openFanApp,
     buyTickets: copy.buyTickets,
-    supportCircles: copy.supportCircles,
+    supportGroups: copy.supportGroups,
     home: copy.home,
     tickets: copy.tickets,
     membership: copy.membership,

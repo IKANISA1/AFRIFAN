@@ -373,16 +373,16 @@ deno_version = 2
 # JWT verification is disabled at the gateway level.
 # Each function handles its own auth internally using the service_role key.
 
-[functions.biopay-enroll]
+[functions.BioPay-enroll]
 verify_jwt = false
 
-[functions.biopay-match]
+[functions.BioPay-match]
 verify_jwt = false
 
-[functions.biopay-revoke]
+[functions.BioPay-revoke]
 verify_jwt = false
 
-[functions.biopay-create-payment-intent]
+[functions.BioPay-create-payment-intent]
 verify_jwt = false
 
 [functions.sms-ingest]

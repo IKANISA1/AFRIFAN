@@ -55,7 +55,7 @@ else
   while IFS= read -r slug; do
     TARGET_APPS+=("$slug")
   done < <(
-    rg -l "bool get hasBiopay => true;" "$ROOT/packages/clubs" -g '*config.dart' \
+    rg -l "bool get hasBioPay => true;" "$ROOT/packages/clubs" -g '*config.dart' \
       | sed -E 's#^.*/club_([^/]+)/lib/src/.*$#\1#' \
       | sort
   )

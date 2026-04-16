@@ -317,10 +317,14 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                   padding: const EdgeInsets.all(SpacingTokens.spacing6),
                   child: Column(
                     children: [
-                      Text(
+                      const Text(
                         'LIVE CENTER UNAVAILABLE',
-                        style: TypographyTokens.headlineMedium().copyWith(
-                          color: ColorTokens.onSurface,
+                        style: TextStyle(
+                          fontFamily: 'Display',
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.white,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -332,10 +336,10 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: SpacingTokens.spacing5),
-                      ClaymorphicButton(
-                        label: 'REFRESH',
-                        width: double.infinity,
-                        onPressed: _loadMatch,
+                      EliteButton(
+                        label: 'Refresh',
+                        fullWidth: true,
+                        onTap: _loadMatch,
                       ),
                     ],
                   ),
@@ -418,17 +422,21 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                   padding: const EdgeInsets.symmetric(
                     horizontal: SpacingTokens.spacing6,
                   ),
-                  child: ClayCard(
+                  child: EliteCard(
                     padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                    backgroundColor: Colors.white,
                     child: Column(
                       children: [
                         Text(
                           competition.toUpperCase(),
-                          style: TypographyTokens.titleSmall().copyWith(
-                            letterSpacing: 1.3,
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.black38,
+                            letterSpacing: 1.5,
                           ),
                         ),
-                        const SizedBox(height: SpacingTokens.spacing3),
+                        const SizedBox(height: SpacingTokens.spacing4),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -436,26 +444,35 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                             const SizedBox(width: SpacingTokens.spacing6),
                             Text(
                               '$homeScore - $awayScore',
-                              style: TypographyTokens.displayLarge().copyWith(
-                                color: ColorTokens.onSurface,
+                              style: const TextStyle(
+                                fontFamily: 'Display',
+                                fontSize: 48,
+                                fontWeight: FontWeight.w900,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.black,
                               ),
                             ),
                             const SizedBox(width: SpacingTokens.spacing6),
                             TeamBadge(label: _abbreviate(awayTeam)),
                           ],
                         ),
-                        const SizedBox(height: SpacingTokens.spacing3),
+                        const SizedBox(height: SpacingTokens.spacing4),
                         Text(
                           '${homeTeam.toUpperCase()}  •  ${awayTeam.toUpperCase()}',
                           textAlign: TextAlign.center,
-                          style: TypographyTokens.headlineSmall().copyWith(
-                            color: ColorTokens.onSurface,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.black,
+                            letterSpacing: 0.5,
                           ),
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
                           _timeAndVenue(match, status),
-                          style: TypographyTokens.headlineSmall().copyWith(
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
                             color: ColorTokens.clubAccent,
                           ),
                         ),
@@ -522,16 +539,17 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                   padding: const EdgeInsets.all(SpacingTokens.spacing6),
                   child: Column(
                     children: [
-                      ClaymorphicButton(
-                        label: 'BROWSE PREDICTIONS',
-                        width: double.infinity,
-                        onPressed: () => context.go('/fanzone/fixtures'),
+                      EliteButton(
+                        label: 'Browse predictions',
+                        fullWidth: true,
+                        onTap: () => context.go('/fanzone/fixtures'),
                       ),
                       const SizedBox(height: SpacingTokens.spacing3),
-                      ClaymorphicButton(
-                        label: 'SHARE MATCH',
-                        width: double.infinity,
-                        onPressed: () async {
+                      EliteButton(
+                        label: 'Share match',
+                        fullWidth: true,
+                        variant: EliteButtonVariant.outline,
+                        onTap: () async {
                           await Clipboard.setData(
                             ClipboardData(
                               text:
