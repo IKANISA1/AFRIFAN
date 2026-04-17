@@ -245,7 +245,8 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
         _isLoading = false;
         _message = null;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('TeamProfileTabs', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) {
         return;
       }

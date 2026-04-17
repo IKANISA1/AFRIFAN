@@ -9,7 +9,6 @@ class ContributionGroup extends Equatable {
     required this.name,
     this.description,
     this.groupType = jh.ContributionGroupType.community,
-    this.privacy = jh.GroupPrivacy.public,
     this.targetAmount = 0,
     this.currentTotal = 0,
     this.paymentRecipient,
@@ -17,7 +16,6 @@ class ContributionGroup extends Equatable {
     this.deadline,
     this.isRecurring = false,
     this.isClosed = false,
-    this.inviteCode,
     this.memberCount = 0,
     required this.createdAt,
   });
@@ -27,7 +25,6 @@ class ContributionGroup extends Equatable {
   final String name;
   final String? description;
   final jh.ContributionGroupType groupType;
-  final jh.GroupPrivacy privacy;
   final int targetAmount;
   final int currentTotal;
   final String? paymentRecipient;
@@ -35,7 +32,6 @@ class ContributionGroup extends Equatable {
   final DateTime? deadline;
   final bool isRecurring;
   final bool isClosed;
-  final String? inviteCode;
   final int memberCount;
   final DateTime createdAt;
 
@@ -52,13 +48,12 @@ class ContributionGroup extends Equatable {
 
     return ContributionGroup(
       id: json['id'] as String,
-      creatorId: json['creator_id'] as String,
+      creatorId: jh.asStringOrNull(json['creator_id']) ?? '',
       name: json['name'] as String,
       description: json['description'] as String?,
       groupType: jh.ContributionGroupTypeX.fromValue(
         json['group_type'] as String?,
       ),
-      privacy: jh.GroupPrivacyX.fromValue(json['privacy'] as String?),
       targetAmount: jh.asInt(json['target_amount']),
       currentTotal: jh.asInt(json['current_total']),
       paymentRecipient: jh.asStringOrNull(json['momo_recipient_code']) ??
@@ -72,7 +67,6 @@ class ContributionGroup extends Equatable {
           : null,
       isRecurring: json['is_recurring'] as bool? ?? false,
       isClosed: isClosed,
-      inviteCode: json['invite_code'] as String?,
       memberCount: (json['member_count'] as num?)?.toInt() ?? 0,
       createdAt: DateTime.parse(json['created_at'] as String),
     );
@@ -82,7 +76,6 @@ class ContributionGroup extends Equatable {
         'name': name,
         'description': description,
         'group_type': groupType.value,
-        'privacy': privacy.value,
         'target_amount': targetAmount,
         'receiving_momo_code': paymentRecipient,
         'momo_route_type': _serializeRecipientType(paymentRecipientType),
@@ -92,44 +85,6 @@ class ContributionGroup extends Equatable {
 
   @override
   List<Object?> get props => [id, creatorId, name, currentTotal, isClosed];
-}
-
-/// A single message in a contribution group chat.
-class GroupMessage extends Equatable {
-  const GroupMessage({
-    required this.id,
-    required this.groupId,
-    required this.senderId,
-    this.alias,
-    required this.content,
-    required this.createdAt,
-  });
-
-  final String id;
-  final String groupId;
-  final String senderId;
-  final String? alias;
-  final String content;
-  final DateTime createdAt;
-
-  factory GroupMessage.fromJson(Map<String, dynamic> json) {
-    return GroupMessage(
-      id: json['id'] as String,
-      groupId: json['group_id'] as String,
-      senderId: json['sender_id'] as String,
-      alias: json['alias'] as String?,
-      content: json['content'] as String,
-      createdAt: DateTime.parse(json['created_at'] as String),
-    );
-  }
-
-  Map<String, dynamic> toInsertJson() => {
-        'group_id': groupId,
-        'content': content,
-      };
-
-  @override
-  List<Object?> get props => [id, groupId, senderId, content];
 }
 
 // ─── Helpers ──────────────────────────────────────────────

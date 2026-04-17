@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/fet_models.dart';
 import '../models/reward_store_content.dart';
+import 'package:core_utils/core_utils.dart';
 
 class FetRepository {
   FetRepository({required SupabaseClient client}) : _client = client;
@@ -261,7 +262,8 @@ class FetRepository {
         return RewardStoreContent.loadFallbackOptions();
       }
       return rows.map(FetRewardOption.fromJson).toList(growable: false);
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FetRepository', 'Operation failed (non-critical).', error, stackTrace);
       return RewardStoreContent.loadFallbackOptions();
     }
   }
@@ -671,7 +673,8 @@ class FetRepository {
             .order('event_at', ascending: false)
             .limit(250),
       );
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FetRepository', 'Operation failed (non-critical).', error, stackTrace);
       return List<Map<String, dynamic>>.from(
         await _client
             .from('fet_events')
@@ -732,9 +735,6 @@ class FetRepository {
     if (eventKeys.contains('invite_friends')) {
       earnedCodes.add('G021');
     }
-    if (groups.isNotEmpty || eventKeys.contains('create_group')) {
-      earnedCodes.add('G022');
-    }
     if (eventKeys.contains('week_streak')) {
       earnedCodes.add('G016');
     }
@@ -776,7 +776,8 @@ class FetRepository {
   ) async {
     try {
       return await future;
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FetRepository', 'Operation failed (non-critical).', error, stackTrace);
       return null;
     }
   }
@@ -786,7 +787,8 @@ class FetRepository {
   ) async {
     try {
       return List<Map<String, dynamic>>.from(await future);
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FetRepository', 'Operation failed (non-critical).', error, stackTrace);
       return const <Map<String, dynamic>>[];
     }
   }

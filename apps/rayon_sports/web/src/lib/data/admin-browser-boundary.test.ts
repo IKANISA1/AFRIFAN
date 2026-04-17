@@ -2,14 +2,24 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess } from "@/lib/types";
 import {
   adjustAdminFetWalletBalance,
+  deleteAdminContentBlock,
   deleteAdminStandingRow,
+  getAdminClubProfile,
+  getAdminContentBlocks,
   getAdminFetWalletSnapshot,
   getAdminContributionSnapshot,
+  getAdminMembershipApplications,
+  getAdminSupporterRegistry,
   getAdminProducts,
   getAdminSmsSnapshot,
+  getAdminTicketOrders,
+  reviewMembershipApplication,
   saveAdminFanClub,
+  saveAdminClubProfile,
+  saveAdminContentBlock,
   sendAdminNotification,
   saveAdminSquadPlayer,
+  updateTicketStatus,
 } from "@/lib/data/admin";
 import { requestAdminApi } from "@/lib/data/admin/http";
 
@@ -101,6 +111,76 @@ describe("admin browser API boundary", () => {
     expectFetchCall(fetchMock, `${origin}/api/admin/shop`, "GET");
   });
 
+  it("loads club settings with editable team colors through the scoped admin API in the browser", async () => {
+    const origin = window.location.origin;
+    const expected = {
+      id: 24,
+      clubName: "Rayon Sports FC",
+      clubSlug: "rayon-sports",
+      shortName: "Rayon",
+      nickname: "Gikundiro",
+      countryCode: "RW",
+      league: "Rwanda Premier League",
+      region: "Kigali",
+      currencyCode: "RWF",
+      currencySymbol: "FRw",
+      defaultLanguage: "rw",
+      supportedLanguages: ["rw", "en", "fr"],
+      officialContact: "+250 700 000 000",
+      primaryColorHex: "#0038A8",
+      secondaryColorHex: "#0E2B55",
+      accentColorHex: "#F7B500",
+      featureFlags: { chat: true, fan_clubs: true, shop: true, sms_ledger: true, ticketing: true },
+    };
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(jsonResponse(expected) as Response);
+
+    await expect(getAdminClubProfile(client, access)).resolves.toEqual(expected);
+    expectFetchCall(fetchMock, `${origin}/api/admin/settings`, "GET");
+  });
+
+  it("saves club settings with normalized team colors through the scoped admin API in the browser", async () => {
+    const origin = window.location.origin;
+    const payload = {
+      id: 24,
+      clubName: "Rayon Sports FC",
+      clubSlug: "rayon-sports",
+      shortName: "Rayon",
+      nickname: "Gikundiro",
+      countryCode: "RW",
+      league: "Rwanda Premier League",
+      region: "Kigali",
+      currencyCode: "RWF",
+      currencySymbol: "FRw",
+      defaultLanguage: "rw",
+      supportedLanguages: ["rw", "en", "fr"],
+      officialContact: "+250 700 000 000",
+      facebookUrl: null,
+      xUrl: null,
+      instagramUrl: null,
+      tiktokUrl: null,
+      officialLogoUrl: null,
+      primaryColorHex: "#0038A8",
+      secondaryColorHex: "#0E2B55",
+      accentColorHex: "#F7B500",
+      featureFlags: { chat: true, fan_clubs: true, shop: true, sms_ledger: true, ticketing: true },
+    };
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(jsonResponse({ success: true }) as Response);
+
+    await expect(saveAdminClubProfile(client, access, payload)).resolves.toEqual({
+      success: true,
+    });
+    expectFetchCall(
+      fetchMock,
+      `${origin}/api/admin/settings`,
+      "POST",
+      JSON.stringify(payload),
+    );
+  });
+
   it("saves fan clubs through the scoped admin API in the browser", async () => {
     const origin = window.location.origin;
     const payload = {
@@ -148,18 +228,17 @@ describe("admin browser API boundary", () => {
     const expected = {
       groups: [],
       contributions: [],
-      : { },
-    monthlyTotal: 0,
+      monthlyTotal: 0,
     };
-  const fetchMock = vi
-    .spyOn(globalThis, "fetch")
-    .mockResolvedValue(jsonResponse(expected) as Response);
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(jsonResponse(expected) as Response);
 
-  await expect(getAdminContributionSnapshot(client, access)).resolves.toEqual(
-    expected,
-  );
-  expectFetchCall(fetchMock, `${origin}/api/admin/contributions`, "GET");
-});
+    await expect(getAdminContributionSnapshot(client, access)).resolves.toEqual(
+      expected,
+    );
+    expectFetchCall(fetchMock, `${origin}/api/admin/contributions`, "GET");
+  });
 
 it("sends notifications through the scoped admin API in the browser", async () => {
   const origin = window.location.origin;
@@ -201,6 +280,59 @@ it("loads sms monitoring through the scoped admin API in the browser", async () 
   expectFetchCall(fetchMock, `${origin}/api/admin/sms`, "GET");
 });
 
+it("loads CMS content blocks through the scoped admin API in the browser", async () => {
+  const origin = window.location.origin;
+  const expected = [{ id: "cms-1", title: "About the club" }];
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse(expected) as Response);
+
+  await expect(getAdminContentBlocks(client, access)).resolves.toEqual(
+    expected,
+  );
+  expectFetchCall(fetchMock, `${origin}/api/admin/cms-content`, "GET");
+});
+
+it("saves CMS content blocks through the scoped admin API in the browser", async () => {
+  const origin = window.location.origin;
+  const payload = {
+    contentType: "general",
+    title: "About the club",
+    body: "Temporary body",
+    distribution: "both" as const,
+    isActive: true,
+  };
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse("cms-1") as Response);
+
+  await expect(saveAdminContentBlock(client, access, payload)).resolves.toBe(
+    "cms-1",
+  );
+  expectFetchCall(
+    fetchMock,
+    `${origin}/api/admin/cms-content`,
+    "POST",
+    JSON.stringify(payload),
+  );
+});
+
+it("deletes CMS content blocks through the scoped admin API in the browser", async () => {
+  const origin = window.location.origin;
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse({ success: true }) as Response);
+
+  await expect(
+    deleteAdminContentBlock(client, access, "cms-1"),
+  ).resolves.toBeUndefined();
+  expectFetchCall(
+    fetchMock,
+    `${origin}/api/admin/cms-content?id=cms-1`,
+    "DELETE",
+  );
+});
+
 it("loads wallet operations through the scoped admin API in the browser", async () => {
   const origin = window.location.origin;
   const expected = {
@@ -227,6 +359,97 @@ it("loads wallet operations through the scoped admin API in the browser", async 
     fetchMock,
     `${origin}/api/admin/gamification-wallet?search=Alpha&user_id=supporter-1`,
     "GET",
+  );
+});
+
+it("loads ticket operations through the scoped admin API in the browser", async () => {
+  const origin = window.location.origin;
+  const expected = [{ id: "ticket-1", status: "pending" }];
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse(expected) as Response);
+
+  await expect(getAdminTicketOrders(client, access)).resolves.toEqual(expected);
+  expectFetchCall(fetchMock, `${origin}/api/admin/tickets`, "GET");
+});
+
+it("updates ticket status through the scoped admin API in the browser", async () => {
+  const origin = window.location.origin;
+  const payload = { ticketId: "ticket-1", status: "valid" };
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse({ success: true }) as Response);
+
+  await expect(
+    updateTicketStatus(client, access, payload.ticketId, payload.status),
+  ).resolves.toBeUndefined();
+  expectFetchCall(
+    fetchMock,
+    `${origin}/api/admin/tickets/status`,
+    "POST",
+    JSON.stringify(payload),
+  );
+});
+
+it("loads supporter registry through the scoped admin API in the browser", async () => {
+  const origin = window.location.origin;
+  const expected = [{ id: "supporter-1", displayName: "Alpha Fan" }];
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse(expected) as Response);
+
+  await expect(getAdminSupporterRegistry(client, access)).resolves.toEqual(
+    expected,
+  );
+  expectFetchCall(
+    fetchMock,
+    `${origin}/api/admin/membership-supporters`,
+    "GET",
+  );
+});
+
+it("loads membership applications through the scoped admin API in the browser", async () => {
+  const origin = window.location.origin;
+  const expected = [{ id: "application-1", status: "pending" }];
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse(expected) as Response);
+
+  await expect(
+    getAdminMembershipApplications(client, access),
+  ).resolves.toEqual(expected);
+  expectFetchCall(
+    fetchMock,
+    `${origin}/api/admin/membership-applications`,
+    "GET",
+  );
+});
+
+it("reviews membership applications through the scoped admin API in the browser", async () => {
+  const origin = window.location.origin;
+  const payload = {
+    applicationId: "application-1",
+    decision: "approved" as const,
+    notes: "Approved after payment confirmation.",
+  };
+  const fetchMock = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(jsonResponse({ success: true }) as Response);
+
+  await expect(
+    reviewMembershipApplication(
+      client,
+      access,
+      payload.applicationId,
+      payload.decision,
+      payload.notes,
+    ),
+  ).resolves.toBeUndefined();
+  expectFetchCall(
+    fetchMock,
+    `${origin}/api/admin/membership-applications/review`,
+    "POST",
+    JSON.stringify(payload),
   );
 });
 

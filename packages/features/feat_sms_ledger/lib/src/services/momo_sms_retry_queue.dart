@@ -28,7 +28,8 @@ class MomoSmsRetryQueue {
     try {
       final box = await _openBox(boxName);
       return box.length;
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('MomoSmsRetryQueue', 'Operation failed (non-critical).', error, stackTrace);
       return 0;
     }
   }

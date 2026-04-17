@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:core_utils/core_utils.dart';
 
 class FetRewardOption {
   const FetRewardOption({
@@ -93,7 +94,8 @@ abstract final class RewardStoreContent {
   static Future<String> _loadCatalogPayload() async {
     try {
       return await rootBundle.loadString(assetPath);
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('RewardStoreContent', 'Operation failed (non-critical).', error, stackTrace);
       return rootBundle.loadString(_localAssetPath);
     }
   }

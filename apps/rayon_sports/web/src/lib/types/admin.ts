@@ -1,6 +1,7 @@
 /**
  * Admin panel types.
  */
+import type { Session, User } from "@supabase/supabase-js";
 import type {
   ContributionGroup,
   FanClubItem,
@@ -22,6 +23,7 @@ export interface AdminAccess {
   hasAccess: boolean;
   isAuthenticated: boolean;
   isSuperAdmin: boolean;
+  userId?: string | null;
   role: AdminRole | null;
   clubId: string | null;
   availableClubIds: string[];
@@ -66,6 +68,14 @@ export interface AdminClubScopeOption {
   clubSlug: string;
   currencyCode: string;
   currencySymbol: string;
+}
+
+export interface AdminPortalInitialState {
+  session: Session | null;
+  user: User | null;
+  access: AdminAccess;
+  clubOptions: AdminClubScopeOption[];
+  error: string | null;
 }
 
 export interface AdminDashboardMetrics {
@@ -155,29 +165,54 @@ export interface AdminShopProduct extends ShopProduct {
 
 export interface PlatformFeature {
   id: string;
+  clubId: number | null;
+  scope: "global" | "club";
   featureKey: string;
   displayName: string;
   description: string | null;
   category: string | null;
   isEnabled: boolean;
-  visibilityState: "visible" | "hidden" | "disabled";
+  visibilityState: "visible" | "hidden" | "maintenance";
   channels: {
-    id: string;
-    channel: "mobile" | "web" | "both";
+    id: string | null;
+    channel: "mobile" | "web";
     isEnabled: boolean;
     isVisible: boolean;
     showInNavigation: boolean;
     showOnHome: boolean;
-    sortOrder: number;
+    sortOrder: number | null;
     routeKey: string | null;
     placementKey: string | null;
   }[];
   rules: {
     authRequired: boolean;
     roleRestrictions: string[];
-    dependencyRules: Record<string, any>;
-    rolloutRules: Record<string, any>;
+    dependencyRules: Record<string, unknown>;
+    rolloutRules: Record<string, unknown>;
+    metadata: Record<string, unknown>;
+    scheduleStartAt: string | null;
+    scheduleEndAt: string | null;
   } | null;
+}
+
+export interface ContentBlock {
+  id?: string;
+  clubId: number | null;
+  scope: "global" | "club";
+  blockKey: string;
+  blockType: string;
+  title: string | null;
+  subtitle: string | null;
+  content: Record<string, unknown>;
+  targetChannel: "mobile" | "web" | "both";
+  placementKey: string;
+  featureId: string | null;
+  featureKey?: string | null;
+  isActive: boolean;
+  sortOrder: number | null;
+  metadata: Record<string, unknown>;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface AdminFanClub extends FanClubItem {
@@ -216,7 +251,6 @@ export interface AdminContributionItem {
 export interface AdminContributionSnapshot {
   groups: AdminContributionGroup[];
   contributions: AdminContributionItem[];
-  : Record<string, string>;
   monthlyTotal: number;
 }
 

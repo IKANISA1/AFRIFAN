@@ -67,6 +67,14 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
             );
           }
 
+          if (ticket.status == TicketStatus.pending) {
+            return const _QrState(
+              title: 'Payment verification pending',
+              body:
+                  'This ticket request was recorded, but the QR code will only unlock after payment verification completes.',
+            );
+          }
+
           final code = ticket.qrCode.isNotEmpty ? ticket.qrCode : ticket.id;
 
           return Center(
@@ -92,7 +100,9 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
+                                  border: Border.all(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.05)),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: QrImageView(
@@ -125,16 +135,19 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                             ],
                           ),
                         ),
-                        
+
                         // Perforated Divider
                         Row(
-                          children: List.generate(20, (i) => Expanded(
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 2),
-                              height: 1,
-                              color: Colors.black12,
-                            ),
-                          )),
+                          children: List.generate(
+                              20,
+                              (i) => Expanded(
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 2),
+                                      height: 1,
+                                      color: Colors.black12,
+                                    ),
+                                  )),
                         ),
 
                         // Lower Pass: Details
@@ -156,9 +169,11 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                               ),
                               const SizedBox(height: 12),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: ColorTokens.clubAccent.withValues(alpha: 0.1),
+                                  color: ColorTokens.clubAccent
+                                      .withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Text(
@@ -172,14 +187,22 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                               ),
                               const SizedBox(height: 24),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
-                                  _buildPassMeta('DATE', AfriDateFormatter.formatDate(ticket.match.matchDate)),
-                                  _buildPassMeta('TIME', ticket.match.kickoffTime ?? '18:00'),
+                                  _buildPassMeta(
+                                      'DATE',
+                                      AfriDateFormatter.formatDate(
+                                          ticket.match.matchDate)),
+                                  _buildPassMeta(
+                                    'TIME',
+                                    ticket.match.kickoffTime,
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 16),
-                              _buildPassMeta('VENUE', ticket.match.venue.toUpperCase()),
+                              _buildPassMeta(
+                                  'VENUE', ticket.match.venue.toUpperCase()),
                             ],
                           ),
                         ),
@@ -198,6 +221,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                           onTap: () {},
                           variant: EliteButtonVariant.outline,
                           icon: Icons.add_card_rounded,
+                          enabled: false,
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -207,9 +231,18 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                           onTap: () {},
                           variant: EliteButtonVariant.outline,
                           icon: Icons.wallet_rounded,
+                          enabled: false,
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Wallet export is not available in this release yet.',
+                    style: TypographyTokens.bodySmall(
+                      ColorTokens.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -225,12 +258,20 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Colors.black26, letterSpacing: 1),
+          style: const TextStyle(
+              fontSize: 8,
+              fontWeight: FontWeight.w900,
+              color: Colors.black26,
+              letterSpacing: 1),
         ),
         const SizedBox(height: 2),
         Text(
           value,
-          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.black, letterSpacing: -0.5),
+          style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w900,
+              color: Colors.black,
+              letterSpacing: -0.5),
         ),
       ],
     );

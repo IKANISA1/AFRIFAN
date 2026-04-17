@@ -35,28 +35,14 @@ export function GlobalNav({ club, copy, features = [], ribbon }: GlobalNavProps)
 
   const logoUrl = club.officialLogoUrl ?? "/icons/icon-192x192.png";
 
-  const NAV_ITEMS = features
-    .filter((f) => {
-      // Must be enabled and set to show in navigation for web
-      const isVisible = f.is_enabled && f.visibility_state === 'visible';
-      const isNavigable = f.channel?.is_enabled && f.channel?.is_visible && f.channel?.show_in_navigation;
-      return isVisible && isNavigable;
-    })
-    .map((f) => {
-      // Map platform feature to Nav Item structure
-      return {
-        label: f.display_name,
-        href: f.channel?.route_key || `/${f.feature_key}`,
-        featureKey: f.feature_key,
-        hasMega: f.rules?.metadata?.hasMega === true || 
-                ["live", "squad"].includes(f.feature_key), // Fallback for legacy
-      };
-    })
-    .sort((a, b) => {
-      const featA = features.find(f => f.feature_key === a.featureKey);
-      const featB = features.find(f => f.feature_key === b.featureKey);
-      return (featA?.channel?.sort_order ?? 99) - (featB?.channel?.sort_order ?? 99);
-    });
+  const navItems = features.map((feature) => ({
+    label: feature.display_name,
+    href: feature.channel?.route_key || `/${feature.feature_key}`,
+    featureKey: feature.feature_key,
+    hasMega:
+      feature.rules?.metadata?.hasMega === true ||
+      ["live", "squad"].includes(feature.feature_key),
+  }));
 
   return (
     <div 
@@ -113,11 +99,13 @@ export function GlobalNav({ club, copy, features = [], ribbon }: GlobalNavProps)
 
         {/* Desktop Links */}
         <div className="hidden flex-1 items-center justify-center gap-1 xl:flex">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <div 
               key={item.href}
               className="relative py-4"
-              onMouseEnter={() => item.hasMega ? setActiveMenu(item.label) : setActiveMenu(null)}
+              onMouseEnter={() =>
+                item.hasMega ? setActiveMenu(item.featureKey) : setActiveMenu(null)
+              }
             >
               <Link
                 href={item.href}
@@ -127,8 +115,8 @@ export function GlobalNav({ club, copy, features = [], ribbon }: GlobalNavProps)
                 )}
               >
                 {item.label}
-                {item.hasMega && <ChevronDown size={14} className={cn("transition-transform duration-300", activeMenu === item.label && "rotate-180")} />}
-              </Link>
+                  {item.hasMega && <ChevronDown size={14} className={cn("transition-transform duration-300", activeMenu === item.featureKey && "rotate-180")} />}
+                </Link>
               {pathname.startsWith(item.href) && (
                 <div className="absolute inset-x-4 bottom-0 h-0.5 bg-[var(--club-accent)]" />
               )}
@@ -138,18 +126,26 @@ export function GlobalNav({ club, copy, features = [], ribbon }: GlobalNavProps)
 
         {/* Actions */}
         <div className="flex items-center gap-3">
-          <button className="hidden h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 lg:flex">
+          <button
+            type="button"
+            aria-label="Search site"
+            className="hidden h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 lg:flex"
+          >
             <Search size={18} />
           </button>
           <Link
             href={resolveFanAppHref()}
-            className="flex items-center gap-2 rounded-full bg-[var(--club-accent)] px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-[var(--club-primary)] shadow-lg transition-transform hover:scale-105 active:scale-95"
+            className="flex items-center gap-2 rounded-full bg-[var(--club-accent)] px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-950 shadow-lg transition-transform hover:scale-105 active:scale-95"
           >
             <User size={16} />
             <span className="hidden sm:inline">Fan Portal</span>
             <span className="sm:hidden">Portal</span>
           </Link>
-          <button className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white xl:hidden">
+          <button
+            type="button"
+            aria-label="Open menu"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white xl:hidden"
+          >
             <Menu size={20} />
           </button>
         </div>
@@ -163,7 +159,7 @@ export function GlobalNav({ club, copy, features = [], ribbon }: GlobalNavProps)
         )}
       >
         <div className="page-shell p-8 lg:p-12">
-          {activeMenu === "Matchday" && (
+          {activeMenu === "live" && (
             <div className="grid grid-cols-4 gap-12">
               <div className="col-span-2">
                 <p className="mb-6 text-xs font-bold uppercase tracking-widest text-white/40">Next Fixture</p>
@@ -206,7 +202,7 @@ export function GlobalNav({ club, copy, features = [], ribbon }: GlobalNavProps)
               </div>
             </div>
           )}
-          {activeMenu === "Squad" && (
+          {activeMenu === "squad" && (
             <div className="grid grid-cols-4 gap-8">
                {[1,2,3,4].map(i => (
                  <div key={i} className="group relative aspect-[3/4] overflow-hidden rounded-xl bg-white/5">

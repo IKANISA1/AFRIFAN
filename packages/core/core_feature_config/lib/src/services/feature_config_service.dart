@@ -1,149 +1,249 @@
 import '../models/platform_feature_config.dart';
 
+const List<MapEntry<String, String>> _fallbackRouteFeatureKeys =
+    <MapEntry<String, String>>[
+      MapEntry<String, String>('/tickets', 'ticketing'),
+      MapEntry<String, String>('/membership', 'membership'),
+      MapEntry<String, String>('/fan-clubs', 'fan_clubs'),
+      MapEntry<String, String>('/groups', 'contributions'),
+      MapEntry<String, String>('/circles', 'contributions'),
+      MapEntry<String, String>('/contribute', 'contributions'),
+      MapEntry<String, String>('/shop', 'shop'),
+      MapEntry<String, String>('/fixtures', 'live'),
+      MapEntry<String, String>('/results', 'live'),
+      MapEntry<String, String>('/standings', 'live'),
+      MapEntry<String, String>('/news', 'news'),
+      MapEntry<String, String>('/squad', 'squad'),
+      MapEntry<String, String>('/fanzone', 'fanzone'),
+      MapEntry<String, String>('/challenge', 'challenge'),
+      MapEntry<String, String>('/admin', 'admin'),
+    ];
+
 /// Central service answering all feature-availability questions.
 ///
-/// This is the **single source of truth** used by the mobile app,
-/// route guards, home composition, navigation, and deep link handlers.
-///
-/// It wraps a [PlatformConfigSnapshot] and provides typed query methods.
-/// When no config is available, methods default to "enabled" for backward
-/// compatibility with the compile-time [ClubConfig.features] approach.
+/// This is the single source of truth used by the mobile app, route guards,
+/// home composition, navigation, and deep link handlers.
 class FeatureConfigService {
   const FeatureConfigService(this._snapshot);
 
   final PlatformConfigSnapshot _snapshot;
 
-  /// The raw snapshot, if needed for debugging or admin previews.
   PlatformConfigSnapshot get snapshot => _snapshot;
 
-  /// Whether config was successfully loaded (vs. empty fallback).
   bool get hasConfig => _snapshot.isNotEmpty;
 
-  // ── Feature queries ──
+  FeatureAccessState getFeatureAccess(
+    String featureKey, {
+    bool isAuthenticated = false,
+    Iterable<String> roles = const <String>[],
+  }) {
+    return _getFeatureAccess(
+      featureKey,
+      isAuthenticated: isAuthenticated,
+      roles: roles,
+      visited: <String>{},
+    );
+  }
 
-  /// Is this feature effectively enabled for the current channel?
-  /// Checks: global enable, channel enable, visibility state, schedule.
-  bool isFeatureEnabled(String featureKey) {
-    final feature = _snapshot.featureByKey(featureKey);
+  FeatureAccessState _getFeatureAccess(
+    String featureKey, {
+    required bool isAuthenticated,
+    required Iterable<String> roles,
+    required Set<String> visited,
+  }) {
+    final normalizedKey = normalizePlatformFeatureKey(featureKey);
+    final feature = _snapshot.featureByKey(normalizedKey);
+
     if (feature == null) {
-      // Feature not in registry → default enabled (backward compat)
-      return true;
+      return FeatureAccessState(
+        featureKey: featureKey,
+        normalizedKey: normalizedKey,
+        isRegistered: false,
+        isVisible: true,
+        isOperational: true,
+        isAvailable: true,
+        showInNavigation: false,
+        showOnHome: false,
+        routeKey: null,
+        placementKey: null,
+        reason: 'unregistered',
+      );
     }
-    return feature.isEffectivelyEnabled;
+
+    final normalizedRoles = roles
+        .map(normalizePlatformFeatureKey)
+        .where((role) => role.isNotEmpty)
+        .toSet();
+    final visibilityState = feature.visibilityState;
+    final channel = feature.channel;
+    final rules = feature.rules;
+
+    final isVisible =
+        visibilityState != 'hidden' && (channel?.isVisible ?? true);
+    final dependencies = rules?.dependencyRules['requires'];
+    final nextVisited = <String>{...visited, normalizedKey};
+    final dependenciesSatisfied =
+        dependencies is! List ||
+        dependencies.every((dependency) {
+          if (dependency is! String) {
+            return true;
+          }
+          final normalizedDependency = normalizePlatformFeatureKey(dependency);
+          if (nextVisited.contains(normalizedDependency)) {
+            return true;
+          }
+          return _getFeatureAccess(
+            dependency,
+            isAuthenticated: isAuthenticated,
+            roles: normalizedRoles,
+            visited: nextVisited,
+          ).isOperational;
+        });
+
+    final roleRestrictions = (rules?.roleRestrictions ?? <String>[])
+        .map(normalizePlatformFeatureKey)
+        .where((role) => role.isNotEmpty)
+        .toSet();
+    final authAllowed = !(rules?.authRequired ?? false) || isAuthenticated;
+    final roleAllowed =
+        roleRestrictions.isEmpty ||
+        (isAuthenticated &&
+            normalizedRoles.any(roleRestrictions.contains));
+    final isWithinSchedule = rules?.isWithinSchedule ?? true;
+
+    final isOperational = feature.isOperationallyEnabled &&
+        dependenciesSatisfied;
+    final isAvailable = isOperational && authAllowed && roleAllowed;
+
+    var reason = 'ok';
+    if (!feature.isEnabled) {
+      reason = 'global_disabled';
+    } else if (!(channel?.isEnabled ?? true)) {
+      reason = 'channel_disabled';
+    } else if (visibilityState == 'hidden') {
+      reason = 'hidden';
+    } else if (!(channel?.isVisible ?? true)) {
+      reason = 'channel_hidden';
+    } else if (visibilityState == 'maintenance') {
+      reason = 'maintenance';
+    } else if (!isWithinSchedule) {
+      reason = 'outside_schedule';
+    } else if (!dependenciesSatisfied) {
+      reason = 'dependency_blocked';
+    } else if (!authAllowed) {
+      reason = 'auth_required';
+    } else if (!roleAllowed) {
+      reason = 'role_restricted';
+    }
+
+    return FeatureAccessState(
+      feature: feature,
+      featureKey: feature.featureKey,
+      normalizedKey: normalizedKey,
+      isRegistered: true,
+      isVisible: isVisible,
+      isOperational: isOperational,
+      isAvailable: isAvailable,
+      showInNavigation: channel?.showInNavigation ?? false,
+      showOnHome: channel?.showOnHome ?? false,
+      routeKey: channel?.routeKey,
+      placementKey: channel?.placementKey,
+      reason: reason,
+    );
   }
 
-  /// Is this feature visible? (not hidden or in maintenance)
+  /// Backward-compatible enablement check used by legacy call sites.
+  ///
+  /// This keeps hidden features out of existing UI entry points while
+  /// [`isFeatureOperational`] and [`canUseFeature`] preserve the more precise
+  /// operational distinction for routing and business actions.
+  bool isFeatureEnabled(String featureKey) {
+    final access = getFeatureAccess(featureKey);
+    return access.isVisible && access.isOperational;
+  }
+
+  bool isFeatureOperational(String featureKey) {
+    return getFeatureAccess(featureKey).isOperational;
+  }
+
+  bool canRenderFeature(String featureKey) {
+    final access = getFeatureAccess(featureKey);
+    return access.isVisible && access.isAvailable;
+  }
+
+  bool canUseFeature(String featureKey) {
+    return getFeatureAccess(featureKey).isAvailable;
+  }
+
   bool isFeatureVisible(String featureKey) {
-    final feature = _snapshot.featureByKey(featureKey);
-    if (feature == null) return true;
-    return feature.visibilityState != 'hidden';
+    return getFeatureAccess(featureKey).isVisible;
   }
 
-  /// Is the feature in maintenance mode?
   bool isFeatureInMaintenance(String featureKey) {
     final feature = _snapshot.featureByKey(featureKey);
     if (feature == null) return false;
     return feature.visibilityState == 'maintenance';
   }
 
-  /// Should this feature appear in navigation?
   bool shouldShowInNav(String featureKey) {
-    final feature = _snapshot.featureByKey(featureKey);
-    if (feature == null) return false;
-    return feature.isEffectivelyEnabled &&
-        (feature.channel?.showInNavigation ?? false);
+    final access = getFeatureAccess(featureKey);
+    return access.showInNavigation && access.isVisible && access.isAvailable;
   }
 
-  /// Should this feature appear on the home screen?
   bool shouldShowOnHome(String featureKey) {
-    final feature = _snapshot.featureByKey(featureKey);
-    if (feature == null) return false;
-    return feature.isEffectivelyEnabled &&
-        (feature.channel?.showOnHome ?? false);
+    final access = getFeatureAccess(featureKey);
+    return access.showOnHome && access.isVisible && access.isAvailable;
   }
 
-  /// Does this feature require authentication?
   bool isAuthRequired(String featureKey) {
     final feature = _snapshot.featureByKey(featureKey);
     if (feature == null) return false;
     return feature.rules?.authRequired ?? false;
   }
 
-  /// Is the feature currently within its scheduled window?
   bool isInsideScheduleWindow(String featureKey) {
     final feature = _snapshot.featureByKey(featureKey);
     if (feature == null) return true;
     return feature.rules?.isWithinSchedule ?? true;
   }
 
-  /// Are all dependency features also enabled?
   bool areDependenciesSatisfied(String featureKey) {
-    final feature = _snapshot.featureByKey(featureKey);
-    if (feature == null) return true;
-
-    final deps = feature.rules?.dependencyRules ?? const <String, dynamic>{};
-    final requires = deps['requires'];
-    if (requires is! List || requires.isEmpty) return true;
-
-    for (final dep in requires) {
-      if (dep is String && !isFeatureEnabled(dep)) {
-        return false;
-      }
-    }
-    return true;
+    return getFeatureAccess(featureKey).reason != 'dependency_blocked';
   }
 
-  /// Get the route key for a feature.
   String? getRoute(String featureKey) {
-    return _snapshot.featureByKey(featureKey)?.channel?.routeKey;
+    return getFeatureAccess(featureKey).routeKey;
   }
 
-  /// Get the sort order for a feature.
   int? getSortOrder(String featureKey) {
     return _snapshot.featureByKey(featureKey)?.channel?.sortOrder;
   }
 
-  /// Get the full feature config.
   PlatformFeature? getFeature(String featureKey) {
     return _snapshot.featureByKey(featureKey);
   }
 
-  // ── Aggregate queries ──
-
-  /// All features that should appear in navigation, sorted by sort_order.
   List<PlatformFeature> getNavFeatures() {
     return _snapshot.features
-        .where(
-          (f) =>
-              f.isEffectivelyEnabled &&
-              (f.channel?.showInNavigation ?? false),
-        )
+        .where((feature) => shouldShowInNav(feature.featureKey))
         .toList()
       ..sort(_bySortOrder);
   }
 
-  /// All features that should appear on the home screen, sorted by sort_order.
   List<PlatformFeature> getHomeFeatures() {
     return _snapshot.features
-        .where(
-          (f) =>
-              f.isEffectivelyEnabled && (f.channel?.showOnHome ?? false),
-        )
+        .where((feature) => shouldShowOnHome(feature.featureKey))
         .toList()
       ..sort(_bySortOrder);
   }
 
-  // ── Content block queries ──
-
-  /// Get content blocks for a given placement.
-  /// Returns only blocks whose linked feature is enabled (or unlinked blocks).
   List<ContentBlock> getContentBlocks(String placementKey) {
     return _snapshot.contentBlocks
         .where((block) {
           if (block.placementKey != placementKey) return false;
           if (!block.isActive) return false;
           if (block.featureKey != null) {
-            return isFeatureEnabled(block.featureKey!);
+            return canRenderFeature(block.featureKey!);
           }
           return true;
         })
@@ -151,7 +251,53 @@ class FeatureConfigService {
       ..sort(_byBlockSortOrder);
   }
 
-  // ── Private helpers ──
+  String? getFeatureKeyForPath(String path) {
+    final normalizedPath = path.trim().toLowerCase();
+    if (normalizedPath.isEmpty || normalizedPath == '/') {
+      return null;
+    }
+
+    final routeMatch = _snapshot.features
+        .map((feature) => MapEntry<String, String>(
+              feature.featureKey,
+              feature.channel?.routeKey?.trim().toLowerCase() ?? '',
+            ))
+        .where((entry) => entry.value.startsWith('/'))
+        .toList()
+      ..sort((left, right) => right.value.length.compareTo(left.value.length));
+
+    for (final entry in routeMatch) {
+      if (entry.value == normalizedPath ||
+          normalizedPath.startsWith('${entry.value}/')) {
+        return entry.key;
+      }
+    }
+
+    for (final fallback in _fallbackRouteFeatureKeys) {
+      if (fallback.key == normalizedPath ||
+          normalizedPath.startsWith('${fallback.key}/')) {
+        return fallback.value;
+      }
+    }
+
+    return null;
+  }
+
+  bool isRouteAvailable(String path) {
+    // M-8: Admin routes are always available — admin access is enforced by
+    // the AdminRouteGuard (RBAC), not by public feature gating.
+    final normalizedPath = path.trim().toLowerCase();
+    if (normalizedPath.startsWith('/admin')) {
+      return true;
+    }
+
+    final featureKey = getFeatureKeyForPath(path);
+    if (featureKey == null) {
+      return true;
+    }
+
+    return canRenderFeature(featureKey);
+  }
 
   static int _bySortOrder(PlatformFeature a, PlatformFeature b) {
     final aOrder = a.channel?.sortOrder ?? 999;

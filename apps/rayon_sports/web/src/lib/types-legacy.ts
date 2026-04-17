@@ -111,13 +111,11 @@ export interface ContributionGroup {
   id: string;
   name: string;
   description: string;
-  privacy: "public" | "private";
-  groupType: "general" | "project" | "savings" | "emergency";
+  groupType: "project" | "community";
   targetAmount: number;
   currentTotal: number;
   currency: string;
   memberCount: number;
-  inviteCode?: string | null;
   isActive: boolean;
 }
 
@@ -290,7 +288,6 @@ export interface AdminContributionItem {
 export interface AdminContributionSnapshot {
   groups: AdminContributionGroup[];
   contributions: AdminContributionItem[];
-  : Record<string, string>;
   monthlyTotal: number;
 }
 

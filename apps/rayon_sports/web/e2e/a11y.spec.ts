@@ -79,10 +79,12 @@ test("supporters handoff page has no critical a11y violations", async ({
 
 test("admin sign-in has no critical a11y violations", async ({ page }) => {
   await page.goto("/admin", { waitUntil: "domcontentloaded" });
+  await page.getByRole("heading", { name: /secure sign in/i }).waitFor({
+    timeout: 15_000,
+  });
 
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag22aa"])
-    .exclude(".glass-panel") // Exclude complex glass panels that may have false positives
     .analyze();
 
   const critical = results.violations.filter(

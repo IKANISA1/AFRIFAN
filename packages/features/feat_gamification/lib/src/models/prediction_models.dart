@@ -880,6 +880,9 @@ class FixtureSummary {
     required this.status,
     this.homeScore,
     this.awayScore,
+    this.homeTeamLogoUrl,
+    this.awayTeamLogoUrl,
+    this.competitionLogoUrl,
   });
 
   final String id;
@@ -898,6 +901,11 @@ class FixtureSummary {
   final String status;
   final int? homeScore;
   final int? awayScore;
+
+  /// API-Football CDN logo URLs (hotlinked)
+  final String? homeTeamLogoUrl;
+  final String? awayTeamLogoUrl;
+  final String? competitionLogoUrl;
 
   bool get isScheduled => status == 'scheduled';
   bool get isLive => status == 'live';
@@ -925,6 +933,9 @@ class FixtureSummary {
       status: json['status']?.toString() ?? 'scheduled',
       homeScore: (json['home_score'] as num?)?.toInt(),
       awayScore: (json['away_score'] as num?)?.toInt(),
+      homeTeamLogoUrl: json['home_team_logo_url']?.toString(),
+      awayTeamLogoUrl: json['away_team_logo_url']?.toString(),
+      competitionLogoUrl: json['competition_logo_url']?.toString(),
     );
   }
 }

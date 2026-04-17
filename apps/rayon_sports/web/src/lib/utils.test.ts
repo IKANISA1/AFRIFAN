@@ -1,7 +1,10 @@
 import {
   cn,
   formatCurrency,
+  isValidHexColor,
+  normalizeHexColorInput,
   safeNumber,
+  sanitizeHexColorDraft,
   safeString,
   slugify,
   toIdString,
@@ -17,6 +20,15 @@ describe("utils", () => {
     expect(safeString("", "fallback")).toBe("fallback");
     expect(safeNumber("42")).toBe(42);
     expect(safeNumber("not-a-number", 9)).toBe(9);
+  });
+
+  it("sanitizes and normalizes hex color input", () => {
+    expect(sanitizeHexColorDraft("0038a8")).toBe("#0038A8");
+    expect(sanitizeHexColorDraft("#d4a")).toBe("#D4A");
+    expect(normalizeHexColorInput("#d4a")).toBe("#DD44AA");
+    expect(normalizeHexColorInput(" 0038a8 ")).toBe("#0038A8");
+    expect(isValidHexColor("#0038A8")).toBe(true);
+    expect(isValidHexColor("#GGGGGG")).toBe(false);
   });
 
   it("formats currency and ids consistently", () => {

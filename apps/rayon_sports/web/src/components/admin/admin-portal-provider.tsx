@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useState,
+  startTransition,
   type ReactNode,
 } from "react";
 import type {
@@ -28,7 +29,7 @@ import {
 import { emptyAdminAccess, resolveAdminAccess } from "@/lib/data/admin/access";
 import { getAdminClubScopeOptions } from "@/lib/data/admin/settings";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
-import type { AdminAccess, AdminClubScopeOption } from "@/lib/types";
+import type { AdminAccess, AdminClubScopeOption, AdminPortalInitialState } from "@/lib/types";
 
 const pendingPhoneStorageKey = "gikundiro.admin.pending-phone";
 
@@ -52,6 +53,7 @@ interface AdminPortalContextValue {
   clubOptions: AdminClubScopeOption[];
   activeClub: AdminClubScopeOption | null;
   switchingClub: boolean;
+  authBusy: boolean;
   loading: boolean;
   error: string | null;
   notice: string | null;
@@ -118,15 +120,40 @@ async function consumeHashSession(client: SupabaseClient) {
   return null;
 }
 
-export function AdminPortalProvider({ children }: { children: ReactNode }) {
+function hasPendingAuthHash() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const hash = window.location.hash.startsWith("#")
+    ? window.location.hash.slice(1)
+    : window.location.hash;
+  if (!hash) {
+    return false;
+  }
+
+  const hashParams = new URLSearchParams(hash);
+  return Boolean(hashParams.get("access_token") && hashParams.get("refresh_token"));
+}
+
+export function AdminPortalProvider({
+  children,
+  initialState,
+}: {
+  children: ReactNode;
+  initialState?: AdminPortalInitialState;
+}) {
   const [client] = useState(() => getBrowserSupabase());
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [access, setAccess] = useState<AdminAccess>(emptyAdminAccess);
-  const [clubOptions, setClubOptions] = useState<AdminClubScopeOption[]>([]);
+  const [session, setSession] = useState<Session | null>(initialState?.session ?? null);
+  const [user, setUser] = useState<User | null>(initialState?.user ?? null);
+  const [access, setAccess] = useState<AdminAccess>(initialState?.access ?? emptyAdminAccess);
+  const [clubOptions, setClubOptions] = useState<AdminClubScopeOption[]>(
+    initialState?.clubOptions ?? [],
+  );
   const [switchingClub, setSwitchingClub] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [authBusy, setAuthBusy] = useState(false);
+  const [loading, setLoading] = useState(initialState == null);
+  const [error, setError] = useState<string | null>(initialState?.error ?? null);
   const [notice, setNotice] = useState<string | null>(null);
   const [pendingPhone, setPendingPhone] = useState<string | null>(null);
 
@@ -145,7 +172,7 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
     window.sessionStorage.removeItem(pendingPhoneStorageKey);
   }, []);
 
-  const refresh = useCallback(async () => {
+  const runRefresh = useCallback(async ({ blocking = true }: { blocking?: boolean } = {}) => {
     if (client == null) {
       setLoading(false);
       setError("Supabase browser configuration is missing.");
@@ -154,44 +181,65 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    setLoading(true);
+    if (blocking) {
+      setLoading(true);
+    }
 
     try {
       const urlError = await consumeHashSession(client);
       const result = await client.auth.getSession();
       const nextSession = result.data.session ?? null;
       const nextUser = nextSession?.user ?? null;
-      setSession(nextSession);
-      setUser(nextUser);
+      startTransition(() => {
+        setSession(nextSession);
+        setUser(nextUser);
+      });
       const nextAccess = await resolveAdminAccess(client, nextUser, {
         requestedClubId: getRequestedClubIdFromLocation(),
       });
-      setAccess(nextAccess);
+      startTransition(() => {
+        setAccess(nextAccess);
+      });
       if (nextAccess.hasAccess) {
         try {
-          setClubOptions(await getAdminClubScopeOptions(client, nextAccess));
+          const nextClubOptions = await getAdminClubScopeOptions(client, nextAccess);
+          startTransition(() => {
+            setClubOptions(nextClubOptions);
+          });
         } catch {
-          setClubOptions([]);
+          startTransition(() => {
+            setClubOptions([]);
+          });
         }
       } else {
-        setClubOptions([]);
+        startTransition(() => {
+          setClubOptions([]);
+        });
       }
       if (nextUser != null) {
         syncPendingPhone(null);
       }
       setError(nextUser == null ? urlError : null);
     } catch (caught) {
-      setAccess(emptyAdminAccess);
-      setClubOptions([]);
+      startTransition(() => {
+        setAccess(emptyAdminAccess);
+        setClubOptions([]);
+      });
       setError(
         caught instanceof Error
           ? caught.message
           : "Could not initialize admin workspace.",
       );
     } finally {
-      setLoading(false);
+      if (blocking) {
+        setLoading(false);
+      }
     }
   }, [client, syncPendingPhone]);
+
+  const refresh = useCallback(async () => {
+    await runRefresh();
+  }, [runRefresh]);
 
   const requestPhoneCode = useCallback(
     async (phone: string) => {
@@ -202,43 +250,48 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
       const normalizedPhone = normalizeAdminPhone(phone);
       setError(null);
       setNotice(null);
+      setAuthBusy(true);
 
-      const eligibilityResponse = await fetch("/api/admin/auth/eligible", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Africlub-CSRF": "1",
-        },
-        body: JSON.stringify({ phone: normalizedPhone }),
-        credentials: "same-origin",
-        cache: "no-store",
-      });
-      const eligibilityPayload = (await eligibilityResponse
-        .json()
-        .catch(() => ({}))) as { error?: string };
+      try {
+        const eligibilityResponse = await fetch("/api/admin/auth/eligible", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Africlub-CSRF": "1",
+          },
+          body: JSON.stringify({ phone: normalizedPhone }),
+          credentials: "same-origin",
+          cache: "no-store",
+        });
+        const eligibilityPayload = (await eligibilityResponse
+          .json()
+          .catch(() => ({}))) as { error?: string };
 
-      if (!eligibilityResponse.ok) {
-        throw new Error(
-          eligibilityPayload.error ?? adminPhoneAccessDeniedMessage(),
+        if (!eligibilityResponse.ok) {
+          throw new Error(
+            eligibilityPayload.error ?? adminPhoneAccessDeniedMessage(),
+          );
+        }
+
+        const { error: authError } = await client.auth.signInWithOtp({
+          phone: normalizedPhone,
+          options: {
+            shouldCreateUser: false,
+            channel: "whatsapp",
+          },
+        });
+
+        if (authError) {
+          throw authError;
+        }
+
+        syncPendingPhone(normalizedPhone);
+        setNotice(
+          `Verification code sent to ${formatAdminPhoneForDisplay(normalizedPhone)}.`,
         );
+      } finally {
+        setAuthBusy(false);
       }
-
-      const { error: authError } = await client.auth.signInWithOtp({
-        phone: normalizedPhone,
-        options: {
-          shouldCreateUser: false,
-          channel: 'whatsapp',
-        },
-      });
-
-      if (authError) {
-        throw authError;
-      }
-
-      syncPendingPhone(normalizedPhone);
-      setNotice(
-        `Verification code sent to ${formatAdminPhoneForDisplay(normalizedPhone)}.`,
-      );
     },
     [client, syncPendingPhone],
   );
@@ -260,22 +313,27 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
 
       setError(null);
       setNotice(null);
+      setAuthBusy(true);
 
-      const { error: authError } = await client.auth.verifyOtp({
-        phone: pendingPhone,
-        token,
-        type: "sms",
-      });
+      try {
+        const { error: authError } = await client.auth.verifyOtp({
+          phone: pendingPhone,
+          token,
+          type: "sms",
+        });
 
-      if (authError) {
-        throw authError;
+        if (authError) {
+          throw authError;
+        }
+
+        syncPendingPhone(null);
+        setNotice("Admin access verified.");
+        await runRefresh({ blocking: false });
+      } finally {
+        setAuthBusy(false);
       }
-
-      syncPendingPhone(null);
-      setNotice("Admin access verified.");
-      await refresh();
     },
-    [client, pendingPhone, refresh, syncPendingPhone],
+    [client, pendingPhone, runRefresh, syncPendingPhone],
   );
 
   const setClubScope = useCallback(
@@ -297,13 +355,13 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
       setSwitchingClub(true);
 
       try {
-        await refresh();
+        await runRefresh({ blocking: false });
         setNotice("Club scope updated.");
       } finally {
         setSwitchingClub(false);
       }
     },
-    [access.clubId, refresh],
+    [access.clubId, runRefresh],
   );
 
   const signOut = useCallback(async () => {
@@ -314,8 +372,8 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
     await client.auth.signOut();
     syncPendingPhone(null);
     setNotice("Signed out of admin workspace.");
-    await refresh();
-  }, [client, refresh, syncPendingPhone]);
+    await runRefresh({ blocking: false });
+  }, [client, runRefresh, syncPendingPhone]);
 
   useEffect(() => {
     if (client == null) {
@@ -330,7 +388,14 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
       );
     }
 
-    refresh().catch(() => {});
+    const shouldHydrateFromClient =
+      initialState == null || hasPendingAuthHash() || readAuthErrorFromUrl() != null;
+
+    if (shouldHydrateFromClient) {
+      runRefresh({ blocking: initialState == null }).catch(() => {});
+    } else {
+      setLoading(false);
+    }
 
     const {
       data: { subscription },
@@ -339,7 +404,7 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
         setSession(nextSession);
         setUser(nextSession?.user ?? null);
         queueMicrotask(() => {
-          refresh().catch(() => {});
+          runRefresh({ blocking: false }).catch(() => {});
         });
       },
     );
@@ -347,7 +412,21 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [client, refresh, syncPendingPhone]);
+  }, [client, initialState, runRefresh, syncPendingPhone]);
+
+  useEffect(() => {
+    if (!notice) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setNotice(null);
+    }, 4000);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [notice]);
 
   const activeClub =
     clubOptions.find((club) => club.id === access.clubId) ?? null;
@@ -362,6 +441,7 @@ export function AdminPortalProvider({ children }: { children: ReactNode }) {
         clubOptions,
         activeClub,
         switchingClub,
+        authBusy,
         loading,
         error,
         notice,

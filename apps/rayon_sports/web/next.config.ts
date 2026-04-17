@@ -7,6 +7,7 @@ const analyticsOrigin = analyticsUrl ? new URL(analyticsUrl).origin : null;
 const isDevelopment = process.env.NODE_ENV === "development";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   distDir: process.env.NEXT_BUILD_DIR || ".next",
   serverExternalPackages: ["exceljs"],
   typescript: {
@@ -15,7 +16,11 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    webpackBuildWorker: true,
+    cpus: 1,
+    workerThreads: false,
+    parallelServerCompiles: false,
+    parallelServerBuildTraces: false,
+    webpackBuildWorker: false,
     webpackMemoryOptimizations: true,
   },
   images: {
@@ -68,7 +73,7 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval'" : ""}`,
+              `script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com${isDevelopment ? " 'unsafe-eval'" : ""}`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https://*.supabase.co",

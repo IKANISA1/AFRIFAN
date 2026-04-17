@@ -41,13 +41,12 @@ void main() {
       // Wait for loading to finish
       await tester.pumpAndSettle();
 
-      expect(find.text('No contribution groups yet'), findsOneWidget);
+      expect(find.text('No communities yet'), findsOneWidget);
       expect(
-        find.text('Create or join a group to start contributing.'),
+        find.text('Team projects and communities appear here after admin setup.'),
         findsOneWidget,
       );
-      expect(find.text('CREATE GROUP'), findsOneWidget);
-      expect(find.byIcon(Icons.group_work_outlined), findsOneWidget);
+      expect(find.text('Browse fan clubs'), findsOneWidget);
     });
   });
 }

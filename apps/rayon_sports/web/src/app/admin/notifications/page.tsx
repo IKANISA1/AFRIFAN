@@ -12,14 +12,17 @@ import {
 import { emptyContext, emptyForm, type NotificationForm as NotificationFormType } from "./_components/notification-state";
 import { NotificationForm } from "./_components/notification-form";
 import { NotificationList } from "./_components/notification-list";
+import { useHydrated } from "@/lib/use-hydrated";
 
 export default function AdminNotificationsPage() {
   const { access, client } = useAdminPortal();
+  const hydrated = useHydrated();
   const [context, setContext] = useState(emptyContext);
   const [form, setForm] = useState<NotificationFormType>(emptyForm);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const formDisabled = !hydrated || client == null;
 
   const loadContext = useCallback(async () => {
     if (client == null) {
@@ -152,6 +155,7 @@ export default function AdminNotificationsPage() {
           setForm={setForm}
           context={context}
           submitting={submitting}
+          disabled={formDisabled}
           onSubmit={() => {
             submitNotification().catch(() => {});
           }}

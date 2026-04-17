@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { ShoppingBag, Trash2 } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminImageField } from "@/components/admin/admin-image-field";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
@@ -16,6 +17,7 @@ import {
   deleteAdminProduct,
 } from "@/lib/data/admin/shop";
 import type { AdminShopProduct } from "@/lib/types";
+import { useHydrated } from "@/lib/use-hydrated";
 
 const emptyForm = {
   id: "",
@@ -33,11 +35,13 @@ const emptyForm = {
 
 export default function AdminShopPage() {
   const { access, activeClub, client } = useAdminPortal();
+  const hydrated = useHydrated();
   const [products, setProducts] = useState<AdminShopProduct[]>([]);
   const [form, setForm] = useState(emptyForm);
   const [filter, setFilter] = useState("ALL");
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const formDisabled = !hydrated || client == null || loading;
 
   const load = useCallback(async () => {
     if (client == null) return;
@@ -102,6 +106,12 @@ export default function AdminShopPage() {
     }
   }
 
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    void submitForm(formData);
+  }
+
   async function removeProduct(product: AdminShopProduct) {
     if (client == null) return;
     if (
@@ -136,7 +146,7 @@ export default function AdminShopPage() {
         <AdminStateCard label="Categories" value={loading ? "..." : categories.length.toString()} helper="Product groups." />
       </div>
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-        <form action={submitForm} className="glass-panel grid gap-4 rounded-[32px] p-6">
+        <form onSubmit={handleSubmit} className="glass-panel grid gap-4 rounded-[32px] p-6">
           <div className="flex items-center justify-between gap-3">
             <p className="font-display text-3xl font-bold uppercase leading-none">{form.id ? "Edit product" : "New product"}</p>
             {form.id ? <button type="button" onClick={() => setForm(emptyForm)} className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8">Clear</button> : null}
@@ -153,15 +163,24 @@ export default function AdminShopPage() {
             <label className="grid gap-2 text-sm">Collection<input name="collection" value={form.collection} onChange={(e) => setForm((c) => ({ ...c, collection: e.target.value }))} className="dashboard-input" /></label>
           </div>
           <label className="grid gap-2 text-sm">Sizes (comma separated)<input name="sizes" value={form.sizes} onChange={(e) => setForm((c) => ({ ...c, sizes: e.target.value }))} className="dashboard-input" /></label>
-          <label className="grid gap-2 text-sm">Image URL<input name="imageUrl" value={form.imageUrl} onChange={(e) => setForm((c) => ({ ...c, imageUrl: e.target.value }))} className="dashboard-input" /></label>
-          {form.imageUrl.trim() ? (
-            <div className="overflow-hidden rounded-[22px] border border-border-soft">
-              {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews accept arbitrary remote URLs that are not suitable for next/image allowlisting. */}
-              <img src={form.imageUrl} alt="Preview" className="h-32 w-full object-cover" />
-            </div>
-          ) : null}
+          <AdminImageField
+            label="Product image"
+            name="imageUrl"
+            value={form.imageUrl}
+            onChange={(nextValue) => setForm((current) => ({ ...current, imageUrl: nextValue }))}
+            mediaKind="shop_product"
+            subject={form.name}
+            previewAlt="Product preview"
+            promptPlaceholder="Example: Premium studio product shot of the new home jersey on a clean dark background, bold blue and white club colors, catalogue lighting."
+          />
           <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-white/5 px-4 py-3 text-sm"><input type="checkbox" name="isActive" checked={form.isActive} onChange={(e) => setForm((c) => ({ ...c, isActive: e.target.checked }))} />Active in shop</label>
-          <button type="submit" className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary">{form.id ? "Save product" : "Add product"}</button>
+          <button
+            type="submit"
+            disabled={formDisabled}
+            className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
+          >
+            {form.id ? "Save product" : "Add product"}
+          </button>
         </form>
         <section className="glass-panel rounded-[32px] p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">

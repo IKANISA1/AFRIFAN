@@ -11,6 +11,7 @@ export const emptyAdminAccess: AdminAccess = {
   hasAccess: false,
   isAuthenticated: false,
   isSuperAdmin: false,
+  userId: null,
   role: null,
   clubId: null,
   availableClubIds: [],
@@ -194,6 +195,7 @@ export function deriveAdminAccess(
     isAuthenticated: user != null,
     isSuperAdmin:
       hasMatchingAssignment && (role === "super_admin" || role === "admin"),
+    userId: safeString((user as { id?: unknown } | null)?.id) || null,
     role,
     clubId: resolveEffectiveClubId({
       role,

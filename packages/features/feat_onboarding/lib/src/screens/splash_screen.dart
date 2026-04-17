@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:core_utils/core_utils.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -32,10 +33,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     // hanging on splash with a slow or unreachable backend.
     if (currentState is AuthInitial) {
       try {
-        await authNotifier.restore().timeout(
-          const Duration(seconds: 15),
-        );
-      } catch (_) {
+        await authNotifier.restore().timeout(const Duration(seconds: 15));
+      } catch (error, stackTrace) {
+      AfriLogger.warn('SplashScreen', 'Operation failed (non-critical).', error, stackTrace);
         // Timeout or restore failure — proceed to navigation logic below
       }
     }
@@ -86,40 +86,49 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     final crestAsset = RuntimeBranding.displayCrestAsset;
+    final mediaQuery = MediaQuery.maybeOf(context);
+    final reduceMotion =
+        mediaQuery?.disableAnimations == true ||
+        mediaQuery?.accessibleNavigation == true;
+
+    Widget crest = crestAsset.isNotEmpty
+        ? Image.asset(
+            crestAsset,
+            width: 180,
+            height: 180,
+            errorBuilder: (context, error, stackTrace) =>
+                _SplashFallbackBadge(label: RuntimeBranding.appInitials),
+          )
+        : _SplashFallbackBadge(label: RuntimeBranding.appInitials);
+
+    if (!reduceMotion) {
+      crest = crest.animate().scale(
+        duration: 500.ms,
+        curve: Curves.easeOutBack,
+      );
+    }
+
+    Widget progress = SizedBox(
+      width: 20,
+      height: 20,
+      child: CircularProgressIndicator(
+        strokeWidth: 2,
+        valueColor: AlwaysStoppedAnimation<Color>(
+          ColorTokens.onSurface.withValues(alpha: 0.6),
+        ),
+      ),
+    );
+
+    if (!reduceMotion) {
+      progress = progress.animate(delay: 800.ms).fadeIn(duration: 400.ms);
+    }
 
     return Scaffold(
       backgroundColor: ColorTokens.clubPrimary,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            (crestAsset.isNotEmpty
-                    ? Image.asset(
-                        crestAsset,
-                        width: 180,
-                        height: 180,
-                        errorBuilder: (context, error, stackTrace) =>
-                            _SplashFallbackBadge(
-                              label: RuntimeBranding.appInitials,
-                            ),
-                      )
-                    : _SplashFallbackBadge(label: RuntimeBranding.appInitials))
-                .animate()
-                .scale(duration: 500.ms, curve: Curves.easeOutBack),
-            const SizedBox(height: 32),
-            SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  ColorTokens.onSurface.withValues(alpha: 0.6),
-                ),
-              ),
-            )
-                .animate(delay: 800.ms)
-                .fadeIn(duration: 400.ms),
-          ],
+          children: [crest, const SizedBox(height: 32), progress],
         ),
       ),
     );

@@ -78,6 +78,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
       share_target: {
         action: "/admin/cms",
         method: "GET",
+        enctype: "application/x-www-form-urlencoded",
         params: {
           title: "title",
           text: "text",
@@ -125,6 +126,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     share_target: {
       action: "/share-target",
       method: "GET",
+      enctype: "application/x-www-form-urlencoded",
       params: {
         title: "title",
         text: "text",

@@ -55,7 +55,7 @@ class MarketOptionPill extends StatelessWidget {
                 if (odds != null) ...[
                   const SizedBox(height: 2),
                   Text(
-                    odds!.toStringAsFixed(1),
+                    '${odds!.toStringAsFixed(2)}x',
                     style: TypographyTokens.monolithFont(
                       fontSize: 14,
                       fontWeight: FontWeight.w800,

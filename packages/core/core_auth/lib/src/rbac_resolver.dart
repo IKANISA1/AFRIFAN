@@ -1,0 +1,130 @@
+import 'package:core_network/core_network.dart';
+import 'package:core_utils/core_utils.dart';
+
+import 'models/admin_workspace_access.dart';
+
+/// Resolves admin RBAC access for a user.
+///
+/// Extracted from [AuthRepository] to follow single-responsibility:
+/// AuthRepository handles authentication flow, while RbacResolver
+/// handles role-based access control resolution.
+class RbacResolver {
+  RbacResolver({
+    required this.tag,
+    Future<dynamic> Function(String userId)? adminAssignmentsLoader,
+    Map<String, dynamic> Function()? appMetadataLoader,
+  }) : _adminAssignmentsLoader = adminAssignmentsLoader,
+       _appMetadataLoader = appMetadataLoader;
+
+  final String tag;
+  final Future<dynamic> Function(String userId)? _adminAssignmentsLoader;
+  final Map<String, dynamic> Function()? _appMetadataLoader;
+
+  /// Resolve admin workspace access for a user.
+  ///
+  /// Returns [AdminWorkspaceAccess.none] if the user has no admin roles,
+  /// or if the resolution fails (fail-closed for safety).
+  Future<AdminWorkspaceAccess> resolve(String userId) async {
+    try {
+      final rowsResult = await SafeRpc.query<dynamic>(
+        () => _loadAdminAssignments(userId),
+        tag: tag,
+        description: 'resolveAdminAccess',
+        maxAttempts: 3,
+      );
+      if (!rowsResult.isSuccess) {
+        AfriLogger.warn(
+          tag,
+          'Admin access resolution failed: ${rowsResult.error}',
+        );
+        return AdminWorkspaceAccess.none;
+      }
+      return _resolveFromRows(rowsResult.requireData);
+    } catch (error, stackTrace) {
+      // Non-network error: log and return no access (fail-closed).
+      AfriLogger.error(
+        tag,
+        'Admin access resolution failed.',
+        error,
+        stackTrace,
+      );
+      return AdminWorkspaceAccess.none;
+    }
+  }
+
+  Future<dynamic> _loadAdminAssignments(String userId) {
+    final injectedLoader = _adminAssignmentsLoader;
+    if (injectedLoader != null) {
+      return injectedLoader(userId);
+    }
+
+    return SupabaseClientFactory.client
+        .from('admin_role_assignments')
+        .select(
+          'id, user_id, role, club_id, assigned_by, created_at, is_active',
+        )
+        .eq('user_id', userId)
+        .eq('is_active', true);
+  }
+
+  AdminWorkspaceAccess _resolveFromRows(dynamic rows) {
+    final assignments = <Map<String, dynamic>>[];
+    if (rows is List) {
+      for (final raw in rows) {
+        final row = raw is Map<String, dynamic>
+            ? raw
+            : raw is Map
+            ? Map<String, dynamic>.from(raw)
+            : null;
+        if (row == null) {
+          continue;
+        }
+
+        final role = AdminRole.fromString(row['role']?.toString());
+        assignments.add(<String, dynamic>{
+          'id': row['id'],
+          'user_id': row['user_id'],
+          'role': switch (role) {
+            AdminRole.admin => 'admin',
+            AdminRole.bank => 'bank',
+            AdminRole.partner || null => 'partner',
+          },
+          'club_id': row['club_id'],
+          'partner_scope_id': row['club_id']?.toString(),
+          'granted_by': row['assigned_by'],
+          'created_at': row['created_at'],
+          'is_active': row['is_active'],
+        });
+      }
+    }
+
+    if (assignments.isEmpty) {
+      final metadata = _appMetadataLoader?.call() ??
+          SupabaseClientFactory.client.auth.currentUser?.appMetadata ??
+          const <String, dynamic>{};
+      return AdminWorkspaceAccess.fromAppMetadata(metadata);
+    }
+
+    final partnerIds = assignments
+        .where((assignment) => assignment['role'] == 'partner')
+        .map((assignment) => assignment['partner_scope_id']?.toString() ?? '')
+        .where((value) => value.isNotEmpty)
+        .toSet();
+    final bankIds = assignments
+        .where((assignment) => assignment['role'] == 'bank')
+        .map((assignment) => assignment['partner_scope_id']?.toString() ?? '')
+        .where((value) => value.isNotEmpty)
+        .toSet();
+
+    return AdminWorkspaceAccess.fromRpcResponse(<String, dynamic>{
+      'has_platform_access': assignments.any(
+        (assignment) => assignment['role'] == 'admin',
+      ),
+      'has_bank_access': bankIds.isNotEmpty,
+      'has_partner_access': false,
+      'bank_partner_ids': bankIds.toList(growable: false),
+      'partner_admin_ids': partnerIds.toList(growable: false),
+      'role_assignments': assignments,
+    });
+  }
+}

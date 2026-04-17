@@ -8,7 +8,7 @@
   },
   "packageManager": "npm@11.8.0",
   "scripts": {
-    "build": "node -e \"const fs=require('node:fs'); fs.rmSync('tmp/deploy-check', { recursive: true, force: true }); fs.rmSync('.next/lock', { force: true });\" && node --max-old-space-size=6144 ./node_modules/next/dist/bin/next build --webpack && node scripts/ensure-next-build-artifacts.mjs && node scripts/fix-route-group-manifests.mjs",
+    "build": "node scripts/run-next-build-stable.mjs && node scripts/ensure-next-build-artifacts.mjs && node scripts/fix-route-group-manifests.mjs",
     "design-system:check": "node scripts/generate-design-tokens.mjs --check",
     "design-system:sync": "node scripts/generate-design-tokens.mjs",
     "dev": "next dev",
@@ -23,10 +23,12 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
     "size": "node scripts/check-app-shell-size.mjs",
+    "qa:supabase:verify": "node scripts/verify-supabase-feature-stack.mjs",
+    "qa:admin:live": "node scripts/run-admin-live-uat.mjs --report tmp/admin-live-uat-latest.json",
     "qa:wallet:seed": "node scripts/seed_wallet_qa_uat.mjs",
-    "preview": "node scripts/sync-cloudflare-dev-vars.mjs && opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "preview": "node scripts/sync-cloudflare-dev-vars.mjs && npm run build && opennextjs-cloudflare build --skipNextBuild && node scripts/fix-route-group-manifests.mjs --open-next && opennextjs-cloudflare preview",
+    "deploy": "npm run build && opennextjs-cloudflare build --skipNextBuild && node scripts/fix-route-group-manifests.mjs --open-next && opennextjs-cloudflare deploy",
+    "upload": "npm run build && opennextjs-cloudflare build --skipNextBuild && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {

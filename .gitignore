@@ -94,7 +94,8 @@ node_modules/
 apps/rayon_sports/web/.wrangler/
 apps/rayon_sports/web/.lighthouseci/
 apps/rayon_sports/web/tmp/
-supabase/recovery/
+supabase/recovery/*
+!supabase/recovery/*.sql
 
 # Relocated design assets (archived from root Diagrams/ and Screens/)
 docs/screenshots/archive/

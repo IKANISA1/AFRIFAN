@@ -25,7 +25,7 @@ Rayon Sports is the reference club profile used to seed defaults, assets, and ex
 
 - Authenticated supporter flows live in Flutter only.
 - Web may present public discovery, marketing, search, and supporter handoff.
-- Ticket purchase, membership management, BioPay, and authenticated fan workflows continue in the native app.
+- Ticket purchase, membership management, contributions, and authenticated fan workflows continue in the native app.
 
 ### ADR-003: Centralized Admin Workspace
 
@@ -44,7 +44,7 @@ Rayon Sports is the reference club profile used to seed defaults, assets, and ex
 ### Flutter Fan App
 
 Purpose:
-- Identity, membership, ticketing, BioPay, supporter communities, commerce, and authenticated fan engagement.
+- Identity, membership, ticketing, supporter communities, commerce, and authenticated fan engagement.
 
 Code shape:
 - `apps/<club>/` contains the native shell and assets.
@@ -128,7 +128,6 @@ packages/
     feat_home/
     feat_ticketing/
     feat_membership/
-    feat_BioPay/
     feat_shop/
     feat_contributions/
     feat_fan_clubs/

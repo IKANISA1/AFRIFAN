@@ -63,8 +63,6 @@ class Mogas90Config implements ClubConfig {
   @override
   List<String> get supportedLanguages => const ['fr', 'en'];
 
-  @override
-  bool get hasBioPay => false;
 
   @override
   bool get hasFanClubs => true;
@@ -93,7 +91,6 @@ class Mogas90Config implements ClubConfig {
 
   @override
   Map<String, bool> get features => {
-    'BioPay': hasBioPay,
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,

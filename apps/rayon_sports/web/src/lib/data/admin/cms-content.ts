@@ -113,6 +113,10 @@ function mapContent(row: Record<string, unknown>): CmsContent {
 }
 
 export async function getAdminContentBlocks(client: SupabaseClient, _access: AdminAccess) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<CmsContent[]>("cms-content");
+  }
+
   const clubId = requireAdminClubId(_access, "load CMS content blocks");
   const { data, error } = await client
     .from("ai_content")
@@ -143,6 +147,13 @@ export async function saveAdminContentBlock(
     distribution?: "web" | "app" | "both";
   },
 ) {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<string>("cms-content", {
+      method: "POST",
+      body: input,
+    });
+  }
+
   const clubId = requireAdminClubId(_access, "save CMS content blocks");
   const payload: Record<string, unknown> = {
     club_id: clubId,
@@ -176,6 +187,14 @@ export async function saveAdminContentBlock(
 }
 
 export async function deleteAdminContentBlock(client: SupabaseClient, _access: AdminAccess, blockId: string) {
+  if (typeof window !== "undefined") {
+    await requestAdminApi<{ success: true }>("cms-content", {
+      method: "DELETE",
+      query: { id: blockId },
+    });
+    return;
+  }
+
   const clubId = requireAdminClubId(_access, "delete CMS content blocks");
   const { error } = await client
     .from("ai_content")

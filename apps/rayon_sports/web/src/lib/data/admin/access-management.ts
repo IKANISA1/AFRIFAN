@@ -59,7 +59,7 @@ async function getAuthEmailMap(
   return new Map(entries);
 }
 
-function mRayon SportsoleAssignment(
+function mapRoleAssignment(
   row: Record<string, unknown>,
   usersById: Map<string, Record<string, unknown>>,
   clubsById: Map<string, string>,
@@ -182,7 +182,7 @@ export async function getAdminRoleAssignments(
   );
 
   return rows.map((row) =>
-    mRayon SportsoleAssignment(row, usersById, clubsById, partnersById, authEmails),
+    mapRoleAssignment(row, usersById, clubsById, partnersById, authEmails),
   );
 }
 

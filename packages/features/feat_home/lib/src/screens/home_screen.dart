@@ -196,11 +196,11 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(width: SpacingTokens.listItemGap),
               FeatureGate(
-                featureKey: 'BioPay',
+                featureKey: 'contributions',
                 child: Expanded(
                   child: AfriButton(
-                    label: 'BioPay',
-                    onTap: () => context.push('/BioPay'),
+                    label: 'Contribute',
+                    onTap: () => context.push('/contribute'),
                     variant: AfriButtonVariant.primary,
                   ),
                 ),

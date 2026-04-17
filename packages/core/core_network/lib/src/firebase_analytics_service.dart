@@ -59,6 +59,86 @@ class FirebaseAnalyticsService {
   /// Returns a RouteObserver that logs screen views.
   static RouteObserver<Route<dynamic>> get routeObserver =>
       _AnalyticsRouteObserver();
+
+  // ─── Structured Business Events ───────────────────────────────
+
+  /// User signed in (anonymous, phone OTP, etc.).
+  static Future<void> logSignIn({required String method}) =>
+      logEvent('sign_in', parameters: <String, Object>{'method': method});
+
+  /// User completed onboarding.
+  static Future<void> logOnboardingComplete() =>
+      logEvent('onboarding_complete');
+
+  /// Profile updated (display name, avatar, etc.).
+  static Future<void> logProfileUpdate({required String field}) =>
+      logEvent('profile_update', parameters: <String, Object>{'field': field});
+
+  /// Prediction placed on a fixture market.
+  static Future<void> logPredictionPlaced({
+    required String marketSlug,
+    required String selectedOutcome,
+    required int fetStaked,
+  }) =>
+      logEvent('prediction_placed', parameters: <String, Object>{
+        'market_slug': marketSlug,
+        'selected_outcome': selectedOutcome,
+        'fet_staked': fetStaked,
+      });
+
+  /// Prediction settled (won/lost).
+  static Future<void> logPredictionSettled({
+    required String status,
+    required int fetEarned,
+  }) =>
+      logEvent('prediction_settled', parameters: <String, Object>{
+        'status': status,
+        'fet_earned': fetEarned,
+      });
+
+  /// FET wallet transfer sent.
+  static Future<void> logWalletTransfer({
+    required int amount,
+    required String direction,
+  }) =>
+      logEvent('wallet_transfer', parameters: <String, Object>{
+        'amount': amount,
+        'direction': direction,
+      });
+
+  /// Challenge created by user.
+  static Future<void> logChallengeCreated({required int stakeFet}) =>
+      logEvent('challenge_created', parameters: <String, Object>{
+        'stake_fet': stakeFet,
+      });
+
+  /// User joined a challenge.
+  static Future<void> logChallengeJoined({required String challengeId}) =>
+      logEvent('challenge_joined', parameters: <String, Object>{
+        'challenge_id': challengeId,
+      });
+
+  /// Membership created or renewed.
+  static Future<void> logMembershipAction({required String action}) =>
+      logEvent('membership_action', parameters: <String, Object>{
+        'action': action,
+      });
+
+  /// MoMo SMS parsed successfully.
+  static Future<void> logMomoSmsParsed({
+    required String provider,
+    required int amount,
+  }) =>
+      logEvent('momo_sms_parsed', parameters: <String, Object>{
+        'provider': provider,
+        'amount': amount,
+      });
+
+  /// Feature flag check — logs when a disabled feature is accessed.
+  static Future<void> logFeatureGated({required String featureKey}) =>
+      logEvent('feature_gated', parameters: <String, Object>{
+        'feature_key': featureKey,
+      });
 }
 
 class _AnalyticsRouteObserver extends RouteObserver<PageRoute<dynamic>> {

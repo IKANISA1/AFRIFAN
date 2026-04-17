@@ -4,7 +4,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { fallbackClubProfile } from "@/lib/content";
 import type { AdminAccess, AdminClubScopeOption, ClubProfile } from "@/lib/types";
-import { safeNumber, safeString } from "@/lib/utils";
+import {
+  isValidHexColor,
+  normalizeHexColorInput,
+  safeNumber,
+  safeString,
+} from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import {
   adminClubIdOrNull,
@@ -170,6 +175,22 @@ export async function saveAdminClubProfile(
     throw new Error("Club slug is required to save club settings.");
   }
 
+  const primaryColorHex = normalizeHexColorInput(input.primaryColorHex);
+  const secondaryColorHex = normalizeHexColorInput(input.secondaryColorHex);
+  const accentColorHex = normalizeHexColorInput(input.accentColorHex);
+
+  if (!isValidHexColor(primaryColorHex)) {
+    throw new Error("Primary team color must be a valid hex value like #1A7A4E.");
+  }
+
+  if (!isValidHexColor(secondaryColorHex)) {
+    throw new Error("Secondary team color must be a valid hex value like #0E2B55.");
+  }
+
+  if (!isValidHexColor(accentColorHex)) {
+    throw new Error("Accent team color must be a valid hex value like #F7B500.");
+  }
+
   const payload = {
     club_name: input.clubName.trim(),
     club_slug: clubSlug,
@@ -188,9 +209,9 @@ export async function saveAdminClubProfile(
     instagram_url: safeString(input.instagramUrl) || null,
     tiktok_url: safeString(input.tiktokUrl) || null,
     official_logo_url: safeString(input.officialLogoUrl) || null,
-    primary_color_hex: input.primaryColorHex.trim(),
-    secondary_color_hex: input.secondaryColorHex.trim(),
-    accent_color_hex: input.accentColorHex.trim(),
+    primary_color_hex: primaryColorHex,
+    secondary_color_hex: secondaryColorHex,
+    accent_color_hex: accentColorHex,
     feature_flags: input.featureFlags,
   };
   const payloadWithoutShortName = Object.fromEntries(

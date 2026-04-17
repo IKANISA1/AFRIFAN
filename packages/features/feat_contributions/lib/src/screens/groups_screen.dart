@@ -1,4 +1,3 @@
-import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
@@ -8,7 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../widgets/group_card.dart';
 
-/// Groups list screen — shows user's contribution Groups.
+/// Communities list screen — shows admin-managed public initiatives.
 class GroupsScreen extends ConsumerStatefulWidget {
   const GroupsScreen({super.key});
 
@@ -43,9 +42,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                   'current_total': g.currentTotal,
                   'target_amount': g.targetAmount,
                   'member_count': g.memberCount,
-                  'privacy': g.privacy.value,
                   'group_type': g.groupType.value,
-                  'invite_code': g.inviteCode,
                   'created_at': g.createdAt.toIso8601String(),
                 },
               )
@@ -58,32 +55,10 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _error = 'Could not load your Groups right now.';
+          _error = 'Could not load public communities right now.';
         });
       }
     }
-  }
-
-  void _openCreateGroup() {
-    final profile = ProviderScope.containerOf(
-      context,
-    ).read(currentUserProvider);
-    if (profile == null) {
-      context.go('/onboarding');
-      return;
-    }
-    context.push('/contribute/create');
-  }
-
-  void _openJoinGroup() {
-    final profile = ProviderScope.containerOf(
-      context,
-    ).read(currentUserProvider);
-    if (profile == null) {
-      context.go('/onboarding');
-      return;
-    }
-    context.push('/contribute/join');
   }
 
   @override
@@ -108,7 +83,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          'My groups',
+          'Communities',
           style: TypographyTokens.headlineSmall(),
         ),
         leading: IconButton(
@@ -125,20 +100,6 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
           ),
           tooltip: 'Back',
         ),
-        actions: [
-          AfriIconButton(
-            icon: AfriIcons.join,
-            onTap: _openJoinGroup,
-            tooltip: 'Join group',
-          ),
-          const SizedBox(width: SpacingTokens.spacing1),
-          AfriIconButton(
-            icon: AfriIcons.add,
-            onTap: _openCreateGroup,
-            tooltip: 'New group',
-          ),
-          const SizedBox(width: SpacingTokens.spacing4),
-        ],
       ),
       body: SafeArea(
         child: CustomScrollView(
@@ -159,7 +120,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                   children: [
                     Expanded(
                       child: AfriMetricTile(
-                        label: 'Groups',
+                        label: 'Initiatives',
                         value: '${_groups.length}',
                         accentColor: ColorTokens.clubAccent,
                       ),
@@ -179,7 +140,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
 
             if (_groups.isNotEmpty)
               const SliverToBoxAdapter(
-                child: AfriSectionHeader(title: 'Active groups'),
+                child: AfriSectionHeader(title: 'Active initiatives'),
               ),
 
             const SliverToBoxAdapter(
@@ -204,7 +165,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                     horizontal: SpacingTokens.spacing6,
                   ),
                   child: AfriStateView.offline(
-                    title: 'Groups unavailable',
+                    title: 'Communities unavailable',
                     message: _error!,
                     actionLabel: 'Retry',
                     onAction: _loadGroups,
@@ -243,10 +204,11 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                   padding: const EdgeInsets.all(SpacingTokens.spacing6),
                   child: AfriEmptyView(
                     icon: AfriIcons.groups,
-                    title: 'No groups yet',
-                    message: 'Create or join a group to start contributing.',
-                    actionLabel: 'Create group',
-                    onAction: _openCreateGroup,
+                    title: 'No communities yet',
+                    message:
+                        'Team projects and communities appear here after admin setup.',
+                    actionLabel: 'Browse fan clubs',
+                    onAction: () => context.go('/fan-clubs'),
                   ),
                 ),
               ),

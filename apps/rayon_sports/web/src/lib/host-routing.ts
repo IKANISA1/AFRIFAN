@@ -1,4 +1,4 @@
-const ADMIN_HOSTNAME = "admin.gikundiro.com";
+const ADMIN_HOSTNAMES = new Set(["admin.gikundiro.com"]);
 const STATIC_FILE_PATTERN = /\.[a-z0-9]+$/i;
 
 export function resolveRoutingHostname(
@@ -32,7 +32,7 @@ function mapSubdomainPath(pathname: string, routePrefix: string) {
 }
 
 export function isAdminHostname(hostname: string | null | undefined) {
-  return resolveRoutingHostname(hostname) === ADMIN_HOSTNAME;
+  return ADMIN_HOSTNAMES.has(resolveRoutingHostname(hostname));
 }
 
 export function shouldBypassSubdomainRewrite(pathname: string) {

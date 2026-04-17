@@ -16,7 +16,7 @@ export function SectionHeading({
   return (
     <div className={className ?? "space-y-4"}>
       {eyebrow ? (
-        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[var(--club-accent)]">
+        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-200">
           {eyebrow}
         </p>
       ) : null}
@@ -24,7 +24,7 @@ export function SectionHeading({
         {title}
       </h2>
       {description ? (
-        <p className="max-w-2xl text-base font-medium leading-relaxed text-white/60">
+        <p className="max-w-2xl text-base font-medium leading-relaxed text-slate-100">
           {description}
         </p>
       ) : null}

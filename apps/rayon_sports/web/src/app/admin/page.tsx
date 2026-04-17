@@ -1,20 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { type ComponentProps, useCallback, useEffect, useState } from "react";
 import {
-  Award,
-  Users,
-  GroupDollarSign,
-  ArrowRightLeft,
-  Ticket,
+  DollarSign,
   Newspaper,
   CalendarDays,
-  HeartHandshake,
   Bell,
-  Settings,
   ShoppingBag,
   Crown,
+  Settings,
+  Users,
 } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
@@ -45,11 +41,12 @@ const quickActions = [
   { href: "/admin/notifications", title: "App Push & Alerts", icon: Bell },
   { href: "/admin/matches", title: "Matchday Centre", icon: CalendarDays },
   { href: "/admin/membership", title: "Memberships", icon: Crown },
-  { href: "/admin/community", title: "Support Circles", icon: HeartHandshake },
   { href: "/admin/shop", title: "Shop Operations", icon: ShoppingBag },
-  { href: "/admin/settings", title: "Platform Config", icon: Settings },
   { href: "/admin/access", title: "Role Management", icon: Users },
+  { href: "/admin/settings", title: "Platform Config", icon: Settings },
 ];
+
+type AdminStatusTone = NonNullable<ComponentProps<typeof AdminStatusBadge>["tone"]>;
 
 export default function AdminDashboardPage() {
   const { client, access, activeClub } = useAdminPortal();
@@ -83,6 +80,68 @@ export default function AdminDashboardPage() {
     loadDashboard().catch(() => { });
   }, [access.hasAccess, client, loadDashboard]);
 
+  const operationalQueue: {
+    key: string;
+    title: string;
+    href: string;
+    value: string;
+    detail: string;
+    tone: AdminStatusTone;
+    badge: string;
+  }[] = [
+    {
+      key: "verifications",
+      title: "Pending verifications",
+      href: "/admin/membership",
+      value: loading ? "..." : snapshot.metrics.pendingVerifications.toLocaleString(),
+      detail:
+        snapshot.metrics.pendingVerifications > 0
+          ? "Review supporter approvals before they queue up."
+          : "No approvals are waiting.",
+      tone: snapshot.metrics.pendingVerifications > 0
+        ? ("warning" as const)
+        : ("success" as const),
+      badge: snapshot.metrics.pendingVerifications > 0 ? "Needs review" : "Clear",
+    },
+    {
+      key: "tickets",
+      title: "Recent ticket sales",
+      href: "/admin/tickets",
+      value: loading ? "..." : snapshot.metrics.recentTicketSales.toLocaleString(),
+      detail: "Latest activity from live matchday commerce.",
+      tone: "info" as const,
+      badge: "Live",
+    },
+    {
+      key: "circles",
+      title: "Support circles",
+      href: "/admin/community",
+      value: loading ? "..." : snapshot.metrics.activeSupportCircles.toLocaleString(),
+      detail:
+        snapshot.metrics.activeSupportCircles > 0
+          ? "Community chapters with active operations."
+          : "No circles are active yet.",
+      tone: snapshot.metrics.activeSupportCircles > 0
+        ? ("success" as const)
+        : ("neutral" as const),
+      badge: snapshot.metrics.activeSupportCircles > 0 ? "Active" : "Idle",
+    },
+    {
+      key: "activity",
+      title: "Recent events",
+      href: "/admin/settings/audit",
+      value: loading ? "..." : snapshot.activity.length.toLocaleString(),
+      detail:
+        snapshot.activity.length > 0
+          ? "Audit what changed across content and operations."
+          : "No recent admin actions recorded.",
+      tone: snapshot.activity.length > 0
+        ? ("accent" as const)
+        : ("neutral" as const),
+      badge: snapshot.activity.length > 0 ? "Tracked" : "Quiet",
+    },
+  ];
+
   return (
     <div className="section-grid !gap-6">
       <AdminPageHeader
@@ -114,6 +173,7 @@ export default function AdminDashboardPage() {
         <KPITile
           label="Support Circles"
           value={loading ? "..." : snapshot.metrics.activeSupportCircles.toLocaleString()}
+          icon={DollarSign}
         />
         <KPITile
           label="Ticket Sales"
@@ -131,30 +191,37 @@ export default function AdminDashboardPage() {
 
       <section className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
-          <AdminSurface title="Operational lanes">
+          <AdminSurface title="Priority queue">
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="ui-panel-inset rounded-2xl p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--admin-text-strong)]">Website Status</h3>
-                  <AdminStatusBadge label="Live" tone="success" />
+              {operationalQueue.map((item) => (
+                <div key={item.key} className="ui-panel-inset rounded-2xl p-4 space-y-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--admin-text-strong)]">
+                      {item.title}
+                    </h3>
+                    <AdminStatusBadge label={item.badge} tone={item.tone} />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-2xl font-bold tracking-tight text-[var(--admin-text-strong)]">
+                      {item.value}
+                    </p>
+                    <p className="text-xs leading-5 text-[var(--admin-zinc-400)]">
+                      {item.detail}
+                    </p>
+                  </div>
+                  <Link
+                    href={withAdminClubScope(item.href, activeClub?.id ?? access.clubId)}
+                    className="text-[11px] font-bold text-club-accent hover:underline"
+                  >
+                    Open queue →
+                  </Link>
                 </div>
-                <p className="text-[10px] text-[var(--admin-zinc-500)]">Last cache invalidation: 12 mins ago</p>
-                <Link href={withAdminClubScope("/admin/cms", activeClub?.id ?? access.clubId)} className="text-[11px] font-bold text-club-accent hover:underline">Manage stories →</Link>
-              </div>
-
-              <div className="ui-panel-inset rounded-2xl p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--admin-text-strong)]">App Services</h3>
-                  <AdminStatusBadge label="Operational" tone="success" />
-                </div>
-                <p className="text-[10px] text-[var(--admin-zinc-500)]">Push server: Connected</p>
-                <Link href={withAdminClubScope("/admin/notifications", activeClub?.id ?? access.clubId)} className="text-[11px] font-bold text-club-accent hover:underline">Send notification →</Link>
-              </div>
+              ))}
             </div>
           </AdminSurface>
 
           <AdminSurface title="Quick actions">
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
               {quickActions.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -172,56 +239,47 @@ export default function AdminDashboardPage() {
           </AdminSurface>
         </div>
 
-        <div className="space-y-6">
-          <AdminSurface title="Recent activity">
-            <div className="divide-y divide-[var(--admin-border)]">
-              {loading ? (
-                <div className="p-4 space-y-4">
-                  {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i} className="space-y-2">
-                      <Skeleton className="skeleton-text h-4 w-1/2" />
-                      <Skeleton className="skeleton-text h-3 w-full" />
-                    </div>
-                  ))}
-                </div>
-              ) : snapshot.activity.length === 0 ? (
-                <div className="p-8 text-center text-sm text-[var(--admin-zinc-500)]">
-                  No recent activity detected.
-                </div>
-              ) : (
-                snapshot.activity.map((item) => (
-                  <div key={item.id} className="p-4 hover:bg-[var(--admin-zinc-800)] transition-colors">
-                    <div className="flex justify-between items-start gap-3">
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold text-[var(--admin-text-strong)] truncate">
-                          {item.title}
-                        </p>
-                        <p className="mt-0.5 text-xs text-[var(--admin-zinc-400)]">
-                          {item.detail}
-                        </p>
-                      </div>
-                      <time className="shrink-0 text-[10px] font-medium text-[var(--admin-zinc-500)]">
-                        {new Date(item.createdAt).toLocaleString("en-RW", {
-                          month: "short",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </time>
-                    </div>
+        <AdminSurface title="Recent activity" className="lg:sticky lg:top-24 lg:h-fit">
+          <div className="divide-y divide-[var(--admin-border)]">
+            {loading ? (
+              <div className="p-4 space-y-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="space-y-2">
+                    <Skeleton className="skeleton-text h-4 w-1/2" />
+                    <Skeleton className="skeleton-text h-3 w-full" />
                   </div>
-                ))
-              )}
-            </div>
-          </AdminSurface>
-
-          <AdminSurface title="Support">
-            <div className="ui-panel-inset rounded-2xl p-4 text-center">
-              <p className="text-xs text-[var(--admin-zinc-400)] mb-3">Need assistance with operations?</p>
-              <a href="https://wa.me/250788767816" target="_blank" className="ui-button-primary w-full py-2 text-xs">WhatsApp Admin</a>
-            </div>
-          </AdminSurface>
-        </div>
+                ))}
+              </div>
+            ) : snapshot.activity.length === 0 ? (
+              <div className="p-8 text-center text-sm text-[var(--admin-zinc-500)]">
+                No recent activity detected.
+              </div>
+            ) : (
+              snapshot.activity.map((item) => (
+                <div key={item.id} className="p-4 transition-colors hover:bg-[var(--admin-zinc-800)]">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-[var(--admin-text-strong)]">
+                        {item.title}
+                      </p>
+                      <p className="mt-0.5 text-xs text-[var(--admin-zinc-400)]">
+                        {item.detail}
+                      </p>
+                    </div>
+                    <time className="shrink-0 text-[10px] font-medium text-[var(--admin-zinc-500)]">
+                      {new Date(item.createdAt).toLocaleString("en-RW", {
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </time>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </AdminSurface>
       </section>
     </div>
   );

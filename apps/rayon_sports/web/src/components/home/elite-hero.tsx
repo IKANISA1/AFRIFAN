@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Calendar, MapPin, Ticket } from "lucide-react";
+import { resolveFanAppHref } from "@/lib/config";
 import { cn, formatDateTime } from "@/lib/utils";
 import type { ClubProfile, MatchItem } from "@/lib/types";
 
@@ -45,22 +46,23 @@ export function EliteHero({
           <h1 className="font-display text-5xl font-black uppercase italic leading-[0.9] tracking-tighter text-white drop-shadow-xl lg:text-8xl">
             {headline || "One Club. One City. One Beloved."}
           </h1>
-          <p className="mt-6 max-w-xl text-lg font-medium leading-relaxed text-white/80 drop-shadow-md lg:text-xl">
+          <p className="mt-6 max-w-xl text-lg font-medium leading-relaxed text-white/92 drop-shadow-md lg:text-xl">
             {description || "Join the legacy of Rwanda's most successful club. Experience matchday magic, exclusive content, and a community like no other."}
           </p>
           
           <div className="mt-10 flex flex-wrap gap-4">
             <Link 
               href="/membership" 
-              className="group flex items-center gap-3 rounded-full bg-[var(--club-accent)] px-8 py-4 text-sm font-black uppercase tracking-widest text-[var(--club-primary)] transition-all hover:scale-105 hover:bg-white"
+              className="group flex items-center gap-3 rounded-full bg-[var(--club-accent)] px-8 py-4 text-sm font-black uppercase tracking-widest text-slate-950 transition-all hover:scale-105 hover:bg-white"
             >
               Join the Beloved <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
             </Link>
             <Link 
-              href="/news" 
-              className="flex items-center gap-3 rounded-full border-2 border-white/20 bg-white/5 px-8 py-4 text-sm font-black uppercase tracking-widest text-white backdrop-blur-md transition-all hover:border-white hover:bg-white/10"
+              href={resolveFanAppHref()}
+              aria-label="Open supporter app"
+              className="flex items-center gap-3 rounded-full border-2 border-white/18 bg-slate-950/72 px-8 py-4 text-sm font-black uppercase tracking-widest text-white backdrop-blur-md transition-all hover:border-white/40 hover:bg-slate-900/88"
             >
-              Latest News
+              Open supporter app
             </Link>
           </div>
         </div>
@@ -81,11 +83,11 @@ export function EliteHero({
                 </div>
                 
                 <div className="text-center">
-                  <div className="mb-2 inline-block rounded-full bg-slate-100 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  <div className="mb-2 inline-block rounded-full bg-slate-100 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-slate-700">
                     {featuredMatch.competition}
                   </div>
-                  <p className="font-display text-4xl font-black italic text-slate-200 lg:text-6xl">VS</p>
-                  <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  <p className="font-display text-4xl font-black italic text-slate-500 lg:text-6xl">VS</p>
+                  <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-slate-700">
                     {formatDateTime(featuredMatch.matchDate)}
                   </p>
                 </div>
@@ -119,7 +121,7 @@ export function EliteHero({
                 ) : (
                   <Link 
                     href="/news" 
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-200 py-4 text-xs font-black uppercase tracking-widest text-slate-500"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 py-4 text-xs font-black uppercase tracking-widest text-white transition-all hover:bg-slate-700"
                   >
                     Match Center
                   </Link>

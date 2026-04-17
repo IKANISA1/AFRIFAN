@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../models/fanzone_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
+import 'package:core_utils/core_utils.dart';
 
 class ClubFanZoneScreen extends ConsumerStatefulWidget {
   const ClubFanZoneScreen({super.key});
@@ -97,7 +98,8 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
         _pulse = pulse;
         _isLoading = false;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('ClubFanZoneScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) {
         return;
       }

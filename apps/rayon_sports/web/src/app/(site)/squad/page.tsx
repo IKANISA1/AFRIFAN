@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, ShieldCheck, Zap } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { getClubProfile, getSquad } from "@/lib/data/public";
+import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import {
   buildPageMetadata,
   buildSquadJsonLd,
@@ -22,6 +23,11 @@ export async function generateMetadata() {
 }
 
 export default async function SquadPage() {
+  const featureGate = await getFeaturePageGuard("squad");
+  if (featureGate) {
+    return featureGate;
+  }
+
   const [club, squad] = await Promise.all([getClubProfile(), getSquad()]);
   const copy = getSiteCopy(club.defaultLanguage);
   

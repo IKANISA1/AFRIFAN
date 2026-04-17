@@ -28,24 +28,34 @@ class AppShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ── Resolve Tabs from Config ──
-    final navFeatures = ref.watch(navFeaturesProvider);
-    final List<TabRoute> tabs;
+    final featureService = ref.watch(featureConfigServiceProvider);
+    final tabModules = modules
+        .where(
+          (module) =>
+              module.tabRoute != null &&
+              primaryBottomTabFeatureKeys.contains(module.featureKey),
+        )
+        .toList()
+      ..sort(
+        (left, right) => primaryBottomTabOrderForFeature(
+          left.featureKey,
+        ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
+      );
+    final visibleEntries = tabModules.asMap().entries.where((entry) {
+      final feature = featureService.getFeature(entry.value.featureKey);
+      if (feature == null) {
+        return true;
+      }
+      return featureService.isFeatureEnabled(entry.value.featureKey);
+    }).toList();
 
-    if (navFeatures.isNotEmpty) {
-      // Map sorted config features back to module tab routes
-      tabs = navFeatures.map((f) {
-        return modules
-            .firstWhere((m) => m.featureKey == f.featureKey)
-            .tabRoute!;
-      }).toList();
-    } else {
-      // Fallback to static module order
-      tabs = modules
-          .where((m) => m.tabRoute != null)
-          .map((m) => m.tabRoute!)
-          .toList();
-    }
+    final resolvedEntries = visibleEntries.isNotEmpty
+        ? visibleEntries
+        : tabModules.asMap().entries.toList();
+    final currentVisibleIndex = resolvedEntries.indexWhere(
+      (entry) => entry.key == shell.currentIndex,
+    );
+    final selectedIndex = currentVisibleIndex >= 0 ? currentVisibleIndex : 0;
 
     // In release/profile builds, wrap each tab's content in an error boundary
     // so a crash in one tab does not take down the entire shell.
@@ -69,16 +79,20 @@ class AppShell extends ConsumerWidget {
       extendBody: true,
       body: body,
       bottomNavigationBar: AfriClubBottomNav(
-        currentIndex: shell.currentIndex,
+        currentIndex: selectedIndex,
         onTap: (index) {
-          shell.goBranch(index, initialLocation: index == shell.currentIndex);
+          final branchIndex = resolvedEntries[index].key;
+          shell.goBranch(
+            branchIndex,
+            initialLocation: branchIndex == shell.currentIndex,
+          );
         },
-        items: tabs
+        items: resolvedEntries
             .map(
-              (tab) => AfriClubNavItem(
-                icon: tab.icon,
-                activeIcon: tab.activeIcon,
-                label: tab.label,
+              (entry) => AfriClubNavItem(
+                icon: entry.value.tabRoute!.icon,
+                activeIcon: entry.value.tabRoute!.activeIcon,
+                label: entry.value.tabRoute!.label,
               ),
             )
             .toList(),

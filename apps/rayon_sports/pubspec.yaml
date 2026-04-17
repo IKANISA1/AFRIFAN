@@ -42,8 +42,6 @@ dependencies:
     path: ../../packages/features/feat_contributions
   feat_shop:
     path: ../../packages/features/feat_shop
-  feat_biopay:
-    path: ../../packages/features/feat_biopay
   feat_sms_ledger:
     path: ../../packages/features/feat_sms_ledger
   feat_settings:
@@ -71,6 +69,7 @@ dependencies:
   flutter_riverpod: ^2.6.1
   hive_flutter: ^1.1.0
   firebase_core: ^4.5.0
+  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   integration_test:
@@ -85,7 +84,6 @@ flutter:
   assets:
     - assets/crest/
     - assets/images/
-    - assets/models/BioPay/
     - google_fonts/
 
 resolution: workspace

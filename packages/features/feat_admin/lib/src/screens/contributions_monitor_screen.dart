@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:core_utils/core_utils.dart';
 
 class ContributionsMonitorScreen extends ConsumerStatefulWidget {
   const ContributionsMonitorScreen({super.key});
@@ -40,8 +41,8 @@ class _ContributionsMonitorScreenState
 
       var groupsQuery = client.from('contribution_groups').select(
         'id, name, description, group_type, target_amount, '
-        'current_total, member_count, creator_id, invite_code, '
-        'is_closed, privacy, created_at',
+        'current_total, member_count, creator_id, '
+        'is_closed, created_at',
       );
       groupsQuery = resolver.apply(groupsQuery, scope);
       final groups = List<Map<String, dynamic>>.from(
@@ -92,7 +93,8 @@ class _ContributionsMonitorScreenState
               aliasMap[id] = alias;
             }
           }
-        } catch (_) {
+        } catch (error, stackTrace) {
+      AfriLogger.warn('ContributionsMonitorScreen', 'Operation failed (non-critical).', error, stackTrace);
           // Alias resolution is best-effort for admin reporting.
         }
       }
@@ -118,11 +120,10 @@ class _ContributionsMonitorScreenState
     final filtered = _groups
         .where((group) {
           final type =
-              group['group_type']?.toString().toLowerCase() ?? 'general';
+              group['group_type']?.toString().toLowerCase() ?? 'community';
           return switch (_selectedFilter) {
-            'CLUB PROJECTS' => type == 'project',
-            'COMMUNITY' => type == 'general' || type == 'community',
-            'SAVINGS' => type == 'savings',
+            'TEAM PROJECTS' => type == 'project',
+            'COMMUNITY' => type == 'community',
             _ => true,
           };
         })
@@ -204,7 +205,7 @@ class _ContributionsMonitorScreenState
         );
         final lastActivity = _lastActivityForGroup(groupId);
         return [
-          group['name']?.toString() ?? 'Group',
+          group['name']?.toString() ?? 'Public group',
           group['group_type']?.toString() ?? 'general',
           '$total',
           '$target',
@@ -273,7 +274,7 @@ class _ContributionsMonitorScreenState
                           spacing: SpacingTokens.spacing2,
                           runSpacing: SpacingTokens.spacing2,
                           children:
-                              ['ALL', 'CLUB PROJECTS', 'COMMUNITY', 'SAVINGS']
+                              ['ALL', 'TEAM PROJECTS', 'COMMUNITY']
                                   .map(
                                     (filter) => ChoiceChip(
                                       selected: _selectedFilter == filter,
@@ -305,8 +306,8 @@ class _ContributionsMonitorScreenState
                   const SizedBox(height: SpacingTokens.spacing4),
                   if (_filteredGroups.isEmpty)
                     const _AdminMonitorState(
-                      title: 'No active Groups',
-                      body: 'Groups will appear when created.',
+                      title: 'No active public groups',
+                      body: 'Groups will appear here after admin setup.',
                       actionLabel: null,
                     )
                   else
@@ -336,7 +337,7 @@ class _ContributionsMonitorScreenState
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      (group['name']?.toString() ?? 'Group')
+                                      (group['name']?.toString() ?? 'Public group')
                                           .toUpperCase(),
                                       style: TypographyTokens.titleLarge()
                                           .copyWith(
@@ -390,10 +391,8 @@ class _ContributionsMonitorScreenState
   }
 
   static String _groupTypeLabel(String? value) {
-    return switch ((value ?? 'general').toLowerCase()) {
-      'project' => 'CLUB PROJECT',
-      'savings' => 'SAVINGS',
-      'emergency' => 'EMERGENCY',
+    return switch ((value ?? 'community').toLowerCase()) {
+      'project' => 'TEAM PROJECT',
       _ => 'COMMUNITY',
     };
   }

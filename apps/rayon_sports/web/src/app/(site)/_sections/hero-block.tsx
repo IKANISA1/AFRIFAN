@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { EliteHero } from "@/components/home/elite-hero";
+import { resolveFanAppHref } from "@/lib/config";
 import {
   getClubProfile,
   getContributionGroups,
@@ -11,6 +12,7 @@ import {
 } from "@/lib/data/public";
 
 const fallbackQuickLinks = [
+  { href: resolveFanAppHref(), label: "Fan portal" },
   { href: "/tickets", label: "Buy tickets" },
   { href: "/Groups", label: "Support Groups" },
   { href: "/membership", label: "Membership tiers" },
@@ -39,10 +41,19 @@ export async function HeroBlock() {
     null;
 
   // Use banners as quick links when available, else fall back
-  const quickLinks =
+  const quickLinks = (
     banners.length > 0
-      ? banners.map((b) => ({ href: b.route, label: b.ctaLabel || b.title }))
-      : fallbackQuickLinks;
+      ? [
+          { href: resolveFanAppHref(), label: "Fan portal" },
+          ...banners.map((b) => ({ href: b.route, label: b.ctaLabel || b.title })),
+        ]
+      : fallbackQuickLinks
+  ).filter(
+    (item, index, items) =>
+      items.findIndex(
+        (candidate) => candidate.href === item.href && candidate.label === item.label,
+      ) === index,
+  );
 
   return (
     <div className="space-y-12">
@@ -60,7 +71,7 @@ export async function HeroBlock() {
             key={item.href}
             href={item.href}
             prefetch={false}
-            className="inline-flex min-h-11 items-center rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm font-semibold text-slate-100 transition hover:-translate-y-0.5 hover:bg-white/10 hover:text-white"
+            className="inline-flex min-h-11 items-center rounded-full border border-slate-700 bg-slate-950/78 px-4 py-2 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-900 hover:text-white"
           >
             {item.label}
           </Link>

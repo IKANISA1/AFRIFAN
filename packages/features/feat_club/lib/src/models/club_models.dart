@@ -1,7 +1,7 @@
 /// Barrel re-export for all club domain models.
 ///
 /// Decomposed from the original monolithic club_models.dart into:
-///   ✅ domain/contribution_models.dart — ContributionGroup, GroupMessage
+///   ✅ domain/contribution_models.dart — ContributionGroup
 ///   ✅ domain/fan_models.dart          — FanMembership, FanClub
 ///   ✅ domain/match_models.dart        — ClubMatch, ClubTicket
 ///   ✅ domain/shop_models.dart         — ClubProduct, CartItem, ClubShopOrder

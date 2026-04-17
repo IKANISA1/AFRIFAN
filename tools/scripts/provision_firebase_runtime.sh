@@ -169,9 +169,6 @@ echo "Firebase project:"
 echo "  $PROJECT_ID"
 echo "Service account:"
 echo "  $CLIENT_EMAIL"
-echo ""
-echo "Local validation:"
-echo "  FIREBASE_ENV_FILE=$ENV_FILE bash tools/scripts/validate_BioPay_firebase.sh rayon_sports"
 
 if [ "$PUSH_SUPABASE" -eq 1 ]; then
   if [ -z "$SUPABASE_PROJECT_REF" ]; then

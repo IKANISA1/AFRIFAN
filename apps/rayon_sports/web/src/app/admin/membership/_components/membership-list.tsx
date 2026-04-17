@@ -61,21 +61,21 @@ export function MembershipList({
             </thead>
             <tbody>
               {packages.map((pkg) => (
-                <tr key={pkg.id}>
-                  <td>
+                <tr key={pkg.id} className="admin-table-row">
+                  <td className="admin-table-cell" data-column-label="Tier">
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="admin-row-title">{pkg.title}</p>
                       <AdminStatusBadge label={pkg.tier} tone={tierTone(pkg.tier)} />
                     </div>
                     <p className="admin-row-copy">{pkg.description}</p>
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Status">
                     <AdminStatusBadge
                       label={pkg.isActive ? "Visible" : "Hidden"}
                       tone={pkg.isActive ? "success" : "neutral"}
                     />
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Price">
                     <p className="text-sm font-medium text-white">
                       {formatCurrency(pkg.annualPrice, currencyCode)}
                     </p>
@@ -83,18 +83,18 @@ export function MembershipList({
                       {pkg.annualPrice > 0 ? "annual plan" : "free tier"}
                     </p>
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Perks">
                     <p className="text-sm font-medium text-white">{pkg.perks.length}</p>
                     <p className="admin-row-meta">
                       {pkg.perks.slice(0, 2).join(" · ") || "No perks listed"}
                     </p>
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Order">
                     <p className="text-sm font-medium text-white">{pkg.sortOrder}</p>
                     <p className="admin-row-meta">display order</p>
                   </td>
-                  <td>
-                    <div className="flex justify-end gap-2">
+                  <td className="admin-table-cell" data-column-label="Actions">
+                    <div className="flex flex-wrap justify-start gap-2 sm:justify-end">
                       <button
                         type="button"
                         onClick={() => onEdit(pkg)}

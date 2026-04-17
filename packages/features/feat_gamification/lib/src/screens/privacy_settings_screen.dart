@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../prediction_providers.dart';
+import 'package:core_utils/core_utils.dart';
 
 /// Privacy settings screen — core guarantees + visibility toggles.
 ///
@@ -85,7 +86,8 @@ class _PrivacySettingsScreenState
       } else {
         setState(() => _isLoadingFromServer = false);
       }
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('PrivacySettingsScreen', 'Operation failed (non-critical).', error, stackTrace);
       // Keep cached values if server is unavailable.
       if (mounted) setState(() => _isLoadingFromServer = false);
     }

@@ -109,7 +109,9 @@ class PredictionShareService {
       _ => '⏳',
     };
 
-    buffer.writeln('$emoji ${data.homeTeamShort.toUpperCase()} vs ${data.awayTeamShort.toUpperCase()}');
+    buffer.writeln(
+      '$emoji ${data.homeTeamShort.toUpperCase()} vs ${data.awayTeamShort.toUpperCase()}',
+    );
     if (data.homeScore != null && data.awayScore != null) {
       buffer.writeln('⚽ Final: ${data.homeScore}-${data.awayScore}');
     }
@@ -123,8 +125,23 @@ class PredictionShareService {
     }
     buffer.writeln();
     buffer.writeln('🏟️ ${data.competitionName}');
-    buffer.write('#FANZONE #AFRICLUB');
+    buffer.write('#FANZONE');
+    final brandHashtag = _buildBrandHashtag();
+    if (brandHashtag != null) {
+      buffer.write(' #$brandHashtag');
+    }
     return buffer.toString();
+  }
+
+  static String? _buildBrandHashtag() {
+    final sanitized = RuntimeBranding.displayAppName.replaceAll(
+      RegExp(r'[^A-Za-z0-9]+'),
+      '',
+    );
+    if (sanitized.isEmpty) {
+      return null;
+    }
+    return sanitized;
   }
 }
 
@@ -166,7 +183,10 @@ class PredictionShareCard extends StatelessWidget {
           ],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: BorderTokens.all(color: color.withValues(alpha: 0.2), width: 1.5),
+        border: BorderTokens.all(
+          color: color.withValues(alpha: 0.2),
+          width: 1.5,
+        ),
       ),
       padding: const EdgeInsets.all(SpacingTokens.spacing5),
       child: Column(

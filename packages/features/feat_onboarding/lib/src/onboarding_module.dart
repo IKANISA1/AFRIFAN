@@ -29,4 +29,11 @@ class OnboardingModule extends FeatureModule {
       builder: (context, state) => const SupporterPhoneAuthScreen(),
     ),
   ];
+
+  @override
+  Set<String> get publicPaths => const <String>{
+    '/splash',
+    '/onboarding',
+    '/auth/phone',
+  };
 }

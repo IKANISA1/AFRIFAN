@@ -36,22 +36,13 @@ void main() {
   });
 
   testWidgets('settings does not show removed items', (tester) async {
-    await tester.pumpWidget(
-      _buildSettingsApp(config: const _FakeClubConfig(hasBioPay: true)),
-    );
+    await tester.pumpWidget(_buildSettingsApp());
     await tester.pumpAndSettle();
 
     // Deleted screens
     expect(find.text('Language & region'), findsNothing);
     expect(find.text('About Gikundiro'), findsNothing);
     expect(find.text('Rate Gikundiro'), findsNothing);
-
-    // BioPay shortcuts removed from settings
-    expect(find.text('BioPay home'), findsNothing);
-    expect(find.text('BioPay & Privacy'), findsNothing);
-    expect(find.text('QR receive & pay'), findsNothing);
-    expect(find.text('NFC receive & pay'), findsNothing);
-    expect(find.text('Face ID & enrollment'), findsNothing);
 
     // Report a problem merged into Help
     expect(find.text('Report a problem'), findsNothing);
@@ -82,7 +73,7 @@ void main() {
 }
 
 Widget _buildSettingsApp({_FakeClubConfig? config}) {
-  final effectiveConfig = config ?? const _FakeClubConfig(hasBioPay: false);
+  final effectiveConfig = config ?? const _FakeClubConfig();
   final router = GoRouter(
     initialLocation: '/settings',
     routes: <RouteBase>[
@@ -106,10 +97,7 @@ Widget _buildSettingsApp({_FakeClubConfig? config}) {
 }
 
 class _FakeClubConfig implements ClubConfig {
-  const _FakeClubConfig({required this.hasBioPay});
-
-  @override
-  final bool hasBioPay;
+  const _FakeClubConfig();
 
   @override
   String get appName => 'Gikundiro';
@@ -157,16 +145,6 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   bool get hasTicketing => true;
-
-  @override
-  Map<String, bool> get features => <String, bool>{
-    'BioPay': hasBioPay,
-    'fan_clubs': hasFanClubs,
-    'shop': hasShop,
-    'ticketing': hasTicketing,
-    'chat': hasChat,
-    'sms_ledger': hasSmsLedger,
-  };
 
   @override
   String get language => 'rw';

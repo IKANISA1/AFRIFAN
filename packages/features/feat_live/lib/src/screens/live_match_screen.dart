@@ -371,6 +371,9 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     );
     final stats = _statsFor(match);
     final events = _eventsFor(match);
+    final homeLogoUrl = match['home_team_logo']?.toString();
+    final awayLogoUrl = match['away_team_logo']?.toString();
+    final competitionLogoUrl = match['competition_logo']?.toString();
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -432,14 +435,14 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _buildTeamBox(homeTeam),
+                          _buildTeamBox(homeTeam, logoUrl: homeLogoUrl),
                           const SizedBox(width: SpacingTokens.spacing6),
                           Text(
                             '$homeScore - $awayScore',
                             style: TypographyTokens.displayMedium(),
                           ),
                           const SizedBox(width: SpacingTokens.spacing6),
-                          _buildTeamBox(awayTeam),
+                          _buildTeamBox(awayTeam, logoUrl: awayLogoUrl),
                         ],
                       ),
                       const SizedBox(height: SpacingTokens.spacing6),
@@ -557,10 +560,10 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     );
   }
 
-  Widget _buildTeamBox(String team) {
+  Widget _buildTeamBox(String team, {String? logoUrl}) {
     return Column(
       children: [
-        TeamBadge(label: _abbreviate(team)),
+        TeamBadge(label: _abbreviate(team), logoUrl: logoUrl),
         const SizedBox(height: SpacingTokens.spacing2),
         SizedBox(
           width: 80,

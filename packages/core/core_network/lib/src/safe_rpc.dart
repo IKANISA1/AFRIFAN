@@ -300,12 +300,42 @@ class SafeRpc {
     if (error is TimeoutException) {
       return 'Request timed out. Please check your connection and try again.';
     }
+    if (error is FunctionException) {
+      final detailsMessage = _extractFunctionErrorMessage(error.details);
+      if (detailsMessage != null) {
+        return detailsMessage;
+      }
+      if (error.status == 401) {
+        return 'Your session has expired. Please sign in again.';
+      }
+      if (error.status == 403) {
+        return 'This feature is currently unavailable.';
+      }
+      if (error.status == 429) {
+        return 'Too many requests. Please try again shortly.';
+      }
+    }
     final message = error.toString();
     if (message.contains('SocketException') ||
         message.contains('Connection refused')) {
       return 'Unable to connect. Please check your internet connection.';
     }
     return 'Something went wrong. Please try again.';
+  }
+
+  static String? _extractFunctionErrorMessage(dynamic details) {
+    if (details is Map) {
+      final rawMessage = details['error'] ?? details['message'];
+      if (rawMessage is String && rawMessage.trim().isNotEmpty) {
+        return rawMessage.trim();
+      }
+    }
+
+    if (details is String && details.trim().isNotEmpty) {
+      return details.trim();
+    }
+
+    return null;
   }
 
   static Duration _delayForAttempt(int attempt, {required Duration baseDelay}) {

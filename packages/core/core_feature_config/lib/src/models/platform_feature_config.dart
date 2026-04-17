@@ -1,5 +1,46 @@
 import 'dart:convert';
 
+String normalizePlatformFeatureKey(String? value) {
+  final normalized = (value ?? '').trim().toLowerCase();
+  if (normalized.isEmpty) {
+    return '';
+  }
+
+  return normalized
+      .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
+      .replaceAll(RegExp(r'^_+|_+$'), '');
+}
+
+class FeatureAccessState {
+  const FeatureAccessState({
+    required this.featureKey,
+    required this.normalizedKey,
+    required this.isRegistered,
+    required this.isVisible,
+    required this.isOperational,
+    required this.isAvailable,
+    required this.showInNavigation,
+    required this.showOnHome,
+    required this.routeKey,
+    required this.placementKey,
+    required this.reason,
+    this.feature,
+  });
+
+  final PlatformFeature? feature;
+  final String featureKey;
+  final String normalizedKey;
+  final bool isRegistered;
+  final bool isVisible;
+  final bool isOperational;
+  final bool isAvailable;
+  final bool showInNavigation;
+  final bool showOnHome;
+  final String? routeKey;
+  final String? placementKey;
+  final String reason;
+}
+
 // ── PlatformConfigSnapshot ──
 
 /// The full platform config payload returned by the RPC.
@@ -18,8 +59,9 @@ class PlatformConfigSnapshot {
 
   /// Quick lookup for a feature by key.
   PlatformFeature? featureByKey(String key) {
+    final normalizedKey = normalizePlatformFeatureKey(key);
     for (final feature in features) {
-      if (feature.featureKey == key) {
+      if (normalizePlatformFeatureKey(feature.featureKey) == normalizedKey) {
         return feature;
       }
     }
@@ -95,19 +137,24 @@ class PlatformFeature {
   final FeatureChannelConfig? channel;
   final FeatureRuleConfig? rules;
 
+  bool get isOperationallyEnabled {
+    if (!isEnabled) return false;
+    if (!(channel?.isEnabled ?? true)) return false;
+    if (visibilityState == 'maintenance') return false;
+    if (!(rules?.isWithinSchedule ?? true)) return false;
+    return true;
+  }
+
+  bool get isVisibleByConfig {
+    if (visibilityState == 'hidden') return false;
+    if (!(channel?.isVisible ?? true)) return false;
+    return true;
+  }
+
   /// Whether this feature is effectively available for the current channel,
   /// considering global enable, channel enable, visibility state, and schedule.
   bool get isEffectivelyEnabled {
-    if (!isEnabled) return false;
-    if (visibilityState == 'hidden') return false;
-    if (channel != null) {
-      if (!channel!.isEnabled || !channel!.isVisible) return false;
-    }
-    if (rules != null) {
-      final isWithin = rules!.isWithinSchedule;
-      if (!isWithin) return false;
-    }
-    return true;
+    return isOperationallyEnabled && isVisibleByConfig;
   }
 
   factory PlatformFeature.fromJson(Map<String, dynamic> json) {

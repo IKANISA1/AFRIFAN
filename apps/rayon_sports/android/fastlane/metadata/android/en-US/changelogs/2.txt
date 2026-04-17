@@ -8,7 +8,6 @@ The official Rayon Sports FC fan super-app is here. This is the first release fe
 • Gamification with predictions and leaderboards
 • Transparent contribution tracking
 • Official Rayon Sports FC merchandise shop
-• BioPay NFC contactless supporter identity
 • Fan Clubs community features
 • SMS Ledger for payment tracking
 • Multi-language support (Kinyarwanda, French, English)

@@ -35,6 +35,29 @@ export function createAdminClient() {
         autoRefreshToken: false,
         persistSession: false,
       },
+      db: {
+        schema: "public",
+      },
+    },
+  );
+}
+
+/**
+ * Admin client pre-configured for the football schema.
+ * Use when you need to query football.* tables directly.
+ */
+export function createFootballAdminClient() {
+  return createClient(
+    getSupabaseUrl(),
+    getSupabaseServiceRoleKey(),
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+      db: {
+        schema: "football",
+      },
     },
   );
 }

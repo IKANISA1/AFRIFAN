@@ -10,6 +10,7 @@ import {
   fanClubTable,
   mutateRecordWithVariants,
   requireAdminClubId,
+  resolveClubFootballPartnerId,
 } from "./helpers";
 
 function mapAdminFanClub(row: Record<string, unknown>): AdminFanClub {
@@ -58,7 +59,9 @@ export async function saveAdminFanClub(
     });
   }
   const clubId = requireAdminClubId(access, "save supporter chapters");
+  const partnerId = await resolveClubFootballPartnerId(client, clubId);
   return mutateRecordWithVariants(client, fanClubTable, input.id, [{
+    partner_id: partnerId,
     club_id: clubId,
     name: input.name.trim(), region: input.region.trim(), description: input.description.trim(),
     member_count: safeNumber(input.memberCount, 0), event_count: safeNumber(input.eventCount, 0),

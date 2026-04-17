@@ -51,7 +51,6 @@ void main() {
         );
 
         const config = _FakeClubConfig(
-          hasBioPay: true,
           hasFanClubs: true,
           hasShop: true,
           hasTicketing: true,
@@ -90,7 +89,6 @@ void main() {
         );
 
         const config = _FakeClubConfig(
-          hasBioPay: true,
           hasFanClubs: true,
           hasShop: true,
           hasTicketing: true,
@@ -126,7 +124,6 @@ void main() {
 
       await coordinator.initialize(
         const _FakeClubConfig(
-          hasBioPay: true,
           hasFanClubs: true,
           hasShop: true,
           hasTicketing: true,
@@ -141,14 +138,10 @@ void main() {
 
 class _FakeClubConfig implements ClubConfig {
   const _FakeClubConfig({
-    required this.hasBioPay,
     required this.hasFanClubs,
     required this.hasShop,
     required this.hasTicketing,
   });
-
-  @override
-  final bool hasBioPay;
 
   @override
   final bool hasFanClubs;
@@ -199,7 +192,6 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   Map<String, bool> get features => <String, bool>{
-    'BioPay': hasBioPay,
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,

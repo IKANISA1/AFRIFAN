@@ -39,7 +39,7 @@ void main() {
                 publicUserId: '483912',
               ),
             ),
-            initialLocation: '/contribute/group/grp-123/chat',
+            initialLocation: '/contribute/group/grp-123/statement',
           ),
         );
 
@@ -48,11 +48,11 @@ void main() {
         await tester.pumpAndSettle();
 
         // Verify that the deeply nested route is rendered, NOT just home
-        expect(find.byType(_FakeGroupChatScreen), findsOneWidget);
+        expect(find.byType(_FakeGroupStatementScreen), findsOneWidget);
 
         // Verify parameter passing
-        final screen = tester.widget<_FakeGroupChatScreen>(
-          find.byType(_FakeGroupChatScreen),
+        final screen = tester.widget<_FakeGroupStatementScreen>(
+          find.byType(_FakeGroupStatementScreen),
         );
         expect(screen.groupId, 'grp-123');
       },
@@ -64,15 +64,15 @@ void main() {
       await tester.pumpWidget(
         AfriClubApp(
           config: config,
-          modules: <FeatureModule>[
-            _HomeModule(),
-            _OnboardingModule(),
-            _ContributionsModule(),
-          ],
-          authRepository: FakeAuthRepository(restoreResult: null),
-          initialLocation: '/contribute/group/grp-789/chat',
-        ),
-      );
+            modules: <FeatureModule>[
+              _HomeModule(),
+              _OnboardingModule(),
+              _ContributionsModule(),
+            ],
+            authRepository: FakeAuthRepository(restoreResult: null),
+            initialLocation: '/contribute/group/grp-789/statement',
+          ),
+        );
 
       // Initially goes to splash which triggers auth, auth fails, goes to onboarding with `from` parameter
       await tester.pump();
@@ -91,7 +91,7 @@ void main() {
       final uri = GoRouterState.of(context).uri;
       final fromPath = uri.queryParameters['from'];
 
-      expect(fromPath, contains('/contribute/group/grp-789/chat'));
+      expect(fromPath, contains('/contribute/group/grp-789/statement'));
 
       // Let's sign in through the notifier
       final container = ProviderScope.containerOf(context);
@@ -112,9 +112,9 @@ void main() {
       await tester.pumpAndSettle();
 
       // Deep link correctly resolved after login
-      expect(find.byType(_FakeGroupChatScreen), findsOneWidget);
-      final screen = tester.widget<_FakeGroupChatScreen>(
-        find.byType(_FakeGroupChatScreen),
+      expect(find.byType(_FakeGroupStatementScreen), findsOneWidget);
+      final screen = tester.widget<_FakeGroupStatementScreen>(
+        find.byType(_FakeGroupStatementScreen),
       );
       expect(screen.groupId, 'grp-789');
     });
@@ -145,17 +145,18 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byType(_FakeHomeScreen), findsOneWidget);
-        expect(find.byType(_FakeGroupChatScreen), findsNothing);
+        expect(find.byType(_FakeGroupStatementScreen), findsNothing);
       },
     );
   });
 }
 
-class _FakeGroupChatScreen extends StatelessWidget {
+class _FakeGroupStatementScreen extends StatelessWidget {
   final String groupId;
-  const _FakeGroupChatScreen({required this.groupId});
+  const _FakeGroupStatementScreen({required this.groupId});
   @override
-  Widget build(BuildContext context) => Scaffold(body: Text('Chat: $groupId'));
+  Widget build(BuildContext context) =>
+      Scaffold(body: Text('Statement: $groupId'));
 }
 
 class _FakeHomeScreen extends StatelessWidget {
@@ -179,10 +180,10 @@ class _ContributionsModule extends FeatureModule {
           builder: (context, state) => const Scaffold(body: Text('Group')),
           routes: [
             GoRoute(
-              path: 'chat',
+              path: 'statement',
               builder: (context, state) {
                 final groupId = state.pathParameters['groupId']!;
-                return _FakeGroupChatScreen(groupId: groupId);
+                return _FakeGroupStatementScreen(groupId: groupId);
               },
             ),
           ],
@@ -322,8 +323,6 @@ class _FakeClubConfig implements ClubConfig {
   String get currency => 'RWF';
   @override
   String get currencySymbol => 'RWF';
-  @override
-  bool get hasBioPay => false;
   @override
   bool get hasChat => false;
   @override

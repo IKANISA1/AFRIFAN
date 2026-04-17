@@ -1,6 +1,7 @@
 "use client";
 
 import type { Dispatch, SetStateAction } from "react";
+import { AdminImageField } from "@/components/admin/admin-image-field";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { saveAdminSquadPlayer } from "@/lib/data/admin/squad";
@@ -116,23 +117,16 @@ export function SquadEditorForm({ form, setForm, client, access, onSaved }: Squa
         </label>
       </div>
 
-      <label className="grid gap-2 text-sm">
-        Photo URL
-        <input
-          name="imageUrl"
-          value={form.imageUrl}
-          onChange={(e) => setForm((c) => ({ ...c, imageUrl: e.target.value }))}
-          className="dashboard-input"
-        />
-      </label>
-      {form.imageUrl.trim() ? (
-        <div className="flex justify-center">
-          <div className="h-24 w-24 overflow-hidden rounded-full border-2 border-club-accent/30">
-             {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews accept arbitrary remote URLs that are not suitable for next/image allowlisting. */}
-            <img src={form.imageUrl} alt="Player preview" className="h-full w-full object-cover" />
-          </div>
-        </div>
-      ) : null}
+      <AdminImageField
+        label="Player image"
+        name="imageUrl"
+        value={form.imageUrl}
+        onChange={(nextValue) => setForm((current) => ({ ...current, imageUrl: nextValue }))}
+        mediaKind="squad_player"
+        subject={form.name}
+        previewAlt="Player preview"
+        promptPlaceholder="Example: Clean player portrait in club colors, sharp lighting, premium media-day look, waist-up framing."
+      />
 
       <label className="grid gap-2 text-sm">
         <div className="flex items-center justify-between">

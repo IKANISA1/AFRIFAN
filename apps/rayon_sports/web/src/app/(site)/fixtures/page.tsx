@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { MatchCard } from "@/components/match-card";
 import { PageHero } from "@/components/page-hero";
 import { getClubProfile, getMatches } from "@/lib/data/public";
+import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getSiteCopy } from "@/lib/site-copy";
 import { isLiveMatch, isResultMatch } from "@/lib/utils";
@@ -18,6 +19,11 @@ export async function generateMetadata() {
 }
 
 export default async function FixturesPage() {
+  const featureGate = await getFeaturePageGuard("live");
+  if (featureGate) {
+    return featureGate;
+  }
+
   const [club, matches] = await Promise.all([getClubProfile(), getMatches()]);
   const copy = getSiteCopy(club.defaultLanguage);
   const liveMatches = matches.filter((match) => isLiveMatch(match.matchStatus));

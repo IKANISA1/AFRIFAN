@@ -10,6 +10,7 @@ import '../models/fet_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/market_option_pill.dart';
+import 'package:core_utils/core_utils.dart';
 
 class FriendChallengeScreen extends ConsumerStatefulWidget {
   const FriendChallengeScreen({super.key, this.selectedOpponentUserId});
@@ -98,7 +99,8 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
         _isLoading = false;
         _error = null;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FriendChallengeScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) {
         return;
       }

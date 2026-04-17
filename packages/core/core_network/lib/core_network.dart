@@ -1,4 +1,8 @@
 // Core Network — Supabase client, config, and services.
+//
+// Observability services (Crashlytics, Analytics, OperationalHealth,
+// OfflineEventQueue) are also exported via core_observability.dart for
+// consumers that only need monitoring/diagnostics.
 
 export 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 

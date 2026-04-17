@@ -52,15 +52,15 @@ void main() {
   );
 
   const _hiddenFeature = PlatformFeature(
-    featureKey: 'biopay',
-    displayName: 'BioPay',
+    featureKey: 'contributions',
+    displayName: 'Contributions',
     isEnabled: true,
     visibilityState: 'hidden',
   );
 
   const _maintenanceFeature = PlatformFeature(
-    featureKey: 'contributions',
-    displayName: 'Contributions',
+    featureKey: 'fan_clubs',
+    displayName: 'Fan Clubs',
     isEnabled: true,
     visibilityState: 'maintenance',
   );
@@ -201,16 +201,12 @@ void main() {
     });
 
     test('isFeatureEnabled — hidden feature returns false', () {
-      expect(service.isFeatureEnabled('biopay'), isFalse);
+      expect(service.isFeatureEnabled('contributions'), isFalse);
     });
 
     test('isFeatureEnabled — maintenance feature returns false',
         () {
-      // maintenance ≠ hidden but the visibility_state check blocks it
-      // Actually let's check: maintenance should NOT be hidden
-      // Looking at isEffectivelyEnabled: it only checks == 'hidden'
-      // So maintenance features ARE effectively enabled
-      expect(service.isFeatureEnabled('contributions'), isTrue);
+      expect(service.isFeatureEnabled('contributions'), isFalse);
     });
 
     test('isFeatureEnabled — channel disabled returns false', () {
@@ -240,11 +236,11 @@ void main() {
     });
 
     test('isFeatureVisible — hidden feature returns false', () {
-      expect(service.isFeatureVisible('biopay'), isFalse);
+      expect(service.isFeatureVisible('contributions'), isFalse);
     });
 
     test('isFeatureVisible — maintenance feature returns true', () {
-      expect(service.isFeatureVisible('contributions'), isTrue);
+      expect(service.isFeatureVisible('fan_clubs'), isTrue);
     });
 
     test('isFeatureVisible — unknown feature defaults to true', () {
@@ -252,7 +248,7 @@ void main() {
     });
 
     test('isFeatureInMaintenance — maintenance feature returns true', () {
-      expect(service.isFeatureInMaintenance('contributions'), isTrue);
+      expect(service.isFeatureInMaintenance('fan_clubs'), isTrue);
     });
 
     test('isFeatureInMaintenance — visible feature returns false', () {
@@ -439,6 +435,94 @@ void main() {
 
     test('getFeature returns null for unknown key', () {
       expect(service.getFeature('unknown'), isNull);
+    });
+
+    test('getFeatureKeyForPath resolves configured and fallback routes', () {
+      expect(service.getFeatureKeyForPath('/tickets'), 'ticketing');
+      expect(service.getFeatureKeyForPath('/tickets/checkout'), 'ticketing');
+      expect(service.getFeatureKeyForPath('/unknown'), isNull);
+    });
+
+    test('isRouteAvailable blocks disabled feature routes gracefully', () {
+      expect(service.isRouteAvailable('/tickets'), isTrue);
+      expect(service.isRouteAvailable('/membership'), isFalse);
+      expect(service.isRouteAvailable('/somewhere-else'), isTrue);
+    });
+  });
+
+  group('FeatureConfigService — access semantics', () {
+    late FeatureConfigService service;
+
+    setUp(() {
+      service = FeatureConfigService(_buildSnapshot(
+        features: [
+          _hiddenFeature,
+          _maintenanceFeature,
+          _authRequired,
+          _withDeps,
+          _ticketing,
+          _shop,
+        ],
+      ));
+    });
+
+    test('hidden features stay operational but do not render', () {
+      final access = service.getFeatureAccess('contributions');
+      expect(access.isVisible, isFalse);
+      expect(access.isOperational, isTrue);
+      expect(access.isAvailable, isTrue);
+      expect(service.canRenderFeature('contributions'), isFalse);
+      expect(service.canUseFeature('contributions'), isTrue);
+    });
+
+    test('maintenance features stay visible but are unavailable', () {
+      final access = service.getFeatureAccess('fan_clubs');
+      expect(access.isVisible, isTrue);
+      expect(access.isOperational, isFalse);
+      expect(access.isAvailable, isFalse);
+      expect(access.reason, 'maintenance');
+    });
+
+    test('auth restrictions block availability until signed in', () {
+      final signedOutAccess = service.getFeatureAccess('admin');
+      final signedInAccess = service.getFeatureAccess(
+        'admin',
+        isAuthenticated: true,
+      );
+
+      expect(signedOutAccess.isAvailable, isFalse);
+      expect(signedOutAccess.reason, 'auth_required');
+      expect(signedInAccess.isAvailable, isTrue);
+      expect(signedInAccess.reason, 'ok');
+    });
+
+    test('dependency checks do not recurse infinitely', () {
+      const cyclicA = PlatformFeature(
+        featureKey: 'cyclic_a',
+        displayName: 'Cyclic A',
+        isEnabled: true,
+        visibilityState: 'visible',
+        rules: FeatureRuleConfig(
+          dependencyRules: {'requires': ['cyclic_b']},
+        ),
+      );
+
+      const cyclicB = PlatformFeature(
+        featureKey: 'cyclic_b',
+        displayName: 'Cyclic B',
+        isEnabled: true,
+        visibilityState: 'visible',
+        rules: FeatureRuleConfig(
+          dependencyRules: {'requires': ['cyclic_a']},
+        ),
+      );
+
+      final cyclicService = FeatureConfigService(
+        _buildSnapshot(features: [cyclicA, cyclicB]),
+      );
+
+      expect(cyclicService.areDependenciesSatisfied('cyclic_a'), isTrue);
+      expect(cyclicService.canUseFeature('cyclic_a'), isTrue);
     });
   });
 

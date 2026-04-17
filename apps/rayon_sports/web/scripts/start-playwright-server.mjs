@@ -7,6 +7,7 @@ const readyPort = Number(process.argv[3] ?? 3201);
 const root = resolve(process.cwd());
 const nextBin = resolve(root, "node_modules/next/dist/bin/next");
 const ensureArtifacts = resolve(root, "scripts/ensure-next-build-artifacts.mjs");
+const fixRouteGroupManifests = resolve(root, "scripts/fix-route-group-manifests.mjs");
 const warmupPaths = ["/manifest.webmanifest", "/admin", "/offline", "/admin/matches"];
 
 let ready = false;
@@ -76,6 +77,24 @@ const ensureExitCode = await new Promise((resolveExit) => {
 
 if (ensureExitCode !== 0) {
   process.exit(ensureExitCode);
+}
+
+const fixRouteGroupManifestsProcess = spawn(
+  process.execPath,
+  [fixRouteGroupManifests],
+  {
+    cwd: root,
+    env: process.env,
+    stdio: "inherit",
+  },
+);
+
+const fixExitCode = await new Promise((resolveExit) => {
+  fixRouteGroupManifestsProcess.on("exit", (code) => resolveExit(code ?? 1));
+});
+
+if (fixExitCode !== 0) {
+  process.exit(fixExitCode);
 }
 
 const child = spawn(

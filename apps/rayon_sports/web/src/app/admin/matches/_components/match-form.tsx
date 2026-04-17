@@ -2,6 +2,7 @@
 
 import type { Dispatch, SetStateAction } from "react";
 import type { MatchFormState } from "./match-form-state";
+import { AdminImageField } from "@/components/admin/admin-image-field";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { saveAdminMatch } from "@/lib/data/admin/matches";
@@ -14,6 +15,7 @@ interface MatchFormProps {
   client: SupabaseClient | null;
   access: AdminAccess;
   onSaved: () => Promise<void>;
+  onCancel?: () => void;
 }
 
 export function MatchForm({
@@ -23,6 +25,7 @@ export function MatchForm({
   client,
   access,
   onSaved,
+  onCancel,
 }: MatchFormProps) {
   async function submitForm(formData: FormData) {
     if (client == null) {
@@ -81,15 +84,26 @@ export function MatchForm({
         <p className="font-display text-3xl font-bold uppercase leading-none">
           {form.id ? "Edit fixture" : "New fixture"}
         </p>
-        {form.id ? (
-          <button
-            type="button"
-            onClick={() => setForm(emptyForm)}
-            className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
-          >
-            Clear
-          </button>
-        ) : null}
+        <div className="flex items-center gap-2">
+          {onCancel ? (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+            >
+              Close
+            </button>
+          ) : null}
+          {form.id ? (
+            <button
+              type="button"
+              onClick={() => setForm(emptyForm)}
+              className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+            >
+              Clear
+            </button>
+          ) : null}
+        </div>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-2 text-sm">
@@ -147,17 +161,23 @@ export function MatchForm({
             <option value="cancelled">Cancelled</option>
           </select>
         </label>
-        <label className="grid gap-2 text-sm">
-          Hero image URL
-          <input name="imageUrl" {...field("imageUrl")} className="dashboard-input" />
-        </label>
+        <AdminImageField
+          label="Hero image"
+          name="imageUrl"
+          value={form.imageUrl}
+          onChange={(nextValue) =>
+            setForm((current) => ({
+              ...current,
+              imageUrl: nextValue,
+            }))
+          }
+          mediaKind="match"
+          subject={`${form.homeTeam || "Home"} vs ${form.awayTeam || "Away"}`}
+          previewAlt="Fixture hero preview"
+          promptPlaceholder="Example: Intense matchday hero image for Home vs Away under stadium lights, premium sports-poster energy, room for headline overlay."
+          className="sm:col-span-2"
+        />
       </div>
-      {form.imageUrl.trim() ? (
-        <div className="overflow-hidden rounded-[22px] border border-border-soft">
-          {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews accept arbitrary remote URLs that are not suitable for next/image allowlisting. */}
-          <img src={form.imageUrl} alt="Preview" className="h-32 w-full object-cover" />
-        </div>
-      ) : null}
       <div className="grid gap-4 sm:grid-cols-3">
         <label className="grid gap-2 text-sm">
           Home score

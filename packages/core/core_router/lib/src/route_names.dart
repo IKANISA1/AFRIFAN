@@ -21,7 +21,6 @@ class RouteNames {
   static const String badges = 'badges';
   static const String fanClub = 'fan-club';
   static const String chat = 'chat';
-  static const String BioPay = 'BioPay';
   static const String settings = 'settings';
 
   // Admin

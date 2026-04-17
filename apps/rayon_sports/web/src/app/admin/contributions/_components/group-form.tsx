@@ -1,6 +1,6 @@
 "use client";
 
-import type { Dispatch, SetStateAction } from "react";
+import type { Dispatch, FormEvent, SetStateAction } from "react";
 import type { GroupForm } from "./group-form-state";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { saveAdminContributionGroup } from "@/lib/data/admin/contributions";
@@ -31,13 +31,15 @@ export function ContributionGroupForm({
       return;
     }
 
-    showAdminToast(form.id ? "Saving Group..." : "Creating Group...", "info");
+    showAdminToast(
+      form.id ? "Saving initiative..." : "Creating initiative...",
+      "info",
+    );
     try {
       await saveAdminContributionGroup(client, access, {
         id: form.id || null,
         name: String(formData.get("name") ?? ""),
         description: String(formData.get("description") ?? ""),
-        privacy: String(formData.get("privacy") ?? "public") as AdminContributionGroup["privacy"],
         groupType: String(formData.get("groupType") ?? "project") as AdminContributionGroup["groupType"],
         targetAmount: Number(formData.get("targetAmount") ?? 0),
         currentTotal: Number(formData.get("currentTotal") ?? 0),
@@ -45,25 +47,30 @@ export function ContributionGroupForm({
           formData.get("currency") ?? defaultCurrencyCode,
         ),
         memberCount: Number(formData.get("memberCount") ?? 0),
-        inviteCode: String(formData.get("inviteCode") ?? ""),
         isClosed: formData.get("isClosed") === "on",
       });
       setForm({ ...emptyForm, currency: defaultCurrencyCode });
       await onSaved();
-      showAdminToast("Support Group saved.", "success");
+      showAdminToast("Public initiative saved.", "success");
     } catch (caught) {
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not save Group.",
+        caught instanceof Error ? caught.message : "Could not save initiative.",
         "error",
       );
     }
   }
 
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    void submitForm(formData);
+  }
+
   return (
-    <form action={submitForm} className="glass-panel grid gap-4 rounded-[32px] p-6">
+    <form onSubmit={handleSubmit} className="glass-panel grid gap-4 rounded-[32px] p-6">
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-3xl font-bold uppercase leading-none">
-          {form.id ? "Edit Group" : "New Group"}
+          {form.id ? "Edit Initiative" : "New Initiative"}
         </p>
         {form.id ? (
           <button
@@ -77,7 +84,7 @@ export function ContributionGroupForm({
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-2 text-sm">
-          Group name
+          Initiative name
           <input
             name="name"
             required
@@ -86,15 +93,12 @@ export function ContributionGroupForm({
             className="dashboard-input"
           />
         </label>
-        <label className="grid gap-2 text-sm">
-          Invite code
-          <input
-            name="inviteCode"
-            value={form.inviteCode}
-            onChange={(e) => setForm((c) => ({ ...c, inviteCode: e.target.value }))}
-            className="dashboard-input"
-          />
-        </label>
+        <div className="grid gap-2 text-sm">
+          Visibility
+          <div className="dashboard-input flex items-center text-[var(--admin-zinc-300)]">
+            Public only
+          </div>
+        </div>
       </div>
       <label className="grid gap-2 text-sm">
         Description
@@ -115,22 +119,8 @@ export function ContributionGroupForm({
             onChange={(e) => setForm((c) => ({ ...c, groupType: e.target.value as AdminContributionGroup["groupType"] }))}
             className="dashboard-input"
           >
-            <option value="project">Project</option>
-            <option value="general">General</option>
-            <option value="savings">Savings</option>
-            <option value="emergency">Emergency</option>
-          </select>
-        </label>
-        <label className="grid gap-2 text-sm">
-          Privacy
-          <select
-            name="privacy"
-            value={form.privacy}
-            onChange={(e) => setForm((c) => ({ ...c, privacy: e.target.value as AdminContributionGroup["privacy"] }))}
-            className="dashboard-input"
-          >
-            <option value="public">Public</option>
-            <option value="private">Private</option>
+            <option value="project">Team project</option>
+            <option value="community">Community</option>
           </select>
         </label>
         <label className="grid gap-2 text-sm">
@@ -188,7 +178,7 @@ export function ContributionGroupForm({
         type="submit"
         className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
       >
-        {form.id ? "Save Group" : "Create Group"}
+        {form.id ? "Save Initiative" : "Create Initiative"}
       </button>
     </form>
   );

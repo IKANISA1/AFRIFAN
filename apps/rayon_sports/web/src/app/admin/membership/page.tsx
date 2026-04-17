@@ -2,10 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Crown, Users, ClipboardCheck, Plus } from "lucide-react";
-import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
-import { AdminFilterBar } from "@/components/admin/admin-filter-bar";
 import { AdminDataGrid } from "@/components/admin/admin-data-grid";
 import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { showAdminToast } from "@/components/admin/admin-toast";
@@ -25,7 +23,7 @@ import type { AdminMembershipPackage, AdminSupporter, AdminMembershipApplication
 import { emptyForm, type MembershipForm } from "./_components/membership-state";
 import { MembershipEditorForm } from "./_components/membership-editor-form";
 import { MembershipList } from "./_components/membership-list";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 type MembershipTab = "tiers" | "registry" | "applications";
 
@@ -37,7 +35,6 @@ export default function AdminMembershipPage() {
   const [applications, setApplications] = useState<AdminMembershipApplication[]>([]);
   const [form, setForm] = useState<MembershipForm>(emptyForm);
   const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const loadTiers = useCallback(async () => {
@@ -75,7 +72,9 @@ export default function AdminMembershipPage() {
 
   useEffect(() => {
     if (client == null || !access.hasAccess) return;
-    loadAll().catch(() => {});
+    queueMicrotask(() => {
+      loadAll().catch(() => {});
+    });
   }, [access.hasAccess, client, loadAll]);
 
   function beginEdit(pkg: AdminMembershipPackage) {
@@ -238,7 +237,14 @@ export default function AdminMembershipPage() {
               <td className="text-right">
                 {app.status === "pending" && (
                   <div className="flex justify-end gap-2">
-                    <button onClick={() => handleReview(app.id, "approved")} className="admin-action-button !bg-emerald-500/10 !text-emerald-400">Approve</button>
+                    <button
+                      onClick={() => handleReview(app.id, "approved")}
+                      className="admin-action-button !bg-emerald-500/10 !text-emerald-400 disabled:cursor-not-allowed disabled:opacity-50"
+                      disabled={app.paymentStatus !== "paid"}
+                      title={app.paymentStatus === "paid" ? "Approve application" : "Payment must be marked paid before approval"}
+                    >
+                      Approve
+                    </button>
                     <button onClick={() => handleReview(app.id, "rejected")} className="admin-action-button !bg-rose-500/10 !text-rose-400">Reject</button>
                   </div>
                 )}

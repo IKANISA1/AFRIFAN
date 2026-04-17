@@ -90,7 +90,8 @@ class _StatementDownloadScreenState
             .toList(growable: false);
         _isLoading = false;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('StatementDownloadScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) return;
       setState(() {
         _isLoading = false;

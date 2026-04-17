@@ -96,7 +96,7 @@ export default function AdminConfigPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Key</span>
-            <input value={form.key} onChange={(e) => setForm({ ...form, key: e.target.value })} required disabled={form.isEditing} className="admin-input" placeholder="e.g. BioPay_face_enabled" />
+            <input value={form.key} onChange={(e) => setForm({ ...form, key: e.target.value })} required disabled={form.isEditing} className="admin-input" placeholder="e.g. community_requests_enabled" />
           </label>
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Value</span>

@@ -62,7 +62,6 @@ const translations = {
       surface: "Surface",
       mobile: "Mobile",
       web: "Web",
-      BioPay: "BioPay",
       current: "Current",
       target: "Target",
       invite: "Invite",
@@ -306,11 +305,11 @@ const translations = {
       supporters: {
         metaTitle: "Supporter app",
         metaDescription:
-          "Continue membership, ticketing, BioPay, shop, and supporter actions in the mobile app.",
+          "Continue membership, ticketing, shop, and supporter actions in the mobile app.",
         eyebrow: "Fan app",
         title: "The supporter journey continues on mobile.",
         description:
-          "The website now handles discovery and club storytelling. Membership activation, secure checkout, BioPay, and authenticated supporter actions continue in the mobile app.",
+          "The website now handles discovery and club storytelling. Membership activation, secure checkout, and authenticated supporter actions continue in the mobile app.",
         supporterIdentity: "Supporter identity",
         secureActions: "Secure actions",
         rolloutReady: "Rollout ready",
@@ -331,7 +330,7 @@ const translations = {
         identityBody:
           "Sign in once and keep club membership, profile, and supporter status together on the native mobile surface.",
         secureActionsBody:
-          "Ticket purchases, community contributions, BioPay flows, and protected fan activity now stay inside the mobile app.",
+          "Ticket purchases, community contributions, and protected fan activity now stay inside the mobile app.",
         catalogIntro:
           "The supporter app now reads the same canonical Fan Engagement Token catalog the admin panel manages. The website exposes the live rewards program and the current supporter leaderboard while authenticated earning flows continue in mobile.",
         leaderboardIntro:
@@ -417,7 +416,6 @@ const translations = {
       surface: "Surface",
       mobile: "Mobile",
       web: "Web",
-      BioPay: "BioPay",
       current: "Actuel",
       target: "Objectif",
       invite: "Invitation",
@@ -661,11 +659,11 @@ const translations = {
       supporters: {
         metaTitle: "App supporters",
         metaDescription:
-          "Poursuivez l'adhésion, la billetterie, BioPay, la boutique et les actions supporters dans l'app mobile.",
+          "Poursuivez l'adhésion, la billetterie, la boutique et les actions supporters dans l'app mobile.",
         eyebrow: "App supporters",
         title: "Le parcours supporter continue sur mobile.",
         description:
-          "Le site gère désormais la découverte et le récit du club. L'activation d'adhésion, le paiement sécurisé, BioPay et les actions authentifiées continuent dans l'app mobile.",
+          "Le site gère désormais la découverte et le récit du club. L'activation d'adhésion, le paiement sécurisé et les actions authentifiées continuent dans l'app mobile.",
         supporterIdentity: "Identité supporter",
         secureActions: "Actions sécurisées",
         rolloutReady: "Prêt au déploiement",
@@ -686,7 +684,7 @@ const translations = {
         identityBody:
           "Connectez-vous une fois et gardez l'adhésion, le profil et le statut supporter ensemble sur la surface mobile native.",
         secureActionsBody:
-          "Achats de billets, contributions communautaires, BioPay et actions protégées restent désormais dans l'app mobile.",
+          "Achats de billets, contributions communautaires et actions protégées restent désormais dans l'app mobile.",
         catalogIntro:
           "L'app supporters lit désormais le même catalogue canonique de Fan Engagement Token que gère l'admin. Le site expose le programme de récompenses en direct et le classement actuel pendant que les actions authentifiées restent sur mobile.",
         leaderboardIntro:
@@ -772,7 +770,6 @@ const translations = {
       surface: "Urubuga",
       mobile: "Mobile",
       web: "Web",
-      BioPay: "BioPay",
       current: "Ubu",
       target: "Intego",
       invite: "Invitation",
@@ -1016,11 +1013,11 @@ const translations = {
       supporters: {
         metaTitle: "App y'abafana",
         metaDescription:
-          "Komeza ubunyamuryango, itike, BioPay, shop n'ibikorwa by'abafana muri app mobile.",
+          "Komeza ubunyamuryango, itike, shop n'ibikorwa by'abafana muri app mobile.",
         eyebrow: "App y'abafana",
         title: "Urugendo rw'umufana rukomereza kuri mobile.",
         description:
-          "Urubuga rukora discovery n'inkuru z'ikipe. Gukoresha ubunyamuryango, kwishyura neza, BioPay n'ibikorwa byihariye bikomereza muri app.",
+          "Urubuga rukora discovery n'inkuru z'ikipe. Gukoresha ubunyamuryango, kwishyura neza n'ibikorwa byihariye bikomereza muri app.",
         supporterIdentity: "Indangamuntu y'umufana",
         secureActions: "Ibikorwa birinzwe",
         rolloutReady: "Byiteguye gutangizwa",
@@ -1041,7 +1038,7 @@ const translations = {
         identityBody:
           "Injira rimwe gusa kandi ugumane ubunyamuryango, profile na status y'umufana kuri mobile app.",
         secureActionsBody:
-          "Kugura itike, gutanga inkunga, BioPay n'ibikorwa birinzwe byose bikomeza gukorerwa muri app.",
+          "Kugura itike, gutanga inkunga n'ibikorwa birinzwe byose bikomeza gukorerwa muri app.",
         catalogIntro:
           "App y'abafana isoma catalogue imwe ya Fan Engagement Token icungwa na admin. Web yerekana rewards za live n'urutonde rw'abafana mu gihe ibikorwa byihariye bikomeza muri mobile.",
         leaderboardIntro:
@@ -1127,7 +1124,6 @@ const translations = {
       surface: "Uso",
       mobile: "Simu",
       web: "Tovuti",
-      BioPay: "BioPay",
       current: "Sasa",
       target: "Lengo",
       invite: "Mwaliko",
@@ -1371,11 +1367,11 @@ const translations = {
       supporters: {
         metaTitle: "App ya mashabiki",
         metaDescription:
-          "Endelea na uanachama, tiketi, BioPay, shop na hatua za mashabiki kwenye app ya simu.",
+          "Endelea na uanachama, tiketi, shop na hatua za mashabiki kwenye app ya simu.",
         eyebrow: "App ya mashabiki",
         title: "Safari ya shabiki inaendelea kwenye simu.",
         description:
-          "Tovuti sasa hushughulikia ugunduzi na simulizi za klabu. Uanachama, malipo salama, BioPay na hatua zilizolindwa zinaendelea kwenye app ya simu.",
+          "Tovuti sasa hushughulikia ugunduzi na simulizi za klabu. Uanachama, malipo salama na hatua zilizolindwa zinaendelea kwenye app ya simu.",
         supporterIdentity: "Utambulisho wa shabiki",
         secureActions: "Hatua salama",
         rolloutReady: "Tayari kwa uzinduzi",
@@ -1396,7 +1392,7 @@ const translations = {
         identityBody:
           "Ingia mara moja na uhifadhi uanachama, wasifu na hadhi ya shabiki pamoja kwenye uso wa simu wa asili.",
         secureActionsBody:
-          "Ununuzi wa tiketi, michango ya jamii, BioPay na shughuli zilizolindwa sasa hubaki ndani ya app ya simu.",
+          "Ununuzi wa tiketi, michango ya jamii na shughuli zilizolindwa sasa hubaki ndani ya app ya simu.",
         catalogIntro:
           "App ya mashabiki sasa husoma catalog ile ile ya Fan Engagement Token inayosimamiwa na admin. Tovuti inaonyesha programu ya zawadi za moja kwa moja na jedwali la sasa huku earning zilizothibitishwa zikiendelea kwenye simu.",
         leaderboardIntro:

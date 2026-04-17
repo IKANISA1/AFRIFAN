@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:core_feature_config/core_feature_config.dart';
 
 import '../admin_providers.dart';
+import '../repositories/feature_management_repository.dart';
 
 class FeatureManagementScreen extends ConsumerStatefulWidget {
   const FeatureManagementScreen({super.key});
@@ -14,13 +16,13 @@ class FeatureManagementScreen extends ConsumerStatefulWidget {
 
 class _FeatureManagementScreenState extends ConsumerState<FeatureManagementScreen> {
   bool _loading = true;
-  List<PlatformFeature> _features = [];
+  List<ManagedPlatformFeature> _features = [];
   String? _error;
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    unawaited(_loadData());
   }
 
   Future<void> _loadData() async {
@@ -46,10 +48,12 @@ class _FeatureManagementScreenState extends ConsumerState<FeatureManagementScree
     }
   }
 
-  Future<void> _toggleGlobal(PlatformFeature feature, bool value) async {
-    final success = await ref.read(featureManagementRepositoryProvider).updateFeatureGlobalStatus(feature.featureKey, value);
+  Future<void> _toggleGlobal(ManagedPlatformFeature feature, bool value) async {
+    final success = await ref
+        .read(featureManagementRepositoryProvider)
+        .updateFeatureGlobalStatus(feature.id, value);
     if (success) {
-      _loadData();
+      await _loadData();
     }
   }
 
@@ -103,7 +107,7 @@ class _FeatureConfigCard extends StatelessWidget {
     required this.onToggleGlobal,
   });
 
-  final PlatformFeature feature;
+  final ManagedPlatformFeature feature;
   final ValueChanged<bool> onToggleGlobal;
 
   @override
@@ -149,16 +153,16 @@ class _FeatureConfigCard extends StatelessWidget {
             children: [
               _ChannelBadge(
                 label: 'MOBILE',
-                enabled: feature.channel?.isEnabled ?? true,
-                nav: feature.channel?.showInNavigation ?? false,
-                home: feature.channel?.showOnHome ?? false,
+                enabled: feature.channelFor('mobile')?.isEnabled ?? true,
+                nav: feature.channelFor('mobile')?.showInNavigation ?? false,
+                home: feature.channelFor('mobile')?.showOnHome ?? false,
               ),
               const SizedBox(width: SpacingTokens.spacing3),
               _ChannelBadge(
                 label: 'WEB',
-                enabled: true, // Placeholder
-                nav: true,
-                home: true,
+                enabled: feature.channelFor('web')?.isEnabled ?? true,
+                nav: feature.channelFor('web')?.showInNavigation ?? false,
+                home: feature.channelFor('web')?.showOnHome ?? false,
               ),
             ],
           ),

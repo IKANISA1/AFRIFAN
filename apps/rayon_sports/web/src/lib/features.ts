@@ -1,4 +1,4 @@
-import { getPublicSupabase } from "./supabase/client";
+import { getBrowserSupabase } from "./supabase/browser";
 
 export interface PlatformFeatureConfig {
   feature_key: string;
@@ -32,7 +32,10 @@ export async function getActiveFeatures(channel: "web" | "mobile" = "web", clubI
     return cachedFeatures;
   }
 
-  const supabase = getPublicSupabase();
+  const supabase = getBrowserSupabase();
+  if (supabase == null) {
+    return cachedFeatures || [];
+  }
   const { data, error } = await supabase.rpc("get_platform_config", {
     p_channel: channel,
     p_club_id: clubId,

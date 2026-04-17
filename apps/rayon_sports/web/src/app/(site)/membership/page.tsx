@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ShieldCheck, Ticket } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { getClubProfile, getMembershipPackages } from "@/lib/data/public";
+import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getSiteCopy } from "@/lib/site-copy";
 import { formatCurrency } from "@/lib/utils";
@@ -17,6 +18,11 @@ export async function generateMetadata() {
 }
 
 export default async function MembershipPage() {
+  const featureGate = await getFeaturePageGuard("membership");
+  if (featureGate) {
+    return featureGate;
+  }
+
   const [club, packages] = await Promise.all([
     getClubProfile(),
     getMembershipPackages(),

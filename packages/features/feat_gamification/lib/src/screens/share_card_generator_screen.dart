@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/prediction_share_card.dart';
+import 'package:core_utils/core_utils.dart';
 
 class ShareCardGeneratorScreen extends ConsumerStatefulWidget {
   const ShareCardGeneratorScreen({super.key});
@@ -42,7 +43,8 @@ class _ShareCardGeneratorScreenState
         _isLoading = false;
         _error = null;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('ShareCardGeneratorScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) {
         return;
       }

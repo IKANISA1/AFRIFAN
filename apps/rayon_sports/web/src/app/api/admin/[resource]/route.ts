@@ -10,6 +10,7 @@ import {
   deleteAdminFanEngagementToken,
   deleteAdminArticle,
   deleteAdminConfigEntry,
+  deleteAdminContentBlock,
   deleteAdminContributionGroup,
   deleteAdminFanClub,
   deleteAdminMatch,
@@ -19,6 +20,7 @@ import {
   deleteAdminStandingRow,
   getAdminArticles,
   getAdminAppConfig,
+  getAdminContentBlocks,
   getAdminClubScopeOptions,
   getAdminClubProfile,
   getAdminContributionSnapshot,
@@ -26,6 +28,7 @@ import {
   getAdminFetWalletSnapshot,
   getAdminFanEngagementTokens,
   getAdminFanClubs,
+  getAdminMembershipApplications,
   getAdminMatches,
   getAdminMembershipPackages,
   getAdminNotificationContext,
@@ -33,14 +36,17 @@ import {
   getAdminRoleAssignments,
   getAdminSmsSnapshot,
   getAdminSmsManualReviewWorkspace,
+  getAdminSupporterRegistry,
   getAdminSquad,
   getAdminStandings,
+  getAdminTicketOrders,
   findAdminUserCandidate,
   rejectAdminSmsManualReview,
   resolveAdminAccess,
   revokeAdminRole,
   saveAdminArticle,
   saveAdminConfigEntry,
+  saveAdminContentBlock,
   saveAdminContributionGroup,
   saveAdminFanClub,
   saveAdminFanEngagementToken,
@@ -51,11 +57,23 @@ import {
   saveAdminSquadPlayer,
   saveAdminStandingRow,
   sendAdminNotification,
+  getAdminOffers,
+  saveAdminOffer,
+  deleteAdminOffer,
+  getAdminPredictionMarkets,
+  saveAdminPredictionMarket,
+  getAdminCompetitions,
+  saveAdminCompetition,
+  getAdminSeasons,
+  saveAdminSeason,
+  getAdminFixtures,
+  saveAdminFixture,
 } from "@/lib/data/admin";
 import {
   rejectInsecureMutation,
   rejectRateLimitedRequest,
 } from "@/lib/security";
+import { withFeatureGuard } from "@/lib/server-feature-guard";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { getServerSupabase } from "@/lib/supabase/server";
 
@@ -134,6 +152,18 @@ function missingIdResponse() {
   );
 }
 
+function withScopedFeatureGuard(
+  access: { clubId: string | null; isAuthenticated: boolean; role: string | null },
+  featureKey: string,
+  handler: () => Promise<NextResponse>,
+) {
+  return withFeatureGuard(featureKey, handler, "web", "action", {
+    clubId: access.clubId,
+    isAuthenticated: access.isAuthenticated,
+    roles: access.role ? [access.role] : [],
+  });
+}
+
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ resource: string }> },
@@ -190,6 +220,10 @@ export async function GET(
         return NextResponse.json({
           data: await getAdminAppConfig(adminClient, access),
         });
+      case "cms-content":
+        return NextResponse.json({
+          data: await getAdminContentBlocks(adminClient, access),
+        });
       case "settings":
         return NextResponse.json({
           data: await getAdminClubProfile(adminClient, access),
@@ -202,9 +236,21 @@ export async function GET(
         return NextResponse.json({
           data: await getAdminMembershipPackages(adminClient, access),
         });
+      case "membership-supporters":
+        return NextResponse.json({
+          data: await getAdminSupporterRegistry(adminClient, access),
+        });
+      case "membership-applications":
+        return NextResponse.json({
+          data: await getAdminMembershipApplications(adminClient, access),
+        });
       case "shop":
         return NextResponse.json({
           data: await getAdminProducts(adminClient, access),
+        });
+      case "tickets":
+        return NextResponse.json({
+          data: await getAdminTicketOrders(adminClient, access),
         });
       case "fan-clubs":
         return NextResponse.json({
@@ -245,6 +291,26 @@ export async function GET(
             userId: request.nextUrl.searchParams.get("user_id"),
           }),
         });
+      case "offers":
+        return NextResponse.json({
+          data: await getAdminOffers(adminClient, access),
+        });
+      case "predictions-markets":
+        return NextResponse.json({
+          data: await getAdminPredictionMarkets(adminClient, access),
+        });
+      case "predictions-competitions":
+        return NextResponse.json({
+          data: await getAdminCompetitions(adminClient, access),
+        });
+      case "predictions-seasons":
+        return NextResponse.json({
+          data: await getAdminSeasons(adminClient, access),
+        });
+      case "predictions-fixtures":
+        return NextResponse.json({
+          data: await getAdminFixtures(adminClient, access),
+        });
       default:
         return NextResponse.json(
           { error: "Unknown admin resource." },
@@ -254,9 +320,12 @@ export async function GET(
         );
     }
   } catch (error) {
+    const resource = await context.params.then((p) => p.resource).catch(() => "unknown");
+    console.error(`[admin-api] GET /${resource} failed:`, error);
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : "Admin request failed.",
+        resource,
       },
       { status: 500 },
     );
@@ -338,6 +407,10 @@ export async function POST(
         return NextResponse.json({
           data: await saveAdminConfigEntry(adminClient, access, body as never),
         });
+      case "cms-content":
+        return NextResponse.json({
+          data: await saveAdminContentBlock(adminClient, access, body as never),
+        });
       case "settings":
         return NextResponse.json({
           data: await saveAdminClubProfile(adminClient, access, body as never),
@@ -371,13 +444,15 @@ export async function POST(
           ),
         });
       case "notifications":
-        return NextResponse.json({
-          data: await sendAdminNotification(
-            serverClient,
-            body as never,
-            access,
-          ),
-        });
+        return withScopedFeatureGuard(access, "notifications", async () =>
+          NextResponse.json({
+            data: await sendAdminNotification(
+              serverClient,
+              body as never,
+              access,
+            ),
+          }),
+        );
       case "squad":
         await saveAdminSquadPlayer(adminClient, access, body as never);
         return NextResponse.json({ data: { success: true } });
@@ -390,16 +465,38 @@ export async function POST(
           ),
         });
       case "gamification-wallet":
-        return NextResponse.json({
-          data: await adjustAdminFetWalletBalance(serverClient, access, {
-            userId: String(body.userId ?? ""),
-            amount: Number(body.amount ?? 0),
-            reason: String(body.reason ?? ""),
-            idempotencyKey:
-              typeof body.idempotencyKey === "string"
-                ? body.idempotencyKey
-                : null,
+        return withScopedFeatureGuard(access, "fanzone", async () =>
+          NextResponse.json({
+            data: await adjustAdminFetWalletBalance(serverClient, access, {
+              userId: String(body.userId ?? ""),
+              amount: Number(body.amount ?? 0),
+              reason: String(body.reason ?? ""),
+              idempotencyKey:
+                typeof body.idempotencyKey === "string"
+                  ? body.idempotencyKey
+                  : null,
+            }),
           }),
+        );
+      case "offers":
+        return NextResponse.json({
+          data: await saveAdminOffer(adminClient, access, body as never),
+        });
+      case "predictions-markets":
+        return NextResponse.json({
+          data: await saveAdminPredictionMarket(adminClient, access, body as never),
+        });
+      case "predictions-competitions":
+        return NextResponse.json({
+          data: await saveAdminCompetition(adminClient, access, body as never),
+        });
+      case "predictions-seasons":
+        return NextResponse.json({
+          data: await saveAdminSeason(adminClient, access, body as never),
+        });
+      case "predictions-fixtures":
+        return NextResponse.json({
+          data: await saveAdminFixture(adminClient, access, body as never),
         });
       default:
         return NextResponse.json(
@@ -444,7 +541,7 @@ export async function DELETE(
       return requestContext.response;
     }
 
-    const { access, adminClient } = requestContext;
+    const { access, adminClient, serverClient } = requestContext;
     const { resource } = await context.params;
     const id = request.nextUrl.searchParams.get("id");
 
@@ -472,6 +569,9 @@ export async function DELETE(
       case "cms-config":
         await deleteAdminConfigEntry(adminClient, access, id);
         break;
+      case "cms-content":
+        await deleteAdminContentBlock(adminClient, access, id);
+        break;
       case "membership":
         await deleteAdminMembershipPackage(adminClient, access, id);
         break;
@@ -492,6 +592,9 @@ export async function DELETE(
         break;
       case "gamification":
         await deleteAdminFanEngagementToken(adminClient, access, id);
+        break;
+      case "offers":
+        await deleteAdminOffer(adminClient, access, id);
         break;
       default:
         return NextResponse.json(

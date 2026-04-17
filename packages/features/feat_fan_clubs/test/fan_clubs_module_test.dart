@@ -35,14 +35,6 @@ void main() {
             .firstWhere((r) => r.path == '/fan-clubs');
       });
 
-      test('has create sub-route', () {
-        final subPaths = rootRoute.routes
-            .whereType<GoRoute>()
-            .map((r) => r.path)
-            .toSet();
-        expect(subPaths, contains('create'));
-      });
-
       test('has :clubId sub-route', () {
         final subPaths = rootRoute.routes
             .whereType<GoRoute>()

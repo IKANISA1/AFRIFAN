@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../models/fanzone_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/gamification_overlays.dart';
+import 'package:core_utils/core_utils.dart';
 
 class BadgesScreen extends ConsumerStatefulWidget {
   const BadgesScreen({super.key});
@@ -37,7 +38,8 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
         _isLoading = false;
         _error = null;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('BadgesScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) return;
       setState(() {
         _badges = const <PredictionBadge>[];

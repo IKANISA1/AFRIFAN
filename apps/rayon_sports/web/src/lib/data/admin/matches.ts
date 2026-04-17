@@ -59,24 +59,38 @@ export async function getAdminMatches(client: SupabaseClient, access: AdminAcces
   if (typeof window !== "undefined") {
     return requestAdminApi<AdminMatchItem[]>("matches");
   }
-  let query = client
-    .from("unified_matches")
-    .select("*")
-    .order("match_date", { ascending: true });
 
-  if (access.clubId != null) {
-    query = query.eq("club_id", Number(access.clubId));
+  // Try the unified view first; fall back to the base matches table
+  // if the view-creating migration hasn't been applied yet.
+  const tables = ["unified_matches", "matches"] as const;
+
+  for (const table of tables) {
+    let query = client
+      .from(table)
+      .select("*")
+      .order("match_date", { ascending: true });
+
+    if (access.clubId != null) {
+      query = query.eq("club_id", Number(access.clubId));
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      // If the table/view doesn't exist, try the next one
+      if (error.code === "PGRST205" || error.message?.includes("schema cache")) {
+        continue;
+      }
+      throw new Error(error.message);
+    }
+
+    return Array.isArray(data)
+      ? data.map((row) => mapMatch(row as Record<string, unknown>))
+      : [];
   }
 
-  const { data, error } = await query;
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return Array.isArray(data)
-    ? data.map((row) => mapMatch(row as Record<string, unknown>))
-    : [];
+  // All table sources failed
+  return [];
 }
 
 export async function saveAdminMatch(

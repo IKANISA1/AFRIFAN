@@ -20,7 +20,7 @@
 -- ──────────────────────────────────────────────────────────────────────────────
 -- 1. platform_features
 -- ──────────────────────────────────────────────────────────────────────────────
-CREATE TABLE public.platform_features (
+CREATE TABLE IF NOT EXISTS public.platform_features (
   id         uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
   feature_key text       NOT NULL,
   display_name text      NOT NULL,
@@ -39,19 +39,19 @@ COMMENT ON TABLE public.platform_features IS
   'Central feature registry. club_id NULL = global default; specific club_id = override.';
 
 -- Handle NULL UNIQUE properly: create a partial unique index for global features
-CREATE UNIQUE INDEX idx_platform_features_global_unique
+CREATE UNIQUE INDEX IF NOT EXISTS idx_platform_features_global_unique
   ON public.platform_features (feature_key) WHERE club_id IS NULL;
 
-CREATE INDEX idx_platform_features_club
+CREATE INDEX IF NOT EXISTS idx_platform_features_club
   ON public.platform_features (club_id) WHERE club_id IS NOT NULL;
 
-CREATE INDEX idx_platform_features_category
+CREATE INDEX IF NOT EXISTS idx_platform_features_category
   ON public.platform_features (category);
 
 -- ──────────────────────────────────────────────────────────────────────────────
 -- 2. platform_feature_channels
 -- ──────────────────────────────────────────────────────────────────────────────
-CREATE TABLE public.platform_feature_channels (
+CREATE TABLE IF NOT EXISTS public.platform_feature_channels (
   id         uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
   feature_id uuid        NOT NULL REFERENCES public.platform_features(id) ON DELETE CASCADE,
   channel    text        NOT NULL CHECK (channel IN ('mobile', 'web')),
@@ -70,13 +70,13 @@ CREATE TABLE public.platform_feature_channels (
 COMMENT ON TABLE public.platform_feature_channels IS
   'Per-channel (mobile/web) configuration for each feature.';
 
-CREATE INDEX idx_platform_feature_channels_feature
+CREATE INDEX IF NOT EXISTS idx_platform_feature_channels_feature
   ON public.platform_feature_channels (feature_id);
 
 -- ──────────────────────────────────────────────────────────────────────────────
 -- 3. platform_feature_rules
 -- ──────────────────────────────────────────────────────────────────────────────
-CREATE TABLE public.platform_feature_rules (
+CREATE TABLE IF NOT EXISTS public.platform_feature_rules (
   id               uuid    DEFAULT gen_random_uuid() PRIMARY KEY,
   feature_id       uuid    NOT NULL REFERENCES public.platform_features(id) ON DELETE CASCADE,
   auth_required    boolean NOT NULL DEFAULT false,
@@ -97,7 +97,7 @@ COMMENT ON TABLE public.platform_feature_rules IS
 -- ──────────────────────────────────────────────────────────────────────────────
 -- 4. platform_content_blocks
 -- ──────────────────────────────────────────────────────────────────────────────
-CREATE TABLE public.platform_content_blocks (
+CREATE TABLE IF NOT EXISTS public.platform_content_blocks (
   id             uuid    DEFAULT gen_random_uuid() PRIMARY KEY,
   block_key      text    UNIQUE NOT NULL,
   block_type     text    NOT NULL,
@@ -118,19 +118,19 @@ CREATE TABLE public.platform_content_blocks (
 COMMENT ON TABLE public.platform_content_blocks IS
   'Admin-managed content blocks for homepage sections, banners, quick actions, promos.';
 
-CREATE INDEX idx_platform_content_blocks_placement
+CREATE INDEX IF NOT EXISTS idx_platform_content_blocks_placement
   ON public.platform_content_blocks (placement_key, sort_order);
 
-CREATE INDEX idx_platform_content_blocks_feature
+CREATE INDEX IF NOT EXISTS idx_platform_content_blocks_feature
   ON public.platform_content_blocks (feature_id) WHERE feature_id IS NOT NULL;
 
-CREATE INDEX idx_platform_content_blocks_active
+CREATE INDEX IF NOT EXISTS idx_platform_content_blocks_active
   ON public.platform_content_blocks (is_active, target_channel);
 
 -- ──────────────────────────────────────────────────────────────────────────────
 -- 5. platform_feature_audit_logs
 -- ──────────────────────────────────────────────────────────────────────────────
-CREATE TABLE public.platform_feature_audit_logs (
+CREATE TABLE IF NOT EXISTS public.platform_feature_audit_logs (
   id           uuid    DEFAULT gen_random_uuid() PRIMARY KEY,
   feature_id   uuid    REFERENCES public.platform_features(id) ON DELETE SET NULL,
   action       text    NOT NULL,
@@ -143,27 +143,31 @@ CREATE TABLE public.platform_feature_audit_logs (
 COMMENT ON TABLE public.platform_feature_audit_logs IS
   'Tracks feature configuration changes: who changed what, when, before/after.';
 
-CREATE INDEX idx_platform_feature_audit_logs_feature
+CREATE INDEX IF NOT EXISTS idx_platform_feature_audit_logs_feature
   ON public.platform_feature_audit_logs (feature_id, created_at DESC);
 
-CREATE INDEX idx_platform_feature_audit_logs_actor
+CREATE INDEX IF NOT EXISTS idx_platform_feature_audit_logs_actor
   ON public.platform_feature_audit_logs (changed_by) WHERE changed_by IS NOT NULL;
 
 -- ──────────────────────────────────────────────────────────────────────────────
 -- Triggers: set_updated_at
 -- ──────────────────────────────────────────────────────────────────────────────
+DROP TRIGGER IF EXISTS trg_platform_features_updated ON public.platform_features;
 CREATE TRIGGER trg_platform_features_updated
   BEFORE UPDATE ON public.platform_features
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
+DROP TRIGGER IF EXISTS trg_platform_feature_channels_updated ON public.platform_feature_channels;
 CREATE TRIGGER trg_platform_feature_channels_updated
   BEFORE UPDATE ON public.platform_feature_channels
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
+DROP TRIGGER IF EXISTS trg_platform_feature_rules_updated ON public.platform_feature_rules;
 CREATE TRIGGER trg_platform_feature_rules_updated
   BEFORE UPDATE ON public.platform_feature_rules
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
+DROP TRIGGER IF EXISTS trg_platform_content_blocks_updated ON public.platform_content_blocks;
 CREATE TRIGGER trg_platform_content_blocks_updated
   BEFORE UPDATE ON public.platform_content_blocks
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
@@ -171,18 +175,22 @@ CREATE TRIGGER trg_platform_content_blocks_updated
 -- ──────────────────────────────────────────────────────────────────────────────
 -- Triggers: admin audit via existing log_admin_mutation()
 -- ──────────────────────────────────────────────────────────────────────────────
+DROP TRIGGER IF EXISTS trg_audit_platform_features ON public.platform_features;
 CREATE TRIGGER trg_audit_platform_features
   AFTER INSERT OR DELETE OR UPDATE ON public.platform_features
   FOR EACH ROW EXECUTE FUNCTION public.log_admin_mutation();
 
+DROP TRIGGER IF EXISTS trg_audit_platform_feature_channels ON public.platform_feature_channels;
 CREATE TRIGGER trg_audit_platform_feature_channels
   AFTER INSERT OR DELETE OR UPDATE ON public.platform_feature_channels
   FOR EACH ROW EXECUTE FUNCTION public.log_admin_mutation();
 
+DROP TRIGGER IF EXISTS trg_audit_platform_feature_rules ON public.platform_feature_rules;
 CREATE TRIGGER trg_audit_platform_feature_rules
   AFTER INSERT OR DELETE OR UPDATE ON public.platform_feature_rules
   FOR EACH ROW EXECUTE FUNCTION public.log_admin_mutation();
 
+DROP TRIGGER IF EXISTS trg_audit_platform_content_blocks ON public.platform_content_blocks;
 CREATE TRIGGER trg_audit_platform_content_blocks
   AFTER INSERT OR DELETE OR UPDATE ON public.platform_content_blocks
   FOR EACH ROW EXECUTE FUNCTION public.log_admin_mutation();
@@ -245,14 +253,17 @@ BEGIN
 END;
 $$;
 
+DROP TRIGGER IF EXISTS trg_feature_audit_features ON public.platform_features;
 CREATE TRIGGER trg_feature_audit_features
   AFTER INSERT OR UPDATE OR DELETE ON public.platform_features
   FOR EACH ROW EXECUTE FUNCTION public.log_feature_config_change();
 
+DROP TRIGGER IF EXISTS trg_feature_audit_channels ON public.platform_feature_channels;
 CREATE TRIGGER trg_feature_audit_channels
   AFTER INSERT OR UPDATE OR DELETE ON public.platform_feature_channels
   FOR EACH ROW EXECUTE FUNCTION public.log_feature_config_change();
 
+DROP TRIGGER IF EXISTS trg_feature_audit_rules ON public.platform_feature_rules;
 CREATE TRIGGER trg_feature_audit_rules
   AFTER INSERT OR UPDATE OR DELETE ON public.platform_feature_rules
   FOR EACH ROW EXECUTE FUNCTION public.log_feature_config_change();
@@ -267,74 +278,92 @@ ALTER TABLE public.platform_content_blocks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.platform_feature_audit_logs ENABLE ROW LEVEL SECURITY;
 
 -- ── platform_features: public read, admin write ──
+DROP POLICY IF EXISTS "Public read platform_features" ON public.platform_features;
 CREATE POLICY "Public read platform_features"
   ON public.platform_features FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS platform_features_insert_admin ON public.platform_features;
 CREATE POLICY platform_features_insert_admin
   ON public.platform_features FOR INSERT TO authenticated
   WITH CHECK (public.is_admin_user());
 
+DROP POLICY IF EXISTS platform_features_update_admin ON public.platform_features;
 CREATE POLICY platform_features_update_admin
   ON public.platform_features FOR UPDATE TO authenticated
   USING (public.is_admin_user()) WITH CHECK (public.is_admin_user());
 
+DROP POLICY IF EXISTS platform_features_delete_admin ON public.platform_features;
 CREATE POLICY platform_features_delete_admin
   ON public.platform_features FOR DELETE TO authenticated
   USING (public.is_admin_user());
 
 -- ── platform_feature_channels: public read, admin write ──
+DROP POLICY IF EXISTS "Public read platform_feature_channels" ON public.platform_feature_channels;
 CREATE POLICY "Public read platform_feature_channels"
   ON public.platform_feature_channels FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS platform_feature_channels_insert_admin ON public.platform_feature_channels;
 CREATE POLICY platform_feature_channels_insert_admin
   ON public.platform_feature_channels FOR INSERT TO authenticated
   WITH CHECK (public.is_admin_user());
 
+DROP POLICY IF EXISTS platform_feature_channels_update_admin ON public.platform_feature_channels;
 CREATE POLICY platform_feature_channels_update_admin
   ON public.platform_feature_channels FOR UPDATE TO authenticated
   USING (public.is_admin_user()) WITH CHECK (public.is_admin_user());
 
+DROP POLICY IF EXISTS platform_feature_channels_delete_admin ON public.platform_feature_channels;
 CREATE POLICY platform_feature_channels_delete_admin
   ON public.platform_feature_channels FOR DELETE TO authenticated
   USING (public.is_admin_user());
 
 -- ── platform_feature_rules: public read, admin write ──
+DROP POLICY IF EXISTS "Public read platform_feature_rules" ON public.platform_feature_rules;
 CREATE POLICY "Public read platform_feature_rules"
   ON public.platform_feature_rules FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS platform_feature_rules_insert_admin ON public.platform_feature_rules;
 CREATE POLICY platform_feature_rules_insert_admin
   ON public.platform_feature_rules FOR INSERT TO authenticated
   WITH CHECK (public.is_admin_user());
 
+DROP POLICY IF EXISTS platform_feature_rules_update_admin ON public.platform_feature_rules;
 CREATE POLICY platform_feature_rules_update_admin
   ON public.platform_feature_rules FOR UPDATE TO authenticated
   USING (public.is_admin_user()) WITH CHECK (public.is_admin_user());
 
+DROP POLICY IF EXISTS platform_feature_rules_delete_admin ON public.platform_feature_rules;
 CREATE POLICY platform_feature_rules_delete_admin
   ON public.platform_feature_rules FOR DELETE TO authenticated
   USING (public.is_admin_user());
 
 -- ── platform_content_blocks: public read (active only), admin write ──
+DROP POLICY IF EXISTS "Public read active platform_content_blocks" ON public.platform_content_blocks;
 CREATE POLICY "Public read active platform_content_blocks"
   ON public.platform_content_blocks FOR SELECT USING (is_active = true);
 
+DROP POLICY IF EXISTS "Admin read all platform_content_blocks" ON public.platform_content_blocks;
 CREATE POLICY "Admin read all platform_content_blocks"
   ON public.platform_content_blocks FOR SELECT TO authenticated
   USING (public.is_admin_user());
 
+DROP POLICY IF EXISTS platform_content_blocks_insert_admin ON public.platform_content_blocks;
 CREATE POLICY platform_content_blocks_insert_admin
   ON public.platform_content_blocks FOR INSERT TO authenticated
   WITH CHECK (public.is_admin_user());
 
+DROP POLICY IF EXISTS platform_content_blocks_update_admin ON public.platform_content_blocks;
 CREATE POLICY platform_content_blocks_update_admin
   ON public.platform_content_blocks FOR UPDATE TO authenticated
   USING (public.is_admin_user()) WITH CHECK (public.is_admin_user());
 
+DROP POLICY IF EXISTS platform_content_blocks_delete_admin ON public.platform_content_blocks;
 CREATE POLICY platform_content_blocks_delete_admin
   ON public.platform_content_blocks FOR DELETE TO authenticated
   USING (public.is_admin_user());
 
 -- ── platform_feature_audit_logs: admin read only, no public write ──
+DROP POLICY IF EXISTS "Admin read platform_feature_audit_logs" ON public.platform_feature_audit_logs;
 CREATE POLICY "Admin read platform_feature_audit_logs"
   ON public.platform_feature_audit_logs FOR SELECT TO authenticated
   USING (public.is_admin_user());
@@ -540,7 +569,7 @@ COMMENT ON FUNCTION public.check_feature_enabled IS
 -- SEED DATA: Insert global features matching current hardcoded FeatureModules
 -- ──────────────────────────────────────────────────────────────────────────────
 
--- All 13 feature modules as global defaults (club_id = NULL)
+-- All 12 feature modules as global defaults (club_id = NULL)
 INSERT INTO public.platform_features
   (feature_key, display_name, description, category, club_id, is_enabled, visibility_state)
 VALUES
@@ -548,7 +577,6 @@ VALUES
   ('live',          'Live Match',     'Live match center with real-time updates',                'core',         NULL, true, 'visible'),
   ('fanzone',       'Fan Zone',       'Predictions, fixtures, leaderboard, wallet, and badges',  'gamification', NULL, true, 'visible'),
   ('challenge',     'Challenge',      'Fan challenges and competitions',                         'gamification', NULL, true, 'visible'),
-  ('BioPay',        'BioPay',         'Facial recognition payment system',                       'commerce',     NULL, true, 'visible'),
   ('settings',      'Settings',       'User settings and profile management',                    'core',         NULL, true, 'visible'),
   ('onboarding',    'Onboarding',     'Welcome flow and phone auth',                             'core',         NULL, true, 'visible'),
   ('membership',    'Membership',     'Fan membership tiers and packages',                       'social',       NULL, true, 'visible'),
@@ -575,7 +603,6 @@ SELECT
     WHEN 'home'          THEN true
     WHEN 'fanzone'       THEN true
     WHEN 'live'          THEN true
-    WHEN 'BioPay'        THEN true
     WHEN 'contributions' THEN true
     WHEN 'ticketing'     THEN true
     WHEN 'shop'          THEN true
@@ -588,7 +615,6 @@ SELECT
     WHEN 'fanzone'       THEN 30
     WHEN 'settings'      THEN 40
     WHEN 'live'          THEN 50
-    WHEN 'BioPay'        THEN 60
     WHEN 'ticketing'     THEN 70
     WHEN 'membership'    THEN 80
     WHEN 'fan_clubs'     THEN 90
@@ -604,7 +630,6 @@ SELECT
     WHEN 'fanzone'       THEN '/fanzone'
     WHEN 'settings'      THEN '/settings'
     WHEN 'live'          THEN '/live'
-    WHEN 'BioPay'        THEN '/BioPay'
     WHEN 'ticketing'     THEN '/tickets'
     WHEN 'membership'    THEN '/membership'
     WHEN 'fan_clubs'     THEN '/fan-clubs'
@@ -620,7 +645,6 @@ SELECT
     WHEN 'fanzone'       THEN 'bottom_nav'
     WHEN 'settings'      THEN 'bottom_nav'
     WHEN 'live'          THEN 'home_action'
-    WHEN 'BioPay'        THEN 'home_action'
     ELSE NULL
   END
 FROM public.platform_features pf

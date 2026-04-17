@@ -83,19 +83,41 @@ extension OrderStatusX on OrderStatus {
   String get label => '${name[0].toUpperCase()}${name.substring(1)}';
 }
 
-enum TicketStatus { active, used, expired, cancelled }
+enum TicketStatus {
+  pending,
+  active,
+  used,
+  expired,
+  cancelled,
+  voided,
+  refunded,
+}
 
 extension TicketStatusX on TicketStatus {
   static TicketStatus fromValue(String? value) {
     return switch ((value ?? '').toLowerCase()) {
+      'pending' => TicketStatus.pending,
+      'valid' || 'active' => TicketStatus.active,
       'used' => TicketStatus.used,
       'expired' => TicketStatus.expired,
       'cancelled' => TicketStatus.cancelled,
-      _ => TicketStatus.active,
+      'voided' => TicketStatus.voided,
+      'refunded' => TicketStatus.refunded,
+      _ => TicketStatus.pending,
     };
   }
 
   String get value => name;
+
+  String get label => switch (this) {
+    TicketStatus.pending => 'Pending verification',
+    TicketStatus.active => 'Valid',
+    TicketStatus.used => 'Used',
+    TicketStatus.expired => 'Expired',
+    TicketStatus.cancelled => 'Cancelled',
+    TicketStatus.voided => 'Voided',
+    TicketStatus.refunded => 'Refunded',
+  };
 }
 
 enum SeatType { general, vip }
@@ -141,7 +163,6 @@ enum FetEventType {
   dailyOpen,
   matchAttendance,
   contribution,
-  createGroup,
   inviteFriends,
   shopPurchase,
   completeProfile,
@@ -154,7 +175,6 @@ extension FetEventTypeX on FetEventType {
     FetEventType.dailyOpen => 10,
     FetEventType.matchAttendance => 500,
     FetEventType.contribution => 50,
-    FetEventType.createGroup => 200,
     FetEventType.inviteFriends => 150,
     FetEventType.shopPurchase => 100,
     FetEventType.completeProfile => 300,
@@ -166,7 +186,6 @@ extension FetEventTypeX on FetEventType {
     FetEventType.dailyOpen => 'Daily Check-In',
     FetEventType.matchAttendance => 'Match Attendance',
     FetEventType.contribution => 'Make Contribution',
-    FetEventType.createGroup => 'Create Group',
     FetEventType.inviteFriends => 'Invite 3 Friends',
     FetEventType.shopPurchase => 'Shop Purchase',
     FetEventType.completeProfile => 'Complete Profile',
@@ -178,7 +197,6 @@ extension FetEventTypeX on FetEventType {
     FetEventType.dailyOpen => Icons.today_rounded,
     FetEventType.matchAttendance => Icons.stadium_rounded,
     FetEventType.contribution => Icons.volunteer_activism_rounded,
-    FetEventType.createGroup => Icons.groups_rounded,
     FetEventType.inviteFriends => Icons.campaign_rounded,
     FetEventType.shopPurchase => Icons.shopping_bag_rounded,
     FetEventType.completeProfile => Icons.check_circle_rounded,
@@ -190,7 +208,6 @@ extension FetEventTypeX on FetEventType {
     FetEventType.dailyOpen => 'Once per day',
     FetEventType.matchAttendance => 'Per match',
     FetEventType.contribution => 'Per transaction',
-    FetEventType.createGroup => 'Per creation',
     FetEventType.inviteFriends => 'Per 3 invites',
     FetEventType.shopPurchase => 'Per purchase',
     FetEventType.completeProfile => 'One-time',
@@ -202,7 +219,6 @@ extension FetEventTypeX on FetEventType {
     FetEventType.dailyOpen => 'daily_open',
     FetEventType.matchAttendance => 'match_attendance',
     FetEventType.contribution => 'contribution',
-    FetEventType.createGroup => 'create_group',
     FetEventType.inviteFriends => 'invite_friends',
     FetEventType.shopPurchase => 'shop_purchase',
     FetEventType.completeProfile => 'complete_profile',
@@ -254,53 +270,30 @@ class FetEvent extends Equatable {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// Contribution Group Types & Privacy
+// Contribution Group Types
 // ═══════════════════════════════════════════════════════════════
 
-enum ContributionGroupType { club, community, savings, fanGroup }
+enum ContributionGroupType { project, community }
 
 extension ContributionGroupTypeX on ContributionGroupType {
   static ContributionGroupType fromValue(String? value) {
     return switch ((value ?? '').toLowerCase()) {
-      'club' => ContributionGroupType.club,
+      'project' || 'club' || 'team_project' => ContributionGroupType.project,
       'community' => ContributionGroupType.community,
-      'savings' => ContributionGroupType.savings,
-      'fan_Group' || 'fanGroup' => ContributionGroupType.fanGroup,
+      'general' || 'savings' || 'emergency' || 'fan_group' || 'fangroup' =>
+        ContributionGroupType.community,
       _ => ContributionGroupType.community,
     };
   }
 
   String get value => switch (this) {
-    ContributionGroupType.club => 'club',
+    ContributionGroupType.project => 'project',
     ContributionGroupType.community => 'community',
-    ContributionGroupType.savings => 'savings',
-    ContributionGroupType.fanGroup => 'fan_Group',
   };
 
   String get label => switch (this) {
-    ContributionGroupType.club => 'Club Project',
-    ContributionGroupType.community => 'Community Group',
-    ContributionGroupType.savings => 'Public Savings',
-    ContributionGroupType.fanGroup => 'Fan Group',
-  };
-}
-
-enum GroupPrivacy { public, friends, private_ }
-
-extension GroupPrivacyX on GroupPrivacy {
-  static GroupPrivacy fromValue(String? value) {
-    return switch ((value ?? '').toLowerCase()) {
-      'public' => GroupPrivacy.public,
-      'friends' => GroupPrivacy.friends,
-      'private' => GroupPrivacy.private_,
-      _ => GroupPrivacy.public,
-    };
-  }
-
-  String get value => switch (this) {
-    GroupPrivacy.public => 'public',
-    GroupPrivacy.friends => 'friends',
-    GroupPrivacy.private_ => 'private',
+    ContributionGroupType.project => 'Team Project',
+    ContributionGroupType.community => 'Community',
   };
 }
 

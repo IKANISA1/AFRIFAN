@@ -70,7 +70,8 @@ class MomoSmsBackgroundProcessor {
       SupabaseClient? driftClient;
       try {
         driftClient = await _ensureSupabaseClient();
-      } catch (_) {
+      } catch (error, stackTrace) {
+      AfriLogger.warn('MomoSmsBackgroundProcessor', 'Operation failed (non-critical).', error, stackTrace);
         return;
       }
       if (driftClient != null) {
@@ -96,14 +97,16 @@ class MomoSmsBackgroundProcessor {
         });
         await box.put(capture.deviceMessageKey, payload);
       }
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('MomoSmsBackgroundProcessor', 'Operation failed (non-critical).', error, stackTrace);
       // Hive write failed — continue with ingestion attempt anyway.
     }
 
     SupabaseClient? client;
     try {
       client = await _ensureSupabaseClient();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('MomoSmsBackgroundProcessor', 'Operation failed (non-critical).', error, stackTrace);
       // Supabase init failed — capture is already queued for retry.
       return;
     }
@@ -119,7 +122,8 @@ class MomoSmsBackgroundProcessor {
       try {
         final box = await _openRetryQueueBox(momoSmsRetryQueueBoxName);
         await box.delete(capture.deviceMessageKey);
-      } catch (_) {
+      } catch (error, stackTrace) {
+      AfriLogger.warn('MomoSmsBackgroundProcessor', 'Operation failed (non-critical).', error, stackTrace);
         // Non-critical: entry will be de-duplicated on retry drain.
       }
     } catch (error) {

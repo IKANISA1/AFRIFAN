@@ -8,12 +8,13 @@ import {
   selectRecipientUserIds,
 } from "../_shared/notifications.ts";
 import {
-  corsPreflightResponse,
   corsHeaders,
-  jsonOk,
+  corsPreflightResponse,
   jsonError,
+  jsonOk,
 } from "../_shared/response.ts";
-import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
+import { enforceFeature } from "../_shared/feature_guard.ts";
+import { isErrorResponse, validateRequest } from "../_shared/validation.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
 type AdminClientLike = ReturnType<typeof createAdminClient>;
@@ -21,11 +22,13 @@ type AdminClientLike = ReturnType<typeof createAdminClient>;
 type Dependencies = {
   createAdminClient: () => AdminClientLike;
   validateRequest: typeof validateRequest;
+  enforceFeature: typeof enforceFeature;
 };
 
 const defaultDependencies: Dependencies = {
   createAdminClient,
   validateRequest,
+  enforceFeature,
 };
 
 export function createAdminSendNotificationHandler(
@@ -47,11 +50,23 @@ export function createAdminSendNotificationHandler(
 
     try {
       // Extract userId and clubId from JWT based on new shared architecture
-      const validated = await deps.validateRequest(request, { requireClubId: true, requireAdmin: true });
+      const validated = await deps.validateRequest(request, {
+        requireClubId: true,
+        requireAdmin: true,
+      });
       if (isErrorResponse(validated)) return validated;
-      const { userId, clubId } = validated;
+      const { userId, clubId, roles } = validated;
       const numericClubId = Number(clubId);
-      
+
+      const guardResponse = await deps.enforceFeature(validated.supabase, {
+        featureKey: "notifications",
+        channel: "mobile",
+        clubId: Number.isFinite(numericClubId) ? numericClubId : null,
+        isAuthenticated: true,
+        roles,
+      });
+      if (guardResponse) return guardResponse;
+
       const adminClient = deps.createAdminClient();
 
       const body = await request.json() as Record<string, unknown>;
@@ -183,7 +198,16 @@ export function createAdminSendNotificationHandler(
 
 if (import.meta.main) {
   const handler = createAdminSendNotificationHandler();
-  Deno.serve((req: Request) => handler(req).then(
-    (res) => new Response(res.body, { ...res, headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() } })
-  ));
+  Deno.serve((req: Request) =>
+    handler(req).then(
+      (res) =>
+        new Response(res.body, {
+          ...res,
+          headers: {
+            ...Object.fromEntries(res.headers.entries()),
+            ...corsHeaders(),
+          },
+        }),
+    )
+  );
 }

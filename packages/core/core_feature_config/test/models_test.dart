@@ -67,8 +67,8 @@ void main() {
       final snapshot = PlatformConfigSnapshot(
         features: [
           const PlatformFeature(
-            featureKey: 'biopay',
-            displayName: 'BioPay',
+            featureKey: 'contributions',
+            displayName: 'Contributions',
             isEnabled: true,
             visibilityState: 'visible',
           ),
@@ -81,7 +81,10 @@ void main() {
         ],
       );
 
-      expect(snapshot.featureByKey('biopay')?.displayName, 'BioPay');
+      expect(
+        snapshot.featureByKey('contributions')?.displayName,
+        'Contributions',
+      );
       expect(snapshot.featureByKey('live')?.isEnabled, isFalse);
       expect(snapshot.featureByKey('nonexistent'), isNull);
     });

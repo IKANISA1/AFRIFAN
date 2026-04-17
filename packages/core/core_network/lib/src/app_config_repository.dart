@@ -4,12 +4,6 @@ import 'club_scope.dart';
 
 /// Centralized key constants for the `app_config` table.
 abstract final class AppConfigKeys {
-  // BioPay
-  static const BioPayEnabled = 'feature_BioPay_enabled';
-  static const BioPayMatchThreshold = 'BioPay_match_threshold';
-  static const BioPayCacheTtlHours = 'BioPay_cache_ttl_hours';
-  static const BioPayStableFrames = 'BioPay_stable_frames';
-
   // Feature flags
   static const featureFlagsPrefix = 'feature_';
   static const killSwitchPrefix = 'kill_';
@@ -24,7 +18,7 @@ abstract final class AppConfigKeys {
 
 /// Fetches key-value config from the `app_config` Supabase table.
 ///
-/// Used for feature flags, BioPay thresholds, and runtime configuration
+/// Used for feature flags and runtime configuration
 /// without requiring an app update.
 class AppConfigRepository {
   AppConfigRepository({required SupabaseClient client}) : _client = client;

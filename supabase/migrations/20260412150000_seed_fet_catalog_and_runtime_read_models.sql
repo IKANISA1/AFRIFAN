@@ -741,26 +741,26 @@ BEGIN
         "code": "G068",
         "template_scope": "club_specific",
         "category": "Partner",
-        "item_name": "Create Group Saving",
+        "item_name": "Join Official Fan Club",
         "fet_value": 500,
-        "trigger_condition": "Install the Cool app and create a group savings pot with 20-plus members and 100,000-plus in total savings.",
+        "trigger_condition": "Join an official fan club that was published by the club admin team.",
         "activation_timing": "Year-round, with push notification support",
-        "description": "Install the Cool app and create a group savings pot with 20-plus members and 100,000-plus in total savings.",
+        "description": "Join an admin-managed fan club and become an active contributor through its dedicated MOMO code.",
         "badge_name": "🏦",
-        "implementation_notes": "High-value banking acquisition event."
+        "implementation_notes": "Rewards onboarding into official club-managed supporter structures."
       },
       {
         "sort_order": 430,
         "code": "G069",
         "template_scope": "club_specific",
         "category": "Partner",
-        "item_name": "Join Group Saving",
+        "item_name": "Support Public Team Project",
         "fet_value": 100,
-        "trigger_condition": "Join a group savings product and contribute at least 5,000.",
+        "trigger_condition": "Contribute at least 5,000 to a public team project or community initiative created by admins.",
         "activation_timing": "Year-round",
-        "description": "Join a group savings product and contribute at least 5,000 through the partner flow.",
+        "description": "Use the initiative's dedicated MOMO code to support a public team project or community campaign.",
         "badge_name": "💳",
-        "implementation_notes": "Drives savings activation and recurring deposits."
+        "implementation_notes": "Covers the remaining public initiative contribution journey without any user-managed initiative creation."
       },
       {
         "sort_order": 440,

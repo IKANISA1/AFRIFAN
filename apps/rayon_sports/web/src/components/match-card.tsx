@@ -94,7 +94,7 @@ export function MatchCard({
       href={href}
       prefetch={false}
       className={cn(
-        "group glass-panel card-interactive flex h-full flex-col gap-5 rounded-[32px] border-[1.2px] p-5",
+        "group glass-panel card-interactive flex h-full flex-col gap-5 rounded-[32px] border-[1.2px] bg-slate-950/96 p-5",
         borderClass,
         upcoming && "kit-stripe",
       )}
@@ -104,11 +104,11 @@ export function MatchCard({
         {live ? (
           <span className="badge-live">Live</span>
         ) : (
-          <span className="rounded-full bg-club-accent/15 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-club-accent">
+          <span className="rounded-full bg-amber-300 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-950">
             {formatMatchStatusLabel(match.matchStatus)}
           </span>
         )}
-        <span className="text-[11px] uppercase tracking-[0.24em] text-slate-300">
+        <span className="text-[11px] uppercase tracking-[0.24em] text-slate-100">
           {match.competition}
         </span>
       </div>
@@ -137,7 +137,7 @@ export function MatchCard({
               </p>
             ) : (
               <>
-                <p className="text-[9px] uppercase tracking-[0.22em] text-slate-400">From</p>
+                <p className="text-[9px] uppercase tracking-[0.22em] text-slate-200">From</p>
                 <p className="font-score text-2xl font-bold uppercase text-white sm:text-3xl">
                   {formatCurrency(match.generalPrice)}
                 </p>
@@ -155,7 +155,7 @@ export function MatchCard({
               variant="neutral"
             />
             <div className="min-w-0">
-              <p className="font-display text-2xl font-bold uppercase leading-none text-white/70 sm:text-3xl">
+              <p className="font-display text-2xl font-bold uppercase leading-none text-white sm:text-3xl">
                 {match.awayTeam}
               </p>
             </div>
@@ -174,17 +174,17 @@ export function MatchCard({
           <MatchProgressBar minute={match.liveMinute} />
         ) : upcoming ? (
           <div className="flex items-center gap-2 pt-1">
-            <span className="text-[10px] uppercase tracking-[0.22em] text-slate-400">Kickoff in</span>
+            <span className="text-[10px] uppercase tracking-[0.22em] text-slate-100">Kickoff in</span>
             <MatchCountdown matchDate={match.matchDate} />
           </div>
         ) : null}
 
         {/* Meta pills */}
         <div className="flex flex-wrap gap-2">
-          <span className="rounded-full border border-white/8 bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-300">
+          <span className="rounded-full border border-slate-700 bg-slate-950/75 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-100">
             {formatDateTime(match.matchDate)}
           </span>
-          <span className="rounded-full border border-white/8 bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-300">
+          <span className="rounded-full border border-slate-700 bg-slate-950/75 px-3 py-1.5 text-[11px] uppercase tracking-[0.22em] text-slate-100">
             {match.venue}
           </span>
           {live && match.liveMinute != null ? (
@@ -196,7 +196,7 @@ export function MatchCard({
       </div>
 
       {/* Summary */}
-      <p className="text-sm leading-7 text-slate-300">
+      <p className="text-sm leading-7 text-slate-100">
         {match.matchSummary ?? "Match details will appear here closer to kickoff."}
       </p>
 
@@ -206,19 +206,19 @@ export function MatchCard({
           {match.liveEvents.slice(0, 2).map((event) => (
             <div
               key={`${event.minute}-${event.event}`}
-              className="rounded-[20px] border border-white/8 bg-white/4 px-3 py-3 text-sm text-slate-200"
+              className="rounded-[20px] border border-slate-700 bg-slate-950/80 px-3 py-3 text-sm text-slate-100"
             >
-              <span className="mr-2 font-semibold text-club-accent">{event.minute}</span>
+              <span className="mr-2 font-semibold text-amber-300">{event.minute}</span>
               {event.event}
             </div>
           ))}
         </div>
       ) : !live && !result ? (
-        <div className="flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.22em] text-slate-300">
-          <span className="rounded-full border border-border-soft px-3 py-1.5">
+        <div className="flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.22em] text-slate-100">
+          <span className="rounded-full border border-slate-700 bg-slate-950/75 px-3 py-1.5">
             General {formatCurrency(match.generalPrice)}
           </span>
-          <span className="rounded-full border border-border-soft px-3 py-1.5">
+          <span className="rounded-full border border-slate-700 bg-slate-950/75 px-3 py-1.5">
             VIP {formatCurrency(match.vipPrice)}
           </span>
         </div>
@@ -230,7 +230,7 @@ export function MatchCard({
           {live ? <Radio size={16} className="text-red-300" /> : result ? <Trophy size={16} className="text-club-accent" /> : <Ticket size={16} className="text-club-accent" />}
           {ctaLabel}
         </div>
-        <ArrowRight size={18} className="text-slate-300 transition-transform duration-300 group-hover:translate-x-1" />
+        <ArrowRight size={18} className="text-slate-100 transition-transform duration-300 group-hover:translate-x-1" />
       </div>
     </Link>
   );

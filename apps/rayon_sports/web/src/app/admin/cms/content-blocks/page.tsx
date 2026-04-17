@@ -10,16 +10,20 @@ import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
+import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import { getAdminContentBlocks, saveAdminContentBlock, deleteAdminContentBlock } from "@/lib/data/admin/content-blocks";
 import { getAdminFeatures } from "@/lib/data/admin/features";
 import type { ContentBlock, PlatformFeature } from "@/lib/types";
+import { useHydrated } from "@/lib/use-hydrated";
 
 export default function AdminContentBlocksPage() {
   const { access, client } = useAdminPortal();
+  const hydrated = useHydrated();
   const [blocks, setBlocks] = useState<ContentBlock[]>([]);
   const [features, setFeatures] = useState<PlatformFeature[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const controlsDisabled = !hydrated || client == null;
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingBlock, setEditingBlock] = useState<Partial<ContentBlock> | null>(null);
@@ -64,7 +68,7 @@ export default function AdminContentBlocksPage() {
   }
 
   async function handleDelete(id: string) {
-    if (!client || !confirm("Are you sure you want to delete this block?")) return;
+    if (!client || !confirmAdminDestructiveAction({ subject: "this content block" })) return;
     try {
       await deleteAdminContentBlock(client, access, id);
       showAdminToast("Block deleted.", "success");
@@ -105,7 +109,11 @@ export default function AdminContentBlocksPage() {
           </span>
         }
         actions={
-          <button onClick={beginCreate} className="admin-action-button !bg-club-accent !text-white">
+          <button
+            onClick={beginCreate}
+            disabled={controlsDisabled}
+            className="admin-action-button !bg-club-accent !text-white disabled:opacity-60"
+          >
             <Plus size={16} /> New Block
           </button>
         }
@@ -169,7 +177,7 @@ export default function AdminContentBlocksPage() {
       )}
 
       <AdminActionDrawer
-        open={drawerOpen}
+        isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         title={editingBlock?.id ? `Edit Block: ${editingBlock.blockKey}` : "New Content Block"}
       >
@@ -204,7 +212,10 @@ export default function AdminContentBlocksPage() {
                   Target Channel
                   <select
                     value={editingBlock.targetChannel}
-                    onChange={e => setEditingBlock({...editingBlock, targetChannel: e.target.value})}
+                    onChange={e => setEditingBlock({
+                      ...editingBlock,
+                      targetChannel: e.target.value as ContentBlock["targetChannel"],
+                    })}
                     className="admin-input"
                   >
                     <option value="both">Both</option>
@@ -233,11 +244,14 @@ export default function AdminContentBlocksPage() {
               </label>
               <label className="grid gap-2 text-sm font-semibold text-white">
                 Linked Feature
-                <select
-                  value={editingBlock.featureId || ""}
-                  onChange={e => setEditingBlock({...editingBlock, featureId: e.target.value || undefined})}
-                  className="admin-input"
-                >
+                  <select
+                    value={editingBlock.featureId || ""}
+                    onChange={e => setEditingBlock({
+                      ...editingBlock,
+                      featureId: e.target.value || null,
+                    })}
+                    className="admin-input"
+                  >
                   <option value="">None (Always Show)</option>
                   {features.map(f => (
                     <option key={f.id} value={f.id}>{f.displayName}</option>
@@ -258,8 +272,14 @@ export default function AdminContentBlocksPage() {
                   <span className="text-sm font-semibold text-white">Sort Order</span>
                   <input
                     type="number"
-                    value={editingBlock.sortOrder}
-                    onChange={e => setEditingBlock({...editingBlock, sortOrder: parseInt(e.target.value)})}
+                    value={editingBlock.sortOrder ?? ""}
+                    onChange={e => setEditingBlock({
+                      ...editingBlock,
+                      sortOrder:
+                        e.target.value.length === 0
+                          ? null
+                          : parseInt(e.target.value, 10),
+                    })}
                     className="admin-input w-20"
                   />
                 </label>

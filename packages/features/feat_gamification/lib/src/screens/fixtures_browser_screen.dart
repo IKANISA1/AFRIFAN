@@ -9,6 +9,7 @@ import '../models/prediction_models.dart';
 import '../models/fanzone_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/fixtures_browser_widgets.dart';
+import 'package:core_utils/core_utils.dart';
 
 class FixturesBrowserScreen extends ConsumerStatefulWidget {
   const FixturesBrowserScreen({
@@ -85,7 +86,8 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
         _dateSummary = summaryMap;
         _isLoading = false;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FixturesBrowserScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) return;
       setState(() {
         _error = 'Could not load fixtures right now.';

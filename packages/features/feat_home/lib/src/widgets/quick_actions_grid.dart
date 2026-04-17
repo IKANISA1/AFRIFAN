@@ -17,10 +17,7 @@ class QuickActionsGrid extends ConsumerWidget {
     final featureService = ref.watch(featureConfigServiceProvider);
 
     final filteredActions = actions.where((action) {
-      // 1. Identify feature key from route or specific mapping
-      final key = _featureKeyForRoute(action.route);
-      // 2. Filter out if feature is explicitly disabled in runtime config
-      return featureService.isFeatureEnabled(key);
+      return featureService.isRouteAvailable(action.route);
     }).toList();
 
     if (filteredActions.isEmpty) {
@@ -60,20 +57,6 @@ class QuickActionsGrid extends ConsumerWidget {
       ],
     );
   }
-
-  String _featureKeyForRoute(String route) {
-    final path = route.trim().toLowerCase();
-    if (path.contains('/fanzone')) return 'fanzone';
-    if (path.contains('/BioPay')) return 'BioPay';
-    if (path.contains('/live')) return 'live';
-    if (path.contains('/shop')) return 'shop';
-    if (path.contains('/tickets')) return 'ticketing';
-    if (path.contains('/membership')) return 'membership';
-    if (path.contains('/contribute')) return 'contributions';
-    if (path.contains('/fan_clubs')) return 'fan_clubs';
-    return 'home';
-  }
-
   IconData _resolveActionIcon(HomeQuickAction action) {
     return switch (action.iconKey.trim()) {
       'groups' => AfriIcons.groups,

@@ -324,6 +324,8 @@ declare
   v_winner record;
   v_entry record;
   v_membership public.fan_memberships;
+  v_should_void boolean := false;
+  v_void_reason text := 'match_invalid';
 begin
   -- Only allow settlement via service role (automated job)
   if auth.role() != 'service_role' then
@@ -343,9 +345,11 @@ begin
   if v_match.status != 'finished' or v_match.home_score is null or v_match.away_score is null then
     -- Refund all and void if match was cancelled/postponed
     if v_match.status in ('cancelled', 'postponed', 'abandoned') or (v_challenge.lock_at < now() - interval '3 days') then
-       goto void_refund;
+      v_should_void := true;
     end if;
-    return jsonb_build_object('status', 'pending', 'message', 'Match not finished yet.');
+    if not v_should_void then
+      return jsonb_build_object('status', 'pending', 'message', 'Match not finished yet.');
+    end if;
   end if;
 
   -- 2. Count winners
@@ -356,90 +360,92 @@ begin
     and predicted_away_score = v_match.away_score;
 
   if v_winners_count = 0 then
-    goto void_refund;
+    v_should_void := true;
+    v_void_reason := 'no_exact_winner';
   end if;
 
-  -- 3. Calculate payouts
-  v_losers_count := v_challenge.total_participants - v_winners_count;
-  v_losers_pool_fet := v_losers_count * v_challenge.stake_fet;
-  v_payout_per_winner_fet := v_challenge.stake_fet + floor(v_losers_pool_fet / v_winners_count);
-  v_remainder_fet := v_losers_pool_fet % v_winners_count;
+  if not v_should_void then
+    -- 3. Calculate payouts
+    v_losers_count := v_challenge.total_participants - v_winners_count;
+    v_losers_pool_fet := v_losers_count * v_challenge.stake_fet;
+    v_payout_per_winner_fet := v_challenge.stake_fet + floor(v_losers_pool_fet / v_winners_count);
+    v_remainder_fet := v_losers_pool_fet % v_winners_count;
 
-  -- 4. Distribute to winners
-  for v_winner in 
-    select * from football.prediction_challenge_entries
+    -- 4. Distribute to winners
+    for v_winner in
+      select * from football.prediction_challenge_entries
+      where challenge_id = p_challenge_id
+        and predicted_home_score = v_match.home_score
+        and predicted_away_score = v_match.away_score
+      order by joined_at asc
+    loop
+      declare
+        v_actual_payout bigint := v_payout_per_winner_fet;
+      begin
+        if v_remainder_fet > 0 then
+          v_actual_payout := v_actual_payout + 1;
+          v_remainder_fet := v_remainder_fet - 1;
+        end if;
+
+        update football.prediction_challenge_entries set
+          status = 'winner',
+          payout_fet = v_actual_payout,
+          settled_at = now()
+        where id = v_winner.id;
+
+        -- Credit wallet
+        select * into v_membership from public.fan_memberships
+        where user_id = v_winner.user_id and club_id = v_challenge.club_id for update;
+
+        update public.fan_memberships set points = points + v_actual_payout
+        where id = v_membership.id;
+
+        perform public.fet_wallet_append_entry(
+          p_club_id := v_challenge.club_id,
+          p_user_id := v_winner.user_id,
+          p_membership_id := v_membership.id,
+          p_entry_type := 'earn',
+          p_direction := 'credit',
+          p_amount := v_actual_payout::integer,
+          p_balance_after := (v_membership.points + v_actual_payout)::integer,
+          p_reference_type := 'challenge_payout',
+          p_reference_id := p_challenge_id::text,
+          p_note := 'Winnings from exact score challenge'
+        );
+      end;
+    end loop;
+
+    -- 5. Mark losers
+    update football.prediction_challenge_entries set
+      status = 'loser',
+      settled_at = now()
     where challenge_id = p_challenge_id
-      and predicted_home_score = v_match.home_score
-      and predicted_away_score = v_match.away_score
-    order by joined_at asc
-  loop
-    declare
-      v_actual_payout bigint := v_payout_per_winner_fet;
-    begin
-      if v_remainder_fet > 0 then
-        v_actual_payout := v_actual_payout + 1;
-        v_remainder_fet := v_remainder_fet - 1;
-      end if;
+      and (predicted_home_score != v_match.home_score or predicted_away_score != v_match.away_score);
 
-      update football.prediction_challenge_entries set
-        status = 'winner',
-        payout_fet = v_actual_payout,
-        settled_at = now()
-      where id = v_winner.id;
+    -- 6. Record settlement
+    insert into football.prediction_challenge_settlements (
+      challenge_id, match_id, official_home_score, official_away_score,
+      winners_count, losers_count, total_pool_fet, losers_pool_fet,
+      payout_per_winner_fet, settlement_mode
+    ) values (
+      p_challenge_id, v_challenge.match_id, v_match.home_score, v_match.away_score,
+      v_winners_count, v_losers_count, v_challenge.total_pool_fet, v_losers_pool_fet,
+      v_payout_per_winner_fet, 'standard'
+    );
 
-      -- Credit wallet
-      select * into v_membership from public.fan_memberships
-      where user_id = v_winner.user_id and club_id = v_challenge.club_id for update;
+    update football.prediction_challenges set
+      status = 'settled',
+      settled_at = now(),
+      winner_count = v_winners_count,
+      loser_count = v_losers_count,
+      payout_per_winner_fet = v_payout_per_winner_fet,
+      official_home_score = v_match.home_score,
+      official_away_score = v_match.away_score
+    where id = p_challenge_id;
 
-      update public.fan_memberships set points = points + v_actual_payout
-      where id = v_membership.id;
+    return jsonb_build_object('status', 'settled', 'winners', v_winners_count);
+  end if;
 
-      perform public.fet_wallet_append_entry(
-        p_club_id := v_challenge.club_id,
-        p_user_id := v_winner.user_id,
-        p_membership_id := v_membership.id,
-        p_entry_type := 'earn',
-        p_direction := 'credit',
-        p_amount := v_actual_payout::integer,
-        p_balance_after := (v_membership.points + v_actual_payout)::integer,
-        p_reference_type := 'challenge_payout',
-        p_reference_id := p_challenge_id::text,
-        p_note := 'Winnings from exact score challenge'
-      );
-    end;
-  end loop;
-
-  -- 5. Mark losers
-  update football.prediction_challenge_entries set
-    status = 'loser',
-    settled_at = now()
-  where challenge_id = p_challenge_id
-    and (predicted_home_score != v_match.home_score or predicted_away_score != v_match.away_score);
-
-  -- 6. Record settlement
-  insert into football.prediction_challenge_settlements (
-    challenge_id, match_id, official_home_score, official_away_score,
-    winners_count, losers_count, total_pool_fet, losers_pool_fet,
-    payout_per_winner_fet, settlement_mode
-  ) values (
-    p_challenge_id, v_challenge.match_id, v_match.home_score, v_match.away_score,
-    v_winners_count, v_losers_count, v_challenge.total_pool_fet, v_losers_pool_fet,
-    v_payout_per_winner_fet, 'standard'
-  );
-
-  update football.prediction_challenges set
-    status = 'settled',
-    settled_at = now(),
-    winner_count = v_winners_count,
-    loser_count = v_losers_count,
-    payout_per_winner_fet = v_payout_per_winner_fet,
-    official_home_score = v_match.home_score,
-    official_away_score = v_match.away_score
-  where id = p_challenge_id;
-
-  return jsonb_build_object('status', 'settled', 'winners', v_winners_count);
-
-<<void_refund>>
   for v_entry in select * from football.prediction_challenge_entries where challenge_id = p_challenge_id
   loop
     select * into v_membership from public.fan_memberships
@@ -471,7 +477,7 @@ begin
   update football.prediction_challenges set
     status = 'void',
     settled_at = now(),
-    void_reason = case when v_winners_count = 0 then 'no_exact_winner' else 'match_invalid' end
+    void_reason = v_void_reason
   where id = p_challenge_id;
 
   return jsonb_build_object('status', 'voided', 'reason', 'refunded_all');

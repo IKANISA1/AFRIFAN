@@ -125,9 +125,9 @@ export default function AdminMatchesPage() {
           emptyForm={emptyMatchForm}
           client={client}
           access={access}
-          onSaved={() => {
+          onSaved={async () => {
             setDrawerOpen(false);
-            loadMatches().catch(() => {});
+            await loadMatches();
           }}
           onCancel={() => setDrawerOpen(false)}
         />

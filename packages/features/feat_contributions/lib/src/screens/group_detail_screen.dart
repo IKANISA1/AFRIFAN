@@ -107,7 +107,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       if (mounted) {
         setState(() {
           _loading = false;
-          _error = 'Could not load this Group right now.';
+          _error = 'Could not load this public initiative right now.';
         });
       }
     }
@@ -131,9 +131,11 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     final progress = targetAmount > 0
         ? (currentTotal / targetAmount).clamp(0.0, 1.0)
         : 0.0;
-    final title = group?['name']?.toString() ?? 'Group';
+    final title = group?['name']?.toString() ?? 'Public initiative';
     final description = group?['description']?.toString();
-    final privacy = group?['privacy']?.toString() ?? 'private';
+    final groupType = (group?['group_type']?.toString() ?? 'community')
+        .replaceAll('_', ' ')
+        .toUpperCase();
     final memberCount = (group?['member_count'] as num?)?.toInt() ?? 0;
 
     return Scaffold(
@@ -158,16 +160,6 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           },
           icon: const Icon(AfriIcons.back),
         ),
-        actions: [
-          IconButton(
-            onPressed: () => showGroupInviteCodeSheet(
-              context,
-              inviteCode: group?['invite_code']?.toString(),
-              groupName: title,
-            ),
-            icon: const Icon(AfriIcons.shareIos),
-          ),
-        ],
       ),
       body: _loading
           ? const Padding(
@@ -176,8 +168,9 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
             )
           : _error != null || group == null
           ? _GroupState(
-              title: _error ?? 'Group unavailable',
-              body: 'Try returning to your Groups and opening it again.',
+              title: _error ?? 'Initiative unavailable',
+              body:
+                  'Try returning to the communities list and opening it again.',
               onPressed: () => context.go('/contribute/groups'),
             )
           : RefreshIndicator(
@@ -226,11 +219,11 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               _GroupMetaStat(
-                                label: 'PRIVACY',
-                                value: privacy.toUpperCase(),
+                                label: 'TYPE',
+                                value: groupType,
                               ),
                               _GroupMetaStat(
-                                label: 'MEMBERS',
+                                label: 'CONTRIBUTORS',
                                 value: '$memberCount',
                               ),
                             ],
@@ -250,28 +243,6 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing4),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () => context.push(
-                              '/contribute/group/${widget.groupId}/chat',
-                            ),
-                            child: const Text('CHAT'),
-                          ),
-                        ),
-                        const SizedBox(width: SpacingTokens.spacing3),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () => context.push(
-                              '/contribute/group/${widget.groupId}/settings',
-                            ),
-                            child: const Text('SETTINGS'),
-                          ),
-                        ),
-                      ],
                     ),
                     const SizedBox(height: SpacingTokens.spacing6),
                     Row(
@@ -294,7 +265,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                       GlassCard(
                         animate: false,
                         child: Text(
-                          'No contributions have been recorded for this Group yet.',
+                          'No contributions have been recorded for this initiative yet.',
                           style: TypographyTokens.bodyMedium(),
                         ),
                       ),
@@ -372,7 +343,7 @@ class _GroupState extends StatelessWidget {
               style: TypographyTokens.bodyMedium(),
             ),
             const SizedBox(height: SpacingTokens.spacing6),
-            AfriButton(label: 'Back to groups', onTap: onPressed),
+            AfriButton(label: 'Back to communities', onTap: onPressed),
           ],
         ),
       ),

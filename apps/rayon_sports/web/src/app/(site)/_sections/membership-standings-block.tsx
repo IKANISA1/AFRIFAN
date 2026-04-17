@@ -19,7 +19,7 @@ export async function MembershipAndStandingsBlock() {
 
   return (
     <section className="page-shell grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-      <div className="glass-panel rounded-[34px] p-6">
+      <div className="glass-panel rounded-[34px] bg-slate-950/96 p-6">
         <SectionHeading
           eyebrow="Membership"
           title={`Join the ${club.nickname || club.shortName} family.`}
@@ -35,7 +35,7 @@ export async function MembershipAndStandingsBlock() {
                   <p className="font-display text-3xl font-bold uppercase leading-none text-white">
                     {membershipPackage.title}
                   </p>
-                  <p className="mt-2 line-clamp-1 text-sm leading-7 text-slate-300">
+                  <p className="mt-2 line-clamp-1 text-sm leading-7 text-slate-100">
                     {membershipPackage.description}
                   </p>
                 </div>
@@ -43,7 +43,7 @@ export async function MembershipAndStandingsBlock() {
                   <p className="font-score text-3xl font-bold uppercase text-white">
                     {formatCurrency(membershipPackage.annualPrice, club.currencyCode)}
                   </p>
-                  <p className="text-[10px] text-slate-300">
+                  <p className="text-[10px] text-slate-100">
                     / year
                   </p>
                 </div>
@@ -52,7 +52,7 @@ export async function MembershipAndStandingsBlock() {
                 {membershipPackage.perks.map((perk) => (
                   <span
                     key={perk}
-                    className="rounded-full border border-border-soft bg-white/4 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-slate-200"
+                    className="rounded-full border border-slate-700 bg-slate-950/75 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-slate-50"
                   >
                     {perk}
                   </span>
@@ -71,14 +71,14 @@ export async function MembershipAndStandingsBlock() {
       </div>
 
       <div className="grid gap-6">
-        <div className="glass-panel rounded-[34px] p-6">
+        <div className="glass-panel rounded-[34px] bg-slate-950/96 p-6">
           <SectionHeading
             eyebrow="Standings"
             title="Where we stand."
           />
           <div className="mt-6 overflow-x-auto overflow-hidden rounded-[26px] border border-border-soft">
             <table className="w-full min-w-[400px] text-left text-sm">
-              <thead className="bg-white/8 text-[11px] uppercase tracking-[0.24em] text-slate-300">
+              <thead className="bg-slate-950/80 text-[11px] uppercase tracking-[0.24em] text-slate-100">
                 <tr>
                   <th className="px-4 py-3 text-center">Pos</th>
                   <th className="px-4 py-3">Club</th>
@@ -93,14 +93,14 @@ export async function MembershipAndStandingsBlock() {
                     key={row.club}
                     className={row.highlight ? "bg-club-primary/15" : "bg-transparent"}
                   >
-                    <td className="px-4 py-4 text-center font-mono opacity-60 text-xs">
+                    <td className="px-4 py-4 text-center font-mono text-xs text-slate-100">
                       {row.position}
                     </td>
                     <td className="px-4 py-4 font-semibold text-white">
                       {row.club}
                     </td>
-                    <td className="px-4 py-4 text-center">{row.played}</td>
-                    <td className="px-4 py-4 text-center">{row.goalDifference}</td>
+                    <td className="px-4 py-4 text-center text-slate-100">{row.played}</td>
+                    <td className="px-4 py-4 text-center text-slate-100">{row.goalDifference}</td>
                     <td className="px-4 py-4 text-center font-semibold text-white">
                       {row.points}
                     </td>
@@ -118,7 +118,7 @@ export async function MembershipAndStandingsBlock() {
           </Link>
         </div>
 
-        <div className="glass-panel rounded-[34px] p-6">
+        <div className="glass-panel rounded-[34px] bg-slate-950/96 p-6">
           <SectionHeading
             eyebrow="Supporter network"
             title="Our supporter chapters."
@@ -132,10 +132,10 @@ export async function MembershipAndStandingsBlock() {
                 <p className="font-display text-xl font-bold uppercase leading-none text-white">
                   {clubItem.name}
                 </p>
-                <p className="mt-1 text-sm text-club-accent">
+                <p className="mt-1 text-sm text-amber-200">
                   {clubItem.region}
                 </p>
-                <p className="mt-3 line-clamp-1 text-sm leading-7 text-slate-300">
+                <p className="mt-3 line-clamp-1 text-sm leading-7 text-slate-100">
                   {clubItem.description}
                 </p>
               </article>

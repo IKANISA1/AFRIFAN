@@ -102,7 +102,19 @@ Future<List<_FontCacheEntry>> _loadFontCacheEntries() async {
       localCandidates: <String>['Inter-Medium.ttf'],
     ),
     _FontCacheDescriptor(
+      cacheName: 'Inter_500normal',
+      fileHash:
+          '492dec3bc33255f9d81bd5fb18704ad72f96f9b9318e4171bc9f9be9dd4bf44b',
+      localCandidates: <String>['Inter-Medium.ttf'],
+    ),
+    _FontCacheDescriptor(
       cacheName: 'Inter_600',
+      fileHash:
+          'd7ba633bab7f40576e539a7e934a1301d7618dceea59c743de477c2c493462fc',
+      localCandidates: <String>['Inter-SemiBold.ttf'],
+    ),
+    _FontCacheDescriptor(
+      cacheName: 'Inter_600normal',
       fileHash:
           'd7ba633bab7f40576e539a7e934a1301d7618dceea59c743de477c2c493462fc',
       localCandidates: <String>['Inter-SemiBold.ttf'],
@@ -111,6 +123,24 @@ Future<List<_FontCacheEntry>> _loadFontCacheEntries() async {
       cacheName: 'Inter_700',
       fileHash:
           'b7e339223d56e8c4210c86f1ba87b3d43d6c47e03956ea56f0a7a938ae61b2a3',
+      localCandidates: <String>['Inter-Bold.ttf'],
+    ),
+    _FontCacheDescriptor(
+      cacheName: 'Inter_700normal',
+      fileHash:
+          '76121a34a606cc8a0e1ef5a47d2b9ba9678c41f5c852d63eb28f62069373bfad',
+      localCandidates: <String>['Inter-Bold.ttf'],
+    ),
+    _FontCacheDescriptor(
+      cacheName: 'Inter_800normal',
+      fileHash:
+          '6af943899936fd3fd15a5889db4a384cec311c9bfe33d74bcfd3e0ae56f1b1d1',
+      localCandidates: <String>['Inter-Bold.ttf'],
+    ),
+    _FontCacheDescriptor(
+      cacheName: 'Inter_900normal',
+      fileHash:
+          'd892b18d080d1200aa41ea8851da84dd8c24c33843d491fa034ac57b16f22973',
       localCandidates: <String>['Inter-Bold.ttf'],
     ),
   ];

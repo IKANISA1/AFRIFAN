@@ -53,35 +53,35 @@ export function CommunityContentList({
             </thead>
             <tbody>
               {clubs.map((club) => (
-                <tr key={club.id}>
-                  <td>
+                <tr key={club.id} className="admin-table-row">
+                  <td className="admin-table-cell" data-column-label="Chapter">
                     <p className="admin-row-title">{club.name}</p>
                     <p className="admin-row-copy">{club.description}</p>
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Region">
                     <p className="text-sm font-medium text-white">{club.region}</p>
                     <p className="admin-row-meta">territory</p>
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Status">
                     <AdminStatusBadge
                       label={club.isActive ? "Visible" : "Hidden"}
                       tone={club.isActive ? "success" : "neutral"}
                     />
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Members">
                     <p className="text-sm font-medium text-white">{club.memberCount}</p>
                     <p className="admin-row-meta">supporters</p>
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Events">
                     <p className="text-sm font-medium text-white">{club.eventCount}</p>
                     <p className="admin-row-meta">chapter events</p>
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Rating">
                     <p className="text-sm font-medium text-white">{club.rating.toFixed(1)}</p>
                     <p className="admin-row-meta">engagement score</p>
                   </td>
-                  <td>
-                    <div className="flex justify-end gap-2">
+                  <td className="admin-table-cell" data-column-label="Actions">
+                    <div className="flex flex-wrap justify-start gap-2 sm:justify-end">
                       <button
                         type="button"
                         onClick={() => onBeginEdit(club)}

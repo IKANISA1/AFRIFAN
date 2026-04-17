@@ -31,19 +31,12 @@ The app collects and processes user data through Supabase (backend) and local st
 |-----------|-----------|--------|---------|----------|
 | Device/app identifiers | Yes | No | Firebase App Check, notification delivery, auth security | No |
 
-### 5. Photos and Videos
-| Data Type | Collected | Shared | Purpose | Optional |
-|-----------|-----------|--------|---------|----------|
-| Photos / face data | Yes | No | BioPay enrollment and matching | Yes |
-
----
-
 ## Data Usage Purposes
 
 - **App functionality**: Core features rely on anonymous authentication, optional profile data, and purchase history
 - **Account management**: Anonymous account/session continuity and optional MoMo profile linkage
 - **Notifications**: Optional alert delivery for configured releases
-- **Fraud prevention / security**: Device/app attestation for Firebase App Check, face data for BioPay
+- **Fraud prevention / security**: Device/app attestation for Firebase App Check
 
 ---
 
@@ -60,7 +53,6 @@ The app collects and processes user data through Supabase (backend) and local st
 ### Data Retention
 - Account data: retained until account deletion
 - Transaction history: retained for 3 years (legal compliance)
-- BioPay biometric templates/embeddings may be transmitted to secure server-side matching services for enrolled users and are retained while the enrollment remains active
 
 ---
 
@@ -70,8 +62,6 @@ The app collects and processes user data through Supabase (backend) and local st
 |-----|---------------|---------|
 | Supabase | Auth tokens, user data | Backend / Database |
 | Firebase | App attestation data, messaging token | App Check / Push messaging |
-| Google ML Kit | Face geometry (local) | BioPay facial detection |
-| TensorFlow Lite | Face embeddings (local and secure request payloads) | BioPay face matching |
 
 ---
 

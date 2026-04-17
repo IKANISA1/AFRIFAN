@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../widgets/fan_club_cards.dart';
+import 'package:core_utils/core_utils.dart';
 
 class FanClubsListScreen extends ConsumerStatefulWidget {
   const FanClubsListScreen({super.key});
@@ -72,7 +73,8 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
               joined.add(clubId);
             }
           }
-        } catch (_) {
+        } catch (error, stackTrace) {
+      AfriLogger.warn('FanClubsListScreen', 'Operation failed (non-critical).', error, stackTrace);
           // Keep rendering the list even if membership lookups are locked down.
         }
       }
@@ -274,20 +276,6 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                                 style: TypographyTokens.displaySmall(primary),
                               ),
                             ],
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            final created = await context.push<bool>(
-                              '/fan-clubs/create',
-                            );
-                            if (created == true && mounted) {
-                              unawaited(_loadClubs());
-                            }
-                          },
-                          icon: Icon(
-                            Icons.add_circle_outline_rounded,
-                            color: ColorTokens.onSurface,
                           ),
                         ),
                       ],

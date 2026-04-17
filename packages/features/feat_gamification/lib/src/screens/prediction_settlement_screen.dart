@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/prediction_share_card.dart';
+import 'package:core_utils/core_utils.dart';
 
 class PredictionSettlementScreen extends ConsumerStatefulWidget {
   const PredictionSettlementScreen({super.key, required this.predictionId});
@@ -49,7 +50,8 @@ class _PredictionSettlementScreenState
         _error = detail == null ? 'Prediction not found.' : null;
         _isLoading = false;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('PredictionSettlementScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) {
         return;
       }

@@ -44,6 +44,9 @@ export {
 
 export {
   getAdminAppConfig,
+  getAdminContentBlocks,
+  saveAdminContentBlock,
+  deleteAdminContentBlock,
   saveAdminConfigEntry,
   deleteAdminConfigEntry,
 } from "./cms-content";
@@ -58,6 +61,11 @@ export {
   deleteAdminMatch,
 } from "./matches";
 
+export {
+  getAdminTicketOrders,
+  updateTicketStatus,
+} from "./tickets";
+
 // Settings
 export {
   getAdminClubScopeOptions,
@@ -71,6 +79,12 @@ export {
   saveAdminMembershipPackage,
   deleteAdminMembershipPackage,
 } from "./membership";
+
+export {
+  getAdminSupporterRegistry,
+  getAdminMembershipApplications,
+  reviewMembershipApplication,
+} from "./membership-ops";
 
 // Shop
 export {
@@ -136,3 +150,22 @@ export {
   getAdminFetWalletSnapshot,
   adjustAdminFetWalletBalance,
 } from "./fet-wallet";
+
+// Offers
+export {
+  getAdminOffers,
+  saveAdminOffer,
+  deleteAdminOffer,
+} from "./offers";
+
+// Predictions
+export {
+  getAdminPredictionMarkets,
+  saveAdminPredictionMarket,
+  getAdminCompetitions,
+  saveAdminCompetition,
+  getAdminSeasons,
+  saveAdminSeason,
+  getAdminFixtures,
+  saveAdminFixture,
+} from "./predictions";

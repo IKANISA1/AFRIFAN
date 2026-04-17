@@ -44,7 +44,7 @@ class _ContributionsHubScreenState
                   'current_total': group.currentTotal,
                   'target_amount': group.targetAmount,
                   'member_count': group.memberCount,
-                  'privacy': group.privacy.name.replaceAll('_', ''),
+                  'group_type': group.groupType.value,
                   'created_at': group.createdAt.toIso8601String(),
                 },
               )
@@ -68,11 +68,12 @@ class _ContributionsHubScreenState
         _isLoading = false;
         _error = null;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('ContributionsHubScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _error = 'Contribution Groups are temporarily unavailable.';
+        _error = 'Contribution initiatives are temporarily unavailable.';
       });
     }
   }
@@ -176,10 +177,6 @@ class _ContributionsHubScreenState
       0,
       (sum, group) => sum + ((group['target_amount'] as num?)?.toInt() ?? 0),
     );
-    final privateGroups = _groups.where((group) {
-      final privacy = group['privacy']?.toString().toLowerCase();
-      return privacy == 'private' || privacy == 'members';
-    }).length;
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -223,7 +220,7 @@ class _ContributionsHubScreenState
               ),
               const SizedBox(height: SpacingTokens.spacing6),
               _HubCard(
-                title: 'CLUB PROJECTS',
+                title: 'TEAM PROJECTS',
                 subtitle: totalRaised == 0
                     ? 'No campaigns yet.'
                     : '${currency.format(totalRaised)} of ${currency.format(totalTarget)} raised.',
@@ -233,12 +230,12 @@ class _ContributionsHubScreenState
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               _HubCard(
-                title: 'MY Groups',
+                title: 'COMMUNITIES',
                 subtitle: _groups.isEmpty
-                    ? 'No Groups yet.'
+                    ? 'No public communities yet.'
                     : '$_groupsCountLabel active.',
                 accent: ColorTokens.success,
-                metricLabel: '$privateGroups PRIVATE',
+                metricLabel: '${_groups.length} LIVE',
                 onTap: () => context.push('/contribute/groups'),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
@@ -298,7 +295,7 @@ class _ContributionsHubScreenState
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               AfriSectionCard(
-                title: 'Live Groups',
+                title: 'Live campaigns',
                 child: Column(
                   children: [
                     if (_isLoading)
@@ -314,7 +311,7 @@ class _ContributionsHubScreenState
                     else if (_groups.isEmpty)
                       const AfriEmptyView(
                         compact: true,
-                        title: 'No Groups yet',
+                        title: 'No public groups yet',
                         icon: AfriIcons.clubZone,
                       )
                     else
@@ -359,18 +356,6 @@ class _ContributionsHubScreenState
                   ],
                 ),
               ),
-              const SizedBox(height: SpacingTokens.sectionGap),
-              AfriButton(
-                label: 'Start a Group',
-                onTap: () => context.push('/contribute/create'),
-              ),
-              const SizedBox(height: SpacingTokens.listItemGap),
-              AfriButton(
-                label: 'Join a Group',
-                icon: AfriIcons.friend,
-                variant: AfriButtonVariant.outline,
-                onTap: () => context.push('/contribute/join'),
-              ),
             ],
           ),
         ),
@@ -379,7 +364,7 @@ class _ContributionsHubScreenState
   }
 
   String get _groupsCountLabel =>
-      _groups.length == 1 ? '1 Group is' : '${_groups.length} Groups are';
+      _groups.length == 1 ? '1 initiative is' : '${_groups.length} initiatives are';
 }
 
 class _HubCard extends StatelessWidget {

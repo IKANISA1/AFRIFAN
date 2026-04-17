@@ -279,8 +279,9 @@ export function requireCronSecret(
   const bearerToken = authorization?.startsWith("Bearer ")
     ? authorization.slice("Bearer ".length).trim()
     : null;
-  const providedSecret = bearerToken ??
-    request.headers.get("x-cron-secret")?.trim();
+  // Prefer x-cron-secret header over Bearer (Bearer may be a Supabase JWT for gateway auth)
+  const cronHeader = request.headers.get("x-cron-secret")?.trim();
+  const providedSecret = cronHeader ?? bearerToken;
 
   if (!providedSecret || providedSecret !== configuredSecret) {
     throw new HttpError(401, "Unauthorized.");

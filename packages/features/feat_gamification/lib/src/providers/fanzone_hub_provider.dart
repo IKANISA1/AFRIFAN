@@ -5,6 +5,7 @@ import '../models/fet_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../repositories/prediction_repository.dart';
+import 'package:core_utils/core_utils.dart';
 
 /// Snapshot of all data needed by the FanzoneHubScreen.
 ///
@@ -87,20 +88,23 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
 
     try {
       dashboard = await predictionRepo.loadUserStats();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
       failures++;
     }
 
     try {
       wallet = await fetRepo.loadWallet();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
       failures++;
     }
 
     try {
       liveFixtures =
           await predictionRepo.loadFixtures(status: 'live', limit: 5);
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
       failures++;
     }
 
@@ -109,7 +113,8 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
         dateFrom: today,
         dateTo: today,
       );
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
       failures++;
     }
 
@@ -119,25 +124,29 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
         dateTo: weekEnd,
         limit: 8,
       );
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
       failures++;
     }
 
     try {
       leaderboard = await predictionRepo.loadLeaderboard(limit: 5);
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
       failures++;
     }
 
     try {
       markets = await predictionRepo.loadMarketCatalog();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
       failures++;
     }
 
     try {
       challenges = await fetRepo.loadCatalog();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
       failures++;
     }
 

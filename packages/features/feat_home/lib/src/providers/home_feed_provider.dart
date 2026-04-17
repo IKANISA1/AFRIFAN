@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../repositories/home_content_repository.dart';
+import 'package:core_utils/core_utils.dart';
 
 /// Riverpod AsyncNotifier managing the home feed lifecycle.
 ///
@@ -30,7 +31,8 @@ class HomeFeedNotifier extends AsyncNotifier<HomeFeedSnapshot> {
     final repo = ref.read(homeFeedRepositoryProvider);
     try {
       return await repo.load();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('HomeFeedProvider', 'Operation failed (non-critical).', error, stackTrace);
       return const HomeFeedSnapshot(
         status: HomeFeedStatus.error,
         message: 'Live club data is temporarily unavailable. Pull to refresh.',

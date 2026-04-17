@@ -2,6 +2,7 @@
 
 import type { Dispatch, SetStateAction } from "react";
 import { Skeleton } from "@/components/skeleton";
+import { normalizeHexColorInput } from "@/lib/utils";
 import type { SettingsForm } from "./settings-form-state";
 
 interface BrandPreviewProps {
@@ -80,8 +81,13 @@ export function BrandPreview({ form, setForm, loading }: BrandPreviewProps) {
                 <div key={label} className="rounded-[22px] border border-border-soft bg-black/10 px-4 py-3">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">{label}</p>
                   <div className="mt-3 flex items-center gap-3">
-                    <span className="h-8 w-8 rounded-full border border-white/15" style={{ backgroundColor: value }} />
-                    <span className="text-sm font-semibold text-slate-100">{value}</span>
+                    <span
+                      className="h-8 w-8 rounded-full border border-white/15"
+                      style={{ backgroundColor: normalizeHexColorInput(value) || "#1A7A4E" }}
+                    />
+                    <span className="text-sm font-semibold text-slate-100">
+                      {normalizeHexColorInput(value) || value}
+                    </span>
                   </div>
                 </div>
               ))}

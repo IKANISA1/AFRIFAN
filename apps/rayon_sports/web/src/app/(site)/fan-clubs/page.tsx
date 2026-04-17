@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { ProgressBar } from "@/components/progress-bar";
 import { getClubProfile, getContributionGroups, getFanClubs } from "@/lib/data/public";
+import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getSiteCopy } from "@/lib/site-copy";
 import { formatCompactNumber } from "@/lib/utils";
@@ -18,6 +19,11 @@ export async function generateMetadata() {
 }
 
 export default async function FanClubsPage() {
+  const featureGate = await getFeaturePageGuard("fan_clubs");
+  if (featureGate) {
+    return featureGate;
+  }
+
   const [club, fanClubs, groups] = await Promise.all([
     getClubProfile(),
     getFanClubs(),

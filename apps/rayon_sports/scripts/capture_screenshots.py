@@ -40,9 +40,8 @@ SCREENS = [
     ("03_membership", "Membership Card", "Navigate to Membership — show the digital membership card."),
     ("04_ticketing", "Ticketing", "Open Ticketing — show available match tickets."),
     ("05_shop", "Official Shop", "Open Shop — show the merchandise listing."),
-    ("06_BioPay", "BioPay NFC", "Navigate to the BioPay tab — show the biometric enrollment or payment screen."),
-    ("07_contributions", "Contributions", "Open Contributions — show the contribution history / payment screen."),
-    ("08_settings", "Settings", "Navigate to the Settings tab — show profile and app settings."),
+    ("06_contributions", "Contributions", "Open Contributions — show the contribution history / payment screen."),
+    ("07_settings", "Settings", "Navigate to the Settings tab — show profile and app settings."),
 ]
 
 

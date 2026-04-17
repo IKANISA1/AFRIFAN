@@ -1,74 +1,161 @@
 import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../controllers/challenge_controller.dart';
+import '../models/challenge_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
+import '../providers/fet_wallet_provider.dart';
+import '../widgets/challenge_card.dart';
+import 'package:core_utils/core_utils.dart';
 
 class CreateChallengeScreen extends ConsumerStatefulWidget {
   const CreateChallengeScreen({super.key});
 
   @override
-  ConsumerState<CreateChallengeScreen> createState() => _CreateChallengeScreenState();
+  ConsumerState<CreateChallengeScreen> createState() =>
+      _CreateChallengeScreenState();
 }
 
 class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
+  static const _stakeOptions = <int>[500, 1000, 3000, 5000, 10000];
+
   FixtureSummary? _selectedFixture;
   int _homeScore = 2;
   int _awayScore = 1;
   int _stakeFet = 1000;
-  bool _loading = true;
-  List<FixtureSummary> _fixtures = [];
+  bool _loadingFixtures = true;
+  bool _submitting = false;
+  List<FixtureSummary> _fixtures = const <FixtureSummary>[];
 
   @override
   void initState() {
     super.initState();
-    _loadFixtures();
+    unawaited(_loadFixtures());
   }
 
   Future<void> _loadFixtures() async {
+    setState(() => _loadingFixtures = true);
     try {
-      final fixtures = await ref.read(predictionRepositoryProvider).loadFixtures();
+      final fixtures = await ref
+          .read(challengeFixturesGatewayProvider)
+          .loadFixtures(status: 'scheduled', limit: 60);
+      if (!mounted) {
+        return;
+      }
       setState(() {
-        _fixtures = fixtures.where((f) => f.isPredictable).toList();
+        _fixtures = fixtures.where((fixture) => fixture.isPredictable).toList();
         if (_fixtures.isNotEmpty) {
           _selectedFixture = _fixtures.first;
         }
-        _loading = false;
+        _loadingFixtures = false;
       });
-    } catch (_) {
-      setState(() => _loading = false);
+    } catch (error, stackTrace) {
+      AfriLogger.warn('CreateChallengeScreen', 'Operation failed (non-critical).', error, stackTrace);
+      if (!mounted) {
+        return;
+      }
+      setState(() => _loadingFixtures = false);
     }
   }
 
-  void _submit() async {
-    if (_selectedFixture == null) return;
+  Future<void> _confirmAndSubmit() async {
+    final fixture = _selectedFixture;
+    if (fixture == null || _submitting) {
+      return;
+    }
 
-    final success = await ref.read(challengeRepositoryProvider).createChallenge(
-      matchId: _selectedFixture!.id,
-      homeScore: _homeScore,
-      awayScore: _awayScore,
-      stakeFet: _stakeFet,
+    final wallet = ref.read(fetWalletProvider).valueOrNull?.wallet;
+    final confirmed = await showModalBottomSheet<bool>(
+      context: context,
+      backgroundColor: ColorTokens.surfaceContainerLow,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'CONFIRM CHALLENGE',
+                  style: TypographyTokens.monolithFont(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: SpacingTokens.spacing4),
+                _SummaryCard(
+                  fixture: fixture,
+                  homeScore: _homeScore,
+                  awayScore: _awayScore,
+                  stakeFet: _stakeFet,
+                  balance: wallet?.balance ?? 0,
+                ),
+                const SizedBox(height: SpacingTokens.spacing4),
+                AfriButton(
+                  label: 'LOCK $_stakeFet FET',
+                  icon: AfriIcons.checkGroup,
+                  onTap: () => Navigator.of(context).pop(true),
+                ),
+                const SizedBox(height: SpacingTokens.spacing3),
+              ],
+            ),
+          ),
+        );
+      },
     );
 
-    if (mounted) {
-      if (success) {
-        context.pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Challenge created successfully!')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to create challenge.')),
-        );
-      }
+    if (confirmed != true) {
+      return;
     }
+
+    setState(() => _submitting = true);
+    final result = await ref
+        .read(challengeRepositoryProvider)
+        .createChallenge(
+          matchId: fixture.id,
+          homeScore: _homeScore,
+          awayScore: _awayScore,
+          stakeFet: _stakeFet,
+        );
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() => _submitting = false);
+
+    if (!result.isSuccess || result.challenge == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not create the challenge. Check your FET balance.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    ref.invalidate(challengeFeedProvider);
+    ref.invalidate(myChallengesProvider);
+    context.go('/challenge/${result.challenge!.id}');
   }
 
   @override
   Widget build(BuildContext context) {
+    final walletAsync = ref.watch(fetWalletProvider);
+    final wallet = walletAsync.valueOrNull?.wallet;
+    final hasBalance = (wallet?.balance ?? 0) >= _stakeFet;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -79,70 +166,124 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
           ),
         ),
       ),
-      body: _loading
-          ? const AfriLoadingIndicator()
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: _loadingFixtures
+          ? const Center(child: AfriLoadingIndicator())
+          : RefreshIndicator(
+              onRefresh: _loadFixtures,
+              child: ListView(
+                padding: const EdgeInsets.all(SpacingTokens.screenPadding),
                 children: [
-                  // ── Fixture Selection ──
-                  const _SectionHeader(title: '1. SELECT MATCH'),
-                  const SizedBox(height: SpacingTokens.spacing3),
                   if (_fixtures.isEmpty)
-                    const Text('No upcoming matches available.')
-                  else
+                    const AfriEmptyView(
+                      compact: true,
+                      title: 'No eligible fixtures',
+                      message:
+                          'Challenge creation opens when upcoming fixtures are available.',
+                      icon: AfriIcons.fixture,
+                    )
+                  else ...[
+                    Text(
+                      'Fixture',
+                      style: TypographyTokens.labelSmall(
+                        ColorTokens.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing2),
                     _FixtureDropdown(
                       fixtures: _fixtures,
                       selected: _selectedFixture,
-                      onChanged: (f) => setState(() => _selectedFixture = f),
+                      onChanged: (fixture) =>
+                          setState(() => _selectedFixture = fixture),
                     ),
-
-                  const SizedBox(height: SpacingTokens.sectionGap),
-
-                  // ── Score Picker ──
-                  const _SectionHeader(title: '2. PREDICT EXACT SCORE'),
-                  const SizedBox(height: SpacingTokens.spacing3),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _ScoreCounter(
-                        label: _selectedFixture?.homeTeamShort ?? 'HOME',
-                        value: _homeScore,
-                        onChanged: (v) => setState(() => _homeScore = v),
+                    const SizedBox(height: SpacingTokens.sectionGap),
+                    Text(
+                      'Exact score',
+                      style: TypographyTokens.labelSmall(
+                        ColorTokens.onSurfaceVariant,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Text(
-                          ':',
-                          style: TypographyTokens.monolithFont(fontSize: 32),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: Align(
+                            child: _ScoreCounter(
+                              label: _selectedFixture?.homeTeamShort ?? 'HOME',
+                              value: _homeScore,
+                              onChanged: (value) =>
+                                  setState(() => _homeScore = value),
+                            ),
+                          ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: SpacingTokens.spacing3,
+                            vertical: SpacingTokens.spacing4,
+                          ),
+                          child: Text(
+                            ':',
+                            style: TypographyTokens.monolithFont(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Align(
+                            child: _ScoreCounter(
+                              label: _selectedFixture?.awayTeamShort ?? 'AWAY',
+                              value: _awayScore,
+                              onChanged: (value) =>
+                                  setState(() => _awayScore = value),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: SpacingTokens.sectionGap),
+                    Text(
+                      'Stake',
+                      style: TypographyTokens.labelSmall(
+                        ColorTokens.onSurfaceVariant,
                       ),
-                      _ScoreCounter(
-                        label: _selectedFixture?.awayTeamShort ?? 'AWAY',
-                        value: _awayScore,
-                        onChanged: (v) => setState(() => _awayScore = v),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    Wrap(
+                      spacing: SpacingTokens.spacing2,
+                      runSpacing: SpacingTokens.spacing2,
+                      children: _stakeOptions.map((stake) {
+                        return ChoiceChip(
+                          selected: _stakeFet == stake,
+                          label: Text('$stake FET'),
+                          onSelected: (_) => setState(() => _stakeFet = stake),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: SpacingTokens.sectionGap),
+                    if (_selectedFixture != null)
+                      _SummaryCard(
+                        fixture: _selectedFixture!,
+                        homeScore: _homeScore,
+                        awayScore: _awayScore,
+                        stakeFet: _stakeFet,
+                        balance: wallet?.balance ?? 0,
                       ),
-                    ],
-                  ),
-
-                  const SizedBox(height: SpacingTokens.sectionGap),
-
-                  // ── Stake Selection ──
-                  const _SectionHeader(title: '3. SET STAKE (FET)'),
-                  const SizedBox(height: SpacingTokens.spacing3),
-                  _StakeSlider(
-                    value: _stakeFet,
-                    onChanged: (v) => setState(() => _stakeFet = v),
-                  ),
-
-                  const SizedBox(height: SpacingTokens.sectionGap * 2),
-
-                  AfriButton(
-                    label: 'CREATE CHALLENGE',
-                    icon: AfriIcons.checkGroup,
-                    onTap: _submit,
-                  ),
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    if (!hasBalance)
+                      Text(
+                        'Your current FET balance does not cover this stake.',
+                        style: TypographyTokens.labelSmall(ColorTokens.error),
+                      ),
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    AfriButton(
+                      label: 'CREATE CHALLENGE',
+                      icon: AfriIcons.versus,
+                      isLoading: _submitting,
+                      enabled: hasBalance,
+                      onTap: _confirmAndSubmit,
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -150,20 +291,85 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title});
-  final String title;
+class _SummaryCard extends StatelessWidget {
+  const _SummaryCard({
+    required this.fixture,
+    required this.homeScore,
+    required this.awayScore,
+    required this.stakeFet,
+    required this.balance,
+  });
+
+  final FixtureSummary fixture;
+  final int homeScore;
+  final int awayScore;
+  final int stakeFet;
+  final int balance;
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: TypographyTokens.editorialFont(
-        fontSize: 10,
-        fontWeight: FontWeight.w700,
-        color: ColorTokens.onSurfaceVariant,
-        letterSpacing: 1.2,
+    final challenge = Challenge(
+      id: 'preview',
+      matchId: fixture.id,
+      creatorUserId: 'me',
+      stakeFet: stakeFet,
+      status: ChallengeStatus.open,
+      lockAt: fixture.kickoffAt ?? DateTime.now().add(const Duration(hours: 1)),
+      totalParticipants: 1,
+      totalPoolFet: stakeFet,
+      clubId: 0,
+      fixture: fixture,
+      creatorName: 'You',
+      creatorPrediction: ChallengeScorePrediction(
+        homeScore: homeScore,
+        awayScore: awayScore,
       ),
+      permissions: const ChallengePermissions(isCreator: true),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ChallengeCard(challenge: challenge, compact: true),
+        const SizedBox(height: SpacingTokens.spacing3),
+        Wrap(
+          spacing: SpacingTokens.spacing2,
+          runSpacing: SpacingTokens.spacing2,
+          children: [
+            StakeBadge(stakeFet: stakeFet),
+            ScorePredictionPill(
+              homeScore: homeScore,
+              awayScore: awayScore,
+              label: 'Your pick',
+              accent: ColorTokens.clubAccent,
+            ),
+            _MetaChip(label: 'Balance $balance FET'),
+            const _MetaChip(label: 'Locks at kickoff'),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _MetaChip extends StatelessWidget {
+  const _MetaChip({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing3,
+        vertical: 6,
+      ),
+      decoration: BoxDecoration(
+        color: ColorTokens.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(999),
+        border: BorderTokens.all(color: ColorTokens.ghostBorder),
+      ),
+      child: Text(label, style: TypographyTokens.labelSmall()),
     );
   }
 }
@@ -185,7 +391,7 @@ class _FixtureDropdown extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         border: BorderTokens.all(color: ColorTokens.ghostBorder),
       ),
       child: DropdownButtonHideUnderline(
@@ -193,11 +399,11 @@ class _FixtureDropdown extends StatelessWidget {
           value: selected,
           isExpanded: true,
           dropdownColor: ColorTokens.surfaceContainerHigh,
-          items: fixtures.map((f) {
-            return DropdownMenuItem(
-              value: f,
+          items: fixtures.map((fixture) {
+            return DropdownMenuItem<FixtureSummary>(
+              value: fixture,
               child: Text(
-                '${f.homeTeamShort} vs ${f.awayTeamShort} (${f.competitionName})',
+                '${fixture.homeTeamShort} vs ${fixture.awayTeamShort} • ${fixture.competitionName}',
                 style: TypographyTokens.bodyMedium(),
               ),
             );
@@ -224,91 +430,25 @@ class _ScoreCounter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(label.toUpperCase(), style: TypographyTokens.labelSmall()),
-        const SizedBox(height: 8),
+        Text(label, style: TypographyTokens.labelSmall()),
+        const SizedBox(height: SpacingTokens.spacing2),
         Row(
           children: [
-            _IconButton(
-              icon: Icons.remove,
-              onTap: value > 0 ? () => onChanged(value - 1) : null,
+            IconButton(
+              onPressed: value > 0 ? () => onChanged(value - 1) : null,
+              icon: const Icon(Icons.remove_rounded),
             ),
-            const SizedBox(width: 16),
             Text(
               '$value',
-              style: TypographyTokens.monolithFont(fontSize: 32, fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(width: 16),
-            _IconButton(
-              icon: Icons.add,
-              onTap: () => onChanged(value + 1),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class _IconButton extends StatelessWidget {
-  const _IconButton({required this.icon, this.onTap});
-  final IconData icon;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          color: ColorTokens.primaryTint(0.1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(icon, size: 16, color: onTap == null ? Colors.white24 : Colors.white),
-      ),
-    );
-  }
-}
-
-class _StakeSlider extends StatelessWidget {
-  const _StakeSlider({required this.value, required this.onChanged});
-  final int value;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Slider(
-          value: value.toDouble(),
-          min: 100,
-          max: 10000,
-          divisions: 99,
-          activeColor: ColorTokens.clubAccent,
-          inactiveColor: Colors.white10,
-          onChanged: (v) => onChanged(v.toInt()),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('100 FET', style: TypographyTokens.labelSmall()),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: ColorTokens.clubAccent.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                '$value FET',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800,
-                  color: ColorTokens.clubAccent,
-                ),
+              style: TypographyTokens.monolithFont(
+                fontSize: 30,
+                fontWeight: FontWeight.w900,
               ),
             ),
-            Text('10k FET', style: TypographyTokens.labelSmall()),
+            IconButton(
+              onPressed: value < 20 ? () => onChanged(value + 1) : null,
+              icon: const Icon(Icons.add_rounded),
+            ),
           ],
         ),
       ],

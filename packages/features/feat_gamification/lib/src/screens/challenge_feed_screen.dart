@@ -4,102 +4,350 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../controllers/challenge_controller.dart';
+import '../models/challenge_models.dart';
 import '../widgets/challenge_card.dart';
 
-class ChallengeFeedScreen extends ConsumerWidget {
+enum _ChallengeFeedFilter {
+  all,
+  open,
+  highPool,
+  mostParticipants,
+  endingSoon,
+  myJoined,
+  settled,
+}
+
+class ChallengeFeedScreen extends ConsumerStatefulWidget {
   const ChallengeFeedScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChallengeFeedScreen> createState() => _ChallengeFeedScreenState();
+}
+
+class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
+  _ChallengeFeedFilter _selectedFilter = _ChallengeFeedFilter.all;
+
+  @override
+  Widget build(BuildContext context) {
     final feedAsync = ref.watch(challengeFeedProvider);
 
     return Scaffold(
       body: GradientBackground(
-        child: CustomScrollView(
-          slivers: [
-            // ── Top Bar ──
-            SliverAppBar(
-              floating: true,
-              backgroundColor: Colors.transparent,
-              title: Text(
-                'CHALLENGES',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 2.0,
-                ),
-              ),
-              actions: [
-                IconButton(
-                  onPressed: () => ref.read(challengeFeedProvider.notifier).refresh(),
-                  icon: const Icon(AfriIcons.refresh),
-                ),
-                const SizedBox(width: SpacingTokens.spacing2),
-              ],
+        child: RefreshIndicator(
+          onRefresh: () => ref.read(challengeFeedProvider.notifier).refresh(),
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
             ),
-
-            // ── Create CTA ──
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.screenPadding,
-                  vertical: SpacingTokens.spacing4,
+            slivers: [
+              SliverAppBar(
+                floating: true,
+                backgroundColor: Colors.transparent,
+                title: Text(
+                  'CHALLENGE',
+                  style: TypographyTokens.monolithFont(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.6,
+                  ),
                 ),
-                child: AfriActionRow(
-                  icon: AfriIcons.add,
-                  label: 'CREATE A NEW CHALLENGE',
-                  accentColor: ColorTokens.clubAccent,
-                  onTap: () => context.push('/challenge/create'),
-                ),
+                actions: [
+                  IconButton(
+                    onPressed: () => context.push('/challenge/my'),
+                    icon: const Icon(AfriIcons.wallet),
+                    tooltip: 'My challenges',
+                  ),
+                  IconButton(
+                    onPressed: () => context.push('/challenge/create'),
+                    icon: const Icon(AfriIcons.add),
+                    tooltip: 'Create challenge',
+                  ),
+                ],
               ),
-            ),
-
-            // ── Feed Content ──
-            feedAsync.when(
-              loading: () => const SliverFillRemaining(
-                child: Center(child: AfriLoadingIndicator()),
-              ),
-              error: (err, _) => SliverFillRemaining(
-                child: AfriStateView.error(
-                  title: 'Load Failed',
-                  message: 'Could not load challenges. Tap to retry.',
-                  actionLabel: 'Retry',
-                  onAction: () => ref.read(challengeFeedProvider.notifier).refresh(),
-                ),
-              ),
-              data: (challenges) {
-                if (challenges.isEmpty) {
-                  return const SliverFillRemaining(
-                    child: AfriEmptyView(
-                      title: 'No Active Challenges',
-                      message: 'Be the first to challenge the club!',
-                      icon: AfriIcons.versus,
-                    ),
-                  );
-                }
-
-                return SliverPadding(
+              SliverToBoxAdapter(
+                child: Padding(
                   padding: const EdgeInsets.fromLTRB(
                     SpacingTokens.screenPadding,
+                    SpacingTokens.spacing3,
+                    SpacingTokens.screenPadding,
                     0,
-                    SpacingTokens.screenPadding,
-                    SpacingTokens.screenPadding,
                   ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) => Padding(
-                        padding: const EdgeInsets.only(bottom: SpacingTokens.spacing4),
-                        child: ChallengeCard(challenge: challenges[index]),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Exact-score pools for real fixtures. Create one, join once, and settle automatically from the official final score.',
+                        style: TypographyTokens.bodyMedium(
+                          ColorTokens.onSurfaceVariant,
+                        ),
                       ),
-                      childCount: challenges.length,
+                      const SizedBox(height: SpacingTokens.spacing4),
+                      Wrap(
+                        spacing: SpacingTokens.spacing2,
+                        runSpacing: SpacingTokens.spacing2,
+                        children: _ChallengeFeedFilter.values.map((filter) {
+                          return ChoiceChip(
+                            selected: _selectedFilter == filter,
+                            label: Text(_labelForFilter(filter)),
+                            onSelected: (_) =>
+                                setState(() => _selectedFilter = filter),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: SpacingTokens.spacing4),
+                      AfriActionRow(
+                        icon: AfriIcons.versus,
+                        label: 'CREATE A NEW CHALLENGE',
+                        accentColor: ColorTokens.clubAccent,
+                        onTap: () => context.push('/challenge/create'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              feedAsync.when(
+                loading: () => const SliverFillRemaining(
+                  child: Center(child: AfriLoadingIndicator()),
+                ),
+                error: (error, _) => SliverFillRemaining(
+                  child: Padding(
+                    padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                    child: AfriStateView.error(
+                      title: 'Challenge feed unavailable',
+                      message: error.toString(),
+                      actionLabel: 'Retry',
+                      onAction: () =>
+                          ref.read(challengeFeedProvider.notifier).refresh(),
                     ),
                   ),
-                );
-              },
-            ),
-          ],
+                ),
+                data: (feed) {
+                  final filtered = _applyFilter(feed, _selectedFilter);
+                  if (_selectedFilter != _ChallengeFeedFilter.all) {
+                    return _buildFilteredList(filtered);
+                  }
+
+                  if (feed.isEmpty) {
+                    return const SliverFillRemaining(
+                      child: Padding(
+                        padding: EdgeInsets.all(SpacingTokens.screenPadding),
+                        child: AfriEmptyView(
+                          title: 'No challenges yet',
+                          message:
+                              'Be first into the pool. Create a challenge on an upcoming fixture to get things moving.',
+                          icon: AfriIcons.versus,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(
+                      SpacingTokens.screenPadding,
+                      SpacingTokens.spacing4,
+                      SpacingTokens.screenPadding,
+                      SpacingTokens.spacing8,
+                    ),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        if (feed.featured.isNotEmpty) ...[
+                          _SectionHeader(
+                            title: 'Featured / Popular Challenges',
+                            actionLabel: 'See all',
+                            onAction: () => setState(
+                              () => _selectedFilter = _ChallengeFeedFilter.highPool,
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing3),
+                          ...feed.featured.map(
+                            (challenge) => Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: SpacingTokens.spacing3,
+                              ),
+                              child: ChallengeCard(challenge: challenge),
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing5),
+                        ],
+                        if (feed.open.isNotEmpty) ...[
+                          _SectionHeader(
+                            title: 'Open Challenges',
+                            actionLabel: 'Ending soon',
+                            onAction: () => setState(
+                              () => _selectedFilter =
+                                  _ChallengeFeedFilter.endingSoon,
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing3),
+                          ...feed.open.take(6).map(
+                            (challenge) => Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: SpacingTokens.spacing3,
+                              ),
+                              child: ChallengeCard(challenge: challenge),
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing5),
+                        ],
+                        if (feed.mine.isNotEmpty) ...[
+                          _SectionHeader(
+                            title: 'My Challenges',
+                            actionLabel: 'Open',
+                            onAction: () => context.push('/challenge/my'),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing3),
+                          ...feed.mine.take(4).map(
+                            (challenge) => Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: SpacingTokens.spacing3,
+                              ),
+                              child: ChallengeCard(challenge: challenge),
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing5),
+                        ],
+                        if (feed.settled.isNotEmpty) ...[
+                          _SectionHeader(
+                            title: 'Settled Challenges',
+                            actionLabel: 'Results',
+                            onAction: () => setState(
+                              () => _selectedFilter =
+                                  _ChallengeFeedFilter.settled,
+                            ),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing3),
+                          ...feed.settled.take(4).map(
+                            (challenge) => Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: SpacingTokens.spacing3,
+                              ),
+                              child: ChallengeCard(
+                                challenge: challenge,
+                                compact: true,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ]),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  SliverList _buildFilteredList(List<Challenge> filtered) {
+    return SliverList(
+      delegate: SliverChildListDelegate([
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            SpacingTokens.screenPadding,
+            SpacingTokens.spacing4,
+            SpacingTokens.screenPadding,
+            SpacingTokens.spacing8,
+          ),
+          child: filtered.isEmpty
+              ? const AfriEmptyView(
+                  compact: true,
+                  title: 'Nothing matches this filter',
+                  message: 'Try another view or create a new pool.',
+                  icon: AfriIcons.filter,
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: filtered
+                      .map(
+                        (challenge) => Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: SpacingTokens.spacing3,
+                          ),
+                          child: ChallengeCard(challenge: challenge),
+                        ),
+                      )
+                      .toList(growable: false),
+                ),
+        ),
+      ]),
+    );
+  }
+
+  List<Challenge> _applyFilter(
+    ChallengeFeedState feed,
+    _ChallengeFeedFilter filter,
+  ) {
+    final all = feed.allVisible();
+    switch (filter) {
+      case _ChallengeFeedFilter.all:
+        return all;
+      case _ChallengeFeedFilter.open:
+        return feed.open;
+      case _ChallengeFeedFilter.highPool:
+        final sorted = [...all];
+        sorted.sort((a, b) => b.totalPoolFet.compareTo(a.totalPoolFet));
+        return sorted;
+      case _ChallengeFeedFilter.mostParticipants:
+        final sorted = [...all];
+        sorted.sort(
+          (a, b) => b.totalParticipants.compareTo(a.totalParticipants),
+        );
+        return sorted;
+      case _ChallengeFeedFilter.endingSoon:
+        final sorted = [...feed.open];
+        sorted.sort((a, b) => a.lockAt.compareTo(b.lockAt));
+        return sorted;
+      case _ChallengeFeedFilter.myJoined:
+        return feed.mine;
+      case _ChallengeFeedFilter.settled:
+        return feed.settled;
+    }
+  }
+
+  String _labelForFilter(_ChallengeFeedFilter filter) {
+    return switch (filter) {
+      _ChallengeFeedFilter.all => 'All',
+      _ChallengeFeedFilter.open => 'Open',
+      _ChallengeFeedFilter.highPool => 'High Pool',
+      _ChallengeFeedFilter.mostParticipants => 'Most Participants',
+      _ChallengeFeedFilter.endingSoon => 'Ending Soon',
+      _ChallengeFeedFilter.myJoined => 'My Joined',
+      _ChallengeFeedFilter.settled => 'Settled',
+    };
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({
+    required this.title,
+    required this.actionLabel,
+    required this.onAction,
+  });
+
+  final String title;
+  final String actionLabel;
+  final VoidCallback onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: TypographyTokens.monolithFont(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: onAction,
+          child: Text(actionLabel),
+        ),
+      ],
     );
   }
 }

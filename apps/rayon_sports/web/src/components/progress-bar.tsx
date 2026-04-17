@@ -19,13 +19,13 @@ export function ProgressBar({
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-3">
         {label ? (
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-300">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-100">
             {label}
           </p>
         ) : (
           <span />
         )}
-        <span className="text-xs font-semibold uppercase tracking-[0.22em] text-club-accent">
+        <span className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300">
           {formatPercent(percent, compact ? 0 : 1)}
         </span>
       </div>

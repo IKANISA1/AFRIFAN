@@ -10,7 +10,6 @@ import '../ticketing_providers.dart';
 import '../widgets/ticket_checkout_shared.dart';
 import '../widgets/ticket_checkout_step.dart';
 import '../widgets/ticket_configure_step.dart';
-import '../widgets/ticketing_overlays.dart';
 
 enum _CheckoutWizardStep { configure, checkout }
 
@@ -127,17 +126,6 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
         return;
       }
 
-      final confirmed = await showTicketPurchaseConfirmSheet(
-        context,
-        matchTitle: '${match.homeTeam} vs ${match.awayTeam}',
-        zone: _selectedSeatType.label,
-        quantity: _quantity,
-        seatCode: _selectedSeatCode,
-        totalLabel: _currencyFormatter.format(total),
-      );
-
-      if (!confirmed || !mounted) return;
-
       final reference = 'ticket-${DateTime.now().millisecondsSinceEpoch}';
       final tickets = await repo.purchaseTickets(
         matchId: match.id,
@@ -168,14 +156,16 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
         SnackBar(
           content: Text(
             _quantity == 1
-                ? 'Ticket reserved — pending payment verification.'
-                : '${tickets.length} tickets reserved — pending verification.',
+                ? 'Ticket request submitted — pending payment verification.'
+                : '${tickets.length} ticket requests submitted — pending verification.',
           ),
-          backgroundColor: ColorTokens.success,
+          backgroundColor: ColorTokens.info,
         ),
       );
 
-      if (tickets.length == 1) {
+      if (tickets.length == 1 &&
+          tickets.first.status == TicketStatus.active &&
+          mounted) {
         context.go('/e-ticket/${tickets.first.id}');
       } else {
         context.go('/my-tickets');
@@ -184,7 +174,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Ticket purchase failed: $error'),
+          content: Text('Ticket request failed: $error'),
           backgroundColor: ColorTokens.error,
         ),
       );

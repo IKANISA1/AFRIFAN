@@ -1,5 +1,7 @@
+import type { FormEvent } from "react";
 import type { CommunityForm } from "./community-state";
 import { emptyForm } from "./community-state";
+import { AdminImageField } from "@/components/admin/admin-image-field";
 
 interface CommunityContentEditorProps {
   form: CommunityForm;
@@ -8,8 +10,14 @@ interface CommunityContentEditorProps {
 }
 
 export function CommunityContentEditor({ form, setForm, onSubmit }: CommunityContentEditorProps) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    onSubmit(formData);
+  }
+
   return (
-    <form action={onSubmit} className="glass-panel grid gap-4 rounded-[32px] p-6">
+    <form onSubmit={handleSubmit} className="glass-panel grid gap-4 rounded-[32px] p-6">
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-3xl font-bold uppercase leading-none">
           {form.id ? "Edit chapter" : "New chapter"}
@@ -114,26 +122,21 @@ export function CommunityContentEditor({ form, setForm, onSubmit }: CommunityCon
         </label>
       </div>
 
-      <label className="grid gap-2 text-sm">
-        Banner image URL
-        <input
-          name="bannerImageUrl"
-          value={form.bannerImageUrl}
-          onChange={(event) =>
-            setForm((current: CommunityForm) => ({
-              ...current,
-              bannerImageUrl: event.target.value,
-            }))
-          }
-          className="dashboard-input"
-        />
-      </label>
-      {form.bannerImageUrl.trim() ? (
-        <div className="overflow-hidden rounded-[22px] border border-border-soft">
-          {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews accept arbitrary remote URLs. */}
-          <img src={form.bannerImageUrl} alt="Preview" className="h-28 w-full object-cover" />
-        </div>
-      ) : null}
+      <AdminImageField
+        label="Chapter banner"
+        name="bannerImageUrl"
+        value={form.bannerImageUrl}
+        onChange={(nextValue) =>
+          setForm((current: CommunityForm) => ({
+            ...current,
+            bannerImageUrl: nextValue,
+          }))
+        }
+        mediaKind="fan_club"
+        subject={form.name}
+        previewAlt="Chapter banner preview"
+        promptPlaceholder="Example: Supporters chapter banner with a vibrant crowd, local community energy, club colors throughout, cinematic but welcoming."
+      />
 
       <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-white/5 px-4 py-3 text-sm">
         <input

@@ -37,14 +37,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>Gikundiro uses the camera for BioPay face capture and secure scan-to-pay flows.</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Gikundiro uses Face ID or device biometrics to confirm sensitive BioPay actions.</string>
-	<key>NFCReaderUsageDescription</key>
-	<string>Gikundiro uses NFC for phone-to-phone payment handoff experiences.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Gikundiro saves BioPay QR codes to your photo library when you choose to export them.</string>
+	<string>Gikundiro saves supporter QR codes to your photo library when you choose to export them.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

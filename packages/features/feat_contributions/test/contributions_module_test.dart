@@ -51,22 +51,6 @@ void main() {
         expect(subPaths, contains('groups'));
       });
 
-      test('has create sub-route', () {
-        final subPaths = rootRoute.routes
-            .whereType<GoRoute>()
-            .map((r) => r.path)
-            .toSet();
-        expect(subPaths, contains('create'));
-      });
-
-      test('has join sub-route', () {
-        final subPaths = rootRoute.routes
-            .whereType<GoRoute>()
-            .map((r) => r.path)
-            .toSet();
-        expect(subPaths, contains('join'));
-      });
-
       test('has group/:groupId sub-route', () {
         final subPaths = rootRoute.routes
             .whereType<GoRoute>()
@@ -82,22 +66,6 @@ void main() {
           groupRoute = rootRoute.routes
               .whereType<GoRoute>()
               .firstWhere((r) => r.path == 'group/:groupId');
-        });
-
-        test('has chat sub-route', () {
-          final subPaths = groupRoute.routes
-              .whereType<GoRoute>()
-              .map((r) => r.path)
-              .toSet();
-          expect(subPaths, contains('chat'));
-        });
-
-        test('has settings sub-route', () {
-          final subPaths = groupRoute.routes
-              .whereType<GoRoute>()
-              .map((r) => r.path)
-              .toSet();
-          expect(subPaths, contains('settings'));
         });
 
         test('has statement sub-route', () {

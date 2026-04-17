@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,88 +7,370 @@ import 'package:go_router/go_router.dart';
 
 import '../controllers/challenge_detail_controller.dart';
 import '../models/challenge_models.dart';
+import '../widgets/challenge_card.dart';
 
-class ChallengeDetailScreen extends ConsumerWidget {
+class ChallengeDetailScreen extends ConsumerStatefulWidget {
   const ChallengeDetailScreen({super.key, required this.id});
 
   final String id;
 
-  void _showJoinSheet(BuildContext context, WidgetRef ref, Challenge challenge) {
-    showAfriBottomSheet(
-      context: context,
-      builder: (context) => _JoinChallengeSheet(challengeId: id, challenge: challenge),
+  @override
+  ConsumerState<ChallengeDetailScreen> createState() =>
+      _ChallengeDetailScreenState();
+}
+
+class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
+  int _homeScore = 1;
+  int _awayScore = 0;
+  bool _joining = false;
+  bool _cancelling = false;
+
+  Future<void> _joinChallenge(Challenge challenge) async {
+    if (_joining || challenge.hasJoined || !challenge.canJoin) {
+      return;
+    }
+
+    setState(() => _joining = true);
+    final result = await ref
+        .read(challengeDetailProvider(widget.id).notifier)
+        .join(_homeScore, _awayScore);
+    if (!mounted) {
+      return;
+    }
+
+    setState(() => _joining = false);
+    if (!result.isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Could not join this challenge right now.'),
+          backgroundColor: ColorTokens.error,
+        ),
+      );
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Challenge joined successfully.'),
+        backgroundColor: ColorTokens.success,
+      ),
+    );
+  }
+
+  Future<void> _cancelChallenge(Challenge challenge) async {
+    if (_cancelling || !challenge.canCancel) {
+      return;
+    }
+
+    setState(() => _cancelling = true);
+    final result = await ref
+        .read(challengeDetailProvider(widget.id).notifier)
+        .cancel();
+    if (!mounted) {
+      return;
+    }
+
+    setState(() => _cancelling = false);
+    if (!result.isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Could not cancel this challenge.'),
+          backgroundColor: ColorTokens.error,
+        ),
+      );
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Challenge cancelled.'),
+        backgroundColor: ColorTokens.success,
+      ),
     );
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final stateAsync = ref.watch(challengeDetailProvider(id));
+  Widget build(BuildContext context) {
+    final state = ref.watch(challengeDetailProvider(widget.id));
 
     return Scaffold(
+      backgroundColor: ColorTokens.background,
       appBar: AppBar(
-        title: const Text('CHALLENGE DETAIL'),
-      ),
-      body: stateAsync.when(
-        loading: () => const Center(child: AfriLoadingIndicator()),
-        error: (err, _) => Center(
-          child: AfriStateView.error(
-            title: 'Load Failed',
-            message: err.toString(),
-            onAction: () => ref.read(challengeDetailProvider(id).notifier).load(),
-            actionLabel: 'Retry',
+        backgroundColor: Colors.transparent,
+        title: Text(
+          'CHALLENGE DETAIL',
+          style: TypographyTokens.monolithFont(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1,
           ),
         ),
-        data: (state) {
-          final challenge = state.challenge;
-          final fixture = challenge.fixture;
+        leading: IconButton(
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/challenge');
+            }
+          },
+          icon: const Icon(AfriIcons.back),
+        ),
+      ),
+      body: state.when(
+        loading: () => const Padding(
+          padding: EdgeInsets.all(SpacingTokens.screenPadding),
+          child: AfriSkeletonList(),
+        ),
+        error: (error, _) => Padding(
+          padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+          child: AfriStateView.offline(
+            title: 'Challenge unavailable',
+            message: error.toString(),
+            actionLabel: 'Retry',
+            onAction: () => unawaited(
+              ref.read(challengeDetailProvider(widget.id).notifier).load(),
+            ),
+          ),
+        ),
+        data: (payload) {
+          final challenge = payload.challenge;
+          final myEntry = payload.userEntry;
+          final settlement = payload.settlement;
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          return RefreshIndicator(
+            onRefresh: () =>
+                ref.read(challengeDetailProvider(widget.id).notifier).load(),
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(SpacingTokens.screenPadding),
               children: [
-                // ── Hero Section ──
-                if (fixture != null)
-                  _FixtureHero(fixture: fixture, status: challenge.status),
-
-                const SizedBox(height: SpacingTokens.sectionGap),
-
-                // ── Metrics Row ──
-                _PoolMetrics(challenge: challenge),
-
-                const SizedBox(height: SpacingTokens.sectionGap),
-
-                // ── Status / Result Card ──
-                if (challenge.isSettled)
-                  _ResultCard(challenge: challenge, userEntry: state.userEntry),
-
-                const SizedBox(height: SpacingTokens.sectionGap),
-
-                // ── My Participation ──
-                if (state.hasJoined)
-                  _MyEntryCard(entry: state.userEntry!)
-                else if (challenge.isOpen)
-                  AfriButton(
-                    label: 'JOIN CHALLENGE',
-                    icon: AfriIcons.join,
-                    onTap: () => _showJoinSheet(context, ref, challenge),
+                IgnorePointer(child: ChallengeCard(challenge: challenge)),
+                const SizedBox(height: SpacingTokens.spacing4),
+                GlassCard(
+                  animate: false,
+                  child: Wrap(
+                    spacing: SpacingTokens.spacing2,
+                    runSpacing: SpacingTokens.spacing2,
+                    children: [
+                      StakeBadge(stakeFet: challenge.stakeFet),
+                      _MetaChip(label: '${challenge.totalParticipants} joined'),
+                      _MetaChip(label: '${challenge.totalPoolFet} FET pool'),
+                      _MetaChip(
+                        label: challenge.status.name
+                            .replaceAll('_', '')
+                            .toUpperCase(),
+                      ),
+                    ],
                   ),
-
-                const SizedBox(height: SpacingTokens.sectionGap),
-
-                // ── Participants ──
-                _SectionHeader(title: 'PARTICIPANTS (${state.entries.length})'),
-                const SizedBox(height: SpacingTokens.spacing3),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.entries.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (context, index) {
-                    final entry = state.entries[index];
-                    return _ParticipantRow(entry: entry);
-                  },
                 ),
+                if (myEntry != null) ...[
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  GlassCard(
+                    animate: false,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'MY PICK',
+                          style: TypographyTokens.labelSmall(
+                            ColorTokens.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing2),
+                        ScorePredictionPill(
+                          homeScore: myEntry.predictedHomeScore,
+                          awayScore: myEntry.predictedAwayScore,
+                          label: 'My entry',
+                          accent: ColorTokens.clubAccent,
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing2),
+                        Text(
+                          _entrySummary(myEntry),
+                          style: TypographyTokens.bodyMedium(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                if (challenge.canJoin && !challenge.hasJoined) ...[
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  GlassCard(
+                    animate: false,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'JOIN THIS CHALLENGE',
+                          style: TypographyTokens.monolithFont(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: ColorTokens.onSurface,
+                          ),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing2),
+                        Text(
+                          'Pick the exact score before the fixture locks.',
+                          style: TypographyTokens.bodyMedium(),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing4),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: Align(
+                                child: _ScoreAdjuster(
+                                  label:
+                                      challenge.fixture?.homeTeamShort ??
+                                      'HOME',
+                                  value: _homeScore,
+                                  onChanged: (value) =>
+                                      setState(() => _homeScore = value),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: SpacingTokens.spacing3,
+                                vertical: SpacingTokens.spacing4,
+                              ),
+                              child: Text(
+                                ':',
+                                style: TypographyTokens.monolithFont(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w900,
+                                  color: ColorTokens.clubAccent,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Align(
+                                child: _ScoreAdjuster(
+                                  label:
+                                      challenge.fixture?.awayTeamShort ??
+                                      'AWAY',
+                                  value: _awayScore,
+                                  onChanged: (value) =>
+                                      setState(() => _awayScore = value),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing4),
+                        AfriButton(
+                          label: _joining
+                              ? 'Joining…'
+                              : 'JOIN FOR ${challenge.stakeFet} FET',
+                          icon: AfriIcons.checkGroup,
+                          isLoading: _joining,
+                          enabled: !_joining,
+                          onTap: () => _joinChallenge(challenge),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                if (challenge.canCancel) ...[
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  AfriButton(
+                    label: _cancelling ? 'Cancelling…' : 'CANCEL CHALLENGE',
+                    variant: AfriButtonVariant.outline,
+                    isLoading: _cancelling,
+                    enabled: !_cancelling,
+                    onTap: () => _cancelChallenge(challenge),
+                  ),
+                ],
+                if (settlement != null) ...[
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  GlassCard(
+                    animate: false,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'SETTLEMENT',
+                          style: TypographyTokens.monolithFont(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: ColorTokens.onSurface,
+                          ),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing3),
+                        _SettlementRow(
+                          label: 'Official score',
+                          value:
+                              '${settlement.officialHomeScore ?? 0}-${settlement.officialAwayScore ?? 0}',
+                        ),
+                        _SettlementRow(
+                          label: 'Winners',
+                          value: '${settlement.winnersCount}',
+                        ),
+                        _SettlementRow(
+                          label: 'Losers',
+                          value: '${settlement.losersCount}',
+                        ),
+                        _SettlementRow(
+                          label: 'Payout / winner',
+                          value: '${settlement.payoutPerWinnerFet} FET',
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                if (payload.entries.isNotEmpty) ...[
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  Text(
+                    'ENTRIES',
+                    style: TypographyTokens.monolithFont(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: ColorTokens.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing2),
+                  ...payload.entries.map(
+                    (entry) => Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: SpacingTokens.spacing2,
+                      ),
+                      child: GlassCard(
+                        animate: false,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    entry.displayName,
+                                    style: TypographyTokens.titleSmall(),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    entry.status.name.toUpperCase(),
+                                    style: TypographyTokens.labelSmall(
+                                      ColorTokens.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ScorePredictionPill(
+                              homeScore: entry.predictedHomeScore,
+                              awayScore: entry.predictedAwayScore,
+                              label: '${entry.stakeFet} FET',
+                              accent: entry.isWinner
+                                  ? ColorTokens.success
+                                  : entry.isLoser
+                                  ? ColorTokens.error
+                                  : ColorTokens.clubAccent,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           );
@@ -94,338 +378,104 @@ class ChallengeDetailScreen extends ConsumerWidget {
       ),
     );
   }
-}
 
-class _FixtureHero extends StatelessWidget {
-  const _FixtureHero({required this.fixture, required this.status});
-  final dynamic fixture;
-  final ChallengeStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      child: Column(
-        children: [
-          Text(
-            fixture.competitionName.toUpperCase(),
-            style: TypographyTokens.labelSmall(),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _TeamHeader(name: fixture.homeTeamShort),
-              _ScoreHeader(
-                status: fixture.status,
-                homeScore: fixture.homeScore,
-                awayScore: fixture.awayScore,
-              ),
-              _TeamHeader(name: fixture.awayTeamShort),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            status.name.toUpperCase(),
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w900,
-              color: ColorTokens.clubAccent,
-              letterSpacing: 2,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TeamHeader extends StatelessWidget {
-  const _TeamHeader({required this.name});
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      name.toUpperCase(),
-      style: TypographyTokens.monolithFont(fontSize: 20, fontWeight: FontWeight.w900),
-    );
-  }
-}
-
-class _ScoreHeader extends StatelessWidget {
-  const _ScoreHeader({required this.status, this.homeScore, this.awayScore});
-  final String status;
-  final int? homeScore;
-  final int? awayScore;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = status.toLowerCase();
-    if (s != 'live' && s != 'finished') {
-      return Text(
-        'VS',
-        style: TypographyTokens.monolithFont(fontSize: 16, color: ColorTokens.clubAccent),
-      );
-    }
-    return Text(
-      '${homeScore ?? 0} - ${awayScore ?? 0}',
-      style: TypographyTokens.monolithFont(fontSize: 24, fontWeight: FontWeight.w900),
-    );
-  }
-}
-
-class _PoolMetrics extends StatelessWidget {
-  const _PoolMetrics({required this.challenge});
-  final Challenge challenge;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _MetricItem(label: 'STAKE', value: '${challenge.stakeFet}'),
-        const Spacer(),
-        _MetricItem(label: 'PLAYERS', value: '${challenge.totalParticipants}'),
-        const Spacer(),
-        _MetricItem(label: 'TOTAL POOL', value: '${challenge.totalPoolFet}', accent: true),
-      ],
-    );
-  }
-}
-
-class _MetricItem extends StatelessWidget {
-  const _MetricItem({required this.label, required this.value, this.accent = false});
-  final String label;
-  final String value;
-  final bool accent;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(label, style: TypographyTokens.labelSmall()),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: TypographyTokens.monolithFont(
-            fontSize: 16,
-            fontWeight: FontWeight.w900,
-            color: accent ? ColorTokens.clubAccent : ColorTokens.onSurface,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ResultCard extends StatelessWidget {
-  const _ResultCard({required this.challenge, this.userEntry});
-  final Challenge challenge;
-  final ChallengeEntry? userEntry;
-
-  @override
-  Widget build(BuildContext context) {
-    final isWinner = userEntry?.status == ChallengeEntryStatus.winner;
-    final isLoser = userEntry?.status == ChallengeEntryStatus.loser;
-    final isRefunded = userEntry?.status == ChallengeEntryStatus.refunded;
-
-    Color color = ColorTokens.onSurfaceVariant;
-    String title = 'CHALLENGE FINISHED';
-    String message = 'The match has concluded.';
-
-    if (isWinner) {
-      color = ColorTokens.success;
-      title = 'YOU WON!';
-      message = 'You earned ${userEntry?.payoutFet} FET!';
-    } else if (isLoser) {
-      color = ColorTokens.error;
-      title = 'YOU LOST';
-      message = 'Better luck next time.';
-    } else if (isRefunded) {
-      color = ColorTokens.clubAccent;
-      title = 'REFUNDED';
-      message = 'Stakes have been returned.';
-    }
-
-    return ClayCard(
-      child: Column(
-        children: [
-          Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: color)),
-          const SizedBox(height: 8),
-          Text(message, style: TypographyTokens.bodyMedium(), textAlign: TextAlign.center),
-        ],
-      ),
-    );
-  }
-}
-
-class _MyEntryCard extends StatelessWidget {
-  const _MyEntryCard({required this.entry});
-  final ChallengeEntry entry;
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      animate: false,
-      child: Row(
-        children: [
-          Icon(AfriIcons.predict, color: ColorTokens.clubAccent),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('YOUR PREDICTION', style: TypographyTokens.labelSmall()),
-                Text(
-                  '${entry.predictedHomeScore} - ${entry.predictedAwayScore}',
-                  style: TypographyTokens.monolithFont(fontSize: 18, fontWeight: FontWeight.w800),
-                ),
-              ],
-            ),
-          ),
-          _StatusLabel(status: entry.status),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatusLabel extends StatelessWidget {
-  const _StatusLabel({required this.status});
-  final ChallengeEntryStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = switch (status) {
-      ChallengeEntryStatus.active => ColorTokens.warning,
-      ChallengeEntryStatus.winner => ColorTokens.success,
-      ChallengeEntryStatus.loser => ColorTokens.error,
-      _ => ColorTokens.onSurfaceVariant,
+  String _entrySummary(ChallengeEntry entry) {
+    return switch (entry.status) {
+      ChallengeEntryStatus.winner => 'Won ${entry.payoutFet} FET',
+      ChallengeEntryStatus.loser => 'Lost this pool',
+      ChallengeEntryStatus.refunded => 'Refunded ${entry.payoutFet} FET',
+      ChallengeEntryStatus.cancelled => 'Entry cancelled',
+      ChallengeEntryStatus.active => 'Waiting for official settlement results.',
     };
-    return Text(
-      status.name.toUpperCase(),
-      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: color),
-    );
   }
 }
 
-class _ParticipantRow extends StatelessWidget {
-  const _ParticipantRow({required this.entry});
-  final ChallengeEntry entry;
+class _ScoreAdjuster extends StatelessWidget {
+  const _ScoreAdjuster({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 24,
-          height: 24,
-          decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white10),
-          alignment: Alignment.center,
-          child: Text(
-            (entry.userName ?? '?').substring(0, 1).toUpperCase(),
-            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(entry.userName ?? 'Supporter', style: TypographyTokens.bodyMedium()),
-        ),
-        Text(
-          '${entry.predictedHomeScore} - ${entry.predictedAwayScore}',
-          style: TypographyTokens.monolithFont(fontWeight: FontWeight.w700),
-        ),
-      ],
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title});
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: TypographyTokens.editorialFont(
-        fontSize: 10,
-        fontWeight: FontWeight.w700,
-        color: ColorTokens.onSurfaceVariant,
-        letterSpacing: 1.2,
-      ),
-    );
-  }
-}
-
-class _JoinChallengeSheet extends StatefulWidget {
-  const _JoinChallengeSheet({required this.challengeId, required this.challenge});
-  final String challengeId;
-  final Challenge challenge;
-
-  @override
-  State<_JoinChallengeSheet> createState() => _JoinChallengeSheetState();
-}
-
-class _JoinChallengeSheetState extends State<_JoinChallengeSheet> {
-  int _home = 2;
-  int _away = 1;
-  bool _submitting = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _Counter(value: _home, onChanged: (v) => setState(() => _home = v)),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              child: Text(':', style: TextStyle(fontSize: 32, fontWeight: FontWeight.w900)),
-            ),
-            _Counter(value: _away, onChanged: (v) => setState(() => _away = v)),
-          ],
-        ),
-        const SizedBox(height: 32),
-        AfriButton(
-          label: 'CONFIRM JOIN (${widget.challenge.stakeFet} FET)',
-          isLoading: _submitting,
-          onTap: () async {
-            setState(() => _submitting = true);
-            final success = await ProviderScope.containerOf(context)
-                .read(challengeDetailProvider(widget.challengeId).notifier)
-                .join(_home, _away);
-            
-            if (mounted) {
-              Navigator.pop(context);
-              if (!success) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Failed to join challenge.')),
-                );
-              }
-            }
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class _Counter extends StatelessWidget {
-  const _Counter({required this.value, required this.onChanged});
+  final String label;
   final int value;
   final ValueChanged<int> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        IconButton(onPressed: value > 0 ? () => onChanged(value - 1) : null, icon: const Icon(Icons.remove)),
-        Text('$value', style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w900)),
-        IconButton(onPressed: () => onChanged(value + 1), icon: const Icon(Icons.add)),
+        Text(
+          label,
+          style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
+        ),
+        const SizedBox(height: SpacingTokens.spacing2),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              onPressed: value > 0 ? () => onChanged(value - 1) : null,
+              icon: const Icon(Icons.remove_circle_outline),
+            ),
+            Text(
+              '$value',
+              style: TypographyTokens.monolithFont(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: ColorTokens.onSurface,
+              ),
+            ),
+            IconButton(
+              onPressed: value < 20 ? () => onChanged(value + 1) : null,
+              icon: const Icon(Icons.add_circle_outline),
+            ),
+          ],
+        ),
       ],
+    );
+  }
+}
+
+class _MetaChip extends StatelessWidget {
+  const _MetaChip({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing3,
+        vertical: 6,
+      ),
+      decoration: BoxDecoration(
+        color: ColorTokens.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
+      ),
+    );
+  }
+}
+
+class _SettlementRow extends StatelessWidget {
+  const _SettlementRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
+      child: Row(
+        children: [
+          Expanded(child: Text(label, style: TypographyTokens.bodyMedium())),
+          Text(value, style: TypographyTokens.titleSmall()),
+        ],
+      ),
     );
   }
 }

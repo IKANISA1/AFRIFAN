@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
 import '../models/reward_store_content.dart';
+import 'package:core_utils/core_utils.dart';
 
 class RewardsStoreScreen extends ConsumerStatefulWidget {
   const RewardsStoreScreen({super.key});
@@ -46,7 +47,8 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
         _isLoading = false;
         _error = null;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('RewardsStoreScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) {
         return;
       }

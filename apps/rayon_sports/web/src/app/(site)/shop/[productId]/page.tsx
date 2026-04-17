@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import { ShareActionButton } from "@/components/pwa/share-action-button";
 import { getClubProfile, getProductById, getProducts } from "@/lib/data/public";
+import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import {
   buildPageMetadata,
   buildProductJsonLd,
@@ -38,6 +39,11 @@ export default async function ProductPage({
 }: {
   params: Promise<{ productId: string }>;
 }) {
+  const featureGate = await getFeaturePageGuard("shop");
+  if (featureGate) {
+    return featureGate;
+  }
+
   const { productId } = await params;
   const [club, product, products] = await Promise.all([
     getClubProfile(),

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { NewsCard } from "@/components/news-card";
 import { ShareActionButton } from "@/components/pwa/share-action-button";
 import { getClubProfile, getNewsArticleById, getNewsArticles } from "@/lib/data/public";
+import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import {
   buildNewsArticleJsonLd,
   buildPageMetadata,
@@ -48,6 +49,11 @@ export default async function ArticlePage({
 }: {
   params: Promise<{ articleId: string }>;
 }) {
+  const featureGate = await getFeaturePageGuard("news");
+  if (featureGate) {
+    return featureGate;
+  }
+
   const { articleId } = await params;
   const [club, article, articles] = await Promise.all([
     getClubProfile(),

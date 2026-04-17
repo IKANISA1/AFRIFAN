@@ -14,6 +14,7 @@ import '../widgets/market_selector_sheet.dart';
 import '../widgets/match_detail_widgets.dart';
 import '../widgets/prediction_slip_widgets.dart';
 import '../widgets/stats_panel.dart';
+import 'package:core_utils/core_utils.dart';
 
 class MatchDetailScreen extends ConsumerStatefulWidget {
   const MatchDetailScreen({super.key, required this.fixtureId});
@@ -119,7 +120,8 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
         _isLoading = false;
         _error = _fixture == null ? 'Fixture not found.' : null;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('MatchDetailScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) {
         return;
       }

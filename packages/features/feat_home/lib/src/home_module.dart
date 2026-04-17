@@ -13,7 +13,7 @@ class HomeModule extends FeatureModule {
   @override
   TabRoute get tabRoute => TabRoute(
     path: '/home',
-    label: 'HOME',
+    label: 'Home',
     icon: AfriIcons.stadium,
     activeIcon: AfriIcons.stadium,
     builder: (context, state) => const HomeScreen(),

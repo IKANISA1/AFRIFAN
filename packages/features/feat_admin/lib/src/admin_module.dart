@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'screens/admin_dashboard_screen.dart';
 import 'screens/admin_route_guard.dart';
+import 'screens/challenge_ops_screen.dart';
 import 'screens/cms_content_manager_screen.dart';
 import 'screens/competition_manager_screen.dart';
 import 'screens/contributions_monitor_screen.dart';
@@ -56,6 +57,11 @@ class AdminModule extends FeatureModule {
           path: 'settle',
           builder: (context, state) =>
               const AdminRouteGuard(child: FixtureSettlementScreen()),
+        ),
+        GoRoute(
+          path: 'challenges',
+          builder: (context, state) =>
+              const AdminRouteGuard(child: ChallengeOpsScreen()),
         ),
         GoRoute(
           path: 'competitions',

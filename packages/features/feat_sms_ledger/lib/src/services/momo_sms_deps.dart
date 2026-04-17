@@ -130,11 +130,13 @@ Future<Box<T>> openHiveBox<T>(String boxName) async {
   if (!Hive.isBoxOpen(boxName)) {
     try {
       return await Hive.openBox<T>(boxName, encryptionCipher: cipher);
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('MomoSmsDeps', 'Operation failed (non-critical).', error, stackTrace);
       // Migration: existing unencrypted box → delete and re-open encrypted.
       try {
         await Hive.deleteBoxFromDisk(boxName);
-      } catch (_) {
+      } catch (error, stackTrace) {
+      AfriLogger.warn('MomoSmsDeps', 'Operation failed (non-critical).', error, stackTrace);
         // Best-effort cleanup.
       }
       return await Hive.openBox<T>(boxName, encryptionCipher: cipher);

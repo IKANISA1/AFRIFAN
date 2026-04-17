@@ -41,3 +41,8 @@ dev_dependencies:
 flutter:
   assets:
     - assets/reward_store_catalog.json
+    - test/fonts/Inter-Regular.ttf
+    - test/fonts/Inter-Medium.ttf
+    - test/fonts/Inter-SemiBold.ttf
+    - test/fonts/Inter-Bold.ttf
+    - test/fonts/Inter-Black.ttf

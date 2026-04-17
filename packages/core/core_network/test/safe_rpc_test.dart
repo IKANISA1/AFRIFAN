@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:core_network/core_network.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() {
   group('RpcResult', () {
@@ -144,6 +145,25 @@ void main() {
 
       expect(result.isSuccess, isFalse);
       expect(result.error, isNotEmpty);
+    });
+
+    test('preserves function exception payload errors', () async {
+      final result = await SafeRpc.query<int>(
+        () async => throw const FunctionException(
+          status: 403,
+          details: <String, Object?>{
+            'error': "The feature 'fan_clubs' is not available (global_disabled).",
+          },
+        ),
+        tag: 'Test',
+        description: 'feature-disabled function',
+      );
+
+      expect(result.isSuccess, isFalse);
+      expect(
+        result.error,
+        "The feature 'fan_clubs' is not available (global_disabled).",
+      );
     });
   });
 }

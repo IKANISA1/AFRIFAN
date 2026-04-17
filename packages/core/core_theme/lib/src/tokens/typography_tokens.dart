@@ -10,6 +10,9 @@ import 'color_tokens.dart';
 class TypographyTokens {
   TypographyTokens._();
 
+  /// Test hook for widget suites that don't bundle Google Fonts assets.
+  static bool debugUseFallbackFonts = false;
+
   static const Map<String, double> semanticSizes = {
     'displayLarge': 48.0,
     'displayMedium': 40.0,
@@ -48,7 +51,7 @@ class TypographyTokens {
     TextDecorationStyle? decorationStyle,
     double? decorationThickness,
   }) {
-    return GoogleFonts.spaceGrotesk(
+    return _interFont(
       textStyle: textStyle,
       color: color,
       fontSize: fontSize,
@@ -90,7 +93,7 @@ class TypographyTokens {
     TextDecorationStyle? decorationStyle,
     double? decorationThickness,
   }) {
-    return GoogleFonts.manrope(
+    return _interFont(
       textStyle: textStyle,
       color: color,
       fontSize: fontSize,
@@ -132,8 +135,72 @@ class TypographyTokens {
     TextDecorationStyle? decorationStyle,
     double? decorationThickness,
   }) {
-    return GoogleFonts.inter(
+    return _interFont(
       textStyle: textStyle,
+      color: color,
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      fontStyle: fontStyle,
+      letterSpacing: letterSpacing,
+      wordSpacing: wordSpacing,
+      textBaseline: textBaseline,
+      height: height,
+      locale: locale,
+      foreground: foreground,
+      background: background,
+      shadows: shadows,
+      fontFeatures: fontFeatures,
+      decoration: decoration,
+      decorationColor: decorationColor,
+      decorationStyle: decorationStyle,
+      decorationThickness: decorationThickness,
+    );
+  }
+
+  static TextStyle _interFont({
+    TextStyle? textStyle,
+    Color? color,
+    double? fontSize,
+    FontWeight? fontWeight,
+    FontStyle? fontStyle,
+    double? letterSpacing,
+    double? wordSpacing,
+    TextBaseline? textBaseline,
+    double? height,
+    Locale? locale,
+    Paint? foreground,
+    Paint? background,
+    List<Shadow>? shadows,
+    List<FontFeature>? fontFeatures,
+    TextDecoration? decoration,
+    Color? decorationColor,
+    TextDecorationStyle? decorationStyle,
+    double? decorationThickness,
+  }) {
+    if (!debugUseFallbackFonts) {
+      return GoogleFonts.inter(
+        textStyle: textStyle,
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        fontStyle: fontStyle,
+        letterSpacing: letterSpacing,
+        wordSpacing: wordSpacing,
+        textBaseline: textBaseline,
+        height: height,
+        locale: locale,
+        foreground: foreground,
+        background: background,
+        shadows: shadows,
+        fontFeatures: fontFeatures,
+        decoration: decoration,
+        decorationColor: decorationColor,
+        decorationStyle: decorationStyle,
+        decorationThickness: decorationThickness,
+      );
+    }
+
+    return (textStyle ?? const TextStyle()).copyWith(
       color: color,
       fontSize: fontSize,
       fontWeight: fontWeight,
@@ -316,4 +383,3 @@ class TypographyTokens {
     letterSpacing: 0.2,
   );
 }
-

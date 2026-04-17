@@ -3,14 +3,14 @@ import Link from "next/link";
 export default function AdminOfflinePage() {
   return (
     <div className="page-shell py-16">
-      <div className="glass-panel-elevated rounded-[36px] p-8 sm:p-10">
-        <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
+      <div className="glass-panel-elevated rounded-[36px] bg-slate-950/94 p-8 sm:p-10">
+        <p className="font-mono text-xs uppercase tracking-[0.28em] text-slate-200">
           Admin offline
         </p>
         <h1 className="mt-4 font-display text-5xl font-bold uppercase leading-none text-white">
           Admin data needs a live connection
         </h1>
-        <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300">
+        <p className="mt-5 max-w-3xl text-base leading-8 text-slate-100">
           The admin workspace is intentionally network-first so operators never
           act on stale club data. Reconnect to continue publishing, editing, or
           reconciling supporter activity.

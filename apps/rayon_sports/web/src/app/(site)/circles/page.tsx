@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, Users } from "lucide-react";
-import { PageHero } from "@/components/page-hero";
-import { ProgressBar } from "@/components/progress-bar";
+import { ArrowRight } from "lucide-react";
 import { getClubProfile, getContributionGroups, getFanClubs } from "@/lib/data/public";
+import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getSiteCopy } from "@/lib/site-copy";
 import { formatCompactNumber, formatCurrency } from "@/lib/utils";
@@ -18,6 +17,11 @@ export async function generateMetadata() {
 }
 
 export default async function GroupsPage() {
+  const featureGate = await getFeaturePageGuard("contributions");
+  if (featureGate) {
+    return featureGate;
+  }
+
   const [club, groups, fanClubs] = await Promise.all([
     getClubProfile(),
     getContributionGroups(),
@@ -48,7 +52,6 @@ export default async function GroupsPage() {
                       <span className="rounded-full bg-[var(--club-primary)] px-4 py-1 text-[10px] font-black uppercase tracking-widest text-white">
                         {group.groupType}
                       </span>
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{group.privacy}</span>
                     </div>
                     <h2 className="font-display text-4xl font-black uppercase italic leading-none text-slate-900 mb-4">{group.name}</h2>
                     <p className="text-base text-slate-600 leading-relaxed">{group.description}</p>
@@ -94,10 +97,10 @@ export default async function GroupsPage() {
             <div className="rounded-3xl bg-slate-900 p-10 text-white shadow-2xl">
               <h3 className="font-display text-3xl font-black uppercase italic leading-none mb-6">Why Support?</h3>
               <ul className="space-y-6">
-                {[
-                  { title: "Direct Impact", body: "100% of your contribution goes directly to the specified club project." },
-                  { title: "Collective Power", body: "Turn individual passion into visible matchday choreography and club heritage." },
-                  { title: "Member Status", body: "Backers earn exclusive digital badges and priority access to project events." }
+                  {[
+                    { title: "Direct Impact", body: "100% of your contribution goes directly to the specified club project." },
+                  { title: "Collective Power", body: "Turn individual passion into visible matchday choreography, community work, and club heritage." },
+                    { title: "Member Status", body: "Backers earn exclusive digital badges and priority access to project events." }
                 ].map((item, i) => (
                   <li key={i} className="border-b border-white/10 pb-6 last:border-0">
                     <p className="text-[var(--club-accent)] text-xs font-black uppercase tracking-widest mb-2">{item.title}</p>

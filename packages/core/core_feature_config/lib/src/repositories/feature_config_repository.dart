@@ -7,7 +7,8 @@ import '../models/platform_feature_config.dart';
 class FeatureConfigRepository {
   FeatureConfigRepository();
 
-  static const _cacheKey = 'africlub_platform_config';
+  static const _cacheKeyPrefix = 'africlub_platform_config';
+  static const _legacyCacheKey = 'africlub_platform_config';
   static const _tag = 'FeatureConfigRepo';
 
   Future<PlatformConfigSnapshot> loadConfig({
@@ -29,14 +30,21 @@ class FeatureConfigRepository {
         Map<String, dynamic>.from(result.requireData as Map),
       );
       // Cache success
-      await _cacheConfig(snapshot);
+      await _cacheConfig(
+        clubId: clubId,
+        channel: channel,
+        snapshot: snapshot,
+      );
       return snapshot;
     }
 
     // 2. Network failed, try cache
-    final cached = await _loadCachedConfig();
+    final cached = await _loadCachedConfig(clubId: clubId, channel: channel);
     if (cached != null) {
-      AfriLogger.info(_tag, 'Returning cached platform config');
+      AfriLogger.info(
+        _tag,
+        'Returning cached platform config for club=$clubId channel=$channel',
+      );
       return cached;
     }
 
@@ -45,19 +53,31 @@ class FeatureConfigRepository {
     return PlatformConfigSnapshot.empty;
   }
 
-  Future<void> _cacheConfig(PlatformConfigSnapshot snapshot) async {
+  Future<void> _cacheConfig({
+    required int clubId,
+    required String channel,
+    required PlatformConfigSnapshot snapshot,
+  }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_cacheKey, jsonEncode(snapshot.toJson()));
+      await prefs.setString(
+        _cacheKey(clubId: clubId, channel: channel),
+        jsonEncode(snapshot.toJson()),
+      );
     } catch (e) {
       AfriLogger.warn(_tag, 'Failed to cache platform config: $e');
     }
   }
 
-  Future<PlatformConfigSnapshot?> _loadCachedConfig() async {
+  Future<PlatformConfigSnapshot?> _loadCachedConfig({
+    required int clubId,
+    required String channel,
+  }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final raw = prefs.getString(_cacheKey);
+      final raw =
+          prefs.getString(_cacheKey(clubId: clubId, channel: channel)) ??
+          prefs.getString(_legacyCacheKey);
       if (raw == null) return null;
       return PlatformConfigSnapshot.fromJson(
         jsonDecode(raw) as Map<String, dynamic>,
@@ -67,4 +87,9 @@ class FeatureConfigRepository {
       return null;
     }
   }
+
+  String _cacheKey({
+    required int clubId,
+    required String channel,
+  }) => '$_cacheKeyPrefix:$clubId:$channel';
 }

@@ -100,9 +100,20 @@ Future<void> _pumpApp(
 }
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
+  final binding = TestWidgetsFlutterBinding.ensureInitialized();
   GoogleFonts.config.allowRuntimeFetching = false;
   setUpAll(loadDesignFonts);
+  setUp(() {
+    binding.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(
+          accessibleNavigation: true,
+          disableAnimations: true,
+          reduceMotion: true,
+        );
+  });
+  tearDown(() {
+    binding.platformDispatcher.clearAccessibilityFeaturesTestValue();
+  });
 
   group('Onboarding auth flow — §2.2 compliant', () {
     testWidgets('splash routes authenticated users with MOMO to home', (
@@ -125,8 +136,7 @@ void main() {
         repository: repository,
       );
 
-      await tester.pump();
-      await tester.pumpAndSettle();
+      await _pumpPastSplash(tester);
 
       expect(find.text('Home Route'), findsOneWidget);
     });
@@ -150,8 +160,7 @@ void main() {
           repository: repository,
         );
 
-        await tester.pump();
-        await tester.pumpAndSettle();
+        await _pumpPastSplash(tester);
 
         // §2.2: Always go to /home — never gate on MOMO during launch
         expect(find.text('Home Route'), findsOneWidget);
@@ -177,13 +186,10 @@ void main() {
           repository: repository,
         );
 
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('NEXT'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('NEXT'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('GET STARTED'));
-        await tester.pumpAndSettle();
+        await _advanceOnboardingToFinalSlide(tester);
+        await tester.tap(find.text('Get started'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 350));
 
         // §2.2: Go straight to home after anonymous sign-in
         expect(find.text('Home Route'), findsOneWidget);
@@ -201,13 +207,10 @@ void main() {
         repository: repository,
       );
 
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('NEXT'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('NEXT'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('USE PHONE / WHATSAPP OTP'));
-      await tester.pumpAndSettle();
+      await _advanceOnboardingToFinalSlide(tester);
+      await tester.tap(find.text('Use phone / WhatsApp OTP'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 350));
 
       expect(find.byType(SupporterPhoneAuthScreen), findsOneWidget);
     });
@@ -223,8 +226,7 @@ void main() {
         repository: repository,
       );
 
-      await tester.pump();
-      await tester.pumpAndSettle();
+      await _pumpPastSplash(tester);
 
       expect(find.byType(OnboardingScreen), findsOneWidget);
     });
@@ -242,8 +244,7 @@ void main() {
           repository: repository,
         );
 
-        await tester.pump();
-        await tester.pumpAndSettle();
+        await _pumpPastSplash(tester);
 
         expect(find.byType(OnboardingScreen), findsOneWidget);
       },
@@ -262,8 +263,7 @@ void main() {
           repository: repository,
         );
 
-        await tester.pump();
-        await tester.pumpAndSettle();
+        await _pumpPastSplash(tester);
 
         expect(find.byType(OnboardingScreen), findsOneWidget);
       },
@@ -279,9 +279,10 @@ void main() {
       const ProviderScope(child: MaterialApp(home: OnboardingScreen())),
     );
 
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('NEXT'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.tap(find.text('Next'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
 
     await expectLater(
       find.byType(OnboardingScreen),
@@ -297,11 +298,27 @@ void main() {
     await tester.pumpWidget(
       const ProviderScope(child: MaterialApp(home: OnboardingScreen())),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
 
-    expect(find.text('NEXT'), findsOneWidget);
+    expect(find.text('Next'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+}
+
+Future<void> _pumpPastSplash(WidgetTester tester) async {
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 900));
+  await tester.pump();
+}
+
+Future<void> _advanceOnboardingToFinalSlide(WidgetTester tester) async {
+  await tester.pump();
+  await tester.tap(find.text('Next'));
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 350));
+  await tester.tap(find.text('Next'));
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 350));
 }
 
 void _setMobileSurface(WidgetTester tester) {

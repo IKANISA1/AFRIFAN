@@ -195,9 +195,6 @@ end;
 $$;
 
 alter table public.groups
-  add column if not exists allow_chat boolean default true not null;
-
-alter table public.groups
   alter column currency set default public.resolve_club_currency_code();
 
 alter table public.groups
@@ -237,51 +234,15 @@ create or replace function public.sync_group_contract_columns() returns trigger
 language plpgsql
 set search_path to 'public'
 as $$
-declare
-  v_group_type text;
-  v_privacy text;
 begin
-  v_group_type := lower(
-    nullif(
-      btrim(
-        coalesce(new.group_type, new.type, 'community')
-      ),
-      ''
-    )
-  );
-
-  if v_group_type = 'saving' then
-    v_group_type := 'savings';
-  elsif v_group_type not in ('club', 'community', 'savings', 'fan_Group') then
-    v_group_type := 'community';
-  end if;
-
-  new.group_type := v_group_type;
-  new.type := case
-    when v_group_type = 'savings' then 'saving'
-    else v_group_type
+  new.group_type := case
+    when lower(coalesce(new.group_type, new.type, 'community')) in ('project', 'club', 'team_project')
+      then 'project'
+    else 'community'
   end;
 
-  v_privacy := lower(
-    nullif(
-      btrim(
-        coalesce(new.privacy, new.visibility, 'private')
-      ),
-      ''
-    )
-  );
-
-  if v_privacy = 'members' then
-    v_privacy := 'friends';
-  elsif v_privacy not in ('public', 'friends', 'private') then
-    v_privacy := 'private';
-  end if;
-
-  new.privacy := v_privacy;
-  new.visibility := case
-    when v_privacy = 'public' then 'public'
-    else 'private'
-  end;
+  new.type := new.group_type;
+  new.visibility := 'public';
 
   if new.current_total is null then
     new.current_total := coalesce(new.amount, 0);
@@ -315,10 +276,7 @@ begin
     new.is_active := coalesce(new.is_closed, false) = false;
   end if;
 
-  new.allow_chat := coalesce(new.allow_chat, true);
-  new.member_count := greatest(coalesce(new.member_count, 1), 0);
-  new.invite_code := upper(coalesce(new.invite_code, public.generate_invite_code()));
-
+  new.member_count := greatest(coalesce(new.member_count, 0), 0);
   return new;
 end;
 $$;
@@ -387,8 +345,11 @@ declare
   v_group_id uuid;
   v_group record;
   v_result record;
-  v_display_name text;
 begin
+  if v_actor_id is null then
+    raise exception 'Authentication is required.';
+  end if;
+
   if tg_op = 'DELETE' then
     select g.*
     into v_group
@@ -402,24 +363,12 @@ begin
     if not (
       public.is_super_admin()
       or public.is_club_admin(v_group.club_id)
-      or v_group.creator_id = v_actor_id
     ) then
-      raise exception 'You do not have permission to delete this contribution group.';
+      raise exception 'Only platform or club admins can delete public initiatives.';
     end if;
 
     delete from public.groups where id = old.id;
     return old;
-  end if;
-
-  if v_actor_id is null then
-    raise exception 'Authentication is required.';
-  end if;
-
-  if tg_op = 'INSERT'
-     and new.creator_id is not null
-     and new.creator_id <> v_actor_id
-     and not public.is_super_admin() then
-    raise exception 'You cannot create or update a contribution group for another user.';
   end if;
 
   if tg_op = 'UPDATE' then
@@ -435,17 +384,14 @@ begin
     if not (
       public.is_super_admin()
       or public.is_club_admin(v_group.club_id)
-      or v_group.creator_id = v_actor_id
     ) then
-      raise exception 'You do not have permission to update this contribution group.';
+      raise exception 'Only platform or club admins can update public initiatives.';
     end if;
 
-    if new.club_id is not null and new.club_id <> v_group.club_id and not public.is_super_admin() then
-      raise exception 'Contribution groups cannot be moved across clubs.';
-    end if;
-
-    if new.creator_id is distinct from v_group.creator_id and not public.is_super_admin() then
-      raise exception 'Only super admins can reassign contribution group ownership.';
+    if new.club_id is not null
+       and new.club_id <> v_group.club_id
+       and not public.is_super_admin() then
+      raise exception 'Contribution initiatives cannot be moved across clubs.';
     end if;
 
     update public.groups
@@ -453,10 +399,9 @@ begin
       creator_id = coalesce(new.creator_id, v_group.creator_id),
       name = new.name,
       description = nullif(btrim(coalesce(new.description, '')), ''),
-      group_type = new.group_type,
-      privacy = new.privacy,
+      group_type = coalesce(new.group_type, v_group.group_type, v_group.type, 'community'),
       target_amount = coalesce(new.target_amount, 0),
-      current_total = coalesce(new.current_total, new.amount, 0),
+      current_total = coalesce(new.current_total, new.amount, v_group.current_total, v_group.amount, 0),
       momo_code = coalesce(
         nullif(btrim(coalesce(new.receiving_momo_code, '')), ''),
         nullif(btrim(coalesce(new.momo_recipient_code, '')), ''),
@@ -466,7 +411,6 @@ begin
       deadline = new.deadline,
       is_recurring = coalesce(new.is_recurring, false),
       is_closed = coalesce(new.is_closed, false),
-      invite_code = coalesce(nullif(btrim(coalesce(new.invite_code, '')), ''), v_group.invite_code),
       member_count = greatest(coalesce(new.member_count, v_group.member_count, 0), 0),
       club_id = coalesce(new.club_id, v_group.club_id),
       partner_id = coalesce(new.partner_id, v_group.partner_id),
@@ -474,9 +418,13 @@ begin
       updated_at = now(),
       is_active = coalesce(new.is_active, coalesce(new.is_closed, false) = false),
       country = coalesce(nullif(btrim(coalesce(new.country, '')), ''), v_group.country),
-      visibility = coalesce(new.visibility, new.privacy, v_group.visibility),
-      type = coalesce(new.type, new.group_type, v_group.type),
-      amount = coalesce(new.amount, new.current_total, v_group.amount, 0)::integer,
+      visibility = 'public',
+      type = case
+        when lower(coalesce(new.group_type, v_group.group_type, v_group.type, 'community')) in ('project', 'club', 'team_project')
+          then 'project'
+        else 'community'
+      end,
+      amount = coalesce(new.amount, new.current_total, v_group.amount, v_group.current_total, 0)::integer,
       monthly_contribution = coalesce(new.monthly_contribution, new.contribution_amount, v_group.monthly_contribution),
       bank_partner_id = coalesce(new.bank_partner_id, v_group.bank_partner_id),
       momo_number = coalesce(new.momo_number, v_group.momo_number),
@@ -484,17 +432,19 @@ begin
       receiving_momo_route_type = coalesce(new.receiving_momo_route_type, new.momo_route_type, v_group.receiving_momo_route_type),
       receiving_momo_code = coalesce(new.receiving_momo_code, new.momo_recipient_code, v_group.receiving_momo_code),
       cycle_days = coalesce(new.cycle_days, v_group.cycle_days, 30),
-      contribution_amount = coalesce(new.contribution_amount, new.monthly_contribution, v_group.contribution_amount, 0),
-      allow_chat = coalesce(new.allow_chat, v_group.allow_chat, true)
+      contribution_amount = coalesce(new.contribution_amount, new.monthly_contribution, v_group.contribution_amount, 0)
     where id = old.id
     returning id into v_group_id;
   else
     if coalesce(new.club_id, v_requesting_club_id) is null then
-      raise exception 'A club scope is required to create a contribution group.';
+      raise exception 'A club scope is required to create a contribution initiative.';
     end if;
 
-    if new.club_id is not null and new.club_id <> v_requesting_club_id and not public.is_super_admin() then
-      raise exception 'Contribution groups must be created within the active club scope.';
+    if not (
+      public.is_super_admin()
+      or public.is_club_admin(coalesce(new.club_id, v_requesting_club_id))
+    ) then
+      raise exception 'Only platform or club admins can create public initiatives.';
     end if;
 
     insert into public.groups (
@@ -502,14 +452,12 @@ begin
       name,
       description,
       group_type,
-      privacy,
       target_amount,
       current_total,
       momo_code,
       deadline,
       is_recurring,
       is_closed,
-      invite_code,
       member_count,
       club_id,
       partner_id,
@@ -526,15 +474,13 @@ begin
       receiving_momo_route_type,
       receiving_momo_code,
       cycle_days,
-      contribution_amount,
-      allow_chat
+      contribution_amount
     )
     values (
       coalesce(new.creator_id, v_actor_id),
       new.name,
       nullif(btrim(coalesce(new.description, '')), ''),
-      new.group_type,
-      new.privacy,
+      coalesce(new.group_type, 'community'),
       coalesce(new.target_amount, 0),
       coalesce(new.current_total, new.amount, 0),
       coalesce(
@@ -545,15 +491,18 @@ begin
       new.deadline,
       coalesce(new.is_recurring, false),
       coalesce(new.is_closed, false),
-      coalesce(nullif(btrim(coalesce(new.invite_code, '')), ''), public.generate_invite_code()),
-      greatest(coalesce(new.member_count, 1), 1),
+      greatest(coalesce(new.member_count, 0), 0),
       coalesce(new.club_id, v_requesting_club_id),
       new.partner_id,
       nullif(btrim(coalesce(new.currency, '')), ''),
       coalesce(new.is_active, coalesce(new.is_closed, false) = false),
       nullif(btrim(coalesce(new.country, '')), ''),
-      coalesce(new.visibility, new.privacy),
-      coalesce(new.type, new.group_type),
+      'public',
+      case
+        when lower(coalesce(new.group_type, 'community')) in ('project', 'club', 'team_project')
+          then 'project'
+        else 'community'
+      end,
       coalesce(new.amount, new.current_total, 0)::integer,
       coalesce(new.monthly_contribution, new.contribution_amount),
       new.bank_partner_id,
@@ -562,38 +511,9 @@ begin
       coalesce(new.receiving_momo_route_type, new.momo_route_type),
       coalesce(new.receiving_momo_code, new.momo_recipient_code),
       coalesce(new.cycle_days, 30),
-      coalesce(new.contribution_amount, new.monthly_contribution, 0),
-      coalesce(new.allow_chat, true)
+      coalesce(new.contribution_amount, new.monthly_contribution, 0)
     )
     returning id into v_group_id;
-
-    select coalesce(nullif(btrim(u.public_user_id), ''), substr(replace(v_actor_id::text, '-', ''), 1, 6))
-    into v_display_name
-    from public.users u
-    where u.id = v_actor_id;
-
-    insert into public.group_members (
-      group_id,
-      user_id,
-      display_name,
-      is_admin,
-      is_anonymous,
-      contribution_amount,
-      joined_at
-    )
-    values (
-      v_group_id,
-      v_actor_id,
-      coalesce(v_display_name, '000000'),
-      true,
-      false,
-      0,
-      now()
-    )
-    on conflict (group_id, user_id)
-    do update set
-      is_admin = true,
-      display_name = excluded.display_name;
   end if;
 
   select *
@@ -613,8 +533,11 @@ select
   g.creator_id,
   g.name,
   g.description,
-  coalesce(nullif(g.group_type, ''), case when g.type = 'saving' then 'savings' else g.type end) as group_type,
-  coalesce(nullif(g.privacy, ''), case when g.visibility = 'public' then 'public' else 'private' end) as privacy,
+  case
+    when lower(coalesce(g.group_type, g.type, 'community')) in ('project', 'club', 'team_project')
+      then 'project'
+    else 'community'
+  end as group_type,
   g.target_amount,
   coalesce(g.current_total, g.amount, 0) as current_total,
   coalesce(g.receiving_momo_code, g.momo_code, g.momo_number) as momo_recipient_code,
@@ -622,7 +545,6 @@ select
   g.deadline,
   g.is_recurring,
   g.is_closed,
-  g.invite_code,
   g.member_count,
   g.created_at,
   g.club_id,
@@ -641,9 +563,9 @@ select
   g.receiving_momo_route_type,
   g.receiving_momo_code,
   g.cycle_days,
-  g.contribution_amount,
-  g.allow_chat
-from public.groups g;
+  g.contribution_amount
+from public.groups g
+where coalesce(g.visibility, 'public') = 'public';
 
 drop trigger if exists trg_contribution_groups_write on public.contribution_groups;
 create trigger trg_contribution_groups_write
@@ -774,74 +696,6 @@ grant insert, update, delete on public.contribution_groups to authenticated, ser
 grant select, insert, update, delete on public.cool_events to authenticated, service_role;
 grant select on public.rs_fan_memberships to authenticated, service_role;
 
-create or replace function public.populate_group_message_defaults() returns trigger
-language plpgsql
-set search_path to 'public'
-as $$
-declare
-  v_sender_id uuid;
-  v_alias text;
-begin
-  v_sender_id := coalesce(new.sender_id, auth.uid());
-  if v_sender_id is null then
-    raise exception 'Authentication is required to send group messages.';
-  end if;
-
-  new.sender_id := v_sender_id;
-
-  if new.group_id is null then
-    raise exception 'group_id is required.';
-  end if;
-
-  if new.club_id is null then
-    select g.club_id
-    into new.club_id
-    from public.groups g
-    where g.id = new.group_id;
-  end if;
-
-  if coalesce(new.alias, '') = '' then
-    select coalesce(nullif(btrim(u.public_user_id), ''), substr(md5(v_sender_id::text || new.group_id::text), 1, 6))
-    into v_alias
-    from public.users u
-    where u.id = v_sender_id;
-
-    new.alias := coalesce(v_alias, substr(md5(v_sender_id::text || new.group_id::text), 1, 6));
-  end if;
-
-  new.updated_at := coalesce(new.updated_at, coalesce(new.created_at, now()));
-  return new;
-end;
-$$;
-
-create table if not exists public.group_messages (
-  id uuid default gen_random_uuid() not null,
-  group_id uuid not null,
-  sender_id uuid,
-  alias character(6),
-  content text not null,
-  created_at timestamp with time zone default now(),
-  club_id bigint,
-  updated_at timestamp with time zone default now() not null
-);
-
-do $$
-begin
-  if not exists (
-    select 1
-    from pg_constraint
-    where conname = 'group_messages_pkey'
-      and conrelid = 'public.group_messages'::regclass
-  ) then
-    alter table public.group_messages
-      add constraint group_messages_pkey primary key (id);
-  end if;
-end;
-$$;
-
-create index if not exists idx_group_messages_group on public.group_messages (group_id);
-create index if not exists idx_group_messages_group_created on public.group_messages (group_id, created_at desc);
-
 delete from public.group_members gm
 where not exists (
   select 1
@@ -884,150 +738,6 @@ begin
 end;
 $$;
 
-do $$
-begin
-  if not exists (
-    select 1
-    from pg_constraint
-    where conname = 'group_messages_group_id_fkey'
-      and conrelid = 'public.group_messages'::regclass
-  ) then
-    alter table public.group_messages
-      add constraint group_messages_group_id_fkey
-      foreign key (group_id) references public.groups(id) on delete cascade;
-  end if;
-end;
-$$;
-
-do $$
-begin
-  if not exists (
-    select 1
-    from pg_constraint
-    where conname = 'group_messages_sender_id_fkey'
-      and conrelid = 'public.group_messages'::regclass
-  ) then
-    alter table public.group_messages
-      add constraint group_messages_sender_id_fkey
-      foreign key (sender_id) references auth.users(id) on delete set null;
-  end if;
-end;
-$$;
-
-do $$
-begin
-  if not exists (
-    select 1
-    from pg_constraint
-    where conname = 'group_messages_club_id_fkey'
-      and conrelid = 'public.group_messages'::regclass
-  ) then
-    alter table public.group_messages
-      add constraint group_messages_club_id_fkey
-      foreign key (club_id) references public.african_football_clubs(id);
-  end if;
-end;
-$$;
-
-alter table public.group_messages enable row level security;
-
-drop trigger if exists trg_group_messages_defaults on public.group_messages;
-create trigger trg_group_messages_defaults
-before insert or update on public.group_messages
-for each row execute function public.populate_group_message_defaults();
-
-drop trigger if exists trg_group_messages_updated on public.group_messages;
-create trigger trg_group_messages_updated
-before update on public.group_messages
-for each row execute function public.set_updated_at();
-
-drop policy if exists group_messages_insert_members on public.group_messages;
-create policy group_messages_insert_members
-on public.group_messages
-for insert
-to authenticated
-with check (
-  sender_id = auth.uid()
-  and exists (
-    select 1
-    from public.groups g
-    where g.id = group_messages.group_id
-      and (g.club_id)::text = public.requesting_club_id()
-      and coalesce(g.allow_chat, true) = true
-      and public.is_group_member(group_messages.group_id)
-  )
-);
-
-drop policy if exists group_messages_select_members on public.group_messages;
-create policy group_messages_select_members
-on public.group_messages
-for select
-to authenticated
-using (
-  exists (
-    select 1
-    from public.groups g
-    where g.id = group_messages.group_id
-      and (g.club_id)::text = public.requesting_club_id()
-      and (
-        public.is_group_member(group_messages.group_id)
-        or g.creator_id = auth.uid()
-        or public.is_club_admin(g.club_id)
-      )
-  )
-);
-
-drop policy if exists group_messages_update_author_or_admin on public.group_messages;
-create policy group_messages_update_author_or_admin
-on public.group_messages
-for update
-to authenticated
-using (
-  sender_id = auth.uid()
-  or exists (
-    select 1
-    from public.groups g
-    where g.id = group_messages.group_id
-      and public.is_club_admin(g.club_id)
-  )
-)
-with check (
-  sender_id = auth.uid()
-  or exists (
-    select 1
-    from public.groups g
-    where g.id = group_messages.group_id
-      and public.is_club_admin(g.club_id)
-  )
-);
-
-drop policy if exists group_messages_delete_author_or_admin on public.group_messages;
-create policy group_messages_delete_author_or_admin
-on public.group_messages
-for delete
-to authenticated
-using (
-  sender_id = auth.uid()
-  or exists (
-    select 1
-    from public.groups g
-    where g.id = group_messages.group_id
-      and public.is_club_admin(g.club_id)
-  )
-);
-
-do $$
-begin
-  execute 'alter publication supabase_realtime add table public.group_messages';
-exception
-  when duplicate_object or undefined_object then
-    null;
-end;
-$$;
-
-grant select on public.group_messages to authenticated, service_role;
-grant insert, update, delete on public.group_messages to authenticated, service_role;
-
 drop policy if exists group_members_select_members on public.group_members;
 create policy group_members_select_members
 on public.group_members
@@ -1040,9 +750,12 @@ using (
     where g.id = group_members.group_id
       and (g.club_id)::text = public.requesting_club_id()
       and (
-        public.is_group_member(group_members.group_id)
-        or g.creator_id = auth.uid()
-        or public.is_club_admin(g.club_id)
+        public.is_club_admin(g.club_id)
+        or (
+          coalesce(g.is_active, true) = true
+          and coalesce(g.is_closed, false) = false
+          and coalesce(g.visibility, 'public') = 'public'
+        )
       )
   )
 );
@@ -1078,8 +791,9 @@ on public.groups
 for select
 to anon
 using (
-  is_active = true
-  and coalesce(privacy, visibility, 'private') = 'public'
+  coalesce(is_active, true) = true
+  and coalesce(is_closed, false) = false
+  and coalesce(visibility, 'public') = 'public'
 );
 
 drop policy if exists contribution_groups_select_club on public.groups;
@@ -1094,120 +808,14 @@ using (
     (club_id)::text = public.requesting_club_id()
     and (
       public.is_club_admin(club_id)
-      or creator_id = auth.uid()
-      or public.is_group_member(id)
-      or coalesce(privacy, visibility, 'private') = 'public'
+      or (
+        coalesce(is_active, true) = true
+        and coalesce(is_closed, false) = false
+        and coalesce(visibility, 'public') = 'public'
+      )
     )
   )
 );
-
-create or replace function public.create_group_atomic(
-  p_name text,
-  p_description text default null::text,
-  p_privacy text default 'private'::text,
-  p_group_type text default 'community'::text,
-  p_target_amount bigint default 0,
-  p_currency text default null::text,
-  p_cycle_days integer default 30,
-  p_country_code text default null::text,
-  p_monthly_contribution bigint default null::bigint,
-  p_momo_number text default null::text,
-  p_receiving_momo_code text default null::text,
-  p_receiving_momo_route_type text default null::text,
-  p_bank_partner_id uuid default null::uuid
-) returns jsonb
-language plpgsql
-security definer
-set search_path to 'public'
-as $$
-declare
-  v_user_id uuid := auth.uid();
-  v_group public.groups;
-  v_display_name text;
-begin
-  if v_user_id is null then
-    return jsonb_build_object('status', 'error', 'message', 'Not authenticated.');
-  end if;
-
-  insert into public.groups (
-    creator_id,
-    name,
-    description,
-    group_type,
-    privacy,
-    target_amount,
-    current_total,
-    currency,
-    country,
-    cycle_days,
-    monthly_contribution,
-    contribution_amount,
-    momo_number,
-    receiving_momo_code,
-    receiving_momo_route_type,
-    bank_partner_id,
-    amount
-  )
-  values (
-    v_user_id,
-    nullif(btrim(p_name), ''),
-    nullif(btrim(coalesce(p_description, '')), ''),
-    p_group_type,
-    p_privacy,
-    coalesce(p_target_amount, 0),
-    0,
-    coalesce(nullif(btrim(coalesce(p_currency, '')), ''), public.resolve_club_currency_code(nullif(public.requesting_club_id(), '')::bigint)),
-    coalesce(nullif(btrim(coalesce(p_country_code, '')), ''), public.resolve_club_country_code(nullif(public.requesting_club_id(), '')::bigint)),
-    greatest(coalesce(p_cycle_days, 30), 1),
-    p_monthly_contribution,
-    coalesce(p_monthly_contribution, 0),
-    nullif(btrim(coalesce(p_momo_number, '')), ''),
-    nullif(btrim(coalesce(p_receiving_momo_code, '')), ''),
-    nullif(btrim(coalesce(p_receiving_momo_route_type, '')), ''),
-    p_bank_partner_id::text,
-    0
-  )
-  returning * into v_group;
-
-  select coalesce(nullif(btrim(u.public_user_id), ''), substr(replace(v_user_id::text, '-', ''), 1, 6))
-  into v_display_name
-  from public.users u
-  where u.id = v_user_id;
-
-  insert into public.group_members (
-    group_id,
-    user_id,
-    display_name,
-    is_admin,
-    is_anonymous,
-    contribution_amount,
-    joined_at
-  )
-  values (
-    v_group.id,
-    v_user_id,
-    coalesce(v_display_name, '000000'),
-    true,
-    false,
-    0,
-    now()
-  )
-  on conflict (group_id, user_id)
-  do update set
-    is_admin = true,
-    display_name = excluded.display_name;
-
-  return jsonb_build_object(
-    'status', 'success',
-    'id', v_group.id,
-    'group_id', v_group.id,
-    'invite_code', v_group.invite_code
-  );
-exception
-  when others then
-    return jsonb_build_object('status', 'error', 'message', sqlerrm);
-end;
-$$;
 
 create or replace function public.get_rayon_member_registry(
   p_partner_id uuid,
@@ -1679,22 +1287,6 @@ grant select on fantasy.fantasy_entries to authenticated, service_role;
 grant select on fantasy.entry_gameweek_scores to anon, authenticated, service_role;
 grant select on fantasy.league_memberships to authenticated, service_role;
 grant select on fantasy.leagues to authenticated, service_role;
-
-grant execute on function public.create_group_atomic(
-  text,
-  text,
-  text,
-  text,
-  bigint,
-  text,
-  integer,
-  text,
-  bigint,
-  text,
-  text,
-  text,
-  uuid
-) to authenticated, service_role;
 
 grant execute on function public.activate_referral_invite_for_user(
   uuid,

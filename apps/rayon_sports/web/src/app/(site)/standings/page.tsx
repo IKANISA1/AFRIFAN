@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Trophy } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { getClubProfile, getStandings } from "@/lib/data/public";
+import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getSiteCopy } from "@/lib/site-copy";
 
@@ -16,6 +17,11 @@ export async function generateMetadata() {
 }
 
 export default async function StandingsPage() {
+  const featureGate = await getFeaturePageGuard("live");
+  if (featureGate) {
+    return featureGate;
+  }
+
   const [club, standings] = await Promise.all([
     getClubProfile(),
     getStandings(),

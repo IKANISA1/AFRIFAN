@@ -98,7 +98,8 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
         _isLoading = false;
         _error = team == null ? 'Team not found.' : null;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('TeamProfileScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) {
         return;
       }
@@ -159,7 +160,8 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
             ? 'This club has not published an active contribution route yet.'
             : null,
       );
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('TeamProfileScreen', 'Operation failed (non-critical).', error, stackTrace);
       return TeamClubContext(
         clubId: clubId,
         isActiveClubTeam: false,
@@ -238,7 +240,8 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
       if (!launched) {
         _showMessage('Could not open the phone dialer.');
       }
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('TeamProfileScreen', 'Operation failed (non-critical).', error, stackTrace);
       _showMessage('Dialer launch failed.');
     } finally {
       if (mounted) {

@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
-import type { PlatformConfigSnapshot } from "@/lib/feature-config";
-import { isFeatureEnabled } from "@/lib/feature-config";
+import { canRenderFeature, type PlatformConfigSnapshot } from "@/lib/feature-config";
 
 interface FeatureGateProps {
   /** The platform config snapshot (fetched via getPlatformConfig). */
@@ -32,7 +31,7 @@ export function FeatureGate({
   children,
   fallback = null,
 }: FeatureGateProps) {
-  if (isFeatureEnabled(config, featureKey)) {
+  if (canRenderFeature(config, featureKey)) {
     return <>{children}</>;
   }
   return <>{fallback}</>;

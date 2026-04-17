@@ -8,6 +8,7 @@ interface AdminStateCardProps {
   value: string;
   helper?: ReactNode;
   icon?: LucideIcon;
+  tone?: "success" | "warning" | "danger" | "info" | "neutral" | "accent";
   trend?: "up" | "down" | "neutral";
   trendLabel?: string;
 }
@@ -17,13 +18,26 @@ export function AdminStateCard({
   value,
   helper,
   icon: Icon,
+  tone = "neutral",
   trend,
   trendLabel,
 }: AdminStateCardProps) {
   const isLoading = value === "..." || value === "";
+  const toneClass =
+    tone === "success"
+      ? "border-emerald-500/20"
+      : tone === "warning"
+        ? "border-amber-500/20"
+        : tone === "danger"
+          ? "border-rose-500/20"
+          : tone === "info"
+            ? "border-sky-500/20"
+            : tone === "accent"
+              ? "border-[var(--club-accent)]/25"
+              : "";
 
   return (
-    <article className={`${ui.panel} ${ui.cardInteractive} group rounded-[28px] border-[1.2px] p-5 sm:p-6`}>
+    <article className={`${ui.panel} ${ui.cardInteractive} ${toneClass} group rounded-[28px] border-[1.2px] p-5 sm:p-6`}>
       <div className="flex items-start justify-between gap-3">
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
           {label}

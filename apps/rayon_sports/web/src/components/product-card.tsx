@@ -12,7 +12,7 @@ export function ProductCard({ product }: { product: ShopProduct }) {
     <Link
       href={`/shop/${product.id}`}
       prefetch={false}
-      className={`group ${ui.panel} ${ui.cardInteractive} flex h-full flex-col gap-5 rounded-[32px] border-[1.2px] p-4 sm:p-5`}
+      className={`group ${ui.panel} ${ui.cardInteractive} flex h-full flex-col gap-5 rounded-[32px] border-[1.2px] bg-slate-950/96 p-4 sm:p-5`}
     >
       <div className="img-zoom relative overflow-hidden rounded-[26px]">
         <Image
@@ -48,7 +48,7 @@ export function ProductCard({ product }: { product: ShopProduct }) {
         <h3 className="font-display text-[2rem] font-bold uppercase leading-[0.92] tracking-[-0.055em] text-white sm:text-[2.3rem]">
           {product.name}
         </h3>
-        <p className="text-sm leading-7 text-slate-300">{product.subtitle}</p>
+        <p className="text-sm leading-7 text-slate-100">{product.subtitle}</p>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -71,7 +71,7 @@ export function ProductCard({ product }: { product: ShopProduct }) {
         </div>
         <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-white">
           View product
-          <ArrowRight size={18} className="text-slate-300 transition-transform duration-300 group-hover:translate-x-1" />
+          <ArrowRight size={18} className="text-slate-100 transition-transform duration-300 group-hover:translate-x-1" />
         </div>
       </div>
     </Link>

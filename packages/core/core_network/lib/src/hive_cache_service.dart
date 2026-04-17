@@ -37,6 +37,10 @@ class HiveCacheService {
   static const _cacheVersion = 2;
   static const _versionKey = '__cache_version__';
 
+  /// Maximum number of data entries (excluding metadata keys).
+  /// When exceeded, the oldest 20% of entries are evicted on next write.
+  static const maxEntries = 500;
+
   static Box<String>? _box;
   static bool _initialized = false;
 
@@ -118,6 +122,9 @@ class HiveCacheService {
       } else {
         await box.delete('$_metaPrefix$key');
       }
+
+      // Evict oldest entries if cache exceeds size limit.
+      await _evictIfNeeded();
     } catch (error) {
       AfriLogger.warn(_tag, 'Failed to cache "$key": $error');
     }
@@ -176,6 +183,72 @@ class HiveCacheService {
 
   /// Number of entries (including metadata).
   static int get length => _box?.length ?? 0;
+
+  /// Number of data entries (excluding metadata and version keys).
+  static int get dataEntryCount {
+    final box = _box;
+    if (box == null) return 0;
+    return box.keys
+        .where((k) => k is String && !k.startsWith(_metaPrefix) && k != _versionKey)
+        .length;
+  }
+
+  /// Evict oldest entries if the cache exceeds [maxEntries].
+  static Future<void> _evictIfNeeded() async {
+    final box = _box;
+    if (box == null) return;
+
+    final dataKeys = box.keys
+        .whereType<String>()
+        .where((k) => !k.startsWith(_metaPrefix) && k != _versionKey)
+        .toList();
+    if (dataKeys.length <= maxEntries) return;
+
+    // Evict oldest 20% — keys are insertion-ordered in Hive.
+    final evictCount = (dataKeys.length * 0.2).ceil();
+    final toEvict = dataKeys.take(evictCount).toList();
+    for (final key in toEvict) {
+      await box.delete(key);
+      await box.delete('$_metaPrefix$key');
+    }
+    AfriLogger.info(
+      _tag,
+      'Evicted $evictCount oldest cache entries (was ${dataKeys.length}, '
+      'limit $maxEntries).',
+    );
+  }
+
+  /// Remove all expired entries. Call periodically (e.g. on app resume)
+  /// to reclaim storage.
+  static Future<int> purgeExpired() async {
+    final box = _box;
+    if (box == null) return 0;
+
+    final now = DateTime.now().toUtc();
+    var purged = 0;
+
+    final metaKeys = box.keys
+        .whereType<String>()
+        .where((k) => k.startsWith(_metaPrefix))
+        .toList();
+
+    for (final metaKey in metaKeys) {
+      final expiresAtStr = box.get(metaKey);
+      if (expiresAtStr == null) continue;
+      final expiresAt = DateTime.tryParse(expiresAtStr);
+      if (expiresAt != null && now.isAfter(expiresAt)) {
+        final dataKey = metaKey.substring(_metaPrefix.length);
+        await box.delete(dataKey);
+        await box.delete(metaKey);
+        purged++;
+      }
+    }
+
+    if (purged > 0) {
+      AfriLogger.info(_tag, 'Purged $purged expired cache entries.');
+    }
+    return purged;
+  }
 
   @visibleForTesting
   static Future<void> resetForTest({bool deleteBox = false}) async {

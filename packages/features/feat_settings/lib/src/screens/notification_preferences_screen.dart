@@ -24,6 +24,7 @@ class _NotificationPreferencesScreenState
   String? _draftUserId;
   bool _isSaving = false;
   PushPermissionStatus? _permissionStatus;
+  String? _localStatusMessage;
 
   @override
   void initState() {
@@ -65,11 +66,17 @@ class _NotificationPreferencesScreenState
   }
 
   Future<void> _togglePush(UserNotificationSettings settings) async {
+    if (_isSaving) {
+      return;
+    }
     if (settings.pushEnabled) {
       await PushNotificationService.unregisterCurrentDevice();
-      setState(() => _draft = settings.copyWith(pushEnabled: false));
+      setState(() {
+        _draft = settings.copyWith(pushEnabled: false);
+        _localStatusMessage =
+            'Device notifications were turned off. Save to update your account preference.';
+      });
       await _refreshPermissionStatus();
-      _showMessage('Notifications disabled for this device.');
       return;
     }
 
@@ -82,8 +89,11 @@ class _NotificationPreferencesScreenState
     switch (status) {
       case PushPermissionStatus.authorized:
       case PushPermissionStatus.provisional:
-        setState(() => _draft = settings.copyWith(pushEnabled: true));
-        _showMessage('Notifications enabled for this device.');
+        setState(() {
+          _draft = settings.copyWith(pushEnabled: true);
+          _localStatusMessage =
+              'Permission granted on this device. Save to enable alerts on your account.';
+        });
         break;
       case PushPermissionStatus.denied:
         _showMessage('Notifications blocked. Enable in device settings.');
@@ -113,7 +123,10 @@ class _NotificationPreferencesScreenState
       }
       ref.invalidate(notificationSettingsProvider);
       if (!mounted) return;
-      setState(() => _draft = saved);
+      setState(() {
+        _draft = saved;
+        _localStatusMessage = null;
+      });
       _showMessage('Notification preferences saved.');
     } catch (error) {
       _showMessage(error.toString());
@@ -211,6 +224,15 @@ class _NotificationPreferencesScreenState
                           permissionCopy,
                           style: TypographyTokens.bodySmall(),
                         ),
+                        if (_localStatusMessage != null) ...[
+                          const SizedBox(height: SpacingTokens.spacing2),
+                          Text(
+                            _localStatusMessage!,
+                            style: TypographyTokens.bodySmall(
+                              ColorTokens.clubAccent,
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: SpacingTokens.spacing4),
                         OutlinedButton(
                           onPressed: _isSaving

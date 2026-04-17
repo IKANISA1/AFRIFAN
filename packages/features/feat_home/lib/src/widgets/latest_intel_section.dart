@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../repositories/home_content_repository.dart';
+import 'package:core_utils/core_utils.dart';
 
 /// Latest Intel section -- horizontal scrolling news/article cards.
 ///
@@ -41,7 +42,8 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
           _isLoading = false;
         });
       }
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('LatestIntelSection', 'Operation failed (non-critical).', error, stackTrace);
       if (mounted) {
         setState(() {
           _snapshot = const LatestIntelSnapshot(

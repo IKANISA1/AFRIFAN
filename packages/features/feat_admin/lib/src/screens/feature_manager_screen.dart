@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:core_feature_config/core_feature_config.dart';
 import 'package:go_router/go_router.dart';
 
 import '../admin_providers.dart';
+import '../repositories/feature_management_repository.dart';
 
 class FeatureManagerScreen extends ConsumerStatefulWidget {
   const FeatureManagerScreen({super.key});
@@ -15,13 +17,13 @@ class FeatureManagerScreen extends ConsumerStatefulWidget {
 
 class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
   bool _isLoading = true;
-  List<PlatformFeature> _features = [];
+  List<ManagedPlatformFeature> _features = [];
   String? _error;
 
   @override
   void initState() {
     super.initState();
-    _loadFeatures();
+    unawaited(_loadFeatures());
   }
 
   Future<void> _loadFeatures() async {
@@ -48,17 +50,21 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
     }
   }
 
-  Future<void> _toggleFeature(String featureKey, bool enabled) async {
-    final success = await ref.read(featureManagementRepositoryProvider).updateFeatureGlobalStatus(featureKey, enabled);
+  Future<void> _toggleFeature(String featureId, bool enabled) async {
+    final success = await ref
+        .read(featureManagementRepositoryProvider)
+        .updateFeatureGlobalStatus(featureId, enabled);
     if (success) {
-      _loadFeatures();
+      await _loadFeatures();
     }
   }
 
-  Future<void> _changeVisibility(String featureKey, String visibility) async {
-    final success = await ref.read(featureManagementRepositoryProvider).updateFeatureVisibility(featureKey, visibility);
+  Future<void> _changeVisibility(String featureId, String visibility) async {
+    final success = await ref
+        .read(featureManagementRepositoryProvider)
+        .updateFeatureVisibility(featureId, visibility);
     if (success) {
-      _loadFeatures();
+      await _loadFeatures();
     }
   }
 
@@ -122,7 +128,7 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
   }
 
   Widget _buildFeatureList() {
-    final grouped = <String, List<PlatformFeature>>{};
+    final grouped = <String, List<ManagedPlatformFeature>>{};
     for (final feature in _features) {
       final category = (feature.category ?? 'OTHER').toUpperCase();
       grouped.putIfAbsent(category, () => []).add(feature);
@@ -156,7 +162,7 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
     );
   }
 
-  Widget _buildFeatureTile(PlatformFeature feature) {
+  Widget _buildFeatureTile(ManagedPlatformFeature feature) {
     final visibility = feature.visibilityState;
     final visIcon = switch (visibility) {
       'visible' => AfriIcons.visibility,
@@ -198,7 +204,7 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
               ),
             ),
             PopupMenuButton<String>(
-              onSelected: (v) => _changeVisibility(feature.featureKey, v),
+              onSelected: (v) => _changeVisibility(feature.id, v),
               itemBuilder: (_) => [
                 const PopupMenuItem(value: 'visible', child: Text('Visible')),
                 const PopupMenuItem(value: 'hidden', child: Text('Hidden')),
@@ -220,7 +226,7 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
             const SizedBox(width: SpacingTokens.spacing2),
             Switch.adaptive(
               value: feature.isEnabled,
-              onChanged: (v) => _toggleFeature(feature.featureKey, v),
+              onChanged: (v) => _toggleFeature(feature.id, v),
               activeTrackColor: ColorTokens.clubAccent,
             ),
           ],

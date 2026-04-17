@@ -70,8 +70,6 @@ void main() {
 
     test('features map is consistent with flags', () {
       final features = config.features;
-      expect(config.hasBioPay, isTrue);
-      expect(features['BioPay'], config.hasBioPay);
       expect(features['fan_clubs'], config.hasFanClubs);
       expect(features['shop'], config.hasShop);
       expect(features['ticketing'], config.hasTicketing);

@@ -165,7 +165,7 @@ void main() {
         'amount_paid': 10000,
         'qr_code': 'RS-123456',
         'momo_reference': 'MOMO-REF-001',
-        'status': 'active',
+        'status': 'valid',
         'purchased_at': '2026-04-01T10:00:00Z',
       });
 
@@ -213,6 +213,25 @@ void main() {
 
       expect(ticket.status, TicketStatus.cancelled);
       expect(ticket.match.homeTeam, 'Rayon');
+    });
+
+    test('keeps pending tickets non-active until verification', () {
+      final ticket = ClubTicket.fromJson({
+        'id': 'ticket-pending',
+        'match_id': 'match-pending',
+        'match': {
+          'id': 'match-pending',
+          'home_team': 'Rayon Sports',
+          'away_team': 'APR FC',
+          'match_date': '2026-05-01T15:00:00Z',
+        },
+        'user_id': 'user-1',
+        'seat_type': 'general',
+        'amount_paid': 2000,
+        'status': 'pending',
+      });
+
+      expect(ticket.status, TicketStatus.pending);
     });
 
     test('defaults seat_type to general for unknown value', () {

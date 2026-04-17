@@ -100,6 +100,42 @@ export function safeString(value: unknown, fallback = "") {
     : fallback;
 }
 
+export function isValidHexColor(value: string) {
+  return /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value.trim());
+}
+
+export function sanitizeHexColorDraft(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return "";
+  }
+
+  const stripped = trimmed
+    .replace(/^#/, "")
+    .replace(/[^0-9a-fA-F]/g, "")
+    .slice(0, 6)
+    .toUpperCase();
+
+  return stripped ? `#${stripped}` : "";
+}
+
+export function normalizeHexColorInput(value: string) {
+  const sanitized = sanitizeHexColorDraft(value);
+  if (!sanitized) {
+    return "";
+  }
+
+  const hex = sanitized.slice(1);
+  if (hex.length === 3) {
+    return `#${hex
+      .split("")
+      .map((channel) => `${channel}${channel}`)
+      .join("")}`;
+  }
+
+  return sanitized;
+}
+
 export function safeNumber(value: unknown, fallback = 0) {
   if (typeof value == "number" && Number.isFinite(value)) {
     return value;

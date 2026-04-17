@@ -20,7 +20,7 @@ export async function ShopAndIdentityBlock() {
 
   return (
     <section className="page-shell grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-      <div className="glass-panel rounded-[34px] p-6">
+      <div className="glass-panel rounded-[34px] bg-slate-950/96 p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeading
             eyebrow="Shop"
@@ -44,7 +44,7 @@ export async function ShopAndIdentityBlock() {
       </div>
 
       <div className="grid gap-6">
-        <div className="glass-panel rounded-[34px] p-6">
+        <div className="glass-panel rounded-[34px] bg-slate-950/96 p-6">
           <SectionHeading
             eyebrow="Club identity"
             title={`${club.nickname || club.shortName} — club identity.`}
@@ -53,19 +53,19 @@ export async function ShopAndIdentityBlock() {
             {moments.map((moment) => (
               <article
                 key={moment.title}
-                className="rounded-[24px] border border-border-soft bg-white/5 p-5"
+                className="rounded-[24px] border border-slate-700 bg-slate-950/75 p-5"
               >
                 <p className="font-display text-2xl font-bold uppercase leading-none text-white">
                   {moment.title}
                 </p>
-                <p className="mt-3 line-clamp-1 text-sm leading-7 text-slate-300">
+                <p className="mt-3 line-clamp-1 text-sm leading-7 text-slate-100">
                   {moment.body}
                 </p>
               </article>
             ))}
           </div>
         </div>
-        <div className="glass-panel rounded-[34px] p-6">
+        <div className="glass-panel rounded-[34px] bg-slate-950/96 p-6">
           <SectionHeading
             eyebrow="Fan app"
             title="Your supporter account."

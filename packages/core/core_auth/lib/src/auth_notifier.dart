@@ -1,4 +1,5 @@
 import 'package:core_network/core_network.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
@@ -58,8 +59,12 @@ class AuthNotifier extends Notifier<AuthState> {
     } catch (e) {
       try {
         await _repository.signOut();
-      } catch (_) {
+      } catch (signOutError) {
         // Best-effort cleanup of a stale or partially restored session.
+        AfriLogger.warn(
+          'AuthNotifier',
+          'Best-effort sign-out during recovery failed: $signOutError',
+        );
       }
       state = AuthRecoveryRequired(
         'Existing session could not be restored and was cleared.',
@@ -278,8 +283,12 @@ class AuthNotifier extends Notifier<AuthState> {
         profile: current.profile,
         workspace: adminAccess,
       );
-    } catch (_) {
-      // Non-fatal — keep current access level.
+    } catch (e) {
+      // Non-fatal — keep current access level but log for diagnostics.
+      AfriLogger.warn(
+        'AuthNotifier',
+        'Admin access refresh failed (keeping current level): $e',
+      );
     }
   }
 
@@ -288,8 +297,12 @@ class AuthNotifier extends Notifier<AuthState> {
     _intentionalSignOut = true;
     try {
       await _repository.signOut();
-    } catch (_) {
-      // Best-effort sign-out.
+    } catch (signOutError) {
+      // Best-effort sign-out — log but do not propagate.
+      AfriLogger.warn(
+        'AuthNotifier',
+        'Best-effort sign-out failed: $signOutError',
+      );
     }
     FirebaseAnalyticsService.setUserId(null);
     CrashlyticsService.setUserId(null);

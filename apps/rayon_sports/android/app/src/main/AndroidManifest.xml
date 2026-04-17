@@ -2,8 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!-- ── Permissions ── -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- ── F-003 Fix: Explicitly remove permissions widened by transitive dependencies ── -->
@@ -15,18 +13,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove" />
 
     <!-- ── Hardware features (optional — app works without them) ── -->
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false"
-        tools:node="replace" />
-    <uses-feature
-        android:name="android.hardware.camera.any"
-        android:required="false"
-        tools:node="replace" />
-    <uses-feature android:name="android.hardware.nfc" android:required="false" tools:node="replace" />
-    <uses-feature
-        android:name="android.hardware.nfc.hce"
-        android:required="false" tools:node="replace" />
     <uses-feature android:name="android.hardware.telephony" android:required="false" tools:node="replace" />
 
     <application
@@ -81,20 +67,6 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-
-        <!-- BioPay NFC Host Card Emulation Service -->
-        <service
-            android:name=".BioPayNfcHostApduService"
-            android:exported="true"
-            android:permission="android.permission.BIND_NFC_SERVICE">
-            <intent-filter>
-                <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.nfc.cardemulation.host_apdu_service"
-                android:resource="@xml/biopay_apduservice" />
-        </service>
     </application>
 
     <!-- Required to query activities that can process text, see:

@@ -43,10 +43,7 @@ class SettingsScreen extends ConsumerWidget {
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(
-          'Settings',
-          style: TypographyTokens.headlineSmall(),
-        ),
+        title: Text('Settings', style: TypographyTokens.headlineSmall()),
       ),
       body: SafeArea(
         child: ListView(
@@ -68,25 +65,28 @@ class SettingsScreen extends ConsumerWidget {
                         height: 56,
                         decoration: BoxDecoration(
                           color: ColorTokens.surfaceContainerHigh,
-                          borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+                          borderRadius: BorderRadius.circular(
+                            ShapeTokens.radiusMd,
+                          ),
                         ),
                         alignment: Alignment.center,
-                        child: const Icon(AfriIcons.profile, color: Colors.white),
+                        child: const Icon(
+                          AfriIcons.profile,
+                          color: Colors.white,
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              alias, 
-                              style: TypographyTokens.titleLarge(),
-                            ),
+                            Text(alias, style: TypographyTokens.titleLarge()),
                             const SizedBox(height: 4),
                             AfriStatusChip(
-                              label: profile?.isAdmin == true ? 'Admin' : 'Supporter',
+                              label: profile?.isAdmin == true
+                                  ? 'Admin'
+                                  : 'Supporter',
                               tone: AfriStatusTone.live,
-
                             ),
                           ],
                         ),
@@ -109,12 +109,12 @@ class SettingsScreen extends ConsumerWidget {
               AfriListRow(
                 icon: AfriIcons.history,
                 title: 'History & honors',
-                onTap: () => context.push('/history'),
+                onTap: () => context.push('/fanzone/history'),
               ),
               AfriListRow(
                 icon: Icons.auto_awesome_rounded,
                 title: 'Hall of fame',
-                onTap: () {},
+                onTap: () => context.push('/fanzone/leaderboard'),
               ),
             ]),
 
@@ -141,12 +141,13 @@ class SettingsScreen extends ConsumerWidget {
               AfriListRow(
                 icon: AfriIcons.help,
                 title: 'Help & support',
-                onTap: () => _openWhatsApp(context, supportWhatsApp.valueOrNull),
+                onTap: () =>
+                    _openWhatsApp(context, supportWhatsApp.valueOrNull),
               ),
               AfriListRow(
                 icon: AfriIcons.privacy,
                 title: 'Privacy policy',
-                onTap: () {},
+                onTap: () => context.push('/settings/privacy'),
               ),
             ]),
 
@@ -163,7 +164,7 @@ class SettingsScreen extends ConsumerWidget {
                   icon: AfriIcons.admin,
                 ),
               ),
-            
+
             AfriButton(
               label: 'Sign out',
               onTap: () async {
@@ -188,10 +189,10 @@ class SettingsScreen extends ConsumerWidget {
       children: [
         AfriSectionHeader(title: title, padding: EdgeInsets.zero),
         const SizedBox(height: SpacingTokens.spacing3),
-        ...children.map((child) => Padding(
-          padding: const EdgeInsets.only(bottom: 4),
-          child: child,
-        )),
+        ...children.map(
+          (child) =>
+              Padding(padding: const EdgeInsets.only(bottom: 4), child: child),
+        ),
       ],
     );
   }
@@ -218,10 +219,7 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _openAdminWorkspace(
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
+  Future<void> _openAdminWorkspace(BuildContext context, WidgetRef ref) async {
     final session = ref.read(supabaseClientProvider).auth.currentUser;
     if (session == null) {
       if (!context.mounted) return;
@@ -249,13 +247,23 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             const Text(
               'ADMIN ACCESS',
-              style: TextStyle(fontFamily: 'Display', fontSize: 24, fontWeight: FontWeight.w900, fontStyle: FontStyle.italic, color: Colors.white),
+              style: TextStyle(
+                fontFamily: 'Display',
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+                fontStyle: FontStyle.italic,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(height: 12),
             const Text(
               'You are entering the admin workspace with elevated permissions. Actions taken here affect all supporters.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Colors.white60, height: 1.5),
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.white60,
+                height: 1.5,
+              ),
             ),
             const SizedBox(height: 32),
             Row(

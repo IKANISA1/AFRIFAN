@@ -88,7 +88,8 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
         _isLoading = false;
         _isLoadingMore = false;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanRegistryScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted || token != _reloadToken) return;
       setState(() {
         _fans = const [];
@@ -130,7 +131,8 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
         _hasMore = nextPage.length == _pageSize;
         _isLoadingMore = false;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanRegistryScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted || token != _reloadToken) return;
       setState(() {
         _isLoadingMore = false;

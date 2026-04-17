@@ -9,6 +9,7 @@ import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/jackpot_countdown_timer.dart';
 import '../widgets/market_option_pill.dart';
+import 'package:core_utils/core_utils.dart';
 
 class JackpotChallengeScreen extends ConsumerStatefulWidget {
   const JackpotChallengeScreen({super.key});
@@ -61,7 +62,8 @@ class _JackpotChallengeScreenState
             ? 'No active jackpot round is available right now.'
             : null;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('JackpotChallengeScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) {
         return;
       }

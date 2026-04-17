@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// Unit tests for AfriClub domain types, enums, and validation logic.
 ///
 /// Covers: FanTier, TicketStatus, SeatType, OrderStatus, ProductCategory,
-/// FetEventType, ContributionGroupType, GroupPrivacy.
+/// FetEventType, and ContributionGroupType.
 void main() {
   // ═══════════════════════════════════════════════════════════
   // FAN TIER — Gamification Levels
@@ -71,15 +71,17 @@ void main() {
 
   group('TicketStatus', () {
     test('fromValue parses all canonical values', () {
+      expect(TicketStatusX.fromValue('pending'), TicketStatus.pending);
+      expect(TicketStatusX.fromValue('valid'), TicketStatus.active);
       expect(TicketStatusX.fromValue('active'), TicketStatus.active);
       expect(TicketStatusX.fromValue('used'), TicketStatus.used);
       expect(TicketStatusX.fromValue('expired'), TicketStatus.expired);
       expect(TicketStatusX.fromValue('cancelled'), TicketStatus.cancelled);
     });
 
-    test('fromValue defaults to active for unknown', () {
-      expect(TicketStatusX.fromValue('invalid'), TicketStatus.active);
-      expect(TicketStatusX.fromValue(null), TicketStatus.active);
+    test('fromValue defaults to pending for unknown', () {
+      expect(TicketStatusX.fromValue('invalid'), TicketStatus.pending);
+      expect(TicketStatusX.fromValue(null), TicketStatus.pending);
     });
 
     test('value round-trips', () {
@@ -231,14 +233,14 @@ void main() {
   });
 
   // ═══════════════════════════════════════════════════════════
-  // CONTRIBUTION GROUP TYPE & PRIVACY
+  // CONTRIBUTION GROUP TYPE
   // ═══════════════════════════════════════════════════════════
 
   group('ContributionGroupType', () {
     test('fromValue parses all values', () {
       expect(
         ContributionGroupTypeX.fromValue('club'),
-        ContributionGroupType.club,
+        ContributionGroupType.project,
       );
       expect(
         ContributionGroupTypeX.fromValue('community'),
@@ -246,15 +248,15 @@ void main() {
       );
       expect(
         ContributionGroupTypeX.fromValue('savings'),
-        ContributionGroupType.savings,
+        ContributionGroupType.community,
       );
       expect(
         ContributionGroupTypeX.fromValue('fan_Group'),
-        ContributionGroupType.fanGroup,
+        ContributionGroupType.community,
       );
       expect(
         ContributionGroupTypeX.fromValue('fanGroup'),
-        ContributionGroupType.fanGroup,
+        ContributionGroupType.community,
       );
     });
 
@@ -268,25 +270,6 @@ void main() {
     test('value round-trips', () {
       for (final type in ContributionGroupType.values) {
         expect(ContributionGroupTypeX.fromValue(type.value), type);
-      }
-    });
-  });
-
-  group('GroupPrivacy', () {
-    test('fromValue parses all values', () {
-      expect(GroupPrivacyX.fromValue('public'), GroupPrivacy.public);
-      expect(GroupPrivacyX.fromValue('friends'), GroupPrivacy.friends);
-      expect(GroupPrivacyX.fromValue('private'), GroupPrivacy.private_);
-    });
-
-    test('fromValue defaults to public', () {
-      expect(GroupPrivacyX.fromValue('secret'), GroupPrivacy.public);
-      expect(GroupPrivacyX.fromValue(null), GroupPrivacy.public);
-    });
-
-    test('value round-trips', () {
-      for (final privacy in GroupPrivacy.values) {
-        expect(GroupPrivacyX.fromValue(privacy.value), privacy);
       }
     });
   });

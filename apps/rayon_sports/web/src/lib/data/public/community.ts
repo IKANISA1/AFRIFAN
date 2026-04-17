@@ -100,25 +100,19 @@ function mapFanClubRow(row: Record<string, unknown>): FanClubItem {
 function mapContributionGroupRow(
   row: Record<string, unknown>,
 ): ContributionGroup {
+  const normalizedType = safeString(row.group_type).toLowerCase();
   return {
     id: toIdString(row.id, crypto.randomUUID()),
-    name: safeString(row.name, "Support Group"),
+    name: safeString(row.name, "Public initiative"),
     description: safeString(
       row.description,
-      "Supporters pooling funds around club activity.",
+      "Supporters backing a public club initiative.",
     ),
-    privacy: safeString(row.privacy) == "public" ? "public" : "private",
-    groupType:
-      safeString(row.group_type) == "project" ||
-        safeString(row.group_type) == "savings" ||
-        safeString(row.group_type) == "emergency"
-        ? (safeString(row.group_type) as ContributionGroup["groupType"])
-        : "general",
+    groupType: normalizedType === "project" ? "project" : "community",
     targetAmount: safeNumber(row.target_amount, 0),
     currentTotal: safeNumber(row.current_total, 0),
     currency: safeString(row.currency, fallbackClubProfile.currencyCode),
     memberCount: safeNumber(row.member_count, 0),
-    inviteCode: safeString(row.invite_code) || null,
     isActive: row.is_closed !== true && row.is_active !== false,
   };
 }

@@ -3,6 +3,11 @@
 import type { Dispatch, SetStateAction } from "react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { Skeleton } from "@/components/skeleton";
+import {
+  isValidHexColor,
+  normalizeHexColorInput,
+  sanitizeHexColorDraft,
+} from "@/lib/utils";
 import type { SettingsForm } from "./settings-form-state";
 
 interface IdentityFormProps {
@@ -34,12 +39,9 @@ function isValidUrl(value: string) {
   }
 }
 
-function isValidHexColor(value: string) {
-  return /^#(?:[0-9a-fA-F]{3}){1,2}$/.test(value.trim());
-}
-
 function resolveColorValue(value: string) {
-  return isValidHexColor(value) ? value : "#1A7A4E";
+  const normalized = normalizeHexColorInput(value);
+  return /^#[0-9A-F]{6}$/.test(normalized) ? normalized : "#1A7A4E";
 }
 
 export function IdentityForm({
@@ -52,6 +54,17 @@ export function IdentityForm({
 }: IdentityFormProps) {
   function updateField<K extends keyof SettingsForm>(field: K, value: SettingsForm[K]) {
     setForm((current) => (current ? { ...current, [field]: value } : current));
+  }
+
+  function updateColorField(
+    field: "primaryColorHex" | "secondaryColorHex" | "accentColorHex",
+    value: string,
+    finalize = false,
+  ) {
+    const nextValue = finalize
+      ? normalizeHexColorInput(value)
+      : sanitizeHexColorDraft(value);
+    updateField(field, nextValue as SettingsForm[typeof field]);
   }
 
   const supportedLanguages = form ? normalizeLanguageList(form.supportedLanguagesText) : [];
@@ -235,31 +248,80 @@ export function IdentityForm({
               {urlErrors.tiktokUrl ? <span className="text-xs text-rose-300">{urlErrors.tiktokUrl}</span> : null}
             </label>
           </div>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <label className="grid gap-2 text-sm">
-              Primary color
-              <div className="flex items-center gap-3">
-                <input type="color" value={resolveColorValue(form.primaryColorHex)} onChange={(e) => updateField("primaryColorHex", e.target.value)} className="h-12 w-12 rounded-2xl border border-border-soft bg-transparent" />
-                <input value={form.primaryColorHex} onChange={(e) => updateField("primaryColorHex", e.target.value)} className="dashboard-input" />
-              </div>
-              {colorErrors.primaryColorHex ? <span className="text-xs text-rose-300">{colorErrors.primaryColorHex}</span> : null}
-            </label>
-            <label className="grid gap-2 text-sm">
-              Secondary color
-              <div className="flex items-center gap-3">
-                <input type="color" value={resolveColorValue(form.secondaryColorHex)} onChange={(e) => updateField("secondaryColorHex", e.target.value)} className="h-12 w-12 rounded-2xl border border-border-soft bg-transparent" />
-                <input value={form.secondaryColorHex} onChange={(e) => updateField("secondaryColorHex", e.target.value)} className="dashboard-input" />
-              </div>
-              {colorErrors.secondaryColorHex ? <span className="text-xs text-rose-300">{colorErrors.secondaryColorHex}</span> : null}
-            </label>
-            <label className="grid gap-2 text-sm">
-              Accent color
-              <div className="flex items-center gap-3">
-                <input type="color" value={resolveColorValue(form.accentColorHex)} onChange={(e) => updateField("accentColorHex", e.target.value)} className="h-12 w-12 rounded-2xl border border-border-soft bg-transparent" />
-                <input value={form.accentColorHex} onChange={(e) => updateField("accentColorHex", e.target.value)} className="dashboard-input" />
-              </div>
-              {colorErrors.accentColorHex ? <span className="text-xs text-rose-300">{colorErrors.accentColorHex}</span> : null}
-            </label>
+          <div className="rounded-[28px] border border-border-soft bg-white/5 p-5">
+            <div className="flex flex-col gap-1">
+              <p className="font-display text-2xl font-bold uppercase leading-none">
+                Team colors
+              </p>
+              <p className="text-sm text-slate-300">
+                Pick a new color visually or type a HEX value like
+                {" "}
+                <span className="font-mono text-slate-100">#0038A8</span>.
+              </p>
+            </div>
+            <div className="mt-4 grid gap-4 sm:grid-cols-3">
+              {[
+                {
+                  field: "primaryColorHex" as const,
+                  label: "Primary color",
+                  helper: "Main kit and action color.",
+                  placeholder: "#0038A8",
+                },
+                {
+                  field: "secondaryColorHex" as const,
+                  label: "Secondary color",
+                  helper: "Support surface and contrast color.",
+                  placeholder: "#0E2B55",
+                },
+                {
+                  field: "accentColorHex" as const,
+                  label: "Accent color",
+                  helper: "Highlights, badges, and emphasis.",
+                  placeholder: "#F7B500",
+                },
+              ].map((colorField) => (
+                <label
+                  key={colorField.field}
+                  className="grid gap-2 rounded-[22px] border border-border-soft bg-black/10 p-4 text-sm"
+                >
+                  <span className="font-semibold text-slate-100">
+                    {colorField.label}
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    {colorField.helper}
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      aria-label={`${colorField.label} picker`}
+                      value={resolveColorValue(form[colorField.field])}
+                      onChange={(e) =>
+                        updateColorField(colorField.field, e.target.value, true)
+                      }
+                      className="h-12 w-12 rounded-2xl border border-border-soft bg-transparent"
+                    />
+                    <input
+                      value={form[colorField.field]}
+                      onChange={(e) =>
+                        updateColorField(colorField.field, e.target.value)
+                      }
+                      onBlur={(e) =>
+                        updateColorField(colorField.field, e.target.value, true)
+                      }
+                      className="dashboard-input font-mono uppercase"
+                      placeholder={colorField.placeholder}
+                      autoComplete="off"
+                      spellCheck={false}
+                    />
+                  </div>
+                  {colorErrors[colorField.field] ? (
+                    <span className="text-xs text-rose-300">
+                      {colorErrors[colorField.field]}
+                    </span>
+                  ) : null}
+                </label>
+              ))}
+            </div>
           </div>
           {validationErrors.length > 0 ? (
             <div className="rounded-[22px] border border-amber-400/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">

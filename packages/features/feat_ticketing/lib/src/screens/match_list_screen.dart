@@ -17,6 +17,9 @@ class MatchListScreen extends ConsumerStatefulWidget {
 class _MatchListScreenState extends ConsumerState<MatchListScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+  String _sortBy = 'soonest';
+  Set<String> _selectedTypes = const <String>{};
+  DateTimeRange? _dateRange;
 
   CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
         currencyCode: context.afriCurrencyCode,
@@ -52,21 +55,35 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
         actions: [
           IconButton(
             icon: Icon(AfriIcons.filter, color: ColorTokens.onSurface),
-            onPressed: () => showAfriFilterSortSheet(
-              context: context,
-              title: 'Match Filters',
-              sortOptions: const [
-                AfriFilterOption(value: 'soonest', label: 'Soonest'),
-                AfriFilterOption(value: 'latest', label: 'Latest'),
-                AfriFilterOption(value: 'cheapest', label: 'Cheapest'),
-              ],
-              typeOptions: const [
-                AfriFilterOption(value: 'available', label: 'Available'),
-                AfriFilterOption(value: 'sold_out', label: 'Sold Out'),
-                AfriFilterOption(value: 'vip', label: 'VIP Zones'),
-              ],
-              showDateRange: true,
-            ),
+            onPressed: () async {
+              final result = await showAfriFilterSortSheet(
+                context: context,
+                title: 'Match Filters',
+                sortOptions: const [
+                  AfriFilterOption(value: 'soonest', label: 'Soonest'),
+                  AfriFilterOption(value: 'latest', label: 'Latest'),
+                  AfriFilterOption(value: 'cheapest', label: 'Cheapest'),
+                ],
+                typeOptions: const [
+                  AfriFilterOption(value: 'available', label: 'Available'),
+                  AfriFilterOption(value: 'sold_out', label: 'Sold Out'),
+                  AfriFilterOption(value: 'vip', label: 'VIP Zones'),
+                ],
+                initialSortBy: _sortBy,
+                initialSelectedTypes: _selectedTypes,
+                initialDateRange: _dateRange,
+                showDateRange: true,
+              );
+
+              if (result == null || !mounted) {
+                return;
+              }
+              setState(() {
+                _sortBy = result.sortBy;
+                _selectedTypes = result.selectedTypes;
+                _dateRange = result.dateRange;
+              });
+            },
           ),
           IconButton(
             icon: Icon(
@@ -99,16 +116,18 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
         ),
         error: (error, _) => _TicketState(
           title: 'Unable to load fixtures',
-          body: 'Ticket inventory is unavailable right now.',
+          body:
+              'Ticket inventory is unavailable right now. Check your connection and try again.',
           actionLabel: 'Retry',
           onPressed: () => ref.invalidate(ticketMatchesProvider),
         ),
         data: (matches) {
+          final filteredMatches = _applyFilters(matches);
           final now = DateTime.now();
-          final upcoming = matches
+          final upcoming = filteredMatches
               .where((match) => !match.matchDate.isBefore(now))
               .toList(growable: false);
-          final past = matches
+          final past = filteredMatches
               .where((match) => match.matchDate.isBefore(now))
               .toList(growable: false);
 
@@ -132,6 +151,57 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
         },
       ),
     );
+  }
+
+  List<ClubMatch> _applyFilters(List<ClubMatch> matches) {
+    final filtered = matches.where((match) {
+      if (_selectedTypes.contains('available') &&
+          (!match.isOnSale || match.isSoldOut)) {
+        return false;
+      }
+      if (_selectedTypes.contains('sold_out') && !match.isSoldOut) {
+        return false;
+      }
+      if (_selectedTypes.contains('vip') && match.ticketVipPrice <= 0) {
+        return false;
+      }
+      if (_dateRange != null) {
+        final start = DateTime(
+          _dateRange!.start.year,
+          _dateRange!.start.month,
+          _dateRange!.start.day,
+        );
+        final end = DateTime(
+          _dateRange!.end.year,
+          _dateRange!.end.month,
+          _dateRange!.end.day,
+          23,
+          59,
+          59,
+        );
+        if (match.matchDate.isBefore(start) || match.matchDate.isAfter(end)) {
+          return false;
+        }
+      }
+      return true;
+    }).toList(growable: false);
+
+    final sorted = List<ClubMatch>.from(filtered);
+    switch (_sortBy) {
+      case 'latest':
+        sorted.sort((a, b) => b.matchDate.compareTo(a.matchDate));
+        break;
+      case 'cheapest':
+        sorted.sort(
+          (a, b) => a.ticketGeneralPrice.compareTo(b.ticketGeneralPrice),
+        );
+        break;
+      case 'soonest':
+      default:
+        sorted.sort((a, b) => a.matchDate.compareTo(b.matchDate));
+        break;
+    }
+    return sorted;
   }
 
   Widget _buildMatchList(
@@ -271,8 +341,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                   final actionButton = AfriButton(
                     label: 'Buy ticket',
                     fullWidth: false,
-                    onTap: () =>
-                        context.push('/tickets/detail/${match.id}'),
+                    onTap: () => context.push('/tickets/detail/${match.id}'),
                   );
                   final isCompactActionRow =
                       onSale && constraints.maxWidth < 360;

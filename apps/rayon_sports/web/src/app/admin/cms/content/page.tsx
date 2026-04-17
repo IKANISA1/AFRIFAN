@@ -13,6 +13,8 @@ import {
   deleteAdminContentBlock,
 } from "@/lib/data/admin/cms-content";
 import type { CmsContent } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { useHydrated } from "@/lib/use-hydrated";
 
 const CONTENT_TYPES = [
   "club_history",
@@ -20,7 +22,6 @@ const CONTENT_TYPES = [
   "terms",
   "contact_support",
   "section_heading",
-  "BioPay_info",
   "portal_hero",
   "general",
 ] as const;
@@ -42,11 +43,13 @@ const emptyForm = {
 
 export default function AdminContentBlocksPage() {
   const { access, client } = useAdminPortal();
+  const hydrated = useHydrated();
   const [blocks, setBlocks] = useState<CmsContent[]>([]);
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState("");
   const [loadError, setLoadError] = useState<string | null>(null);
+  const formDisabled = !hydrated || client == null;
 
   const load = useCallback(async () => {
     if (!client) return;
@@ -70,20 +73,25 @@ export default function AdminContentBlocksPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!client) return;
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
     try {
       await saveAdminContentBlock(client, access, {
         id: form.id || null,
-        contentType: form.contentType,
-        title: form.title,
-        subtitle: form.subtitle,
-        body: form.body,
-        rationale: form.rationale,
-        iconEmoji: form.iconEmoji,
-        ctaAction: form.ctaAction,
-        ctaLabel: form.ctaLabel,
-        sortOrder: form.sortOrder,
-        isActive: form.isActive,
-        distribution: form.distribution,
+        contentType: String(formData.get("contentType") ?? form.contentType),
+        title: String(formData.get("title") ?? form.title),
+        subtitle: String(formData.get("subtitle") ?? form.subtitle),
+        body: String(formData.get("body") ?? form.body),
+        rationale: String(formData.get("rationale") ?? form.rationale),
+        iconEmoji: String(formData.get("iconEmoji") ?? form.iconEmoji),
+        ctaAction: String(formData.get("ctaAction") ?? form.ctaAction),
+        ctaLabel: String(formData.get("ctaLabel") ?? form.ctaLabel),
+        sortOrder: Number(formData.get("sortOrder") ?? form.sortOrder),
+        isActive: formData.get("isActive") === "on",
+        distribution:
+          (String(formData.get("distribution") ?? form.distribution) as
+            | "web"
+            | "app"
+            | "both"),
       });
       setForm(emptyForm);
       await load();
@@ -124,17 +132,17 @@ export default function AdminContentBlocksPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Content type</span>
-            <select value={form.contentType} onChange={(e) => setForm({ ...form, contentType: e.target.value })} className="admin-input">
+            <select name="contentType" value={form.contentType} onChange={(e) => setForm({ ...form, contentType: e.target.value })} className="admin-input">
               {CONTENT_TYPES.map((t) => <option key={t} value={t}>{t.replace(/_/g, " ")}</option>)}
             </select>
           </label>
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Title</span>
-            <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required className="admin-input" />
+            <input name="title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required className="admin-input" />
           </label>
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Distribution</span>
-            <select value={form.distribution} onChange={(e) => setForm({ ...form, distribution: e.target.value as any })} className="admin-input">
+            <select name="distribution" value={form.distribution} onChange={(e) => setForm({ ...form, distribution: e.target.value as any })} className="admin-input">
               <option value="both">Both (Web & App)</option>
               <option value="web">Website only</option>
               <option value="app">Mobile App only</option>
@@ -142,35 +150,39 @@ export default function AdminContentBlocksPage() {
           </label>
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Icon emoji</span>
-            <input value={form.iconEmoji} onChange={(e) => setForm({ ...form, iconEmoji: e.target.value })} className="admin-input" placeholder="📰" />
+            <input name="iconEmoji" value={form.iconEmoji} onChange={(e) => setForm({ ...form, iconEmoji: e.target.value })} className="admin-input" placeholder="📰" />
           </label>
           <label className="grid gap-1 sm:col-span-2">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Subtitle</span>
-            <input value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} className="admin-input" />
+            <input name="subtitle" value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} className="admin-input" />
           </label>
           <label className="grid gap-1 sm:col-span-2">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Body</span>
-            <textarea value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} rows={4} className="admin-input min-h-[100px]" />
+            <textarea name="body" value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} rows={4} className="admin-input min-h-[100px]" />
           </label>
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">CTA label</span>
-            <input value={form.ctaLabel} onChange={(e) => setForm({ ...form, ctaLabel: e.target.value })} className="admin-input" />
+            <input name="ctaLabel" value={form.ctaLabel} onChange={(e) => setForm({ ...form, ctaLabel: e.target.value })} className="admin-input" />
           </label>
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">CTA action/route</span>
-            <input value={form.ctaAction} onChange={(e) => setForm({ ...form, ctaAction: e.target.value })} className="admin-input" />
+            <input name="ctaAction" value={form.ctaAction} onChange={(e) => setForm({ ...form, ctaAction: e.target.value })} className="admin-input" />
           </label>
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Sort order</span>
-            <input type="number" value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: Number(e.target.value) })} className="admin-input" />
+            <input name="sortOrder" type="number" value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: Number(e.target.value) })} className="admin-input" />
           </label>
           <label className="flex items-center gap-3 self-end pb-2">
-            <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="h-4 w-4 rounded accent-club-accent" />
+            <input name="isActive" type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="h-4 w-4 rounded accent-club-accent" />
             <span className="text-sm text-slate-200">Active</span>
           </label>
         </div>
         <div className="flex gap-3">
-          <button type="submit" className="rounded-full bg-club-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-club-primary-light">
+          <button
+            type="submit"
+            disabled={formDisabled}
+            className="rounded-full bg-club-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-club-primary-light disabled:opacity-60"
+          >
             <Plus size={16} className="inline mr-1" />{form.id ? "Update" : "Add"} block
           </button>
           {form.id ? (
@@ -221,10 +233,33 @@ export default function AdminContentBlocksPage() {
                     <p className="mt-1 text-xs text-slate-400 line-clamp-2">{b.body || "—"}</p>
                   </div>
                   <div className="flex shrink-0 gap-2">
-                    <button onClick={() => setForm({ id: b.id, contentType: b.contentType, title: b.title, subtitle: b.subtitle, body: b.body, rationale: b.rationale, iconEmoji: b.iconEmoji, ctaAction: b.ctaAction, ctaLabel: b.ctaLabel, sortOrder: b.sortOrder, isActive: b.isActive, distribution: b.distribution })} className="rounded-full border border-border-soft p-2 text-slate-300 hover:bg-white/10">
+                    <button
+                      onClick={() =>
+                        setForm({
+                          id: b.id,
+                          contentType: b.contentType,
+                          title: b.title,
+                          subtitle: b.subtitle,
+                          body: b.body,
+                          rationale: b.rationale,
+                          iconEmoji: b.iconEmoji,
+                          ctaAction: b.ctaAction,
+                          ctaLabel: b.ctaLabel,
+                          sortOrder: b.sortOrder,
+                          isActive: b.isActive,
+                          distribution: b.distribution,
+                        })
+                      }
+                      aria-label={`Edit content block ${b.title || b.contentType}`}
+                      className="rounded-full border border-border-soft p-2 text-slate-300 hover:bg-white/10"
+                    >
                       <Edit3 size={14} />
                     </button>
-                    <button onClick={() => remove(b.id)} className="rounded-full border border-red-500/30 p-2 text-red-400 hover:bg-red-500/10">
+                    <button
+                      onClick={() => remove(b.id)}
+                      aria-label={`Delete content block ${b.title || b.contentType}`}
+                      className="rounded-full border border-red-500/30 p-2 text-red-400 hover:bg-red-500/10"
+                    >
                       <Trash2 size={14} />
                     </button>
                   </div>

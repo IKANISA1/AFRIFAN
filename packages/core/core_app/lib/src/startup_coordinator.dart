@@ -43,7 +43,7 @@ class AppStartupOptions {
   final Future<void> Function(ClubConfig config)? deferredBackendOverride;
 
   /// Feature-specific initialization callbacks injected by the app entry point.
-  /// This decouples core_app from feature packages (BioPay, sms_ledger, etc.).
+  /// This decouples core_app from feature packages.
   final DeferredFeatureInitializer featureInitializer;
 }
 
@@ -134,17 +134,11 @@ class AppStartupCoordinator {
     await CrashlyticsService.initialize();
     await ConnectivityService.initialize();
 
-    if (kReleaseMode && config.hasBioPay) {
-      if (!firebaseReady) {
-        throw StateError(
-          'BioPay-enabled release builds require Firebase initialization.',
-        );
-      }
-      if (!appCheckReady) {
-        throw StateError(
-          'BioPay-enabled release builds require Firebase App Check.',
-        );
-      }
+    if (kReleaseMode && !firebaseReady && !appCheckReady) {
+      AfriLogger.warn(
+        'Bootstrap',
+        'Firebase and App Check are unavailable for this release build.',
+      );
     }
 
     await SupabaseClientFactory.initialize(

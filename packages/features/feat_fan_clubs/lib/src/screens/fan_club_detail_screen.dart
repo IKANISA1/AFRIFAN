@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:core_utils/core_utils.dart';
 
 class FanClubDetailScreen extends ConsumerStatefulWidget {
   const FanClubDetailScreen({required this.clubId, super.key});
@@ -68,7 +69,8 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
             .order('match_date', ascending: true)
             .limit(1)
             .maybeSingle();
-      } catch (_) {
+      } catch (error, stackTrace) {
+      AfriLogger.warn('FanClubDetailScreen', 'Operation failed (non-critical).', error, stackTrace);
         matchRow = null;
       }
 
@@ -83,7 +85,8 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
               .eq('user_id', userId)
               .maybeSingle();
           joined = membership != null;
-        } catch (_) {
+        } catch (error, stackTrace) {
+      AfriLogger.warn('FanClubDetailScreen', 'Operation failed (non-critical).', error, stackTrace);
           joined = false;
         }
       }
@@ -97,7 +100,8 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
         _joined = joined;
         _isLoading = false;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanClubDetailScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) return;
       setState(() {
         _isLoading = false;
@@ -152,7 +156,8 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
               : (currentMembers - 1).clamp(0, currentMembers),
         };
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanClubDetailScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

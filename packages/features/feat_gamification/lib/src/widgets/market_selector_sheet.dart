@@ -454,8 +454,11 @@ class _SheetMarketCard extends ConsumerWidget {
               children: market.outcomes
                   .map((outcome) {
                     final isSelected = selected?.outcomeKey == outcome.key;
+                    // Show odds only if meaningful (> 1.0 means multiplier is set)
+                    final showOdds = outcome.odds > 1.0;
                     return MarketOptionPill(
                       label: outcome.label,
+                      odds: showOdds ? outcome.odds : null,
                       isSelected: isSelected,
                       trailing: isSelected
                           ? Icon(

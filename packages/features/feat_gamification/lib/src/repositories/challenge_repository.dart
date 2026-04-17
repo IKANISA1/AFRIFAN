@@ -7,175 +7,173 @@ class ChallengeRepository {
   ChallengeRepository({required SupabaseClient client}) : _client = client;
 
   final SupabaseClient _client;
+  late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
+    client: _client,
+  );
+
   static const _tag = 'ChallengeRepo';
 
   Future<List<Challenge>> loadChallenges({
-    String? status,
+    List<String>? statuses,
+    String sort = 'ending_soon',
+    int limit = 20,
+    int offset = 0,
+    bool onlyJoined = false,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const <Challenge>[];
+    }
+
+    final result = await SafeRpc.call(
+      'prediction_get_challenge_feed',
+      params: <String, dynamic>{
+        'p_club_id': scope.clubId,
+        'p_statuses': statuses,
+        'p_sort': sort,
+        'p_limit': limit,
+        'p_offset': offset,
+        'p_only_joined': onlyJoined,
+      },
+      tag: _tag,
+    );
+
+    if (!result.isSuccess || result.data is! List) {
+      return const <Challenge>[];
+    }
+
+    return (result.data as List)
+        .whereType<Map>()
+        .map((row) => Challenge.fromJson(Map<String, dynamic>.from(row)))
+        .toList(growable: false);
+  }
+
+  Future<List<Challenge>> loadMyChallenges({
+    List<String>? statuses,
+    String sort = 'ending_soon',
     int limit = 20,
     int offset = 0,
   }) async {
-    final result = await SafeRpc.query<List<Challenge>>(
-      () async {
-        var query = _client.from('prediction_challenges').select('''
-              *,
-              fixture:match_id (
-                id,
-                home_team_name,
-                home_team_short_name,
-                away_team_name,
-                away_team_short_name,
-                kickoff_at,
-                venue_name,
-                status,
-                home_score,
-                away_score,
-                competition_name
-              ),
-              creator:creator_user_id (
-                display_name,
-                full_name,
-                avatar_url
-              )
-            ''');
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const <Challenge>[];
+    }
 
-        if (status != null) {
-          query = query.eq('status', status);
-        }
-
-        final rows = await query
-            .order('created_at', ascending: false)
-            .range(offset, offset + limit - 1);
-
-        return rows.map((row) {
-          final creator = row['creator'] as Map<String, dynamic>?;
-          return Challenge.fromJson({
-            ...row,
-            'creator_name': creator?['display_name'] ?? creator?['full_name'],
-            'creator_avatar': creator?['avatar_url'],
-          });
-        }).toList();
+    final result = await SafeRpc.call(
+      'prediction_get_my_challenges',
+      params: <String, dynamic>{
+        'p_club_id': scope.clubId,
+        'p_statuses': statuses,
+        'p_sort': sort,
+        'p_limit': limit,
+        'p_offset': offset,
       },
       tag: _tag,
-      description: 'Load challenges',
     );
-    return result.requireData;
+
+    if (!result.isSuccess || result.data is! List) {
+      return const <Challenge>[];
+    }
+
+    return (result.data as List)
+        .whereType<Map>()
+        .map((row) => Challenge.fromJson(Map<String, dynamic>.from(row)))
+        .toList(growable: false);
   }
 
-  Future<Challenge?> loadChallengeDetail(String challengeId) async {
-    final result = await SafeRpc.query<Challenge?>(
-      () async {
-        final row = await _client
-            .from('prediction_challenges')
-            .select('''
-              *,
-              fixture:match_id (*),
-              creator:creator_user_id (display_name, full_name, avatar_url)
-            ''')
-            .eq('id', challengeId)
-            .maybeSingle();
+  Future<ChallengeDetailPayload?> loadChallengeDetail(String challengeId) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return null;
+    }
 
-        if (row == null) return null;
-
-        final creator = row['creator'] as Map<String, dynamic>?;
-        return Challenge.fromJson({
-          ...row,
-          'creator_name': creator?['display_name'] ?? creator?['full_name'],
-          'creator_avatar': creator?['avatar_url'],
-        });
+    final result = await SafeRpc.call(
+      'prediction_get_challenge_detail',
+      params: <String, dynamic>{
+        'p_challenge_id': challengeId,
+        'p_club_id': scope.clubId,
       },
       tag: _tag,
-      description: 'Load challenge detail',
     );
-    return result.requireData;
+
+    if (!result.isSuccess || result.data is! Map) {
+      return null;
+    }
+
+    return ChallengeDetailPayload.fromJson(
+      Map<String, dynamic>.from(result.data as Map),
+    );
   }
 
-  Future<List<ChallengeEntry>> loadChallengeEntries(String challengeId) async {
-    final result = await SafeRpc.query<List<ChallengeEntry>>(
-      () async {
-        final rows = await _client
-            .from('prediction_challenge_entries')
-            .select('*, user:user_id(display_name, full_name, avatar_url)')
-            .eq('challenge_id', challengeId)
-            .order('joined_at', ascending: true);
-
-        return rows.map((row) {
-          final user = row['user'] as Map<String, dynamic>?;
-          return ChallengeEntry.fromJson({
-            ...row,
-            'user_name': user?['display_name'] ?? user?['full_name'],
-            'user_avatar': user?['avatar_url'],
-          });
-        }).toList();
-      },
-      tag: _tag,
-      description: 'Load challenge entries',
-    );
-    return result.requireData;
-  }
-
-  Future<ChallengeEntry?> loadUserEntry(String challengeId) async {
-    final userId = _client.auth.currentUser?.id;
-    if (userId == null) return null;
-
-    final result = await SafeRpc.query<ChallengeEntry?>(
-      () async {
-        final row = await _client
-            .from('prediction_challenge_entries')
-            .select()
-            .eq('challenge_id', challengeId)
-            .eq('user_id', userId)
-            .maybeSingle();
-
-        return row != null ? ChallengeEntry.fromJson(row) : null;
-      },
-      tag: _tag,
-      description: 'Load user entry',
-    );
-    return result.requireData;
-  }
-
-  Future<bool> createChallenge({
+  Future<ChallengeMutationResult> createChallenge({
     required String matchId,
     required int homeScore,
     required int awayScore,
     required int stakeFet,
   }) async {
+    final scope = await _scopeResolver.requireResolved();
+
     final result = await SafeRpc.call(
       'prediction_challenge_create',
-      params: {
+      params: <String, dynamic>{
         'p_match_id': matchId,
         'p_home_score': homeScore,
         'p_away_score': awayScore,
         'p_stake_fet': stakeFet,
+        'p_club_id': scope.clubId,
       },
       tag: _tag,
+      maxAttempts: 1,
     );
-    return result.isSuccess;
+
+    if (!result.isSuccess || result.data is! Map) {
+      return const ChallengeMutationResult(status: 'error');
+    }
+
+    return ChallengeMutationResult.fromJson(
+      Map<String, dynamic>.from(result.data as Map),
+    );
   }
 
-  Future<bool> joinChallenge({
+  Future<ChallengeMutationResult> joinChallenge({
     required String challengeId,
     required int homeScore,
     required int awayScore,
   }) async {
     final result = await SafeRpc.call(
       'prediction_challenge_join',
-      params: {
+      params: <String, dynamic>{
         'p_challenge_id': challengeId,
         'p_home_score': homeScore,
         'p_away_score': awayScore,
       },
       tag: _tag,
+      maxAttempts: 1,
     );
-    return result.isSuccess;
+
+    if (!result.isSuccess || result.data is! Map) {
+      return const ChallengeMutationResult(status: 'error');
+    }
+
+    return ChallengeMutationResult.fromJson(
+      Map<String, dynamic>.from(result.data as Map),
+    );
   }
 
-  Future<bool> cancelChallenge(String challengeId) async {
+  Future<ChallengeMutationResult> cancelChallenge(String challengeId) async {
     final result = await SafeRpc.call(
       'prediction_challenge_cancel',
-      params: {'p_challenge_id': challengeId},
+      params: <String, dynamic>{'p_challenge_id': challengeId},
       tag: _tag,
+      maxAttempts: 1,
     );
-    return result.isSuccess;
+
+    if (!result.isSuccess || result.data is! Map) {
+      return const ChallengeMutationResult(status: 'error');
+    }
+
+    return ChallengeMutationResult.fromJson(
+      Map<String, dynamic>.from(result.data as Map),
+    );
   }
 }

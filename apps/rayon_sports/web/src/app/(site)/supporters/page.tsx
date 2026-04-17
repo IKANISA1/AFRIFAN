@@ -4,6 +4,7 @@ import { FatLeaderboard } from "@/components/engagement/fat-leaderboard";
 import { PageHero } from "@/components/page-hero";
 import { resolveFanAppHref, siteConfig } from "@/lib/config";
 import { getClubProfile } from "@/lib/data/public";
+import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import {
   getFanEngagementLeaderboard,
   getFanEngagementTokens,
@@ -22,6 +23,11 @@ export async function generateMetadata() {
 }
 
 export default async function SupportersPage() {
+  const featureGate = await getFeaturePageGuard("gamification");
+  if (featureGate) {
+    return featureGate;
+  }
+
   const fanAppHref = resolveFanAppHref();
   const hasExternalAppUrl = siteConfig.fanAppUrl.length > 0;
   const [club, catalog, leaderboard] = await Promise.all([
@@ -61,7 +67,7 @@ export default async function SupportersPage() {
         stats={[
           { label: copy.tickets, value: copy.common.mobile },
           { label: copy.membership, value: copy.common.mobile },
-          { label: copy.common.BioPay, value: copy.common.mobile },
+          { label: "Contributions", value: copy.common.mobile },
         ]}
       />
 

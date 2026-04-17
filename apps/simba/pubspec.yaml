@@ -42,8 +42,6 @@ dependencies:
     path: ../../packages/features/feat_contributions
   feat_shop:
     path: ../../packages/features/feat_shop
-  feat_biopay:
-    path: ../../packages/features/feat_biopay
   feat_sms_ledger:
     path: ../../packages/features/feat_sms_ledger
   feat_settings:
@@ -85,6 +83,5 @@ flutter:
     - assets/crest/
     - assets/flavors/
     - assets/images/
-    - assets/models/BioPay/
 
 resolution: workspace

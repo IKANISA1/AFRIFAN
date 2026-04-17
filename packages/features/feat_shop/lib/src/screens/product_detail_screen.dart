@@ -126,7 +126,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         _isLoading = false;
         _error = null;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('ProductDetailScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (mounted) {
         setState(() {
           _error = 'Failed to load product';

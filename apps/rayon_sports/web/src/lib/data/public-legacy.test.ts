@@ -44,7 +44,7 @@ describe("public data", () => {
     const product = await getProductById("replica-home-26");
 
     expect(match?.homeTeam).toBe(fallbackClubProfile.shortName);
-    expect(article?.title).toContain("digital-first");
+    expect(article?.content).toContain("digital-first");
     expect(product?.name).toContain("Replica Jersey");
   });
 });

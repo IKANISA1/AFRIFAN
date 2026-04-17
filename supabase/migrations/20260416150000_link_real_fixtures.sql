@@ -8,6 +8,20 @@
 ALTER TABLE public.matches ADD COLUMN IF NOT EXISTS fixture_id uuid REFERENCES football.fixtures(id) ON DELETE SET NULL;
 COMMENT ON COLUMN public.matches.fixture_id IS 'Link to the structured fixture in football schema.';
 
+-- Backfill links for legacy matches using the stable fields shared by both
+-- schemas. The legacy table does not carry external fixture identifiers.
+UPDATE public.matches m
+SET fixture_id = f.id
+FROM public.football_fixtures_catalog f
+WHERE m.fixture_id IS NULL
+  AND m.match_date = f.kickoff_at::date
+  AND lower(trim(coalesce(m.home_team, ''))) = lower(trim(coalesce(f.home_team_name, '')))
+  AND lower(trim(coalesce(m.away_team, ''))) = lower(trim(coalesce(f.away_team_name, '')))
+  AND (
+    nullif(trim(coalesce(m.competition, '')), '') IS NULL
+    OR lower(trim(m.competition)) = lower(trim(coalesce(f.competition_name, '')))
+  );
+
 -- 2. Create a unified view for matches
 -- This view prefers data from football.fixtures but includes ticketing from public.matches
 CREATE OR REPLACE VIEW public.unified_matches AS
@@ -39,7 +53,18 @@ SELECT
   f.competition_slug,
   f.season_slug
 FROM public.football_fixtures_catalog f
-LEFT JOIN public.matches m ON m.fixture_id = f.id OR m.external_fixture_id = f.external_fixture_id;
+LEFT JOIN public.matches m
+  ON m.fixture_id = f.id
+  OR (
+    m.fixture_id IS NULL
+    AND m.match_date = f.kickoff_at::date
+    AND lower(trim(coalesce(m.home_team, ''))) = lower(trim(coalesce(f.home_team_name, '')))
+    AND lower(trim(coalesce(m.away_team, ''))) = lower(trim(coalesce(f.away_team_name, '')))
+    AND (
+      nullif(trim(coalesce(m.competition, '')), '') IS NULL
+      OR lower(trim(m.competition)) = lower(trim(coalesce(f.competition_name, '')))
+    )
+  );
 
 -- 3. Create a unified view for standings
 CREATE OR REPLACE VIEW public.unified_standings AS

@@ -75,6 +75,60 @@ void main() {
         expect(find.byType(_FakeOnboardingScreen), findsNothing);
       },
     );
+
+    testWidgets(
+      'redirects disabled deep links to the unavailable screen',
+      (tester) async {
+        await tester.pumpWidget(
+          AfriClubApp(
+            config: config,
+            modules: <FeatureModule>[
+              _HomeModule(),
+              _OnboardingModule(),
+              _SettingsModule(),
+              _AdminModule(),
+              _TicketsModule(),
+            ],
+            authRepository: FakeAuthRepository(
+              restoreResult: const UserProfile(
+                id: 'user-1',
+                clubId: '1',
+                publicUserId: '483912',
+              ),
+            ),
+            platformConfigSnapshot: <String, dynamic>{
+              'channel': 'mobile',
+              'features': <Map<String, dynamic>>[
+                <String, dynamic>{
+                  'feature_key': 'ticketing',
+                  'display_name': 'Ticketing',
+                  'is_enabled': true,
+                  'visibility_state': 'hidden',
+                  'channel': <String, dynamic>{
+                    'is_enabled': true,
+                    'is_visible': false,
+                    'show_in_navigation': false,
+                    'show_on_home': false,
+                    'route_key': '/tickets',
+                  },
+                },
+              ],
+              'content_blocks': const <Map<String, dynamic>>[],
+            },
+            initialLocation: '/tickets',
+          ),
+        );
+
+        await tester.pump();
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text('This feature is currently unavailable.'),
+          findsOneWidget,
+        );
+        expect(find.text('Tickets'), findsNothing);
+      },
+    );
   });
 }
 
@@ -239,9 +293,6 @@ class _FakeClubConfig implements ClubConfig {
   String get currencySymbol => 'RWF';
 
   @override
-  bool get hasBioPay => false;
-
-  @override
   bool get hasChat => false;
 
   @override
@@ -255,16 +306,6 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   bool get hasTicketing => false;
-
-  @override
-  Map<String, bool> get features => <String, bool>{
-    'BioPay': hasBioPay,
-    'fan_clubs': hasFanClubs,
-    'shop': hasShop,
-    'ticketing': hasTicketing,
-    'chat': hasChat,
-    'sms_ledger': hasSmsLedger,
-  };
 
   @override
   String get language => 'en';
@@ -348,6 +389,19 @@ class _AdminModule extends FeatureModule {
     GoRoute(
       path: '/admin',
       builder: (context, state) => const Scaffold(body: Text('Admin')),
+    ),
+  ];
+}
+
+class _TicketsModule extends FeatureModule {
+  @override
+  String get featureKey => 'ticketing';
+
+  @override
+  List<RouteBase> get routes => <RouteBase>[
+    GoRoute(
+      path: '/tickets',
+      builder: (context, state) => const Scaffold(body: Text('Tickets')),
     ),
   ];
 }

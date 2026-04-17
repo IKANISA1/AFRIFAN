@@ -75,16 +75,20 @@ export function AppBottomNav({
   const pathname = usePathname();
   const activeTab = resolveActiveTab(pathname);
   
-  const tabs = BASE_TABS.filter(tab => {
-    // Keep home always
-    if (tab.id === 'home') return true;
-    const f = features.find(f => f.feature_key === tab.featureKey);
-    return f ? f.is_enabled && f.visibility_state === 'visible' : true; // Fallback to visible if not found
-  }).map(tab => {
+  const tabs = BASE_TABS.filter((tab) => {
+    if (tab.id === "home") return true;
+    const feature = features.find((entry) => entry.feature_key === tab.featureKey);
+    return feature != null;
+  }).map((tab) => {
     // Map label from copy
-    const label = tab.id === 'home' ? copy.home : 
-                  tab.id === 'tickets' ? copy.tickets : copy.membership;
-    return { ...tab, label };
+    const label = tab.id === 'home' ? copy.home :
+      tab.id === 'tickets' ? copy.tickets : copy.membership;
+    const feature = features.find((entry) => entry.feature_key === tab.featureKey);
+    return {
+      ...tab,
+      href: feature?.channel?.route_key || tab.href,
+      label,
+    };
   });
 
   return (

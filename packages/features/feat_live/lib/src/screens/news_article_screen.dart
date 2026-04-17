@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:core_utils/core_utils.dart';
 
 class NewsArticleScreen extends ConsumerStatefulWidget {
   const NewsArticleScreen({required this.articleId, super.key});
@@ -66,7 +67,8 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
         _related = List<Map<String, dynamic>>.from(related);
         _loading = false;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('NewsArticleScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (mounted) {
         setState(() {
           _loading = false;

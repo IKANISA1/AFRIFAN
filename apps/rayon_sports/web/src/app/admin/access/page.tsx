@@ -11,6 +11,7 @@ import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { KPISummaryRibbon, KPITile } from "@/components/admin/kpi-summary-ribbon";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
+import { Skeleton } from "@/components/skeleton";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   assignAdminRole,

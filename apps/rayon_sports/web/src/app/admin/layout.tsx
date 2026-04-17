@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { AdminClientLoader } from "./admin-client-loader";
+import { AdminClientFrame } from "./admin-client-frame";
 import { siteConfig } from "@/lib/config";
+import { getAdminPortalInitialState } from "@/lib/data/admin/bootstrap";
 
 export const metadata: Metadata = {
   title: "Admin workspace",
@@ -47,6 +48,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
-  return <AdminClientLoader>{children}</AdminClientLoader>;
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  const initialState = await getAdminPortalInitialState();
+  return <AdminClientFrame initialState={initialState}>{children}</AdminClientFrame>;
 }

@@ -7,4 +7,5 @@ export 'src/auth_repository.dart';
 export 'src/auth_state.dart';
 export 'src/models/admin_workspace_access.dart';
 export 'src/models/user_profile.dart';
+export 'src/rbac_resolver.dart';
 export 'src/user_session.dart';

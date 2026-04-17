@@ -23,12 +23,6 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
   String? _draftUserId;
   bool _isSaving = false;
 
-  static const Map<String, String> _visibilityOptions = <String, String>{
-    'PUBLIC': 'public',
-    'MEMBERS ONLY': 'members',
-    'PRIVATE': 'private',
-  };
-
   void _syncDraft(UserPrivacySettings settings) {
     if (_draftUserId == settings.userId) return;
 
@@ -85,11 +79,6 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
   Future<void> _synchronizeSmsAutoreadConsent(
     UserPrivacySettings settings,
   ) async {
-    final config = ClubConfigScope.maybeOf(context);
-    if (config?.hasBioPay != true) {
-      return;
-    }
-
     final appAccessService = AppAccessService(openBox: openHiveBox<bool>);
     await appAccessService.setEnabled(
       AppAccessPermission.sms,
@@ -112,7 +101,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     }
 
     _showMessage(
-      'SMS sync stays off until you grant Android SMS access for BioPay verification.',
+      'SMS sync stays off until you grant Android SMS access for MoMo verification.',
     );
   }
 
@@ -121,9 +110,9 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Enable SMS verification'),
+          title: const Text('Enable MoMo SMS sync'),
           content: const Text(
-            'BioPay can read only approved Mobile Money verification SMS on this device to match your payments automatically. This does not enable general message access in the app UI.',
+            'The app can read only approved Mobile Money verification SMS on this device to match your contribution payments automatically. This does not enable general message access in the app UI.',
           ),
           actions: [
             TextButton(
@@ -147,7 +136,6 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     final appName =
         ClubConfigScope.maybeOf(context)?.appName ??
         RuntimeBranding.displayAppName;
-    final hasBioPay = ClubConfigScope.maybeOf(context)?.hasBioPay ?? false;
     final asyncSettings = ref.watch(privacySettingsProvider);
     final loadedSettings = asyncSettings.valueOrNull;
     if (loadedSettings != null) {
@@ -209,26 +197,18 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'GROUP VISIBILITY',
+                          'CONTRIBUTION PRIVACY',
                           style: TypographyTokens.labelSmall(),
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
-                        Wrap(
-                          spacing: SpacingTokens.spacing2,
-                          children: _visibilityOptions.entries.map((entry) {
-                            return ChoiceChip(
-                              selected: settings.groupVisibility == entry.value,
-                              label: Text(entry.key),
-                              onSelected: (_) => setState(
-                                () => _draft = settings.copyWith(
-                                  groupVisibility: entry.value,
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                        Text(
+                          'Fan clubs, team projects, and communities are public and admin-managed in this release. You can join and contribute, but you cannot create or hide groups.',
+                          style: TypographyTokens.bodyMedium(
+                            ColorTokens.onSurfaceVariant,
+                          ),
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
-                        if (hasBioPay)
+                        if (EnvConfig.enableAndroidMomoSmsAutoread)
                           SwitchListTile(
                             value: settings.momoSmsAutoreadEnabled,
                             onChanged: (value) => setState(
@@ -236,9 +216,9 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                                 momoSmsAutoreadEnabled: value,
                               ),
                             ),
-                            title: const Text('BioPay SMS verification'),
+                            title: const Text('MoMo SMS sync'),
                             subtitle: const Text(
-                              'Allow approved Mobile Money SMS to be matched automatically for faster BioPay payment verification.',
+                              'Allow approved Mobile Money SMS to be matched automatically for faster contribution verification.',
                             ),
                           ),
                         const SizedBox(height: SpacingTokens.spacing2),

@@ -22,7 +22,6 @@ class ClubRepository {
   static const Map<FetEventType, String> _fetCodeByEventType =
       <FetEventType, String>{
     FetEventType.matchAttendance: 'G006',
-    FetEventType.createGroup: 'G022',
     FetEventType.inviteFriends: 'G021',
     FetEventType.shopPurchase: 'G058',
     FetEventType.completeProfile: 'G001',
@@ -287,21 +286,18 @@ class ClubRepository {
       if (ticketIds.isNotEmpty) {
         return _fetchTicketsByIds(ticketIds);
       }
-      throw StateError('Ticket purchase returned no issued tickets.');
+      throw StateError(
+          'Ticket purchase request was not accepted by the backend.');
     } on PostgrestException catch (error) {
       if (!_isMissingPurchaseRpc(error)) {
         rethrow;
       }
-      AfriLogger.warn(
+      AfriLogger.error(
         'ClubRepository',
-        'purchase_club_tickets RPC missing, using direct ticket issuance fallback.',
+        'purchase_club_tickets RPC missing. Refusing to issue tickets client-side.',
       );
-      return _createTicketsDirect(
-        matchId: matchId,
-        userId: userId,
-        seatType: seatType,
-        quantity: quantity,
-        paymentReference: paymentReference,
+      throw StateError(
+        'Ticketing verification is temporarily unavailable. Please try again later.',
       );
     }
   }
@@ -413,23 +409,6 @@ class ClubRepository {
     return rows.map((r) => ContributionGroup.fromJson(r)).toList();
   }
 
-  /// Atomically create a group and add creator as admin member via RPC.
-  Future<ContributionGroup> createContributionGroup(
-    ContributionGroup group,
-  ) async {
-    final scope = await _scopeResolver.requireResolved();
-    final row = await _client
-        .from('contribution_groups')
-        .insert({
-          ...group.toInsertJson(),
-          ..._scopeResolver.payload(scope),
-          'creator_id': _userId,
-        })
-        .select()
-        .single();
-    return ContributionGroup.fromJson(row);
-  }
-
   /// Record a contribution against the ledger-backed group contributions table.
   Future<String> contribute({
     required String groupId,
@@ -477,33 +456,6 @@ class ClubRepository {
     if (status == 'confirmed' || status == 'verified') return 'verified';
     if (status == 'failed' || status == 'rejected') return 'failed';
     return 'pending';
-  }
-
-  /// Preview an invite code (no auth required for the RPC).
-  Future<Map<String, dynamic>?> previewInvite(String inviteCode) async {
-    try {
-      final result = await _client.rpc('preview_invite', params: {
-        'p_invite_code': inviteCode,
-      });
-      final data = result is Map<String, dynamic>
-          ? result
-          : (result as List).first as Map<String, dynamic>;
-      if (data['found'] == true) return data;
-      return null;
-    } catch (e) {
-      AfriLogger.warn('ClubRepository', 'previewInvite error: $e');
-      return null;
-    }
-  }
-
-  /// Join a group via invite code.
-  Future<Map<String, dynamic>> joinGroupViaInvite(String inviteCode) async {
-    final result = await _client.rpc('join_group_via_invite', params: {
-      'p_invite_code': inviteCode,
-    });
-    return result is Map<String, dynamic>
-        ? result
-        : (result as List).first as Map<String, dynamic>;
   }
 
   /// Get contributions for a specific group.
@@ -580,59 +532,6 @@ class ClubRepository {
             message.contains('could not find'));
   }
 
-  Future<List<ClubTicket>> _createTicketsDirect({
-    required String matchId,
-    required String userId,
-    required String seatType,
-    required int quantity,
-    required String paymentReference,
-  }) async {
-    final scope = await _scopeResolver.requireResolved();
-    var matchQuery = _client
-        .from('unified_matches')
-        .select(
-            'id, club_id, is_on_sale, ticket_general_price, ticket_vip_price')
-        .eq('id', matchId);
-    matchQuery = _scopeResolver.apply(matchQuery, scope);
-    final match = await matchQuery.maybeSingle();
-
-    if (match == null) {
-      throw StateError('Match not found for the active club.');
-    }
-    if (match['is_on_sale'] != true) {
-      throw StateError('Tickets are not on sale for this fixture.');
-    }
-
-    final normalizedSeatType =
-        seatType.trim().toLowerCase() == 'vip' ? 'vip' : 'general';
-    final amountPaid = normalizedSeatType == 'vip'
-        ? (match['ticket_vip_price'] as num?)?.toInt() ?? 0
-        : (match['ticket_general_price'] as num?)?.toInt() ?? 0;
-    final purchasedAt = DateTime.now().toUtc().toIso8601String();
-    final rows = List.generate(
-      quantity,
-      (_) => <String, dynamic>{
-        'match_id': matchId,
-        'user_id': userId,
-        'club_id': match['club_id'],
-        'seat_type': normalizedSeatType,
-        'amount_paid': amountPaid,
-        'momo_reference': paymentReference,
-        'status': 'valid',
-        'confirmed_at': purchasedAt,
-        'purchased_at': purchasedAt,
-      },
-    );
-
-    final inserted = await _client.from('tickets').insert(rows).select('id');
-    final ticketIds = List<Map<String, dynamic>>.from(inserted as List)
-        .map((row) => row['id']?.toString())
-        .whereType<String>()
-        .where((id) => id.isNotEmpty)
-        .toList(growable: false);
-    return _fetchTicketsByIds(ticketIds);
-  }
-
   /// Get group members for a specific group.
   Future<List<Map<String, dynamic>>> getGroupMembers(String groupId) async {
     await _requireGroupScope(groupId);
@@ -663,7 +562,8 @@ class ClubRepository {
 
     try {
       await _client.from('cool_events').insert(payload);
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('ClubRepository', 'Operation failed (non-critical).', error, stackTrace);
       await _client.from('fet_events').insert(payload);
     }
   }
@@ -680,7 +580,8 @@ class ClubRepository {
           .order('event_at', ascending: false)
           .limit(limit);
       return rows.map((r) => FetEvent.fromJson(r)).toList();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('ClubRepository', 'Operation failed (non-critical).', error, stackTrace);
       final rows = await _client
           .from('fet_events')
           .select()
@@ -711,7 +612,8 @@ class ClubRepository {
           .eq('is_active', true)
           .maybeSingle();
       return (row?['fet_value'] as num?)?.toInt() ?? eventType.fetReward;
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('ClubRepository', 'Operation failed (non-critical).', error, stackTrace);
       return eventType.fetReward;
     }
   }
@@ -747,32 +649,5 @@ class ClubRepository {
       'No active payment route for partner '
       '${partnerId.trim().isEmpty ? 'current club' : partnerId}',
     );
-  }
-
-  // ═══════════════════════════════════════════════════════════
-  // Group Messages
-  // ═══════════════════════════════════════════════════════════
-
-  Future<List<GroupMessage>> getGroupMessages(
-    String groupId, {
-    int limit = 50,
-  }) async {
-    await _requireGroupScope(groupId);
-    final rows = await _client
-        .from('group_messages')
-        .select()
-        .eq('group_id', groupId)
-        .order('created_at', ascending: false)
-        .limit(limit);
-    return rows.map((r) => GroupMessage.fromJson(r)).toList();
-  }
-
-  Future<GroupMessage> sendGroupMessage(GroupMessage message) async {
-    final row = await _client
-        .from('group_messages')
-        .insert(message.toInsertJson())
-        .select()
-        .single();
-    return GroupMessage.fromJson(row);
   }
 }

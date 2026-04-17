@@ -4,6 +4,7 @@ import { ShieldCheck } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { PageHero } from "@/components/page-hero";
 import { getClubProfile, getProducts } from "@/lib/data/public";
+import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getSiteCopy } from "@/lib/site-copy";
 import { formatCurrency } from "@/lib/utils";
@@ -19,6 +20,11 @@ export async function generateMetadata() {
 }
 
 export default async function ShopPage() {
+  const featureGate = await getFeaturePageGuard("shop");
+  if (featureGate) {
+    return featureGate;
+  }
+
   const [club, products] = await Promise.all([getClubProfile(), getProducts()]);
   const copy = getSiteCopy(club.defaultLanguage);
   const [featuredProduct, ...catalogue] = products;

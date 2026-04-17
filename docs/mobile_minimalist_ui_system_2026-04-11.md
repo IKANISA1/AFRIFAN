@@ -242,7 +242,7 @@ Pattern:
 
 - profile summary
 - account
-- privacy/BioPay
+- privacy/contributions
 - support/about
 
 ## Reusable widget patterns

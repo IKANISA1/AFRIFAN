@@ -2,36 +2,39 @@ import 'package:app_registry/app_registry.dart';
 import 'package:club_rayon_sports/club_rayon_sports.dart';
 import 'package:core_app/bootstrap.dart';
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:feat_home/src/widgets/match_card.dart';
 import 'package:feat_home/src/widgets/quick_actions_grid.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rayon_sports/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
+  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() {
     GoogleFonts.config.allowRuntimeFetching = false;
   });
 
-  tearDown(() {
-    TestWidgetsFlutterBinding.ensureInitialized().platformDispatcher
-        .clearAccessibilityFeaturesTestValue();
-  });
-
-  testWidgets('restores an authenticated fan into the production home shell', (
-    tester,
-  ) async {
-    tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
+  setUp(() {
+    binding.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(
           accessibleNavigation: true,
           disableAnimations: true,
           reduceMotion: true,
         );
+  });
 
+  tearDown(() {
+    binding.platformDispatcher.clearAccessibilityFeaturesTestValue();
+  });
+
+  testWidgets('restores an authenticated fan into the production home shell', (
+    tester,
+  ) async {
     await startRayonSportsApp(
       options: AfriClubBootstrapOptions(
         modules: AppModuleRegistry.build(const RayonSportsConfig()),
@@ -47,6 +50,9 @@ void main() {
           ),
         ),
         providerOverrides: [
+          initialFeatureConfigSnapshotProvider.overrideWithValue(
+            _smokeFeatureSnapshot,
+          ),
           homeFeedRepositoryProvider.overrideWithValue(
             const _FakeHomeFeedRepository(
               snapshot: HomeFeedSnapshot(
@@ -82,10 +88,12 @@ void main() {
       ),
     );
 
-    await tester.pump();
-    await tester.pump();
-    await tester.pumpAndSettle();
-    await _pumpUntilVisible(tester, find.byType(QuickActionsGrid));
+    await _pumpAppStartup(tester);
+    await _pumpUntilVisible(
+      tester,
+      find.byType(QuickActionsGrid),
+      maxPumps: 60,
+    );
 
     expect(find.byType(QuickActionsGrid), findsOneWidget);
     expect(find.text('News'), findsOneWidget);
@@ -95,13 +103,6 @@ void main() {
   testWidgets(
     'routes back to onboarding when an existing session cannot be restored safely',
     (tester) async {
-      tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
-          const FakeAccessibilityFeatures(
-            accessibleNavigation: true,
-            disableAnimations: true,
-            reduceMotion: true,
-          );
-
       await startRayonSportsApp(
         options: AfriClubBootstrapOptions(
           modules: AppModuleRegistry.build(const RayonSportsConfig()),
@@ -110,6 +111,9 @@ void main() {
             restoreError: Exception('temporary profile hydration failure'),
           ),
           providerOverrides: [
+            initialFeatureConfigSnapshotProvider.overrideWithValue(
+              _smokeFeatureSnapshot,
+            ),
             homeFeedRepositoryProvider.overrideWithValue(
               const _FakeHomeFeedRepository(
                 snapshot: HomeFeedSnapshot(
@@ -145,43 +149,22 @@ void main() {
         ),
       );
 
-      await tester.pump();
-      await tester.pump();
-      await tester.pumpAndSettle();
-      await _pumpUntilVisible(tester, find.text('NEXT'));
+      await _pumpAppStartup(tester);
+      await _pumpUntilVisible(tester, find.text('Next'));
 
-      expect(find.text('NEXT'), findsOneWidget);
+      expect(find.text('Next'), findsOneWidget);
     },
   );
 
   testWidgets(
-    'current production release keeps settings streamlined while BioPay stays enabled',
+    'current production release keeps settings streamlined after the payment-surface cleanup',
     (tester) async {
-    tester.binding.platformDispatcher.accessibilityFeaturesTestValue =
-        const FakeAccessibilityFeatures(
-          accessibleNavigation: true,
-          disableAnimations: true,
-          reduceMotion: true,
-        );
-
-    await startRayonSportsApp(
-      options: AfriClubBootstrapOptions(
-        modules: AppModuleRegistry.build(const RayonSportsConfig()),
-        startupOptions: const AppStartupOptions.integrationTest(),
-        authRepository: _FakeAuthRepository(
-          restoreResult: const UserProfile(
-            id: 'user-1',
-            clubId: '24',
-            publicUserId: '483912',
-            momoNumber: '0788123456',
-            momoProvider: 'MoMo',
-            languageCode: 'en',
-          ),
-        ),
-        initialLocation: '/settings',
-        providerOverrides: [
-          currentUserProvider.overrideWith(
-            (ref) => const UserProfile(
+      await startRayonSportsApp(
+        options: AfriClubBootstrapOptions(
+          modules: AppModuleRegistry.build(const RayonSportsConfig()),
+          startupOptions: const AppStartupOptions.integrationTest(),
+          authRepository: _FakeAuthRepository(
+            restoreResult: const UserProfile(
               id: 'user-1',
               clubId: '24',
               publicUserId: '483912',
@@ -190,22 +173,69 @@ void main() {
               languageCode: 'en',
             ),
           ),
-        ],
-      ),
-    );
+          initialLocation: '/settings',
+          providerOverrides: [
+            initialFeatureConfigSnapshotProvider.overrideWithValue(
+              _smokeFeatureSnapshot,
+            ),
+            currentUserProvider.overrideWith(
+              (ref) => const UserProfile(
+                id: 'user-1',
+                clubId: '24',
+                publicUserId: '483912',
+                momoNumber: '0788123456',
+                momoProvider: 'MoMo',
+                languageCode: 'en',
+              ),
+            ),
+          ],
+        ),
+      );
 
-    await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text('Help & Support'), 240);
-    await _pumpUntilVisible(tester, find.text('Help & Support'));
+      await _pumpAppStartup(tester);
+      await _pumpUntilVisible(
+        tester,
+        find.text('Privacy policy'),
+        maxPumps: 60,
+      );
+      await tester.scrollUntilVisible(find.text('Help & support'), 240);
+      await _pumpUntilVisible(
+        tester,
+        find.text('Help & support'),
+        maxPumps: 60,
+      );
 
-    expect(find.text('Privacy controls'), findsOneWidget);
-    expect(find.text('Help & Support'), findsOneWidget);
-    expect(find.text('BioPay & Privacy'), findsNothing);
-    expect(find.text('BioPay home'), findsNothing);
-    expect(find.text('Face ID & enrollment'), findsNothing);
-  },
+      expect(find.text('Privacy policy'), findsOneWidget);
+      expect(find.text('Help & support'), findsOneWidget);
+    },
   );
 }
+
+const _smokeFeatureSnapshot = PlatformConfigSnapshot(
+  contentBlocks: <ContentBlock>[
+    ContentBlock(
+      blockKey: 'smoke_home_hero',
+      blockType: 'widget',
+      content: <String, dynamic>{'widget': 'match_score_card'},
+      placementKey: 'home_hero',
+      sortOrder: 0,
+    ),
+    ContentBlock(
+      blockKey: 'smoke_home_quick_actions',
+      blockType: 'widget',
+      content: <String, dynamic>{'widget': 'quick_actions_grid'},
+      placementKey: 'home_top',
+      sortOrder: 10,
+    ),
+    ContentBlock(
+      blockKey: 'smoke_home_latest_intel',
+      blockType: 'widget',
+      content: <String, dynamic>{'widget': 'latest_intel_section'},
+      placementKey: 'home_bottom',
+      sortOrder: 20,
+    ),
+  ],
+);
 
 class _FakeAuthRepository extends AuthRepository {
   _FakeAuthRepository({this.restoreResult, this.restoreError})
@@ -264,7 +294,7 @@ class _FakeLatestIntelRepository implements LatestIntelRepository {
 Future<void> _pumpUntilVisible(
   WidgetTester tester,
   Finder finder, {
-  int maxPumps = 20,
+  int maxPumps = 60,
 }) async {
   for (var i = 0; i < maxPumps; i++) {
     if (finder.evaluate().isNotEmpty) {
@@ -274,4 +304,11 @@ Future<void> _pumpUntilVisible(
   }
 
   expect(finder, findsOneWidget);
+}
+
+Future<void> _pumpAppStartup(WidgetTester tester) async {
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 300));
+  await tester.pump(const Duration(milliseconds: 900));
+  await tester.pump();
 }

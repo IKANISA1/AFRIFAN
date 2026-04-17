@@ -201,6 +201,16 @@ class _PredictionSlipSheet extends ConsumerWidget {
             icon: AfriIcons.verified,
             enabled: !slip.isSubmitting,
             onTap: () async {
+              // B-1: Confirmation gate before prediction submission.
+              // Show a summary sheet and only proceed if the user confirms.
+              final confirmed = await _showPreSubmitConfirmation(
+                context,
+                items: slip.items,
+                accaMode: slip.accaMode,
+                totalPotential: slip.totalPotential,
+              );
+              if (!confirmed || !context.mounted) return;
+
               final messenger = ScaffoldMessenger.of(context);
 
               // Capture slip info before submit clears it.
@@ -258,6 +268,123 @@ class _PredictionSlipSheet extends ConsumerWidget {
       ),
     );
   }
+}
+
+// ── Pre-submission confirmation sheet (B-1 fix) ────────────────────────
+
+/// Shows a confirmation bottom sheet summarising the prediction slip before
+/// submission. Returns `true` if the user confirms, `false` if they cancel.
+Future<bool> _showPreSubmitConfirmation(
+  BuildContext context, {
+  required List<FanzoneSlipSelection> items,
+  required bool accaMode,
+  required int totalPotential,
+}) async {
+  final result = await showAfriBottomSheet<bool>(
+    context: context,
+    builder: (context) => Padding(
+      padding: const EdgeInsets.only(bottom: SpacingTokens.spacing4),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'CONFIRM PREDICTIONS',
+            style: TypographyTokens.monolithFont(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.4,
+            ),
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(
+            accaMode && items.length > 1
+                ? 'You are locking ${items.length} selections as an Acca.'
+                : items.length == 1
+                    ? 'You are locking 1 prediction.'
+                    : 'You are locking ${items.length} predictions.',
+            style: TypographyTokens.bodyMedium(),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          ...items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
+              child: GlassCard(
+                animate: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.fixtureLabel,
+                      style: TypographyTokens.titleSmall(),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing1),
+                    Row(
+                      children: [
+                        Text(
+                          item.marketName.toUpperCase(),
+                          style: TypographyTokens.labelSmall(
+                            ColorTokens.onSurfaceVariant,
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          '${item.outcomeLabel}  ·  +${item.fetPotential} FET',
+                          style: TypographyTokens.labelSmall(
+                            ColorTokens.clubAccent,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: SpacingTokens.spacing3),
+          ClayCard(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'TOTAL POTENTIAL',
+                        style: TypographyTokens.labelSmall(
+                          ColorTokens.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '+$totalPotential FET',
+                        style: TypographyTokens.metricValue(
+                          ColorTokens.clubAccent,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: SpacingTokens.spacing5),
+          AfriButton(
+            label: 'CONFIRM & LOCK IN',
+            icon: AfriIcons.verified,
+            onTap: () => Navigator.of(context).pop(true),
+          ),
+          const SizedBox(height: SpacingTokens.spacing3),
+          AfriButton(
+            label: 'GO BACK',
+            variant: AfriButtonVariant.secondary,
+            onTap: () => Navigator.of(context).pop(false),
+          ),
+        ],
+      ),
+    ),
+  );
+  return result == true;
 }
 
 // ── Post-submission share card modal ───────────────────────────────────

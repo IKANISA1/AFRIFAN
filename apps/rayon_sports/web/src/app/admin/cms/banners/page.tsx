@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Plus, Trash2, Edit3, Eye, EyeOff } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { AdminImageField } from "@/components/admin/admin-image-field";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
@@ -13,6 +14,7 @@ import {
   deleteAdminBanner,
 } from "@/lib/data/admin/cms-content";
 import type { HomeBanner } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 const emptyForm = {
   id: "" as string,
@@ -132,10 +134,16 @@ export default function AdminBannersPage() {
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Route</span>
             <input value={form.route} onChange={(e) => setForm({ ...form, route: e.target.value })} className="admin-input" placeholder="/tickets" />
           </label>
-          <label className="grid gap-1">
-            <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Image URL</span>
-            <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} className="admin-input" />
-          </label>
+          <AdminImageField
+            label="Banner image"
+            value={form.imageUrl}
+            onChange={(nextValue) => setForm({ ...form, imageUrl: nextValue })}
+            mediaKind="home_banner"
+            subject={form.title}
+            previewAlt="Banner preview"
+            promptPlaceholder="Example: Homepage hero banner for an upcoming fixture or campaign, dramatic atmosphere, strong brand colors, clean focal point."
+            className="sm:col-span-2"
+          />
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Sort order</span>
             <input type="number" value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: Number(e.target.value) })} className="admin-input" />

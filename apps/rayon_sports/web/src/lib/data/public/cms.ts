@@ -23,6 +23,8 @@ function mapHomeBanner(row: Record<string, unknown>): HomeBanner {
     imageUrl: safeString(row.image_url) || null,
     sortOrder: Number(row.sort_order ?? 0),
     isActive: row.is_active !== false,
+    distribution:
+      safeString(row.distribution, "both") as HomeBanner["distribution"],
   };
 }
 
@@ -39,6 +41,8 @@ function mapCmsContent(row: Record<string, unknown>): CmsContent {
     ctaLabel: safeString(row.cta_label, ""),
     sortOrder: Number(row.sort_order ?? 0),
     isActive: row.is_active !== false,
+    distribution:
+      safeString(row.distribution, "both") as CmsContent["distribution"],
   };
 }
 

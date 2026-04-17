@@ -5,8 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../models/prediction_models.dart';
-import '../prediction_providers.dart';
+import '../providers/prediction_detail_provider.dart';
 import '../widgets/prediction_share_card.dart';
+import 'package:core_utils/core_utils.dart';
 
 class PredictionDetailScreen extends ConsumerStatefulWidget {
   const PredictionDetailScreen({super.key, required this.predictionId});
@@ -20,83 +21,32 @@ class PredictionDetailScreen extends ConsumerStatefulWidget {
 
 class _PredictionDetailScreenState
     extends ConsumerState<PredictionDetailScreen> {
-  PredictionDetail? _detail;
-  bool _isLoading = true;
   bool _isCancelling = false;
-  String? _error;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadDetail();
-  }
+  Future<void> _cancelPrediction(PredictionDetail detail) async {
+    if (!detail.isPending || _isCancelling) return;
 
-  Future<void> _loadDetail() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final detail = await ref
-          .read(predictionRepositoryProvider)
-          .loadPredictionDetail(widget.predictionId);
-
-      if (!mounted) return;
-      setState(() {
-        _detail = detail;
-        _error = detail == null ? 'Prediction not found.' : null;
-        _isLoading = false;
-      });
-    } catch (_) {
-      if (!mounted) return;
-      setState(() {
-        _error = 'Could not load prediction detail right now.';
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _cancelPrediction() async {
-    final detail = _detail;
-    if (detail == null || !detail.isPending || _isCancelling) {
-      return;
-    }
-
-    setState(() {
-      _isCancelling = true;
-    });
-
+    setState(() => _isCancelling = true);
     try {
       final result = await ref
-          .read(predictionRepositoryProvider)
-          .cancelPrediction(detail.id);
+          .read(predictionDetailProvider(widget.predictionId).notifier)
+          .cancel();
 
       if (!mounted) return;
       if (result.isError) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(result.message)));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(result.message)));
       } else {
-        await _loadDetail();
-        if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Prediction cancelled.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Prediction cancelled.')),
+        );
       }
     } finally {
-      if (mounted) {
-        setState(() {
-          _isCancelling = false;
-        });
-      }
+      if (mounted) setState(() => _isCancelling = false);
     }
   }
 
-  Future<void> _copySummary() async {
-    final detail = _detail;
-    if (detail == null) return;
-
+  Future<void> _copySummary(PredictionDetail detail) async {
     final score = detail.hasScoreline
         ? '${detail.homeScore}-${detail.awayScore}'
         : 'pending';
@@ -158,48 +108,71 @@ class _PredictionDetailScreenState
 
   @override
   Widget build(BuildContext context) {
-    final detail = _detail;
+    final asyncDetail = ref.watch(
+      predictionDetailProvider(widget.predictionId),
+    );
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
       body: GradientBackground(
         child: SafeArea(
-          child: _isLoading
-              ? const Padding(
-                  padding: EdgeInsets.all(SpacingTokens.spacing6),
-                  child: AfriSkeletonList(),
-                )
-              : detail == null
-              ? Padding(
-                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                  child: Column(
+          child: asyncDetail.when(
+            loading: () => const Padding(
+              padding: EdgeInsets.all(SpacingTokens.spacing6),
+              child: AfriSkeletonList(),
+            ),
+            error: (error, _) => Padding(
+              padding: const EdgeInsets.all(SpacingTokens.spacing6),
+              child: Column(
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          if (context.canPop())
-                            IconButton(
-                              onPressed: () => context.pop(),
-                              icon: const Icon(AfriIcons.back),
-                            ),
-                        ],
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: AfriStateView.offline(
-                            title: 'Prediction unavailable',
-                            message: _error ?? 'Prediction not found.',
-                            actionLabel: 'Retry',
-                            onAction: _loadDetail,
-                          ),
+                      if (context.canPop())
+                        IconButton(
+                          onPressed: () => context.pop(),
+                          icon: const Icon(AfriIcons.back),
                         ),
-                      ),
                     ],
                   ),
-                )
-              : RefreshIndicator(
-                  onRefresh: _loadDetail,
-                  color: ColorTokens.clubAccent,
-                  child: CustomScrollView(
+                  Expanded(
+                    child: Center(
+                      child: AfriStateView.offline(
+                        title: 'Prediction unavailable',
+                        message: 'Could not load prediction detail right now.',
+                        actionLabel: 'Retry',
+                        onAction: () => ref
+                            .read(predictionDetailProvider(
+                              widget.predictionId,
+                            ).notifier)
+                            .refresh(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            data: (detail) {
+              if (detail == null) {
+                return Padding(
+                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                  child: Center(
+                    child: AfriStateView.offline(
+                      title: 'Prediction not found',
+                      message: 'This prediction could not be located.',
+                      actionLabel: 'Go back',
+                      onAction: () => context.pop(),
+                    ),
+                  ),
+                );
+              }
+              return RefreshIndicator(
+                onRefresh: () => ref
+                    .read(predictionDetailProvider(
+                      widget.predictionId,
+                    ).notifier)
+                    .refresh(),
+                color: ColorTokens.clubAccent,
+                child: CustomScrollView(
                     physics: const BouncingScrollPhysics(
                       parent: AlwaysScrollableScrollPhysics(),
                     ),
@@ -431,7 +404,7 @@ class _PredictionDetailScreenState
                                   variant: AfriButtonVariant.secondary,
                                   enabled: !_isCancelling,
                                   isLoading: _isCancelling,
-                                  onTap: _cancelPrediction,
+                                  onTap: () => _cancelPrediction(detail),
                                 ),
                               if (detail.isPending)
                                 const SizedBox(height: SpacingTokens.spacing3),
@@ -440,7 +413,7 @@ class _PredictionDetailScreenState
                                     ? 'COPY RESULT'
                                     : 'COPY SUMMARY',
                                 variant: AfriButtonVariant.secondary,
-                                onTap: _copySummary,
+                                onTap: () => _copySummary(detail),
                               ),
                               const SizedBox(height: SpacingTokens.spacing3),
                               AfriButton(
@@ -462,7 +435,9 @@ class _PredictionDetailScreenState
                       ),
                     ],
                   ),
-                ),
+                );
+            },
+          ),
         ),
       ),
     );

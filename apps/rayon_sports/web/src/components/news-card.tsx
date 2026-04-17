@@ -12,7 +12,7 @@ export function NewsCard({ article }: { article: NewsArticle }) {
     <Link
       href={`/news/${article.id}`}
       prefetch={false}
-      className={`${ui.panel} ${ui.cardInteractive} group flex h-full flex-col gap-5 rounded-[32px] border-[1.2px] p-4 sm:p-5`}
+      className={`${ui.panel} ${ui.cardInteractive} group flex h-full flex-col gap-5 rounded-[32px] border-[1.2px] bg-slate-950/96 p-4 sm:p-5`}
     >
       <div className="img-zoom relative overflow-hidden rounded-[26px]">
         <Image
@@ -36,21 +36,21 @@ export function NewsCard({ article }: { article: NewsArticle }) {
       </div>
 
       <div className="space-y-3">
-        <div className={`flex items-center justify-between gap-3 ${ui.meta}`}>
+        <div className="flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.2em] text-slate-100">
           <span>Club media</span>
           <span>{formatDate(article.publishedAt)}</span>
         </div>
         <h3 className="font-display text-[2rem] font-bold uppercase leading-[0.92] tracking-[-0.055em] text-balance text-white sm:text-[2.35rem]">
           {article.title}
         </h3>
-        <p className="text-sm leading-7 text-slate-300">{article.excerpt}</p>
+        <p className="text-sm leading-7 text-slate-100">{article.excerpt}</p>
       </div>
 
       <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/10 pt-4">
         <span className="text-sm font-semibold uppercase tracking-[0.18em] text-white/92">
           Read story
         </span>
-        <ArrowRight size={18} className="text-slate-300 transition-transform duration-300 group-hover:translate-x-1" />
+        <ArrowRight size={18} className="text-slate-100 transition-transform duration-300 group-hover:translate-x-1" />
       </div>
     </Link>
   );

@@ -5,6 +5,7 @@ import {
   getRequestedAdminClubId,
 } from "@/lib/admin-club-scope";
 import { resolveAdminAccess } from "@/lib/data/admin/access";
+import { enforceFeatureState } from "@/lib/server-feature-guard";
 import { rejectInsecureMutation, rejectRateLimitedRequest } from "@/lib/security";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { getServerSupabase } from "@/lib/supabase/server";
@@ -16,6 +17,11 @@ type AdminRouteHandler<T> = (
 ) => Promise<T>;
 
 type AdminRouteOptions = {
+  featureGuard?: {
+    featureKey: string;
+    channel?: "mobile" | "web";
+    mode?: "navigation" | "route" | "action";
+  };
   requireSuperAdmin?: boolean;
   rateLimitKey?: string;
   mutationLimit?: number;
@@ -81,6 +87,30 @@ export async function handleAdminApiRoute<T>(
         { error: "Admin access denied." },
         { status: 403 },
       );
+    }
+
+    if (options.featureGuard) {
+      const featureState = await enforceFeatureState(
+        options.featureGuard.featureKey,
+        options.featureGuard.channel ?? "web",
+        options.featureGuard.mode ?? "action",
+        {
+          clubId: access.clubId,
+          isAuthenticated: access.isAuthenticated,
+          roles: access.role ? [access.role] : [],
+        },
+      );
+
+      if (!featureState.allowed) {
+        return NextResponse.json(
+          {
+            code: "FEATURE_DISABLED",
+            error:
+              featureState.error ?? "Feature disabled or unavailable.",
+          },
+          { status: 403 },
+        );
+      }
     }
 
     if (options.requireSuperAdmin && !access.isSuperAdmin) {

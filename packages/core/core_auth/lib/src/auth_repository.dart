@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'models/admin_workspace_access.dart';
 import 'models/user_profile.dart';
+import 'rbac_resolver.dart';
 
 class AuthRestoreFailure implements Exception {
   const AuthRestoreFailure(this.message, [this.cause]);
@@ -23,14 +24,18 @@ class AuthRepository {
     required this.clubId,
     Future<dynamic> Function(String userId)? adminAssignmentsLoader,
     Map<String, dynamic> Function()? appMetadataLoader,
-  }) : _adminAssignmentsLoader = adminAssignmentsLoader,
-       _appMetadataLoader = appMetadataLoader;
+  }) : rbacResolver = RbacResolver(
+         tag: _tag,
+         adminAssignmentsLoader: adminAssignmentsLoader,
+         appMetadataLoader: appMetadataLoader,
+       );
 
   static const _tag = 'AuthRepository';
 
   final String clubId; // This must now be a numeric string matching DB `id`
-  final Future<dynamic> Function(String userId)? _adminAssignmentsLoader;
-  final Map<String, dynamic> Function()? _appMetadataLoader;
+
+  /// Exposed for direct RBAC resolution without going through AuthRepository.
+  final RbacResolver rbacResolver;
 
   SupabaseClient get _client => SupabaseClientFactory.client;
 
@@ -219,33 +224,10 @@ class AuthRepository {
   // ─── RBAC ───────────────────────────────────────────────────
 
   /// Resolve admin workspace access for a user.
-  Future<AdminWorkspaceAccess> resolveAdminAccess(String userId) async {
-    try {
-      final rowsResult = await SafeRpc.query<dynamic>(
-        () => _loadAdminAssignments(userId),
-        tag: _tag,
-        description: 'resolveAdminAccess',
-        maxAttempts: 3,
-      );
-      if (!rowsResult.isSuccess) {
-        AfriLogger.warn(
-          _tag,
-          'Admin access resolution failed: ${rowsResult.error}',
-        );
-        return AdminWorkspaceAccess.none;
-      }
-      return _resolveAdminAccessFromRows(rowsResult.requireData);
-    } catch (error, stackTrace) {
-      // Non-network error: log and return no access.
-      AfriLogger.error(
-        _tag,
-        'Admin access resolution failed.',
-        error,
-        stackTrace,
-      );
-      return AdminWorkspaceAccess.none;
-    }
-  }
+  ///
+  /// Delegates to [RbacResolver] for separation of concerns.
+  Future<AdminWorkspaceAccess> resolveAdminAccess(String userId) =>
+      rbacResolver.resolve(userId);
 
   // ─── Session ────────────────────────────────────────────────
 
@@ -269,79 +251,7 @@ class AuthRepository {
 
   // ─── Helpers ────────────────────────────────────────────────
 
-  Future<dynamic> _loadAdminAssignments(String userId) {
-    final injectedLoader = _adminAssignmentsLoader;
-    if (injectedLoader != null) {
-      return injectedLoader(userId);
-    }
 
-    return _client
-        .from('admin_role_assignments')
-        .select(
-          'id, user_id, role, club_id, assigned_by, created_at, is_active',
-        )
-        .eq('user_id', userId)
-        .eq('is_active', true);
-  }
-
-  AdminWorkspaceAccess _resolveAdminAccessFromRows(dynamic rows) {
-    final assignments = <Map<String, dynamic>>[];
-    if (rows is List) {
-      for (final raw in rows) {
-        final row = raw is Map<String, dynamic>
-            ? raw
-            : raw is Map
-            ? Map<String, dynamic>.from(raw)
-            : null;
-        if (row == null) {
-          continue;
-        }
-
-        final role = AdminRole.fromString(row['role']?.toString());
-        assignments.add(<String, dynamic>{
-          'id': row['id'],
-          'user_id': row['user_id'],
-          'role': switch (role) {
-            AdminRole.admin => 'admin',
-            AdminRole.bank => 'bank',
-            AdminRole.partner || null => 'partner',
-          },
-          'club_id': row['club_id'],
-          'partner_scope_id': row['club_id']?.toString(),
-          'granted_by': row['assigned_by'],
-          'created_at': row['created_at'],
-          'is_active': row['is_active'],
-        });
-      }
-    }
-
-    if (assignments.isEmpty) {
-      final metadata = _appMetadataLoader?.call() ?? _client.auth.currentUser?.appMetadata ?? const <String, dynamic>{};
-      return AdminWorkspaceAccess.fromAppMetadata(metadata);
-    }
-
-    final partnerIds = assignments
-        .where((assignment) => assignment['role'] == 'partner')
-        .map((assignment) => assignment['partner_scope_id']?.toString() ?? '')
-        .where((value) => value.isNotEmpty)
-        .toSet();
-    final bankIds = assignments
-        .where((assignment) => assignment['role'] == 'bank')
-        .map((assignment) => assignment['partner_scope_id']?.toString() ?? '')
-        .where((value) => value.isNotEmpty)
-        .toSet();
-
-    return AdminWorkspaceAccess.fromRpcResponse(<String, dynamic>{
-      'has_platform_access': assignments.any(
-        (assignment) => assignment['role'] == 'admin',
-      ),
-      'has_bank_access': bankIds.isNotEmpty,
-      'has_partner_access': false,
-      'bank_partner_ids': bankIds.toList(growable: false),
-      'partner_admin_ids': partnerIds.toList(growable: false),
-      'role_assignments': assignments,
-    });
-  }
 
   Future<void> _ensureProfileRow(User user) async {
     final seededProfile = _buildSeededProfile(user);
@@ -369,21 +279,15 @@ class AuthRepository {
   }
 
   Future<UserProfile?> _loadProfile(String userId) async {
-    final rowResult = await SafeRpc.query<dynamic>(
-      () => _client.from('profiles').select().eq('id', userId).maybeSingle(),
-      tag: _tag,
-      description: '_loadProfile.profile',
-      maxAttempts: 3,
-    );
-    if (!rowResult.isSuccess) {
-      throw StateError(rowResult.error ?? 'Could not load the user profile.');
-    }
-    final row = rowResult.data;
-    if (row == null) return null;
-
-    Map<String, dynamic>? privateContact;
-    try {
-      final privateContactResult = await SafeRpc.query<dynamic>(
+    // Parallelize the two independent queries to halve latency.
+    final results = await Future.wait(<Future<RpcResult<dynamic>>>[
+      SafeRpc.query<dynamic>(
+        () => _client.from('profiles').select().eq('id', userId).maybeSingle(),
+        tag: _tag,
+        description: '_loadProfile.profile',
+        maxAttempts: 3,
+      ),
+      SafeRpc.query<dynamic>(
         () => _client
             .from('user_private_contacts')
             .select()
@@ -392,14 +296,30 @@ class AuthRepository {
         tag: _tag,
         description: '_loadProfile.privateContact',
         maxAttempts: 2,
-      );
-      if (privateContactResult.isSuccess) {
-        privateContact = privateContactResult.data == null
-            ? null
-            : Map<String, dynamic>.from(privateContactResult.data as Map);
+      ),
+    ]);
+
+    final profileResult = results[0];
+    final privateContactResult = results[1];
+
+    if (!profileResult.isSuccess) {
+      throw StateError(profileResult.error ?? 'Could not load the user profile.');
+    }
+    final row = profileResult.data;
+    if (row == null) return null;
+
+    Map<String, dynamic>? privateContact;
+    try {
+      if (privateContactResult.isSuccess && privateContactResult.data != null) {
+        privateContact =
+            Map<String, dynamic>.from(privateContactResult.data as Map);
       }
-    } catch (_) {
+    } catch (e) {
       privateContact = null;
+      AfriLogger.warn(
+        'AuthRepository',
+        'Private contact fetch failed (non-fatal): $e',
+      );
     }
 
     return UserProfile.fromJson(<String, dynamic>{

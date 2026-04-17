@@ -1,5 +1,6 @@
 import type { ArticleForm } from "./cms-state";
 import { emptyArticleForm, wordCount } from "./cms-state";
+import { AdminImageField } from "@/components/admin/admin-image-field";
 import { showAdminToast } from "@/components/admin/admin-toast";
 
 interface CMSContentEditorProps {
@@ -70,27 +71,23 @@ export function CMSContentEditor({ form, setForm, onSubmit }: CMSContentEditorPr
             className="dashboard-input"
           />
         </label>
-        <label className="grid gap-2 text-sm">
-          Image URL
-          <input
-            name="imageUrl"
-            value={form.imageUrl}
-            onChange={(event) =>
-              setForm((current: ArticleForm) => ({
-                ...current,
-                imageUrl: event.target.value,
-              }))
-            }
-            className="dashboard-input"
-          />
-        </label>
+        <AdminImageField
+          label="Cover image"
+          name="imageUrl"
+          value={form.imageUrl}
+          onChange={(nextValue) =>
+            setForm((current: ArticleForm) => ({
+              ...current,
+              imageUrl: nextValue,
+            }))
+          }
+          mediaKind="news_article"
+          subject={form.title}
+          previewAlt="Article cover preview"
+          promptPlaceholder="Example: Matchday editorial hero image of celebrating supporters under floodlights, dramatic sports-photo composition, club colors visible, no watermark."
+          className="sm:col-span-2"
+        />
       </div>
-      {form.imageUrl.trim() ? (
-        <div className="overflow-hidden rounded-[22px] border border-border-soft">
-          {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews accept arbitrary remote URLs. */}
-          <img src={form.imageUrl} alt="Cover preview" className="h-32 w-full object-cover" />
-        </div>
-      ) : null}
       <label className="grid gap-2 text-sm">
         <div className="flex items-center justify-between">
           <span>Excerpt</span>

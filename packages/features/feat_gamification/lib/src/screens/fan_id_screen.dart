@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
+import 'package:core_utils/core_utils.dart';
 
 /// Shows the user's FANZONE Fan ID with profile-backed privacy state.
 ///
@@ -62,7 +63,8 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
 
     try {
       wallet = await ref.read(fetRepositoryProvider).loadWallet();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanIdScreen', 'Operation failed (non-critical).', error, stackTrace);
       wallet = null;
     }
 
@@ -76,7 +78,8 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
           )
           .eq('id', profile.id)
           .maybeSingle();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FanIdScreen', 'Operation failed (non-critical).', error, stackTrace);
       profileRow = null;
     }
 

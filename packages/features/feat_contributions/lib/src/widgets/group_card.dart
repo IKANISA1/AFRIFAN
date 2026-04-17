@@ -1,7 +1,7 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
-/// Group card — glassmorphic tile showing group name, progress, members.
+/// Initiative card — glassmorphic tile showing name, progress, and members.
 class GroupCard extends StatelessWidget {
   final Map<String, dynamic> group;
   final VoidCallback? onTap;
@@ -11,9 +11,9 @@ class GroupCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final name = group['name']?.toString() ?? 'Group';
+    final name = group['name']?.toString() ?? 'Public group';
     final target = (group['target_amount'] as num?)?.toDouble() ?? 0;
-    final current = (group['current_amount'] as num?)?.toDouble() ?? 0;
+    final current = (group['current_total'] as num?)?.toDouble() ?? 0;
     final progress = target > 0 ? (current / target).clamp(0.0, 1.0) : 0.0;
     final memberCount = (group['member_count'] as num?)?.toInt() ?? 0;
 
@@ -54,7 +54,7 @@ class GroupCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      '$memberCount members',
+                      '$memberCount contributors',
                       style: TypographyTokens.editorialFont(
                         fontSize: 15,
                         color: ColorTokens.onSurfaceVariant,

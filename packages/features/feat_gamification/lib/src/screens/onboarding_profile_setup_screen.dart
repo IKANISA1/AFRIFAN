@@ -6,6 +6,7 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:core_utils/core_utils.dart';
 
 /// Onboarding profile setup screen — step-based flow.
 ///
@@ -68,7 +69,8 @@ class _OnboardingProfileSetupScreenState
         _teams = teamOptions;
         _selectedTeam = selected;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('OnboardingProfileSetupScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) return;
       const fallbackOptions = <_TeamOption>[
         _TeamOption(label: 'My Club'),

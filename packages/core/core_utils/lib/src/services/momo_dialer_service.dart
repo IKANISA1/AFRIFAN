@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../country_catalog.dart';
 
 /// Generic service to format and launch Mobile Money USSD flows
-/// across the entire AfriClub monorepo (Shop, Ticketing, BioPay).
+/// across the entire AfriClub monorepo.
 class MomoDialerService {
   /// Builds the USSD code and attempts to launch the native device dialer.
   ///

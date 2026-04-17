@@ -10,10 +10,10 @@ class DeferredFeatureInitializer {
     this.onInitializeSmsAutoread,
   });
 
-  /// Purge legacy caches (e.g., BioPay persistent cache).
+  /// Purge legacy caches from optional feature packages.
   final Future<void> Function()? onPurgeLegacyCache;
 
-  /// Register auth lifecycle observers (e.g., BioPay cache clear on sign-out).
+  /// Register auth lifecycle observers for optional feature packages.
   final Future<void> Function()? onRegisterAuthLifecycleObservers;
 
   /// Initialize SMS autoread service.

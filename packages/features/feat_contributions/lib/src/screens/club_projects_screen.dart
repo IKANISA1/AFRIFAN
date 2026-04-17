@@ -70,7 +70,8 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
         _isLoading = false;
         _error = null;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('ClubProjectsScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) return;
       setState(() {
         _isLoading = false;

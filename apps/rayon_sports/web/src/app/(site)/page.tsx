@@ -1,13 +1,18 @@
 import { buildPageMetadata } from "@/lib/metadata";
 import { getClubProfile } from "@/lib/data/public";
 import { HeroBlock } from "./_sections/hero-block";
-import { CirclesAndMatchdayBlock } from "./_sections/circles-matchday-block";
+import { GroupsAndMatchdayBlock } from "./_sections/circles-matchday-block";
 import { FixturesBlock } from "./_sections/fixtures-block";
 import { MembershipAndStandingsBlock } from "./_sections/membership-standings-block";
 import { NewsBlock } from "./_sections/news-block";
 import { ShopAndIdentityBlock } from "./_sections/shop-identity-block";
 import { StoriesBlock } from "./_sections/stories-block";
-import { getPlatformConfig, getContentBlocks, type ContentBlock } from "@/lib/feature-config";
+import {
+  getPlatformConfig,
+  getContentBlocks,
+  type ContentBlock,
+  type PlatformConfigSnapshot,
+} from "@/lib/feature-config";
 import { FeatureGate } from "@/components/feature-gate";
 
 export async function generateMetadata() {
@@ -28,18 +33,18 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col gap-24 pb-32 pt-0 lg:gap-48">
       {allBlocks.map((block) => (
-        <BlockRenderer key={block.block_key} block={block} />
+        <BlockRenderer key={block.block_key} block={block} config={config} />
       ))}
     </div>
   );
 }
 
-function BlockRenderer({ block }: { block: ContentBlock }) {
+function BlockRenderer({ block, config }: { block: ContentBlock; config: PlatformConfigSnapshot }) {
   const content = _renderBlockContent(block);
   
   if (block.feature_key) {
     return (
-      <FeatureGate featureKey={block.feature_key}>
+      <FeatureGate config={config} featureKey={block.feature_key}>
         {content}
       </FeatureGate>
     );
@@ -57,7 +62,7 @@ function _renderBlockContent(block: ContentBlock) {
       return <HeroBlock />;
     case "circles-matchday-block":
     case "matchday_hub":
-      return <CirclesAndMatchdayBlock />;
+      return <GroupsAndMatchdayBlock />;
     case "fixtures-block":
     case "fixtures":
       return <FixturesBlock />;

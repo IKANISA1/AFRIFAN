@@ -345,7 +345,8 @@ class _ContributionSuccessDialogState
         setState(() => _status = 'failed');
         return;
       }
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('MomoContributionSheet', 'Operation failed (non-critical).', error, stackTrace);
       // Network error during poll — continue polling
     }
 

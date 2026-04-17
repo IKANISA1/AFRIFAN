@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { absoluteUrl, rayonClub, siteConfig } from "@/lib/config";
-import type { MatchItem, NewsArticle, ShopProduct } from "@/lib/types";
+import type {
+  ClubProfile,
+  MatchItem,
+  NewsArticle,
+  ShopProduct,
+  SquadPlayer,
+} from "@/lib/types";
 
 interface PageMetadataOptions {
   title: string;
@@ -180,7 +186,7 @@ export function buildSiteJsonLd() {
         alternateName: siteConfig.title,
         url: siteConfig.siteUrl,
         description: siteConfig.description,
-        inLanguage: ["en", "fr", "rw"],
+        inLanguage: ["en"],
       },
       {
         "@type": "SportsOrganization",

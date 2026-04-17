@@ -67,7 +67,7 @@ References:
    - install succeeds
    - onboarding works
    - home shell loads
-   - BioPay hub loads
+   - contributions hub loads
    - notifications register
 6. Promote to closed track only after smoke checks pass.
 7. Promote to production only after monitoring internal/closed results.
@@ -89,7 +89,7 @@ Fastlane upload prerequisite:
 5. Verify on physical devices:
    - first launch
    - auth restore
-   - BioPay launch
+   - contributions launch
    - push token registration
    - push delivery
 

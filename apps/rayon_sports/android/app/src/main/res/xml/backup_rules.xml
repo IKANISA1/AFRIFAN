@@ -5,7 +5,6 @@
   Reference: https://developer.android.com/guide/topics/data/autobackup
 -->
 <full-backup-content>
-    <exclude domain="sharedpref" path="BioPay_nfc_hce.xml" />
     <exclude domain="sharedpref" path="FlutterSecureStorage" />
     <exclude domain="database" path="." />
     <exclude domain="file" path="." />

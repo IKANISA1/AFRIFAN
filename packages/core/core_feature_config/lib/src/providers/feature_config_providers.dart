@@ -10,6 +10,14 @@ final featureConfigRepositoryProvider = Provider<FeatureConfigRepository>(
   (ref) => FeatureConfigRepository(),
 );
 
+/// Bootstrap snapshot injected by the app before the first frame when available.
+///
+/// This keeps feature gates, route guards, and home composition deterministic
+/// on the initial render without mutating notifier state during widget mount.
+final initialFeatureConfigSnapshotProvider = Provider<PlatformConfigSnapshot?>(
+  (ref) => null,
+);
+
 /// AsyncNotifier managing the platform feature config lifecycle.
 ///
 /// Must be initialized with clubId after bootstrap.
@@ -18,8 +26,8 @@ final featureConfigRepositoryProvider = Provider<FeatureConfigRepository>(
 class FeatureConfigNotifier extends AsyncNotifier<PlatformConfigSnapshot> {
   @override
   Future<PlatformConfigSnapshot> build() async {
-    // Returns empty initially — loadForClub() is called during bootstrap.
-    return const PlatformConfigSnapshot();
+    return ref.watch(initialFeatureConfigSnapshotProvider) ??
+        const PlatformConfigSnapshot();
   }
 
   /// Load the platform config for a specific club.
@@ -65,7 +73,9 @@ final featureConfigProvider = AsyncNotifierProvider<
 final featureConfigServiceProvider = Provider<FeatureConfigService>((ref) {
   final asyncConfig = ref.watch(featureConfigProvider);
   final snapshot =
-      asyncConfig.valueOrNull ?? const PlatformConfigSnapshot();
+      asyncConfig.valueOrNull ??
+      ref.watch(initialFeatureConfigSnapshotProvider) ??
+      const PlatformConfigSnapshot();
   return FeatureConfigService(snapshot);
 });
 
@@ -76,6 +86,14 @@ final isFeatureEnabledProvider = Provider.family<bool, String>(
   (ref, featureKey) {
     final service = ref.watch(featureConfigServiceProvider);
     return service.isFeatureEnabled(featureKey);
+  },
+);
+
+/// Check if a feature should render in the current UI context.
+final canRenderFeatureProvider = Provider.family<bool, String>(
+  (ref, featureKey) {
+    final service = ref.watch(featureConfigServiceProvider);
+    return service.canRenderFeature(featureKey);
   },
 );
 

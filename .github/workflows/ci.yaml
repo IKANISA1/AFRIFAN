@@ -192,6 +192,46 @@ jobs:
         run: npm run test:e2e:ci
 
   # ──────────────────────────────────────────────
+  # Android: Debug Build (PR gate — catch compile errors early)
+  # ──────────────────────────────────────────────
+  android-debug:
+    name: Android Debug Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: github.event_name == 'pull_request'
+    needs: [flutter-ci]
+    defaults:
+      run:
+        working-directory: apps/rayon_sports
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.9'
+          channel: stable
+          cache: true
+
+      - name: Install Melos & Bootstrap
+        run: |
+          dart pub global activate melos
+          cd ../..
+          melos bootstrap
+
+      - name: Generate stub flavor overrides
+        run: |
+          jq '. + {"SUPABASE_URL": "https://stub.supabase.co", "SUPABASE_ANON_KEY": "stub-anon-key"}' \
+            assets/flavors/production.json > assets/flavors/production.local.json
+
+      - name: Build debug APK
+        run: flutter build apk --debug --dart-define-from-file=assets/flavors/production.local.json
+
+  # ──────────────────────────────────────────────
   # Android: Release Build (on main only)
   # ──────────────────────────────────────────────
   android-build:

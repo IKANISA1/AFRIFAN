@@ -63,8 +63,15 @@ class _AfriClubAppState extends State<AfriClubApp> {
 
   @override
   Widget build(BuildContext context) {
+    final bootstrapSnapshot = widget.platformConfigSnapshot == null
+        ? null
+        : PlatformConfigSnapshot.fromJson(widget.platformConfigSnapshot!);
     final providerOverrides = <Override>[
       authRepositoryProvider.overrideWithValue(_authRepository),
+      if (bootstrapSnapshot != null)
+        initialFeatureConfigSnapshotProvider.overrideWithValue(
+          bootstrapSnapshot,
+        ),
       ...widget.providerOverrides,
     ];
 
@@ -140,10 +147,11 @@ class _AfriClubMaterialApp extends ConsumerStatefulWidget {
 }
 
 class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
-  static const Set<String> _publicPaths = <String>{
-    '/splash',
-    '/onboarding',
-    '/auth/phone',
+  /// Aggregated public paths from all registered modules plus system routes.
+  /// These paths bypass the authentication redirect guard.
+  late final Set<String> _publicPaths = <String>{
+    '/feature-unavailable',
+    for (final module in widget.modules) ...module.publicPaths,
   };
 
   late final ValueNotifier<int> _routerRefreshTick;
@@ -156,17 +164,6 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
   void initState() {
     super.initState();
 
-    // ── Hydrate Riverpod feature config from bootstrap snapshot ──
-    // The bootstrap sequence already fetched the platform config from Supabase.
-    // Inject it into the reactive provider graph so the first frame uses
-    // admin-controlled feature states.
-    if (widget.platformConfigSnapshot != null) {
-      final snapshot = PlatformConfigSnapshot.fromJson(
-        widget.platformConfigSnapshot!,
-      );
-      ref.read(featureConfigProvider.notifier).hydrateFromBootstrap(snapshot);
-    }
-
     _routerRefreshTick = ValueNotifier<int>(0);
     _authSubscription = ref.listenManual<AuthState>(authStateProvider, (_, __) {
       _routerRefreshTick.value = _routerRefreshTick.value + 1;
@@ -178,24 +175,7 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
       redirect: _handleRedirect,
       observers: [FirebaseAnalyticsService.routeObserver],
       isFeatureEnabled: (path) {
-        final segments = path.split('/');
-        if (segments.length < 2) return true;
-        final firstSegment = segments[1];
-
-        // Map route paths to Supabase feature_keys
-        const pathMap = {
-          'tickets': 'ticketing',
-          'my-tickets': 'ticketing',
-          'e-ticket': 'ticketing',
-          'contribute': 'contributions',
-          'Groups': 'contributions',
-          'challenge': 'challenge',
-          'fanzone': 'fanzone',
-          'fan-clubs': 'fan_clubs',
-        };
-
-        final key = pathMap[firstSegment] ?? firstSegment;
-        return ref.read(featureConfigServiceProvider).isFeatureEnabled(key);
+        return ref.read(featureConfigServiceProvider).isRouteAvailable(path);
       },
       shellBuilder: (context, shell) => AppShell(
         shell: shell,
@@ -283,6 +263,10 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
     }
 
     if (authState is AuthAuthenticated) {
+      if (location == '/feature-unavailable') {
+        return null;
+      }
+
       if (_isPublicPath(location)) {
         return _safeDeferredDestination(state) ?? '/home';
       }
@@ -294,13 +278,16 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
       return null;
     }
 
-    // Session recovery failed — route to onboarding without preserving
-    // the stale deferred destination to avoid redirect loops.
+    // B-6: Session recovery failed — redirect to re-authentication with
+    // the user's current location preserved so they can return after re-auth.
     if (authState is AuthRecoveryRequired || authState is AuthError) {
       if (_isPublicPath(location)) {
         return null;
       }
-      return '/onboarding';
+      // Route to phone auth instead of generic onboarding so the user
+      // sees a clear "session expired" re-auth flow with their destination
+      // preserved via the `from` query parameter.
+      return _buildRedirectUri('/auth/phone', state);
     }
 
     if (_isPublicPath(location)) {

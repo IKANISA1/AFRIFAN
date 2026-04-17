@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../models/fanzone_models.dart';
 import '../prediction_providers.dart';
+import 'package:core_utils/core_utils.dart';
 
 class PredictionNotificationsScreen extends ConsumerStatefulWidget {
   const PredictionNotificationsScreen({super.key});
@@ -44,7 +45,8 @@ class _PredictionNotificationsScreenState
         _notifications = notifications;
         _isLoading = false;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('PredictionNotificationsScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) {
         return;
       }

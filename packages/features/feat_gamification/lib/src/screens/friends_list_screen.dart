@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
+import 'package:core_utils/core_utils.dart';
 
 class FriendsListScreen extends ConsumerStatefulWidget {
   const FriendsListScreen({super.key});
@@ -52,7 +53,8 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
         _isLoading = false;
         _error = null;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('FriendsListScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) {
         return;
       }
@@ -89,7 +91,8 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
           _matches = matches;
           _isSearching = false;
         });
-      } catch (_) {
+      } catch (error, stackTrace) {
+      AfriLogger.warn('FriendsListScreen', 'Operation failed (non-critical).', error, stackTrace);
         if (!mounted) {
           return;
         }
@@ -118,7 +121,8 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
           _matches = matches;
           _isSearching = false;
         });
-      } catch (_) {
+      } catch (error, stackTrace) {
+      AfriLogger.warn('FriendsListScreen', 'Operation failed (non-critical).', error, stackTrace);
         if (!mounted) {
           return;
         }

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
+import 'package:core_utils/core_utils.dart';
 
 class MyPredictionsScreen extends ConsumerStatefulWidget {
   const MyPredictionsScreen({super.key});
@@ -55,7 +56,8 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
         _history = results[1];
         _isLoading = false;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('MyPredictionsScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) return;
       setState(() {
         _error = 'Could not load your predictions right now.';
@@ -156,7 +158,8 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(result.message)));
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('MyPredictionsScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Could not cancel this prediction.')),

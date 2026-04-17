@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../models/fanzone_models.dart';
 import '../prediction_providers.dart';
+import 'package:core_utils/core_utils.dart';
 
 class LeagueStandingsScreen extends ConsumerStatefulWidget {
   const LeagueStandingsScreen({super.key, required this.competitionSlug});
@@ -44,7 +45,8 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
         _isLoading = false;
         _error = _competition == null ? 'Competition not found.' : null;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('LeagueStandingsScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) {
         return;
       }

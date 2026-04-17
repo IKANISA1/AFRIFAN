@@ -1,8 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Users, GroupDollarSign, Plus, Download, Radio, ShieldCheck } from "lucide-react";
-import { AdminErrorState } from "@/components/admin/admin-error-state";
+import { Users, DollarSign, Plus, Download } from "lucide-react";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { AdminDataGrid } from "@/components/admin/admin-data-grid";
@@ -20,26 +19,26 @@ import {
   deleteAdminContributionGroup,
   downloadContributionExcel,
   getAdminContributionSnapshot,
-  saveAdminContributionGroup,
 } from "@/lib/data/admin/contributions";
-import type { AdminFanClub, AdminContributionGroup, AdminContributionSnapshot, AdminContributionItem } from "@/lib/types";
+import type { AdminFanClub, AdminContributionGroup, AdminContributionSnapshot } from "@/lib/types";
 import { emptyForm as emptyChapterForm, type CommunityForm } from "./_components/community-state";
 import { emptyGroupForm, groupToFormState } from "../contributions/_components/group-form-state";
 import { CommunityContentEditor } from "./_components/community-content-editor";
 import { ContributionGroupForm } from "../contributions/_components/group-form";
 import { cn, formatCurrency } from "@/lib/utils";
+import { useHydrated } from "@/lib/use-hydrated";
 
-type CommunityTab = "chapters" | "circles" | "contributions";
+type CommunityTab = "chapters" | "groups" | "contributions";
 
 const emptySnapshot: AdminContributionSnapshot = {
   groups: [],
   contributions: [],
-  : { },
-monthlyTotal: 0,
+  monthlyTotal: 0,
 };
 
 export default function AdminCommunityHubPage() {
   const { access, client, activeClub } = useAdminPortal();
+  const hydrated = useHydrated();
   const [activeTab, setActiveTab] = useState<CommunityTab>("chapters");
   const [clubs, setClubs] = useState<AdminFanClub[]>([]);
   const [contributionSnapshot, setSnapshot] = useState<AdminContributionSnapshot>(emptySnapshot);
@@ -48,6 +47,7 @@ export default function AdminCommunityHubPage() {
   const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<"chapter" | "circle">("chapter");
+  const controlsDisabled = !hydrated || client == null || loading;
 
   const loadChapters = useCallback(async () => {
     if (!client) return;
@@ -75,7 +75,9 @@ export default function AdminCommunityHubPage() {
 
   useEffect(() => {
     if (client == null || !access.hasAccess) return;
-    loadAll().catch(() => {});
+    queueMicrotask(() => {
+      loadAll().catch(() => {});
+    });
   }, [access.hasAccess, client, loadAll]);
 
   function beginChapterEdit(club: AdminFanClub) {
@@ -117,8 +119,6 @@ export default function AdminCommunityHubPage() {
   }
 
   const totalMembers = clubs.reduce((sum, club) => sum + club.memberCount, 0);
-  const totalCircleMembers = contributionSnapshot.groups.reduce((sum, g) => sum + g.memberCount, 0);
-
   return (
     <div className="section-grid !gap-6">
       <AdminPageHeader
@@ -128,15 +128,17 @@ export default function AdminCommunityHubPage() {
           <div className="flex gap-2">
             <button
               onClick={() => { setChapterForm(emptyChapterForm); setDrawerMode("chapter"); setDrawerOpen(true); }}
-              className="admin-action-button !bg-club-accent !text-white"
+              disabled={controlsDisabled}
+              className="admin-action-button !bg-club-accent !text-white disabled:opacity-60"
             >
               <Plus size={14} /> New Chapter
             </button>
             <button
               onClick={() => { setCircleForm(emptyGroupForm); setDrawerMode("circle"); setDrawerOpen(true); }}
-              className="admin-action-button !bg-[var(--admin-zinc-800)] !text-white"
+              disabled={controlsDisabled}
+              className="admin-action-button !bg-[var(--admin-zinc-800)] !text-white disabled:opacity-60"
             >
-              <Plus size={14} /> New Circle
+              <Plus size={14} /> New Public Group
             </button>
           </div>
         }
@@ -154,9 +156,9 @@ export default function AdminCommunityHubPage() {
           helper="Geographic reach"
         />
         <AdminStateCard
-          label="Support Circles"
+          label="Public Groups"
           value={loading ? "..." : contributionSnapshot.groups.length.toString()}
-          icon={GroupDollarSign}
+          icon={DollarSign}
         />
         <AdminStateCard
           label="Monthly Raised"
@@ -166,7 +168,7 @@ export default function AdminCommunityHubPage() {
       </div>
 
       <div className="flex items-center gap-1 border-b border-[var(--admin-border)] overflow-x-auto no-scrollbar">
-        {(["chapters", "circles", "contributions"] as CommunityTab[]).map((tab) => (
+        {(["chapters", "groups", "contributions"] as CommunityTab[]).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -226,12 +228,11 @@ export default function AdminCommunityHubPage() {
         </AdminDataGrid>
       )}
 
-      {activeTab === "circles" && (
+      {activeTab === "groups" && (
         <AdminDataGrid
           columns={[
-            { key: "circle", label: "Support Circle" },
+            { key: "circle", label: "Public Group" },
             { key: "type", label: "Type" },
-            { key: "privacy", label: "Privacy" },
             { key: "funding", label: "Funding Status" },
             { key: "members", label: "Members" },
             { key: "actions", label: "", className: "text-right" },
@@ -245,12 +246,6 @@ export default function AdminCommunityHubPage() {
               </td>
               <td>
                 <AdminStatusBadge label={group.groupType} tone="neutral" />
-              </td>
-              <td>
-                <div className="flex items-center gap-1 text-[var(--admin-zinc-400)]">
-                   {group.privacy === "private" ? <ShieldCheck size={12} /> : <Radio size={12} />}
-                   <span className="text-[10px] font-bold uppercase tracking-wider">{group.privacy}</span>
-                </div>
               </td>
               <td>
                 <div className="w-full max-w-[120px] space-y-1">
@@ -305,7 +300,7 @@ export default function AdminCommunityHubPage() {
                     <p className="text-sm font-bold text-emerald-400">{formatCurrency(item.amount, group?.currency)}</p>
                   </td>
                   <td>
-                    <p className="text-sm text-[var(--admin-zinc-300)]">{group?.name || "Unknown Circle"}</p>
+                    <p className="text-sm text-[var(--admin-zinc-300)]">{group?.name || "Unknown Group"}</p>
                   </td>
                   <td>
                     <AdminStatusBadge label={item.status} tone={item.status === "confirmed" ? "success" : item.status === "pending" ? "warning" : "danger"} />
@@ -321,14 +316,14 @@ export default function AdminCommunityHubPage() {
       )}
 
       <AdminActionDrawer
-        open={drawerOpen}
+        isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        title={drawerMode === "chapter" ? (chapterForm.id ? "Edit Chapter" : "New Chapter") : (circleForm.id ? "Edit Circle" : "New Circle")}
+        title={drawerMode === "chapter" ? (chapterForm.id ? "Edit Chapter" : "New Chapter") : (circleForm.id ? "Edit Public Group" : "New Public Group")}
       >
         {drawerMode === "chapter" ? (
           <CommunityContentEditor
             form={chapterForm}
-            setForm={setForm as any}
+            setForm={setChapterForm}
             onSubmit={async (formData) => {
                await saveAdminFanClub(client!, access, {
                  id: chapterForm.id || null,
@@ -347,7 +342,7 @@ export default function AdminCommunityHubPage() {
         ) : (
           <ContributionGroupForm
             form={circleForm}
-            setForm={setCircleForm as any}
+            setForm={setCircleForm}
             emptyForm={emptyGroupForm}
             defaultCurrencyCode={activeClub?.currencyCode ?? "USD"}
             client={client}

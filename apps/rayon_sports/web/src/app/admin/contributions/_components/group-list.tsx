@@ -40,9 +40,7 @@ export function ContributionGroupList({
         case "CLUB PROJECTS":
           return group.groupType === "project";
         case "COMMUNITY":
-          return group.groupType === "general";
-        case "SAVINGS":
-          return group.groupType === "savings";
+          return group.groupType === "community";
         case "CLOSED":
           return group.isClosed;
         default:
@@ -61,7 +59,7 @@ export function ContributionGroupList({
 
   return (
     <AdminSurface
-      title="Contribution groups"
+      title="Public initiatives"
       actions={
         <button
           type="button"
@@ -74,7 +72,7 @@ export function ContributionGroupList({
       }
       toolbar={
         <div className="flex flex-wrap items-center gap-2">
-          {["ALL", "CLUB PROJECTS", "COMMUNITY", "SAVINGS", "CLOSED"].map((item) => (
+          {["ALL", "CLUB PROJECTS", "COMMUNITY", "CLOSED"].map((item) => (
             <button
               key={item}
               type="button"
@@ -115,16 +113,16 @@ export function ContributionGroupList({
           ))}
         </div>
       ) : filteredGroups.length === 0 ? (
-        <AdminEmptyState
-          title="No contribution groups in this view"
-          description="Adjust the current filter or create a new group from the editor."
+          <AdminEmptyState
+          title="No public initiatives in this view"
+          description="Adjust the current filter or create a new initiative from the editor."
         />
       ) : (
         <div className="admin-table-shell">
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Group</th>
+                <th>Initiative</th>
                 <th>Type</th>
                 <th>Status</th>
                 <th>Members</th>
@@ -136,30 +134,28 @@ export function ContributionGroupList({
             </thead>
             <tbody>
               {filteredGroups.map((group) => {
-                const creatorAlias = group.creatorId
-                  ? snapshot.[group.creatorId] ?? "000000"
-                  : "000000";
+                const creatorAlias = group.creatorId?.slice(0, 6) ?? "000000";
 
                 return (
-                  <tr key={group.id}>
-                    <td>
+                  <tr key={group.id} className="admin-table-row">
+                    <td className="admin-table-cell" data-column-label="Initiative">
                       <p className="admin-row-title">{group.name}</p>
                       <p className="admin-row-copy">{group.description}</p>
                     </td>
-                    <td>
+                    <td className="admin-table-cell" data-column-label="Type">
                       <AdminStatusBadge label={group.groupType} tone="neutral" />
                     </td>
-                    <td>
+                    <td className="admin-table-cell" data-column-label="Status">
                       <AdminStatusBadge
                         label={group.isClosed ? "Closed" : "Active"}
                         tone={group.isClosed ? "danger" : "success"}
                       />
                     </td>
-                    <td>
+                    <td className="admin-table-cell" data-column-label="Members">
                       <p className="text-sm font-medium text-white">{group.memberCount}</p>
                       <p className="admin-row-meta">contributors</p>
                     </td>
-                    <td>
+                    <td className="admin-table-cell" data-column-label="Raised">
                       <p className="text-sm font-medium text-white">
                         {formatCurrency(group.currentTotal, currencyCode)}
                       </p>
@@ -167,7 +163,7 @@ export function ContributionGroupList({
                         Target {formatCurrency(group.targetAmount, currencyCode)}
                       </p>
                     </td>
-                    <td className="min-w-[180px]">
+                    <td className="admin-table-cell min-w-[180px]" data-column-label="Progress">
                       <ProgressBar
                         value={group.currentTotal}
                         max={Math.max(group.targetAmount, group.currentTotal, 1)}
@@ -177,7 +173,7 @@ export function ContributionGroupList({
                         {Math.round((group.currentTotal / Math.max(group.targetAmount, 1)) * 100)}% funded
                       </p>
                     </td>
-                    <td>
+                    <td className="admin-table-cell" data-column-label="Owner">
                       <p className="text-sm font-medium text-white">{creatorAlias}</p>
                       <p className="admin-row-meta">
                         {new Date(group.createdAt).toLocaleDateString("en-US", {
@@ -187,8 +183,8 @@ export function ContributionGroupList({
                         })}
                       </p>
                     </td>
-                    <td>
-                      <div className="flex justify-end gap-2">
+                    <td className="admin-table-cell" data-column-label="Actions">
+                      <div className="flex flex-wrap justify-start gap-2 sm:justify-end">
                         <button
                           type="button"
                           onClick={() => onEdit(group)}

@@ -1,7 +1,11 @@
-import 'package:core_network/core_network.dart';
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../admin_providers.dart';
+import '../repositories/feature_management_repository.dart';
 
 /// Detail screen for editing a single platform feature's channel configs
 /// and scheduling rules.
@@ -16,17 +20,18 @@ class FeatureDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
-  Map<String, dynamic>? _feature;
-  List<Map<String, dynamic>> _channels = [];
-  Map<String, dynamic>? _rules;
+  ManagedPlatformFeature? _feature;
   bool _isLoading = true;
-  String? _error;
   bool _isSaving = false;
+  String? _error;
+
+  FeatureManagementRepository get _repository =>
+      ref.read(featureManagementRepositoryProvider);
 
   @override
   void initState() {
     super.initState();
-    _load();
+    unawaited(_load());
   }
 
   Future<void> _load() async {
@@ -36,54 +41,21 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
     });
 
     try {
-      final client = SupabaseClientFactory.client;
+      final feature = await _repository.loadFeature(widget.featureKey);
+      if (!mounted) return;
 
-      // 1. Load the feature
-      final featureResp = await client
-          .from('platform_features')
-          .select()
-          .eq('feature_key', widget.featureKey)
-          .maybeSingle();
-
-      if (featureResp == null) {
-        if (!mounted) return;
-        setState(() {
-          _isLoading = false;
+      setState(() {
+        _feature = feature;
+        _isLoading = false;
+        if (feature == null) {
           _error = 'Feature "${widget.featureKey}" not found.';
-        });
-        return;
-      }
-
-      final featureId = featureResp['id'] as String;
-
-      // 2. Load channels
-      final channelsResp = await client
-          .from('platform_feature_channels')
-          .select()
-          .eq('feature_id', featureId)
-          .order('channel');
-
-      // 3. Load rules
-      final rulesResp = await client
-          .from('platform_feature_rules')
-          .select()
-          .eq('feature_id', featureId)
-          .maybeSingle();
-
-      if (!mounted) return;
-      setState(() {
-        _feature = Map<String, dynamic>.from(featureResp);
-        _channels = List<Map<String, dynamic>>.from(channelsResp as List);
-        _rules = rulesResp != null
-            ? Map<String, dynamic>.from(rulesResp)
-            : null;
-        _isLoading = false;
+        }
       });
-    } catch (e) {
+    } catch (error) {
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _error = e.toString();
+        _error = error.toString();
       });
     }
   }
@@ -104,11 +76,11 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                         child: AfriSkeletonList(),
                       )
                     : _error != null
-                        ? _buildError()
-                        : RefreshIndicator(
-                            onRefresh: _load,
-                            child: _buildContent(),
-                          ),
+                    ? _buildError()
+                    : RefreshIndicator(
+                        onRefresh: _load,
+                        child: _buildContent(),
+                      ),
               ),
             ],
           ),
@@ -132,7 +104,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _feature?['display_name'] as String? ?? widget.featureKey,
+                  _feature?.displayName ?? widget.featureKey,
                   style: TypographyTokens.titleMedium(),
                 ),
                 Text(
@@ -151,31 +123,38 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
   }
 
   Widget _buildContent() {
+    final feature = _feature;
+    if (feature == null) {
+      return ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: const [SizedBox(height: 1)],
+      );
+    }
+
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.spacing6,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildSectionTitle('GLOBAL STATE'),
           const SizedBox(height: SpacingTokens.spacing3),
-          _buildGlobalState(),
+          _buildGlobalState(feature),
           const SizedBox(height: SpacingTokens.spacing6),
           _buildSectionTitle('CHANNEL CONFIG'),
           const SizedBox(height: SpacingTokens.spacing3),
-          ..._channels.map(_buildChannelCard),
-          if (_channels.isEmpty)
-            _buildEmptyState('No channel configs found'),
+          if (feature.channels.isEmpty)
+            _buildEmptyState('No channel configs found')
+          else
+            ...feature.channels.map(_buildChannelCard),
           const SizedBox(height: SpacingTokens.spacing6),
           _buildSectionTitle('SCHEDULING'),
           const SizedBox(height: SpacingTokens.spacing3),
-          _buildScheduleCard(),
+          _buildScheduleCard(feature),
           const SizedBox(height: SpacingTokens.spacing6),
           _buildSectionTitle('ACCESS RULES'),
           const SizedBox(height: SpacingTokens.spacing3),
-          _buildAccessRulesCard(),
+          _buildAccessRulesCard(feature),
           const SizedBox(height: SpacingTokens.spacing8),
         ],
       ),
@@ -192,12 +171,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
     );
   }
 
-  // ──── Global state ────
-
-  Widget _buildGlobalState() {
-    final enabled = _feature?['is_enabled'] as bool? ?? true;
-    final visibility = _feature?['visibility_state'] as String? ?? 'visible';
-
+  Widget _buildGlobalState(ManagedPlatformFeature feature) {
     return GlassCard(
       animate: false,
       child: Column(
@@ -205,29 +179,21 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
           _buildToggleRow(
             label: 'Enabled',
             subtitle: 'Global kill switch for this feature',
-            value: enabled,
-            onChanged: (v) => _updateFeature({'is_enabled': v}),
+            value: feature.isEnabled,
+            onChanged: (value) => _updateGlobalEnabled(value),
           ),
           const Divider(color: Colors.white10),
           _buildVisibilityRow(
-            current: visibility,
-            onChanged: (v) => _updateFeature({'visibility_state': v}),
+            current: feature.visibilityState,
+            onChanged: _updateVisibility,
           ),
         ],
       ),
     );
   }
 
-  // ──── Channel config cards ────
-
-  Widget _buildChannelCard(Map<String, dynamic> channel) {
-    final channelName = (channel['channel'] as String).toUpperCase();
-    final channelEnabled = channel['is_enabled'] as bool? ?? true;
-    final channelVisible = channel['is_visible'] as bool? ?? true;
-    final showInNav = channel['show_in_navigation'] as bool? ?? false;
-    final showOnHome = channel['show_on_home'] as bool? ?? false;
-    final sortOrder = channel['sort_order'] as int?;
-    final channelId = channel['id'] as String;
+  Widget _buildChannelCard(ManagedFeatureChannelConfig channel) {
+    final channelName = channel.channel.toUpperCase();
 
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
@@ -239,7 +205,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
             Row(
               children: [
                 Icon(
-                  channelName == 'MOBILE'
+                  channel.channel == 'mobile'
                       ? Icons.phone_android
                       : Icons.language,
                   size: 18,
@@ -248,8 +214,9 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                 const SizedBox(width: SpacingTokens.spacing2),
                 Text(
                   channelName,
-                  style: TypographyTokens.titleSmall()
-                      .copyWith(letterSpacing: 1.2),
+                  style: TypographyTokens.titleSmall().copyWith(
+                    letterSpacing: 1.2,
+                  ),
                 ),
               ],
             ),
@@ -257,39 +224,46 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
             _buildToggleRow(
               label: 'Enabled',
               subtitle: 'Feature active on $channelName',
-              value: channelEnabled,
-              onChanged: (v) => _updateChannel(channelId, {'is_enabled': v}),
+              value: channel.isEnabled,
+              onChanged: (value) => _updateChannel(channel.channel, {
+                'is_enabled': value,
+              }),
             ),
             const Divider(color: Colors.white10),
             _buildToggleRow(
               label: 'Visible',
               subtitle: 'Show in $channelName UI',
-              value: channelVisible,
-              onChanged: (v) => _updateChannel(channelId, {'is_visible': v}),
+              value: channel.isVisible,
+              onChanged: (value) => _updateChannel(channel.channel, {
+                'is_visible': value,
+              }),
             ),
             const Divider(color: Colors.white10),
             _buildToggleRow(
               label: 'Show in Navigation',
-              subtitle: channelName == 'MOBILE'
+              subtitle: channel.channel == 'mobile'
                   ? 'Bottom navigation tab'
                   : 'Top navigation menu',
-              value: showInNav,
-              onChanged: (v) =>
-                  _updateChannel(channelId, {'show_in_navigation': v}),
+              value: channel.showInNavigation,
+              onChanged: (value) => _updateChannel(channel.channel, {
+                'show_in_navigation': value,
+              }),
             ),
             const Divider(color: Colors.white10),
             _buildToggleRow(
               label: 'Show on Home',
               subtitle: 'Display on home screen',
-              value: showOnHome,
-              onChanged: (v) =>
-                  _updateChannel(channelId, {'show_on_home': v}),
+              value: channel.showOnHome,
+              onChanged: (value) => _updateChannel(channel.channel, {
+                'show_on_home': value,
+              }),
             ),
             const Divider(color: Colors.white10),
             _buildSortOrderRow(
-              current: sortOrder,
-              onChanged: (v) =>
-                  _updateChannel(channelId, {'sort_order': v}),
+              current: channel.sortOrder,
+              onChanged: (value) => _updateChannel(channel.channel, {
+                'sort_order': value,
+              }),
             ),
           ],
         ),
@@ -297,13 +271,9 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
     );
   }
 
-  // ──── Schedule card ────
-
-  Widget _buildScheduleCard() {
-    final startAt = _rules?['schedule_start_at'] as String?;
-    final endAt = _rules?['schedule_end_at'] as String?;
-    final startDate = startAt != null ? DateTime.tryParse(startAt) : null;
-    final endDate = endAt != null ? DateTime.tryParse(endAt) : null;
+  Widget _buildScheduleCard(ManagedPlatformFeature feature) {
+    final startDate = feature.rules?.scheduleStartAt;
+    final endDate = feature.rules?.scheduleEndAt;
 
     return GlassCard(
       animate: false,
@@ -334,13 +304,18 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.info_outline, size: 16, color: Colors.white38),
+                  const Icon(
+                    Icons.info_outline,
+                    size: 16,
+                    color: Colors.white38,
+                  ),
                   const SizedBox(width: SpacingTokens.spacing2),
                   Expanded(
                     child: Text(
                       _scheduleDescription(startDate, endDate),
-                      style: TypographyTokens.bodySmall()
-                          .copyWith(color: Colors.white54),
+                      style: TypographyTokens.bodySmall().copyWith(
+                        color: Colors.white54,
+                      ),
                     ),
                   ),
                   TextButton(
@@ -350,8 +325,9 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                     }),
                     child: Text(
                       'Clear',
-                      style: TypographyTokens.bodySmall()
-                          .copyWith(color: Colors.red.shade400),
+                      style: TypographyTokens.bodySmall().copyWith(
+                        color: Colors.red.shade400,
+                      ),
                     ),
                   ),
                 ],
@@ -363,11 +339,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
     );
   }
 
-  // ──── Access rules card ────
-
-  Widget _buildAccessRulesCard() {
-    final authRequired = _rules?['auth_required'] as bool? ?? false;
-
+  Widget _buildAccessRulesCard(ManagedPlatformFeature feature) {
     return GlassCard(
       animate: false,
       child: Column(
@@ -375,15 +347,13 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
           _buildToggleRow(
             label: 'Auth Required',
             subtitle: 'User must be signed in to access',
-            value: authRequired,
-            onChanged: (v) => _updateRules({'auth_required': v}),
+            value: feature.rules?.authRequired ?? false,
+            onChanged: (value) => _updateRules({'auth_required': value}),
           ),
         ],
       ),
     );
   }
-
-  // ──── Reusable row builders ────
 
   Widget _buildToggleRow({
     required String label,
@@ -402,8 +372,9 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                 Text(label, style: TypographyTokens.bodyMedium()),
                 Text(
                   subtitle,
-                  style: TypographyTokens.bodySmall()
-                      .copyWith(color: Colors.white38),
+                  style: TypographyTokens.bodySmall().copyWith(
+                    color: Colors.white38,
+                  ),
                 ),
               ],
             ),
@@ -440,27 +411,27 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                 Text('Visibility', style: TypographyTokens.bodyMedium()),
                 Text(
                   'Controls UI rendering state',
-                  style: TypographyTokens.bodySmall()
-                      .copyWith(color: Colors.white38),
+                  style: TypographyTokens.bodySmall().copyWith(
+                    color: Colors.white38,
+                  ),
                 ),
               ],
             ),
           ),
           PopupMenuButton<String>(
-            onSelected: onChanged,
-            itemBuilder: (_) => [
-              const PopupMenuItem(value: 'visible', child: Text('Visible')),
-              const PopupMenuItem(value: 'hidden', child: Text('Hidden')),
-              const PopupMenuItem(
-                value: 'maintenance',
-                child: Text('Maintenance'),
-              ),
+            onSelected: _isSaving ? null : onChanged,
+            itemBuilder: (_) => const [
+              PopupMenuItem(value: 'visible', child: Text('Visible')),
+              PopupMenuItem(value: 'hidden', child: Text('Hidden')),
+              PopupMenuItem(value: 'maintenance', child: Text('Maintenance')),
             ],
             child: Chip(
               label: Text(
                 current.toUpperCase(),
-                style: TypographyTokens.bodySmall()
-                    .copyWith(color: color, fontSize: 10),
+                style: TypographyTokens.bodySmall().copyWith(
+                  color: color,
+                  fontSize: 10,
+                ),
               ),
               side: BorderSide(color: color.withValues(alpha: 0.3)),
               backgroundColor: color.withValues(alpha: 0.1),
@@ -487,8 +458,9 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                 Text('Sort Order', style: TypographyTokens.bodyMedium()),
                 Text(
                   'Lower = higher priority in nav/home',
-                  style: TypographyTokens.bodySmall()
-                      .copyWith(color: Colors.white38),
+                  style: TypographyTokens.bodySmall().copyWith(
+                    color: Colors.white38,
+                  ),
                 ),
               ],
             ),
@@ -508,10 +480,14 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                 ),
                 border: OutlineInputBorder(),
               ),
-              onFieldSubmitted: (value) {
-                final parsed = int.tryParse(value);
-                if (parsed != null) onChanged(parsed);
-              },
+              onFieldSubmitted: _isSaving
+                  ? null
+                  : (value) {
+                      final parsed = int.tryParse(value);
+                      if (parsed != null) {
+                        onChanged(parsed);
+                      }
+                    },
             ),
           ),
         ],
@@ -541,14 +517,15 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                 Text(label, style: TypographyTokens.bodyMedium()),
                 Text(
                   subtitle,
-                  style: TypographyTokens.bodySmall()
-                      .copyWith(color: Colors.white38),
+                  style: TypographyTokens.bodySmall().copyWith(
+                    color: Colors.white38,
+                  ),
                 ),
               ],
             ),
           ),
           GestureDetector(
-            onTap: () => _pickDateTime(value, onChanged),
+            onTap: _isSaving ? null : () => _pickDateTime(value, onChanged),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.white24),
@@ -572,8 +549,6 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
       ),
     );
   }
-
-  // ──── Date/time picker ────
 
   Future<void> _pickDateTime(
     DateTime? initial,
@@ -605,67 +580,63 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
     onChanged(combined);
   }
 
-  // ──── Mutation helpers ────
+  Future<void> _updateGlobalEnabled(bool value) async {
+    final feature = _feature;
+    if (feature == null) return;
+    await _runSave(
+      () => _repository.updateFeatureGlobalStatus(feature.id, value),
+      errorMessage: 'Failed to update feature.',
+    );
+  }
 
-  Future<void> _updateFeature(Map<String, dynamic> updates) async {
-    if (_feature == null) return;
-    setState(() => _isSaving = true);
-    try {
-      final client = SupabaseClientFactory.client;
-      await client
-          .from('platform_features')
-          .update(updates)
-          .eq('id', _feature!['id'] as String);
-      await _load();
-    } catch (e) {
-      _showError('Failed to update feature: $e');
-    } finally {
-      if (mounted) setState(() => _isSaving = false);
-    }
+  Future<void> _updateVisibility(String value) async {
+    final feature = _feature;
+    if (feature == null) return;
+    await _runSave(
+      () => _repository.updateFeatureVisibility(feature.id, value),
+      errorMessage: 'Failed to update feature visibility.',
+    );
   }
 
   Future<void> _updateChannel(
-    String channelId,
+    String channel,
     Map<String, dynamic> updates,
   ) async {
-    setState(() => _isSaving = true);
-    try {
-      final client = SupabaseClientFactory.client;
-      await client
-          .from('platform_feature_channels')
-          .update(updates)
-          .eq('id', channelId);
-      await _load();
-    } catch (e) {
-      _showError('Failed to update channel: $e');
-    } finally {
-      if (mounted) setState(() => _isSaving = false);
-    }
+    final feature = _feature;
+    if (feature == null) return;
+    await _runSave(
+      () => _repository.updateChannelConfig(feature.id, channel, updates),
+      errorMessage: 'Failed to update channel config.',
+    );
   }
 
   Future<void> _updateRules(Map<String, dynamic> updates) async {
-    if (_feature == null) return;
+    final feature = _feature;
+    if (feature == null) return;
+    await _runSave(
+      () => _repository.updateFeatureRules(feature.id, updates),
+      errorMessage: 'Failed to update feature rules.',
+    );
+  }
+
+  Future<void> _runSave(
+    Future<bool> Function() action, {
+    required String errorMessage,
+  }) async {
     setState(() => _isSaving = true);
     try {
-      final client = SupabaseClientFactory.client;
-      final featureId = _feature!['id'] as String;
-
-      if (_rules != null) {
-        await client
-            .from('platform_feature_rules')
-            .update(updates)
-            .eq('feature_id', featureId);
-      } else {
-        await client.from('platform_feature_rules').insert({
-          'feature_id': featureId,
-          ...updates,
-        });
+      final success = await action();
+      if (!success) {
+        _showError(errorMessage);
+        return;
       }
       await _load();
-    } catch (e) {
-      _showError('Failed to update rules: $e');
+    } catch (error) {
+      _showError('$errorMessage $error');
     } finally {
-      if (mounted) setState(() => _isSaving = false);
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
     }
   }
 
@@ -679,21 +650,21 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
     );
   }
 
-  // ──── Helpers ────
-
   String _scheduleDescription(DateTime? start, DateTime? end) {
     if (start != null && end != null) {
       return 'Active from ${_formatDate(start)} to ${_formatDate(end)}';
-    } else if (start != null) {
+    }
+    if (start != null) {
       return 'Available from ${_formatDate(start)}';
-    } else if (end != null) {
+    }
+    if (end != null) {
       return 'Available until ${_formatDate(end)}';
     }
     return 'Always available';
   }
 
-  String _formatDate(DateTime d) =>
-      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+  String _formatDate(DateTime value) =>
+      '${value.year}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';
 
   Widget _buildEmptyState(String message) {
     return Padding(
@@ -716,7 +687,10 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
           children: [
             Icon(Icons.error_outline, size: 48, color: Colors.red.shade400),
             const SizedBox(height: SpacingTokens.spacing4),
-            Text('Failed to load feature', style: TypographyTokens.titleMedium()),
+            Text(
+              'Failed to load feature',
+              style: TypographyTokens.titleMedium(),
+            ),
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
               _error ?? 'Unknown error',

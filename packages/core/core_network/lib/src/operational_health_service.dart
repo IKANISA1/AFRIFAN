@@ -12,8 +12,8 @@ enum OperationalHealthSeverity { info, warning, critical }
 
 /// Records operational health events to Supabase for monitoring.
 ///
-/// Used by BioPay, payment services, and critical infrastructure to track
-/// errors, warnings, and service disruptions in production.
+/// Used by payment services and critical infrastructure to track errors,
+/// warnings, and service disruptions in production.
 class OperationalHealthService {
   OperationalHealthService({required SupabaseClient client}) : _client = client;
 

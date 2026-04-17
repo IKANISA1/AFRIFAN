@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { GroupDollarSign, Coins, Users } from "lucide-react";
+import { DollarSign, Coins, Users } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { showAdminToast } from "@/components/admin/admin-toast";
@@ -22,8 +22,7 @@ import { ContributionGroupList } from "./_components/group-list";
 const emptySnapshot: AdminContributionSnapshot = {
   groups: [],
   contributions: [],
-  : { },
-monthlyTotal: 0,
+  monthlyTotal: 0,
 };
 
 export default function AdminContributionsPage() {
@@ -78,7 +77,8 @@ export default function AdminContributionsPage() {
     if (
       !confirmAdminDestructiveAction({
         subject: group.name,
-        detail: "The contribution group and its operational definition will be removed.",
+        detail:
+          "The public initiative and its operational definition will be removed.",
       })
     ) {
       return;
@@ -90,7 +90,9 @@ export default function AdminContributionsPage() {
       showAdminToast(`${group.name} removed.`, "success");
     } catch (caught) {
       showAdminToast(
-        caught instanceof Error ? caught.message : "Could not remove support Group.",
+        caught instanceof Error
+          ? caught.message
+          : "Could not remove public initiative.",
         "error",
       );
     }
@@ -120,12 +122,12 @@ export default function AdminContributionsPage() {
           icon={Coins}
         />
         <AdminStateCard
-          label="Active Groups"
+          label="Active initiatives"
           value={
             loading ? "..." : snapshot.groups.filter((g) => !g.isClosed).length.toString()
           }
           helper="Currently visible."
-          icon={GroupDollarSign}
+          icon={DollarSign}
         />
         <AdminStateCard
           label="Contributors"

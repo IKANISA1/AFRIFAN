@@ -62,11 +62,13 @@ test("supporters handoff page renders on tablet", async ({ page }) => {
   await page.goto("/supporters", { waitUntil: "domcontentloaded" });
   await expect(
     page.getByRole("heading", {
-      name: /urugendo rw'umufana rukomereza kuri mobile/i,
+      name: /the supporter journey continues on mobile/i,
     }),
   ).toBeVisible();
   await expect(
-    page.getByText(/catalogue imwe ya Fan Engagement Token icungwa na admin/i),
+    page.getByRole("heading", {
+      name: /admin-managed fan engagement rewards/i,
+    }),
   ).toBeVisible();
 });
 
@@ -191,7 +193,7 @@ test("admin auth with assignment-backed session reaches dashboard", async ({
     const created = await serviceClient.auth.admin.createUser({
       email,
       email_confirm: true,
-      app_metadata: { role: "rayon_sport", club_id: CLUB_ID },
+      app_metadata: { role: "club_admin", club_id: CLUB_ID },
     });
     if (created.error) {
       throw created.error;
@@ -202,7 +204,7 @@ test("admin auth with assignment-backed session reaches dashboard", async ({
       .from("admin_role_assignments")
       .insert({
         user_id: userId,
-        role: "rayon_sport",
+        role: "club_admin",
         is_active: true,
         club_id: CLUB_ID,
         notes: "temporary playwright verification user",
@@ -213,7 +215,7 @@ test("admin auth with assignment-backed session reaches dashboard", async ({
 
     // Use magic link as a bridge to bypass OTP in CI
     // (Phone OTP cannot be intercepted programmatically in CI without Twilio hooks)
-    const redirectTo = `${baseURL}/admin`;
+    const redirectTo = `${baseURL}/auth/callback?next=/admin`;
     const link = await serviceClient.auth.admin.generateLink({
       type: "magiclink",
       email,
@@ -232,13 +234,44 @@ test("admin auth with assignment-backed session reaches dashboard", async ({
     });
 
     // After sign-in, we should see the operations dashboard
-    await expect(page.getByText(/operations dashboard/i)).toBeVisible({
+    await expect(
+      page
+        .locator("#admin-main-content")
+        .getByRole("heading", { name: /operations dashboard/i })
+        .first(),
+    ).toBeVisible({
       timeout: 20_000,
     });
     await expect(
-      page.getByText(/signal first\. actions stay one click away\./i),
+      page
+        .locator("#admin-main-content")
+        .getByRole("heading", { name: /quick actions/i })
+        .first(),
     ).toBeVisible();
-    await expect(page.getByText(/secure session/i)).toBeVisible();
+    await expect(
+      page
+        .locator("#admin-main-content")
+        .getByRole("heading", { name: /recent activity/i })
+        .first(),
+    ).toBeVisible();
+
+    const moreButton = page.getByRole("button", {
+      name: /show more admin options/i,
+    });
+    await expect(moreButton).toBeVisible();
+    await moreButton.click();
+
+    const moreDialog = page.getByRole("dialog", {
+      name: /more admin options/i,
+    });
+    await expect(moreDialog).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(moreDialog).toBeHidden();
+
+    const horizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(horizontalOverflow).toBeLessThanOrEqual(1);
   } finally {
     if (userId) {
       await serviceClient

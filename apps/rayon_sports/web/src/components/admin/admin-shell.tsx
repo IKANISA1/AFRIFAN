@@ -8,11 +8,13 @@ import type { FormEvent, ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   Award,
+  AlertTriangle,
   Bell,
-  Command,
   Crown,
+  Database,
   FileImage,
   FileText,
+  Gift,
   HandHeart,
   Handshake,
   LayoutDashboard,
@@ -21,18 +23,18 @@ import {
   Newspaper,
   PanelLeftClose,
   PanelLeftOpen,
-  Search,
   Settings,
   Settings2,
   ShieldCheck,
   ShoppingBag,
   Smartphone,
-  Sparkles,
+  Target,
   Trophy,
   Users,
   Wallet,
   X,
 } from "lucide-react";
+import { AdminDialogFrame } from "@/components/admin/admin-dialog-frame";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { formatAdminPhoneForDisplay } from "@/lib/admin-auth";
 import { withAdminClubScope } from "@/lib/admin-club-scope";
@@ -54,14 +56,17 @@ const navIcons: Record<string, LucideIcon> = {
   "/admin/matches": Trophy,
   "/admin/squad": Users,
   "/admin/shop": ShoppingBag,
+  "/admin/offers": Gift,
   "/admin/membership": Crown,
   "/admin/gamification": Award,
   "/admin/gamification/wallet": Wallet,
+  "/admin/predictions": Target,
   "/admin/community": Handshake,
   "/admin/standings": ListOrdered,
   "/admin/contributions": HandHeart,
   "/admin/notifications": Bell,
   "/admin/sms-monitor": Smartphone,
+  "/admin/football-sync": Database,
 };
 
 const sidebarSections = [
@@ -82,6 +87,7 @@ const sidebarSections = [
       "/admin/tickets",
       "/admin/community",
       "/admin/shop",
+      "/admin/offers",
     ],
   },
   {
@@ -93,6 +99,8 @@ const sidebarSections = [
     items: [
       "/admin/gamification",
       "/admin/gamification/wallet",
+      "/admin/predictions",
+      "/admin/football-sync",
       "/admin/settings",
       "/admin/settings/features",
       "/admin/settings/audit",
@@ -137,15 +145,114 @@ function roleTone(role: string | null) {
   }
 }
 
+function WhatsAppIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    </svg>
+  );
+}
+
+function OtpDigitInput({
+  value,
+  length = 6,
+  onChange,
+}: {
+  value: string;
+  length?: number;
+  onChange: (val: string) => void;
+}) {
+  // Build a fixed-length array of single characters for each OTP box.
+  // Array.from guarantees exactly `length` entries regardless of input.
+  const digits = Array.from({ length }, (_, i) => value[i] ?? "");
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>, index: number) {
+    if (event.key === "Backspace") {
+      event.preventDefault();
+      const currentDigit = digits[index] ?? "";
+
+      if (currentDigit) {
+        // Clear the current digit
+        const next = value.slice(0, index) + value.slice(index + 1);
+        onChange(next.slice(0, length));
+      } else if (index > 0) {
+        // Current cell is already empty — clear the previous digit and focus it
+        const next = value.slice(0, index - 1) + value.slice(index);
+        onChange(next.slice(0, length));
+        document.getElementById(`otp-${index - 1}`)?.focus();
+      }
+    }
+
+    if (event.key === "ArrowLeft" && index > 0) {
+      event.preventDefault();
+      document.getElementById(`otp-${index - 1}`)?.focus();
+    }
+
+    if (event.key === "ArrowRight" && index < length - 1) {
+      event.preventDefault();
+      document.getElementById(`otp-${index + 1}`)?.focus();
+    }
+  }
+
+  function handleInput(char: string, index: number) {
+    const cleaned = char.replace(/[^\d]/g, "");
+    if (!cleaned) return;
+    // Replace the digit at `index` with the new character
+    const before = value.padEnd(index, " ").slice(0, index);
+    const after = value.slice(index + 1);
+    const next = (before + cleaned[0] + after).replace(/[^\d]/g, "").slice(0, length);
+    onChange(next);
+    if (index < length - 1) {
+      document.getElementById(`otp-${index + 1}`)?.focus();
+    }
+  }
+
+  function handlePaste(event: React.ClipboardEvent) {
+    event.preventDefault();
+    const pasted = event.clipboardData.getData("text").replace(/[^\d]/g, "").slice(0, length);
+    if (pasted) {
+      onChange(pasted);
+      const lastIndex = Math.min(pasted.length, length) - 1;
+      document.getElementById(`otp-${lastIndex}`)?.focus();
+    }
+  }
+
+  return (
+    <div className="flex items-center justify-center gap-2 sm:gap-3" onPaste={handlePaste}>
+      {digits.map((digit, i) => (
+        <input
+          key={i}
+          id={`otp-${i}`}
+          type="text"
+          inputMode="numeric"
+          autoComplete={i === 0 ? "one-time-code" : "off"}
+          maxLength={1}
+          value={digit}
+          onChange={(e) => handleInput(e.target.value, i)}
+          onKeyDown={(e) => handleKeyDown(e, i)}
+          onFocus={(e) => e.target.select()}
+          className={cn(
+            "h-14 w-11 sm:h-16 sm:w-13 rounded-xl border-[1.2px] bg-transparent text-center font-display text-2xl font-bold text-white transition-all duration-200 outline-none",
+            digit
+              ? "border-[#25D366]/60 shadow-[0_0_20px_rgba(37,211,102,0.15)]"
+              : "border-white/12 hover:border-white/20",
+            "focus:border-[#25D366] focus:shadow-[0_0_24px_rgba(37,211,102,0.2)]",
+          )}
+        />
+      ))}
+    </div>
+  );
+}
+
 function AdminAuthCard() {
   const {
     requestPhoneCode,
     verifyPhoneCode,
     pendingPhone,
     resetPendingPhone,
+    authBusy,
     error,
     notice,
-    loading,
   } = useAdminPortal();
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
@@ -184,136 +291,186 @@ function AdminAuthCard() {
     }
   }
 
-  const activePhone = pendingPhone ?? (phone.trim() || null);
+  const activePhone = pendingPhone;
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-12 relative">
-      {showContactPopup && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-          <div className={`${ui.panelElevated} w-full max-w-sm rounded-[32px] border-[1.2px] p-6 sm:p-8 text-center`}>
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366]/10 text-[#25D366]">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12.031 0C5.405 0 0 5.413 0 12.046C0 14.167 0.553 16.236 1.583 18.056L0.519 21.93L4.492 20.887C6.262 21.83 8.248 22.33 12.029 22.33C18.653 22.33 24.058 16.917 24.058 10.286C24.058 3.654 18.653 0 12.031 0ZM18.423 15.65C18.158 16.398 17.126 17.067 16.326 17.228C15.776 17.337 14.982 17.433 12.185 16.268C8.611 14.779 6.275 11.134 6.061 10.85C5.847 10.566 4.3 8.016 4.3 5.385C4.3 2.753 5.568 1.488 5.86 1.189C6.151 0.89 6.643 0.767 7.108 0.767C7.257 0.767 7.391 0.774 7.51 0.781C7.868 0.8 8.077 0.831 8.314 1.408C8.611 2.128 9.336 3.916 9.426 4.103C9.515 4.29 9.605 4.526 9.485 4.764C9.366 5.002 9.277 5.111 9.098 5.321C8.919 5.532 8.75 5.679 8.571 5.903C8.402 6.113 8.213 6.34 8.421 6.699C8.63 7.058 9.348 8.23 10.347 9.135C11.635 10.302 12.748 10.67 13.14 10.835C13.531 11 13.784 10.971 14.004 10.742C14.223 10.513 14.862 9.771 15.113 9.422C15.364 9.073 15.602 9.117 15.96 9.251C16.318 9.385 18.218 10.323 18.576 10.502C18.934 10.681 19.172 10.771 19.261 10.92C19.351 11.069 19.351 11.758 19.086 12.506H18.423Z" />
-              </svg>
-            </div>
-            <h2 className="text-xl font-bold text-white mb-2">Access Denied</h2>
-            <p className="text-slate-300 text-sm mb-6">
-              This number is not registered as an admin. Contact the system administrator via WhatsApp to request access.
-            </p>
-            <div className="flex flex-col gap-3">
-              <a
-                href="https://wa.me/250788767816"
-                target="_blank"
-                rel="norenoopener"
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-bold text-white transition-opacity hover:bg-[#20bd5a]"
-              >
-                Message +250 788 767 816
-              </a>
-              <button
-                type="button"
-                onClick={() => setShowContactPopup(false)}
-                className="text-sm font-semibold text-slate-400 hover:text-white transition-colors"
-              >
-                Close
-              </button>
-            </div>
+      {/* Background glow effects */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-[#25D366]/4 blur-[120px]" />
+        <div className="absolute left-1/4 top-2/3 h-[300px] w-[300px] rounded-full bg-club-primary/6 blur-[100px]" />
+      </div>
+
+      <AdminDialogFrame
+        open={showContactPopup}
+        onClose={() => setShowContactPopup(false)}
+        title="Access denied"
+        description="This number is not registered as an admin. Contact the system administrator via WhatsApp to request access."
+        closeLabel="Close access denied dialog"
+      >
+        <div className="space-y-6 text-center">
+          <div className="mx-auto flex h-18 w-18 items-center justify-center rounded-full bg-[#25D366]/10 text-[#25D366]">
+            <WhatsAppIcon size={36} />
           </div>
+          <a
+            href="https://wa.me/250788767816"
+            target="_blank"
+            rel="noopener"
+            className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#25D366] to-[#128C7E] px-5 py-4 text-sm font-extrabold uppercase tracking-wider text-white transition-all hover:shadow-[0_8px_32px_rgba(37,211,102,0.3)] active:scale-[0.98]"
+          >
+            <WhatsAppIcon size={18} />
+            Message +250 788 767 816
+          </a>
         </div>
-      )}
-      <div className="w-full max-w-xl">
+      </AdminDialogFrame>
+
+      <div className="relative w-full max-w-lg">
         <div
-          className={`${ui.panelElevated} overflow-hidden rounded-[36px] border-[1.2px] p-6 sm:p-8`}
+          className={`${ui.panelElevated} overflow-hidden rounded-[36px] border-[1.2px] p-7 sm:p-10`}
         >
-          <div className="space-y-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/6">
+          <div className="space-y-8">
+            {/* Header with WhatsApp branding */}
+            <div className="flex items-start gap-5">
+              <div className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/6">
                 <Image
                   src="/icons/icon-192x192.png"
                   alt={`${siteConfig.shortTitle} emblem`}
-                  width={34}
-                  height={34}
+                  width={40}
+                  height={40}
                   priority
                 />
               </div>
-              <div className="space-y-1">
-                <p className="admin-page-eyebrow">Central admin</p>
-                <h1 className="admin-page-title text-[2rem] sm:text-[2.4rem]">
+              <div className="space-y-1.5">
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.3em] text-[#25D366]">
+                  Central admin
+                </p>
+                <h1 className="font-display text-[2rem] font-extrabold leading-[1.05] text-white sm:text-[2.6rem]">
                   Secure sign in
                 </h1>
               </div>
             </div>
 
+            {/* Auth form card */}
             <div
-              className={`${ui.panelInset} grid gap-4 rounded-[28px] p-5 sm:p-6`}
+              className={`${ui.panelInset} grid gap-5 rounded-[28px] p-5 sm:p-7`}
             >
-              <div className="flex items-center gap-3">
-                <div className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-club-accent/30 bg-club-accent/12 text-club-accent">
-                  <Smartphone className="h-4 w-4" />
+              {/* Status indicator */}
+              <div className="flex items-center gap-3.5">
+                <div className={cn(
+                  "relative inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition-all duration-500",
+                  activePhone
+                    ? "bg-[#25D366]/12 text-[#25D366]"
+                    : "border border-white/12 bg-white/5 text-white/60",
+                )}>
+                  {activePhone ? (
+                    <WhatsAppIcon size={22} />
+                  ) : (
+                    <Smartphone className="h-5 w-5" />
+                  )}
+                  {activePhone && (
+                    <span className="absolute inset-0 animate-ping rounded-full bg-[#25D366]/20" style={{ animationDuration: "2s" }} />
+                  )}
                 </div>
-                <p className="text-sm text-slate-300">
-                  {activePhone
-                    ? "Enter the 6-digit code"
-                    : "Use your approved admin phone number"}
-                </p>
+                <div>
+                  <p className="text-sm font-bold text-white">
+                    {activePhone
+                      ? "Enter verification code"
+                      : "WhatsApp authentication"}
+                  </p>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    {activePhone
+                      ? "6-digit code sent to your WhatsApp"
+                      : "Use your approved admin phone number"}
+                  </p>
+                </div>
               </div>
 
+              {/* Phone input state */}
               {!activePhone ? (
-                <form className="grid gap-4" onSubmit={handlePhoneSubmit}>
-                  <label className="grid gap-2 text-sm text-slate-300">
-                    Admin phone number
-                    <input
-                      type="tel"
-                      name="phone"
-                      required
-                      value={phone}
-                      onChange={(event) => setPhone(event.target.value)}
-                      placeholder="+250 7xx xxx xxx"
-                      autoComplete="tel"
-                      className={ui.input}
-                    />
+                <form className="grid gap-5" onSubmit={handlePhoneSubmit} aria-busy={authBusy}>
+                  <label className="grid gap-2.5">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                      Admin phone number
+                    </span>
+                    <div className="relative">
+                      <div className="pointer-events-none absolute left-0 top-0 flex h-full items-center pl-4">
+                        <span className="flex items-center gap-1.5 rounded-lg bg-white/8 px-2.5 py-1 text-xs font-bold text-white/70">
+                          🇷🇼 +250
+                        </span>
+                      </div>
+                      <input
+                        type="tel"
+                        name="phone"
+                        required
+                        value={phone}
+                        onChange={(event) => setPhone(event.target.value)}
+                        placeholder="+250 7xx xxx xxx"
+                        autoComplete="tel"
+                        disabled={authBusy}
+                        className={cn(
+                          ui.input,
+                          "!pl-[100px] !h-14 !text-base !font-semibold !tracking-wide",
+                        )}
+                      />
+                    </div>
                   </label>
                   <button
                     type="submit"
-                    disabled={loading}
-                    className={`${ui.buttonPrimary} disabled:opacity-60`}
+                    disabled={authBusy}
+                    aria-label="Send code via WhatsApp"
+                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#25D366] to-[#128C7E] text-sm font-extrabold uppercase tracking-wider text-white transition-all hover:shadow-[0_8px_32px_rgba(37,211,102,0.3)] active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
                   >
-                    {loading ? "Sending…" : "Send code"}
+                    {authBusy ? (
+                      <>
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                        Sending…
+                      </>
+                    ) : (
+                      <>
+                        <WhatsAppIcon size={18} />
+                        Send WhatsApp code
+                      </>
+                    )}
                   </button>
                 </form>
               ) : (
-                <form className="grid gap-4" onSubmit={handleCodeSubmit}>
-                  <p className="text-sm text-slate-400">
-                    Verification code sent to{" "}
-                    <span className="font-semibold text-white">
-                      {formatAdminPhoneForDisplay(activePhone)}
-                    </span>
-                  </p>
-                  <label className="grid gap-2 text-sm text-slate-300">
-                    Verification code
-                    <input
-                      type="text"
-                      name="otp"
-                      required
-                      value={code}
-                      onChange={(event) =>
-                        setCode(
-                          event.target.value.replace(/[^\d]/g, "").slice(0, 6),
-                        )
-                      }
-                      inputMode="numeric"
-                      pattern="[0-9]{6}"
-                      autoComplete="one-time-code"
-                      placeholder="000000"
-                      className={`${ui.input} text-center tracking-[0.45em] text-lg`}
-                    />
-                  </label>
+                /* OTP input state */
+                <form className="grid gap-5" onSubmit={handleCodeSubmit} aria-busy={authBusy}>
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-slate-400">
+                      Code sent to{" "}
+                      <span className="font-bold text-white">
+                        {formatAdminPhoneForDisplay(activePhone)}
+                      </span>
+                    </p>
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#25D366]/15 text-[#25D366]">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <OtpDigitInput
+                    value={code}
+                    length={6}
+                    onChange={setCode}
+                  />
+
                   <button
                     type="submit"
-                    disabled={loading || code.length < 6}
-                    className={`${ui.buttonPrimary} disabled:opacity-60`}
+                    disabled={authBusy || code.length < 6}
+                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#25D366] to-[#128C7E] text-sm font-extrabold uppercase tracking-wider text-white transition-all hover:shadow-[0_8px_32px_rgba(37,211,102,0.3)] active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
                   >
-                    {loading ? "Verifying…" : "Verify"}
+                    {authBusy ? (
+                      <>
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                        Verifying…
+                      </>
+                    ) : (
+                      "Verify & sign in"
+                    )}
                   </button>
+
                   <button
                     type="button"
                     onClick={() => {
@@ -321,26 +478,44 @@ function AdminAuthCard() {
                       setStatus(null);
                       resetPendingPhone();
                     }}
-                    className={ui.buttonSecondary}
+                    disabled={authBusy}
+                    className="text-sm font-bold text-slate-400 hover:text-white transition-colors py-1"
                   >
-                    Use a different number
+                    ← Use a different number
                   </button>
                 </form>
               )}
             </div>
 
+            {/* Status messages */}
             {status || notice || error ? (
               <div
+                role={error && !status ? "alert" : "status"}
+                aria-live={error && !status ? "assertive" : "polite"}
                 className={cn(
-                  "rounded-2xl border px-4 py-3 text-sm leading-6",
+                  "flex items-center gap-3 rounded-2xl border px-5 py-3.5 text-sm leading-6",
                   error && !status
                     ? "border-rose-400/30 bg-rose-500/10 text-rose-200"
-                    : "border-white/10 bg-white/6 text-slate-200",
+                    : status?.toLowerCase().includes("sent")
+                      ? "border-[#25D366]/30 bg-[#25D366]/8 text-[#25D366]"
+                      : "border-white/10 bg-white/5 text-slate-200",
                 )}
               >
+                {status?.toLowerCase().includes("sent") && (
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#25D366]/20 text-[#25D366]">
+                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                      <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                )}
                 {status ?? notice ?? error}
               </div>
             ) : null}
+
+            {/* Footer */}
+            <p className="text-center text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500">
+              Secured by WhatsApp OTP · {siteConfig.shortTitle} admin
+            </p>
           </div>
         </div>
       </div>
@@ -384,6 +559,40 @@ function AdminUnauthorizedCard() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function AdminWorkspaceSignal({
+  error,
+  notice,
+  switchingClub,
+}: {
+  error: string | null;
+  notice: string | null;
+  switchingClub: boolean;
+}) {
+  const message = error ?? (switchingClub ? "Switching club scope..." : notice);
+  if (!message) {
+    return null;
+  }
+
+  const isError = error != null;
+  return (
+    <div
+      role={isError ? "alert" : "status"}
+      aria-live={isError ? "assertive" : "polite"}
+      className={cn(
+        "mt-4 flex items-start gap-3 rounded-2xl border px-4 py-3 text-sm",
+        isError
+          ? "border-rose-500/25 bg-rose-500/10 text-rose-100"
+          : "border-[var(--admin-border)] bg-[var(--admin-zinc-900)] text-[var(--admin-text)]",
+      )}
+    >
+      <span className="mt-0.5 shrink-0 text-[var(--admin-text-muted)]">
+        {isError ? <AlertTriangle size={16} /> : "i"}
+      </span>
+      <span className="min-w-0">{message}</span>
     </div>
   );
 }
@@ -482,8 +691,10 @@ export function AdminShell({ children }: { children: ReactNode }) {
               className="animate-pulse"
               priority
             />
-            <p className="admin-page-eyebrow">Central admin</p>
-            <p className="text-lg text-slate-200">Loading workspace</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.26em] text-slate-200">
+              Central admin
+            </p>
+            <p className="text-lg text-white">Loading workspace</p>
             <div className="mt-2 h-1 w-32 overflow-hidden rounded-full bg-white/10">
               <div className="h-full w-1/2 animate-pulse rounded-full bg-club-accent" />
             </div>
@@ -598,7 +809,8 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 <button
                   type="button"
                   onClick={() => setSidebarCollapsed((v) => !v)}
-                  className="hidden xl:block text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-100)]"
+                  className="hidden rounded-lg p-2 text-[var(--admin-zinc-500)] transition hover:bg-[var(--admin-zinc-900)] hover:text-[var(--admin-zinc-100)] xl:block"
+                  aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                 >
                   {sidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
                 </button>
@@ -618,7 +830,8 @@ export function AdminShell({ children }: { children: ReactNode }) {
                     value={selectedClubId ?? ""}
                     onChange={(e) => setClubScope(e.target.value).catch(() => {})}
                     disabled={switchingClub}
-                    className="bg-[var(--admin-zinc-900)] border border-[var(--admin-border)] rounded-md px-3 py-1.5 text-xs font-semibold text-[var(--admin-zinc-100)] outline-none"
+                    aria-busy={switchingClub}
+                    className="rounded-md border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] px-3 py-1.5 text-xs font-semibold text-[var(--admin-zinc-100)] outline-none"
                   >
                     {clubOptions.map((club) => (
                       <option key={club.id} value={club.id}>{club.clubName}</option>
@@ -635,9 +848,18 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 />
               </div>
             </div>
+            <AdminWorkspaceSignal
+              error={error}
+              notice={notice}
+              switchingClub={switchingClub}
+            />
           </header>
 
-          <main id="admin-main-content" className="p-4 sm:p-6 lg:p-8">
+          <main
+            id="admin-main-content"
+            className="p-4 sm:p-6 lg:p-8"
+            aria-busy={switchingClub || undefined}
+          >
             <div className="mx-auto max-w-full">
               {children}
             </div>
@@ -724,74 +946,58 @@ function AdminMobileNav({
         </div>
       </nav>
 
-      {sheetOpen ? (
-        <div
-          className="fixed inset-0 z-40 xl:hidden"
-          role="dialog"
-          aria-modal="true"
-          aria-label="More admin options"
-        >
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setSheetOpen(false)}
-          />
-          <div
-            className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-xl bg-[var(--admin-zinc-900)] p-5 pb-[calc(env(safe-area-inset-bottom)+1rem)] border-t border-[var(--admin-border)]"
-          >
-            <div className="flex items-center justify-between pb-4 border-b border-[var(--admin-border)] mb-4">
-              <p className="text-sm font-bold uppercase tracking-widest text-[var(--admin-zinc-400)]">Menu</p>
-              <button
-                type="button"
-                onClick={() => setSheetOpen(false)}
-                className="text-[var(--admin-zinc-500)]"
-              >
-                <X size={20} />
-              </button>
+      <AdminDialogFrame
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        title="More admin options"
+        layout="sheet"
+        panelClassName="xl:hidden"
+        bodyClassName="space-y-6 pb-[calc(env(safe-area-inset-bottom)+1rem)]"
+        closeLabel="Close admin menu"
+      >
+        {overflowSections.map((section) => (
+          <div key={section.title}>
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--admin-zinc-600)]">
+              {section.title}
+            </p>
+            <div className="grid gap-1">
+              {section.items.map((href) => {
+                const item = resolveNavItem(href);
+                const Icon = navIcons[href] ?? LayoutDashboard;
+                const active = isActivePath(href, pathname);
+
+                return (
+                  <Link
+                    key={href}
+                    href={withAdminClubScope(href, selectedClubId)}
+                    onClick={() => setSheetOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                      active
+                        ? "bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-100)]"
+                        : "text-[var(--admin-zinc-400)] hover:bg-[var(--admin-zinc-800)]",
+                    )}
+                  >
+                    <Icon size={18} className="text-[var(--admin-zinc-500)]" />
+                    {item.label}
+                  </Link>
+                );
+              })}
             </div>
-
-            <div className="space-y-6">
-              {overflowSections.map((section) => (
-                <div key={section.title}>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--admin-zinc-600)] mb-3">{section.title}</p>
-                  <div className="grid gap-1">
-                    {section.items.map((href) => {
-                      const item = resolveNavItem(href);
-                      const Icon = navIcons[href] ?? LayoutDashboard;
-                      const active = isActivePath(href, pathname);
-
-                      return (
-                        <Link
-                          key={href}
-                          href={withAdminClubScope(href, selectedClubId)}
-                          onClick={() => setSheetOpen(false)}
-                          className={cn(
-                            "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                            active ? "bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-100)]" : "text-[var(--admin-zinc-400)] hover:bg-[var(--admin-zinc-800)]"
-                          )}
-                        >
-                          <Icon size={18} className="text-[var(--admin-zinc-500)]" />
-                          {item.label}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                setSheetOpen(false);
-                onSignOut();
-              }}
-              className="mt-8 w-full rounded-lg border border-rose-500/20 bg-rose-500/5 py-3 text-sm font-bold uppercase tracking-wider text-rose-500"
-            >
-              Sign out
-            </button>
           </div>
-        </div>
-      ) : null}
+        ))}
+
+        <button
+          type="button"
+          onClick={() => {
+            setSheetOpen(false);
+            onSignOut();
+          }}
+          className="mt-2 w-full rounded-lg border border-rose-500/20 bg-rose-500/5 py-3 text-sm font-bold uppercase tracking-wider text-rose-500"
+        >
+          Sign out
+        </button>
+      </AdminDialogFrame>
     </>
   );
 }

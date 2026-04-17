@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'momo_sms_deps.dart';
+import 'package:core_utils/core_utils.dart';
 
 /// Top-level helper to record an operational health event for SMS ingestion.
 Future<void> recordSmsIngestOperationalEvent(
@@ -59,7 +60,8 @@ Map<String, dynamic>? _senderDriftTelemetry({
     // This import is intentionally deferred to avoid circular deps.
     // In the integrated service, the repository import is already available.
     return null; // Will be populated via the repository's senderDriftTelemetry
-  } catch (_) {
+  } catch (error, stackTrace) {
+      AfriLogger.warn('MomoSmsTelemetry', 'Operation failed (non-critical).', error, stackTrace);
     return null;
   }
 }

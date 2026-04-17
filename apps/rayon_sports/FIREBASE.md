@@ -25,16 +25,10 @@ Repo-managed client config:
 - Flutter options: [lib/firebase_options.dart](/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/lib/firebase_options.dart)
 - Firebase CLI alias: [\.firebaserc](/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/.firebaserc)
 
-Server-side secrets still required for BioPay App Check and FCM delivery:
+Server-side secrets still required for App Check verification and FCM delivery:
 
 - `FIREBASE_PROJECT_ID=gen-lang-client-0172279957`
 - `FIREBASE_SERVICE_ACCOUNT_JSON=<service account JSON>`
-
-Validation command:
-
-```bash
-bash tools/scripts/validate_BioPay_firebase.sh rayon_sports
-```
 
 Provisioning command for Supabase Edge Function runtime secrets:
 

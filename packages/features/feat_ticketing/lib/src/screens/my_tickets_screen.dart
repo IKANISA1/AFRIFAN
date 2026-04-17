@@ -78,15 +78,17 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
         ),
         error: (error, _) => _TicketWalletState(
           title: 'Ticket wallet unavailable',
-          body: 'We could not load your issued tickets right now.',
+          body:
+              'We could not load your ticket wallet right now. Check your connection and try again.',
           actionLabel: 'Retry',
           onPressed: () => ref.invalidate(myTicketsProvider),
         ),
         data: (tickets) {
           final now = DateTime.now();
           final upcoming = tickets.where((ticket) {
-            return ticket.status == TicketStatus.active &&
-                !ticket.match.matchDate.isBefore(now);
+            final isOpenTicket = ticket.status == TicketStatus.pending ||
+                ticket.status == TicketStatus.active;
+            return isOpenTicket && !ticket.match.matchDate.isBefore(now);
           }).toList(growable: false);
           final past =
               tickets.where((ticket) => !upcoming.contains(ticket)).toList(
@@ -99,8 +101,9 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
               _buildTicketList(
                 context,
                 tickets: upcoming,
-                emptyTitle: 'No active tickets yet',
-                emptyBody: 'Tickets appear after payment.',
+                emptyTitle: 'No upcoming tickets yet',
+                emptyBody:
+                    'Confirmed tickets appear here after payment verification.',
               ),
               _buildTicketList(
                 context,
@@ -139,6 +142,16 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
       itemBuilder: (context, index) {
         final ticket = tickets[index];
         final isActive = ticket.status == TicketStatus.active;
+        final isPending = ticket.status == TicketStatus.pending;
+        final statusColor = switch (ticket.status) {
+          TicketStatus.active => ColorTokens.success,
+          TicketStatus.pending => ColorTokens.warning,
+          TicketStatus.used => ColorTokens.onSurfaceVariant,
+          TicketStatus.expired => ColorTokens.onSurfaceVariant,
+          TicketStatus.cancelled => ColorTokens.onSurfaceVariant,
+          TicketStatus.voided => ColorTokens.error,
+          TicketStatus.refunded => ColorTokens.info,
+        };
 
         return GestureDetector(
           onTap: isActive ? () => context.push('/e-ticket/${ticket.id}') : null,
@@ -176,6 +189,15 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
                         '${ticket.seatType.label}  •  ${_currencyFormatter.format(ticket.amountPaid)}',
                         style: TypographyTokens.bodyMedium(),
                       ),
+                      if (isPending) ...[
+                        const SizedBox(height: SpacingTokens.spacing2),
+                        Text(
+                          'Payment received on your phone still needs verification before the QR unlocks.',
+                          style: TypographyTokens.bodySmall(
+                            ColorTokens.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: SpacingTokens.spacing4),
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -190,11 +212,9 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
                           borderRadius: ShapeTokens.chipRadius,
                         ),
                         child: Text(
-                          ticket.status.value.toUpperCase(),
+                          ticket.status.label.toUpperCase(),
                           style: TypographyTokens.labelSmall().copyWith(
-                            color: isActive
-                                ? ColorTokens.success
-                                : ColorTokens.onSurfaceVariant,
+                            color: statusColor,
                             letterSpacing: 1,
                           ),
                         ),
@@ -211,7 +231,9 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
                   ),
                   alignment: Alignment.center,
                   child: Icon(
-                    Icons.qr_code_2_rounded,
+                    isPending
+                        ? Icons.hourglass_top_rounded
+                        : Icons.qr_code_2_rounded,
                     size: 56,
                     color: isActive
                         ? ColorTokens.onSurface

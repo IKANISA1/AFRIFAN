@@ -13,13 +13,7 @@
 -keep class kotlin.Metadata { *; }
 -dontwarn kotlin.**
 
-# ── TensorFlow Lite (BioPay face recognition) ──
--keep class org.tensorflow.** { *; }
--keep class org.tensorflow.lite.** { *; }
--dontwarn org.tensorflow.**
-
-# ── NFC Host Card Emulation Service ──
--keep class rw.gikundiro.app.BioPayNfcHostApduService { *; }
+# ── Host activity ──
 -keep class rw.gikundiro.app.MainActivity { *; }
 
 # ── Supabase / GoTrue / PostgREST ──

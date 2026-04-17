@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { handleAdminApiRoute } from "@/lib/admin-api-handler";
+import { enforceFeatureState } from "@/lib/server-feature-guard";
 
 /**
  * Push subscription management API.
@@ -11,6 +13,8 @@ import { NextRequest, NextResponse } from "next/server";
  * In production, subscriptions would be stored in Supabase.
  * For now, we validate the shape and return success.
  */
+
+export const dynamic = "force-dynamic";
 
 interface SubscribePayload {
   action: "subscribe";
@@ -59,14 +63,30 @@ function isValidPayload(data: unknown): data is PushPayload {
 }
 
 export async function POST(request: NextRequest) {
-  try {
+  return handleAdminApiRoute(request, async (_adminClient, access) => {
     const data: unknown = await request.json();
 
     if (!isValidPayload(data)) {
-      return NextResponse.json(
-        { error: "Invalid push payload" },
-        { status: 400 },
+      throw new Error("Invalid push payload");
+    }
+
+    if (data.action === "send") {
+      const featureState = await enforceFeatureState(
+        "notifications",
+        "web",
+        "action",
+        {
+          clubId: access.clubId,
+          isAuthenticated: access.isAuthenticated,
+          roles: access.role ? [access.role] : [],
+        },
       );
+
+      if (!featureState.allowed) {
+        throw new Error(
+          featureState.error ?? "Notifications are currently unavailable.",
+        );
+      }
     }
 
     switch (data.action) {
@@ -74,21 +94,21 @@ export async function POST(request: NextRequest) {
         // Store subscription in database
         // In production: INSERT INTO push_subscriptions (endpoint, keys_auth, keys_p256dh, user_id)
         console.log("[push-api] Subscription registered:", data.subscription.endpoint.slice(0, 50));
-        return NextResponse.json({ success: true, message: "Subscription stored" });
+        return { success: true, message: "Subscription stored" };
       }
 
       case "unsubscribe": {
         // Remove subscription from database
         // In production: DELETE FROM push_subscriptions WHERE endpoint = $1
         console.log("[push-api] Subscription removed:", data.endpoint.slice(0, 50));
-        return NextResponse.json({ success: true, message: "Subscription removed" });
+        return { success: true, message: "Subscription removed" };
       }
 
       case "send": {
         // In production, iterate over subscriptions and call web-push library
         // For now, acknowledge the send request
         console.log("[push-api] Send requested:", data.title);
-        return NextResponse.json({
+        return {
           success: true,
           message: "Push notification queued",
           payload: {
@@ -99,16 +119,11 @@ export async function POST(request: NextRequest) {
             badge: data.badge ?? "/icons/icon-72x72.png",
             tag: data.tag ?? "admin-notification",
           },
-        });
+        };
       }
 
       default:
-        return NextResponse.json({ error: "Unknown action" }, { status: 400 });
+        throw new Error("Unknown action");
     }
-  } catch {
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
-  }
+  });
 }

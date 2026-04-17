@@ -115,7 +115,6 @@ android {
 }
 
 dependencies {
-    implementation("org.tensorflow:tensorflow-lite-gpu-api:2.16.1")
 }
 
 flutter {

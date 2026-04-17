@@ -24,7 +24,7 @@ class ChannelGate extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isEnabled = ref.watch(isFeatureEnabledProvider(featureKey));
-    return isEnabled ? child : fallback;
+    final canRender = ref.watch(canRenderFeatureProvider(featureKey));
+    return canRender ? child : fallback;
   }
 }

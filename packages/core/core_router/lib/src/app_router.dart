@@ -35,8 +35,14 @@ class AppRouter {
       // 1. Feature Gate Check
       if (isFeatureEnabled != null) {
         final path = state.uri.path;
-        if (path != '/' && path != '/home' && !isFeatureEnabled!(path)) {
-          return initialLocation;
+        if (path != '/' &&
+            path != '/home' &&
+            path != '/feature-unavailable' &&
+            !isFeatureEnabled!(path)) {
+          return Uri(
+            path: '/feature-unavailable',
+            queryParameters: <String, String>{'from': path},
+          ).toString();
         }
       }
 
@@ -56,6 +62,12 @@ class AppRouter {
           fallbackLocation: initialLocation,
         ),
     routes: [
+      GoRoute(
+        path: '/feature-unavailable',
+        builder: (context, state) => _FeatureUnavailableScreen(
+          fallbackLocation: initialLocation,
+        ),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => shellBuilder(context, shell),
         branches: _buildBranches(),
@@ -67,7 +79,18 @@ class AppRouter {
 
   /// Build shell branches from tab routes.
   List<StatefulShellBranch> _buildBranches() {
-    final tabModules = modules.where((m) => m.tabRoute != null).toList();
+    final tabModules = modules
+        .where(
+          (module) =>
+              module.tabRoute != null &&
+              primaryBottomTabFeatureKeys.contains(module.featureKey),
+        )
+        .toList()
+      ..sort(
+        (left, right) => primaryBottomTabOrderForFeature(
+          left.featureKey,
+        ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
+      );
 
     return tabModules.map((module) {
       final tab = module.tabRoute!;
@@ -98,8 +121,22 @@ class AppRouter {
   }
 
   /// Get tab info for building bottom nav.
-  List<TabRoute> get tabs =>
-      modules.where((m) => m.tabRoute != null).map((m) => m.tabRoute!).toList();
+  List<TabRoute> get tabs {
+    final tabModules = modules
+        .where(
+          (module) =>
+              module.tabRoute != null &&
+              primaryBottomTabFeatureKeys.contains(module.featureKey),
+        )
+        .toList()
+      ..sort(
+        (left, right) => primaryBottomTabOrderForFeature(
+          left.featureKey,
+        ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
+      );
+
+    return tabModules.map((module) => module.tabRoute!).toList();
+  }
 
   String _resolveInitialLocation() {
     final standaloneRoutes = _buildStandaloneRoutes();
@@ -109,7 +146,20 @@ class AppRouter {
       }
     }
 
-    for (final module in modules) {
+    final tabModules = modules
+        .where(
+          (module) =>
+              module.tabRoute != null &&
+              primaryBottomTabFeatureKeys.contains(module.featureKey),
+        )
+        .toList()
+      ..sort(
+        (left, right) => primaryBottomTabOrderForFeature(
+          left.featureKey,
+        ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
+      );
+
+    for (final module in tabModules) {
       final tabRoute = module.tabRoute;
       if (tabRoute != null) {
         return tabRoute.path;
@@ -124,6 +174,44 @@ class AppRouter {
 
     throw StateError(
       'AppRouter requires at least one tab route or absolute standalone route.',
+    );
+  }
+}
+
+class _FeatureUnavailableScreen extends StatelessWidget {
+  const _FeatureUnavailableScreen({required this.fallbackLocation});
+
+  final String fallbackLocation;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.construction_rounded, size: 48),
+              const SizedBox(height: 16),
+              const Text(
+                'This feature is currently unavailable.',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'The club has hidden or disabled this section for now.',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () => context.go(fallbackLocation),
+                child: const Text('Go back'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

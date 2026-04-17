@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
+import 'package:core_utils/core_utils.dart';
 
 class StreakCalendarScreen extends ConsumerStatefulWidget {
   const StreakCalendarScreen({super.key});
@@ -89,7 +90,8 @@ class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
         _bestStreak = best;
         _isLoading = false;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('StreakCalendarScreen', 'Operation failed (non-critical).', error, stackTrace);
       if (!mounted) return;
       setState(() {
         _heat = List<int>.filled(35, 0);

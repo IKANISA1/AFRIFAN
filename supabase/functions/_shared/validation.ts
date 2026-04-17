@@ -3,11 +3,12 @@
  * Centralizes JWT club_id extraction and request validation per RULES.md §6.3.
  */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
-import { jsonUnauthorized, jsonForbidden } from "./response.ts";
+import { jsonForbidden, jsonUnauthorized } from "./response.ts";
 
 export interface ValidatedRequest {
   userId: string;
   clubId: string | null;
+  roles: string[];
   supabase: ReturnType<typeof createClient> | any;
 }
 
@@ -28,6 +29,42 @@ function normalizeRole(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const trimmed = value.trim().toLowerCase();
   return trimmed.length > 0 ? trimmed : null;
+}
+
+function extractRoles(appMetadata: Record<string, unknown>): string[] {
+  const roles = new Set<string>();
+
+  const primaryRole = normalizeRole(appMetadata["role"]);
+  if (primaryRole != null) {
+    roles.add(primaryRole);
+  }
+
+  const adminRole = normalizeRole(appMetadata["admin_role"]);
+  if (adminRole != null) {
+    roles.add(adminRole);
+  }
+
+  const rawRoles = appMetadata["roles"];
+  if (Array.isArray(rawRoles)) {
+    for (const value of rawRoles) {
+      const role = normalizeRole(value);
+      if (role != null) {
+        roles.add(role);
+      }
+    }
+  }
+
+  if (
+    metadataBool(appMetadata["is_admin"]) || metadataBool(appMetadata["admin"])
+  ) {
+    roles.add("admin");
+  }
+
+  if (metadataBool(appMetadata["super_admin"])) {
+    roles.add("super_admin");
+  }
+
+  return Array.from(roles);
 }
 
 function hasMetadataAdminAccess(
@@ -59,7 +96,11 @@ function hasMetadataAdminAccess(
  */
 export async function validateRequest(
   req: Request,
-  options?: { requireClubId?: boolean; requireAdmin?: boolean; requireClubAdmin?: number | string },
+  options?: {
+    requireClubId?: boolean;
+    requireAdmin?: boolean;
+    requireClubAdmin?: number | string;
+  },
 ): Promise<ValidatedRequest | Response> {
   const authHeader = req.headers.get("Authorization");
   if (!authHeader) {
@@ -73,17 +114,23 @@ export async function validateRequest(
     global: { headers: { Authorization: authHeader } },
   });
 
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+  const authResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
+    headers: {
+      Authorization: authHeader,
+      apikey: supabaseAnonKey,
+    },
+  });
 
-  if (error || !user) {
+  if (!authResponse.ok) {
     return jsonUnauthorized("Invalid or expired token");
   }
 
-  const clubId =
-    (user.app_metadata?.club_id as string | undefined) ??
+  const user = await authResponse.json().catch(() => null);
+  if (!user || typeof user !== "object" || typeof user.id !== "string") {
+    return jsonUnauthorized("Invalid or expired token");
+  }
+
+  const clubId = (user.app_metadata?.club_id as string | undefined) ??
     (user.user_metadata?.club_id as string | undefined) ??
     null;
 
@@ -92,6 +139,7 @@ export async function validateRequest(
   }
 
   const appMetadata = (user.app_metadata ?? {}) as Record<string, unknown>;
+  const roles = extractRoles(appMetadata);
 
   if (options?.requireAdmin) {
     const isAppAdmin = hasMetadataAdminAccess(appMetadata);
@@ -103,13 +151,16 @@ export async function validateRequest(
   }
 
   if (options?.requireClubAdmin !== undefined) {
-    const isClubAdmin = hasMetadataAdminAccess(appMetadata, options.requireClubAdmin);
+    const isClubAdmin = hasMetadataAdminAccess(
+      appMetadata,
+      options.requireClubAdmin,
+    );
     if (!isClubAdmin) {
       return jsonForbidden("Club admin access required.");
     }
   }
 
-  return { userId: user.id, clubId, supabase };
+  return { userId: user.id, clubId, roles, supabase };
 }
 
 /** Type guard: checks if validateRequest returned an error Response. */

@@ -7,6 +7,7 @@ import 'models/fanzone_slip_models.dart';
 import 'models/prediction_models.dart';
 import 'prediction_providers.dart';
 import 'repositories/prediction_repository.dart';
+import 'package:core_utils/core_utils.dart';
 
 final fanzoneSlipProvider =
     NotifierProvider<FanzoneSlipController, FanzoneSlipState>(
@@ -140,7 +141,8 @@ class FanzoneSlipController extends Notifier<FanzoneSlipState> {
             failedCount += 1;
             messages.add(result.message);
           }
-        } catch (_) {
+        } catch (error, stackTrace) {
+      AfriLogger.warn('FanzoneSlipProviders', 'Operation failed (non-critical).', error, stackTrace);
           failedCount += 1;
           messages.add(
             'Could not submit ${item.marketName} for ${item.fixtureLabel}.',

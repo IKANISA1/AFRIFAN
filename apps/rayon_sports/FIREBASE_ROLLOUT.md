@@ -63,12 +63,7 @@ It is ignored by git.
 
 ## 3. Validate locally
 
-```bash
-FIREBASE_ENV_FILE=supabase/.env.firebase.local \
-  bash tools/scripts/validate_BioPay_firebase.sh rayon_sports
-```
-
-Expected result:
+Expected local result:
 
 - Android/iOS Firebase config files are present and point to the same Firebase project
 - The runtime service account JSON is valid
@@ -159,7 +154,7 @@ Official reference:
 
 1. Install a release-capable build on a physical device.
 2. Sign in.
-3. Trigger a BioPay flow that calls a protected Supabase Edge Function.
+3. Trigger a protected app flow that calls a Supabase Edge Function.
 4. Confirm requests include `X-Firebase-AppCheck` and are accepted.
 
 ### iOS

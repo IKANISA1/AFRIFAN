@@ -17,7 +17,10 @@ void main() {
             onTap: (index) => tappedIndex = index,
             items: const [
               AfriClubNavItem(icon: Icons.home_rounded, label: 'HOME'),
-              AfriClubNavItem(icon: Icons.payments_rounded, label: 'BioPay'),
+              AfriClubNavItem(
+                icon: Icons.volunteer_activism_rounded,
+                label: 'CONTRIBUTE',
+              ),
               AfriClubNavItem(icon: Icons.settings_rounded, label: 'SETTINGS'),
             ],
           ),
@@ -27,7 +30,7 @@ void main() {
 
     await tester.pump(const Duration(milliseconds: 250));
 
-    expect(find.text('BioPay'), findsOneWidget);
+    expect(find.text('CONTRIBUTE'), findsOneWidget);
     expect(find.bySemanticsLabel('HOME'), findsOneWidget);
     expect(find.bySemanticsLabel('SETTINGS'), findsOneWidget);
 

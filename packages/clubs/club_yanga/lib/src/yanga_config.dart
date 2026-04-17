@@ -63,8 +63,6 @@ class YangaConfig implements ClubConfig {
   @override
   List<String> get supportedLanguages => const ['sw', 'en'];
 
-  @override
-  bool get hasBioPay => false;
 
   @override
   bool get hasFanClubs => true;
@@ -93,7 +91,6 @@ class YangaConfig implements ClubConfig {
 
   @override
   Map<String, bool> get features => {
-    'BioPay': hasBioPay,
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,

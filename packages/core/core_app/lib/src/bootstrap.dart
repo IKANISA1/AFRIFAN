@@ -124,24 +124,32 @@ Future<void> bootstrap(
       // This runs AFTER Supabase initialization (inside startupCoordinator)
       // and BEFORE runApp, so the first frame already uses config-driven modules.
       Map<String, dynamic>? platformConfigSnapshot;
-      try {
-        final featureConfigRepo = FeatureConfigRepository();
-        final snapshot = await featureConfigRepo.loadConfig(
-          clubId: normalizedClubId,
-          channel: 'mobile',
-        );
-        if (snapshot.isNotEmpty) {
-          platformConfigSnapshot = snapshot.toJson();
-          AfriLogger.info(
+      if (SupabaseClientFactory.isInitialized) {
+        try {
+          final featureConfigRepo = FeatureConfigRepository();
+          final snapshot = await featureConfigRepo.loadConfig(
+            clubId: normalizedClubId,
+            channel: 'mobile',
+          );
+          if (snapshot.isNotEmpty) {
+            platformConfigSnapshot = snapshot.toJson();
+            AfriLogger.info(
+              'Bootstrap',
+              'Platform config loaded: ${snapshot.features.length} features.',
+            );
+          }
+        } catch (error) {
+          AfriLogger.warn(
             'Bootstrap',
-            'Platform config loaded: ${snapshot.features.length} features.',
+            'Platform config fetch failed (non-fatal): $error. '
+                'Using compile-time feature flags.',
           );
         }
-      } catch (error) {
-        AfriLogger.warn(
+      } else {
+        AfriLogger.info(
           'Bootstrap',
-          'Platform config fetch failed (non-fatal): $error. '
-          'Using compile-time feature flags.',
+          'Skipping platform config fetch because backend initialization '
+              'is disabled for this startup mode.',
         );
       }
 
@@ -240,7 +248,6 @@ Future<void> _reportUnhandledError({
     return;
   }
 
-
   await OperationalHealthService(
     client: SupabaseClientFactory.client,
   ).recordEvent(
@@ -261,7 +268,7 @@ Future<void> flushPendingPreInitErrors() async {
   if (_pendingPreInitErrors.isEmpty || !SupabaseClientFactory.isInitialized) {
     return;
   }
-  
+
   final flushQueue = List<Map<String, dynamic>>.from(_pendingPreInitErrors);
   _pendingPreInitErrors.clear();
 

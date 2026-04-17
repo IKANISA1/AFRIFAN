@@ -1,11 +1,13 @@
 import type { AdminNotificationContext } from "@/lib/types";
 import type { NotificationForm as NotificationFormType } from "./notification-state";
+import { AdminImageField } from "@/components/admin/admin-image-field";
 
 interface NotificationFormProps {
   form: NotificationFormType;
   setForm: (update: NotificationFormType | ((prev: NotificationFormType) => NotificationFormType)) => void;
   context: AdminNotificationContext;
   submitting: boolean;
+  disabled?: boolean;
   onSubmit: () => void;
   onCopyPayload: () => void;
 }
@@ -15,6 +17,7 @@ export function NotificationForm({
   setForm,
   context,
   submitting,
+  disabled = false,
   onSubmit,
   onCopyPayload,
 }: NotificationFormProps) {
@@ -150,22 +153,20 @@ export function NotificationForm({
           />
         </label>
       ) : null}
-      <label className="grid gap-2 text-sm">
-        Image URL
-        <input
-          value={form.imageUrl}
-          onChange={(event) =>
-            setForm((current: NotificationFormType) => ({ ...current, imageUrl: event.target.value }))
-          }
-          className="dashboard-input"
-        />
-      </label>
-      {form.imageUrl.trim() ? (
-        <div className="overflow-hidden rounded-[22px] border border-border-soft">
-          {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews accept arbitrary remote URLs. */}
-          <img src={form.imageUrl} alt="Notification preview" className="h-28 w-full object-cover" />
-        </div>
-      ) : null}
+      <AdminImageField
+        label="Notification image"
+        value={form.imageUrl}
+        onChange={(nextValue) =>
+          setForm((current: NotificationFormType) => ({
+            ...current,
+            imageUrl: nextValue,
+          }))
+        }
+        mediaKind="notification"
+        subject={form.title}
+        previewAlt="Notification preview"
+        promptPlaceholder="Example: Simple promotional image for a supporter announcement, bold club colors, clean composition that still reads well when cropped."
+      />
       <div className="rounded-[24px] border border-border-soft bg-black/10 px-4 py-4 text-sm text-slate-300">
         Target:{" "}
         <span className="font-semibold text-white">
@@ -180,14 +181,14 @@ export function NotificationForm({
       <div className="flex flex-wrap gap-3">
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || disabled}
           className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
         >
           {form.deliveryMode === "schedule" ? "Schedule notification" : "Send notification"}
         </button>
         <button
           type="button"
-          disabled={submitting}
+          disabled={submitting || disabled}
           onClick={onCopyPayload}
           className="rounded-full border border-border-soft px-5 py-3 font-semibold text-slate-100 disabled:opacity-60 transition hover:bg-white/8"
         >

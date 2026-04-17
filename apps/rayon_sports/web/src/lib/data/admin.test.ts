@@ -170,13 +170,11 @@ describe("admin data helpers", () => {
           id: "group-1",
           name: "Blue Wall Fund",
           description: "Matchday tifo support",
-          privacy: "public",
           groupType: "project",
           targetAmount: 1000000,
           currentTotal: 550000,
           currency: "RWF",
           memberCount: 32,
-          inviteCode: "BLUE",
           isActive: true,
           creatorId: "user-1",
           createdAt: "2026-04-03T08:00:00.000Z",
@@ -184,8 +182,7 @@ describe("admin data helpers", () => {
         },
       ],
       contributions: [],
-      : { },
-    monthlyTotal: 550000,
+      monthlyTotal: 550000,
     });
 
   expect(headers).toContain("Name");

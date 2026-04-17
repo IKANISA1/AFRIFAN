@@ -2,6 +2,8 @@ import 'package:core_network/core_network.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'feature_management_repository.dart';
+
 /// Admin repository for club-scoped management queries.
 ///
 /// All queries are gated behind RLS + `is_club_admin(club_id)` on the server
@@ -16,6 +18,8 @@ class AdminRepository {
   late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
     client: _client,
   );
+  late final FeatureManagementRepository _featureManagementRepository =
+      FeatureManagementRepository(client: _client);
 
   // ── RBAC Check ──
 
@@ -197,6 +201,16 @@ class AdminRepository {
     return int.tryParse(value.toString().trim());
   }
 
+  Map<String, dynamic> _asJsonMap(dynamic value) {
+    if (value is Map<String, dynamic>) {
+      return value;
+    }
+    if (value is Map) {
+      return value.map((key, val) => MapEntry('$key', val));
+    }
+    return const <String, dynamic>{};
+  }
+
   // ── Contribution Groups ──
 
   /// Returns all contribution groups for the club (admin view — all groups).
@@ -208,9 +222,9 @@ class AdminRepository {
     var query = _client
         .from('contribution_groups')
         .select(
-          'id, name, description, group_type, privacy, '
+          'id, name, description, group_type, '
           'target_amount, current_total, member_count, '
-          'is_closed, creator_id, created_at, invite_code',
+          'is_closed, creator_id, created_at',
         );
     query = _scopeResolver.apply(query, scope);
     final data = await query
@@ -510,12 +524,11 @@ class AdminRepository {
   Future<List<Map<String, dynamic>>> getPlatformFeatures({
     int limit = 100,
   }) async {
-    final data = await _client
-        .from('platform_features')
-        .select('*, channels:platform_feature_channels(*), rules:platform_feature_rules(*)')
-        .order('feature_key', ascending: true)
-        .limit(limit);
-    return List<Map<String, dynamic>>.from(data as List);
+    final features = await _featureManagementRepository.loadAllFeatures();
+    return features
+        .take(limit)
+        .map(_serializeManagedFeature)
+        .toList(growable: false);
   }
 
   // ── Platform Content Blocks ──
@@ -524,13 +537,29 @@ class AdminRepository {
   Future<List<Map<String, dynamic>>> getPlatformContentBlocks({
     int limit = 100,
   }) async {
-    final data = await _client
+    final scopedClubId = _scopeResolver.currentClubId;
+    var query = _client
         .from('platform_content_blocks')
-        .select('*, feature:platform_features(id, feature_key, display_name)')
+        .select(
+          'id, club_id, block_key, block_type, title, subtitle, content, '
+          'target_channel, placement_key, feature_id, is_active, sort_order, '
+          'metadata, created_at, updated_at, '
+          'feature:platform_features(id, feature_key, display_name)',
+        );
+    if (scopedClubId != null) {
+      query = query.or('club_id.eq.$scopedClubId,club_id.is.null');
+    } else {
+      query = query.isFilter('club_id', null);
+    }
+    final data = await query
         .order('placement_key', ascending: true)
-        .order('sort_order', ascending: true, nullsFirst: false)
-        .limit(limit);
-    return List<Map<String, dynamic>>.from(data as List);
+        .order('sort_order', ascending: true, nullsFirst: false);
+    final rows = List<Map<String, dynamic>>.from(
+      (data as List).map((row) => Map<String, dynamic>.from(row as Map)),
+    );
+    return _resolveScopedPlatformContentBlocks(rows, scopedClubId)
+        .take(limit)
+        .toList(growable: false);
   }
 
   /// Creates a new platform content block.
@@ -547,9 +576,11 @@ class AdminRepository {
     bool isActive = true,
     Map<String, dynamic> metadata = const <String, dynamic>{},
   }) async {
+    final scopedClubId = _scopeResolver.currentClubId;
     final data = await _client
         .from('platform_content_blocks')
         .insert({
+          if (scopedClubId != null) 'club_id': scopedClubId,
           'block_key': blockKey,
           'block_type': blockType,
           'title': title,
@@ -572,10 +603,26 @@ class AdminRepository {
     String blockId,
     Map<String, dynamic> updates,
   ) async {
+    final scopedClubId = _scopeResolver.currentClubId;
+    final source = await _getPlatformContentBlockRowById(blockId);
+    final targetId = await _ensureScopedPlatformContentBlockTarget(
+      source,
+      clubId: scopedClubId,
+    );
+    final payload = Map<String, dynamic>.from(updates)
+      ..remove('id')
+      ..remove('feature')
+      ..remove('club_id');
+    if (payload.containsKey('content')) {
+      payload['content'] = _asJsonMap(payload['content']);
+    }
+    if (payload.containsKey('metadata')) {
+      payload['metadata'] = _asJsonMap(payload['metadata']);
+    }
     await _client
         .from('platform_content_blocks')
-        .update(updates)
-        .eq('id', blockId);
+        .update(payload)
+        .eq('id', targetId);
   }
 
   // ── Platform Feature Audit Logs ──
@@ -590,6 +637,160 @@ class AdminRepository {
         .order('created_at', ascending: false)
         .limit(limit);
     return List<Map<String, dynamic>>.from(data as List);
+  }
+
+  Map<String, dynamic> _serializeManagedFeature(
+    ManagedPlatformFeature feature,
+  ) {
+    return <String, dynamic>{
+      'id': feature.id,
+      'club_id': feature.clubId,
+      'feature_key': feature.featureKey,
+      'display_name': feature.displayName,
+      'description': feature.description,
+      'category': feature.category,
+      'is_enabled': feature.isEnabled,
+      'visibility_state': feature.visibilityState,
+      'channels': feature.channels
+          .map(
+            (channel) => <String, dynamic>{
+              'id': channel.id,
+              'channel': channel.channel,
+              'is_enabled': channel.isEnabled,
+              'is_visible': channel.isVisible,
+              'show_in_navigation': channel.showInNavigation,
+              'show_on_home': channel.showOnHome,
+              'sort_order': channel.sortOrder,
+              'route_key': channel.routeKey,
+              'placement_key': channel.placementKey,
+            },
+          )
+          .toList(growable: false),
+      'rules': feature.rules == null
+          ? const <Map<String, dynamic>>[]
+          : <Map<String, dynamic>>[
+              <String, dynamic>{
+                'id': feature.rules!.id,
+                'auth_required': feature.rules!.authRequired,
+                'role_restrictions': feature.rules!.roleRestrictions,
+                'dependency_rules': feature.rules!.dependencyRules,
+                'rollout_rules': feature.rules!.rolloutRules,
+                'metadata': feature.rules!.metadata,
+                'schedule_start_at':
+                    feature.rules!.scheduleStartAt?.toIso8601String(),
+                'schedule_end_at':
+                    feature.rules!.scheduleEndAt?.toIso8601String(),
+              },
+            ],
+    };
+  }
+
+  Future<Map<String, dynamic>> _getPlatformContentBlockRowById(
+    String blockId,
+  ) async {
+    final data = await _client
+        .from('platform_content_blocks')
+        .select(
+          'id, club_id, block_key, block_type, title, subtitle, content, '
+          'target_channel, placement_key, feature_id, is_active, sort_order, '
+          'metadata, created_at, updated_at',
+        )
+        .eq('id', blockId)
+        .single();
+    return Map<String, dynamic>.from(data as Map);
+  }
+
+  Future<String> _ensureScopedPlatformContentBlockTarget(
+    Map<String, dynamic> source, {
+    required int? clubId,
+  }) async {
+    final sourceClubId = _asInt(source['club_id']);
+    if (clubId == null || sourceClubId == clubId) {
+      return source['id']?.toString() ?? '';
+    }
+
+    final blockKey = source['block_key']?.toString() ?? '';
+    final existing = await _client
+        .from('platform_content_blocks')
+        .select('id')
+        .eq('block_key', blockKey)
+        .eq('club_id', clubId)
+        .maybeSingle();
+    final existingId = existing?['id']?.toString();
+    if (existingId != null && existingId.isNotEmpty) {
+      return existingId;
+    }
+
+    final inserted = await _client
+        .from('platform_content_blocks')
+        .insert(<String, dynamic>{
+          'club_id': clubId,
+          'block_key': blockKey,
+          'block_type': source['block_type'],
+          'title': source['title'],
+          'subtitle': source['subtitle'],
+          'content': _asJsonMap(source['content']),
+          'target_channel': source['target_channel'],
+          'placement_key': source['placement_key'],
+          'feature_id': source['feature_id'],
+          'is_active': source['is_active'] as bool? ?? true,
+          'sort_order': (source['sort_order'] as num?)?.toInt(),
+          'metadata': _asJsonMap(source['metadata']),
+        })
+        .select('id')
+        .single();
+    final targetId = inserted['id']?.toString() ?? '';
+    if (targetId.isEmpty) {
+      throw StateError('Could not create scoped content-block override.');
+    }
+    return targetId;
+  }
+
+  List<Map<String, dynamic>> _resolveScopedPlatformContentBlocks(
+    List<Map<String, dynamic>> rows,
+    int? clubId,
+  ) {
+    final grouped = <String, List<Map<String, dynamic>>>{};
+    for (final row in rows) {
+      final key = row['block_key']?.toString() ?? '';
+      grouped.putIfAbsent(key, () => <Map<String, dynamic>>[]).add(row);
+    }
+
+    final resolved = grouped.values.map((variants) {
+      if (clubId == null) {
+        return variants.firstWhere(
+          (row) => row['club_id'] == null,
+          orElse: () => variants.first,
+        );
+      }
+
+      for (final row in variants) {
+        if (_asInt(row['club_id']) == clubId) {
+          return row;
+        }
+      }
+
+      for (final row in variants) {
+        if (row['club_id'] == null) {
+          return row;
+        }
+      }
+
+      return variants.first;
+    }).toList(growable: false);
+
+    resolved.sort((left, right) {
+      final placementCompare = (left['placement_key']?.toString() ?? '')
+          .compareTo(right['placement_key']?.toString() ?? '');
+      if (placementCompare != 0) {
+        return placementCompare;
+      }
+      return ((left['sort_order'] as num?)?.toInt() ?? 999).compareTo(
+        (right['sort_order'] as num?)?.toInt() ?? 999,
+      );
+    });
+
+    return resolved;
   }
 
   // ── Shop Products ──
@@ -636,9 +837,61 @@ class AdminRepository {
       return (data as List)
           .map((item) => item['title']?.toString() ?? 'News update')
           .toList();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('AdminRepository', 'Operation failed (non-critical).', error, stackTrace);
       return [];
     }
+  }
+
+  Future<List<Map<String, dynamic>>> getPredictionChallenges({
+    List<String>? statuses,
+    int limit = 50,
+    int offset = 0,
+  }) async {
+    final scope = await _scopeResolver.requireResolved();
+    if (scope.clubId == null) {
+      return const <Map<String, dynamic>>[];
+    }
+
+    final result = await SafeRpc.call(
+      'prediction_admin_get_challenges',
+      params: <String, dynamic>{
+        'p_club_id': scope.clubId,
+        'p_statuses': statuses,
+        'p_limit': limit,
+        'p_offset': offset,
+      },
+      tag: 'AdminChallenges',
+    );
+
+    if (!result.isSuccess || result.data is! List) {
+      return const <Map<String, dynamic>>[];
+    }
+
+    return (result.data as List)
+        .whereType<Map>()
+        .map((row) => Map<String, dynamic>.from(row))
+        .toList(growable: false);
+  }
+
+  Future<Map<String, dynamic>> retryPredictionChallengeSettlement(
+    String challengeId,
+  ) async {
+    final result = await SafeRpc.call(
+      'prediction_challenge_admin_retry_settlement',
+      params: <String, dynamic>{'p_challenge_id': challengeId},
+      tag: 'AdminChallenges',
+      maxAttempts: 1,
+    );
+
+    if (!result.isSuccess || result.data is! Map) {
+      return <String, dynamic>{
+        'status': 'error',
+        'message': result.error ?? 'Retry failed.',
+      };
+    }
+
+    return Map<String, dynamic>.from(result.data as Map);
   }
 
   Future<String> _resolveNewsTable() async {

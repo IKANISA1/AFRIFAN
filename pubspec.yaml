@@ -51,7 +51,6 @@ workspace:
   - packages/core/core_feature_config
   # ── Feature packages ──
   - packages/features/feat_admin
-  - packages/features/feat_biopay
   - packages/features/feat_club
   - packages/features/feat_home
   - packages/features/feat_fan_clubs

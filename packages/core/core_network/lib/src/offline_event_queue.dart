@@ -12,8 +12,8 @@ import 'operational_health_service.dart';
 /// Queues [OperationalHealthService] events locally when offline,
 /// and flushes them when connectivity is restored.
 ///
-/// This ensures that critical operational monitoring events (BioPay errors,
-/// payment failures, service disruptions) are never lost due to transient
+/// This ensures that critical operational monitoring events
+/// (payment failures, service disruptions) are never lost due to transient
 /// network issues — especially important on African mobile networks.
 ///
 /// Usage:
@@ -24,9 +24,9 @@ import 'operational_health_service.dart';
 ///
 /// // This call will either send immediately (online) or queue (offline).
 /// await OfflineEventQueue.enqueue(
-///   service: 'BioPay',
-///   component: 'verification',
-///   message: 'Fingerprint scan timeout',
+///   service: 'payments',
+///   component: 'momo_handoff',
+///   message: 'USSD handoff timed out',
 ///   status: OperationalHealthStatus.error,
 /// );
 /// ```

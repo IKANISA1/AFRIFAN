@@ -7,8 +7,6 @@ class ProfileSetupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasBioPay = ClubConfigScope.maybeOf(context)?.hasBioPay ?? false;
-
     return Scaffold(
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
@@ -32,19 +30,19 @@ class ProfileSetupScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'FACE ID PAYMENT ROUTE',
+                'PUBLIC CONTRIBUTION ROUTES',
                 style: TypographyTokens.headlineLarge(),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
-                'Mobile money numbers and merchant codes are not linked at the account level anymore. Save a payment route only while enrolling Face ID.',
+                'Contribution routes now belong to admin-managed fan clubs, team projects, and communities.',
                 style: TypographyTokens.bodyLarge().copyWith(
                   color: ColorTokens.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
-                'QR codes and NFC taps now ask for the MoMo number or code manually each time you generate them.',
+                'Every public initiative uses its own dedicated MoMo code. Users support admin-published routes only and do not manage their own supporter pools.',
                 style: TypographyTokens.bodyMedium(
                   ColorTokens.onSurfaceVariant,
                 ),
@@ -61,12 +59,12 @@ class ProfileSetupScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Use Face ID enrollment when you want one saved route tied to your face.',
+                      'Use the contribute section to support the current public initiatives.',
                       style: TypographyTokens.labelLarge(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     Text(
-                      'That saved route is used only for Face ID payments. It is not required for tickets, membership, QR, NFC, or other app features.',
+                      'Fan clubs, team projects, and communities are created centrally from the admin panel, with contribution collection handled through dedicated MoMo codes.',
                       style: TypographyTokens.bodyMedium(
                         ColorTokens.onSurfaceVariant,
                       ),
@@ -76,23 +74,20 @@ class ProfileSetupScreen extends StatelessWidget {
               ),
               const SizedBox(height: SpacingTokens.spacing8),
               AfriButton(
-                label: hasBioPay ? 'Open Face ID setup' : 'Back to Settings',
+                label: 'Open contributions',
                 fullWidth: true,
-                onTap: () =>
-                    context.go(hasBioPay ? '/BioPay/register' : '/settings'),
+                onTap: () => context.go('/contribute'),
               ),
-              if (hasBioPay) ...[
-                const SizedBox(height: SpacingTokens.spacing4),
-                TextButton(
-                  onPressed: () => context.go('/settings'),
-                  child: Text(
-                    'Back to Settings',
-                    style: TypographyTokens.labelLarge().copyWith(
-                      color: ColorTokens.onSurfaceVariant,
-                    ),
+              const SizedBox(height: SpacingTokens.spacing4),
+              TextButton(
+                onPressed: () => context.go('/settings'),
+                child: Text(
+                  'Back to Settings',
+                  style: TypographyTokens.labelLarge().copyWith(
+                    color: ColorTokens.onSurfaceVariant,
                   ),
                 ),
-              ],
+              ),
             ],
           ),
         ),

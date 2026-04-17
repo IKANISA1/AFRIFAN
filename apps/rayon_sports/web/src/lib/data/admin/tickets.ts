@@ -58,10 +58,11 @@ export async function updateTicketStatus(
   status: string,
 ) {
   if (typeof window !== "undefined") {
-    return requestAdminApi("tickets/status", {
+    await requestAdminApi("tickets/status", {
       method: "POST",
       body: { ticketId, status },
     });
+    return;
   }
   const clubId = requireAdminClubId(access, "update ticket status");
 

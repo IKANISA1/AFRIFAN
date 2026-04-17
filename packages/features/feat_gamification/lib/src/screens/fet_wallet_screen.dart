@@ -85,7 +85,8 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           _supporterMatches = matches;
           _isSearching = false;
         });
-      } catch (_) {
+      } catch (error, stackTrace) {
+      AfriLogger.warn('FetWalletScreen', 'Operation failed (non-critical).', error, stackTrace);
         if (!mounted) {
           return;
         }
@@ -111,6 +112,22 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
       _showMessage('Enter a valid FET amount to transfer.');
       return;
     }
+
+    // M-7: Client-side balance validation.
+    final currentBalance = ref.read(fetWalletProvider).valueOrNull?.wallet?.balance ?? 0;
+    if (amount > currentBalance) {
+      _showMessage('Insufficient FET balance. You have ${_formatFet(currentBalance)} FET.');
+      return;
+    }
+
+    // B-2: Confirmation gate for FET transfer.
+    final confirmed = await _showWalletConfirmation(
+      title: 'Confirm Transfer',
+      message: 'Send ${_formatFet(amount)} FET to ${selectedSupporter.displayName}?',
+      detail: 'Remaining balance: ${_formatFet(currentBalance - amount)} FET',
+      confirmLabel: 'SEND FET',
+    );
+    if (!confirmed || !mounted) return;
 
     setState(() {
       _isSubmittingTransfer = true;
@@ -170,6 +187,22 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
       return;
     }
 
+    // M-7: Client-side balance validation.
+    final currentBalance = ref.read(fetWalletProvider).valueOrNull?.wallet?.balance ?? 0;
+    if (amount > currentBalance) {
+      _showMessage('Insufficient FET balance. You have ${_formatFet(currentBalance)} FET.');
+      return;
+    }
+
+    // B-2: Confirmation gate for FET redemption.
+    final confirmed = await _showWalletConfirmation(
+      title: 'Confirm Redemption',
+      message: 'Redeem ${_formatFet(amount)} FET?',
+      detail: 'Remaining balance: ${_formatFet(currentBalance - amount)} FET',
+      confirmLabel: 'REDEEM FET',
+    );
+    if (!confirmed || !mounted) return;
+
     setState(() {
       _isSubmittingRedemption = true;
     });
@@ -217,6 +250,64 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  /// B-2: Reusable confirmation bottom sheet for wallet operations.
+  Future<bool> _showWalletConfirmation({
+    required String title,
+    required String message,
+    required String detail,
+    required String confirmLabel,
+  }) async {
+    final result = await showAfriBottomSheet<bool>(
+      context: context,
+      builder: (context) => Padding(
+        padding: const EdgeInsets.only(bottom: SpacingTokens.spacing4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title.toUpperCase(),
+              style: TypographyTokens.monolithFont(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.4,
+              ),
+            ),
+            const SizedBox(height: SpacingTokens.spacing4),
+            GlassCard(
+              animate: false,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(message, style: TypographyTokens.titleMedium()),
+                  const SizedBox(height: SpacingTokens.spacing2),
+                  Text(
+                    detail,
+                    style: TypographyTokens.bodySmall(
+                      ColorTokens.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: SpacingTokens.spacing5),
+            AfriButton(
+              label: confirmLabel,
+              onTap: () => Navigator.of(context).pop(true),
+            ),
+            const SizedBox(height: SpacingTokens.spacing3),
+            AfriButton(
+              label: 'CANCEL',
+              variant: AfriButtonVariant.secondary,
+              onTap: () => Navigator.of(context).pop(false),
+            ),
+          ],
+        ),
+      ),
+    );
+    return result == true;
   }
 
   String _operationKey(String operation) {

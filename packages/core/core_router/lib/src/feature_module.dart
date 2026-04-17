@@ -1,6 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+String _normalizeFeatureKey(String value) {
+  final normalized = value.trim().toLowerCase();
+  if (normalized.isEmpty) {
+    return '';
+  }
+
+  return normalized
+      .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
+      .replaceAll(RegExp(r'^_+|_+$'), '');
+}
+
+/// The only feature modules allowed to render in the mobile bottom nav.
+const List<String> primaryBottomTabFeatureOrder = <String>[
+  'home',
+  'challenge',
+  'settings',
+];
+
+const Set<String> primaryBottomTabFeatureKeys = <String>{
+  'home',
+  'challenge',
+  'settings',
+};
+
+int primaryBottomTabOrderForFeature(String featureKey) {
+  final index = primaryBottomTabFeatureOrder.indexOf(featureKey);
+  if (index >= 0) {
+    return index;
+  }
+  return primaryBottomTabFeatureOrder.length;
+}
+
 /// Abstract interface for feature modules.
 ///
 /// Every feature package exports a single FeatureModule that
@@ -40,18 +72,24 @@ abstract class FeatureModule {
       if (features is List) {
         for (final raw in features) {
           if (raw is Map<String, dynamic> &&
-              raw['feature_key'] == featureKey) {
-            // Found in snapshot — use the resolved enabled state.
+              _normalizeFeatureKey(raw['feature_key'] as String? ?? '') ==
+                  _normalizeFeatureKey(featureKey)) {
+            // Module registration should follow operational availability.
+            // Hidden features remain registered so routes and deep links can be
+            // handled gracefully, but maintenance / disabled features are
+            // removed entirely.
             final isGlobalEnabled = raw['is_enabled'] as bool? ?? true;
             final visibility = raw['visibility_state'] as String? ?? 'visible';
             final channel = raw['channel'] as Map<String, dynamic>?;
             final channelEnabled = channel?['is_enabled'] as bool? ?? true;
-            final channelVisible = channel?['is_visible'] as bool? ?? true;
+            final rules = raw['rules'] as Map<String, dynamic>?;
+            final isWithinSchedule =
+                rules?['is_within_schedule'] as bool? ?? true;
 
             return isGlobalEnabled &&
-                visibility != 'hidden' &&
                 channelEnabled &&
-                channelVisible;
+                visibility != 'maintenance' &&
+                isWithinSchedule;
           }
         }
       }
@@ -77,6 +115,12 @@ abstract class FeatureModule {
   /// pushed absolutely (e.g. context.push('/profile_setup')) from
   /// multiple unrelated features.
   List<RouteBase> get standaloneRoutes => const [];
+
+  /// Paths that are accessible without authentication.
+  ///
+  /// Override in modules that provide pre-auth routes (splash, onboarding,
+  /// phone auth). These paths bypass the auth redirect guard.
+  Set<String> get publicPaths => const <String>{};
 }
 
 /// Describes a bottom navigation tab provided by a feature.
@@ -95,4 +139,3 @@ class TabRoute {
     required this.builder,
   });
 }
-

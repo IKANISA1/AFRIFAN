@@ -12,12 +12,14 @@ import { LiveTableContext } from "@/components/engagement/live-table-context";
 import { NotificationOptInCard } from "@/components/pwa/notification-opt-in-card";
 import { ShareActionButton } from "@/components/pwa/share-action-button";
 import { getClubProfile, getMatchById, getMatches, getStandings } from "@/lib/data/public";
+import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import {
   buildMatchJsonLd,
   buildPageMetadata,
   renderJsonLdScriptContent,
 } from "@/lib/metadata";
 import {
+  cn,
   formatCurrency,
   formatDateTime,
   formatMatchStatusLabel,
@@ -48,6 +50,11 @@ export default async function FixtureDetailPage({
 }: {
   params: Promise<{ matchId: string }>;
 }) {
+  const featureGate = await getFeaturePageGuard("live");
+  if (featureGate) {
+    return featureGate;
+  }
+
   const { matchId } = await params;
   const [club, match, matches, standings] = await Promise.all([
     getClubProfile(),

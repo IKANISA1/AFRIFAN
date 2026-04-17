@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../widgets/contributor_leaderboard.dart';
 import '../widgets/match_card.dart';
+import 'package:core_utils/core_utils.dart';
 
 enum HomeFeedStatus { success, degraded, empty, error }
 
@@ -186,7 +187,8 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
 
     try {
       scope = await ClubScopeResolver(client: client).requireResolved();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('HomeContentRepository', 'Operation failed (non-critical).', error, stackTrace);
       return const HomeFeedSnapshot(
         status: HomeFeedStatus.error,
         message: 'Could not resolve the active club. Pull to refresh.',
@@ -388,7 +390,8 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
       final rank = higherRows.length + 1;
 
       result(userPoints, rank);
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('HomeContentRepository', 'Operation failed (non-critical).', error, stackTrace);
       // Best-effort — leave values at 0 so stats row hides gracefully.
     }
   }
@@ -411,7 +414,8 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
             currentUserId.isNotEmpty) {
           profile[currentUserId] = selfAlias;
         }
-      } catch (_) {
+      } catch (error, stackTrace) {
+      AfriLogger.warn('HomeContentRepository', 'Operation failed (non-critical).', error, stackTrace);
         // Keep rendering even if self alias lookup is restricted.
       }
     }
@@ -436,7 +440,8 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
           profile[id] = alias;
         }
       }
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('HomeContentRepository', 'Operation failed (non-critical).', error, stackTrace);
       // Alias lookup is best-effort only.
     }
   }
@@ -619,7 +624,8 @@ class SupabaseLatestIntelRepository implements LatestIntelRepository {
         status: LatestIntelStatus.ready,
         articles: articles,
       );
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AfriLogger.warn('HomeContentRepository', 'Operation failed (non-critical).', error, stackTrace);
       return const LatestIntelSnapshot(
         status: LatestIntelStatus.error,
         message: 'Latest Intel is temporarily unavailable. Pull to refresh.',

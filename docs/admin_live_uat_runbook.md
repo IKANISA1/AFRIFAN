@@ -1,0 +1,104 @@
+# Admin Live UAT Runbook
+
+This runbook defines the repeatable release verification path for the production admin workspace on `https://admin.gikundiro.com`.
+
+## Preconditions
+
+- `apps/rayon_sports/web/.env.local` must contain:
+  - `NEXT_PUBLIC_SUPABASE_URL` or `SUPABASE_URL`
+  - `SUPABASE_SERVICE_ROLE_KEY`
+  - `SUPABASE_ACCESS_TOKEN`
+  - `POSTGRES_URL`
+  - `NEXT_PUBLIC_SITE_URL`
+  - `NEXT_PUBLIC_ADMIN_URL`
+- `psql` must be available on the machine running the checks.
+- Playwright Chromium must already be installed through the repo toolchain.
+
+## Release Verification Commands
+
+Run these from [apps/rayon_sports/web](/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/web).
+
+```bash
+npm run qa:supabase:verify
+npm run qa:admin:live
+```
+
+## What `qa:supabase:verify` Checks
+
+- live Supabase Auth `site_url`
+- redirect allow-list entries for:
+  - `gikundiro.com`
+  - `www.gikundiro.com`
+  - `admin.gikundiro.com`
+  - `fans.gikundiro.com`
+- presence of the feature-audit triggers on:
+  - `platform_features`
+  - `platform_feature_channels`
+  - `platform_feature_rules`
+  - `platform_content_blocks`
+- presence and shape of `log_feature_config_change()`
+- existence of:
+  - `get_platform_config(...)`
+  - `get_feature_access_state(...)`
+  - `check_feature_enabled(...)`
+
+## What `qa:admin:live` Checks
+
+The live runner creates a temporary `club_admin` user, authenticates via Supabase magic link, performs live admin checks, and cleans up all temporary test data.
+
+It verifies:
+
+- dashboard login session
+- feature registry page loads
+- feature disable/enable write path
+- feature audit logging
+- content-blocks page loads
+- content-block create/delete write path
+- content-block audit logging
+- authenticated admin APIs for:
+  - `/api/admin/features`
+  - `/api/admin/content-blocks`
+
+It also runs read-level page checks for these module surfaces:
+
+- `/admin`
+- `/admin/matches`
+- `/admin/notifications`
+- `/admin/membership`
+- `/admin/community`
+- `/admin/shop`
+- `/admin/tickets`
+- `/admin/cms`
+- `/admin/cms/banners`
+- `/admin/cms/content`
+- `/admin/cms/content-blocks`
+- `/admin/cms/config`
+- `/admin/contributions`
+- `/admin/standings`
+- `/admin/squad`
+- `/admin/gamification`
+- `/admin/gamification/wallet`
+- `/admin/sms-monitor`
+- `/admin/settings`
+- `/admin/settings/features`
+- `/admin/settings/audit`
+
+It also verifies that `/admin/access` is correctly restricted for a `club_admin` session.
+
+## Artifacts
+
+- Live admin UAT writes a JSON report to:
+  - [tmp/admin-live-uat-latest.json](/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/web/tmp/admin-live-uat-latest.json)
+
+## Known Boundaries
+
+- The live runner uses magic-link authentication to automate the authenticated session safely. It does not validate real-device WhatsApp OTP delivery.
+- The runner verifies the central feature/content governance path and the main admin module surfaces. It is not a substitute for manual exploratory QA on visual polish or domain-specific business rules.
+
+## Manual Follow-Up Checks
+
+After the automated run passes, do a short human smoke pass for:
+
+- mobile nav/layout on `gikundiro.com`
+- critical public routes after any feature flag changes
+- any admin module that received recent UI-only work not covered by the automated write checks

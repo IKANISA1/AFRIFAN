@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ExternalLink, MessageGroup, ShieldCheck } from "lucide-react";
+import { ExternalLink, MessagesSquare, ShieldCheck } from "lucide-react";
 import { PageHero } from "@/components/page-hero";
 import { resolveFanAppHref } from "@/lib/config";
 import { getClubProfile, getCmsContent } from "@/lib/data/public";
@@ -22,7 +22,7 @@ const fallbackSupportBlocks = [
     copy: "Membership, tickets, and orders stay in the fan app for authenticated follow-up.",
   },
   {
-    icon: MessageGroup,
+    icon: MessagesSquare,
     copy: "Public contact stays focused on club communication, media, and general supporter questions.",
   },
 ];
@@ -45,7 +45,7 @@ export default async function ContactPage() {
   const supportBlocks =
     cmsBlocks.length > 0
       ? cmsBlocks.map((block, i) => ({
-        icon: i === 0 ? ShieldCheck : MessageGroup,
+        icon: i === 0 ? ShieldCheck : MessagesSquare,
         copy: block.body || block.title,
       }))
       : fallbackSupportBlocks;

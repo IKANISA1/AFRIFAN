@@ -86,8 +86,8 @@ export function NotificationList({
                 const total = Math.max(item.sentCount + item.failedCount, item.requestedRecipientCount);
 
                 return (
-                  <tr key={item.id}>
-                    <td>
+                  <tr key={item.id} className="admin-table-row">
+                    <td className="admin-table-cell" data-column-label="Message">
                       <p className="admin-row-title">{item.title}</p>
                       <p className="admin-row-copy">{item.body}</p>
                       {item.lastError ? (
@@ -97,11 +97,11 @@ export function NotificationList({
                         </div>
                       ) : null}
                     </td>
-                    <td>
+                    <td className="admin-table-cell" data-column-label="Audience">
                       <p className="text-sm font-medium text-white">{audienceLabel(item)}</p>
                       <p className="admin-row-meta">{item.audienceType.replaceAll("_", " ")}</p>
                     </td>
-                    <td>
+                    <td className="admin-table-cell" data-column-label="Delivery">
                       <p className="text-sm font-medium text-white">
                         {item.deliveryMode === "schedule" ? "Scheduled" : "Immediate"}
                       </p>
@@ -114,13 +114,13 @@ export function NotificationList({
                         })}
                       </p>
                     </td>
-                    <td>
+                    <td className="admin-table-cell" data-column-label="Status">
                       <AdminStatusBadge
                         label={item.status}
                         tone={notificationTone(item.status)}
                       />
                     </td>
-                    <td className="min-w-[180px]">
+                    <td className="admin-table-cell min-w-[180px]" data-column-label="Sent">
                       <p className="text-sm font-medium text-white">
                         {item.sentCount} / {total}
                       </p>
@@ -130,7 +130,7 @@ export function NotificationList({
                         </div>
                       ) : null}
                     </td>
-                    <td>
+                    <td className="admin-table-cell" data-column-label="Failures">
                       <p className="text-sm font-medium text-white">{item.failedCount}</p>
                       <p className="admin-row-meta">
                         {item.failedCount > 0 ? "needs review" : "clear"}

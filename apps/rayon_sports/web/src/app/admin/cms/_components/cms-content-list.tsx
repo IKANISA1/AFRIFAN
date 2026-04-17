@@ -75,9 +75,9 @@ export function CMSContentList({
               {articles.map((article) => (
                 <tr
                   key={article.id}
-                  className={cn(!article.isPublished && "opacity-80")}
+                  className={cn("admin-table-row", !article.isPublished && "opacity-80")}
                 >
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Article">
                     <div className="flex gap-3">
                       {article.imageUrl ? (
                         <div className="hidden h-12 w-12 overflow-hidden rounded-xl border border-border-soft sm:block">
@@ -91,16 +91,16 @@ export function CMSContentList({
                       </div>
                     </div>
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Category">
                     <AdminStatusBadge label={article.category} tone="neutral" />
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Status">
                     <AdminStatusBadge
                       label={article.isPublished ? "Live" : "Draft"}
                       tone={article.isPublished ? "success" : "neutral"}
                     />
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Flags">
                     <div className="flex flex-wrap gap-2">
                       {article.isFeatured ? (
                         <AdminStatusBadge label="Featured" tone="accent" />
@@ -109,13 +109,13 @@ export function CMSContentList({
                       )}
                     </div>
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Words">
                     <p className="text-sm font-medium text-white">
                       {wordCount(article.body)}
                     </p>
                     <p className="admin-row-meta">body words</p>
                   </td>
-                  <td>
+                  <td className="admin-table-cell" data-column-label="Updated">
                     <p className="text-sm font-medium text-white">
                       {new Date(article.publishedAt ?? article.createdAt).toLocaleDateString("en-US", {
                         month: "short",
@@ -127,8 +127,8 @@ export function CMSContentList({
                       {article.isPublished ? "published" : "created"}
                     </p>
                   </td>
-                  <td>
-                    <div className="flex justify-end gap-2">
+                  <td className="admin-table-cell" data-column-label="Actions">
+                    <div className="flex flex-wrap justify-start gap-2 sm:justify-end">
                       <button
                         type="button"
                         onClick={() => onBeginEdit(article)}

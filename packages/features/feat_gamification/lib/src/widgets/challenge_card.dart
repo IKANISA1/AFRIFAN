@@ -1,31 +1,42 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../models/challenge_models.dart';
 
 class ChallengeCard extends StatelessWidget {
   const ChallengeCard({
     super.key,
     required this.challenge,
+    this.compact = false,
   });
 
   final Challenge challenge;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     final fixture = challenge.fixture;
-    if (fixture == null) return const SizedBox.shrink();
+    if (fixture == null) {
+      return const SizedBox.shrink();
+    }
+
+    final countdown = challenge.timeUntilLock;
+    final hasCountdown = challenge.status == ChallengeStatus.open &&
+        countdown.inSeconds > 0;
 
     return GlassCard(
       onTap: () => context.push('/challenge/${challenge.id}'),
+      animate: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _CreatorAvatar(
-                name: challenge.creatorName ?? 'Supporter',
-                avatarUrl: challenge.creatorAvatar,
+              _AvatarBadge(
+                label: challenge.creatorDisplayName,
+                avatarUrl: challenge.creatorAvatarUrl,
               ),
               const SizedBox(width: SpacingTokens.spacing3),
               Expanded(
@@ -33,162 +44,131 @@ class ChallengeCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${challenge.creatorName ?? 'Supporter'}''s Challenge',
-                      style: TypographyTokens.labelSmall(),
+                      challenge.creatorDisplayName,
+                      style: TypographyTokens.titleSmall(),
                     ),
+                    const SizedBox(height: 2),
                     Text(
-                      challenge.fixture?.competitionName.toUpperCase() ?? 'MATCH',
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: ColorTokens.onSurfaceVariant,
-                        letterSpacing: 1.0,
+                      fixture.competitionName,
+                      style: TypographyTokens.labelSmall(
+                        ColorTokens.onSurfaceVariant,
                       ),
                     ),
                   ],
                 ),
               ),
-              _StatusChip(status: challenge.status),
+              ChallengeStatusChip(status: challenge.status),
             ],
           ),
           const SizedBox(height: SpacingTokens.spacing4),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _TeamBox(
-                name: fixture.homeTeamShort,
-                alignment: CrossAxisAlignment.start,
+              Expanded(
+                child: _TeamColumn(
+                  name: fixture.homeTeamShort,
+                  alignment: CrossAxisAlignment.start,
+                ),
               ),
-              _ScoreDisplay(
-                status: fixture.status,
-                homeScore: fixture.homeScore,
-                awayScore: fixture.awayScore,
+              Column(
+                children: [
+                  Text(
+                    fixture.status == 'finished' || fixture.status == 'live'
+                        ? '${fixture.homeScore ?? 0}-${fixture.awayScore ?? 0}'
+                        : 'VS',
+                    style: TypographyTokens.monolithFont(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                      color: fixture.status == 'live'
+                          ? ColorTokens.error
+                          : ColorTokens.clubAccent,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  if (hasCountdown)
+                    Text(
+                      _formatCountdown(countdown),
+                      style: TypographyTokens.labelSmall(
+                        ColorTokens.warning,
+                      ),
+                    )
+                  else
+                    Text(
+                      compact
+                          ? fixture.kickoffAt?.toLocal().toString().split('.').first ??
+                              'Kickoff soon'
+                          : _formatKickoff(fixture.kickoffAt),
+                      style: TypographyTokens.labelSmall(
+                        ColorTokens.onSurfaceVariant,
+                      ),
+                    ),
+                ],
               ),
-              _TeamBox(
-                name: fixture.awayTeamShort,
-                alignment: CrossAxisAlignment.end,
+              Expanded(
+                child: _TeamColumn(
+                  name: fixture.awayTeamShort,
+                  alignment: CrossAxisAlignment.end,
+                ),
               ),
             ],
           ),
           const SizedBox(height: SpacingTokens.spacing4),
-          Divider(color: ColorTokens.ghostBorder, height: 1),
-          const SizedBox(height: SpacingTokens.spacing4),
-          Row(
+          Wrap(
+            spacing: SpacingTokens.spacing2,
+            runSpacing: SpacingTokens.spacing2,
             children: [
-              _Metric(
-                icon: AfriIcons.earn,
-                label: 'STAKE',
-                value: '${challenge.stakeFet} FET',
-                accent: true,
-              ),
-              const Spacer(),
-              _Metric(
+              StakeBadge(stakeFet: challenge.stakeFet),
+              _InfoChip(
                 icon: AfriIcons.users,
-                label: 'PLAYERS',
-                value: '${challenge.totalParticipants}',
+                label: '${challenge.totalParticipants} joined',
               ),
-              const Spacer(),
-              _Metric(
+              _InfoChip(
                 icon: AfriIcons.wallet,
-                label: 'TOTAL POOL',
-                value: '${challenge.totalPoolFet}',
-                accent: true,
+                label: '${challenge.totalPoolFet} FET pool',
               ),
+              if (challenge.creatorPrediction != null)
+                ScorePredictionPill(
+                  homeScore: challenge.creatorPrediction!.homeScore,
+                  awayScore: challenge.creatorPrediction!.awayScore,
+                  label: 'Creator',
+                ),
+              if (challenge.myEntry != null)
+                ScorePredictionPill(
+                  homeScore: challenge.myEntry!.predictedHomeScore,
+                  awayScore: challenge.myEntry!.predictedAwayScore,
+                  label: 'My pick',
+                  accent: ColorTokens.clubAccent,
+                ),
             ],
           ),
         ],
       ),
     );
   }
-}
 
-class _CreatorAvatar extends StatelessWidget {
-  const _CreatorAvatar({required this.name, this.avatarUrl});
-  final String name;
-  final String? avatarUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 32,
-      height: 32,
-      decoration: BoxDecoration(
-        color: ColorTokens.primaryTint(0.2),
-        shape: BoxShape.circle,
-        border: BorderTokens.all(color: ColorTokens.ghostBorder),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        name.substring(0, 1).toUpperCase(),
-        style: TypographyTokens.labelSmall().copyWith(fontWeight: FontWeight.w900),
-      ),
-    );
-  }
-}
-
-class _TeamBox extends StatelessWidget {
-  const _TeamBox({required this.name, required this.alignment});
-  final String name;
-  final CrossAxisAlignment alignment;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: alignment,
-        children: [
-          Text(
-            name.toUpperCase(),
-            style: TypographyTokens.monolithFont(
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ScoreDisplay extends StatelessWidget {
-  const _ScoreDisplay({
-    required this.status,
-    this.homeScore,
-    this.awayScore,
-  });
-  final String status;
-  final int? homeScore;
-  final int? awayScore;
-
-  @override
-  Widget build(BuildContext context) {
-    final isLive = status.toLowerCase() == 'live';
-    final isFinished = status.toLowerCase() == 'finished';
-
-    if (!isLive && !isFinished) {
-      return Text(
-        'VS',
-        style: TypographyTokens.monolithFont(
-          fontSize: 14,
-          fontWeight: FontWeight.w900,
-          color: ColorTokens.clubAccent,
-        ),
-      );
+  String _formatKickoff(DateTime? value) {
+    if (value == null) {
+      return 'Kickoff soon';
     }
+    final local = value.toLocal();
+    final hour = local.hour.toString().padLeft(2, '0');
+    final minute = local.minute.toString().padLeft(2, '0');
+    return '${local.day}/${local.month} $hour:$minute';
+  }
 
-    return Text(
-      '${homeScore ?? 0} - ${awayScore ?? 0}',
-      style: TypographyTokens.monolithFont(
-        fontSize: 18,
-        fontWeight: FontWeight.w900,
-        color: isLive ? ColorTokens.error : ColorTokens.onSurface,
-      ),
-    );
+  String _formatCountdown(Duration duration) {
+    if (duration.inHours >= 24) {
+      return '${duration.inDays}d left';
+    }
+    if (duration.inHours >= 1) {
+      return '${duration.inHours}h ${duration.inMinutes.remainder(60)}m';
+    }
+    return '${duration.inMinutes}m left';
   }
 }
 
-class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.status});
+class ChallengeStatusChip extends StatelessWidget {
+  const ChallengeStatusChip({super.key, required this.status});
+
   final ChallengeStatus status;
 
   @override
@@ -197,68 +177,179 @@ class _StatusChip extends StatelessWidget {
       ChallengeStatus.open => ColorTokens.success,
       ChallengeStatus.locked => ColorTokens.warning,
       ChallengeStatus.settled => ColorTokens.clubAccent,
-      _ => ColorTokens.onSurfaceVariant,
+      ChallengeStatus.void_ => ColorTokens.onSurfaceVariant,
+      ChallengeStatus.cancelled => ColorTokens.error,
     };
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing3,
+        vertical: 6,
+      ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        status.name.toUpperCase(),
+        status.name.replaceAll('_', '').toUpperCase(),
         style: TypographyTokens.editorialFont(
-          fontSize: 8,
-          fontWeight: FontWeight.w900,
+          fontSize: 9,
+          fontWeight: FontWeight.w700,
           color: color,
-          letterSpacing: 1,
+          letterSpacing: 0.8,
         ),
       ),
     );
   }
 }
 
-class _Metric extends StatelessWidget {
-  const _Metric({
-    required this.icon,
+class StakeBadge extends StatelessWidget {
+  const StakeBadge({super.key, required this.stakeFet});
+
+  final int stakeFet;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing3,
+        vertical: 6,
+      ),
+      decoration: BoxDecoration(
+        color: ColorTokens.clubAccent.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        '$stakeFet FET',
+        style: TypographyTokens.editorialFont(
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          color: ColorTokens.clubAccent,
+          letterSpacing: 0.8,
+        ),
+      ),
+    );
+  }
+}
+
+class ScorePredictionPill extends StatelessWidget {
+  const ScorePredictionPill({
+    super.key,
+    required this.homeScore,
+    required this.awayScore,
     required this.label,
-    required this.value,
-    this.accent = false,
+    this.accent = ColorTokens.success,
   });
+
+  final int homeScore;
+  final int awayScore;
+  final String label;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing3,
+        vertical: 6,
+      ),
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        '$label  $homeScore-$awayScore',
+        style: TypographyTokens.editorialFont(
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          color: accent,
+          letterSpacing: 0.7,
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoChip extends StatelessWidget {
+  const _InfoChip({required this.icon, required this.label});
 
   final IconData icon;
   final String label;
-  final String value;
-  final bool accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing3,
+        vertical: 6,
+      ),
+      decoration: BoxDecoration(
+        color: ColorTokens.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(999),
+        border: BorderTokens.all(color: ColorTokens.ghostBorder),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: ColorTokens.onSurfaceVariant),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: TypographyTokens.labelSmall(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AvatarBadge extends StatelessWidget {
+  const _AvatarBadge({required this.label, this.avatarUrl});
+
+  final String label;
+  final String? avatarUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    final trimmed = label.trim();
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: ColorTokens.primaryTint(0.16),
+        border: BorderTokens.all(color: ColorTokens.ghostBorder),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        trimmed.isEmpty ? '?' : trimmed.substring(0, 1).toUpperCase(),
+        style: TypographyTokens.labelSmall().copyWith(
+          fontWeight: FontWeight.w900,
+        ),
+      ),
+    );
+  }
+}
+
+class _TeamColumn extends StatelessWidget {
+  const _TeamColumn({
+    required this.name,
+    required this.alignment,
+  });
+
+  final String name;
+  final CrossAxisAlignment alignment;
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: alignment,
       children: [
-        Row(
-          children: [
-            Icon(icon, size: 10, color: ColorTokens.onSurfaceVariant),
-            const SizedBox(width: 4),
-            Text(
-              label,
-              style: TypographyTokens.editorialFont(
-                fontSize: 8,
-                fontWeight: FontWeight.w700,
-                color: ColorTokens.onSurfaceVariant,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 2),
         Text(
-          value,
+          name.toUpperCase(),
           style: TypographyTokens.monolithFont(
-            fontSize: 12,
-            fontWeight: FontWeight.w800,
-            color: accent ? ColorTokens.clubAccent : ColorTokens.onSurface,
+            fontSize: 16,
+            fontWeight: FontWeight.w900,
           ),
         ),
       ],

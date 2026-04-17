@@ -192,3 +192,59 @@ export function metadataSnippet(value: unknown) {
   }
   return "Recorded by admin workflow.";
 }
+
+export async function resolveClubFootballPartnerId(
+  client: SupabaseClient,
+  clubId: number,
+) {
+  const clubLookup = await client
+    .from(clubTable)
+    .select("club_name, club_slug")
+    .eq("id", clubId)
+    .maybeSingle();
+
+  if (clubLookup.error) {
+    throw new Error(clubLookup.error.message);
+  }
+
+  const clubSlug = safeString(clubLookup.data?.club_slug);
+  const clubName = safeString(clubLookup.data?.club_name);
+
+  if (clubSlug) {
+    const partnerBySlug = await client
+      .from("partners")
+      .select("id")
+      .eq("category", "football")
+      .eq("slug", clubSlug)
+      .maybeSingle();
+
+    if (partnerBySlug.error) {
+      throw new Error(partnerBySlug.error.message);
+    }
+
+    const partnerId = safeString(partnerBySlug.data?.id);
+    if (partnerId.length > 0) {
+      return partnerId;
+    }
+  }
+
+  if (clubName) {
+    const partnerByName = await client
+      .from("partners")
+      .select("id")
+      .eq("category", "football")
+      .eq("name", clubName)
+      .maybeSingle();
+
+    if (partnerByName.error) {
+      throw new Error(partnerByName.error.message);
+    }
+
+    const partnerId = safeString(partnerByName.data?.id);
+    if (partnerId.length > 0) {
+      return partnerId;
+    }
+  }
+
+  throw new Error(`No football partner mapping exists for club ${clubId}.`);
+}

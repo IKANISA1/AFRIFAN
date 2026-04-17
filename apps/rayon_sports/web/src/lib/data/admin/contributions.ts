@@ -1,5 +1,5 @@
 /**
- * Admin contributions — Groups snapshot, Excel export, group CRUD.
+ * Admin contributions — public initiative snapshot, Excel export, initiative CRUD.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { fallbackClubProfile } from "@/lib/content";
@@ -13,21 +13,19 @@ import {
   requireAdminClubId,
 } from "./helpers";
 
+const contributionWriteTable = "groups";
+
 function mapContributionGroup(row: Record<string, unknown>): AdminContributionGroup {
+  const normalizedType = safeString(row.group_type).toLowerCase();
   return {
     id: toIdString(row.id, crypto.randomUUID()),
-    name: safeString(row.name, "Support Group"),
-    description: safeString(row.description, "Supporter funding Group."),
-    privacy: safeString(row.privacy) === "public" ? "public" : "private",
-    groupType:
-      safeString(row.group_type) === "project" || safeString(row.group_type) === "savings" || safeString(row.group_type) === "emergency"
-        ? (safeString(row.group_type) as AdminContributionGroup["groupType"])
-        : "general",
+    name: safeString(row.name, "Public initiative"),
+    description: safeString(row.description, "Admin-managed public initiative."),
+    groupType: normalizedType === "project" ? "project" : "community",
     targetAmount: safeNumber(row.target_amount, 0),
     currentTotal: safeNumber(row.current_total, 0),
     currency: safeString(row.currency, fallbackClubProfile.currencyCode),
     memberCount: safeNumber(row.member_count, 0),
-    inviteCode: safeString(row.invite_code) || null,
     isActive: row.is_closed !== true,
     creatorId: safeString(row.creator_id) || null,
     createdAt: safeString(row.created_at, new Date().toISOString()),
@@ -55,7 +53,7 @@ export async function getAdminContributionSnapshot(client: SupabaseClient, acces
   // Fetch groups scoped to the admin's club
   const groupsQuery = client
     .from(contributionTable)
-    .select("id, name, description, group_type, privacy, target_amount, current_total, member_count, creator_id, invite_code, is_closed, created_at, currency")
+    .select("id, name, description, group_type, target_amount, current_total, member_count, creator_id, is_closed, created_at, currency")
     .eq("club_id", clubId)
     .order("created_at", { ascending: false });
 
@@ -73,20 +71,6 @@ export async function getAdminContributionSnapshot(client: SupabaseClient, acces
     scopedContributions = Array.isArray(contributionsResult.data) ? contributionsResult.data.map((row) => mapContributionItem(row as Record<string, unknown>)) : [];
   }
 
-  const creatorIds = groups.map((group) => group.creatorId).filter((value): value is string => Boolean(value));
-  const : Record<string, string > = { };
-  if (creatorIds.length > 0) {
-    const { data } = await client.from("profiles").select("id, public_user_id").in("id", creatorIds);
-    if (Array.isArray(data)) {
-      for (const profile of data) {
-        const row = profile as Record<string, unknown>;
-        const id = safeString(row.id);
-        const alias = safeString(row.public_user_id);
-        if (id && alias) [id] = alias;
-      }
-    }
-  }
-
   const today = new Date();
   const monthlyTotal = scopedContributions.reduce((sum, item) => {
     const createdAt = new Date(item.createdAt);
@@ -94,7 +78,7 @@ export async function getAdminContributionSnapshot(client: SupabaseClient, acces
     return sum + item.amount;
   }, 0);
 
-  return { groups, contributions: scopedContributions, , monthlyTotal };
+  return { groups, contributions: scopedContributions, monthlyTotal };
 }
 
 export function buildContributionExcel(snapshot: AdminContributionSnapshot) {
@@ -150,7 +134,7 @@ export async function downloadContributionExcel(snapshot: AdminContributionSnaps
 
 export async function saveAdminContributionGroup(
   client: SupabaseClient, access: AdminAccess,
-  input: { id?: string | null; name: string; description: string; privacy: AdminContributionGroup["privacy"]; groupType: AdminContributionGroup["groupType"]; targetAmount: number; currentTotal: number; currency: string; memberCount: number; inviteCode?: string | null; isClosed: boolean },
+  input: { id?: string | null; name: string; description: string; groupType: AdminContributionGroup["groupType"]; targetAmount: number; currentTotal: number; currency: string; memberCount: number; isClosed: boolean },
 ) {
   if (typeof window !== "undefined") {
     return requestAdminApi<string>("contributions", {
@@ -159,9 +143,32 @@ export async function saveAdminContributionGroup(
     });
   }
   const clubId = requireAdminClubId(access, "save contribution groups");
-  return mutateRecordWithVariants(client, contributionTable, input.id, [
-    { club_id: clubId, name: input.name.trim(), description: input.description.trim(), privacy: input.privacy, group_type: input.groupType, target_amount: safeNumber(input.targetAmount, 0), current_total: safeNumber(input.currentTotal, 0), currency: input.currency.trim() || fallbackClubProfile.currencyCode, member_count: safeNumber(input.memberCount, 0), invite_code: safeString(input.inviteCode) || null, is_closed: input.isClosed, is_active: input.isClosed !== true },
-    { club_id: clubId, name: input.name.trim(), description: input.description.trim(), privacy: input.privacy, group_type: input.groupType, target_amount: safeNumber(input.targetAmount, 0), current_total: safeNumber(input.currentTotal, 0), currency: input.currency.trim() || fallbackClubProfile.currencyCode, member_count: safeNumber(input.memberCount, 0), invite_code: safeString(input.inviteCode) || null, is_closed: input.isClosed },
+  return mutateRecordWithVariants(client, contributionWriteTable, input.id, [
+    {
+      club_id: clubId,
+      name: input.name.trim(),
+      description: input.description.trim(),
+      group_type: input.groupType,
+      visibility: "public",
+      target_amount: safeNumber(input.targetAmount, 0),
+      current_total: safeNumber(input.currentTotal, 0),
+      currency: input.currency.trim() || fallbackClubProfile.currencyCode,
+      member_count: safeNumber(input.memberCount, 0),
+      is_closed: input.isClosed,
+      is_active: input.isClosed !== true,
+    },
+    {
+      club_id: clubId,
+      name: input.name.trim(),
+      description: input.description.trim(),
+      group_type: input.groupType,
+      visibility: "public",
+      target_amount: safeNumber(input.targetAmount, 0),
+      current_total: safeNumber(input.currentTotal, 0),
+      currency: input.currency.trim() || fallbackClubProfile.currencyCode,
+      member_count: safeNumber(input.memberCount, 0),
+      is_closed: input.isClosed,
+    },
   ], { club_id: clubId });
 }
 
@@ -178,7 +185,7 @@ export async function deleteAdminContributionGroup(
     return;
   }
   const clubId = requireAdminClubId(access, "delete contribution groups");
-  await deleteRecordWithMatchers(client, contributionTable, groupId, {
+  await deleteRecordWithMatchers(client, contributionWriteTable, groupId, {
     club_id: clubId,
   });
 }

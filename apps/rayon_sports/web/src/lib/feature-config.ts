@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { getActiveClubReference } from "@/lib/club-context";
-import { getServerSupabase } from "@/lib/supabase/server";
+import { getReadOnlySupabase } from "@/lib/supabase/admin";
 
 export interface FeatureChannelConfig {
   is_enabled: boolean;
@@ -95,6 +95,8 @@ const EMPTY_CONFIG: PlatformConfigSnapshot = {
   club_id: null,
 };
 
+const lastKnownConfigByClub = new Map<number, PlatformConfigSnapshot>();
+
 const FALLBACK_ROUTE_FEATURE_KEYS: ReadonlyArray<[string, string]> = [
   ["/tickets", "ticketing"],
   ["/membership", "membership"],
@@ -116,6 +118,31 @@ function emptyConfigSnapshot(channel: "mobile" | "web" = "web"): PlatformConfigS
     channel,
     config_version: new Date().toISOString(),
   };
+}
+
+function rememberConfig(snapshot: PlatformConfigSnapshot) {
+  if (snapshot.club_id == null) {
+    return snapshot;
+  }
+
+  lastKnownConfigByClub.set(snapshot.club_id, snapshot);
+  return snapshot;
+}
+
+function getLastKnownConfig(
+  clubId: number,
+  channel: "mobile" | "web" = "web",
+) {
+  const cached = lastKnownConfigByClub.get(clubId);
+  if (!cached) {
+    return null;
+  }
+
+  return {
+    ...cached,
+    channel,
+    club_id: cached.club_id ?? clubId,
+  } satisfies PlatformConfigSnapshot;
 }
 
 export function normalizeFeatureKey(value: string | null | undefined) {
@@ -147,6 +174,15 @@ export function getFeatureAccess(
   key: string,
   options: FeatureAccessOptions = {},
 ): FeatureAccessState {
+  return _getFeatureAccess(config, key, options, new Set<string>());
+}
+
+function _getFeatureAccess(
+  config: PlatformConfigSnapshot,
+  key: string,
+  options: FeatureAccessOptions,
+  visited: Set<string>,
+): FeatureAccessState {
   const normalizedKey = normalizeFeatureKey(key);
   const feature = getFeature(config, normalizedKey);
 
@@ -176,12 +212,16 @@ export function getFeatureAccess(
   const isVisible =
     visibilityState !== "hidden" && (channel?.is_visible ?? true);
   const dependencies = rules?.dependency_rules?.requires;
+  const nextVisited = new Set<string>(visited);
+  nextVisited.add(normalizedKey);
   const dependenciesSatisfied =
     !Array.isArray(dependencies) ||
     dependencies.every(
       (dependency) =>
         typeof dependency !== "string" ||
-        getFeatureAccess(config, dependency, options).isOperational,
+        (nextVisited.has(normalizeFeatureKey(dependency)) ||
+          _getFeatureAccess(config, dependency, options, nextVisited)
+              .isOperational),
     );
   const isWithinSchedule = rules?.is_within_schedule ?? true;
   const roleRestrictions = Array.isArray(rules?.role_restrictions)
@@ -351,34 +391,58 @@ export function isRouteAvailable(
 
 export const getPlatformConfig = cache(async function getPlatformConfig(): Promise<PlatformConfigSnapshot> {
   try {
-    const supabase = await getServerSupabase();
     const club = await getActiveClubReference();
+    const supabase = getReadOnlySupabase();
     if (supabase == null) {
-      return emptyConfigSnapshot("web");
+      return (
+        getLastKnownConfig(club.numericId, "web") ??
+        emptyConfigSnapshot("web")
+      );
     }
 
-    const { data, error } = await supabase.rpc("get_platform_config", {
+    const rpcClient = supabase as unknown as {
+      rpc: (
+        name: string,
+        params: Record<string, unknown>,
+      ) => Promise<{ data: unknown; error: { message?: string } | null }>;
+    };
+
+    const { data, error } = await rpcClient.rpc("get_platform_config", {
       p_channel: "web",
       p_club_id: club.numericId,
     });
 
     if (error) {
       console.error("[feature-config] RPC error:", error.message);
-      return emptyConfigSnapshot("web");
+      return (
+        getLastKnownConfig(club.numericId, "web") ??
+        emptyConfigSnapshot("web")
+      );
     }
 
     const payload = (data as PlatformConfigSnapshot | null) ?? null;
     if (!payload) {
-      return emptyConfigSnapshot("web");
+      return (
+        getLastKnownConfig(club.numericId, "web") ??
+        emptyConfigSnapshot("web")
+      );
     }
 
-    return {
+    return rememberConfig({
       ...payload,
       channel: "web",
       club_id: payload.club_id ?? club.numericId,
-    };
+    });
   } catch (error) {
     console.error("[feature-config] Unexpected error:", error);
-    return emptyConfigSnapshot("web");
+    try {
+      const club = await getActiveClubReference();
+      return (
+        getLastKnownConfig(club.numericId, "web") ??
+        emptyConfigSnapshot("web")
+      );
+    } catch {
+      return emptyConfigSnapshot("web");
+    }
   }
 });
