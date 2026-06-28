@@ -41,30 +41,24 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
+      appBar: AfriAppBar(
         title: Text('MY TICKETS', style: TypographyTokens.headlineLarge()),
-        backgroundColor: Colors.transparent,
+        backgroundColor: ColorTokens.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: ColorTokens.onSurface),
-          onPressed: () => context.pop(),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
         actions: [
-          IconButton(
-            icon: const Icon(AfriIcons.refresh),
-            onPressed: () => ref.invalidate(myTicketsProvider),
+          AfriIconButton(
+            icon: AfriIcons.refresh,
+            onTap: () => ref.invalidate(myTicketsProvider),
+            tooltip: 'Refresh tickets',
           ),
         ],
-        bottom: TabBar(
+        bottom: AfriTabBar.line(
           controller: _tabController,
-          indicatorColor: ColorTokens.clubPrimary,
-          indicatorWeight: 3,
-          labelStyle: TypographyTokens.labelLarge(),
-          unselectedLabelStyle: TypographyTokens.labelLarge().copyWith(
-            color: ColorTokens.onSurfaceVariant,
-          ),
-          labelColor: ColorTokens.onSurface,
-          unselectedLabelColor: ColorTokens.onSurfaceVariant,
           tabs: const [
             Tab(text: 'UPCOMING'),
             Tab(text: 'PAST'),
@@ -101,16 +95,10 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
               _buildTicketList(
                 context,
                 tickets: upcoming,
-                emptyTitle: 'No upcoming tickets yet',
-                emptyBody:
-                    'Confirmed tickets appear here after payment verification.',
               ),
               _buildTicketList(
                 context,
                 tickets: past,
-                emptyTitle: 'No ticket history yet',
-                emptyBody:
-                    'Used and expired tickets will move here automatically.',
               ),
             ],
           );
@@ -122,15 +110,14 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
   Widget _buildTicketList(
     BuildContext context, {
     required List<ClubTicket> tickets,
-    required String emptyTitle,
-    required String emptyBody,
   }) {
     if (tickets.isEmpty) {
-      return _TicketWalletState(
-        title: emptyTitle,
-        body: emptyBody,
-        actionLabel: 'Browse Matches',
-        onPressed: () => context.go('/tickets'),
+      return Center(
+        child: AfriButton(
+          label: 'Browse matches',
+          icon: AfriIcons.tickets,
+          onTap: () => context.go('/tickets'),
+        ),
       );
     }
 
@@ -153,8 +140,13 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
           TicketStatus.refunded => ColorTokens.info,
         };
 
-        return GestureDetector(
+        return AfriPressFeedback(
           onTap: isActive ? () => context.push('/e-ticket/${ticket.id}') : null,
+          enabled: isActive,
+          tooltip: isActive ? 'Open ticket QR code' : null,
+          semanticsLabel:
+              '${ticket.matchTitle}, ${ticket.status.name} ticket, ${ticket.seatType.label}',
+          semanticsHint: isActive ? 'Open ticket QR code' : null,
           child: Container(
             decoration: BoxDecoration(
               color: ColorTokens.surface,
@@ -231,9 +223,7 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
                   ),
                   alignment: Alignment.center,
                   child: Icon(
-                    isPending
-                        ? Icons.hourglass_top_rounded
-                        : Icons.qr_code_2_rounded,
+                    isPending ? AfriIcons.statusWait : AfriIcons.qrCode,
                     size: 56,
                     color: isActive
                         ? ColorTokens.onSurface
@@ -271,7 +261,7 @@ class _TicketWalletState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.local_activity_outlined,
+              AfriIcons.tickets,
               size: 56,
               color: ColorTokens.onSurfaceVariant,
             ),

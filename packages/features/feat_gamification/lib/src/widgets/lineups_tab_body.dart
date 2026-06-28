@@ -45,7 +45,7 @@ class LineupsTabBody extends StatelessWidget {
                 ),
                 alignment: Alignment.center,
                 child: Icon(
-                  Icons.groups_rounded,
+                  AfriIcons.groups,
                   size: 36,
                   color: ColorTokens.onSurfaceVariant,
                 ),
@@ -53,12 +53,9 @@ class LineupsTabBody extends StatelessWidget {
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
                 'LINEUPS',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: ColorTokens.onSurfaceVariant,
-                  letterSpacing: 1.5,
-                ),
+                style: TypographyTokens.titleLarge(
+                  ColorTokens.onSurfaceVariant,
+                ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
@@ -82,21 +79,13 @@ class LineupsTabBody extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (homeFormation != null)
-                _FormationChip(
-                  team: homeTeamShort,
-                  formation: homeFormation!,
-                ),
+                _FormationChip(team: homeTeamShort, formation: homeFormation!),
               if (homeFormation != null && awayFormation != null)
                 const SizedBox(width: SpacingTokens.spacing4),
               if (awayFormation != null)
-                _FormationChip(
-                  team: awayTeamShort,
-                  formation: awayFormation!,
-                ),
+                _FormationChip(team: awayTeamShort, formation: awayFormation!),
             ],
-          )
-              .animate()
-              .fadeIn(duration: 300.ms),
+          ).animate().fadeIn(duration: 300.ms),
 
         if (homeFormation != null || awayFormation != null)
           const SizedBox(height: SpacingTokens.spacing5),
@@ -128,10 +117,7 @@ class LineupsTabBody extends StatelessWidget {
 }
 
 class _FormationChip extends StatelessWidget {
-  const _FormationChip({
-    required this.team,
-    required this.formation,
-  });
+  const _FormationChip({required this.team, required this.formation});
 
   final String team;
   final String formation;
@@ -152,21 +138,16 @@ class _FormationChip extends StatelessWidget {
         children: [
           Text(
             team,
-            style: TypographyTokens.editorialFont(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: ColorTokens.onSurfaceVariant,
-              letterSpacing: 1,
-            ),
+            style: TypographyTokens.metricLabel(
+              ColorTokens.onSurfaceVariant,
+            ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1),
           ),
           const SizedBox(width: SpacingTokens.spacing2),
           Text(
             formation,
-            style: TypographyTokens.monolithFont(
-              fontSize: 14,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.onSurface,
-            ),
+            style: TypographyTokens.titleSmall(
+              ColorTokens.onSurface,
+            ).copyWith(fontWeight: FontWeight.w800),
           ),
         ],
       ),
@@ -195,33 +176,24 @@ class _TeamLineup extends StatelessWidget {
       children: [
         Text(
           teamName,
-          style: TypographyTokens.monolithFont(
-            fontSize: 14,
-            fontWeight: FontWeight.w800,
-            color: isHome ? ColorTokens.clubAccent : ColorTokens.onSurface,
-            letterSpacing: 1.2,
-          ),
+          style: TypographyTokens.titleSmall(
+            isHome ? ColorTokens.clubAccent : ColorTokens.onSurface,
+          ).copyWith(fontWeight: FontWeight.w800, letterSpacing: 1.2),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
 
         // Starters
         ...starters.asMap().entries.map((entry) {
-          return _PlayerRow(
-            player: entry.value,
-            delay: (entry.key * 40),
-          );
+          return _PlayerRow(player: entry.value, delay: (entry.key * 40));
         }),
 
         if (subs.isNotEmpty) ...[
           const SizedBox(height: SpacingTokens.spacing3),
           Text(
             'SUBS',
-            style: TypographyTokens.editorialFont(
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-              color: ColorTokens.onSurfaceVariant,
-              letterSpacing: 1.2,
-            ),
+            style: TypographyTokens.labelSmall(
+              ColorTokens.onSurfaceVariant,
+            ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           ...subs.asMap().entries.map((entry) {
@@ -238,11 +210,7 @@ class _TeamLineup extends StatelessWidget {
 }
 
 class _PlayerRow extends StatelessWidget {
-  const _PlayerRow({
-    required this.player,
-    this.delay = 0,
-    this.isSub = false,
-  });
+  const _PlayerRow({required this.player, this.delay = 0, this.isSub = false});
 
   final LineupPlayer player;
   final int delay;
@@ -251,46 +219,41 @@ class _PlayerRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 24,
-            child: Text(
-              player.number != null ? '${player.number}' : '',
-              style: TypographyTokens.monolithFont(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: isSub
-                    ? ColorTokens.onSurfaceVariant
-                    : ColorTokens.clubAccent,
+          padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 24,
+                child: Text(
+                  player.number != null ? '${player.number}' : '',
+                  style: TypographyTokens.labelMedium(
+                    isSub
+                        ? ColorTokens.onSurfaceVariant
+                        : ColorTokens.clubAccent,
+                  ).copyWith(fontWeight: FontWeight.w700),
+                ),
               ),
-            ),
+              const SizedBox(width: SpacingTokens.spacing2),
+              Expanded(
+                child: Text(
+                  player.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TypographyTokens.bodyMedium().copyWith(
+                    color: isSub ? ColorTokens.onSurfaceVariant : null,
+                  ),
+                ),
+              ),
+              if (player.position != null)
+                Text(
+                  player.position!,
+                  style: TypographyTokens.labelSmall(
+                    ColorTokens.onSurfaceVariant,
+                  ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 0.5),
+                ),
+            ],
           ),
-          const SizedBox(width: SpacingTokens.spacing2),
-          Expanded(
-            child: Text(
-              player.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TypographyTokens.bodyMedium().copyWith(
-                color: isSub ? ColorTokens.onSurfaceVariant : null,
-              ),
-            ),
-          ),
-          if (player.position != null)
-            Text(
-              player.position!,
-              style: TypographyTokens.editorialFont(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: ColorTokens.onSurfaceVariant,
-                letterSpacing: 0.5,
-              ),
-            ),
-        ],
-      ),
-    )
+        )
         .animate(delay: delay.ms)
         .fadeIn(duration: 200.ms)
         .slideX(begin: 0.03, end: 0, duration: 200.ms);

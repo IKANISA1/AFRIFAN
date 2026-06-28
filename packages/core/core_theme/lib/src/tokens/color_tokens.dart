@@ -220,6 +220,20 @@ class ColorTokens {
   static Color get chromeBorder => Colors.white.withValues(alpha: 0.28);
   static Color get chromeForeground => const Color(0xFFFFFDFB);
 
+  static const Color transparent = Color(0x00000000);
+  static const Color onDark = Color(0xFFFFFFFF);
+  static const Color onDarkDim = Color(0x99FFFFFF);
+  static const Color onDarkSubtle = Color(0x8AFFFFFF);
+  static const Color onDarkFaint = Color(0x61FFFFFF);
+  static const Color onDarkSoft = Color(0x3DFFFFFF);
+  static const Color onDarkHairline = Color(0x1AFFFFFF);
+  static const Color borrowedPaper = Color(0xFFFFFFFF);
+  static const Color borrowedInk = _inkBase;
+  static const Color borrowedInkMuted = Color(0x8A09090B);
+  static const Color borrowedInkSubtle = Color(0x6109090B);
+  static const Color borrowedInkFaint = Color(0x4209090B);
+  static const Color borrowedHairline = Color(0x0D09090B);
+
   static Color get navActive => primaryContainer;
 
   static Color get ambientShadow => const Color(0xFF040812);
@@ -237,6 +251,62 @@ class ColorTokens {
       end: Alignment.bottomRight,
       colors: [from ?? primary, to ?? primaryContainer],
       stops: const [0.0, 1.0],
+    );
+  }
+
+  static LinearGradient borrowedGradient({
+    required List<Color> colors,
+    AlignmentGeometry begin = Alignment.topLeft,
+    AlignmentGeometry end = Alignment.bottomRight,
+    List<double>? stops,
+  }) {
+    return LinearGradient(begin: begin, end: end, colors: colors, stops: stops);
+  }
+
+  static LinearGradient borrowedSurfaceGradient({
+    Color? tint,
+    double tintAlpha = 0.12,
+    Color? from,
+    Color? to,
+  }) {
+    final tintColor = tint?.withValues(alpha: tintAlpha.clamp(0.0, 1.0));
+    return borrowedGradient(
+      colors: [
+        from ?? tintColor ?? surfaceContainerHigh,
+        to ?? surfaceContainerLow,
+      ],
+    );
+  }
+
+  static LinearGradient imageScrimGradient({
+    Color color = Colors.black,
+    List<double> alphas = const [0.0, 1.0],
+    List<double>? stops,
+  }) {
+    return borrowedGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: alphas
+          .map((alpha) => color.withValues(alpha: alpha.clamp(0.0, 1.0)))
+          .toList(growable: false),
+      stops: stops,
+    );
+  }
+
+  static LinearGradient productFallbackGradient(String category) {
+    final lower = category.toLowerCase();
+    if (lower.contains('kit')) {
+      return borrowedGradient(
+        colors: [primaryTint(0.55), surfaceContainerHighest],
+      );
+    }
+    if (lower.contains('access')) {
+      return borrowedGradient(
+        colors: [surfaceContainerHighest, surfaceContainerLow],
+      );
+    }
+    return borrowedGradient(
+      colors: [surfaceContainerHigh, surfaceContainerLow],
     );
   }
 

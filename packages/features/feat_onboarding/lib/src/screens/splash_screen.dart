@@ -115,15 +115,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       );
     }
 
-    Widget progress = SizedBox(
-      width: 20,
-      height: 20,
-      child: CircularProgressIndicator(
-        strokeWidth: 2,
-        valueColor: AlwaysStoppedAnimation<Color>(
-          ColorTokens.onSurface.withValues(alpha: 0.6),
-        ),
-      ),
+    Widget progress = AfriLoadingIndicator(
+      size: 20,
+      color: ColorTokens.onSurface.withValues(alpha: 0.6),
     );
 
     if (!reduceMotion) {
@@ -165,12 +159,9 @@ class _SplashFallbackBadge extends StatelessWidget {
               fontWeight: FontWeight.w800,
               letterSpacing: 2,
             ) ??
-            TextStyle(
-              color: ColorTokens.onSurface,
-              fontSize: 48,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 2,
-            ),
+            TypographyTokens.displayLarge(
+              ColorTokens.onSurface,
+            ).copyWith(fontWeight: FontWeight.w800, letterSpacing: 2),
       ),
     );
   }

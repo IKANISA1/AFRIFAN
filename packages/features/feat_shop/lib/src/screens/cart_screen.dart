@@ -70,7 +70,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     setState(() {
       _paymentRoute = route;
       _paymentRouteMessage = route == null
-          ? 'No active checkout route for this club.'
+          ? 'Checkout payment setup is pending club activation.'
           : null;
     });
   }
@@ -98,13 +98,12 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       if (route == null) {
         if (!mounted) return;
         setState(() {
-          _paymentRouteMessage = 'No active checkout route for this club.';
+          _paymentRouteMessage =
+              'Checkout payment setup is pending club activation.';
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text(
-              'This club does not have an active MOMO checkout route yet.',
-            ),
+            content: Text('MOMO checkout setup is pending club activation.'),
             backgroundColor: ColorTokens.error,
           ),
         );
@@ -188,7 +187,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           children: [
             Text('Review order', style: TypographyTokens.headlineSmall()),
             const SizedBox(height: SpacingTokens.spacing4),
-            ClayCard(
+            AfriSurfaceCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -217,14 +216,23 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       ),
                   if (items.length > 3)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
+                      padding: const EdgeInsets.only(
+                        bottom: SpacingTokens.spacing3,
+                      ),
                       child: Text(
                         '+${items.length - 3} more items',
-                        style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+                        style: TypographyTokens.bodySmall(
+                          ColorTokens.onSurfaceVariant,
+                        ),
                       ),
                     ),
                   const SizedBox(height: SpacingTokens.spacing2),
-                  Text('Deliver to', style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant)),
+                  Text(
+                    'Deliver to',
+                    style: TypographyTokens.labelSmall(
+                      ColorTokens.onSurfaceVariant,
+                    ),
+                  ),
                   const SizedBox(height: SpacingTokens.spacing1),
                   Text(
                     _addressController.text.trim(),
@@ -255,14 +263,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             AfriButton(
               label: 'I submitted the payment',
               fullWidth: true,
-              onTap: () => Navigator.of(context).pop(true),
+              onTap: () => context.pop(true),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             AfriButton(
               label: 'Back',
               variant: AfriButtonVariant.outline,
               fullWidth: true,
-              onTap: () => Navigator.of(context).pop(false),
+              onTap: () => context.pop(false),
             ),
           ],
         );
@@ -288,12 +296,13 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text('Cart', style: TypographyTokens.headlineSmall()),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: items.isEmpty
@@ -304,7 +313,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.shopping_bag_outlined,
+                      AfriIcons.cart,
                       size: 56,
                       color: ColorTokens.onSurfaceVariant,
                     ),
@@ -350,7 +359,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     );
                   }),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  ClayCard(
+                  AfriSurfaceCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -360,10 +369,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           padding: EdgeInsets.zero,
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
-                        TextField(
+                        AfriInputField(
                           controller: _addressController,
                           maxLines: 2,
-                          decoration: InputDecoration(hintText: deliveryHint),
+                          hint: deliveryHint,
                         ),
                         const SizedBox(height: SpacingTokens.spacing6),
                         Row(
@@ -371,7 +380,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           children: [
                             Text(
                               'Subtotal',
-                              style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
+                              style: TypographyTokens.bodyMedium(
+                                ColorTokens.onSurfaceVariant,
+                              ),
                             ),
                             Text(
                               currency.format(total),
@@ -385,7 +396,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           children: [
                             Text(
                               'Delivery',
-                              style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
+                              style: TypographyTokens.bodyMedium(
+                                ColorTokens.onSurfaceVariant,
+                              ),
                             ),
                             Text(
                               currency.format(0),
@@ -397,7 +410,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Total', style: TypographyTokens.titleMedium()),
+                            Text(
+                              'Total',
+                              style: TypographyTokens.titleMedium(),
+                            ),
                             Text(
                               currency.format(total),
                               style: TypographyTokens.titleLarge(
@@ -418,11 +434,11 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     ),
                   ] else if (_paymentRoute != null) ...[
                     const SizedBox(height: SpacingTokens.spacing4),
-                    ClayCard(
+                    AfriSurfaceCard(
                       child: Row(
                         children: [
                           const Icon(
-                            Icons.verified_rounded,
+                            AfriIcons.verified,
                             color: ColorTokens.success,
                             size: 20,
                           ),

@@ -57,18 +57,18 @@ class TierDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
+      appBar: AfriAppBar(
         title: Text(
           detail.title,
-          style: TypographyTokens.monolithFont(
-            fontSize: 22,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
       ),
       body: SingleChildScrollView(
@@ -84,12 +84,10 @@ class TierDetailScreen extends ConsumerWidget {
                     height: 104,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                      gradient: ColorTokens.borrowedGradient(
                         colors: [
                           ColorTokens.clubAccent.withValues(alpha: 0.9),
-                          Theme.of(context).colorScheme.primary,
+                          ColorTokens.clubPrimary,
                         ],
                       ),
                     ),
@@ -99,10 +97,8 @@ class TierDetailScreen extends ConsumerWidget {
                   const SizedBox(height: SpacingTokens.spacing4),
                   Text(
                     detail.xpBand,
-                    style: TypographyTokens.monolithFont(
-                      fontSize: 28,
+                    style: TypographyTokens.headlineLarge().copyWith(
                       fontWeight: FontWeight.w800,
-                      color: ColorTokens.onSurface,
                     ),
                   ),
                   if (detail.subtitle.isNotEmpty) ...[
@@ -268,10 +264,8 @@ class _PerkCard extends StatelessWidget {
         children: [
           Text(
             title.toUpperCase(),
-            style: TypographyTokens.monolithFont(
-              fontSize: 20,
+            style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
-              color: ColorTokens.onSurface,
               letterSpacing: 0.8,
             ),
           ),

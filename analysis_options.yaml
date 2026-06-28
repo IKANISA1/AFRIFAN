@@ -50,6 +50,8 @@ analyzer:
     missing_return: error
     dead_code: warning
   exclude:
+    - "**/.dart_tool/**"
+    - "**/build/**"
     - "**/*.g.dart"
     - "**/*.freezed.dart"
     - "**/*.mocks.dart"

@@ -1,5 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 Future<bool> showDeleteAccountConfirmDialog(BuildContext context) async {
   final controller = TextEditingController();
@@ -11,82 +12,73 @@ Future<bool> showDeleteAccountConfirmDialog(BuildContext context) async {
     builder: (context) {
       return StatefulBuilder(
         builder: (context, setState) {
-          return Dialog(
-            backgroundColor: Colors.transparent,
-            child: GlassCard(
-              animate: false,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: ColorTokens.error.withValues(alpha: 0.14),
-                          shape: BoxShape.circle,
-                        ),
-                        alignment: Alignment.center,
-                        child: const Icon(
-                          Icons.warning_rounded,
-                          color: ColorTokens.error,
-                        ),
+          return AfriDialog(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: ColorTokens.error.withValues(alpha: 0.14),
+                        shape: BoxShape.circle,
                       ),
-                      const SizedBox(width: SpacingTokens.spacing3),
-                      Expanded(
-                        child: Text(
-                          'DELETE YOUR ACCOUNT?',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            color: ColorTokens.onSurface,
-                          ),
-                        ),
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        AfriIcons.warning,
+                        color: ColorTokens.error,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  Text(
-                    'Permanently deletes your profile, FET, badges, and history. Cannot be undone.',
-                    style: TypographyTokens.bodyMedium(),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  Text(
-                    'TYPE DELETE TO CONFIRM',
-                    style: TypographyTokens.labelSmall(),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing2),
-                  TextField(
-                    controller: controller,
-                    onChanged: (value) {
-                      setState(
-                        () =>
-                            canDelete = value.trim().toUpperCase() == 'DELETE',
-                      );
-                    },
-                    decoration: const InputDecoration(hintText: 'DELETE'),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing5),
-                  OutlinedButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 56),
                     ),
-                    child: const Text('CANCEL'),
+                    const SizedBox(width: SpacingTokens.spacing3),
+                    Expanded(
+                      child: Text(
+                        'DELETE YOUR ACCOUNT?',
+                        style: TypographyTokens.headlineMedium().copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: SpacingTokens.spacing4),
+                Text(
+                  'Permanently deletes your profile, FET, badges, and history. Cannot be undone.',
+                  style: TypographyTokens.bodyMedium(),
+                ),
+                const SizedBox(height: SpacingTokens.spacing4),
+                Text(
+                  'TYPE DELETE TO CONFIRM',
+                  style: TypographyTokens.labelSmall(),
+                ),
+                const SizedBox(height: SpacingTokens.spacing2),
+                AfriInputField(
+                  controller: controller,
+                  onChanged: (value) {
+                    setState(
+                      () => canDelete = value.trim().toUpperCase() == 'DELETE',
+                    );
+                  },
+                  hint: 'DELETE',
+                ),
+                const SizedBox(height: SpacingTokens.spacing5),
+                AfriOutlinedButton(
+                  onPressed: () => context.pop(false),
+                  style: AfriOutlinedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 56),
                   ),
-                  const SizedBox(height: SpacingTokens.spacing3),
-                  AfriButton(
-                    label: 'Delete permanently',
-                    fullWidth: true,
-                    onTap: canDelete
-                        ? () => Navigator.of(context).pop(true)
-                        : () {},
-                    enabled: canDelete,
-                  ),
-                ],
-              ),
+                  child: const Text('CANCEL'),
+                ),
+                const SizedBox(height: SpacingTokens.spacing3),
+                AfriButton(
+                  label: 'Delete permanently',
+                  fullWidth: true,
+                  onTap: canDelete ? () => context.pop(true) : () {},
+                  enabled: canDelete,
+                ),
+              ],
             ),
           );
         },
@@ -103,50 +95,44 @@ Future<bool> showNotificationPermissionModal(BuildContext context) async {
     context: context,
     barrierColor: ColorTokens.scrim,
     builder: (context) {
-      return Dialog(
-        backgroundColor: Colors.transparent,
-        child: GlassCard(
-          animate: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.notifications_active_rounded,
-                color: ColorTokens.clubPrimary,
-                size: 56,
+      return AfriDialog(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              AfriIcons.notificationsActive,
+              color: ColorTokens.clubPrimary,
+              size: 56,
+            ),
+            const SizedBox(height: SpacingTokens.spacing4),
+            Text(
+              'STAY IN THE GAME',
+              style: TypographyTokens.headlineLarge().copyWith(
+                fontWeight: FontWeight.w800,
               ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              Text(
-                'STAY IN THE GAME',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: ColorTokens.onSurface,
-                ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              Text(
-                'Get notified for matches, contributions, FET milestones, and club news.',
-                textAlign: TextAlign.center,
-                style: TypographyTokens.bodyMedium(),
-              ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              const _BenefitRow(label: 'Match alerts before kickoff'),
-              const _BenefitRow(label: 'Contribution and ticket updates'),
-              const _BenefitRow(label: 'FET milestones and challenge drops'),
-              const SizedBox(height: SpacingTokens.spacing5),
-              AfriButton(
-                label: 'Enable notifications',
-                fullWidth: true,
-                onTap: () => Navigator.of(context).pop(true),
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('MAYBE LATER'),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: SpacingTokens.spacing3),
+            Text(
+              'Get notified for matches, contributions, FET milestones, and club news.',
+              textAlign: TextAlign.center,
+              style: TypographyTokens.bodyMedium(),
+            ),
+            const SizedBox(height: SpacingTokens.spacing4),
+            const _BenefitRow(label: 'Match alerts before kickoff'),
+            const _BenefitRow(label: 'Contribution and ticket updates'),
+            const _BenefitRow(label: 'FET milestones and challenge drops'),
+            const SizedBox(height: SpacingTokens.spacing5),
+            AfriButton(
+              label: 'Enable notifications',
+              fullWidth: true,
+              onTap: () => context.pop(true),
+            ),
+            const SizedBox(height: SpacingTokens.spacing3),
+            AfriTextButton(
+              onPressed: () => context.pop(false),
+              child: const Text('MAYBE LATER'),
+            ),
+          ],
         ),
       );
     },
@@ -175,10 +161,8 @@ Future<bool> showSignOutConfirmationSheet(BuildContext context) async {
           const SizedBox(height: SpacingTokens.spacing4),
           Text(
             'SIGN OUT?',
-            style: TypographyTokens.monolithFont(
-              fontSize: 26,
+            style: TypographyTokens.headlineMedium().copyWith(
               fontWeight: FontWeight.w800,
-              color: ColorTokens.onSurface,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
@@ -188,9 +172,9 @@ Future<bool> showSignOutConfirmationSheet(BuildContext context) async {
             style: TypographyTokens.bodyMedium(),
           ),
           const SizedBox(height: SpacingTokens.spacing5),
-          OutlinedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: OutlinedButton.styleFrom(
+          AfriOutlinedButton(
+            onPressed: () => context.pop(true),
+            style: AfriOutlinedButton.styleFrom(
               minimumSize: const Size(double.infinity, 56),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),
@@ -202,7 +186,7 @@ Future<bool> showSignOutConfirmationSheet(BuildContext context) async {
           AfriButton(
             label: 'Stay',
             fullWidth: true,
-            onTap: () => Navigator.of(context).pop(false),
+            onTap: () => context.pop(false),
           ),
         ],
       );
@@ -232,10 +216,8 @@ Future<bool> showSignOutOtherDevicesSheet(BuildContext context) async {
           const SizedBox(height: SpacingTokens.spacing4),
           Text(
             'SIGN OUT OTHER DEVICES?',
-            style: TypographyTokens.monolithFont(
-              fontSize: 26,
+            style: TypographyTokens.headlineMedium().copyWith(
               fontWeight: FontWeight.w800,
-              color: ColorTokens.onSurface,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
@@ -245,9 +227,9 @@ Future<bool> showSignOutOtherDevicesSheet(BuildContext context) async {
             style: TypographyTokens.bodyMedium(),
           ),
           const SizedBox(height: SpacingTokens.spacing5),
-          OutlinedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: OutlinedButton.styleFrom(
+          AfriOutlinedButton(
+            onPressed: () => context.pop(true),
+            style: AfriOutlinedButton.styleFrom(
               minimumSize: const Size(double.infinity, 56),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),
@@ -259,7 +241,7 @@ Future<bool> showSignOutOtherDevicesSheet(BuildContext context) async {
           AfriButton(
             label: 'Cancel',
             fullWidth: true,
-            onTap: () => Navigator.of(context).pop(false),
+            onTap: () => context.pop(false),
           ),
         ],
       );
@@ -281,7 +263,7 @@ class _BenefitRow extends StatelessWidget {
       child: Row(
         children: [
           const Icon(
-            Icons.check_circle_rounded,
+            AfriIcons.statusSuccess,
             color: ColorTokens.success,
             size: 18,
           ),

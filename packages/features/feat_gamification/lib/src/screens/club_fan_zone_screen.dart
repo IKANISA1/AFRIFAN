@@ -44,7 +44,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
           (competitions.isEmpty ? null : competitions.first.slug);
 
       if (selectedSlug == null) {
-        throw Exception('No competitions available.');
+        throw Exception('Competition catalog is pending.');
       }
 
       final selectedCompetition = competitions
@@ -99,7 +99,12 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
         _isLoading = false;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('ClubFanZoneScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'ClubFanZoneScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -114,19 +119,19 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'CLUB FAN ZONE',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -146,7 +151,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                 ),
               ),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: () => _load(_selectedCompetition?.slug),
               color: ColorTokens.clubAccent,
               child: ListView(
@@ -196,15 +201,14 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                       ),
                     ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  ClayCard(
+                  AfriSurfaceCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           _selectedCompetition?.name.toUpperCase() ??
                               'SUPPORTER PULSE',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 28,
+                          style: TypographyTokens.headlineLarge().copyWith(
                             fontWeight: FontWeight.w900,
                             height: 0.95,
                           ),
@@ -218,7 +222,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  ClayCard(
+                  AfriSurfaceCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -241,10 +245,10 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                       width: 28,
                                       child: Text(
                                         '#${entry.position}',
-                                        style: TypographyTokens.monolithFont(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w800,
-                                        ),
+                                        style: TypographyTokens.titleSmall()
+                                            .copyWith(
+                                              fontWeight: FontWeight.w800,
+                                            ),
                                       ),
                                     ),
                                     Expanded(
@@ -255,11 +259,9 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                     ),
                                     Text(
                                       '${entry.points} pts',
-                                      style: TypographyTokens.monolithFont(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w800,
-                                        color: ColorTokens.clubAccent,
-                                      ),
+                                      style: TypographyTokens.titleSmall(
+                                        ColorTokens.clubAccent,
+                                      ).copyWith(fontWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),
@@ -271,7 +273,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  ClayCard(
+                  AfriSurfaceCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -312,7 +314,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                       const SizedBox(
                                         height: SpacingTokens.spacing3,
                                       ),
-                                      LinearProgressIndicator(
+                                      AfriLinearProgressIndicator(
                                         value: (pulse.leadingPercentage / 100)
                                             .clamp(0.0, 1.0),
                                         minHeight: 10,

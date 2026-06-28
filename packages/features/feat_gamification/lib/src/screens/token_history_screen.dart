@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
-import 'package:core_utils/core_utils.dart';
 
 class TokenHistoryScreen extends ConsumerStatefulWidget {
   const TokenHistoryScreen({super.key});
@@ -24,7 +26,7 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
   @override
   void initState() {
     super.initState();
-    _load();
+    unawaited(_load());
   }
 
   Future<void> _load() async {
@@ -44,7 +46,12 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
         _error = null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('TokenHistoryScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'TokenHistoryScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -69,31 +76,23 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
         .toList(growable: false);
   }
 
-  String _formatDate(DateTime? value) {
-    if (value == null) {
-      return 'Unknown time';
-    }
-    final local = value.toLocal();
-    return '${local.day}/${local.month}/${local.year} · ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'TOKEN HISTORY',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -113,7 +112,7 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
                 ),
               ),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _load,
               color: ColorTokens.clubAccent,
               child: ListView(
@@ -122,7 +121,7 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
                 ),
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 children: [
-                  ClayCard(
+                  AfriSurfaceCard(
                     child: Row(
                       children: [
                         Expanded(
@@ -171,99 +170,135 @@ class _TokenHistoryScreenState extends ConsumerState<TokenHistoryScreen> {
                     ],
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  if (_filteredTransactions.isEmpty)
-                    const AfriEmptyView(
-                      title: 'No token events yet',
-                      message:
-                          'Earn or spend FET and the ledger will appear here.',
-                    )
-                  else
-                    ..._filteredTransactions.map((transaction) {
-                      final isCredit =
-                          transaction.direction ==
-                          FetWalletEntryDirection.credit;
-                      final color = isCredit
-                          ? ColorTokens.success
-                          : ColorTokens.warning;
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: SpacingTokens.spacing3,
-                        ),
-                        child: GlassCard(
-                          animate: false,
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: color.withValues(alpha: 0.14),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                alignment: Alignment.center,
-                                child: Icon(
-                                  isCredit
-                                      ? AfriIcons.incoming
-                                      : AfriIcons.out,
-                                  color: color,
-                                  size: 18,
-                                ),
-                              ),
-                              const SizedBox(width: SpacingTokens.spacing3),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      transaction.headline,
-                                      style: TypographyTokens.titleSmall(),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      transaction.note ??
-                                          transaction.counterpartyDisplayName ??
-                                          transaction.referenceType ??
-                                          'Ledger update',
-                                      style: TypographyTokens.bodySmall(),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      _formatDate(transaction.createdAt),
-                                      style: TypographyTokens.labelSmall(
-                                        ColorTokens.onSurfaceVariant,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: SpacingTokens.spacing3),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    '${isCredit ? '+' : '-'}${transaction.amount} FET',
-                                    style: TypographyTokens.monolithFont(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      color: color,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Bal ${transaction.balanceAfter}',
-                                    style: TypographyTokens.bodySmall(),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
+                  TokenHistoryTransactionList(
+                    transactions: _filteredTransactions,
+                  ),
                 ],
               ),
             ),
     );
   }
+}
+
+class TokenHistoryTransactionList extends StatelessWidget {
+  const TokenHistoryTransactionList({super.key, required this.transactions});
+
+  final List<FetWalletTransaction> transactions;
+
+  @override
+  Widget build(BuildContext context) {
+    if (transactions.isEmpty) {
+      return const SizedBox.shrink(
+        key: ValueKey<String>('token-history-empty'),
+      );
+    }
+
+    return Column(
+      children: transactions
+          .map((transaction) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
+              child: _TokenHistoryTransactionCard(transaction: transaction),
+            );
+          })
+          .toList(growable: false),
+    );
+  }
+}
+
+class _TokenHistoryTransactionCard extends StatelessWidget {
+  const _TokenHistoryTransactionCard({required this.transaction});
+
+  final FetWalletTransaction transaction;
+
+  @override
+  Widget build(BuildContext context) {
+    final isCredit = transaction.direction == FetWalletEntryDirection.credit;
+    final color = isCredit ? ColorTokens.success : ColorTokens.warning;
+    final directionLabel = isCredit ? 'Credit' : 'Debit';
+    final dateLabel = _formatTokenHistoryDate(transaction.createdAt);
+    final detail =
+        transaction.note ??
+        transaction.counterpartyDisplayName ??
+        transaction.referenceType ??
+        'Ledger update';
+
+    return Semantics(
+      container: true,
+      label:
+          '$directionLabel transaction, ${transaction.headline}, '
+          '$detail, ${transaction.amount} FET, '
+          'balance ${transaction.balanceAfter}, $dateLabel',
+      child: ExcludeSemantics(
+        child: GlassCard(
+          animate: false,
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                alignment: Alignment.center,
+                child: Icon(
+                  isCredit ? AfriIcons.incoming : AfriIcons.out,
+                  color: color,
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: SpacingTokens.spacing3),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      transaction.headline,
+                      style: TypographyTokens.titleSmall(),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(detail, style: TypographyTokens.bodySmall()),
+                    const SizedBox(height: 2),
+                    Text(
+                      dateLabel,
+                      style: TypographyTokens.labelSmall(
+                        ColorTokens.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: SpacingTokens.spacing3),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '${isCredit ? '+' : '-'}${transaction.amount} FET',
+                    style: TypographyTokens.titleMedium(
+                      color,
+                    ).copyWith(fontWeight: FontWeight.w800),
+                  ),
+                  Text(
+                    'Bal ${transaction.balanceAfter}',
+                    style: TypographyTokens.bodySmall(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+String _formatTokenHistoryDate(DateTime? value) {
+  if (value == null) {
+    return 'Unknown time';
+  }
+  final local = value.toLocal();
+  return '${local.day}/${local.month}/${local.year} · ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
 }
 
 class _HistoryMetric extends StatelessWidget {
@@ -286,8 +321,7 @@ class _HistoryMetric extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing1),
           Text(
             value,
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
+            style: TypographyTokens.titleLarge().copyWith(
               fontWeight: FontWeight.w800,
             ),
           ),

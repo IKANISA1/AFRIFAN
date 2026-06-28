@@ -99,7 +99,12 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
         _error = team == null ? 'Team not found.' : null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('TeamProfileScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'TeamProfileScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -161,7 +166,12 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
             : null,
       );
     } catch (error, stackTrace) {
-      AfriLogger.warn('TeamProfileScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'TeamProfileScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       return TeamClubContext(
         clubId: clubId,
         isActiveClubTeam: false,
@@ -216,10 +226,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
 
     final route = _paymentRoute;
     if (route == null || route.recipientCode.trim().isEmpty) {
-      _showMessage(
-        _clubSupportMessage ??
-            'No active contribution route is configured yet.',
-      );
+      _showMessage(_clubSupportMessage ?? 'Contribution route unavailable.');
       return;
     }
 
@@ -241,7 +248,12 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
         _showMessage('Could not open the phone dialer.');
       }
     } catch (error, stackTrace) {
-      AfriLogger.warn('TeamProfileScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'TeamProfileScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       _showMessage('Dialer launch failed.');
     } finally {
       if (mounted) {
@@ -254,7 +266,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
     final controller = TextEditingController();
     final amount = await showDialog<int?>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => AfriAlertDialog(
         title: const Text('Enter contribution amount'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -264,19 +276,17 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
               'You will pay ${route.payToLabel} via ${route.providerLabel}.',
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-            TextField(
+            AfriInputField(
               controller: controller,
               keyboardType: TextInputType.number,
               autofocus: true,
-              decoration: InputDecoration(
-                labelText: 'Amount (${route.country.currencyCode})',
-              ),
+              label: 'Amount (${route.country.currencyCode})',
             ),
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
+          AfriTextButton(
+            onPressed: () => dialogContext.pop(),
             child: const Text('Cancel'),
           ),
           AfriButton(
@@ -291,7 +301,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                 );
                 return;
               }
-              Navigator.of(dialogContext).pop(parsed);
+              dialogContext.pop(parsed);
             },
             fullWidth: false,
           ),
@@ -316,19 +326,19 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           team?.shortName.toUpperCase() ?? 'TEAM PROFILE',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -355,14 +365,13 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                    child: ClayCard(
+                    child: AfriSurfaceCard(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             team?.name.toUpperCase() ?? 'TEAM',
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 28,
+                            style: TypographyTokens.headlineLarge().copyWith(
                               fontWeight: FontWeight.w900,
                               height: 0.95,
                             ),
@@ -415,22 +424,12 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                   ),
                 ),
 
-                // ── Tab Bar ──
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: TeamTabBarDelegate(
-                    tabBar: TabBar(
+                    tabBar: AfriTabBar.line(
                       controller: _tabController,
                       isScrollable: true,
-                      labelColor: ColorTokens.clubAccent,
-                      unselectedLabelColor: ColorTokens.onSurfaceVariant,
-                      indicatorColor: ColorTokens.clubAccent,
-                      indicatorWeight: 2,
-                      labelStyle: TypographyTokens.editorialFont(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.5,
-                      ),
                       tabs: const [
                         Tab(text: 'Overview'),
                         Tab(text: 'Members'),

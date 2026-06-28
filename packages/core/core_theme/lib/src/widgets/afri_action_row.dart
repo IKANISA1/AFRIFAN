@@ -5,7 +5,7 @@ import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_press_feedback.dart';
-import 'clay_card.dart';
+import 'afri_surface_card.dart';
 
 /// Compact icon-led action tile for grids, shortcuts, and quick-action surfaces.
 ///
@@ -46,7 +46,7 @@ class AfriActionRow extends StatelessWidget {
     return AfriPressFeedback(
       onTap: onTap,
       semanticsLabel: label,
-      builder: (context, state) => ClayCard(
+      builder: (context, state) => AfriSurfaceCard(
         padding: const EdgeInsets.all(SpacingTokens.tapPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

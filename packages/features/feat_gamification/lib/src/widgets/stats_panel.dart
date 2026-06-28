@@ -50,30 +50,21 @@ class StatsPanel extends StatelessWidget {
               children: [
                 Text(
                   homeLabel!.toUpperCase(),
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.clubAccent,
-                    letterSpacing: 1.2,
-                  ),
+                  style: TypographyTokens.metricLabel(
+                    ColorTokens.clubAccent,
+                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
                 ),
                 Text(
                   title,
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurfaceVariant,
-                    letterSpacing: 1.5,
-                  ),
+                  style: TypographyTokens.titleSmall(
+                    ColorTokens.onSurfaceVariant,
+                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
                 ),
                 Text(
                   awayLabel!.toUpperCase(),
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurfaceVariant,
-                    letterSpacing: 1.2,
-                  ),
+                  style: TypographyTokens.metricLabel(
+                    ColorTokens.onSurfaceVariant,
+                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
                 ),
               ],
             ),
@@ -81,12 +72,9 @@ class StatsPanel extends StatelessWidget {
           ] else ...[
             Text(
               title,
-              style: TypographyTokens.monolithFont(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: ColorTokens.onSurfaceVariant,
-                letterSpacing: 1.5,
-              ),
+              style: TypographyTokens.titleMedium(
+                ColorTokens.onSurfaceVariant,
+              ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
             ),
             const SizedBox(height: SpacingTokens.spacing4),
           ],
@@ -128,32 +116,25 @@ class _StatComparisonRow extends StatelessWidget {
           children: [
             Text(
               stat.leftDisplay,
-              style: TypographyTokens.monolithFont(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: leftPct >= rightPct
+              style: TypographyTokens.labelMedium(
+                leftPct >= rightPct
                     ? ColorTokens.onSurface
                     : ColorTokens.onSurfaceVariant,
-              ),
+              ).copyWith(fontWeight: FontWeight.w700),
             ),
             Text(
               stat.label.toUpperCase(),
-              style: TypographyTokens.editorialFont(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: ColorTokens.onSurfaceVariant,
-                letterSpacing: 1.0,
-              ),
+              style: TypographyTokens.labelSmall(
+                ColorTokens.onSurfaceVariant,
+              ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.0),
             ),
             Text(
               stat.rightDisplay,
-              style: TypographyTokens.monolithFont(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: rightPct > leftPct
+              style: TypographyTokens.labelMedium(
+                rightPct > leftPct
                     ? ColorTokens.onSurface
                     : ColorTokens.onSurfaceVariant,
-              ),
+              ).copyWith(fontWeight: FontWeight.w700),
             ),
           ],
         ),
@@ -179,17 +160,20 @@ class _StatComparisonRow extends StatelessWidget {
                 const SizedBox(width: 2),
                 Flexible(
                   flex: (rightPct * 1000).round().clamp(1, 999),
-                  child: Container(
-                    color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.35),
-                  )
-                      .animate(delay: delay.ms)
-                      .scaleX(
-                        begin: 0,
-                        end: 1,
-                        duration: 500.ms,
-                        curve: Curves.easeOutCubic,
-                        alignment: Alignment.centerRight,
-                      ),
+                  child:
+                      Container(
+                            color: ColorTokens.onSurfaceVariant.withValues(
+                              alpha: 0.35,
+                            ),
+                          )
+                          .animate(delay: delay.ms)
+                          .scaleX(
+                            begin: 0,
+                            end: 1,
+                            duration: 500.ms,
+                            curve: Curves.easeOutCubic,
+                            alignment: Alignment.centerRight,
+                          ),
                 ),
               ],
             ),

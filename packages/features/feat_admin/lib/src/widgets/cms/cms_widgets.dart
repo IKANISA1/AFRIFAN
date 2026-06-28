@@ -15,14 +15,15 @@ class _DialogTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return AfriInputField(
       controller: controller,
       keyboardType: keyboardType,
       maxLines: maxLines,
-      decoration: InputDecoration(hintText: hint),
+      hint: hint,
     );
   }
 }
+
 class _SectionHeader extends StatelessWidget {
   const _SectionHeader({
     required this.title,
@@ -44,34 +45,16 @@ class _SectionHeader extends StatelessWidget {
             style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.1),
           ),
         ),
-        TextButton.icon(
+        AfriTextIconButton(
           onPressed: onAction,
-          icon: const Icon(Icons.add_rounded, size: 18),
+          icon: const Icon(AfriIcons.add, size: 18),
           label: Text(actionLabel),
         ),
       ],
     );
   }
 }
-class _EmptySectionState extends StatelessWidget {
-  const _EmptySectionState({required this.title, required this.message});
 
-  final String title;
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      animate: false,
-      child: AfriEmptyView(
-        compact: true,
-        title: title,
-        message: message,
-        icon: AfriIcons.statusEmpty,
-      ),
-    );
-  }
-}
 class _EntityCard extends StatelessWidget {
   const _EntityCard({
     required this.title,
@@ -138,14 +121,14 @@ class _EntityCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton.icon(
+              AfriTextIconButton(
                 onPressed: onEdit,
-                icon: const Icon(Icons.edit_outlined, size: 18),
+                icon: const Icon(AfriIcons.edit, size: 18),
                 label: const Text('EDIT'),
               ),
-              TextButton.icon(
+              AfriTextIconButton(
                 onPressed: onToggle,
-                icon: const Icon(Icons.toggle_on_outlined, size: 18),
+                icon: const Icon(AfriIcons.toggleOn, size: 18),
                 label: Text(toggleLabel),
               ),
             ],
@@ -155,6 +138,7 @@ class _EntityCard extends StatelessWidget {
     );
   }
 }
+
 class _ArticleCard extends StatelessWidget {
   const _ArticleCard({required this.article, required this.onTogglePublish});
 
@@ -215,12 +199,10 @@ class _ArticleCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton.icon(
+              AfriTextIconButton(
                 onPressed: onTogglePublish,
                 icon: Icon(
-                  isPublished
-                      ? Icons.unpublished_rounded
-                      : Icons.publish_rounded,
+                  isPublished ? AfriIcons.unpublished : AfriIcons.publish,
                   size: 18,
                 ),
                 label: Text(isPublished ? 'UNPUBLISH' : 'PUBLISH'),

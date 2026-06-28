@@ -50,9 +50,9 @@ class WalletSelectedSupporterTile extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(
-            onPressed: onClear,
-            icon: const Icon(AfriIcons.close),
+          AfriIconButton(
+            icon: AfriIcons.close,
+            onTap: onClear,
             tooltip: 'Clear supporter',
           ),
         ],
@@ -130,10 +130,7 @@ class WalletTransactionRow extends StatelessWidget {
               shape: BoxShape.circle,
               color: color.withValues(alpha: 0.18),
             ),
-            child: Icon(
-              _transactionIcon(),
-              color: color,
-            ),
+            child: Icon(_transactionIcon(), color: color),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
           Expanded(
@@ -148,9 +145,7 @@ class WalletTransactionRow extends StatelessWidget {
                 ),
                 if (transaction.counterpartyUserId != null)
                   Padding(
-                    padding: const EdgeInsets.only(
-                      top: SpacingTokens.spacing1,
-                    ),
+                    padding: const EdgeInsets.only(top: SpacingTokens.spacing1),
                     child: Text(
                       _formatCounterparty(),
                       style: TypographyTokens.bodySmall(
@@ -160,9 +155,7 @@ class WalletTransactionRow extends StatelessWidget {
                   ),
                 if (transaction.note != null)
                   Padding(
-                    padding: const EdgeInsets.only(
-                      top: SpacingTokens.spacing1,
-                    ),
+                    padding: const EdgeInsets.only(top: SpacingTokens.spacing1),
                     child: Text(
                       transaction.note!,
                       style: TypographyTokens.bodySmall(
@@ -174,9 +167,7 @@ class WalletTransactionRow extends StatelessWidget {
                 Text(
                   transaction.createdAt == null
                       ? 'Just now'
-                      : AfriDateFormatter.timeAgo(
-                          transaction.createdAt!,
-                        ),
+                      : AfriDateFormatter.timeAgo(transaction.createdAt!),
                   style: TypographyTokens.bodySmall(
                     ColorTokens.onSurfaceVariant,
                   ),
@@ -190,18 +181,14 @@ class WalletTransactionRow extends StatelessWidget {
             children: [
               Text(
                 '${transaction.direction == FetWalletEntryDirection.debit ? '-' : '+'}${formatFet(transaction.amount)}',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: color,
-                ),
+                style: TypographyTokens.titleLarge(
+                  color,
+                ).copyWith(fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: SpacingTokens.spacing1),
               Text(
                 'Bal. ${formatFet(transaction.balanceAfter)}',
-                style: TypographyTokens.bodySmall(
-                  ColorTokens.onSurfaceVariant,
-                ),
+                style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
               ),
             ],
           ),

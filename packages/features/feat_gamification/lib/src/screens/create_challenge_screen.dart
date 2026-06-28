@@ -55,7 +55,12 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
         _loadingFixtures = false;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('CreateChallengeScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'CreateChallengeScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -87,8 +92,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
               children: [
                 Text(
                   'CONFIRM CHALLENGE',
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 16,
+                  style: TypographyTokens.titleMedium().copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -104,7 +108,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                 AfriButton(
                   label: 'LOCK $_stakeFet FET',
                   icon: AfriIcons.checkGroup,
-                  onTap: () => Navigator.of(context).pop(true),
+                  onTap: () => context.pop(true),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
               ],
@@ -157,30 +161,23 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
     final hasBalance = (wallet?.balance ?? 0) >= _stakeFet;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: AfriAppBar(
         title: Text(
           'CREATE CHALLENGE',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
+          style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
           ),
         ),
       ),
       body: _loadingFixtures
           ? const Center(child: AfriLoadingIndicator())
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _loadFixtures,
               child: ListView(
                 padding: const EdgeInsets.all(SpacingTokens.screenPadding),
                 children: [
                   if (_fixtures.isEmpty)
-                    const AfriEmptyView(
-                      compact: true,
-                      title: 'No eligible fixtures',
-                      message:
-                          'Challenge creation opens when upcoming fixtures are available.',
-                      icon: AfriIcons.fixture,
-                    )
+                    const SizedBox.shrink()
                   else ...[
                     Text(
                       'Fixture',
@@ -223,8 +220,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                           ),
                           child: Text(
                             ':',
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 28,
+                            style: TypographyTokens.metricValue().copyWith(
                               fontWeight: FontWeight.w900,
                             ),
                           ),
@@ -253,7 +249,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                       spacing: SpacingTokens.spacing2,
                       runSpacing: SpacingTokens.spacing2,
                       children: _stakeOptions.map((stake) {
-                        return ChoiceChip(
+                        return AfriChoiceChip(
                           selected: _stakeFet == stake,
                           label: Text('$stake FET'),
                           onSelected: (_) => setState(() => _stakeFet = stake),
@@ -434,20 +430,21 @@ class _ScoreCounter extends StatelessWidget {
         const SizedBox(height: SpacingTokens.spacing2),
         Row(
           children: [
-            IconButton(
-              onPressed: value > 0 ? () => onChanged(value - 1) : null,
-              icon: const Icon(Icons.remove_rounded),
+            AfriIconButton(
+              icon: AfriIcons.remove,
+              onTap: value > 0 ? () => onChanged(value - 1) : null,
+              tooltip: 'Decrease $label',
             ),
             Text(
               '$value',
-              style: TypographyTokens.monolithFont(
-                fontSize: 30,
+              style: TypographyTokens.headlineLarge().copyWith(
                 fontWeight: FontWeight.w900,
               ),
             ),
-            IconButton(
-              onPressed: value < 20 ? () => onChanged(value + 1) : null,
-              icon: const Icon(Icons.add_rounded),
+            AfriIconButton(
+              icon: AfriIcons.add,
+              onTap: value < 20 ? () => onChanged(value + 1) : null,
+              tooltip: 'Increase $label',
             ),
           ],
         ),

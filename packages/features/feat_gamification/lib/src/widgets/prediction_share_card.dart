@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -76,7 +78,7 @@ class PredictionShareService {
     required PredictionShareData data,
     required BuildContext context,
   }) async {
-    HapticFeedback.lightImpact();
+    unawaited(HapticFeedback.lightImpact());
     await SharePlus.instance.share(
       ShareParams(text: _buildShareText(data), title: 'FANZONE Prediction'),
     );
@@ -86,7 +88,7 @@ class PredictionShareService {
     required PredictionShareData data,
     required BuildContext context,
   }) async {
-    HapticFeedback.lightImpact();
+    unawaited(HapticFeedback.lightImpact());
     await Clipboard.setData(ClipboardData(text: _buildShareText(data)));
     if (!context.mounted) {
       return;
@@ -101,30 +103,28 @@ class PredictionShareService {
 
   static String _buildShareText(PredictionShareData data) {
     final buffer = StringBuffer();
-    final emoji = switch (data.status) {
-      PredictionStatus.won => '✅',
-      PredictionStatus.lost => '❌',
-      PredictionStatus.cancelled => '🚫',
-      PredictionStatus.void_ => '⚪',
-      _ => '⏳',
+    final statusLabel = switch (data.status) {
+      PredictionStatus.won => 'Won',
+      PredictionStatus.lost => 'Lost',
+      PredictionStatus.cancelled => 'Cancelled',
+      PredictionStatus.void_ => 'Void',
+      _ => 'Pending',
     };
 
     buffer.writeln(
-      '$emoji ${data.homeTeamShort.toUpperCase()} vs ${data.awayTeamShort.toUpperCase()}',
+      '$statusLabel: ${data.homeTeamShort.toUpperCase()} vs ${data.awayTeamShort.toUpperCase()}',
     );
     if (data.homeScore != null && data.awayScore != null) {
-      buffer.writeln('⚽ Final: ${data.homeScore}-${data.awayScore}');
+      buffer.writeln('Final score: ${data.homeScore}-${data.awayScore}');
     }
-    buffer.writeln(
-      '🎯 ${data.marketName}: ${data.selectedOutcome.toUpperCase()}',
-    );
+    buffer.writeln('${data.marketName}: ${data.selectedOutcome.toUpperCase()}');
     if (data.status == PredictionStatus.won) {
-      buffer.writeln('💰 Earned: +${data.fetEarned} FET');
+      buffer.writeln('Earned: +${data.fetEarned} FET');
     } else {
-      buffer.writeln('🔮 Potential: +${data.fetPotential} FET');
+      buffer.writeln('Potential: +${data.fetPotential} FET');
     }
     buffer.writeln();
-    buffer.writeln('🏟️ ${data.competitionName}');
+    buffer.writeln(data.competitionName);
     buffer.write('#FANZONE');
     final brandHashtag = _buildBrandHashtag();
     if (brandHashtag != null) {
@@ -174,13 +174,9 @@ class PredictionShareCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            ColorTokens.surfaceContainerLow,
-            color.withValues(alpha: 0.06),
-          ],
+        gradient: ColorTokens.borrowedSurfaceGradient(
+          from: ColorTokens.surfaceContainerLow,
+          to: color.withValues(alpha: 0.06),
         ),
         borderRadius: BorderRadius.circular(20),
         border: BorderTokens.all(
@@ -205,12 +201,9 @@ class PredictionShareCard extends StatelessWidget {
                 ),
                 child: Text(
                   data.competitionName.toUpperCase(),
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.clubAccent,
-                    letterSpacing: 1.2,
-                  ),
+                  style: TypographyTokens.labelSmall(
+                    ColorTokens.clubAccent,
+                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
                 ),
               ),
               const Spacer(),
@@ -225,12 +218,9 @@ class PredictionShareCard extends StatelessWidget {
                 ),
                 child: Text(
                   _statusLabel(),
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: color,
-                    letterSpacing: 1.0,
-                  ),
+                  style: TypographyTokens.labelSmall(
+                    color,
+                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.0),
                 ),
               ),
             ],
@@ -241,10 +231,8 @@ class PredictionShareCard extends StatelessWidget {
               children: [
                 Text(
                   data.homeTeamShort.toUpperCase(),
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 22,
+                  style: TypographyTokens.headlineMedium().copyWith(
                     fontWeight: FontWeight.w900,
-                    color: ColorTokens.onSurface,
                   ),
                 ),
                 Padding(
@@ -255,19 +243,17 @@ class PredictionShareCard extends StatelessWidget {
                     data.homeScore != null && data.awayScore != null
                         ? '${data.homeScore} - ${data.awayScore}'
                         : 'VS',
-                    style: TypographyTokens.monolithFont(
-                      fontSize: data.homeScore != null ? 20 : 14,
-                      fontWeight: FontWeight.w800,
-                      color: color,
-                    ),
+                    style:
+                        (data.homeScore != null
+                                ? TypographyTokens.headlineSmall(color)
+                                : TypographyTokens.titleSmall(color))
+                            .copyWith(fontWeight: FontWeight.w800),
                   ),
                 ),
                 Text(
                   data.awayTeamShort.toUpperCase(),
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 22,
+                  style: TypographyTokens.headlineMedium().copyWith(
                     fontWeight: FontWeight.w900,
-                    color: ColorTokens.onSurface,
                   ),
                 ),
               ],
@@ -309,12 +295,9 @@ class PredictionShareCard extends StatelessWidget {
           Center(
             child: Text(
               'FANZONE · PREDICT. EARN. REPEAT.',
-              style: TypographyTokens.editorialFont(
-                fontSize: 9,
-                fontWeight: FontWeight.w600,
-                color: ColorTokens.onSurfaceVariant,
-                letterSpacing: 1.2,
-              ),
+              style: TypographyTokens.labelSmall(
+                ColorTokens.onSurfaceVariant,
+              ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.2),
             ),
           ),
         ],
@@ -343,22 +326,17 @@ class _ShareMetric extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: TypographyTokens.monolithFont(
-            fontSize: 14,
-            fontWeight: FontWeight.w800,
-            color: accent ? ColorTokens.clubAccent : ColorTokens.onSurface,
-          ),
+          style: TypographyTokens.titleSmall(
+            accent ? ColorTokens.clubAccent : ColorTokens.onSurface,
+          ).copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 4),
         Text(
           label,
           textAlign: TextAlign.center,
-          style: TypographyTokens.editorialFont(
-            fontSize: 9,
-            fontWeight: FontWeight.w600,
-            color: ColorTokens.onSurfaceVariant,
-            letterSpacing: 1,
-          ),
+          style: TypographyTokens.labelSmall(
+            ColorTokens.onSurfaceVariant,
+          ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1),
         ),
       ],
     );

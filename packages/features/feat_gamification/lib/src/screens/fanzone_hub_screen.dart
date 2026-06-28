@@ -23,16 +23,13 @@ class FanzoneHubScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        title: Text(
-          'Fanzone',
-          style: TypographyTokens.headlineSmall(),
-        ),
+      appBar: AfriAppBar(
+        title: Text('Fanzone', style: TypographyTokens.headlineSmall()),
         actions: [
-          IconButton(
-            onPressed: () => _showOverflow(context, ref),
+          AfriIconButton(
+            icon: AfriIcons.more,
+            onTap: () => _showOverflow(context, ref),
             tooltip: 'More options',
-            icon: const Icon(AfriIcons.more),
           ),
         ],
       ),
@@ -70,7 +67,7 @@ class FanzoneHubScreen extends ConsumerWidget {
     final notifier = ref.read(fanzoneHubProvider.notifier);
 
     return GradientBackground(
-      child: RefreshIndicator(
+      child: AfriRefreshIndicator(
         onRefresh: () => notifier.refresh(),
         color: ColorTokens.clubAccent,
         child: CustomScrollView(
@@ -194,8 +191,8 @@ class FanzoneHubScreen extends ConsumerWidget {
                               )
                               .toList(growable: false),
                         ),
-                ),
-              ),
+                      ),
+                    ),
             ),
 
             // ── Upcoming fixtures (next 7 days) ──

@@ -142,7 +142,7 @@ Future<void> bootstrap(
         } else {
           AfriLogger.info(
             'Bootstrap',
-            'No cached platform config found. Using compile-time feature flags '
+            'Platform config cache empty. Using compile-time feature flags '
                 'until background refresh completes.',
           );
         }

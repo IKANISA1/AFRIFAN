@@ -127,7 +127,7 @@ class _CompetitionManagerScreenState
     showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) => const Center(child: CircularProgressIndicator()),
+      builder: (ctx) => const AfriLoadingIndicator(),
     );
 
     try {
@@ -146,7 +146,7 @@ class _CompetitionManagerScreenState
       }
 
       if (!mounted) return;
-      Navigator.of(context).pop(); // close loading
+      context.pop(); // close loading
       await _loadCompetitions();
 
       if (!mounted) return;
@@ -160,7 +160,7 @@ class _CompetitionManagerScreenState
       );
     } catch (e) {
       if (!mounted) return;
-      Navigator.of(context).pop(); // close loading
+      context.pop(); // close loading
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed: $e'),
@@ -195,17 +195,18 @@ class _CompetitionManagerScreenState
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text('COMPETITIONS', style: TypographyTokens.titleLarge()),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
         actions: [
-          IconButton(
-            onPressed: () => _openCompetitionForm(),
-            icon: const Icon(Icons.add_rounded),
+          AfriIconButton(
+            icon: AfriIcons.add,
+            onTap: () => _openCompetitionForm(),
             tooltip: 'Add competition',
           ),
         ],
@@ -217,7 +218,7 @@ class _CompetitionManagerScreenState
             )
           : _error != null
           ? _buildError()
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _loadCompetitions,
               child: ListView(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
@@ -256,7 +257,7 @@ class _CompetitionManagerScreenState
                 Row(
                   children: [
                     Icon(
-                      Icons.emoji_events_rounded,
+                      AfriIcons.rank,
                       size: 18,
                       color: ColorTokens.onSurfaceVariant,
                     ),
@@ -285,7 +286,7 @@ class _CompetitionManagerScreenState
                 Row(
                   children: [
                     Icon(
-                      Icons.check_circle_rounded,
+                      AfriIcons.statusSuccess,
                       size: 18,
                       color: ColorTokens.success,
                     ),
@@ -320,7 +321,7 @@ class _CompetitionManagerScreenState
       runSpacing: SpacingTokens.spacing2,
       children: regions.entries
           .map(
-            (e) => ChoiceChip(
+            (e) => AfriChoiceChip(
               selected: _regionFilter == e.key,
               label: Text(e.value),
               onSelected: (_) {
@@ -345,7 +346,7 @@ class _CompetitionManagerScreenState
       runSpacing: SpacingTokens.spacing2,
       children: kinds.entries
           .map(
-            (e) => ChoiceChip(
+            (e) => AfriChoiceChip(
               selected: _kindFilter == e.key,
               label: Text(e.value),
               onSelected: (_) {
@@ -402,19 +403,13 @@ class _CompetitionManagerScreenState
               spacing: SpacingTokens.spacing2,
               runSpacing: SpacingTokens.spacing2,
               children: [
-                _InfoChip(
-                  icon: Icons.category_rounded,
-                  label: kind.toUpperCase(),
-                ),
-                _InfoChip(
-                  icon: Icons.public_rounded,
-                  label: region.toUpperCase(),
-                ),
+                _InfoChip(icon: AfriIcons.category, label: kind.toUpperCase()),
+                _InfoChip(icon: AfriIcons.public, label: region.toUpperCase()),
                 if (country != null)
-                  _InfoChip(icon: Icons.flag_rounded, label: country),
+                  _InfoChip(icon: AfriIcons.challenge, label: country),
                 if (competition['organizer'] != null)
                   _InfoChip(
-                    icon: Icons.business_rounded,
+                    icon: AfriIcons.business,
                     label: competition['organizer'].toString(),
                   ),
               ],
@@ -434,28 +429,26 @@ class _CompetitionManagerScreenState
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton.icon(
+                AfriTextIconButton(
                   onPressed: () => _openSeasonManager(competition),
-                  icon: const Icon(Icons.calendar_month_rounded, size: 16),
+                  icon: const Icon(AfriIcons.calendar, size: 16),
                   label: const Text('SEASONS'),
                 ),
                 const SizedBox(width: SpacingTokens.spacing2),
-                TextButton.icon(
+                AfriTextIconButton(
                   onPressed: () => _openCompetitionForm(competition),
-                  icon: const Icon(Icons.edit_rounded, size: 16),
+                  icon: const Icon(AfriIcons.edit, size: 16),
                   label: const Text('EDIT'),
                 ),
                 const SizedBox(width: SpacingTokens.spacing2),
-                TextButton.icon(
+                AfriTextIconButton(
                   onPressed: () => _toggleActive(competition),
                   icon: Icon(
-                    isActive
-                        ? Icons.visibility_off_rounded
-                        : Icons.visibility_rounded,
+                    isActive ? AfriIcons.visibilityOff : AfriIcons.visibility,
                     size: 16,
                   ),
                   label: Text(isActive ? 'DEACTIVATE' : 'ACTIVATE'),
-                  style: TextButton.styleFrom(
+                  style: AfriTextButton.styleFrom(
                     foregroundColor: isActive
                         ? ColorTokens.error
                         : ColorTokens.success,
@@ -477,14 +470,10 @@ class _CompetitionManagerScreenState
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.emoji_events_rounded,
-              size: 48,
-              color: ColorTokens.onSurfaceVariant,
-            ),
+            Icon(AfriIcons.rank, size: 48, color: ColorTokens.onSurfaceVariant),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
-              'No competitions found',
+              'Adjust competition filters',
               style: TypographyTokens.headlineMedium().copyWith(
                 color: ColorTokens.onSurface,
               ),
@@ -516,7 +505,7 @@ class _CompetitionManagerScreenState
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(
-              Icons.error_outline_rounded,
+              AfriIcons.statusError,
               size: 48,
               color: ColorTokens.error,
             ),
@@ -541,4 +530,3 @@ class _CompetitionManagerScreenState
 }
 
 // ── Competition Form Bottom Sheet ──
-

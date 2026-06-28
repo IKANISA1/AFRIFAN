@@ -52,7 +52,7 @@ class MatchSlide {
 /// - Rounded corners all around (~20px)
 /// - Card floats/is detached from the background
 /// - Image fills the card, clipped by rounded corners
-/// - No custom clipper needed — just ClipRRect + margin
+/// - Uses ClipRRect plus margin instead of a custom clipper.
 class MatchScoreCard extends StatefulWidget {
   final List<MatchSlide> slides;
   final Duration autoSlideInterval;
@@ -93,10 +93,12 @@ class _MatchScoreCardState extends State<MatchScoreCard> {
     _autoSlideTimer = Timer.periodic(widget.autoSlideInterval, (_) {
       if (!mounted) return;
       final next = (_currentPage + 1) % widget.slides.length;
-      _pageController.animateToPage(
-        next,
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.easeInOut,
+      unawaited(
+        _pageController.animateToPage(
+          next,
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeInOut,
+        ),
       );
     });
   }
@@ -119,12 +121,16 @@ class _MatchScoreCardState extends State<MatchScoreCard> {
             onPageChanged: (i) => setState(() => _currentPage = i),
             itemBuilder: (context, i) {
               final slide = widget.slides[i];
-              return GestureDetector(
-                onTap: () {
-                  if (slide.route != null) {
-                    context.push(slide.route!);
-                  }
-                },
+              return AfriPressFeedback(
+                onTap: slide.route == null
+                    ? null
+                    : () => unawaited(context.push(slide.route!)),
+                haptic: slide.route != null,
+                scaleEnd: 0.99,
+                opacityEnd: 0.98,
+                semanticsLabel: 'Open match details',
+                tooltip: 'Open match details',
+                excludeChildSemantics: false,
                 child: _HeroSlide(slide: slide, accentColor: _heroAccent),
               );
             },
@@ -148,7 +154,7 @@ class _MatchScoreCardState extends State<MatchScoreCard> {
                     decoration: BoxDecoration(
                       color: i == _currentPage
                           ? _heroAccent
-                          : Colors.white.withValues(alpha: 0.25),
+                          : ColorTokens.onDarkSoft,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -179,15 +185,9 @@ class _HeroSlide extends StatelessWidget {
         // ── Gradient overlay (using primary as allowed) ──
         DecoratedBox(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                ColorTokens.clubPrimary.withValues(alpha: 0.0),
-                ColorTokens.clubPrimary.withValues(alpha: 0.27),
-                ColorTokens.clubPrimary.withValues(alpha: 0.8),
-                ColorTokens.clubPrimary.withValues(alpha: 1.0),
-              ],
+            gradient: ColorTokens.imageScrimGradient(
+              color: ColorTokens.clubPrimary,
+              alphas: const [0.0, 0.27, 0.8, 1.0],
               stops: const [0.0, 0.3, 0.7, 1.0],
             ),
           ),
@@ -218,33 +218,34 @@ class _HeroSlide extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: '${slide.homeTeam.toUpperCase()} ',
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 64,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white,
-                              height: 0.90,
-                              letterSpacing: 0,
-                            ),
+                            style:
+                                TypographyTokens.displayLarge(
+                                  ColorTokens.onDark,
+                                ).copyWith(
+                                  fontWeight: FontWeight.w900,
+                                  height: 0.90,
+                                  letterSpacing: 0,
+                                ),
                           ),
                           TextSpan(
                             text: 'VS\n',
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 64,
-                              fontWeight: FontWeight.w900,
-                              color: accentColor,
-                              height: 0.90,
-                              letterSpacing: 0,
-                            ),
+                            style: TypographyTokens.displayLarge(accentColor)
+                                .copyWith(
+                                  fontWeight: FontWeight.w900,
+                                  height: 0.90,
+                                  letterSpacing: 0,
+                                ),
                           ),
                           TextSpan(
                             text: slide.awayTeam.toUpperCase(),
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 64,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white,
-                              height: 0.90,
-                              letterSpacing: 0,
-                            ),
+                            style:
+                                TypographyTokens.displayLarge(
+                                  ColorTokens.onDark,
+                                ).copyWith(
+                                  fontWeight: FontWeight.w900,
+                                  height: 0.90,
+                                  letterSpacing: 0,
+                                ),
                           ),
                         ],
                       ),
@@ -268,12 +269,13 @@ class _HeroSlide extends StatelessWidget {
                     const SizedBox(width: 10),
                     Text(
                       slide.dateInfo,
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white.withValues(alpha: 0.55),
-                        letterSpacing: 1.5,
-                      ),
+                      style:
+                          TypographyTokens.bodyLarge(
+                            ColorTokens.onDarkSubtle,
+                          ).copyWith(
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 1.5,
+                          ),
                     ),
                   ],
                 ),
@@ -318,7 +320,7 @@ class _HeroSlide extends StatelessWidget {
   Widget _gradient() {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: ColorTokens.borrowedGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [

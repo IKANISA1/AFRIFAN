@@ -41,77 +41,22 @@ class TeamOverviewTab extends StatelessWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       physics: const BouncingScrollPhysics(),
       children: [
-        // MoMo Contribution Code — dynamic per team
-        Container(
-              padding: const EdgeInsets.all(SpacingTokens.spacing4),
-              decoration: BoxDecoration(
-                color: ColorTokens.clubAccent.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(16),
-                border: BorderTokens.all(
-                  color: ColorTokens.clubAccent.withValues(alpha: 0.2),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    isActiveClubTeam
-                        ? 'MOMO CONTRIBUTION ROUTE'
-                        : 'CLUB CONTRIBUTIONS',
-                    style: TypographyTokens.editorialFont(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      color: ColorTokens.clubAccent,
-                      letterSpacing: 1.4,
-                    ),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing2),
-                  Text(
-                    paymentRoute != null
-                        ? paymentRoute!.payToLabel
-                        : isActiveClubTeam
-                        ? 'Contribution route not configured'
-                        : 'Supporter routing unavailable',
-                    style: TypographyTokens.monolithFont(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      color: ColorTokens.clubAccent,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing2),
-                  Text(
-                    paymentRoute != null
-                        ? (paymentRoute!.reconciliationLabel.trim().isNotEmpty
-                              ? paymentRoute!.reconciliationLabel
-                              : 'Use ${paymentRoute!.providerLabel} to contribute to ${team?.name ?? 'this club'}.')
-                        : (clubSupportMessage ??
-                              'Contribution instructions will appear when the club publishes a route.'),
-                    style: TypographyTokens.bodySmall(),
-                  ),
-                ],
-              ),
-            )
-            .animate()
-            .fadeIn(duration: 400.ms)
-            .slideY(begin: 0.04, end: 0, duration: 400.ms),
-
-        const SizedBox(height: SpacingTokens.spacing5),
+        if (isActiveClubTeam && paymentRoute != null) ...[
+          TeamContributionRouteBanner(team: team, paymentRoute: paymentRoute!),
+          const SizedBox(height: SpacingTokens.spacing5),
+        ],
 
         // Standings card if available
         if (tableRow != null)
-          ClayCard(
+          AfriSurfaceCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'LEAGUE POSITION',
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurfaceVariant,
-                    letterSpacing: 1.2,
-                  ),
+                  style: TypographyTokens.metricLabel(
+                    ColorTokens.onSurfaceVariant,
+                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 Row(
@@ -122,10 +67,7 @@ class TeamOverviewTab extends StatelessWidget {
                     MiniStat(label: 'W', value: '${tableRow!.won}'),
                     MiniStat(label: 'D', value: '${tableRow!.drawn}'),
                     MiniStat(label: 'L', value: '${tableRow!.lost}'),
-                    MiniStat(
-                      label: 'GD',
-                      value: '${tableRow!.goalDifference}',
-                    ),
+                    MiniStat(label: 'GD', value: '${tableRow!.goalDifference}'),
                     MiniStat(label: 'Pts', value: '${tableRow!.points}'),
                   ],
                 ),
@@ -134,6 +76,59 @@ class TeamOverviewTab extends StatelessWidget {
           ),
       ],
     );
+  }
+}
+
+class TeamContributionRouteBanner extends StatelessWidget {
+  const TeamContributionRouteBanner({
+    super.key,
+    required this.team,
+    required this.paymentRoute,
+  });
+
+  final TeamCatalogEntry? team;
+  final PartnerPaymentRoute paymentRoute;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+          padding: const EdgeInsets.all(SpacingTokens.spacing4),
+          decoration: BoxDecoration(
+            color: ColorTokens.clubAccent.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(16),
+            border: BorderTokens.all(
+              color: ColorTokens.clubAccent.withValues(alpha: 0.2),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'MOMO CONTRIBUTION ROUTE',
+                style: TypographyTokens.labelSmall(
+                  ColorTokens.clubAccent,
+                ).copyWith(fontWeight: FontWeight.w800, letterSpacing: 1.4),
+              ),
+              const SizedBox(height: SpacingTokens.spacing2),
+              Text(
+                paymentRoute.payToLabel,
+                style: TypographyTokens.titleMedium(
+                  ColorTokens.clubAccent,
+                ).copyWith(fontWeight: FontWeight.w800, letterSpacing: 1),
+              ),
+              const SizedBox(height: SpacingTokens.spacing2),
+              Text(
+                paymentRoute.reconciliationLabel.trim().isNotEmpty
+                    ? paymentRoute.reconciliationLabel
+                    : 'Use ${paymentRoute.providerLabel} to contribute to ${team?.name ?? 'this club'}.',
+                style: TypographyTokens.bodySmall(),
+              ),
+            ],
+          ),
+        )
+        .animate()
+        .fadeIn(duration: 400.ms)
+        .slideY(begin: 0.04, end: 0, duration: 400.ms);
   }
 }
 
@@ -246,7 +241,12 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
         _message = null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('TeamProfileTabs', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'TeamProfileTabs',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -291,21 +291,46 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
       );
     }
 
+    return TeamMembersContent(
+      legendCount: _legendCount,
+      ultraCount: _ultraCount,
+      memberCount: _memberCount,
+      supporterCount: _supporterCount,
+      contributors: _contributors,
+    );
+  }
+}
+
+class TeamMembersContent extends StatelessWidget {
+  const TeamMembersContent({
+    super.key,
+    required this.legendCount,
+    required this.ultraCount,
+    required this.memberCount,
+    required this.supporterCount,
+    required this.contributors,
+  });
+
+  final int legendCount;
+  final int ultraCount;
+  final int memberCount;
+  final int supporterCount;
+  final List<ClubMemberEntry> contributors;
+
+  @override
+  Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       physics: const BouncingScrollPhysics(),
       children: [
         Text(
           'CLUB MEMBERS',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
+          style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: 1.2,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing4),
-
-        // ── Tier Breakdown Grid (dynamic counts) ──
         GridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -314,39 +339,39 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
           mainAxisSpacing: SpacingTokens.spacing3,
           childAspectRatio: 1.5,
           children: [
-            TierCountCard(icon: '👑', label: 'Legends', count: _legendCount),
-            TierCountCard(icon: '🔥', label: 'Ultras', count: _ultraCount),
-            TierCountCard(icon: '🏅', label: 'Members', count: _memberCount),
             TierCountCard(
-              icon: '⚽',
+              icon: AfriIcons.premium,
+              label: 'Legends',
+              count: legendCount,
+            ),
+            TierCountCard(
+              icon: AfriIcons.streak,
+              label: 'Ultras',
+              count: ultraCount,
+            ),
+            TierCountCard(
+              icon: AfriIcons.badge,
+              label: 'Members',
+              count: memberCount,
+            ),
+            TierCountCard(
+              icon: AfriIcons.fanzone,
               label: 'Supporters',
-              count: _supporterCount,
+              count: supporterCount,
             ),
           ],
         ),
-
-        const SizedBox(height: SpacingTokens.spacing6),
-
-        Text(
-          'TOP CONTRIBUTORS',
-          style: TypographyTokens.editorialFont(
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            color: ColorTokens.onSurfaceVariant,
-            letterSpacing: 1.2,
+        if (contributors.isNotEmpty) ...[
+          const SizedBox(height: SpacingTokens.spacing6),
+          Text(
+            'TOP CONTRIBUTORS',
+            key: const ValueKey<String>('team-members-contributors-title'),
+            style: TypographyTokens.metricLabel(
+              ColorTokens.onSurfaceVariant,
+            ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
           ),
-        ),
-        const SizedBox(height: SpacingTokens.spacing3),
-
-        if (_contributors.isEmpty)
-          AfriEmptyView(
-            compact: true,
-            title: 'No contributors yet',
-            message:
-                _message ?? 'Top contributors will appear as supporters join.',
-          )
-        else
-          ..._contributors
+          const SizedBox(height: SpacingTokens.spacing3),
+          ...contributors
               .take(10)
               .toList()
               .asMap()
@@ -360,6 +385,7 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
                   isMe: entry.value.isCurrentUser,
                 ),
               ),
+        ],
       ],
     );
   }
@@ -379,15 +405,7 @@ class TeamFixturesTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (fixtures.isEmpty) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(SpacingTokens.spacing6),
-          child: AfriEmptyView(
-            title: 'No fixtures available',
-            message: 'Upcoming and recent matches will appear here.',
-          ),
-        ),
-      );
+      return const SizedBox.shrink();
     }
 
     return ListView.builder(
@@ -426,13 +444,11 @@ class TeamFixturesTab extends StatelessWidget {
                             fixture.awayScore != null
                         ? '${fixture.homeScore}-${fixture.awayScore}'
                         : 'OPEN',
-                    style: TypographyTokens.monolithFont(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      color: fixture.isLive
+                    style: TypographyTokens.titleMedium(
+                      fixture.isLive
                           ? ColorTokens.success
                           : ColorTokens.clubAccent,
-                    ),
+                    ).copyWith(fontWeight: FontWeight.w800),
                   ),
                 ],
               ),
@@ -463,31 +479,9 @@ class TeamContributeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!isActiveClubTeam) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(SpacingTokens.spacing6),
-          child: AfriEmptyView(
-            title: 'Contributions unavailable',
-            message:
-                clubSupportMessage ??
-                'Contribution routing is only available for the active club in this app.',
-          ),
-        ),
-      );
-    }
-
-    if (paymentRoute == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(SpacingTokens.spacing6),
-          child: AfriEmptyView(
-            title: 'No contribution route',
-            message:
-                clubSupportMessage ??
-                'This club has not published an active contribution route yet.',
-          ),
-        ),
+    if (!isActiveClubTeam || paymentRoute == null) {
+      return const SizedBox.shrink(
+        key: ValueKey<String>('team-contribute-empty'),
       );
     }
 
@@ -497,8 +491,7 @@ class TeamContributeTab extends StatelessWidget {
       children: [
         Text(
           'MOMO CONTRIBUTION',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
+          style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: 1.2,
           ),
@@ -527,7 +520,7 @@ class TeamContributeTab extends StatelessWidget {
 
         const SizedBox(height: SpacingTokens.spacing5),
 
-        ClayCard(
+        AfriSurfaceCard(
           child: Column(
             children: [
               ContributeStep(
@@ -584,14 +577,13 @@ class TeamAboutTab extends StatelessWidget {
       children: [
         Text(
           'ABOUT ${team?.name.toUpperCase() ?? 'THIS CLUB'}',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
+          style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: 1.2,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing4),
-        ClayCard(
+        AfriSurfaceCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

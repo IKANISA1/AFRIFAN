@@ -137,7 +137,7 @@ class AfriCountry {
 
     if (template == null || template.trim().isEmpty) {
       throw UnsupportedError(
-        'No USSD template configured for $recipientType in $isoCode.',
+        'USSD template pending for $recipientType in $isoCode.',
       );
     }
 

@@ -116,7 +116,7 @@ class AdminWorkspaceAccess {
   final Set<String> partnerAdminIds;
   final List<AdminRoleAssignment> roleAssignments;
 
-  /// No admin access at all.
+  /// Admin access is unavailable.
   static const none = AdminWorkspaceAccess();
 
   bool get hasBankAdminAccess =>

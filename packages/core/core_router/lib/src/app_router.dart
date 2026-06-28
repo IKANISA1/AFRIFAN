@@ -1,3 +1,4 @@
+import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -64,9 +65,8 @@ class AppRouter {
     routes: [
       GoRoute(
         path: '/feature-unavailable',
-        builder: (context, state) => _FeatureUnavailableScreen(
-          fallbackLocation: initialLocation,
-        ),
+        builder: (context, state) =>
+            _FeatureUnavailableScreen(fallbackLocation: initialLocation),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => shellBuilder(context, shell),
@@ -79,18 +79,19 @@ class AppRouter {
 
   /// Build shell branches from tab routes.
   List<StatefulShellBranch> _buildBranches() {
-    final tabModules = modules
-        .where(
-          (module) =>
-              module.tabRoute != null &&
-              primaryBottomTabFeatureKeys.contains(module.featureKey),
-        )
-        .toList()
-      ..sort(
-        (left, right) => primaryBottomTabOrderForFeature(
-          left.featureKey,
-        ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
-      );
+    final tabModules =
+        modules
+            .where(
+              (module) =>
+                  module.tabRoute != null &&
+                  primaryBottomTabFeatureKeys.contains(module.featureKey),
+            )
+            .toList()
+          ..sort(
+            (left, right) => primaryBottomTabOrderForFeature(
+              left.featureKey,
+            ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
+          );
 
     return tabModules.map((module) {
       final tab = module.tabRoute!;
@@ -122,18 +123,19 @@ class AppRouter {
 
   /// Get tab info for building bottom nav.
   List<TabRoute> get tabs {
-    final tabModules = modules
-        .where(
-          (module) =>
-              module.tabRoute != null &&
-              primaryBottomTabFeatureKeys.contains(module.featureKey),
-        )
-        .toList()
-      ..sort(
-        (left, right) => primaryBottomTabOrderForFeature(
-          left.featureKey,
-        ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
-      );
+    final tabModules =
+        modules
+            .where(
+              (module) =>
+                  module.tabRoute != null &&
+                  primaryBottomTabFeatureKeys.contains(module.featureKey),
+            )
+            .toList()
+          ..sort(
+            (left, right) => primaryBottomTabOrderForFeature(
+              left.featureKey,
+            ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
+          );
 
     return tabModules.map((module) => module.tabRoute!).toList();
   }
@@ -146,18 +148,19 @@ class AppRouter {
       }
     }
 
-    final tabModules = modules
-        .where(
-          (module) =>
-              module.tabRoute != null &&
-              primaryBottomTabFeatureKeys.contains(module.featureKey),
-        )
-        .toList()
-      ..sort(
-        (left, right) => primaryBottomTabOrderForFeature(
-          left.featureKey,
-        ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
-      );
+    final tabModules =
+        modules
+            .where(
+              (module) =>
+                  module.tabRoute != null &&
+                  primaryBottomTabFeatureKeys.contains(module.featureKey),
+            )
+            .toList()
+          ..sort(
+            (left, right) => primaryBottomTabOrderForFeature(
+              left.featureKey,
+            ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
+          );
 
     for (final module in tabModules) {
       final tabRoute = module.tabRoute;
@@ -186,29 +189,17 @@ class _FeatureUnavailableScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorTokens.background,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.construction_rounded, size: 48),
-              const SizedBox(height: 16),
-              const Text(
-                'This feature is currently unavailable.',
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'The club has hidden or disabled this section for now.',
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: () => context.go(fallbackLocation),
-                child: const Text('Go back'),
-              ),
-            ],
+          padding: const EdgeInsets.all(SpacingTokens.spacing6),
+          child: AfriStateView.empty(
+            title: 'This feature is currently unavailable.',
+            message: 'The club has hidden or disabled this section for now.',
+            icon: AfriIcons.statusBlocked,
+            actionLabel: 'Go back',
+            onAction: () => context.go(fallbackLocation),
+            compact: true,
           ),
         ),
       ),
@@ -228,24 +219,16 @@ class _RouterErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorTokens.background,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.error_outline_rounded, size: 48),
-              const SizedBox(height: 16),
-              const Text(
-                'We could not open that page.',
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: () => context.go(fallbackLocation),
-                child: const Text('Go Home'),
-              ),
-            ],
+          padding: const EdgeInsets.all(SpacingTokens.spacing6),
+          child: AfriStateView.error(
+            title: 'We could not open that page.',
+            message: error?.toString() ?? 'The requested route is unavailable.',
+            actionLabel: 'Go home',
+            onAction: () => context.go(fallbackLocation),
+            compact: true,
           ),
         ),
       ),

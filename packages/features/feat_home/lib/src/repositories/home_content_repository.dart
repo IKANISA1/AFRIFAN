@@ -1,12 +1,12 @@
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../widgets/contributor_leaderboard.dart';
 import '../widgets/match_card.dart';
-import 'package:core_utils/core_utils.dart';
 
 enum HomeFeedStatus { success, degraded, empty, error }
 
@@ -54,7 +54,6 @@ class HomeQuickAction {
       route: '/contribute',
       iconKey: 'groups',
       subtitle: 'Savings & fundraising',
-      emoji: '🤝',
       sortOrder: 10,
     ),
     HomeQuickAction(
@@ -63,7 +62,6 @@ class HomeQuickAction {
       route: '/fanzone',
       iconKey: 'predict',
       subtitle: 'Fixtures, picks & live',
-      emoji: '⚽',
       sortOrder: 20,
     ),
     HomeQuickAction(
@@ -72,7 +70,6 @@ class HomeQuickAction {
       route: '/tickets',
       iconKey: 'tickets',
       subtitle: 'Match access',
-      emoji: '🎟️',
       sortOrder: 30,
     ),
     HomeQuickAction(
@@ -81,7 +78,6 @@ class HomeQuickAction {
       route: '/shop',
       iconKey: 'shop',
       subtitle: 'Rewards & merchandise',
-      emoji: '🛍️',
       sortOrder: 40,
     ),
     HomeQuickAction(
@@ -90,7 +86,6 @@ class HomeQuickAction {
       route: '/membership',
       iconKey: 'members',
       subtitle: 'Club supporters',
-      emoji: '👥',
       sortOrder: 50,
     ),
     HomeQuickAction(
@@ -99,7 +94,6 @@ class HomeQuickAction {
       route: '/fanzone/offers',
       iconKey: 'offers',
       subtitle: 'Earn with partners',
-      emoji: '🎁',
       sortOrder: 60,
     ),
   ];
@@ -381,7 +375,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
           .eq('user_id', currentUserId);
       query = ClubScopeResolver(client: client).apply(query, scope);
       final row = await query.maybeSingle();
-      if (row == null) return; // User has no membership yet.
+      if (row == null) return; // Membership is pending for this user.
 
       final userPoints = (row['points'] as num?)?.toInt() ?? 0;
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import '../extensions.dart';
 import '../tokens/color_tokens.dart';
@@ -103,7 +104,7 @@ class _AfriActionSheetBody extends StatelessWidget {
                 (action) => AfriPressFeedback(
                   onTap: () {
                     HapticFeedback.lightImpact();
-                    Navigator.of(context).pop();
+                    context.pop();
                     action.onTap();
                   },
                   semanticsLabel: action.label,

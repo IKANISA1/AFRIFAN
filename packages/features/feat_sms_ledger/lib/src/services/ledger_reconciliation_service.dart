@@ -34,7 +34,10 @@ class LedgerReconciliationService {
       final pendingList = pendingState.rows;
 
       if (pendingList.isEmpty) {
-        AfriLogger.info('Reconciliation', 'No pending contributions to reconcile.');
+        AfriLogger.info(
+          'Reconciliation',
+          'Pending contribution queue is empty.',
+        );
         return 0;
       }
 
@@ -124,7 +127,7 @@ class LedgerReconciliationService {
           AfriLogger.info(
             'Reconciliation',
             'Matched contribution ${contribution['id']} '
-            '→ ledger $ledgerId (tx: $txId)',
+                '→ ledger $ledgerId (tx: $txId)',
           );
         } catch (e) {
           AfriLogger.warn(
@@ -137,7 +140,7 @@ class LedgerReconciliationService {
       AfriLogger.info(
         'Reconciliation',
         'Pass complete: $reconciled of '
-        '${pendingList.length} contributions reconciled.',
+            '${pendingList.length} contributions reconciled.',
       );
     } catch (e) {
       AfriLogger.error('Reconciliation', 'Service error', e);

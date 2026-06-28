@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  core_theme:
+    path: ../core_theme
   core_utils:
     path: ../core_utils
   crypto: ^3.0.6

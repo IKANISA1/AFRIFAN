@@ -106,12 +106,13 @@ class _MatchManagerScreenState extends ConsumerState<MatchManagerScreen> {
     final currencySymbol = context.afriCurrencySymbol;
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text('MATCHES', style: TypographyTokens.titleLarge()),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -126,7 +127,7 @@ class _MatchManagerScreenState extends ConsumerState<MatchManagerScreen> {
               actionLabel: 'Retry',
               onPressed: _loadMatches,
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _loadMatches,
               child: ListView(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
@@ -137,7 +138,7 @@ class _MatchManagerScreenState extends ConsumerState<MatchManagerScreen> {
                     children:
                         ['ALL', 'LIVE', 'UPCOMING', 'ON SALE', 'COMPLETED']
                             .map(
-                              (filter) => ChoiceChip(
+                              (filter) => AfriChoiceChip(
                                 selected: _filter == filter,
                                 label: Text(filter),
                                 onSelected: (_) =>
@@ -147,14 +148,7 @@ class _MatchManagerScreenState extends ConsumerState<MatchManagerScreen> {
                             .toList(),
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  if (_filteredMatches.isEmpty)
-                    const _StateCard(
-                      title: 'No fixtures in this view',
-                      body:
-                          'Create a new match or switch filters to inspect the live schedule.',
-                      actionLabel: null,
-                    )
-                  else
+                  if (_filteredMatches.isNotEmpty)
                     ..._filteredMatches.map((match) {
                       final matchDate = DateTime.tryParse(
                         match['match_date']?.toString() ?? '',
@@ -257,9 +251,9 @@ class _MatchManagerScreenState extends ConsumerState<MatchManagerScreen> {
                               const SizedBox(height: SpacingTokens.spacing3),
                               Align(
                                 alignment: Alignment.centerRight,
-                                child: TextButton.icon(
+                                child: AfriTextIconButton(
                                   onPressed: () => _openComposer(match),
-                                  icon: const Icon(Icons.edit_rounded),
+                                  icon: const Icon(AfriIcons.edit),
                                   label: Text(
                                     match['is_on_sale'] == true
                                         ? 'EDIT ON-SALE FIXTURE'

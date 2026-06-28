@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,7 +23,8 @@ class ChallengeFeedScreen extends ConsumerStatefulWidget {
   const ChallengeFeedScreen({super.key});
 
   @override
-  ConsumerState<ChallengeFeedScreen> createState() => _ChallengeFeedScreenState();
+  ConsumerState<ChallengeFeedScreen> createState() =>
+      _ChallengeFeedScreenState();
 }
 
 class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
@@ -33,33 +36,32 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
 
     return Scaffold(
       body: GradientBackground(
-        child: RefreshIndicator(
+        child: AfriRefreshIndicator(
           onRefresh: () => ref.read(challengeFeedProvider.notifier).refresh(),
           child: CustomScrollView(
             physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics(),
             ),
             slivers: [
-              SliverAppBar(
+              AfriSliverAppBar(
                 floating: true,
-                backgroundColor: Colors.transparent,
+                backgroundColor: ColorTokens.transparent,
                 title: Text(
                   'CHALLENGE',
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 22,
+                  style: TypographyTokens.headlineSmall().copyWith(
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.6,
                   ),
                 ),
                 actions: [
-                  IconButton(
-                    onPressed: () => context.push('/challenge/my'),
-                    icon: const Icon(AfriIcons.wallet),
+                  AfriIconButton(
+                    icon: AfriIcons.wallet,
+                    onTap: () => unawaited(context.push('/challenge/my')),
                     tooltip: 'My challenges',
                   ),
-                  IconButton(
-                    onPressed: () => context.push('/challenge/create'),
-                    icon: const Icon(AfriIcons.add),
+                  AfriIconButton(
+                    icon: AfriIcons.add,
+                    onTap: () => unawaited(context.push('/challenge/create')),
                     tooltip: 'Create challenge',
                   ),
                 ],
@@ -86,7 +88,7 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                         spacing: SpacingTokens.spacing2,
                         runSpacing: SpacingTokens.spacing2,
                         children: _ChallengeFeedFilter.values.map((filter) {
-                          return ChoiceChip(
+                          return AfriChoiceChip(
                             selected: _selectedFilter == filter,
                             label: Text(_labelForFilter(filter)),
                             onSelected: (_) =>
@@ -128,16 +130,9 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                   }
 
                   if (feed.isEmpty) {
-                    return const SliverFillRemaining(
-                      child: Padding(
-                        padding: EdgeInsets.all(SpacingTokens.screenPadding),
-                        child: AfriEmptyView(
-                          title: 'No challenges yet',
-                          message:
-                              'Be first into the pool. Create a challenge on an upcoming fixture to get things moving.',
-                          icon: AfriIcons.versus,
-                        ),
-                      ),
+                    return const SliverToBoxAdapter(
+                      key: ValueKey<String>('challenge-feed-empty'),
+                      child: SizedBox.shrink(),
                     );
                   }
 
@@ -155,7 +150,8 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                             title: 'Featured / Popular Challenges',
                             actionLabel: 'See all',
                             onAction: () => setState(
-                              () => _selectedFilter = _ChallengeFeedFilter.highPool,
+                              () => _selectedFilter =
+                                  _ChallengeFeedFilter.highPool,
                             ),
                           ),
                           const SizedBox(height: SpacingTokens.spacing3),
@@ -179,14 +175,16 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                             ),
                           ),
                           const SizedBox(height: SpacingTokens.spacing3),
-                          ...feed.open.take(6).map(
-                            (challenge) => Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: SpacingTokens.spacing3,
+                          ...feed.open
+                              .take(6)
+                              .map(
+                                (challenge) => Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: SpacingTokens.spacing3,
+                                  ),
+                                  child: ChallengeCard(challenge: challenge),
+                                ),
                               ),
-                              child: ChallengeCard(challenge: challenge),
-                            ),
-                          ),
                           const SizedBox(height: SpacingTokens.spacing5),
                         ],
                         if (feed.mine.isNotEmpty) ...[
@@ -196,14 +194,16 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                             onAction: () => context.push('/challenge/my'),
                           ),
                           const SizedBox(height: SpacingTokens.spacing3),
-                          ...feed.mine.take(4).map(
-                            (challenge) => Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: SpacingTokens.spacing3,
+                          ...feed.mine
+                              .take(4)
+                              .map(
+                                (challenge) => Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: SpacingTokens.spacing3,
+                                  ),
+                                  child: ChallengeCard(challenge: challenge),
+                                ),
                               ),
-                              child: ChallengeCard(challenge: challenge),
-                            ),
-                          ),
                           const SizedBox(height: SpacingTokens.spacing5),
                         ],
                         if (feed.settled.isNotEmpty) ...[
@@ -216,17 +216,19 @@ class _ChallengeFeedScreenState extends ConsumerState<ChallengeFeedScreen> {
                             ),
                           ),
                           const SizedBox(height: SpacingTokens.spacing3),
-                          ...feed.settled.take(4).map(
-                            (challenge) => Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: SpacingTokens.spacing3,
+                          ...feed.settled
+                              .take(4)
+                              .map(
+                                (challenge) => Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: SpacingTokens.spacing3,
+                                  ),
+                                  child: ChallengeCard(
+                                    challenge: challenge,
+                                    compact: true,
+                                  ),
+                                ),
                               ),
-                              child: ChallengeCard(
-                                challenge: challenge,
-                                compact: true,
-                              ),
-                            ),
-                          ),
                         ],
                       ]),
                     ),
@@ -337,16 +339,12 @@ class _SectionHeader extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: TypographyTokens.monolithFont(
-              fontSize: 14,
+            style: TypographyTokens.titleSmall().copyWith(
               fontWeight: FontWeight.w700,
             ),
           ),
         ),
-        TextButton(
-          onPressed: onAction,
-          child: Text(actionLabel),
-        ),
+        AfriTextButton(onPressed: onAction, child: Text(actionLabel)),
       ],
     );
   }

@@ -29,17 +29,14 @@ class CheckoutBar extends StatelessWidget {
       curve: Curves.easeOutCubic,
       child: Padding(
         padding: EdgeInsets.fromLTRB(16, 0, 16, bottomPadding + 12),
-        child: ClayCard(
+        child: AfriSurfaceCard(
           padding: const EdgeInsets.symmetric(
             horizontal: SpacingTokens.spacing4,
             vertical: SpacingTokens.spacing3,
           ),
           child: Row(
             children: [
-              AfriStatusChip(
-                label: '$itemCount',
-                icon: Icons.shopping_bag_outlined,
-              ),
+              AfriStatusChip(label: '$itemCount', icon: AfriIcons.cart),
               const SizedBox(width: SpacingTokens.spacing3),
               Expanded(
                 child: Column(
@@ -62,7 +59,7 @@ class CheckoutBar extends StatelessWidget {
               const SizedBox(width: SpacingTokens.spacing3),
               AfriButton(
                 label: 'Checkout',
-                icon: Icons.arrow_forward_rounded,
+                icon: AfriIcons.forward,
                 onTap: onCheckout ?? () {},
                 fullWidth: false,
                 enabled: onCheckout != null,

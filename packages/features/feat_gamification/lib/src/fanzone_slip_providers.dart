@@ -76,7 +76,7 @@ class FanzoneSlipController extends Notifier<FanzoneSlipState> {
         submittedCount: 0,
         failedCount: 0,
         totalPotential: 0,
-        messages: <String>['No predictions selected.'],
+        messages: <String>['Select predictions first.'],
       );
     }
 
@@ -142,7 +142,12 @@ class FanzoneSlipController extends Notifier<FanzoneSlipState> {
             messages.add(result.message);
           }
         } catch (error, stackTrace) {
-      AfriLogger.warn('FanzoneSlipProviders', 'Operation failed (non-critical).', error, stackTrace);
+          AfriLogger.warn(
+            'FanzoneSlipProviders',
+            'Operation failed (non-critical).',
+            error,
+            stackTrace,
+          );
           failedCount += 1;
           messages.add(
             'Could not submit ${item.marketName} for ${item.fixtureLabel}.',

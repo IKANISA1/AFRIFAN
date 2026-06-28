@@ -11,10 +11,12 @@ class FeatureManagementScreen extends ConsumerStatefulWidget {
   const FeatureManagementScreen({super.key});
 
   @override
-  ConsumerState<FeatureManagementScreen> createState() => _FeatureManagementScreenState();
+  ConsumerState<FeatureManagementScreen> createState() =>
+      _FeatureManagementScreenState();
 }
 
-class _FeatureManagementScreenState extends ConsumerState<FeatureManagementScreen> {
+class _FeatureManagementScreenState
+    extends ConsumerState<FeatureManagementScreen> {
   bool _loading = true;
   List<ManagedPlatformFeature> _features = [];
   String? _error;
@@ -31,7 +33,9 @@ class _FeatureManagementScreenState extends ConsumerState<FeatureManagementScree
       _error = null;
     });
     try {
-      final features = await ref.read(featureManagementRepositoryProvider).loadAllFeatures();
+      final features = await ref
+          .read(featureManagementRepositoryProvider)
+          .loadAllFeatures();
       if (mounted) {
         setState(() {
           _features = features;
@@ -60,19 +64,19 @@ class _FeatureManagementScreenState extends ConsumerState<FeatureManagementScree
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AfriAppBar(
         title: Text(
           'PLATFORM FEATURES',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
+          style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.2,
           ),
         ),
         actions: [
-          IconButton(
-            onPressed: _loadData,
-            icon: const Icon(AfriIcons.refresh),
+          AfriIconButton(
+            icon: AfriIcons.refresh,
+            onTap: _loadData,
+            tooltip: 'Refresh features',
           ),
           const SizedBox(width: SpacingTokens.spacing2),
         ],
@@ -80,23 +84,24 @@ class _FeatureManagementScreenState extends ConsumerState<FeatureManagementScree
       body: _loading
           ? const Center(child: AfriLoadingIndicator())
           : _error != null
-              ? AfriStateView.error(
-                  title: 'Error',
-                  message: _error!,
-                  onAction: _loadData,
-                )
-              : ListView.separated(
-                  padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-                  itemCount: _features.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: SpacingTokens.spacing4),
-                  itemBuilder: (context, index) {
-                    final feature = _features[index];
-                    return _FeatureConfigCard(
-                      feature: feature,
-                      onToggleGlobal: (val) => _toggleGlobal(feature, val),
-                    );
-                  },
-                ),
+          ? AfriStateView.error(
+              title: 'Error',
+              message: _error!,
+              onAction: _loadData,
+            )
+          : ListView.separated(
+              padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+              itemCount: _features.length,
+              separatorBuilder: (_, __) =>
+                  const SizedBox(height: SpacingTokens.spacing4),
+              itemBuilder: (context, index) {
+                final feature = _features[index];
+                return _FeatureConfigCard(
+                  feature: feature,
+                  onToggleGlobal: (val) => _toggleGlobal(feature, val),
+                );
+              },
+            ),
     );
   }
 }
@@ -128,7 +133,9 @@ class _FeatureConfigCard extends StatelessWidget {
                     ),
                     Text(
                       (feature.category ?? 'OTHER').toUpperCase(),
-                      style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
+                      style: TypographyTokens.labelSmall(
+                        ColorTokens.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
@@ -142,12 +149,9 @@ class _FeatureConfigCard extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           if (feature.description != null)
-            Text(
-              feature.description!,
-              style: TypographyTokens.bodySmall(),
-            ),
+            Text(feature.description!, style: TypographyTokens.bodySmall()),
           const SizedBox(height: SpacingTokens.spacing4),
-          const Divider(height: 1),
+          const AfriDivider(),
           const SizedBox(height: SpacingTokens.spacing3),
           Row(
             children: [
@@ -188,7 +192,7 @@ class _ChannelBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = enabled ? ColorTokens.success : ColorTokens.onSurfaceVariant;
-    
+
     return Container(
       padding: const EdgeInsets.all(SpacingTokens.spacing2),
       decoration: BoxDecoration(
@@ -201,19 +205,16 @@ class _ChannelBadge extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TypographyTokens.editorialFont(
-              fontSize: 8,
-              fontWeight: FontWeight.w900,
-              color: color,
-              letterSpacing: 1,
-            ),
+            style: TypographyTokens.metricLabel(
+              color,
+            ).copyWith(fontWeight: FontWeight.w900, letterSpacing: 1),
           ),
           const SizedBox(height: 4),
           Row(
             children: [
               _TinyIcon(icon: AfriIcons.grid, active: home),
               const SizedBox(width: 4),
-              _TinyIcon(icon: Icons.navigation_rounded, active: nav),
+              _TinyIcon(icon: AfriIcons.forward, active: nav),
             ],
           ),
         ],
@@ -232,7 +233,9 @@ class _TinyIcon extends StatelessWidget {
     return Icon(
       icon,
       size: 10,
-      color: active ? ColorTokens.clubAccent : ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
+      color: active
+          ? ColorTokens.clubAccent
+          : ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
     );
   }
 }

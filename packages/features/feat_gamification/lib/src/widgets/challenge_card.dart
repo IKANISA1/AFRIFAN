@@ -22,8 +22,8 @@ class ChallengeCard extends StatelessWidget {
     }
 
     final countdown = challenge.timeUntilLock;
-    final hasCountdown = challenge.status == ChallengeStatus.open &&
-        countdown.inSeconds > 0;
+    final hasCountdown =
+        challenge.status == ChallengeStatus.open && countdown.inSeconds > 0;
 
     return GlassCard(
       onTap: () => context.push('/challenge/${challenge.id}'),
@@ -75,27 +75,27 @@ class ChallengeCard extends StatelessWidget {
                     fixture.status == 'finished' || fixture.status == 'live'
                         ? '${fixture.homeScore ?? 0}-${fixture.awayScore ?? 0}'
                         : 'VS',
-                    style: TypographyTokens.monolithFont(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                      color: fixture.status == 'live'
+                    style: TypographyTokens.titleLarge(
+                      fixture.status == 'live'
                           ? ColorTokens.error
                           : ColorTokens.clubAccent,
-                    ),
+                    ).copyWith(fontWeight: FontWeight.w900),
                   ),
                   const SizedBox(height: 4),
                   if (hasCountdown)
                     Text(
                       _formatCountdown(countdown),
-                      style: TypographyTokens.labelSmall(
-                        ColorTokens.warning,
-                      ),
+                      style: TypographyTokens.labelSmall(ColorTokens.warning),
                     )
                   else
                     Text(
                       compact
-                          ? fixture.kickoffAt?.toLocal().toString().split('.').first ??
-                              'Kickoff soon'
+                          ? fixture.kickoffAt
+                                    ?.toLocal()
+                                    .toString()
+                                    .split('.')
+                                    .first ??
+                                'Kickoff soon'
                           : _formatKickoff(fixture.kickoffAt),
                       style: TypographyTokens.labelSmall(
                         ColorTokens.onSurfaceVariant,
@@ -192,12 +192,9 @@ class ChallengeStatusChip extends StatelessWidget {
       ),
       child: Text(
         status.name.replaceAll('_', '').toUpperCase(),
-        style: TypographyTokens.editorialFont(
-          fontSize: 9,
-          fontWeight: FontWeight.w700,
-          color: color,
-          letterSpacing: 0.8,
-        ),
+        style: TypographyTokens.metricLabel(
+          color,
+        ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
       ),
     );
   }
@@ -221,12 +218,9 @@ class StakeBadge extends StatelessWidget {
       ),
       child: Text(
         '$stakeFet FET',
-        style: TypographyTokens.editorialFont(
-          fontSize: 10,
-          fontWeight: FontWeight.w700,
-          color: ColorTokens.clubAccent,
-          letterSpacing: 0.8,
-        ),
+        style: TypographyTokens.metricLabel(
+          ColorTokens.clubAccent,
+        ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
       ),
     );
   }
@@ -259,12 +253,9 @@ class ScorePredictionPill extends StatelessWidget {
       ),
       child: Text(
         '$label  $homeScore-$awayScore',
-        style: TypographyTokens.editorialFont(
-          fontSize: 10,
-          fontWeight: FontWeight.w700,
-          color: accent,
-          letterSpacing: 0.7,
-        ),
+        style: TypographyTokens.metricLabel(
+          accent,
+        ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.7),
       ),
     );
   }
@@ -293,10 +284,7 @@ class _InfoChip extends StatelessWidget {
         children: [
           Icon(icon, size: 12, color: ColorTokens.onSurfaceVariant),
           const SizedBox(width: 6),
-          Text(
-            label,
-            style: TypographyTokens.labelSmall(),
-          ),
+          Text(label, style: TypographyTokens.labelSmall()),
         ],
       ),
     );
@@ -332,10 +320,7 @@ class _AvatarBadge extends StatelessWidget {
 }
 
 class _TeamColumn extends StatelessWidget {
-  const _TeamColumn({
-    required this.name,
-    required this.alignment,
-  });
+  const _TeamColumn({required this.name, required this.alignment});
 
   final String name;
   final CrossAxisAlignment alignment;
@@ -347,8 +332,7 @@ class _TeamColumn extends StatelessWidget {
       children: [
         Text(
           name.toUpperCase(),
-          style: TypographyTokens.monolithFont(
-            fontSize: 16,
+          style: TypographyTokens.titleMedium().copyWith(
             fontWeight: FontWeight.w900,
           ),
         ),

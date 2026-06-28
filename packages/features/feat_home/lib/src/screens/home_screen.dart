@@ -7,8 +7,8 @@ import 'package:go_router/go_router.dart';
 
 import '../providers/home_feed_provider.dart';
 import '../repositories/home_content_repository.dart';
+import '../widgets/borrowed_match_strip.dart';
 import '../widgets/contributor_leaderboard.dart';
-import '../widgets/elite_match_strip.dart';
 import '../widgets/latest_intel_section.dart';
 import '../widgets/match_card.dart';
 import '../widgets/quick_actions_grid.dart';
@@ -29,7 +29,7 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       body: GradientBackground(
         routePath: '/home',
-        child: RefreshIndicator(
+        child: AfriRefreshIndicator(
           onRefresh: () => notifier.refresh(),
           color: ColorTokens.clubAccent,
           child: asyncFeed.when(
@@ -236,7 +236,9 @@ class HomeScreen extends ConsumerWidget {
         );
         break;
       case 'stats_row':
-        if (!snapshot.hasStats) return const SizedBox.shrink();
+        if (!snapshot.hasStats) {
+          return const SliverToBoxAdapter(child: SizedBox.shrink());
+        }
         content = Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: SpacingTokens.screenPadding,
@@ -252,7 +254,9 @@ class HomeScreen extends ConsumerWidget {
         );
         break;
       case 'contributor_leaderboard':
-        if (!snapshot.hasLeaderboard) return const SizedBox.shrink();
+        if (!snapshot.hasLeaderboard) {
+          return const SliverToBoxAdapter(child: SizedBox.shrink());
+        }
         content = Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: SpacingTokens.screenPadding,
@@ -341,19 +345,10 @@ class HomeScreen extends ConsumerWidget {
       );
     }
 
-    final slides = snapshot.heroSlides.isNotEmpty
-        ? snapshot.heroSlides
-        : (snapshot.showFixturePlaceholder ? _buildEmptyHeroSlides() : null);
+    final slides = snapshot.heroSlides;
 
-    if (slides == null || slides.isEmpty) {
-      return const _HomeHeroStateCard(
-        child: AfriEmptyView(
-          compact: true,
-          title: 'No fixture yet',
-          message: 'The next fixture appears here when confirmed.',
-          icon: AfriIcons.fixture,
-        ),
-      );
+    if (slides.isEmpty) {
+      return const SizedBox.shrink();
     }
 
     return Column(
@@ -381,7 +376,7 @@ class HomeScreen extends ConsumerWidget {
         if (slides.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 12),
-            child: EliteMatchStrip(
+            child: BorrowedMatchStrip(
               slide: slides.first,
               onTap: slides.first.route != null
                   ? () => context.push(slides.first.route!)
@@ -390,20 +385,6 @@ class HomeScreen extends ConsumerWidget {
           ),
       ],
     );
-  }
-
-  List<MatchSlide> _buildEmptyHeroSlides() {
-    final homeTeam = RuntimeBranding.displayHomeTeamName;
-
-    return <MatchSlide>[
-      MatchSlide(
-        homeTeam: homeTeam,
-        awayTeam: 'Matchday',
-        venue: RuntimeBranding.displayHomeVenueName,
-        status: 'No fixture',
-        dateInfo: 'Next fixture coming soon',
-      ),
-    ];
   }
 }
 

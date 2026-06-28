@@ -15,8 +15,7 @@ void main() {
 
     test('has tab route at /home', () {
       final tab = module.tabRoute;
-      expect(tab, isNotNull);
-      expect(tab!.path, '/home');
+      expect(tab.path, '/home');
       expect(tab.label, isNotEmpty);
     });
 

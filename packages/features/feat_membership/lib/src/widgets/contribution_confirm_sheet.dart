@@ -1,6 +1,7 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 
 /// Post-MoMo dial confirmation bottom sheet.
 ///
@@ -25,11 +26,9 @@ class ContributionConfirmSheet extends StatefulWidget {
     return showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => ContributionConfirmSheet(
-        tierLabel: tierLabel,
-        onConfirm: onConfirm,
-      ),
+      backgroundColor: ColorTokens.transparent,
+      builder: (_) =>
+          ContributionConfirmSheet(tierLabel: tierLabel, onConfirm: onConfirm),
     );
   }
 
@@ -47,7 +46,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
       if (mounted) {
         setState(() => _isConfirming = false);
         widget.onConfirm();
-        Navigator.of(context).pop(true);
+        context.pop(true);
       }
     });
   }
@@ -83,21 +82,21 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
 
           // Icon
           Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: ColorTokens.clubAccent.withValues(alpha: 0.14),
-              border: BorderTokens.all(
-                color: ColorTokens.clubAccent.withValues(alpha: 0.3),
-              ),
-            ),
-            child: Icon(
-              AfriIcons.checkGroup,
-              size: 32,
-              color: ColorTokens.clubAccent,
-            ),
-          )
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: ColorTokens.clubAccent.withValues(alpha: 0.14),
+                  border: BorderTokens.all(
+                    color: ColorTokens.clubAccent.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Icon(
+                  AfriIcons.checkGroup,
+                  size: 32,
+                  color: ColorTokens.clubAccent,
+                ),
+              )
               .animate()
               .scale(
                 begin: const Offset(0.8, 0.8),
@@ -111,8 +110,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
 
           Text(
             'CONFIRM CONTRIBUTION',
-            style: TypographyTokens.monolithFont(
-              fontSize: 20,
+            style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w800,
               letterSpacing: 1.6,
             ),
@@ -144,8 +142,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
                     const SizedBox(height: SpacingTokens.spacing1),
                     Text(
                       widget.tierLabel.toUpperCase(),
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 16,
+                      style: TypographyTokens.titleMedium().copyWith(
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -162,12 +159,9 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
                   ),
                   child: Text(
                     'PENDING VERIFICATION',
-                    style: TypographyTokens.editorialFont(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      color: ColorTokens.clubAccent,
-                      letterSpacing: 1.2,
-                    ),
+                    style: TypographyTokens.labelSmall(
+                      ColorTokens.clubAccent,
+                    ).copyWith(fontWeight: FontWeight.w800),
                   ),
                 ),
               ],
@@ -183,7 +177,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
                 child: AfriButton(
                   label: 'Not yet',
                   variant: AfriButtonVariant.outline,
-                  onTap: () => Navigator.of(context).pop(false),
+                  onTap: () => context.pop(false),
                 ),
               ),
               const SizedBox(width: SpacingTokens.spacing3),
@@ -203,12 +197,9 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
           Text(
             'CONTRIBUTIONS ARE VERIFIED ANONYMOUSLY VIA FAN ID.',
             textAlign: TextAlign.center,
-            style: TypographyTokens.editorialFont(
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-              color: ColorTokens.onSurfaceVariant,
-              letterSpacing: 1.6,
-            ),
+            style: TypographyTokens.labelSmall(
+              ColorTokens.onSurfaceVariant,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),

@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
-import 'package:core_utils/core_utils.dart';
 
 class FriendsListScreen extends ConsumerStatefulWidget {
   const FriendsListScreen({super.key});
@@ -54,7 +54,12 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
         _error = null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('FriendsListScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FriendsListScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -92,7 +97,12 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
           _isSearching = false;
         });
       } catch (error, stackTrace) {
-      AfriLogger.warn('FriendsListScreen', 'Operation failed (non-critical).', error, stackTrace);
+        AfriLogger.warn(
+          'FriendsListScreen',
+          'Operation failed (non-critical).',
+          error,
+          stackTrace,
+        );
         if (!mounted) {
           return;
         }
@@ -122,7 +132,12 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
           _isSearching = false;
         });
       } catch (error, stackTrace) {
-      AfriLogger.warn('FriendsListScreen', 'Operation failed (non-critical).', error, stackTrace);
+        AfriLogger.warn(
+          'FriendsListScreen',
+          'Operation failed (non-critical).',
+          error,
+          stackTrace,
+        );
         if (!mounted) {
           return;
         }
@@ -135,19 +150,6 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
     }
 
     await _load();
-  }
-
-  String _actionLabel(FetFriendProfile supporter) {
-    if (supporter.isFriend) {
-      return 'Challenge';
-    }
-    if (supporter.hasPendingIncoming) {
-      return 'Accept';
-    }
-    if (supporter.hasPendingOutgoing) {
-      return 'Pending';
-    }
-    return 'Add';
   }
 
   Future<void> _handlePrimaryAction(FetFriendProfile supporter) async {
@@ -191,19 +193,19 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'Friends',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.0,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -223,7 +225,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
                 ),
               ),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _refreshVisibleData,
               color: ColorTokens.clubAccent,
               child: ListView(
@@ -240,59 +242,79 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
                   ),
                   if (_isSearching) ...[
                     const SizedBox(height: SpacingTokens.spacing3),
-                    const LinearProgressIndicator(minHeight: 3),
+                    const AfriLinearProgressIndicator(minHeight: 3),
                   ],
                   const SizedBox(height: SpacingTokens.spacing4),
-                  AfriSectionCard(
-                    title: searchMode ? 'Results' : 'Your friends',
-                    child: visibleSupporters.isEmpty
-                        ? AfriEmptyView(
-                            compact: true,
-                            title: searchMode
-                                ? 'No supporters found'
-                                : 'No friends yet',
-                            message: searchMode
-                                ? 'Try another name or supporter ID.'
-                                : 'Search for supporters to build your network.',
-                            icon: searchMode
-                                ? AfriIcons.search
-                                : Icons.people_outline_rounded,
-                          )
-                        : Column(
-                            children: visibleSupporters
-                                .asMap()
-                                .entries
-                                .map((entry) {
-                                  final supporter = entry.value;
-                                  return Column(
-                                    children: [
-                                      if (entry.key > 0)
-                                        Divider(
-                                          height: 1,
-                                          color: ColorTokens.ghostBorder,
-                                        ),
-                                      _SupporterRow(
-                                        name: supporter.displayName,
-                                        details: _supporterDetails(supporter),
-                                        isOnline: supporter.isOnline,
-                                        actionLabel: searchMode
-                                            ? _actionLabel(supporter)
-                                            : 'Challenge',
-                                        actionEnabled:
-                                            !supporter.hasPendingOutgoing,
-                                        onAction: () =>
-                                            _handlePrimaryAction(supporter),
-                                      ),
-                                    ],
-                                  );
-                                })
-                                .toList(growable: false),
-                          ),
+                  FriendSupportersSection(
+                    searchMode: searchMode,
+                    supporters: visibleSupporters,
+                    onAction: _handlePrimaryAction,
                   ),
                 ],
               ),
             ),
     );
+  }
+}
+
+class FriendSupportersSection extends StatelessWidget {
+  const FriendSupportersSection({
+    super.key,
+    required this.searchMode,
+    required this.supporters,
+    required this.onAction,
+  });
+
+  final bool searchMode;
+  final List<FetFriendProfile> supporters;
+  final ValueChanged<FetFriendProfile> onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    if (supporters.isEmpty) {
+      return const SizedBox.shrink(key: ValueKey<String>('friends-list-empty'));
+    }
+
+    return AfriSectionCard(
+      title: searchMode ? 'Results' : 'Your friends',
+      child: Column(
+        children: supporters
+            .asMap()
+            .entries
+            .map((entry) {
+              final supporter = entry.value;
+              return Column(
+                children: [
+                  if (entry.key > 0) const AfriDivider(),
+                  _SupporterRow(
+                    name: supporter.displayName,
+                    details: _supporterDetails(supporter),
+                    isOnline: supporter.isOnline,
+                    actionLabel: searchMode
+                        ? _actionLabel(supporter)
+                        : 'Challenge',
+                    actionEnabled: !supporter.hasPendingOutgoing,
+                    onAction: () => onAction(supporter),
+                  ),
+                ],
+              );
+            })
+            .toList(growable: false),
+      ),
+    );
+  }
+
+  String _actionLabel(FetFriendProfile supporter) {
+    if (supporter.isFriend) {
+      return 'Challenge';
+    }
+    if (supporter.hasPendingIncoming) {
+      return 'Accept';
+    }
+    if (supporter.hasPendingOutgoing) {
+      return 'Pending';
+    }
+    return 'Add';
   }
 
   String _supporterDetails(FetFriendProfile supporter) {

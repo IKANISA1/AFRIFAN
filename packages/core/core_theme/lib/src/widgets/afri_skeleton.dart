@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import '../extensions.dart';
 import '../tokens/shape_tokens.dart';
 
-/// Shimmer-effect skeleton placeholder for loading states.
+/// Shimmer-effect skeleton for loading states.
 ///
 /// Provides named constructors for common shapes:
-/// - [AfriSkeleton.card] — full-width card placeholder
+/// - [AfriSkeleton.card] — full-width card skeleton
 /// - [AfriSkeleton.listCard] — horizontal list item
-/// - [AfriSkeleton.line] — text line placeholder
+/// - [AfriSkeleton.line] — text line skeleton
 ///
 /// Respects `MediaQuery.disableAnimationsOf` for reduced-motion.
 class AfriSkeleton extends StatefulWidget {

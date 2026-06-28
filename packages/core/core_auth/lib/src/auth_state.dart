@@ -21,7 +21,7 @@ sealed class AuthState {
   bool get isLoading => false;
 }
 
-/// Initial state — no auth activity yet.
+/// Initial state before auth activity starts.
 class AuthInitial extends AuthState {
   const AuthInitial();
 }

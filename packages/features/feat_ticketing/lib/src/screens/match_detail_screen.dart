@@ -66,8 +66,9 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
     if (!mounted || lookupKey != _paymentRouteLookupKey) return;
     setState(() {
       _paymentRoute = route;
-      _paymentRouteMessage =
-          route == null ? 'No active payment route for this club.' : null;
+      _paymentRouteMessage = route == null
+          ? 'Ticket payment setup is pending club activation.'
+          : null;
     });
   }
 
@@ -94,12 +95,13 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (route == null) {
         if (!mounted) return;
         setState(() {
-          _paymentRouteMessage = 'No active payment route for this club.';
+          _paymentRouteMessage =
+              'Ticket payment setup is pending club activation.';
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
-              'This club does not have an active MOMO ticketing route yet.',
+              'MOMO ticketing setup is pending club activation.',
             ),
             backgroundColor: ColorTokens.error,
           ),
@@ -193,13 +195,14 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         elevation: 0,
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(AfriIcons.back, color: ColorTokens.onSurface),
-          onPressed: () {
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onTap: () {
             if (_step == _CheckoutWizardStep.checkout) {
               setState(() => _step = _CheckoutWizardStep.configure);
             } else {
@@ -224,7 +227,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
           if (match == null) {
             return MatchDetailEmptyState(
               title: 'Fixture not found',
-              body: 'This fixture is no longer available.',
+              body: 'This fixture is unavailable.',
               actionLabel: 'Back to Tickets',
               onPressed: () => context.go('/tickets'),
             );

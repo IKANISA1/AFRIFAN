@@ -1,6 +1,5 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../fanzone_slip_providers.dart';
@@ -38,13 +37,11 @@ class InlineMatchCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLive = fixture.isLive;
-    final hasScore =
-        fixture.homeScore != null && fixture.awayScore != null;
+    final hasScore = fixture.homeScore != null && fixture.awayScore != null;
 
     return AfriPressFeedback(
       onTap: onTap,
-      semanticsLabel:
-          '${fixture.homeTeamName} vs ${fixture.awayTeamName}',
+      semanticsLabel: '${fixture.homeTeamName} vs ${fixture.awayTeamName}',
       builder: (context, state) => Container(
         decoration: BoxDecoration(
           color: ColorTokens.surfaceContainerLow,
@@ -56,7 +53,7 @@ class InlineMatchCard extends ConsumerWidget {
               : BorderTokens.ghost(),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
+              color: ColorTokens.ambientShadow.withValues(alpha: 0.15),
               blurRadius: 20,
               offset: const Offset(0, 4),
             ),
@@ -91,55 +88,39 @@ class InlineMatchCard extends ConsumerWidget {
                     children: [
                       Text(
                         fixture.competitionName.toUpperCase(),
-                        style: TypographyTokens.editorialFont(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          color: ColorTokens.onSurfaceVariant,
-                          letterSpacing: 1.5,
-                        ),
+                        style:
+                            TypographyTokens.labelSmall(
+                              ColorTokens.onSurfaceVariant,
+                            ).copyWith(
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1.5,
+                            ),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: SpacingTokens.spacing1),
                       Text(
                         '·',
-                        style: TypographyTokens.editorialFont(
-                          fontSize: 10,
-                          color: ColorTokens.onSurfaceVariant,
+                        style: TypographyTokens.labelSmall(
+                          ColorTokens.onSurfaceVariant,
                         ),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: SpacingTokens.spacing1),
                       Text(
                         _formatKickoff(),
-                        style: TypographyTokens.editorialFont(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: ColorTokens.onSurfaceVariant,
-                          letterSpacing: 1,
-                        ),
+                        style:
+                            TypographyTokens.labelSmall(
+                              ColorTokens.onSurfaceVariant,
+                            ).copyWith(
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 1,
+                            ),
                       ),
                       const Spacer(),
-                      if (isLive)
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 6,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: ColorTokens.clubAccent,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'LIVE',
-                              style: TypographyTokens.editorialFont(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w800,
-                                color: ColorTokens.clubAccent,
-                              ),
-                            ),
-                          ],
+                      if (isLive) ...[
+                        AfriInfoChip(
+                          label: 'LIVE',
+                          color: ColorTokens.clubAccent,
                         ),
+                      ],
                     ],
                   ),
 
@@ -154,11 +135,11 @@ class InlineMatchCard extends ConsumerWidget {
                         hasScore
                             ? '${fixture.homeScore} - ${fixture.awayScore}'
                             : 'VS',
-                        style: TypographyTokens.monolithFont(
-                          fontSize: hasScore ? 28 : 22,
-                          fontWeight: FontWeight.w900,
-                          color: ColorTokens.onSurface,
-                        ),
+                        style:
+                            (hasScore
+                                    ? TypographyTokens.headlineLarge()
+                                    : TypographyTokens.headlineMedium())
+                                .copyWith(fontWeight: FontWeight.w900),
                       ),
                       _TeamColumn(name: fixture.awayTeamShort),
                     ],
@@ -203,25 +184,33 @@ class _TeamColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: ColorTokens.surfaceContainerHigh,
-          ),
-          alignment: Alignment.center,
-          child: const Text('⚽', style: TextStyle(fontSize: 22)),
-        ),
+        const _TeamAvatar(),
         const SizedBox(height: SpacingTokens.spacing2),
         Text(
           name.toUpperCase(),
-          style: TypographyTokens.monolithFont(
-            fontSize: 14,
+          style: TypographyTokens.titleSmall().copyWith(
             fontWeight: FontWeight.w800,
           ),
         ),
       ],
+    );
+  }
+}
+
+class _TeamAvatar extends StatelessWidget {
+  const _TeamAvatar();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: ColorTokens.surfaceContainerHigh,
+      ),
+      alignment: Alignment.center,
+      child: Text('⚽', style: TypographyTokens.headlineMedium()),
     );
   }
 }
@@ -240,8 +229,9 @@ class _InlinePredictionGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final slip = ref.watch(fanzoneSlipProvider);
-    final isAuthenticated =
-        ref.read(predictionRepositoryProvider).isAuthenticated;
+    final isAuthenticated = ref
+        .read(predictionRepositoryProvider)
+        .isAuthenticated;
     final selectedOutcome = slip.items
         .where((item) => item.fixtureMarketId == market.fixtureMarketId)
         .map((item) => item.outcomeKey)
@@ -258,7 +248,7 @@ class _InlinePredictionGrid extends ConsumerWidget {
                   ? SpacingTokens.spacing2
                   : 0,
             ),
-            child: GestureDetector(
+            child: AfriPressFeedback(
               onTap: () {
                 // Auth gate: intercept unauthenticated users.
                 if (!isAuthenticated) {
@@ -266,15 +256,25 @@ class _InlinePredictionGrid extends ConsumerWidget {
                   return;
                 }
 
-                HapticFeedback.lightImpact();
-                ref.read(fanzoneSlipProvider.notifier).addFromMarket(
-                  fixture: fixture,
-                  market: market,
-                  outcome: outcome,
-                );
+                ref
+                    .read(fanzoneSlipProvider.notifier)
+                    .addFromMarket(
+                      fixture: fixture,
+                      market: market,
+                      outcome: outcome,
+                    );
               },
+              selected: isSelected,
+              tooltip: '${outcome.label} prediction',
+              semanticsLabel:
+                  '${outcome.label} prediction for ${fixture.homeTeamShort} versus ${fixture.awayTeamShort}',
+              semanticsHint: isSelected
+                  ? 'Selected prediction'
+                  : 'Add prediction to slip',
+              excludeChildSemantics: true,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
+                constraints: const BoxConstraints(minHeight: 48),
                 padding: const EdgeInsets.symmetric(
                   vertical: SpacingTokens.spacing3,
                 ),
@@ -282,7 +282,7 @@ class _InlinePredictionGrid extends ConsumerWidget {
                   color: isSelected
                       ? ColorTokens.clubAccent.withValues(alpha: 0.2)
                       : ColorTokens.surfaceContainerHigh,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: ShapeTokens.aliasPillRadius,
                   border: isSelected
                       ? BorderTokens.all(color: ColorTokens.clubAccent)
                       : BorderTokens.ghost(),
@@ -291,31 +291,25 @@ class _InlinePredictionGrid extends ConsumerWidget {
                   children: [
                     Text(
                       outcome.label,
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
-                        color: isSelected
+                      style: TypographyTokens.labelSmall(
+                        isSelected
                             ? ColorTokens.clubAccent
                             : ColorTokens.onSurfaceVariant,
-                      ),
+                      ).copyWith(fontWeight: FontWeight.w800),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: SpacingTokens.spacing1),
                     Text(
                       outcome.label, // Display mapped label
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 15,
+                      style: TypographyTokens.titleSmall().copyWith(
                         fontWeight: FontWeight.w800,
-                        color: ColorTokens.onSurface,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: SpacingTokens.spacing1),
                     Text(
                       '+${market.fetValue} FET',
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w700,
-                        color: ColorTokens.clubAccent,
-                      ),
+                      style: TypographyTokens.labelSmall(
+                        ColorTokens.clubAccent,
+                      ).copyWith(fontWeight: FontWeight.w700),
                     ),
                   ],
                 ),

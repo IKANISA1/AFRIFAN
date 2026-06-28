@@ -149,7 +149,7 @@ class AuthRepository {
   // ─── Session Restore ────────────────────────────────────────
 
   /// Restore the current user profile strictly from Supabase.
-  /// No silent upserts to prevent overwriting server data.
+  /// Silent upserts are avoided to prevent overwriting server data.
   Future<UserProfile?> restoreCurrentUser() async {
     final user = _client.auth.currentUser;
     if (user == null) return null;
@@ -251,8 +251,6 @@ class AuthRepository {
 
   // ─── Helpers ────────────────────────────────────────────────
 
-
-
   Future<void> _ensureProfileRow(User user) async {
     final seededProfile = _buildSeededProfile(user);
 
@@ -303,7 +301,9 @@ class AuthRepository {
     final privateContactResult = results[1];
 
     if (!profileResult.isSuccess) {
-      throw StateError(profileResult.error ?? 'Could not load the user profile.');
+      throw StateError(
+        profileResult.error ?? 'Could not load the user profile.',
+      );
     }
     final row = profileResult.data;
     if (row == null) return null;
@@ -311,8 +311,9 @@ class AuthRepository {
     Map<String, dynamic>? privateContact;
     try {
       if (privateContactResult.isSuccess && privateContactResult.data != null) {
-        privateContact =
-            Map<String, dynamic>.from(privateContactResult.data as Map);
+        privateContact = Map<String, dynamic>.from(
+          privateContactResult.data as Map,
+        );
       }
     } catch (e) {
       privateContact = null;

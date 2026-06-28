@@ -287,7 +287,7 @@ class _PushNotificationsScreenState
     return item['body']?.toString() ??
         item['message']?.toString() ??
         item['content']?.toString() ??
-        'No message body available.';
+        'Message body pending.';
   }
 
   DateTime? _historyDate(Map<String, dynamic> item) {
@@ -315,12 +315,13 @@ class _PushNotificationsScreenState
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text('SEND NOTIFICATION', style: TypographyTokens.titleLarge()),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -328,7 +329,7 @@ class _PushNotificationsScreenState
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _loadContext,
               child: ListView(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
@@ -363,7 +364,7 @@ class _PushNotificationsScreenState
                           runSpacing: SpacingTokens.spacing2,
                           children: ['ALL FANS', 'BY TIER', 'BY GROUP']
                               .map(
-                                (item) => ChoiceChip(
+                                (item) => AfriChoiceChip(
                                   selected: _audience == item,
                                   label: Text(item),
                                   onSelected: (_) {
@@ -388,7 +389,7 @@ class _PushNotificationsScreenState
                             runSpacing: SpacingTokens.spacing2,
                             children: ['FAN', 'BRONZE', 'GOLD', 'PLATINUM']
                                 .map(
-                                  (tier) => ChoiceChip(
+                                  (tier) => AfriChoiceChip(
                                     selected: _selectedTier == tier,
                                     label: Text(tier),
                                     onSelected: (_) =>
@@ -400,11 +401,9 @@ class _PushNotificationsScreenState
                         ],
                         if (_audience == 'BY GROUP') ...[
                           const SizedBox(height: SpacingTokens.spacing4),
-                          DropdownButtonFormField<String>(
+                          AfriDropdownField<String>(
                             initialValue: _selectedGroupId,
-                            decoration: const InputDecoration(
-                              labelText: 'Select group',
-                            ),
+                            label: 'Select group',
                             items: _groups
                                 .map(
                                   (group) => DropdownMenuItem<String>(
@@ -418,38 +417,25 @@ class _PushNotificationsScreenState
                             onChanged: (value) =>
                                 setState(() => _selectedGroupId = value),
                           ),
-                          if (_groups.isEmpty) ...[
-                            const SizedBox(height: SpacingTokens.spacing2),
-                            Text(
-                              'No active Groups for group targeting.',
-                              style: TypographyTokens.bodySmall(),
-                            ),
-                          ],
                         ],
                         const SizedBox(height: SpacingTokens.spacing5),
-                        TextField(
+                        AfriInputField(
                           controller: _titleController,
-                          decoration: const InputDecoration(
-                            labelText: 'Notification title',
-                          ),
+                          label: 'Notification title',
                           onChanged: (_) => setState(() {}),
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
-                        TextField(
+                        AfriInputField(
                           controller: _bodyController,
                           maxLines: 2,
-                          decoration: InputDecoration(
-                            labelText: 'Message body',
-                            helperText: '$charCount characters',
-                          ),
+                          label: 'Message body',
+                          helperText: '$charCount characters',
                           onChanged: (_) => setState(() {}),
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
-                        TextField(
+                        AfriInputField(
                           controller: _imageUrlController,
-                          decoration: const InputDecoration(
-                            labelText: 'Optional image URL',
-                          ),
+                          label: 'Optional image URL',
                         ),
                       ],
                     ),
@@ -466,7 +452,7 @@ class _PushNotificationsScreenState
                           spacing: SpacingTokens.spacing2,
                           children: ['SEND NOW', 'SCHEDULE']
                               .map(
-                                (mode) => ChoiceChip(
+                                (mode) => AfriChoiceChip(
                                   selected: _scheduleMode == mode,
                                   label: Text(mode),
                                   onSelected: (_) {
@@ -483,9 +469,9 @@ class _PushNotificationsScreenState
                         ),
                         if (_scheduleMode == 'SCHEDULE') ...[
                           const SizedBox(height: SpacingTokens.spacing4),
-                          OutlinedButton.icon(
+                          AfriOutlinedIconButton(
                             onPressed: _pickSchedule,
-                            icon: const Icon(Icons.schedule_rounded),
+                            icon: const Icon(AfriIcons.statusPending),
                             label: Text(
                               _scheduledAt == null
                                   ? 'Pick date & time'
@@ -493,7 +479,7 @@ class _PushNotificationsScreenState
                                       'dd MMM yyyy • HH:mm',
                                     ).format(_scheduledAt!.toLocal()),
                             ),
-                            style: OutlinedButton.styleFrom(
+                            style: AfriOutlinedButton.styleFrom(
                               minimumSize: const Size(double.infinity, 52),
                             ),
                           ),
@@ -522,9 +508,9 @@ class _PushNotificationsScreenState
                     enabled: !_submitting,
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
-                  TextButton.icon(
+                  AfriTextIconButton(
                     onPressed: _submitting ? null : _copyPayload,
-                    icon: const Icon(Icons.copy_rounded),
+                    icon: const Icon(AfriIcons.copy),
                     label: const Text('COPY PAYLOAD'),
                   ),
                   const SizedBox(height: SpacingTokens.spacing6),
@@ -543,15 +529,7 @@ class _PushNotificationsScreenState
                         style: TypographyTokens.bodyMedium(),
                       ),
                     )
-                  else if (_history.isEmpty)
-                    GlassCard(
-                      animate: false,
-                      child: Text(
-                        'No notifications have been recorded yet.',
-                        style: TypographyTokens.bodyMedium(),
-                      ),
-                    )
-                  else
+                  else if (_history.isNotEmpty)
                     ..._history.map(
                       (item) => NotificationHistoryCard(
                         title: _historyTitle(item),

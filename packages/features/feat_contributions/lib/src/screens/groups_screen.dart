@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
@@ -23,7 +25,7 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadGroups();
+    unawaited(_loadGroups());
   }
 
   Future<void> _loadGroups() async {
@@ -63,8 +65,6 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final primary = theme.colorScheme.primary;
     final currency = CurrencyFormatter(
       currencyCode: context.afriCurrencyCode,
       currencySymbol: context.afriCurrencySymbol,
@@ -73,32 +73,21 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
       0,
       (sum, group) => sum + ((group['current_total'] as num?)?.toInt() ?? 0),
     );
-    final totalMembers = _groups.fold<int>(
-      0,
-      (sum, group) => sum + ((group['member_count'] as num?)?.toInt() ?? 0),
-    );
-
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(
-          'Communities',
-          style: TypographyTokens.headlineSmall(),
-        ),
-        leading: IconButton(
-          onPressed: () {
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
+        title: Text('Communities', style: TypographyTokens.headlineSmall()),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          tooltip: 'Back',
+          onTap: () {
             if (context.canPop()) {
               context.pop();
             } else {
               context.go('/home');
             }
           },
-          icon: Icon(
-            AfriIcons.back,
-            color: ColorTokens.onSurface,
-          ),
-          tooltip: 'Back',
         ),
       ),
       body: SafeArea(
@@ -107,36 +96,36 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
             parent: AlwaysScrollableScrollPhysics(),
           ),
           slivers: [
-            // Summary row
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.spacing6,
-                  SpacingTokens.spacing4,
-                  SpacingTokens.spacing6,
-                  SpacingTokens.spacing6,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: AfriMetricTile(
-                        label: 'Initiatives',
-                        value: '${_groups.length}',
-                        accentColor: ColorTokens.clubAccent,
+            if (!_isLoading && _error == null && _groups.isNotEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    SpacingTokens.spacing6,
+                    SpacingTokens.spacing4,
+                    SpacingTokens.spacing6,
+                    SpacingTokens.spacing6,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: AfriMetricTile(
+                          label: 'Initiatives',
+                          value: '${_groups.length}',
+                          accentColor: ColorTokens.clubAccent,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing3),
-                    Expanded(
-                      child: AfriMetricTile(
-                        label: 'Contributed',
-                        value: currency.formatPlain(totalContributed),
-                        meta: context.afriCurrencyCode,
+                      const SizedBox(width: SpacingTokens.spacing3),
+                      Expanded(
+                        child: AfriMetricTile(
+                          label: 'Contributed',
+                          value: currency.formatPlain(totalContributed),
+                          meta: context.afriCurrencyCode,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
 
             if (_groups.isNotEmpty)
               const SliverToBoxAdapter(
@@ -197,66 +186,12 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                 }, childCount: _groups.length),
               ),
 
-            // Empty state
-            if (!_isLoading && _error == null && _groups.isEmpty)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                  child: AfriEmptyView(
-                    icon: AfriIcons.groups,
-                    title: 'No communities yet',
-                    message:
-                        'Team projects and communities appear here after admin setup.',
-                    actionLabel: 'Browse fan clubs',
-                    onAction: () => context.go('/fan-clubs'),
-                  ),
-                ),
-              ),
-
             const SliverToBoxAdapter(
               child: SizedBox(height: SpacingTokens.spacing20),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _SummaryItem extends StatelessWidget {
-  final String value;
-  final String label;
-  final Color color;
-
-  const _SummaryItem({
-    required this.value,
-    required this.label,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: TypographyTokens.monolithFont(
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-            color: color,
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          label,
-          style: TypographyTokens.editorialFont(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            color: ColorTokens.onSurfaceVariant,
-            letterSpacing: 1.0,
-          ),
-        ),
-      ],
     );
   }
 }

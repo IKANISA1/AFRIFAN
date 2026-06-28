@@ -1,10 +1,11 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:core_utils/core_utils.dart';
 
 class NewsArticleScreen extends ConsumerStatefulWidget {
   const NewsArticleScreen({required this.articleId, super.key});
@@ -27,7 +28,7 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
   @override
   void initState() {
     super.initState();
-    _loadArticle();
+    unawaited(_loadArticle());
   }
 
   Future<void> _loadArticle() async {
@@ -36,7 +37,10 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
       final resolver = ClubScopeResolver(client: client);
       final scope = await resolver.requireResolved();
       final newsTable = await _resolveNewsTable(client);
-      var articleQuery = client.from(newsTable).select().eq('id', widget.articleId);
+      var articleQuery = client
+          .from(newsTable)
+          .select()
+          .eq('id', widget.articleId);
       articleQuery = resolver.apply(articleQuery, scope);
       final article = await articleQuery.maybeSingle();
 
@@ -67,8 +71,7 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
         _related = List<Map<String, dynamic>>.from(related);
         _loading = false;
       });
-    } catch (error, stackTrace) {
-      AfriLogger.warn('NewsArticleScreen', 'Operation failed (non-critical).', error, stackTrace);
+    } catch (_) {
       if (mounted) {
         setState(() {
           _loading = false;
@@ -134,10 +137,7 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                     const SizedBox(height: SpacingTokens.spacing4),
                     Text(_error ?? 'Article unavailable'),
                     const SizedBox(height: SpacingTokens.spacing4),
-                    AfriButton(
-                      label: 'Back',
-                      onTap: () => context.pop(),
-                    ),
+                    AfriButton(label: 'Back', onTap: () => context.pop()),
                   ],
                 ),
               ),
@@ -145,13 +145,14 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
           : CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
-                SliverAppBar(
+                AfriSliverAppBar(
                   expandedHeight: 260,
                   pinned: true,
                   backgroundColor: ColorTokens.background,
-                  leading: IconButton(
-                    onPressed: () => context.pop(),
-                    icon: const Icon(AfriIcons.back),
+                  leading: AfriIconButton(
+                    icon: AfriIcons.back,
+                    onTap: () => context.pop(),
+                    tooltip: 'Back',
                   ),
                   flexibleSpace: FlexibleSpaceBar(
                     background: imageUrl != null && imageUrl.isNotEmpty
@@ -166,13 +167,8 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.transparent,
-                                      ColorTokens.background,
-                                    ],
+                                  gradient: ColorTokens.imageScrimGradient(
+                                    color: ColorTokens.background,
                                   ),
                                 ),
                               ),
@@ -250,9 +246,7 @@ class _ArticleHeroFallback extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        gradient: ColorTokens.borrowedGradient(
           colors: [
             ColorTokens.clubPrimary.withValues(alpha: 0.4),
             ColorTokens.clubSecondary,
@@ -285,7 +279,7 @@ class _RelatedArticle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClayCard(
+    return AfriSurfaceCard(
       onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -18,9 +18,13 @@ COOL, and Collect implementations:
 ## Non-Negotiables
 
 - Do not introduce external font packages or feature-local font fixtures.
+- Do not use direct `TextStyle(...)` constructors in feature/app UI; use
+  `TypographyTokens` from `core_theme`.
 - Do not use negative letter spacing.
 - Do not create screen-local gradients, nav bars, card systems, or display
   fonts when a `core_theme` token or widget exists.
+- Do not use Flutter `Colors.*` directly in feature or app UI. Use
+  `ColorTokens`, `AfriSemanticColors`, or `ExternalBrandColors`.
 - Do not reintroduce old non-borrowed design language in product docs.
 - Club colors are accents only; the shell and route background come from
   `ColorTokens.screenGradientForPath`.
@@ -30,8 +34,11 @@ COOL, and Collect implementations:
 - `packages/core/core_theme` owns tokens, typography, shared chrome, cards,
   buttons, route backgrounds, and navigation.
 - Feature packages consume `TypographyTokens`, `GradientBackground`,
-  `AfriTopCommandBar`, `AfriClubBottomNav`, `GlassCard`, and current shared
-  primitives.
+  `AfriAppBar`, `AfriSliverAppBar`, `AfriTopCommandBar`,
+  `AfriClubBottomNav`, `GlassCard`, `AfriButton`, shared `Afri*Button`
+  compatibility primitives, shared `Afri*Chip` primitives, shared
+  `Afri*List*` row primitives, borrowed-paper tokens for ticket/pass cards,
+  and current shared primitives.
 - Feature packages may add business-specific widgets only when they still route
   all visual decisions through `core_theme`.
 

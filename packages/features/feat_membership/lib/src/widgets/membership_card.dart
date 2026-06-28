@@ -21,7 +21,6 @@ class MembershipCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final primary = Theme.of(context).colorScheme.primary;
     final profile = ref.watch(currentUserProvider);
     final alias = AliasGenerator.format(profile?.publicUserId ?? '000000');
     final resolvedTier = (tierLabel ?? 'Fan').toUpperCase();
@@ -31,10 +30,9 @@ class MembershipCard extends ConsumerWidget {
       height: 200,
       decoration: BoxDecoration(
         borderRadius: ShapeTokens.cardRadius,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [ColorTokens.clubSecondary, primary.withValues(alpha: 0.6)],
+        gradient: ColorTokens.borrowedSurfaceGradient(
+          from: ColorTokens.clubSecondary,
+          to: ColorTokens.clubAccent.withValues(alpha: 0.6),
         ),
         boxShadow: [
           BoxShadow(
@@ -61,12 +59,13 @@ class MembershipCard extends ConsumerWidget {
                   children: [
                     Text(
                       RuntimeBranding.displayHomeTeamName.toUpperCase(),
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: ColorTokens.onSurface.withValues(alpha: 0.7),
-                        letterSpacing: 2.0,
-                      ),
+                      style:
+                          TypographyTokens.labelLarge(
+                            ColorTokens.onSurface.withValues(alpha: 0.7),
+                          ).copyWith(
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 2.0,
+                          ),
                     ),
                     if (paymentStatus == PaymentStatus.pendingVerification)
                       Container(
@@ -75,29 +74,27 @@ class MembershipCard extends ConsumerWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.amber.withValues(alpha: 0.9),
+                          color: ColorTokens.warning.withValues(alpha: 0.9),
                           borderRadius: ShapeTokens.chipRadius,
                         ),
                         child: Text(
                           'PENDING VERIFICATION',
-                          style: TypographyTokens.editorialFont(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.black,
-                            letterSpacing: 0.5,
-                          ),
+                          style: TypographyTokens.labelSmall(
+                            ColorTokens.borrowedInk,
+                          ).copyWith(fontWeight: FontWeight.w800),
                         ),
                       )
                     else ...[
                       const Spacer(),
                       Text(
                         'FAN CARD',
-                        style: TypographyTokens.editorialFont(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: ColorTokens.onSurface.withValues(alpha: 0.5),
-                          letterSpacing: 1.0,
-                        ),
+                        style:
+                            TypographyTokens.labelLarge(
+                              ColorTokens.onSurface.withValues(alpha: 0.5),
+                            ).copyWith(
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 1.0,
+                            ),
                       ),
                     ],
                   ],
@@ -108,10 +105,8 @@ class MembershipCard extends ConsumerWidget {
                 // Alias display
                 Text(
                   alias,
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 36,
+                  style: TypographyTokens.displayMedium().copyWith(
                     fontWeight: FontWeight.w800,
-                    color: ColorTokens.onSurface,
                     letterSpacing: 4.0,
                   ),
                 ),
@@ -131,10 +126,8 @@ class MembershipCard extends ConsumerWidget {
                       ),
                       child: Text(
                         resolvedTier,
-                        style: TypographyTokens.monolithFont(
-                          fontSize: 15,
+                        style: TypographyTokens.labelLarge().copyWith(
                           fontWeight: FontWeight.w700,
-                          color: ColorTokens.onSurface,
                           letterSpacing: 1.5,
                         ),
                       ),
@@ -142,11 +135,9 @@ class MembershipCard extends ConsumerWidget {
                     const Spacer(),
                     Text(
                       '$resolvedFet FET',
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: primary,
-                      ),
+                      style: TypographyTokens.titleLarge(
+                        ColorTokens.clubAccent,
+                      ).copyWith(fontWeight: FontWeight.w700),
                     ),
                   ],
                 ),

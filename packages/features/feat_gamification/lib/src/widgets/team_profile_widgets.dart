@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class TeamTabBarDelegate extends SliverPersistentHeaderDelegate {
   const TeamTabBarDelegate({required this.tabBar});
 
-  final TabBar tabBar;
+  final PreferredSizeWidget tabBar;
 
   @override
   Widget build(
@@ -35,26 +35,7 @@ class TeamMetric extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
-      animate: false,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label.toUpperCase(),
-            style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ],
-      ),
-    );
+    return AfriMetricTile(label: label.toUpperCase(), value: value);
   }
 }
 
@@ -71,12 +52,11 @@ class MiniStat extends StatelessWidget {
       children: [
         Text(
           value,
-          style: TypographyTokens.monolithFont(
-            fontSize: 16,
+          style: TypographyTokens.titleMedium().copyWith(
             fontWeight: FontWeight.w800,
           ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: SpacingTokens.spacing1),
         Text(
           label,
           style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
@@ -86,7 +66,7 @@ class MiniStat extends StatelessWidget {
   }
 }
 
-/// Tier count card in the Members tab grid (emoji + count + label).
+/// Tier count card in the Members tab grid.
 class TierCountCard extends StatelessWidget {
   const TierCountCard({
     super.key,
@@ -95,7 +75,7 @@ class TierCountCard extends StatelessWidget {
     required this.count,
   });
 
-  final String icon;
+  final IconData icon;
   final String label;
   final int count;
 
@@ -106,24 +86,20 @@ class TierCountCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(icon, style: const TextStyle(fontSize: 24)),
+          Icon(icon, size: 28, color: ColorTokens.clubAccent),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             '$count',
-            style: TypographyTokens.monolithFont(
-              fontSize: 20,
+            style: TypographyTokens.metricValue().copyWith(
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: SpacingTokens.spacing1),
           Text(
             label.toUpperCase(),
-            style: TypographyTokens.editorialFont(
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-              color: ColorTokens.onSurfaceVariant,
-              letterSpacing: 1.2,
-            ),
+            style: TypographyTokens.labelSmall(
+              ColorTokens.onSurfaceVariant,
+            ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
           ),
         ],
       ),
@@ -162,11 +138,9 @@ class ContributeStep extends StatelessWidget {
           alignment: Alignment.center,
           child: Text(
             '$stepNumber',
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.clubAccent,
-            ),
+            style: TypographyTokens.titleLarge(
+              ColorTokens.clubAccent,
+            ).copyWith(fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(width: SpacingTokens.spacing3),
@@ -206,43 +180,27 @@ class MemberRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
-      child: Container(
+      child: AfriPanelCard(
         padding: const EdgeInsets.all(SpacingTokens.spacing3),
-        decoration: BoxDecoration(
-          color: isMe
-              ? ColorTokens.clubAccent.withValues(alpha: 0.10)
-              : ColorTokens.surfaceContainerHigh,
-          borderRadius: BorderRadius.circular(14),
-          border: isMe
-              ? BorderTokens.all(
-                  color: ColorTokens.clubAccent.withValues(alpha: 0.3),
-                )
-              : null,
-        ),
+        backgroundColor: isMe
+            ? ColorTokens.clubAccent.withValues(alpha: 0.10)
+            : ColorTokens.surfaceContainerHigh,
+        borderColor: isMe
+            ? ColorTokens.clubAccent.withValues(alpha: 0.3)
+            : ColorTokens.ghostBorder,
         child: Row(
           children: [
             SizedBox(
               width: 20,
               child: Text(
                 '$rank',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: ColorTokens.onSurfaceVariant,
-                ),
+                style: TypographyTokens.labelSmall(
+                  ColorTokens.onSurfaceVariant,
+                ).copyWith(fontWeight: FontWeight.w700),
               ),
             ),
             const SizedBox(width: SpacingTokens.spacing2),
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: ColorTokens.surfaceContainerHigh,
-              ),
-              alignment: Alignment.center,
-              child: const Text('👤', style: TextStyle(fontSize: 14)),
-            ),
+            const _MemberAvatar(),
             const SizedBox(width: SpacingTokens.spacing3),
             Expanded(
               child: Column(
@@ -253,49 +211,52 @@ class MemberRow extends StatelessWidget {
                       Text(fanId, style: TypographyTokens.titleSmall()),
                       if (isMe) ...[
                         const SizedBox(width: SpacingTokens.spacing2),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: ColorTokens.clubAccent,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            'YOU',
-                            style: TypographyTokens.editorialFont(
-                              fontSize: 9,
-                              fontWeight: FontWeight.w800,
-                              color: ColorTokens.background,
-                              letterSpacing: 1.2,
-                            ),
-                          ),
+                        AfriInfoChip(
+                          label: 'YOU',
+                          color: ColorTokens.clubAccent,
                         ),
                       ],
                     ],
                   ),
                   Text(
                     tier,
-                    style: TypographyTokens.editorialFont(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: ColorTokens.clubAccent,
-                    ),
+                    style: TypographyTokens.labelSmall(
+                      ColorTokens.clubAccent,
+                    ).copyWith(fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
             ),
             Text(
               fetLabel,
-              style: TypographyTokens.monolithFont(
-                fontSize: 14,
-                fontWeight: FontWeight.w800,
-                color: ColorTokens.clubAccent,
-              ),
+              style: TypographyTokens.titleSmall(
+                ColorTokens.clubAccent,
+              ).copyWith(fontWeight: FontWeight.w800),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _MemberAvatar extends StatelessWidget {
+  const _MemberAvatar();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 32,
+      height: 32,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: ColorTokens.surfaceContainerHigh,
+      ),
+      alignment: Alignment.center,
+      child: Icon(
+        AfriIcons.profile,
+        size: 18,
+        color: ColorTokens.onSurfaceVariant,
       ),
     );
   }
@@ -319,12 +280,9 @@ class TeamInfoRow extends StatelessWidget {
             width: 120,
             child: Text(
               label.toUpperCase(),
-              style: TypographyTokens.editorialFont(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: ColorTokens.onSurfaceVariant,
-                letterSpacing: 1,
-              ),
+              style: TypographyTokens.labelSmall(
+                ColorTokens.onSurfaceVariant,
+              ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1),
             ),
           ),
           Expanded(child: Text(value, style: TypographyTokens.bodyMedium())),

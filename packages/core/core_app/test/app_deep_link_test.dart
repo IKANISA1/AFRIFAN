@@ -64,15 +64,15 @@ void main() {
       await tester.pumpWidget(
         AfriClubApp(
           config: config,
-            modules: <FeatureModule>[
-              _HomeModule(),
-              _OnboardingModule(),
-              _ContributionsModule(),
-            ],
-            authRepository: FakeAuthRepository(restoreResult: null),
-            initialLocation: '/contribute/group/grp-789/statement',
-          ),
-        );
+          modules: <FeatureModule>[
+            _HomeModule(),
+            _OnboardingModule(),
+            _ContributionsModule(),
+          ],
+          authRepository: FakeAuthRepository(restoreResult: null),
+          initialLocation: '/contribute/group/grp-789/statement',
+        ),
+      );
 
       // Initially goes to splash which triggers auth, auth fails, goes to onboarding with `from` parameter
       await tester.pump();
@@ -308,10 +308,13 @@ class _FakeClubConfig implements ClubConfig {
   String get clubName => 'Test';
   @override
   ClubColors get colors => const ClubColors(
-    primary: Colors.red,
-    secondary: Colors.red,
-    accent: Colors.red,
-    gradient: [Colors.red, Colors.red],
+    primary: ColorTokens.referenceAccountBlue,
+    secondary: ColorTokens.referenceChromeBlack,
+    accent: ColorTokens.referenceRewardsVioletHot,
+    gradient: [
+      ColorTokens.referenceAccountBlue,
+      ColorTokens.referenceRewardsVioletHot,
+    ],
   );
   @override
   String get country => 'Rwanda';
@@ -334,7 +337,11 @@ class _FakeClubConfig implements ClubConfig {
   @override
   bool get hasTicketing => false;
   @override
-  Map<String, bool> get features => {};
+  Map<String, bool> get features => const <String, bool>{
+    'home': true,
+    'onboarding': true,
+    'contributions': true,
+  };
   @override
   String get language => 'en';
   @override
@@ -359,7 +366,7 @@ class _HomeModule extends FeatureModule {
   TabRoute get tabRoute => TabRoute(
     path: '/home',
     label: 'Home',
-    icon: Icons.home,
+    icon: AfriIcons.home,
     builder: (c, s) => const _FakeHomeScreen(),
   );
 }
@@ -375,4 +382,7 @@ class _OnboardingModule extends FeatureModule {
       builder: (c, s) => const _FakeOnboardingScreen(),
     ),
   ];
+
+  @override
+  Set<String> get publicPaths => const <String>{'/splash', '/onboarding'};
 }

@@ -1,7 +1,7 @@
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../repositories/home_content_repository.dart';
-import 'package:core_utils/core_utils.dart';
 
 /// Riverpod AsyncNotifier managing the home feed lifecycle.
 ///

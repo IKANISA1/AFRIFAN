@@ -9,7 +9,7 @@ import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 
 /// Button variant enumeration for the AFRICLUB design system.
-enum AfriButtonVariant { primary, secondary, outline, ghost, accent, clay }
+enum AfriButtonVariant { primary, secondary, outline, ghost, accent }
 
 /// Shared button component with a small, consistent set of emphasis levels.
 class AfriButton extends StatefulWidget {
@@ -91,7 +91,6 @@ class _AfriButtonState extends State<AfriButton>
 
     switch (widget.variant) {
       case AfriButtonVariant.primary:
-      case AfriButtonVariant.clay:
         background = colors.buttonPrimaryBackground;
         foreground = colors.buttonPrimaryForeground;
         shadows = [

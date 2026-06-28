@@ -44,18 +44,20 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(AfriIcons.back, color: ColorTokens.onSurface),
-          onPressed: () => context.pop(),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
         title: Text('TICKETS', style: TypographyTokens.headlineLarge()),
         actions: [
-          IconButton(
-            icon: Icon(AfriIcons.filter, color: ColorTokens.onSurface),
-            onPressed: () async {
+          AfriIconButton(
+            icon: AfriIcons.filter,
+            tooltip: 'Filter matches',
+            onTap: () async {
               final result = await showAfriFilterSortSheet(
                 context: context,
                 title: 'Match Filters',
@@ -85,24 +87,14 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
               });
             },
           ),
-          IconButton(
-            icon: Icon(
-              AfriIcons.refresh,
-              color: ColorTokens.onSurface,
-            ),
-            onPressed: () => ref.invalidate(ticketMatchesProvider),
+          AfriIconButton(
+            icon: AfriIcons.refresh,
+            onTap: () => ref.invalidate(ticketMatchesProvider),
+            tooltip: 'Refresh matches',
           ),
         ],
-        bottom: TabBar(
+        bottom: AfriTabBar.line(
           controller: _tabController,
-          indicatorColor: ColorTokens.clubPrimary,
-          indicatorWeight: 3,
-          labelStyle: TypographyTokens.labelLarge(),
-          unselectedLabelStyle: TypographyTokens.labelLarge().copyWith(
-            color: ColorTokens.onSurfaceVariant,
-          ),
-          labelColor: ColorTokens.onSurface,
-          unselectedLabelColor: ColorTokens.onSurfaceVariant,
           tabs: const [
             Tab(text: 'UPCOMING'),
             Tab(text: 'PAST'),
@@ -137,14 +129,10 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
               _buildMatchList(
                 context,
                 matches: upcoming,
-                emptyTitle: 'No upcoming fixtures on sale',
-                emptyBody: 'New fixtures will appear when published.',
               ),
               _buildMatchList(
                 context,
                 matches: past,
-                emptyTitle: 'No past fixtures yet',
-                emptyBody: 'Past fixtures will appear after archival.',
               ),
             ],
           );
@@ -207,16 +195,9 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
   Widget _buildMatchList(
     BuildContext context, {
     required List<ClubMatch> matches,
-    required String emptyTitle,
-    required String emptyBody,
   }) {
     if (matches.isEmpty) {
-      return _TicketState(
-        title: emptyTitle,
-        body: emptyBody,
-        actionLabel: 'Back Home',
-        onPressed: () => context.go('/home'),
-      );
+      return const SizedBox.shrink();
     }
 
     return ListView.separated(

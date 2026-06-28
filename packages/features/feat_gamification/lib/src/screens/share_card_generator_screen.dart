@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/prediction_share_card.dart';
-import 'package:core_utils/core_utils.dart';
 
 class ShareCardGeneratorScreen extends ConsumerStatefulWidget {
   const ShareCardGeneratorScreen({super.key});
@@ -26,7 +28,7 @@ class _ShareCardGeneratorScreenState
   @override
   void initState() {
     super.initState();
-    _load();
+    unawaited(_load());
   }
 
   Future<void> _load() async {
@@ -44,7 +46,12 @@ class _ShareCardGeneratorScreenState
         _error = null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('ShareCardGeneratorScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'ShareCardGeneratorScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -61,19 +68,19 @@ class _ShareCardGeneratorScreenState
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'SHARE CARD',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -93,134 +100,154 @@ class _ShareCardGeneratorScreenState
                 ),
               ),
             )
-          : selected == null
-          ? const Center(
-              child: Padding(
-                padding: EdgeInsets.all(SpacingTokens.spacing6),
-                child: AfriEmptyView(
-                  title: 'No settled predictions yet',
-                  message:
-                      'Once your predictions settle, you can generate branded share cards here.',
+          : ShareCardGeneratorContent(
+              history: _history,
+              selected: selected,
+              onRefresh: _load,
+              onSelected: (prediction) => setState(() {
+                _selected = prediction;
+              }),
+              onShare: (prediction) => PredictionShareService.share(
+                data: PredictionShareData.fromPrediction(prediction),
+                context: context,
+              ),
+              onCopy: (prediction) => PredictionShareService.copy(
+                data: PredictionShareData.fromPrediction(prediction),
+                context: context,
+              ),
+            ),
+    );
+  }
+}
+
+class ShareCardGeneratorContent extends StatelessWidget {
+  const ShareCardGeneratorContent({
+    super.key,
+    required this.history,
+    required this.selected,
+    required this.onRefresh,
+    required this.onSelected,
+    required this.onShare,
+    required this.onCopy,
+  });
+
+  final List<UserPrediction> history;
+  final UserPrediction? selected;
+  final Future<void> Function() onRefresh;
+  final ValueChanged<UserPrediction> onSelected;
+  final ValueChanged<UserPrediction> onShare;
+  final ValueChanged<UserPrediction> onCopy;
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedPrediction = selected;
+    if (selectedPrediction == null) {
+      return const SizedBox.shrink(key: ValueKey<String>('share-card-empty'));
+    }
+
+    return AfriRefreshIndicator(
+      onRefresh: onRefresh,
+      color: ColorTokens.clubAccent,
+      child: ListView(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        children: [
+          PredictionShareCard(
+            data: PredictionShareData.fromPrediction(selectedPrediction),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          Row(
+            children: [
+              Expanded(
+                child: AfriButton(
+                  onTap: () => onShare(selectedPrediction),
+                  label: 'Share',
                 ),
               ),
-            )
-          : RefreshIndicator(
-              onRefresh: _load,
-              color: ColorTokens.clubAccent,
-              child: ListView(
-                physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics(),
+              const SizedBox(width: SpacingTokens.spacing3),
+              Expanded(
+                child: AfriButton(
+                  onTap: () => onCopy(selectedPrediction),
+                  label: 'Copy',
+                  variant: AfriButtonVariant.secondary,
                 ),
-                padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                children: [
-                  PredictionShareCard(
-                    data: PredictionShareData.fromPrediction(selected),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AfriButton(
-                          onTap: () => PredictionShareService.share(
-                            data: PredictionShareData.fromPrediction(selected),
-                            context: context,
-                          ),
-                          label: 'Share',
-                        ),
-                      ),
-                      const SizedBox(width: SpacingTokens.spacing3),
-                      Expanded(
-                        child: AfriButton(
-                          onTap: () => PredictionShareService.copy(
-                            data: PredictionShareData.fromPrediction(selected),
-                            context: context,
-                          ),
-                          label: 'Copy',
-                          variant: AfriButtonVariant.secondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  ClayCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'SELECT A PREDICTION',
-                          style: TypographyTokens.titleLarge(),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing3),
-                        ..._history.map((prediction) {
-                          final selectedCard = prediction.id == selected.id;
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: SpacingTokens.spacing3,
+              ),
+            ],
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          AfriSurfaceCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'SELECT A PREDICTION',
+                  style: TypographyTokens.titleLarge(),
+                ),
+                const SizedBox(height: SpacingTokens.spacing3),
+                ...history.map((prediction) {
+                  final selectedCard = prediction.id == selectedPrediction.id;
+                  return Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: SpacingTokens.spacing3,
+                    ),
+                    child: AfriPressFeedback(
+                      onTap: () => onSelected(prediction),
+                      builder: (context, _) => GlassCard(
+                        animate: false,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${prediction.homeTeamShort} vs ${prediction.awayTeamShort}',
+                                    style: TypographyTokens.titleSmall(),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    '${prediction.marketName} · ${prediction.selectedOutcome.toUpperCase()}',
+                                    style: TypographyTokens.bodySmall(),
+                                  ),
+                                ],
+                              ),
                             ),
-                            child: AfriPressFeedback(
-                              onTap: () =>
-                                  setState(() => _selected = prediction),
-                              builder: (context, _) => GlassCard(
-                                animate: false,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '${prediction.homeTeamShort} vs ${prediction.awayTeamShort}',
-                                            style:
-                                                TypographyTokens.titleSmall(),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            '${prediction.marketName} · ${prediction.selectedOutcome.toUpperCase()}',
-                                            style: TypographyTokens.bodySmall(),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: SpacingTokens.spacing3,
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: SpacingTokens.spacing2,
-                                        vertical: SpacingTokens.spacing1,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: selectedCard
-                                            ? ColorTokens.clubAccent.withValues(
-                                                alpha: 0.16,
-                                              )
-                                            : ColorTokens.surfaceContainerHigh,
-                                        borderRadius: BorderRadius.circular(
-                                          999,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        selectedCard ? 'Selected' : 'Open',
-                                        style: TypographyTokens.labelSmall(
-                                          selectedCard
-                                              ? ColorTokens.clubAccent
-                                              : ColorTokens.onSurfaceVariant,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                            const SizedBox(width: SpacingTokens.spacing3),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: SpacingTokens.spacing2,
+                                vertical: SpacingTokens.spacing1,
+                              ),
+                              decoration: BoxDecoration(
+                                color: selectedCard
+                                    ? ColorTokens.clubAccent.withValues(
+                                        alpha: 0.16,
+                                      )
+                                    : ColorTokens.surfaceContainerHigh,
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                              child: Text(
+                                selectedCard ? 'Selected' : 'Open',
+                                style: TypographyTokens.labelSmall(
+                                  selectedCard
+                                      ? ColorTokens.clubAccent
+                                      : ColorTokens.onSurfaceVariant,
                                 ),
                               ),
                             ),
-                          );
-                        }),
-                      ],
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  );
+                }),
+              ],
             ),
+          ),
+        ],
+      ),
     );
   }
 }

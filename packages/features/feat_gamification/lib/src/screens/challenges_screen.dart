@@ -59,7 +59,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: ColorTokens.transparent,
       builder: (context) => const _FetTutorialSheet(),
     ).then((_) {
       HiveCacheService.putJson(_tutorialSeenKey, true);
@@ -106,7 +106,12 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
         _error = null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('ChallengesScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'ChallengesScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) return;
       setState(() {
         _isLoading = false;
@@ -119,21 +124,21 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'CHALLENGES',
-          style: TypographyTokens.monolithFont(
-            fontSize: 22,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
-        bottom: TabBar(
+        bottom: AfriTabBar.line(
           controller: _tabController,
           tabs: const [
             Tab(text: 'DAILY'),
@@ -229,18 +234,16 @@ class _ChallengeCard extends StatelessWidget {
         children: [
           Text(
             data.title.toUpperCase(),
-            style: TypographyTokens.monolithFont(
-              fontSize: 22,
+            style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
-              color: ColorTokens.onSurface,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(data.reward, style: TypographyTokens.bodyLarge()),
           const SizedBox(height: SpacingTokens.spacing3),
-          LinearProgressIndicator(
+          AfriLinearProgressIndicator(
             value: data.progress,
-            color: Theme.of(context).colorScheme.primary,
+            color: ColorTokens.clubAccent,
             backgroundColor: ColorTokens.surfaceContainerHighest,
             minHeight: 8,
             borderRadius: BorderRadius.circular(999),
@@ -269,21 +272,24 @@ class _FetTutorialSheetState extends State<_FetTutorialSheet> {
     _TutorialStep(
       icon: AfriIcons.fetToken,
       title: 'WHAT IS FET?',
-      body: 'FET (Fan Engagement Tokens) are your supporter currency. '
+      body:
+          'FET (Fan Engagement Tokens) are your supporter currency. '
           'Earn them by engaging with your club — attending matches, '
           'completing challenges, making predictions, and supporting the community.',
     ),
     _TutorialStep(
       icon: AfriIcons.versus,
       title: 'HOW PREDICTIONS WORK',
-      body: 'Browse upcoming fixtures, pick your markets (Match Result, '
+      body:
+          'Browse upcoming fixtures, pick your markets (Match Result, '
           'Goals, Scorers), and lock in your predictions before kickoff. '
           'Correct picks earn you FET based on difficulty — harder calls mean bigger rewards.',
     ),
     _TutorialStep(
       icon: AfriIcons.wallet,
       title: 'EARN, TRANSFER & REDEEM',
-      body: 'Your FET balance grows as you engage. Transfer tokens to friends, '
+      body:
+          'Your FET balance grows as you engage. Transfer tokens to friends, '
           'climb the leaderboard, unlock membership tiers, and redeem rewards '
           'from the club store. Every action counts.',
     ),
@@ -340,18 +346,13 @@ class _FetTutorialSheetState extends State<_FetTutorialSheet> {
           const SizedBox(height: SpacingTokens.spacing6),
 
           // Icon
-          Icon(
-            step.icon,
-            size: 48,
-            color: ColorTokens.clubAccent,
-          ),
+          Icon(step.icon, size: 48, color: ColorTokens.clubAccent),
           const SizedBox(height: SpacingTokens.spacing4),
 
           // Title
           Text(
             step.title,
-            style: TypographyTokens.monolithFont(
-              fontSize: 22,
+            style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w800,
               letterSpacing: 1.2,
             ),
@@ -378,13 +379,14 @@ class _FetTutorialSheetState extends State<_FetTutorialSheet> {
                     onTap: () => setState(() => _currentStep--),
                   ),
                 ),
-              if (_currentStep > 0) const SizedBox(width: SpacingTokens.spacing3),
+              if (_currentStep > 0)
+                const SizedBox(width: SpacingTokens.spacing3),
               Expanded(
                 child: AfriButton(
                   label: isLast ? 'GET STARTED' : 'NEXT',
                   onTap: () {
                     if (isLast) {
-                      Navigator.of(context).pop();
+                      context.pop();
                     } else {
                       setState(() => _currentStep++);
                     }

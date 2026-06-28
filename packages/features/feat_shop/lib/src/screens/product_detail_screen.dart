@@ -127,7 +127,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         _error = null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('ProductDetailScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'ProductDetailScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (mounted) {
         setState(() {
           _error = 'Failed to load product';
@@ -165,9 +170,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
     if (!_isInStock(product)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('This item is currently out of stock.'),
-        ),
+        const SnackBar(content: Text('This item is currently out of stock.')),
       );
       return;
     }
@@ -211,12 +214,13 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     if (_error != null && !_isLoading) {
       return Scaffold(
         backgroundColor: ColorTokens.background,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
+        appBar: AfriAppBar(
+          backgroundColor: ColorTokens.transparent,
           elevation: 0,
-          leading: IconButton(
-            icon: Icon(AfriIcons.close, color: ColorTokens.onSurface),
-            onPressed: () => context.pop(),
+          leading: AfriIconButton(
+            icon: AfriIcons.close,
+            onTap: () => context.pop(),
+            tooltip: 'Close',
           ),
         ),
         body: Center(
@@ -252,7 +256,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         product['description']?.toString() ?? 'Official club merchandise.';
     final imageUrl = product['image_url']?.toString();
     final badge = product['badge_label']?.toString();
-    final primary = Theme.of(context).colorScheme.primary;
+    final primary = ColorTokens.clubAccent;
     final sizes = _availableSizes(product);
     final inStock = _isInStock(product);
     final stockCount = _stockCount(product);
@@ -277,7 +281,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              SliverAppBar(
+              AfriSliverAppBar(
                 expandedHeight: 400,
                 pinned: true,
                 backgroundColor: ColorTokens.background,
@@ -293,12 +297,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           borderRadius: BorderRadius.circular(12),
                           border: BorderTokens.ghost(),
                         ),
-                        child: IconButton(
-                          icon: Icon(
-                            AfriIcons.back,
-                            color: ColorTokens.onSurface,
-                          ),
-                          onPressed: () {
+                        child: AfriIconButton(
+                          icon: AfriIcons.back,
+                          tooltip: 'Back',
+                          onTap: () {
                             if (context.canPop()) {
                               context.pop();
                             } else {
@@ -333,13 +335,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                         height: 120,
                         child: Container(
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                ColorTokens.background,
-                              ],
+                            gradient: ColorTokens.imageScrimGradient(
+                              color: ColorTokens.background,
                             ),
                           ),
                         ),
@@ -394,24 +391,38 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                   ? '$stockCount available now'
                                   : 'Available now')
                             : 'Out of stock',
-                        tone: inStock ? AfriStatusTone.success : AfriStatusTone.error,
+                        tone: inStock
+                            ? AfriStatusTone.success
+                            : AfriStatusTone.error,
                       ),
                       const SizedBox(height: SpacingTokens.spacing8),
                       if (sizes.isNotEmpty) ...[
-                        const AfriSectionHeader(title: 'Select size', padding: EdgeInsets.zero),
+                        const AfriSectionHeader(
+                          title: 'Select size',
+                          padding: EdgeInsets.zero,
+                        ),
                         const SizedBox(height: SpacingTokens.spacing3),
                         Wrap(
                           spacing: SpacingTokens.spacing3,
                           runSpacing: SpacingTokens.spacing3,
                           children: sizes.map((size) {
                             final selected = size == _selectedSize;
-                            return GestureDetector(
+                            return AfriPressFeedback(
                               onTap: () {
                                 setState(() => _selectedSize = size);
-                                HapticFeedback.lightImpact();
                               },
+                              selected: selected,
+                              tooltip: 'Size $size',
+                              semanticsLabel: 'Size $size',
+                              semanticsHint: selected
+                                  ? 'Selected size'
+                                  : 'Select size',
+                              excludeChildSemantics: true,
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
+                                constraints: const BoxConstraints(
+                                  minHeight: 48,
+                                ),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 20,
                                   vertical: 12,
@@ -426,7 +437,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                 child: Text(
                                   size,
                                   style: TypographyTokens.labelMedium(
-                                    selected ? Colors.white : ColorTokens.onSurface,
+                                    selected
+                                        ? ColorTokens.onDark
+                                        : ColorTokens.onSurface,
                                   ),
                                 ),
                               ),
@@ -438,7 +451,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const AfriSectionHeader(title: 'Quantity', padding: EdgeInsets.zero),
+                          const AfriSectionHeader(
+                            title: 'Quantity',
+                            padding: EdgeInsets.zero,
+                          ),
                           Container(
                             decoration: BoxDecoration(
                               color: ColorTokens.surfaceContainerLow,
@@ -448,9 +464,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                IconButton(
-                                  icon: Icon(Icons.remove_rounded, size: 20),
-                                  onPressed: _quantity > 1 ? _decrement : null,
+                                AfriIconButton(
+                                  icon: AfriIcons.remove,
+                                  onTap: _quantity > 1 ? _decrement : null,
+                                  tooltip: 'Decrease quantity',
                                 ),
                                 SizedBox(
                                   width: 40,
@@ -461,11 +478,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                     ),
                                   ),
                                 ),
-                                IconButton(
-                                  icon: Icon(Icons.add_rounded, size: 20),
-                                  onPressed: _quantity < maxQuantity
+                                AfriIconButton(
+                                  icon: AfriIcons.add,
+                                  onTap: _quantity < maxQuantity
                                       ? _increment
                                       : null,
+                                  tooltip: 'Increase quantity',
                                 ),
                               ],
                             ),
@@ -507,7 +525,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                 children: [
                                   Text(
                                     'Total',
-                                    style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
+                                    style: TypographyTokens.labelSmall(
+                                      ColorTokens.onSurfaceVariant,
+                                    ),
                                   ),
                                   Text(
                                     currency.format(total),
@@ -530,7 +550,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                     onTap: _addToCart,
                                     enabled: inStock,
                                   ),
-                                  const SizedBox(height: SpacingTokens.spacing2),
+                                  const SizedBox(
+                                    height: SpacingTokens.spacing2,
+                                  ),
                                   AfriButton(
                                     label: 'Buy now',
                                     variant: AfriButtonVariant.outline,

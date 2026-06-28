@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
-import 'clay_card.dart';
+import 'afri_surface_card.dart';
 
 /// Compact metric tile for summary values.
 class AfriMetricTile extends StatelessWidget {
@@ -26,7 +26,7 @@ class AfriMetricTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = accentColor ?? ColorTokens.primaryContainer;
 
-    return ClayCard(
+    return AfriSurfaceCard(
       padding: const EdgeInsets.all(SpacingTokens.spacing4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +52,7 @@ class AfriMetricTile extends StatelessWidget {
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TypographyTokens.headlineSmall(),
+            style: TypographyTokens.headlineSmall(accentColor),
           ),
           if (meta != null) ...[
             const SizedBox(height: SpacingTokens.spacing1),

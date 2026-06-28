@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:core_utils/core_utils.dart';
 
 class FanClubDetailScreen extends ConsumerStatefulWidget {
   const FanClubDetailScreen({required this.clubId, super.key});
@@ -16,6 +15,17 @@ class FanClubDetailScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<FanClubDetailScreen> createState() =>
       _FanClubDetailScreenState();
+}
+
+void _reportNonCriticalError(Object error, StackTrace stackTrace) {
+  FlutterError.reportError(
+    FlutterErrorDetails(
+      exception: error,
+      stack: stackTrace,
+      library: 'feat_fan_clubs',
+      context: ErrorDescription('FanClubDetailScreen non-critical operation'),
+    ),
+  );
 }
 
 class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
@@ -56,21 +66,24 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
         if (!mounted) return;
         setState(() {
           _isLoading = false;
-          _error = 'This fan club is no longer available.';
+          _error = 'This fan club is unavailable.';
         });
         return;
       }
 
       Map<String, dynamic>? matchRow;
       try {
-        var query = client.from('unified_matches').select().eq('is_on_sale', true);
+        var query = client
+            .from('unified_matches')
+            .select()
+            .eq('is_on_sale', true);
         query = resolver.apply(query, scope);
         matchRow = await query
             .order('match_date', ascending: true)
             .limit(1)
             .maybeSingle();
       } catch (error, stackTrace) {
-      AfriLogger.warn('FanClubDetailScreen', 'Operation failed (non-critical).', error, stackTrace);
+        _reportNonCriticalError(error, stackTrace);
         matchRow = null;
       }
 
@@ -86,7 +99,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
               .maybeSingle();
           joined = membership != null;
         } catch (error, stackTrace) {
-      AfriLogger.warn('FanClubDetailScreen', 'Operation failed (non-critical).', error, stackTrace);
+          _reportNonCriticalError(error, stackTrace);
           joined = false;
         }
       }
@@ -101,7 +114,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
         _isLoading = false;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('FanClubDetailScreen', 'Operation failed (non-critical).', error, stackTrace);
+      _reportNonCriticalError(error, stackTrace);
       if (!mounted) return;
       setState(() {
         _isLoading = false;
@@ -157,7 +170,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
         };
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('FanClubDetailScreen', 'Operation failed (non-critical).', error, stackTrace);
+      _reportNonCriticalError(error, stackTrace);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -214,11 +227,12 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     if (_error != null || _club == null) {
       return Scaffold(
         backgroundColor: ColorTokens.background,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          leading: IconButton(
-            onPressed: () => context.pop(),
-            icon: const Icon(AfriIcons.back),
+        appBar: AfriAppBar(
+          backgroundColor: ColorTokens.transparent,
+          leading: AfriIconButton(
+            icon: AfriIcons.back,
+            onTap: () => context.pop(),
+            tooltip: 'Back',
           ),
         ),
         body: Center(
@@ -235,7 +249,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     }
 
     final club = _club!;
-    final primary = Theme.of(context).colorScheme.primary;
+    final primary = ColorTokens.clubAccent;
     final name = club['name']?.toString() ?? 'Fan Club';
     final description = club['description']?.toString() ?? '';
     final region = club['region']?.toString() ?? 'Unknown';
@@ -250,20 +264,19 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          SliverAppBar(
+          AfriSliverAppBar(
             expandedHeight: 280,
             backgroundColor: ColorTokens.background,
             pinned: true,
-            leading: IconButton(
-              onPressed: () => context.pop(),
-              icon: const Icon(AfriIcons.back),
+            leading: AfriIconButton(
+              icon: AfriIcons.back,
+              onTap: () => context.pop(),
+              tooltip: 'Back',
             ),
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+                  gradient: ColorTokens.borrowedGradient(
                     colors: [
                       ColorTokens.clubPrimary.withValues(alpha: 0.6),
                       ColorTokens.surfaceContainerLow,
@@ -280,7 +293,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                       Row(
                         children: [
                           Icon(
-                            Icons.groups_rounded,
+                            AfriIcons.groups,
                             size: 32,
                             color: ColorTokens.onSurface,
                           ),
@@ -300,14 +313,15 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                             ),
                             child: Text(
                               isActive ? 'ACTIVE' : 'PENDING REVIEW',
-                              style: TypographyTokens.editorialFont(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                color: isActive
-                                    ? ColorTokens.clubAccent
-                                    : ColorTokens.warning,
-                                letterSpacing: 1.2,
-                              ),
+                              style:
+                                  TypographyTokens.labelMedium(
+                                    isActive
+                                        ? ColorTokens.clubAccent
+                                        : ColorTokens.warning,
+                                  ).copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 1.2,
+                                  ),
                             ),
                           ),
                         ],
@@ -315,10 +329,8 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                       const SizedBox(height: SpacingTokens.spacing4),
                       Text(
                         name.toUpperCase(),
-                        style: TypographyTokens.monolithFont(
-                          fontSize: 34,
+                        style: TypographyTokens.displaySmall().copyWith(
                           fontWeight: FontWeight.w800,
-                          color: ColorTokens.onSurface,
                           height: 1,
                           letterSpacing: 0.6,
                         ),
@@ -369,10 +381,8 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                       children: [
                         Text(
                           'ABOUT THIS CLUB',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 18,
+                          style: TypographyTokens.titleLarge().copyWith(
                             fontWeight: FontWeight.w700,
-                            color: ColorTokens.onSurface,
                             letterSpacing: 1.2,
                           ),
                         ),
@@ -394,10 +404,8 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                       children: [
                         Text(
                           'Group SNAPSHOT',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 18,
+                          style: TypographyTokens.titleLarge().copyWith(
                             fontWeight: FontWeight.w700,
-                            color: ColorTokens.onSurface,
                             letterSpacing: 1.2,
                           ),
                         ),
@@ -417,53 +425,9 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  GlassCard(
-                    animate: false,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'MATCHDAY AGENDA',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: ColorTokens.onSurface,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing3),
-                        if (!isActive)
-                          Text(
-                            'Matchday coordination unlocks once this fan club is approved.',
-                            style: TypographyTokens.bodyMedium(),
-                          )
-                        else if (match == null)
-                          Text(
-                            'No upcoming club fixture is linked to this chapter yet.',
-                            style: TypographyTokens.bodyMedium(),
-                          )
-                        else ...[
-                          Text(
-                            '${match['home_team']} vs ${match['away_team']}',
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700,
-                              color: ColorTokens.onSurface,
-                            ),
-                          ),
-                          const SizedBox(height: SpacingTokens.spacing2),
-                          Text(
-                            '${match['competition']}  •  ${match['venue']}',
-                            style: TypographyTokens.bodyMedium(),
-                          ),
-                          const SizedBox(height: SpacingTokens.spacing2),
-                          Text(
-                            '${match['match_date']}  •  ${match['kickoff_time']}',
-                            style: TypographyTokens.bodySmall(),
-                          ),
-                        ],
-                      ],
-                    ),
+                  FanClubMatchdayAgendaSection(
+                    isActive: isActive,
+                    match: match,
                   ),
                   const SizedBox(height: SpacingTokens.spacing6),
                   Row(
@@ -477,7 +441,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                               : _joined
                               ? 'JOINED'
                               : 'JOIN CLUB',
-                          variant: AfriButtonVariant.clay,
+                          variant: AfriButtonVariant.primary,
                           enabled: isActive && !_isJoinMutationPending,
                           isLoading: isActive && _isJoinMutationPending,
                           onTap: _toggleJoin,
@@ -488,9 +452,9 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                         SizedBox(
                           width: 58,
                           height: 58,
-                          child: OutlinedButton(
+                          child: AfriOutlinedButton(
                             onPressed: _copyShareLink,
-                            style: OutlinedButton.styleFrom(
+                            style: AfriOutlinedButton.styleFrom(
                               side: BorderTokens.side(color: primary),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18),
@@ -504,6 +468,60 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                 ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class FanClubMatchdayAgendaSection extends StatelessWidget {
+  const FanClubMatchdayAgendaSection({
+    required this.isActive,
+    required this.match,
+    super.key,
+  });
+
+  final bool isActive;
+  final Map<String, dynamic>? match;
+
+  @override
+  Widget build(BuildContext context) {
+    final agendaMatch = match;
+    if (!isActive || agendaMatch == null) {
+      return const SizedBox.shrink(
+        key: ValueKey<String>('fan-club-matchday-agenda-empty'),
+      );
+    }
+
+    return GlassCard(
+      animate: false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'MATCHDAY AGENDA',
+            style: TypographyTokens.titleLarge().copyWith(
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.2,
+            ),
+          ),
+          const SizedBox(height: SpacingTokens.spacing3),
+          Text(
+            '${agendaMatch['home_team']} vs ${agendaMatch['away_team']}',
+            style: TypographyTokens.headlineMedium().copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(
+            '${agendaMatch['competition']}  •  ${agendaMatch['venue']}',
+            style: TypographyTokens.bodyMedium(),
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(
+            '${agendaMatch['match_date']}  •  ${agendaMatch['kickoff_time']}',
+            style: TypographyTokens.bodySmall(),
           ),
         ],
       ),
@@ -527,11 +545,9 @@ class _DetailStat extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             value,
-            style: TypographyTokens.monolithFont(
-              fontSize: 28,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.clubAccent,
-            ),
+            style: TypographyTokens.headlineLarge(
+              ColorTokens.clubAccent,
+            ).copyWith(fontWeight: FontWeight.w800),
           ),
         ],
       ),

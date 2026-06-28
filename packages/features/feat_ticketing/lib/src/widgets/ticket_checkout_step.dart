@@ -41,7 +41,7 @@ class TicketCheckoutStep extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClayCard(
+          AfriSurfaceCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -74,7 +74,7 @@ class TicketCheckoutStep extends StatelessWidget {
           ),
           if (paymentRouteMessage != null) ...[
             const SizedBox(height: SpacingTokens.spacing4),
-            ClayCard(
+            AfriSurfaceCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -92,7 +92,7 @@ class TicketCheckoutStep extends StatelessWidget {
             ),
           ] else if (paymentRoute != null) ...[
             const SizedBox(height: SpacingTokens.spacing4),
-            ClayCard(
+            AfriSurfaceCard(
               child: Row(
                 children: [
                   const Icon(
@@ -124,9 +124,9 @@ class TicketCheckoutStep extends StatelessWidget {
             isLoading: submitting,
             onTap: onPurchaseRequest,
             enabled: !match.isSoldOut &&
-                    match.isOnSale &&
-                    !submitting &&
-                    paymentRouteMessage == null,
+                match.isOnSale &&
+                !submitting &&
+                paymentRouteMessage == null,
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           Text(

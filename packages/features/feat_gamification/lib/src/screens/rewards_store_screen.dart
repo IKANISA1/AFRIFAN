@@ -48,7 +48,12 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
         _error = null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('RewardsStoreScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'RewardsStoreScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -136,19 +141,19 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'REWARDS STORE',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -168,7 +173,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                 ),
               ),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _load,
               color: ColorTokens.clubAccent,
               child: ListView(
@@ -177,7 +182,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                 ),
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 children: [
-                  ClayCard(
+                  AfriSurfaceCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -190,11 +195,9 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
                           '${wallet?.balance ?? 0} FET',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w900,
-                            color: ColorTokens.clubAccent,
-                          ),
+                          style: TypographyTokens.displaySmall(
+                            ColorTokens.clubAccent,
+                          ).copyWith(fontWeight: FontWeight.w900),
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(

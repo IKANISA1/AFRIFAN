@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../extensions.dart';
+import '../tokens/icon_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_button.dart';
+import 'afri_icon_button.dart';
 
 /// Gate widget that blocks access when a feature's kill-switch is active.
 class KillSwitchGate extends StatelessWidget {
@@ -22,6 +25,17 @@ class KillSwitchGate extends StatelessWidget {
   final String? message;
   final VoidCallback? onBackPressed;
 
+  void _handleBack(BuildContext context) {
+    final customBack = onBackPressed;
+    if (customBack != null) {
+      customBack();
+      return;
+    }
+    if (context.canPop()) {
+      context.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (enabled) return child;
@@ -36,9 +50,10 @@ class KillSwitchGate extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: colors.primaryText),
-          onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => _handleBack(context),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
       ),
       body: Center(
@@ -83,7 +98,7 @@ class KillSwitchGate extends StatelessWidget {
               const SizedBox(height: SpacingTokens.spacing7),
               AfriButton(
                 label: 'Go Back',
-                onTap: onBackPressed ?? () => Navigator.of(context).pop(),
+                onTap: () => _handleBack(context),
                 variant: AfriButtonVariant.secondary,
               ),
             ],

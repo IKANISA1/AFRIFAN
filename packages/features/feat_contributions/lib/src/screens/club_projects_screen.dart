@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
@@ -22,7 +24,7 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProjects();
+    unawaited(_loadProjects());
   }
 
   Future<void> _loadProjects() async {
@@ -71,7 +73,12 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
         _error = null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('ClubProjectsScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'ClubProjectsScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) return;
       setState(() {
         _isLoading = false;
@@ -84,19 +91,19 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'CLUB PROJECTS',
-          style: TypographyTokens.monolithFont(
-            fontSize: 22,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
       ),
       body: _isLoading
@@ -112,24 +119,12 @@ class _ClubProjectsScreenState extends ConsumerState<ClubProjectsScreen> {
                   title: 'Projects unavailable',
                   message: _error!,
                   actionLabel: 'Retry',
-                  onAction: _loadProjects,
+                  onAction: () => unawaited(_loadProjects()),
                 ),
               ),
             )
           : _projects.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                child: GlassCard(
-                  animate: false,
-                  child: Text(
-                    'No campaigns yet. Start a new Group.',
-                    style: TypographyTokens.bodyMedium(),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            )
+          ? const SizedBox.shrink()
           : ListView.builder(
               padding: const EdgeInsets.all(SpacingTokens.spacing6),
               itemCount: _projects.length,
@@ -159,9 +154,7 @@ class _ProjectCard extends StatelessWidget {
       currencySymbol: context.afriCurrencySymbol,
     );
     final title = project['name']?.toString() ?? 'Project';
-    final body =
-        project['description']?.toString() ??
-        'Supporter-led contribution Group.';
+    final body = project['description']?.toString() ?? '';
     final currentTotal = (project['current_total'] as num?)?.toInt() ?? 0;
     final targetAmount = (project['target_amount'] as num?)?.toInt() ?? 0;
     final memberCount = (project['member_count'] as num?)?.toInt() ?? 0;
@@ -174,26 +167,26 @@ class _ProjectCard extends StatelessWidget {
       animate: false,
       onTap: groupId.isEmpty
           ? null
-          : () => context.push('/contribute/group/$groupId'),
+          : () => unawaited(context.push('/contribute/group/$groupId')),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title.toUpperCase(),
-            style: TypographyTokens.monolithFont(
-              fontSize: 24,
+            style: TypographyTokens.headlineMedium().copyWith(
               fontWeight: FontWeight.w800,
-              color: ColorTokens.onSurface,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
-          Text(body, style: TypographyTokens.bodyMedium()),
-          const SizedBox(height: SpacingTokens.spacing4),
-          LinearProgressIndicator(
+          if (body.isNotEmpty) ...[
+            Text(body, style: TypographyTokens.bodyMedium()),
+            const SizedBox(height: SpacingTokens.spacing4),
+          ],
+          AfriLinearProgressIndicator(
             value: progress,
             minHeight: 8,
             borderRadius: BorderRadius.circular(999),
-            color: Theme.of(context).colorScheme.primary,
+            color: ColorTokens.clubPrimary,
             backgroundColor: ColorTokens.surfaceContainerHighest,
           ),
           const SizedBox(height: SpacingTokens.spacing2),
@@ -207,7 +200,8 @@ class _ProjectCard extends StatelessWidget {
           AfriButton(
             label: 'Contribute',
             fullWidth: true,
-            onTap: () => showMomoAmountEntrySheet(context, title: title),
+            onTap: () =>
+                unawaited(showMomoAmountEntrySheet(context, title: title)),
           ),
         ],
       ),

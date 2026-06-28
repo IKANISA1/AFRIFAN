@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../widgets/fan_club_cards.dart';
-import 'package:core_utils/core_utils.dart';
 
 class FanClubsListScreen extends ConsumerStatefulWidget {
   const FanClubsListScreen({super.key});
@@ -73,8 +72,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
               joined.add(clubId);
             }
           }
-        } catch (error, stackTrace) {
-      AfriLogger.warn('FanClubsListScreen', 'Operation failed (non-critical).', error, stackTrace);
+        } catch (_) {
           // Keep rendering the list even if membership lookups are locked down.
         }
       }
@@ -217,22 +215,15 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
+    final primary = ColorTokens.clubPrimary;
     final featuredClub = _clubs.isEmpty ? null : _clubs.first;
     final filters = _buildFilters(_clubs);
-    final isSearching = _searchController.text.trim().isNotEmpty;
-    final emptyTitle = _clubs.isEmpty && !isSearching
-        ? 'No fan clubs yet'
-        : 'No clubs found';
-    final emptyMessage = _clubs.isEmpty && !isSearching
-        ? 'New fan clubs appear here after admin approval.'
-        : 'Try a different club name or region.';
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
       body: GradientBackground(
         child: SafeArea(
-          child: RefreshIndicator(
+          child: AfriRefreshIndicator(
             onRefresh: _loadClubs,
             color: primary,
             child: CustomScrollView(
@@ -250,12 +241,10 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                     ),
                     child: Row(
                       children: [
-                        IconButton(
-                          onPressed: () => context.pop(),
-                          icon: Icon(
-                            AfriIcons.back,
-                            color: ColorTokens.onSurface,
-                          ),
+                        AfriIconButton(
+                          icon: AfriIcons.back,
+                          onTap: () => context.pop(),
+                          tooltip: 'Back',
                         ),
                         const SizedBox(width: SpacingTokens.spacing2),
                         Expanded(
@@ -264,12 +253,13 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                             children: [
                               Text(
                                 'THE COMMUNITY',
-                                style: TypographyTokens.monolithFont(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: ColorTokens.onSurfaceVariant,
-                                  letterSpacing: 2.0,
-                                ),
+                                style:
+                                    TypographyTokens.labelLarge(
+                                      ColorTokens.onSurfaceVariant,
+                                    ).copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 2.0,
+                                    ),
                               ),
                               Text(
                                 'FAN CLUBS',
@@ -301,8 +291,9 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                       ),
                       child: FanClubFeaturedCard(
                         club: featuredClub,
-                        onTap: () =>
-                            context.push('/fan-clubs/${featuredClub['id']}'),
+                        onTap: () => unawaited(
+                          context.push('/fan-clubs/${featuredClub['id']}'),
+                        ),
                       ),
                     ),
                   ),
@@ -314,9 +305,9 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                       SpacingTokens.spacing6,
                       0,
                     ),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
                         children: filters
                             .map((filter) {
                               final selected = filter == _activeFilter;
@@ -324,7 +315,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                                 padding: const EdgeInsets.only(
                                   right: SpacingTokens.spacing2,
                                 ),
-                                child: ChoiceChip(
+                                child: AfriChoiceChip(
                                   selected: selected,
                                   label: Text(filter),
                                   onSelected: (_) =>
@@ -340,71 +331,98 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                 const SliverToBoxAdapter(
                   child: SizedBox(height: SpacingTokens.spacing4),
                 ),
-                if (_isLoading)
-                  const SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: SpacingTokens.spacing6,
-                      ),
-                      child: AfriSkeletonList(),
-                    ),
-                  )
-                else if (_error != null)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-                      child: AfriErrorView(
-                        compact: true,
-                        message: _error,
-                        onRetry: _loadClubs,
-                      ),
-                    ),
-                  )
-                else if (_visibleClubs.isEmpty)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-                      child: AfriEmptyView(
-                        compact: true,
-                        title: emptyTitle,
-                        message: emptyMessage,
-                        icon: AfriIcons.clubZone,
-                      ),
-                    ),
-                  )
-                else
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final club = _visibleClubs[index];
-                      final clubId = club['id']?.toString() ?? '';
-                      final joined = _joinedClubIds.contains(clubId);
-                      final isPending = _pendingClubIds.contains(clubId);
-
-                      return Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          SpacingTokens.spacing6,
-                          0,
-                          SpacingTokens.spacing6,
-                          index == _visibleClubs.length - 1
-                              ? SpacingTokens.spacing20
-                              : SpacingTokens.spacing3,
-                        ),
-                        child: FanClubListItem(
-                          club: club,
-                          isJoined: joined,
-                          isPending: isPending,
-                          isOfficial: false,
-                          onTap: () => context.push('/fan-clubs/$clubId'),
-                          onJoinToggled: () => _toggleJoin(club),
-                        ),
-                      );
-                    }, childCount: _visibleClubs.length),
-                  ),
+                FanClubsResultsSliver(
+                  isLoading: _isLoading,
+                  error: _error,
+                  visibleClubs: _visibleClubs,
+                  joinedClubIds: _joinedClubIds,
+                  pendingClubIds: _pendingClubIds,
+                  onRetry: () => unawaited(_loadClubs()),
+                  onOpenClub: (clubId) =>
+                      unawaited(context.push('/fan-clubs/$clubId')),
+                  onJoinToggled: _toggleJoin,
+                ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class FanClubsResultsSliver extends StatelessWidget {
+  const FanClubsResultsSliver({
+    super.key,
+    required this.isLoading,
+    required this.error,
+    required this.visibleClubs,
+    required this.joinedClubIds,
+    required this.pendingClubIds,
+    required this.onRetry,
+    required this.onOpenClub,
+    required this.onJoinToggled,
+  });
+
+  final bool isLoading;
+  final String? error;
+  final List<Map<String, dynamic>> visibleClubs;
+  final Set<String> joinedClubIds;
+  final Set<String> pendingClubIds;
+  final VoidCallback onRetry;
+  final ValueChanged<String> onOpenClub;
+  final ValueChanged<Map<String, dynamic>> onJoinToggled;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return const SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: SpacingTokens.spacing6),
+          child: AfriSkeletonList(),
+        ),
+      );
+    }
+
+    if (error != null) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+          child: AfriErrorView(compact: true, message: error, onRetry: onRetry),
+        ),
+      );
+    }
+
+    if (visibleClubs.isEmpty) {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        final club = visibleClubs[index];
+        final clubId = club['id']?.toString() ?? '';
+        final joined = joinedClubIds.contains(clubId);
+        final isPending = pendingClubIds.contains(clubId);
+
+        return Padding(
+          padding: EdgeInsets.fromLTRB(
+            SpacingTokens.spacing6,
+            0,
+            SpacingTokens.spacing6,
+            index == visibleClubs.length - 1
+                ? SpacingTokens.spacing20
+                : SpacingTokens.spacing3,
+          ),
+          child: FanClubListItem(
+            club: club,
+            isJoined: joined,
+            isPending: isPending,
+            isOfficial: false,
+            onTap: () => onOpenClub(clubId),
+            onJoinToggled: () => onJoinToggled(club),
+          ),
+        );
+      }, childCount: visibleClubs.length),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 /// Shows match creation/editing form as a modal bottom sheet.
@@ -16,7 +17,7 @@ Future<bool?> showMatchComposerSheet(
   return showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.transparent,
+    backgroundColor: ColorTokens.transparent,
     builder: (context) =>
         _MatchComposerSheet(ref: ref, existing: existing, partnerId: partnerId),
   );
@@ -181,7 +182,7 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
       }
 
       if (!mounted) return;
-      Navigator.of(context).pop(true);
+      context.pop(true);
     } catch (error) {
       setState(() => _errorText = error.toString());
     }
@@ -226,30 +227,21 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing4),
-            TextField(
-              controller: _homeController,
-              decoration: const InputDecoration(labelText: 'Home Team'),
-            ),
+            AfriInputField(controller: _homeController, label: 'Home Team'),
             const SizedBox(height: SpacingTokens.spacing3),
-            TextField(
-              controller: _awayController,
-              decoration: const InputDecoration(labelText: 'Away Team'),
-            ),
+            AfriInputField(controller: _awayController, label: 'Away Team'),
             const SizedBox(height: SpacingTokens.spacing3),
-            TextField(
+            AfriInputField(
               controller: _competitionController,
-              decoration: const InputDecoration(labelText: 'Competition'),
+              label: 'Competition',
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-            TextField(
-              controller: _venueController,
-              decoration: const InputDecoration(labelText: 'Venue'),
-            ),
+            AfriInputField(controller: _venueController, label: 'Venue'),
             const SizedBox(height: SpacingTokens.spacing4),
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton(
+                  child: AfriOutlinedButton(
                     onPressed: _pickDate,
                     child: Text(
                       DateFormat('dd MMM yyyy').format(_selectedDate),
@@ -258,7 +250,7 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
-                  child: OutlinedButton(
+                  child: AfriOutlinedButton(
                     onPressed: _pickTime,
                     child: Text(_selectedTime.format(context)),
                   ),
@@ -269,43 +261,39 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
             Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: AfriInputField(
                     controller: _generalController,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: 'General $currencySymbol',
-                    ),
+                    label: 'General $currencySymbol',
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
-                  child: TextField(
+                  child: AfriInputField(
                     controller: _vipController,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: 'VIP $currencySymbol',
-                    ),
+                    label: 'VIP $currencySymbol',
                   ),
                 ),
               ],
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-            TextField(
+            AfriInputField(
               controller: _capacityController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Capacity'),
+              label: 'Capacity',
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-            SwitchListTile.adaptive(
+            AfriSwitchListTile(
               value: _isOnSale,
               contentPadding: EdgeInsets.zero,
               title: const Text('Tickets on sale'),
               onChanged: (value) => setState(() => _isOnSale = value),
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-            DropdownButtonFormField<String>(
+            AfriDropdownField<String>(
               initialValue: _matchStatus,
-              decoration: const InputDecoration(labelText: 'Match status'),
+              label: 'Match status',
               items: const [
                 DropdownMenuItem(value: 'scheduled', child: Text('Scheduled')),
                 DropdownMenuItem(value: 'live', child: Text('Live')),
@@ -322,38 +310,36 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
             Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: AfriInputField(
                     controller: _homeScoreController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'Home score'),
+                    label: 'Home score',
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
-                  child: TextField(
+                  child: AfriInputField(
                     controller: _awayScoreController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'Away score'),
+                    label: 'Away score',
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
-                  child: TextField(
+                  child: AfriInputField(
                     controller: _liveMinuteController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'Live minute'),
+                    label: 'Live minute',
                   ),
                 ),
               ],
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-            TextField(
+            AfriInputField(
               controller: _summaryController,
               minLines: 2,
               maxLines: 4,
-              decoration: const InputDecoration(
-                labelText: 'Match summary / live note',
-              ),
+              label: 'Match summary / live note',
             ),
             if (_errorText != null) ...[
               const SizedBox(height: SpacingTokens.spacing2),

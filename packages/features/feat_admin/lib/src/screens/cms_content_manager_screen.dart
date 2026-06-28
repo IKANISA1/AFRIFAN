@@ -229,8 +229,7 @@ class _CmsContentManagerScreenState
         context: context,
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, setDialogState) {
-            return AlertDialog(
-              backgroundColor: ColorTokens.surfaceContainer,
+            return AfriAlertDialog(
               title: Text(
                 existing == null ? 'ADD CONTENT BLOCK' : 'EDIT CONTENT BLOCK',
                 style: TypographyTokens.titleLarge(),
@@ -249,11 +248,9 @@ class _CmsContentManagerScreenState
                       hint: 'Block type (e.g. banner)',
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
-                    DropdownButtonFormField<String>(
-                      value: targetChannel,
-                      decoration: const InputDecoration(
-                        labelText: 'Target Channel',
-                      ),
+                    AfriDropdownField<String>(
+                      initialValue: targetChannel,
+                      label: 'Target Channel',
                       items: _targetChannels
                           .map(
                             (item) => DropdownMenuItem<String>(
@@ -268,13 +265,11 @@ class _CmsContentManagerScreenState
                       },
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
-                    DropdownButtonFormField<String>(
-                      value: _placementKeys.contains(placementKey)
+                    AfriDropdownField<String>(
+                      initialValue: _placementKeys.contains(placementKey)
                           ? placementKey
                           : null,
-                      decoration: const InputDecoration(
-                        labelText: 'Placement Key',
-                      ),
+                      label: 'Placement Key',
                       items: _placementKeys
                           .map(
                             (item) => DropdownMenuItem<String>(
@@ -304,9 +299,9 @@ class _CmsContentManagerScreenState
                       hint: 'Content Component Name',
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
-                    DropdownButtonFormField<String>(
-                      value: selectedFeatureId,
-                      decoration: const InputDecoration(labelText: 'Feature'),
+                    AfriDropdownField<String>(
+                      initialValue: selectedFeatureId,
+                      label: 'Feature',
                       items: [
                         const DropdownMenuItem<String>(
                           value: null,
@@ -333,7 +328,7 @@ class _CmsContentManagerScreenState
                       hint: 'Sort order',
                       keyboardType: TextInputType.number,
                     ),
-                    SwitchListTile.adaptive(
+                    AfriSwitchListTile(
                       value: isActive,
                       onChanged: (value) =>
                           setDialogState(() => isActive = value),
@@ -344,11 +339,11 @@ class _CmsContentManagerScreenState
                 ),
               ),
               actions: [
-                TextButton(
+                AfriTextButton(
                   onPressed: () => dialogContext.pop(),
                   child: const Text('CANCEL'),
                 ),
-                TextButton(
+                AfriTextButton(
                   onPressed: () async {
                     final blockKey = blockKeyController.text.trim();
                     if (blockKey.isEmpty) return;
@@ -417,30 +412,29 @@ class _CmsContentManagerScreenState
     unawaited(
       showDialog<void>(
         context: context,
-        builder: (dialogContext) => AlertDialog(
-          backgroundColor: ColorTokens.surfaceContainer,
+        builder: (dialogContext) => AfriAlertDialog(
           title: Text('NEW ARTICLE', style: TypographyTokens.titleLarge()),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
+              AfriInputField(
                 controller: titleController,
-                decoration: const InputDecoration(hintText: 'Article title'),
+                hint: 'Article title',
               ),
               const SizedBox(height: SpacingTokens.spacing3),
-              TextField(
+              AfriInputField(
                 controller: bodyController,
                 maxLines: 3,
-                decoration: const InputDecoration(hintText: 'Article body'),
+                hint: 'Article body',
               ),
             ],
           ),
           actions: [
-            TextButton(
+            AfriTextButton(
               onPressed: () => dialogContext.pop(),
               child: const Text('CANCEL'),
             ),
-            TextButton(
+            AfriTextButton(
               onPressed: () async {
                 if (titleController.text.trim().isEmpty) return;
                 dialogContext.pop();
@@ -494,8 +488,7 @@ class _CmsContentManagerScreenState
         context: context,
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, setDialogState) {
-            return AlertDialog(
-              backgroundColor: ColorTokens.surfaceContainer,
+            return AfriAlertDialog(
               title: Text(
                 existing == null ? 'ADD QUICK ACTION' : 'EDIT QUICK ACTION',
                 style: TypographyTokens.titleLarge(),
@@ -540,9 +533,9 @@ class _CmsContentManagerScreenState
                       keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
-                    DropdownButtonFormField<String>(
+                    AfriDropdownField<String>(
                       initialValue: selectedCountry,
-                      decoration: const InputDecoration(labelText: 'Country'),
+                      label: 'Country',
                       items: _countryOptions
                           .map(
                             (country) => DropdownMenuItem<String>(
@@ -556,7 +549,7 @@ class _CmsContentManagerScreenState
                         setDialogState(() => selectedCountry = value);
                       },
                     ),
-                    SwitchListTile.adaptive(
+                    AfriSwitchListTile(
                       value: isActive,
                       onChanged: (value) =>
                           setDialogState(() => isActive = value),
@@ -567,11 +560,11 @@ class _CmsContentManagerScreenState
                 ),
               ),
               actions: [
-                TextButton(
+                AfriTextButton(
                   onPressed: () => dialogContext.pop(),
                   child: const Text('CANCEL'),
                 ),
-                TextButton(
+                AfriTextButton(
                   onPressed: () async {
                     final actionKey = actionKeyController.text.trim();
                     final title = titleController.text.trim();
@@ -647,7 +640,7 @@ class _CmsContentManagerScreenState
       text: existing?['description']?.toString() ?? '',
     );
     final emojiController = TextEditingController(
-      text: existing?['emoji']?.toString() ?? '🤝',
+      text: existing?['emoji']?.toString() ?? '',
     );
     final sortOrderController = TextEditingController(
       text: '${(existing?['sort_order'] as num?)?.toInt() ?? 0}',
@@ -662,8 +655,7 @@ class _CmsContentManagerScreenState
         context: context,
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, setDialogState) {
-            return AlertDialog(
-              backgroundColor: ColorTokens.surfaceContainer,
+            return AfriAlertDialog(
               title: Text(
                 existing == null ? 'ADD PARTNER' : 'EDIT PARTNER',
                 style: TypographyTokens.titleLarge(),
@@ -676,9 +668,9 @@ class _CmsContentManagerScreenState
                     const SizedBox(height: SpacingTokens.spacing3),
                     _DialogTextField(controller: slugController, hint: 'Slug'),
                     const SizedBox(height: SpacingTokens.spacing3),
-                    DropdownButtonFormField<String>(
+                    AfriDropdownField<String>(
                       initialValue: category,
-                      decoration: const InputDecoration(labelText: 'Category'),
+                      label: 'Category',
                       items: _partnerCategories
                           .map(
                             (item) => DropdownMenuItem<String>(
@@ -693,9 +685,9 @@ class _CmsContentManagerScreenState
                       },
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
-                    DropdownButtonFormField<String>(
+                    AfriDropdownField<String>(
                       initialValue: country,
-                      decoration: const InputDecoration(labelText: 'Country'),
+                      label: 'Country',
                       items: _countryOptions
                           .where((item) => item != 'GLOBAL')
                           .map(
@@ -732,14 +724,14 @@ class _CmsContentManagerScreenState
                       hint: 'Sort order',
                       keyboardType: TextInputType.number,
                     ),
-                    SwitchListTile.adaptive(
+                    AfriSwitchListTile(
                       value: isActive,
                       onChanged: (value) =>
                           setDialogState(() => isActive = value),
                       title: const Text('Active'),
                       contentPadding: EdgeInsets.zero,
                     ),
-                    SwitchListTile.adaptive(
+                    AfriSwitchListTile(
                       value: gamificationEnabled,
                       onChanged: (value) =>
                           setDialogState(() => gamificationEnabled = value),
@@ -750,11 +742,11 @@ class _CmsContentManagerScreenState
                 ),
               ),
               actions: [
-                TextButton(
+                AfriTextButton(
                   onPressed: () => dialogContext.pop(),
                   child: const Text('CANCEL'),
                 ),
-                TextButton(
+                AfriTextButton(
                   onPressed: () async {
                     final name = nameController.text.trim();
                     final slug = slugController.text.trim();
@@ -767,7 +759,7 @@ class _CmsContentManagerScreenState
                       'country': country,
                       'subtitle': _trimToNull(subtitleController.text),
                       'description': _trimToNull(descriptionController.text),
-                      'emoji': _trimToNull(emojiController.text) ?? '🤝',
+                      'emoji': _trimToNull(emojiController.text),
                       'sort_order':
                           int.tryParse(sortOrderController.text.trim()) ?? 0,
                       'is_active': isActive,
@@ -783,7 +775,7 @@ class _CmsContentManagerScreenState
                           slug: slug,
                           category: category,
                           countryCode: country,
-                          emoji: payload['emoji']?.toString() ?? '🤝',
+                          emoji: payload['emoji']?.toString(),
                           subtitle: payload['subtitle']?.toString(),
                           description: payload['description']?.toString(),
                           isActive: isActive,
@@ -851,8 +843,7 @@ class _CmsContentManagerScreenState
         context: context,
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, setDialogState) {
-            return AlertDialog(
-              backgroundColor: ColorTokens.surfaceContainer,
+            return AfriAlertDialog(
               title: Text(
                 existing == null
                     ? 'ADD PARTNER SERVICE'
@@ -863,9 +854,9 @@ class _CmsContentManagerScreenState
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    DropdownButtonFormField<String>(
+                    AfriDropdownField<String>(
                       initialValue: selectedPartnerId,
-                      decoration: const InputDecoration(labelText: 'Partner'),
+                      label: 'Partner',
                       items: _partners
                           .map(
                             (partner) => DropdownMenuItem<String>(
@@ -897,9 +888,9 @@ class _CmsContentManagerScreenState
                       hint: 'Subtitle',
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
-                    DropdownButtonFormField<String>(
+                    AfriDropdownField<String>(
                       initialValue: category,
-                      decoration: const InputDecoration(labelText: 'Category'),
+                      label: 'Category',
                       items: _serviceCategories
                           .map(
                             (item) => DropdownMenuItem<String>(
@@ -914,9 +905,9 @@ class _CmsContentManagerScreenState
                       },
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
-                    DropdownButtonFormField<String>(
+                    AfriDropdownField<String>(
                       initialValue: country,
-                      decoration: const InputDecoration(labelText: 'Country'),
+                      label: 'Country',
                       items: _countryOptions
                           .map(
                             (item) => DropdownMenuItem<String>(
@@ -951,14 +942,14 @@ class _CmsContentManagerScreenState
                       hint: 'Sort order',
                       keyboardType: TextInputType.number,
                     ),
-                    SwitchListTile.adaptive(
+                    AfriSwitchListTile(
                       value: isActive,
                       onChanged: (value) =>
                           setDialogState(() => isActive = value),
                       title: const Text('Active'),
                       contentPadding: EdgeInsets.zero,
                     ),
-                    SwitchListTile.adaptive(
+                    AfriSwitchListTile(
                       value: gamificationEnabled,
                       onChanged: (value) =>
                           setDialogState(() => gamificationEnabled = value),
@@ -969,11 +960,11 @@ class _CmsContentManagerScreenState
                 ),
               ),
               actions: [
-                TextButton(
+                AfriTextButton(
                   onPressed: () => dialogContext.pop(),
                   child: const Text('CANCEL'),
                 ),
-                TextButton(
+                AfriTextButton(
                   onPressed: () async {
                     final serviceSlug = serviceSlugController.text.trim();
                     final title = titleController.text.trim();
@@ -1073,8 +1064,7 @@ class _CmsContentManagerScreenState
         context: context,
         builder: (dialogContext) => StatefulBuilder(
           builder: (context, setDialogState) {
-            return AlertDialog(
-              backgroundColor: ColorTokens.surfaceContainer,
+            return AfriAlertDialog(
               title: Text(
                 existing == null
                     ? 'ADD PREDICTION COMPETITION'
@@ -1085,13 +1075,11 @@ class _CmsContentManagerScreenState
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    DropdownButtonFormField<String>(
+                    AfriDropdownField<String>(
                       initialValue: selectedCompetitionId.isEmpty
                           ? null
                           : selectedCompetitionId,
-                      decoration: const InputDecoration(
-                        labelText: 'Competition',
-                      ),
+                      label: 'Competition',
                       items: availableCompetitions
                           .map(
                             (competition) => DropdownMenuItem<String>(
@@ -1123,7 +1111,7 @@ class _CmsContentManagerScreenState
                       hint: 'Sort order',
                       keyboardType: TextInputType.number,
                     ),
-                    SwitchListTile.adaptive(
+                    AfriSwitchListTile(
                       value: isActive,
                       onChanged: (value) =>
                           setDialogState(() => isActive = value),
@@ -1134,11 +1122,11 @@ class _CmsContentManagerScreenState
                 ),
               ),
               actions: [
-                TextButton(
+                AfriTextButton(
                   onPressed: () => dialogContext.pop(),
                   child: const Text('CANCEL'),
                 ),
-                TextButton(
+                AfriTextButton(
                   onPressed: () async {
                     if (selectedCompetitionId.isEmpty) return;
                     final payload = <String, dynamic>{
@@ -1211,12 +1199,13 @@ class _CmsContentManagerScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text('CONTENT MANAGER', style: TypographyTokens.titleLarge()),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -1226,7 +1215,7 @@ class _CmsContentManagerScreenState
             )
           : _error != null
           ? buildErrorState()
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _loadContent,
               child: ListView(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),

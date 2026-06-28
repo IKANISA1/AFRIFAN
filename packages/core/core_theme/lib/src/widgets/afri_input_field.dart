@@ -31,7 +31,9 @@ class AfriInputField extends StatelessWidget {
     this.suffixIcon,
     this.keyboardType,
     this.textCapitalization = TextCapitalization.none,
+    this.textAlign = TextAlign.start,
     this.maxLines = 1,
+    this.minLines,
     this.maxLength,
     this.maxLengthEnforcement,
     this.readOnly = false,
@@ -42,6 +44,9 @@ class AfriInputField extends StatelessWidget {
     this.focusNode,
     this.autofocus = false,
     this.textInputAction,
+    this.style,
+    this.helperText,
+    this.contentPadding,
   });
 
   final TextEditingController controller;
@@ -52,7 +57,9 @@ class AfriInputField extends StatelessWidget {
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
   final TextCapitalization textCapitalization;
+  final TextAlign textAlign;
   final int maxLines;
+  final int? minLines;
   final int? maxLength;
   final MaxLengthEnforcement? maxLengthEnforcement;
   final bool readOnly;
@@ -63,6 +70,9 @@ class AfriInputField extends StatelessWidget {
   final FocusNode? focusNode;
   final bool autofocus;
   final TextInputAction? textInputAction;
+  final TextStyle? style;
+  final String? helperText;
+  final EdgeInsetsGeometry? contentPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +82,9 @@ class AfriInputField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       textCapitalization: textCapitalization,
+      textAlign: textAlign,
       maxLines: maxLines,
+      minLines: minLines,
       readOnly: readOnly,
       enabled: enabled,
       obscureText: obscureText,
@@ -92,10 +104,11 @@ class AfriInputField extends StatelessWidget {
               required maxLength,
             }) => null
           : null,
-      style: TypographyTokens.bodyLarge(colors.primaryText),
+      style: style ?? TypographyTokens.bodyLarge(colors.primaryText),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
+        helperText: helperText,
         prefixText: prefixText,
         prefixIcon: prefixIcon != null
             ? Icon(prefixIcon, size: 20, color: colors.secondaryText)
@@ -105,10 +118,12 @@ class AfriInputField extends StatelessWidget {
         fillColor: colors.inputSurface,
         labelStyle: TypographyTokens.bodyMedium(colors.secondaryText),
         hintStyle: TypographyTokens.bodyMedium(colors.tertiaryText),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: SpacingTokens.tapPadding,
-          vertical: SpacingTokens.spacing4,
-        ),
+        contentPadding:
+            contentPadding ??
+            const EdgeInsets.symmetric(
+              horizontal: SpacingTokens.tapPadding,
+              vertical: SpacingTokens.spacing4,
+            ),
         border: BorderTokens.input(
           borderRadius: ShapeTokens.inputRadius,
           color: colors.border,

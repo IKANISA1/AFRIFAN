@@ -10,7 +10,6 @@ class GroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
     final name = group['name']?.toString() ?? 'Public group';
     final target = (group['target_amount'] as num?)?.toDouble() ?? 0;
     final current = (group['current_total'] as num?)?.toDouble() ?? 0;
@@ -30,11 +29,15 @@ class GroupCard extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: primary.withValues(alpha: 0.15),
+                  color: ColorTokens.clubAccent.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
-                  child: Icon(Icons.group_work, color: primary, size: 20),
+                  child: Icon(
+                    AfriIcons.groups,
+                    color: ColorTokens.clubAccent,
+                    size: 20,
+                  ),
                 ),
               ),
               const SizedBox(width: SpacingTokens.spacing3),
@@ -44,10 +47,8 @@ class GroupCard extends StatelessWidget {
                   children: [
                     Text(
                       name.toUpperCase(),
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 16,
+                      style: TypographyTokens.titleMedium().copyWith(
                         fontWeight: FontWeight.w700,
-                        color: ColorTokens.onSurface,
                         letterSpacing: 0.5,
                       ),
                       maxLines: 1,
@@ -55,16 +56,15 @@ class GroupCard extends StatelessWidget {
                     ),
                     Text(
                       '$memberCount contributors',
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 15,
-                        color: ColorTokens.onSurfaceVariant,
+                      style: TypographyTokens.bodyLarge(
+                        ColorTokens.onSurfaceVariant,
                       ),
                     ),
                   ],
                 ),
               ),
               Icon(
-                Icons.chevron_right,
+                AfriIcons.chevronRight,
                 color: ColorTokens.onSurfaceVariant,
                 size: 20,
               ),
@@ -75,20 +75,17 @@ class GroupCard extends StatelessWidget {
             const SizedBox(height: SpacingTokens.spacing3),
             ClipRRect(
               borderRadius: BorderRadius.circular(3),
-              child: LinearProgressIndicator(
+              child: AfriLinearProgressIndicator(
                 value: progress,
                 minHeight: 4,
                 backgroundColor: ColorTokens.surfaceContainerHigh,
-                valueColor: AlwaysStoppedAnimation<Color>(primary),
+                color: ColorTokens.clubAccent,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing1),
             Text(
               '${(progress * 100).toStringAsFixed(0)}% of goal',
-              style: TypographyTokens.editorialFont(
-                fontSize: 15,
-                color: ColorTokens.onSurfaceVariant,
-              ),
+              style: TypographyTokens.bodyLarge(ColorTokens.onSurfaceVariant),
             ),
           ],
         ],

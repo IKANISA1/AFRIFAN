@@ -95,25 +95,25 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'CHALLENGE DETAIL',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
+          style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1,
           ),
         ),
-        leading: IconButton(
-          onPressed: () {
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          tooltip: 'Back',
+          onTap: () {
             if (context.canPop()) {
               context.pop();
             } else {
               context.go('/challenge');
             }
           },
-          icon: const Icon(AfriIcons.back),
         ),
       ),
       body: state.when(
@@ -137,7 +137,7 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
           final myEntry = payload.userEntry;
           final settlement = payload.settlement;
 
-          return RefreshIndicator(
+          return AfriRefreshIndicator(
             onRefresh: () =>
                 ref.read(challengeDetailProvider(widget.id).notifier).load(),
             child: ListView(
@@ -201,10 +201,8 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                       children: [
                         Text(
                           'JOIN THIS CHALLENGE',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 16,
+                          style: TypographyTokens.sectionTitle().copyWith(
                             fontWeight: FontWeight.w700,
-                            color: ColorTokens.onSurface,
                           ),
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
@@ -235,11 +233,9 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                               ),
                               child: Text(
                                 ':',
-                                style: TypographyTokens.monolithFont(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w900,
-                                  color: ColorTokens.clubAccent,
-                                ),
+                                style: TypographyTokens.metricValue(
+                                  ColorTokens.clubAccent,
+                                ).copyWith(fontWeight: FontWeight.w900),
                               ),
                             ),
                             Expanded(
@@ -289,10 +285,8 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                       children: [
                         Text(
                           'SETTLEMENT',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 16,
+                          style: TypographyTokens.sectionTitle().copyWith(
                             fontWeight: FontWeight.w700,
-                            color: ColorTokens.onSurface,
                           ),
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
@@ -321,10 +315,8 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                   const SizedBox(height: SpacingTokens.spacing4),
                   Text(
                     'ENTRIES',
-                    style: TypographyTokens.monolithFont(
-                      fontSize: 16,
+                    style: TypographyTokens.sectionTitle().copyWith(
                       fontWeight: FontWeight.w700,
-                      color: ColorTokens.onSurface,
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing2),
@@ -413,21 +405,21 @@ class _ScoreAdjuster extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              onPressed: value > 0 ? () => onChanged(value - 1) : null,
-              icon: const Icon(Icons.remove_circle_outline),
+            AfriIconButton(
+              icon: AfriIcons.remove,
+              onTap: value > 0 ? () => onChanged(value - 1) : null,
+              tooltip: 'Decrease $label',
             ),
             Text(
               '$value',
-              style: TypographyTokens.monolithFont(
-                fontSize: 24,
+              style: TypographyTokens.headlineMedium().copyWith(
                 fontWeight: FontWeight.w800,
-                color: ColorTokens.onSurface,
               ),
             ),
-            IconButton(
-              onPressed: value < 20 ? () => onChanged(value + 1) : null,
-              icon: const Icon(Icons.add_circle_outline),
+            AfriIconButton(
+              icon: AfriIcons.add,
+              onTap: value < 20 ? () => onChanged(value + 1) : null,
+              tooltip: 'Increase $label',
             ),
           ],
         ),

@@ -72,7 +72,7 @@ class _ContributorRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final isFirst = data.rank == 1;
 
-    return ClayCard(
+    return AfriSurfaceCard(
       borderRadius: ShapeTokens.chipRadius,
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing4,

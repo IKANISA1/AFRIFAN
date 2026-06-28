@@ -8,8 +8,8 @@ import '../models/fet_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../providers/leaderboard_provider.dart';
-import '../repositories/prediction_repository.dart';
 import '../widgets/leaderboard_widgets.dart';
+
 /// Dual-tab leaderboard: FET ranking (fans) and Supporters ranking.
 ///
 /// Uses [FetLeaderboardNotifier] and [SupporterLeaderboardNotifier] via
@@ -68,63 +68,37 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(
-          'Leaderboard',
-          style: TypographyTokens.headlineSmall(),
-        ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
+        title: Text('Leaderboard', style: TypographyTokens.headlineSmall()),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            // ── Top-level tabs: FET / SUPPORTERS ──
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: SpacingTokens.spacing6,
                 vertical: SpacingTokens.spacing3,
               ),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: ColorTokens.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.all(3),
-                child: TabBar(
-                  controller: _topTabController,
-                  isScrollable: false,
-                  indicator: BoxDecoration(
-                    color: ColorTokens.clubAccent,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  labelColor: ColorTokens.background,
-                  unselectedLabelColor: ColorTokens.onSurfaceVariant,
-                  labelStyle: TypographyTokens.labelMedium(
-                    ColorTokens.background,
-                  ),
-                  dividerColor: Colors.transparent,
-                  splashFactory: NoSplash.splashFactory,
-                  tabs: const [
-                    Tab(text: 'FET Ranking'),
-                    Tab(text: 'Supporters'),
-                  ],
-                ),
+              child: AfriTabBar.segmented(
+                controller: _topTabController,
+                padding: EdgeInsets.zero,
+                tabs: const [
+                  Tab(text: 'FET Ranking'),
+                  Tab(text: 'Supporters'),
+                ],
               ),
             ),
 
-            // ── Tab content ──
             Expanded(
               child: TabBarView(
                 controller: _topTabController,
-                children: [
-                  _buildFetTab(),
-                  _buildSupporterTab(),
-                ],
+                children: [_buildFetTab(), _buildSupporterTab()],
               ),
             ),
           ],
@@ -201,87 +175,12 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
         ),
       ),
       data: (snapshot) {
-        if (snapshot.rows.isEmpty) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(SpacingTokens.spacing6),
-              child: AfriEmptyView(
-                title: 'No ranks yet',
-                message: 'The board fills as predictions settle.',
-              ),
-            ),
-          );
-        }
-
-        final podium = snapshot.rows.take(3).toList(growable: false);
-        final currentUserId =
-            ref.read(predictionRepositoryProvider).currentUserId;
-        final userEntry = currentUserId == null || currentUserId.isEmpty
-            ? null
-            : snapshot.rows.cast<PredictionLeaderboardEntry?>().firstWhere(
-                  (e) => e?.userId == currentUserId,
-                  orElse: () => null,
-                );
-
-        return ListView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(
-            horizontal: SpacingTokens.spacing6,
-          ),
-          children: [
-            // Podium
-            if (podium.isNotEmpty)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: FetPodiumCard(
-                      entry: podium.length > 1 ? podium[1] : null,
-                    ),
-                  ),
-                  const SizedBox(width: SpacingTokens.spacing3),
-                  Expanded(
-                    child: FetPodiumCard(
-                      entry: podium.first,
-                      featured: true,
-                    ),
-                  ),
-                  const SizedBox(width: SpacingTokens.spacing3),
-                  Expanded(
-                    child: FetPodiumCard(
-                      entry: podium.length > 2 ? podium[2] : null,
-                    ),
-                  ),
-                ],
-              )
-                  .animate()
-                  .fadeIn(duration: 400.ms)
-                  .slideY(begin: 0.04, end: 0, duration: 400.ms),
-            const SizedBox(height: SpacingTokens.spacing4),
-
-            // Pinned user row
-            if (userEntry != null) FetUserRow(entry: userEntry),
-
-            if (userEntry != null)
-              const SizedBox(height: SpacingTokens.spacing3),
-
-            // Full list
-            for (int i = 0; i < snapshot.rows.length; i++)
-              Padding(
-                padding: const EdgeInsets.only(
-                  bottom: SpacingTokens.spacing3,
-                ),
-                child: FetListRow(
-                  entry: snapshot.rows[i],
-                  isMe: currentUserId != null &&
-                      currentUserId.isNotEmpty &&
-                      snapshot.rows[i].userId == currentUserId,
-                ),
-              )
-                  .animate(delay: (i * 40).ms)
-                  .fadeIn(duration: 200.ms)
-                  .slideY(begin: 0.03, end: 0, duration: 200.ms),
-          ],
+        final currentUserId = ref
+            .read(predictionRepositoryProvider)
+            .currentUserId;
+        return FetLeaderboardContent(
+          snapshot: snapshot,
+          currentUserId: currentUserId,
         );
       },
     );
@@ -311,43 +210,114 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
           ),
         ),
       ),
-      data: (snapshot) {
-        if (snapshot.rows.isEmpty) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(SpacingTokens.spacing6),
-              child: AfriEmptyView(
-                title: 'No supporters yet',
-                message: 'Supporter rankings update with contributions.',
-              ),
-            ),
+      data: (snapshot) => SupporterLeaderboardContent(snapshot: snapshot),
+    );
+  }
+}
+
+class FetLeaderboardContent extends StatelessWidget {
+  const FetLeaderboardContent({
+    super.key,
+    required this.snapshot,
+    required this.currentUserId,
+  });
+
+  final FetLeaderboardSnapshot snapshot;
+  final String? currentUserId;
+
+  @override
+  Widget build(BuildContext context) {
+    if (snapshot.rows.isEmpty) {
+      return const SizedBox.shrink(
+        key: ValueKey<String>('fet-leaderboard-empty'),
+      );
+    }
+
+    final podium = snapshot.rows.length >= 3
+        ? snapshot.rows.take(3).toList(growable: false)
+        : const <PredictionLeaderboardEntry>[];
+    final userEntry = currentUserId == null || currentUserId!.isEmpty
+        ? null
+        : snapshot.rows.cast<PredictionLeaderboardEntry?>().firstWhere(
+            (e) => e?.userId == currentUserId,
+            orElse: () => null,
           );
-        }
 
-        final podium = snapshot.rows.take(3).toList(growable: false);
-        final currentUser = snapshot.rows
-            .cast<FetLeaderboardRow?>()
-            .firstWhere(
-              (e) => e?.isCurrentUser == true,
-              orElse: () => null,
-            );
-
-        return ListView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(
-            horizontal: SpacingTokens.spacing6,
-          ),
-          children: [
-            // Podium
-            if (podium.isNotEmpty)
-              Row(
+    return ListView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing6),
+      children: [
+        if (podium.length == 3) ...[
+          Row(
+                key: const ValueKey<String>('fet-leaderboard-podium'),
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  Expanded(child: FetPodiumCard(entry: podium[1])),
+                  const SizedBox(width: SpacingTokens.spacing3),
                   Expanded(
-                    child: SupporterPodiumCard(
-                      entry: podium.length > 1 ? podium[1] : null,
-                    ),
+                    child: FetPodiumCard(entry: podium.first, featured: true),
                   ),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(child: FetPodiumCard(entry: podium[2])),
+                ],
+              )
+              .animate()
+              .fadeIn(duration: 400.ms)
+              .slideY(begin: 0.04, end: 0, duration: 400.ms),
+          const SizedBox(height: SpacingTokens.spacing4),
+        ],
+        if (userEntry != null) FetUserRow(entry: userEntry),
+        if (userEntry != null) const SizedBox(height: SpacingTokens.spacing3),
+        for (int i = 0; i < snapshot.rows.length; i++)
+          Padding(
+                padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
+                child: FetListRow(
+                  entry: snapshot.rows[i],
+                  isMe:
+                      currentUserId != null &&
+                      currentUserId!.isNotEmpty &&
+                      snapshot.rows[i].userId == currentUserId,
+                ),
+              )
+              .animate(delay: (i * 40).ms)
+              .fadeIn(duration: 200.ms)
+              .slideY(begin: 0.03, end: 0, duration: 200.ms),
+      ],
+    );
+  }
+}
+
+class SupporterLeaderboardContent extends StatelessWidget {
+  const SupporterLeaderboardContent({super.key, required this.snapshot});
+
+  final SupporterLeaderboardSnapshot snapshot;
+
+  @override
+  Widget build(BuildContext context) {
+    if (snapshot.rows.isEmpty) {
+      return const SizedBox.shrink(
+        key: ValueKey<String>('supporter-leaderboard-empty'),
+      );
+    }
+
+    final podium = snapshot.rows.length >= 3
+        ? snapshot.rows.take(3).toList(growable: false)
+        : const <FetLeaderboardRow>[];
+    final currentUser = snapshot.rows.cast<FetLeaderboardRow?>().firstWhere(
+      (e) => e?.isCurrentUser == true,
+      orElse: () => null,
+    );
+
+    return ListView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing6),
+      children: [
+        if (podium.length == 3) ...[
+          Row(
+                key: const ValueKey<String>('supporter-leaderboard-podium'),
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(child: SupporterPodiumCard(entry: podium[1])),
                   const SizedBox(width: SpacingTokens.spacing3),
                   Expanded(
                     child: SupporterPodiumCard(
@@ -356,42 +326,28 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
                     ),
                   ),
                   const SizedBox(width: SpacingTokens.spacing3),
-                  Expanded(
-                    child: SupporterPodiumCard(
-                      entry: podium.length > 2 ? podium[2] : null,
-                    ),
-                  ),
+                  Expanded(child: SupporterPodiumCard(entry: podium[2])),
                 ],
               )
-                  .animate()
-                  .fadeIn(duration: 400.ms)
-                  .slideY(begin: 0.04, end: 0, duration: 400.ms),
-            const SizedBox(height: SpacingTokens.spacing4),
-
-            // Pinned user row
-            if (currentUser != null)
-              SupporterUserRow(entry: currentUser),
-
-            if (currentUser != null)
-              const SizedBox(height: SpacingTokens.spacing3),
-
-            // Full list
-            for (int i = 0; i < snapshot.rows.length; i++)
-              Padding(
-                padding: const EdgeInsets.only(
-                  bottom: SpacingTokens.spacing3,
-                ),
+              .animate()
+              .fadeIn(duration: 400.ms)
+              .slideY(begin: 0.04, end: 0, duration: 400.ms),
+          const SizedBox(height: SpacingTokens.spacing4),
+        ],
+        if (currentUser != null) SupporterUserRow(entry: currentUser),
+        if (currentUser != null) const SizedBox(height: SpacingTokens.spacing3),
+        for (int i = 0; i < snapshot.rows.length; i++)
+          Padding(
+                padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
                 child: SupporterListRow(
                   entry: snapshot.rows[i],
                   isMe: snapshot.rows[i].isCurrentUser,
                 ),
               )
-                  .animate(delay: (i * 40).ms)
-                  .fadeIn(duration: 200.ms)
-                  .slideY(begin: 0.03, end: 0, duration: 200.ms),
-          ],
-        );
-      },
+              .animate(delay: (i * 40).ms)
+              .fadeIn(duration: 200.ms)
+              .slideY(begin: 0.03, end: 0, duration: 200.ms),
+      ],
     );
   }
 }

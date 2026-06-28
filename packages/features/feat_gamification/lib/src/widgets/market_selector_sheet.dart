@@ -4,6 +4,7 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../fanzone_slip_providers.dart';
 import '../models/prediction_models.dart';
@@ -53,6 +54,7 @@ class _MarketSelectorContent extends ConsumerStatefulWidget {
 
 class _MarketSelectorContentState
     extends ConsumerState<_MarketSelectorContent> {
+  final _searchController = TextEditingController();
   String _query = '';
   String? _activeCategory;
 
@@ -105,6 +107,12 @@ class _MarketSelectorContentState
     _activeCategory = _categories.isNotEmpty ? _categories.first : null;
   }
 
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   /// Short label for chip display.
   String _chipLabel(String category) {
     // Shorten common suffixes for chip UI
@@ -119,14 +127,16 @@ class _MarketSelectorContentState
   @override
   Widget build(BuildContext context) {
     final slip = ref.watch(fanzoneSlipProvider);
-    final allMarkets = widget.markets.where((market) {
-      final q = _query.trim().toLowerCase();
-      if (q.isEmpty) return true;
-      return market.marketName.toLowerCase().contains(q) ||
-          market.description.toLowerCase().contains(q) ||
-          market.marketShortName.toLowerCase().contains(q) ||
-          market.marketCategory.toLowerCase().contains(q);
-    }).toList(growable: false);
+    final allMarkets = widget.markets
+        .where((market) {
+          final q = _query.trim().toLowerCase();
+          if (q.isEmpty) return true;
+          return market.marketName.toLowerCase().contains(q) ||
+              market.description.toLowerCase().contains(q) ||
+              market.marketShortName.toLowerCase().contains(q) ||
+              market.marketCategory.toLowerCase().contains(q);
+        })
+        .toList(growable: false);
 
     final markets = _activeCategory == null
         ? allMarkets
@@ -162,10 +172,8 @@ class _MarketSelectorContentState
               Expanded(
                 child: Text(
                   widget.fixture.fixtureLabel,
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 18,
+                  style: TypographyTokens.titleLarge().copyWith(
                     fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurface,
                   ),
                 ),
               ),
@@ -183,15 +191,11 @@ class _MarketSelectorContentState
           padding: const EdgeInsets.symmetric(
             horizontal: SpacingTokens.spacing6,
           ),
-          child: TextField(
+          child: AfriInputField(
+            controller: _searchController,
             onChanged: (value) => setState(() => _query = value),
-            decoration: InputDecoration(
-              hintText: 'Search markets',
-              prefixIcon: const Icon(AfriIcons.search),
-              filled: true,
-              fillColor: ColorTokens.surfaceContainerHigh,
-              border: InputBorder.none,
-            ),
+            hint: 'Search markets',
+            prefixIcon: AfriIcons.search,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing4),
@@ -249,21 +253,19 @@ class _MarketSelectorContentState
                           ),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? ColorTokens.clubAccent
-                                    .withValues(alpha: 0.25)
-                                : ColorTokens.onSurfaceVariant
-                                    .withValues(alpha: 0.12),
+                                ? ColorTokens.clubAccent.withValues(alpha: 0.25)
+                                : ColorTokens.onSurfaceVariant.withValues(
+                                    alpha: 0.12,
+                                  ),
                             borderRadius: BorderRadius.circular(999),
                           ),
                           child: Text(
                             '$count',
-                            style: TypographyTokens.editorialFont(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              color: isSelected
+                            style: TypographyTokens.metricLabel(
+                              isSelected
                                   ? ColorTokens.clubAccent
                                   : ColorTokens.onSurfaceVariant,
-                            ),
+                            ).copyWith(fontWeight: FontWeight.w700),
                           ),
                         ),
                       ],
@@ -298,12 +300,9 @@ class _MarketSelectorContentState
                 Expanded(
                   child: Text(
                     _activeCategory!,
-                    style: TypographyTokens.editorialFont(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: ColorTokens.onSurfaceVariant,
-                      letterSpacing: 1.0,
-                    ),
+                    style: TypographyTokens.metricLabel(
+                      ColorTokens.onSurfaceVariant,
+                    ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.0),
                   ),
                 ),
                 Text(
@@ -320,13 +319,19 @@ class _MarketSelectorContentState
               ? Center(
                   child: Padding(
                     padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                    child: AfriEmptyView(
-                      compact: true,
-                      title: _query.isNotEmpty
-                          ? 'No markets match "$_query"'
-                          : 'No markets in this category',
-                      icon: AfriIcons.grid,
-                    ),
+                    child: _query.isEmpty
+                        ? const SizedBox.shrink()
+                        : AfriButton(
+                            label: 'Clear search',
+                            icon: AfriIcons.filter,
+                            variant: AfriButtonVariant.secondary,
+                            onTap: () {
+                              setState(() {
+                                _query = '';
+                                _searchController.clear();
+                              });
+                            },
+                          ),
                   ),
                 )
               : ListView.separated(
@@ -359,7 +364,7 @@ class _MarketSelectorContentState
                 : 'Open Slip · ${slip.items.length} picks · ${slip.totalPotential} FET',
             icon: AfriIcons.myPicks,
             enabled: slip.items.isNotEmpty,
-            onTap: () => Navigator.of(context).pop(),
+            onTap: () => context.pop(),
           ),
         ),
       ],
@@ -421,20 +426,22 @@ class _SheetMarketCard extends ConsumerWidget {
                     ),
                     child: Text(
                       '+${market.fetValue} FET',
-                      style:
-                          TypographyTokens.labelSmall(ColorTokens.clubAccent),
+                      style: TypographyTokens.labelSmall(
+                        ColorTokens.clubAccent,
+                      ),
                     ),
                   ),
                   if (market.betType.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Text(
                       market.betType,
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w600,
-                        color: ColorTokens.onSurfaceVariant,
-                        letterSpacing: 0.5,
-                      ),
+                      style:
+                          TypographyTokens.metricLabel(
+                            ColorTokens.onSurfaceVariant,
+                          ).copyWith(
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
+                          ),
                     ),
                   ],
                 ],

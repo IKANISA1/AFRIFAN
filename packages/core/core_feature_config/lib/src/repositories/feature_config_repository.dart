@@ -42,7 +42,7 @@ class FeatureConfigRepository {
     }
 
     // 3. Last resort, return empty
-    AfriLogger.warn(_tag, 'No config available, returning empty snapshot');
+    AfriLogger.warn(_tag, 'Config unavailable, returning empty snapshot');
     return PlatformConfigSnapshot.empty;
   }
 

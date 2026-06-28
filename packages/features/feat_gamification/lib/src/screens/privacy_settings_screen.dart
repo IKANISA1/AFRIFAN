@@ -24,8 +24,7 @@ class PrivacySettingsScreen extends ConsumerStatefulWidget {
       _PrivacySettingsScreenState();
 }
 
-class _PrivacySettingsScreenState
-    extends ConsumerState<PrivacySettingsScreen> {
+class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
   static const _showRealNameKey = 'privacy:show_real_name';
   static const _findableByPhoneKey = 'privacy:findable_by_phone';
 
@@ -37,8 +36,7 @@ class _PrivacySettingsScreenState
   void initState() {
     super.initState();
     // Start with cached values for instant UI, then load from server.
-    _showRealName =
-        HiveCacheService.getJson<bool>(_showRealNameKey) ?? false;
+    _showRealName = HiveCacheService.getJson<bool>(_showRealNameKey) ?? false;
     _findableByPhone =
         HiveCacheService.getJson<bool>(_findableByPhoneKey) ?? false;
     _loadFromServer();
@@ -63,8 +61,7 @@ class _PrivacySettingsScreenState
 
       if (!mounted) return;
       if (row != null) {
-        final serverShowReal =
-            row['privacy_show_real_name'] as bool? ?? false;
+        final serverShowReal = row['privacy_show_real_name'] as bool? ?? false;
         final serverFindable =
             row['privacy_findable_by_phone'] as bool? ?? false;
 
@@ -76,18 +73,25 @@ class _PrivacySettingsScreenState
 
         // Update local cache to match server.
         HiveCacheService.putJson(
-          _showRealNameKey, serverShowReal,
+          _showRealNameKey,
+          serverShowReal,
           ttl: const Duration(days: 365),
         );
         HiveCacheService.putJson(
-          _findableByPhoneKey, serverFindable,
+          _findableByPhoneKey,
+          serverFindable,
           ttl: const Duration(days: 365),
         );
       } else {
         setState(() => _isLoadingFromServer = false);
       }
     } catch (error, stackTrace) {
-      AfriLogger.warn('PrivacySettingsScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'PrivacySettingsScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       // Keep cached values if server is unavailable.
       if (mounted) setState(() => _isLoadingFromServer = false);
     }
@@ -139,9 +143,10 @@ class _PrivacySettingsScreenState
                   ),
                   child: Row(
                     children: [
-                      IconButton(
-                        onPressed: () => context.pop(),
-                        icon: const Icon(AfriIcons.back),
+                      AfriIconButton(
+                        icon: AfriIcons.back,
+                        onTap: () => context.pop(),
+                        tooltip: 'Back',
                       ),
                       const SizedBox(width: SpacingTokens.spacing2),
                       Column(
@@ -149,17 +154,17 @@ class _PrivacySettingsScreenState
                         children: [
                           Text(
                             'SETTINGS',
-                            style: TypographyTokens.editorialFont(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              color: ColorTokens.onSurfaceVariant,
-                              letterSpacing: 1.6,
-                            ),
+                            style:
+                                TypographyTokens.metricLabel(
+                                  ColorTokens.onSurfaceVariant,
+                                ).copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 1.6,
+                                ),
                           ),
                           Text(
                             'PRIVACY',
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 22,
+                            style: TypographyTokens.headlineSmall().copyWith(
                               fontWeight: FontWeight.w700,
                               letterSpacing: 1.6,
                             ),
@@ -180,42 +185,40 @@ class _PrivacySettingsScreenState
                     // ══════════ Core Guarantees ══════════
                     Text(
                       'CORE GUARANTEES',
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: ColorTokens.onSurfaceVariant,
-                        letterSpacing: 1.6,
-                      ),
+                      style:
+                          TypographyTokens.metricLabel(
+                            ColorTokens.onSurfaceVariant,
+                          ).copyWith(
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.6,
+                          ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
-                    ClayCard(
-                      child: Column(
-                        children: [
-                          _GuaranteeRow(
-                            icon: AfriIcons.phone,
-                            iconColor: ExternalBrandColors.whatsAppGreen,
-                            title: 'Phone Number Hidden',
-                            description:
-                                'Your WhatsApp/Phone number is encrypted and stored '
-                                'server-side only. It is never exposed to other users, '
-                                'club admins, or in public leaderboards.',
+                    AfriSurfaceCard(
+                          child: Column(
+                            children: [
+                              _GuaranteeRow(
+                                icon: AfriIcons.phone,
+                                iconColor: ExternalBrandColors.whatsAppGreen,
+                                title: 'Phone Number Hidden',
+                                description:
+                                    'Your WhatsApp/Phone number is encrypted and stored '
+                                    'server-side only. It is never exposed to other users, '
+                                    'club admins, or in public leaderboards.',
+                              ),
+                              const AfriDivider(),
+                              _GuaranteeRow(
+                                icon: AfriIcons.privacy,
+                                iconColor: ColorTokens.clubAccent,
+                                title: 'Anonymous Contributions',
+                                description:
+                                    'MoMo contributions to fan clubs are logged using your '
+                                    'Fan ID and amount bracket only. Exact amounts and '
+                                    'phone numbers are not recorded.',
+                              ),
+                            ],
                           ),
-                          Divider(
-                            height: 1,
-                            color: ColorTokens.ghostBorder,
-                          ),
-                          _GuaranteeRow(
-                            icon: AfriIcons.privacy,
-                            iconColor: ColorTokens.clubAccent,
-                            title: 'Anonymous Contributions',
-                            description:
-                                'MoMo contributions to fan clubs are logged using your '
-                                'Fan ID and amount bracket only. Exact amounts and '
-                                'phone numbers are not recorded.',
-                          ),
-                        ],
-                      ),
-                    )
+                        )
                         .animate()
                         .fadeIn(duration: 300.ms)
                         .slideY(begin: 0.03, end: 0, duration: 300.ms),
@@ -225,44 +228,42 @@ class _PrivacySettingsScreenState
                     // ══════════ Visibility Controls ══════════
                     Text(
                       'VISIBILITY CONTROLS',
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: ColorTokens.onSurfaceVariant,
-                        letterSpacing: 1.6,
-                      ),
+                      style:
+                          TypographyTokens.metricLabel(
+                            ColorTokens.onSurfaceVariant,
+                          ).copyWith(
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.6,
+                          ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
-                    ClayCard(
-                      child: Column(
-                        children: [
-                          _VisibilityToggle(
-                            icon: _showRealName
-                                ? AfriIcons.visibility
-                                : AfriIcons.visibilityOff,
-                            title: 'Show Real Name',
-                            description:
-                                'If OFF, your Fan ID is displayed on leaderboards '
-                                'instead of your real name.',
-                            value: _showRealName,
-                            onChanged: _setShowRealName,
+                    AfriSurfaceCard(
+                          child: Column(
+                            children: [
+                              _VisibilityToggle(
+                                icon: _showRealName
+                                    ? AfriIcons.visibility
+                                    : AfriIcons.visibilityOff,
+                                title: 'Show Real Name',
+                                description:
+                                    'If OFF, your Fan ID is displayed on leaderboards '
+                                    'instead of your real name.',
+                                value: _showRealName,
+                                onChanged: _setShowRealName,
+                              ),
+                              const AfriDivider(),
+                              _VisibilityToggle(
+                                icon: AfriIcons.search,
+                                title: 'Findable by Phone',
+                                description:
+                                    'Allows friends to find you by phone number. '
+                                    'Your number stays private.',
+                                value: _findableByPhone,
+                                onChanged: _setFindableByPhone,
+                              ),
+                            ],
                           ),
-                          Divider(
-                            height: 1,
-                            color: ColorTokens.ghostBorder,
-                          ),
-                          _VisibilityToggle(
-                            icon: AfriIcons.search,
-                            title: 'Findable by Phone',
-                            description:
-                                'Allows friends to find you by phone number. '
-                                'Your number stays private.',
-                            value: _findableByPhone,
-                            onChanged: _setFindableByPhone,
-                          ),
-                        ],
-                      ),
-                    )
+                        )
                         .animate(delay: 100.ms)
                         .fadeIn(duration: 300.ms)
                         .slideY(begin: 0.03, end: 0, duration: 300.ms),
@@ -284,8 +285,9 @@ class _PrivacySettingsScreenState
                             height: 48,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: ColorTokens.success
-                                  .withValues(alpha: 0.12),
+                              color: ColorTokens.success.withValues(
+                                alpha: 0.12,
+                              ),
                             ),
                             alignment: Alignment.center,
                             child: const Icon(
@@ -315,9 +317,7 @@ class _PrivacySettingsScreenState
                           ),
                         ],
                       ),
-                    )
-                        .animate(delay: 200.ms)
-                        .fadeIn(duration: 300.ms),
+                    ).animate(delay: 200.ms).fadeIn(duration: 300.ms),
 
                     const SizedBox(height: 80),
                   ]),
@@ -368,10 +368,7 @@ class _GuaranteeRow extends StatelessWidget {
               children: [
                 Text(title, style: TypographyTokens.titleSmall()),
                 const SizedBox(height: 2),
-                Text(
-                  description,
-                  style: TypographyTokens.bodySmall(),
-                ),
+                Text(description, style: TypographyTokens.bodySmall()),
               ],
             ),
           ),
@@ -411,11 +408,7 @@ class _VisibilityToggle extends StatelessWidget {
               color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.1),
             ),
             alignment: Alignment.center,
-            child: Icon(
-              icon,
-              size: 20,
-              color: ColorTokens.onSurfaceVariant,
-            ),
+            child: Icon(icon, size: 20, color: ColorTokens.onSurfaceVariant),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
           Expanded(

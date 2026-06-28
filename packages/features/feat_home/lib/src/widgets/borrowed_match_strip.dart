@@ -3,22 +3,22 @@ import 'package:flutter/material.dart';
 
 import 'match_card.dart'; // To reuse MatchSlide
 
-class EliteMatchStrip extends StatelessWidget {
+class BorrowedMatchStrip extends StatelessWidget {
   final MatchSlide slide;
   final VoidCallback? onTap;
 
-  const EliteMatchStrip({super.key, required this.slide, this.onTap});
+  const BorrowedMatchStrip({super.key, required this.slide, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return EliteCard(
+    return AfriPanelCard(
       onTap: onTap,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       margin: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.screenPadding,
       ),
-      backgroundColor: Colors.white,
-      borderColor: Colors.transparent,
+      backgroundColor: ColorTokens.borrowedPaper,
+      borderColor: ColorTokens.transparent,
       child: Row(
         children: [
           Expanded(
@@ -39,23 +39,23 @@ class EliteMatchStrip extends StatelessWidget {
                       ),
                       child: Text(
                         slide.status.toUpperCase(),
-                        style: const TextStyle(
-                          color: ColorTokens.error,
-                          fontSize: 9,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1,
-                        ),
+                        style: TypographyTokens.metricLabel(ColorTokens.error)
+                            .copyWith(
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1,
+                            ),
                       ),
                     ),
                     const SizedBox(width: 8),
                     Text(
                       slide.dateInfo,
-                      style: TextStyle(
-                        color: Colors.black.withValues(alpha: 0.4),
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
-                      ),
+                      style:
+                          TypographyTokens.metricLabel(
+                            ColorTokens.borrowedInkSubtle,
+                          ).copyWith(
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
                     ),
                   ],
                 ),
@@ -65,15 +65,14 @@ class EliteMatchStrip extends StatelessWidget {
                     Expanded(
                       child: Text(
                         '${slide.homeTeam} vs ${slide.awayTeam}'.toUpperCase(),
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontFamily: TypographyTokens.borrowedFontFamily,
-                          package: 'core_theme',
-                          fontWeight: FontWeight.w900,
-                          fontStyle: FontStyle.italic,
-                          height: 0.9,
-                        ),
+                        style:
+                            TypographyTokens.titleLarge(
+                              ColorTokens.borrowedInk,
+                            ).copyWith(
+                              fontWeight: FontWeight.w900,
+                              fontStyle: FontStyle.italic,
+                              height: 0.9,
+                            ),
                       ),
                     ),
                   ],
@@ -81,12 +80,9 @@ class EliteMatchStrip extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   slide.venue.toUpperCase(),
-                  style: TextStyle(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    fontSize: 9,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1,
-                  ),
+                  style: TypographyTokens.metricLabel(
+                    ColorTokens.borrowedInkFaint,
+                  ).copyWith(fontWeight: FontWeight.w900, letterSpacing: 1),
                 ),
               ],
             ),
@@ -94,12 +90,12 @@ class EliteMatchStrip extends StatelessWidget {
           Container(
             height: 48,
             width: 1,
-            color: Colors.black.withValues(alpha: 0.05),
+            color: ColorTokens.borrowedHairline,
             margin: const EdgeInsets.symmetric(horizontal: 16),
           ),
           const Icon(
-            Icons.chevron_right_rounded,
-            color: Colors.black26,
+            AfriIcons.chevronRight,
+            color: ColorTokens.borrowedInkFaint,
             size: 24,
           ),
         ],

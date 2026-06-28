@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 void closeSettingsChild(BuildContext context) {
-  final navigator = Navigator.of(context);
-  if (navigator.canPop()) {
+  if (context.canPop()) {
     context.pop();
     return;
   }
@@ -18,7 +17,7 @@ class SettingsBackGuard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final canPop = Navigator.of(context).canPop();
+    final canPop = context.canPop();
 
     return PopScope(
       canPop: canPop,

@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
-import 'package:core_utils/core_utils.dart';
 
 class OffersScreen extends ConsumerStatefulWidget {
   const OffersScreen({super.key});
@@ -44,7 +44,12 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
         _error = null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('OffersScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'OffersScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -106,10 +111,7 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
                     value: offer.triggerCondition,
                   ),
                   const SizedBox(height: SpacingTokens.spacing5),
-                  AfriButton(
-                    label: 'Close',
-                    onTap: () => Navigator.of(sheetContext).pop(),
-                  ),
+                  AfriButton(label: 'Close', onTap: () => sheetContext.pop()),
                 ],
               ),
             ),
@@ -130,23 +132,16 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
     final alwaysOn = _offers
         .where((offer) => !offer.isFeatured && !offer.isMatchDay)
         .toList(growable: false);
-    final maxReward = _offers.isEmpty
-        ? 0
-        : _offers
-              .map((offer) => offer.fetValue)
-              .reduce((value, element) => value > element ? value : element);
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(
-          'Offers',
-          style: TypographyTokens.headlineSmall(),
-        ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
+        title: Text('Offers', style: TypographyTokens.headlineSmall()),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -166,7 +161,7 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
                 ),
               ),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _load,
               color: ColorTokens.clubAccent,
               child: CustomScrollView(
@@ -186,10 +181,11 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          AfriSectionHeader(
+                          const AfriSectionHeader(
                             title: 'Ways to earn',
-                            subtitle: 'Join campaigns and activations to earn FET.',
-                            padding: EdgeInsets.zero,
+                            subtitle:
+                                'Join campaigns and activations to earn FET.',
+                            padding: EdgeInsets.all(0),
                           ),
                           const SizedBox(height: SpacingTokens.spacing4),
                           Row(
@@ -216,15 +212,7 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
                     ),
                   ),
                   if (_offers.isEmpty)
-                    const SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: AfriEmptyView(
-                        icon: AfriIcons.offers,
-                        title: 'No partner offers live',
-                        message:
-                            'Offers will appear once partner campaigns are published for the active club.',
-                      ),
-                    )
+                    const SliverToBoxAdapter(child: SizedBox.shrink())
                   else ...[
                     if (featured.isNotEmpty) ...[
                       _buildSectionHeader('Featured', featured.length),
@@ -262,9 +250,7 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
           title: title,
           trailing: Text(
             '$count',
-            style: TypographyTokens.labelSmall(
-              ColorTokens.onSurfaceVariant,
-            ),
+            style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
           ),
         ),
       ),
@@ -273,17 +259,13 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
 
   Widget _buildOfferSliver(List<FetPartnerOffer> offers) {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.spacing6,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing6),
       sliver: SliverList.builder(
         itemCount: offers.length,
         itemBuilder: (context, index) {
           return Padding(
             padding: EdgeInsets.only(
-              bottom: index < offers.length - 1
-                  ? SpacingTokens.spacing3
-                  : 0,
+              bottom: index < offers.length - 1 ? SpacingTokens.spacing3 : 0,
             ),
             child: _OfferCard(
               offer: offers[index],
@@ -304,7 +286,7 @@ class _OfferCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClayCard(
+    return AfriSurfaceCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -312,7 +294,7 @@ class _OfferCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  '${offer.partnerEmoji ?? '🤝'} ${offer.partnerName}',
+                  offer.partnerName,
                   style: TypographyTokens.labelSmall(
                     ColorTokens.onSurfaceVariant,
                   ),
@@ -380,35 +362,6 @@ class _OfferMetaRow extends StatelessWidget {
             TextSpan(text: value),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _OfferStat extends StatelessWidget {
-  const _OfferStat({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(SpacingTokens.spacing3),
-      decoration: BoxDecoration(
-        color: ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label.toUpperCase(),
-            style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
-          ),
-          const SizedBox(height: SpacingTokens.spacing1),
-          Text(value, style: TypographyTokens.titleMedium()),
-        ],
       ),
     );
   }

@@ -9,12 +9,13 @@ class ProfileSetupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: ColorTokens.onSurface),
-          onPressed: () {
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onTap: () {
             if (context.canPop()) {
               context.pop();
             } else {
@@ -79,7 +80,7 @@ class ProfileSetupScreen extends StatelessWidget {
                 onTap: () => context.go('/contribute'),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
-              TextButton(
+              AfriTextButton(
                 onPressed: () => context.go('/settings'),
                 child: Text(
                   'Back to Settings',

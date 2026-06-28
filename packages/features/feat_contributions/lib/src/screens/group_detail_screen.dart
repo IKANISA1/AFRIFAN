@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -30,7 +32,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _loadGroup();
+    unawaited(_loadGroup());
   }
 
   Future<void> _loadGroup() async {
@@ -113,15 +115,6 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     }
   }
 
-  String _humanizeStatus(String? raw) {
-    return switch (raw?.toLowerCase().trim()) {
-      'confirmed' => 'CONFIRMED',
-      'rejected' || 'failed' => 'FAILED',
-      'pending' || '' || null => 'PROCESSING',
-      final other => other!.toUpperCase(),
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     final currency = _currencyFormatter;
@@ -140,25 +133,25 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           title.toUpperCase(),
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.4,
           ),
         ),
-        leading: IconButton(
-          onPressed: () {
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onTap: () {
             if (context.canPop()) {
               context.pop();
             } else {
               context.go('/contribute/groups');
             }
           },
-          icon: const Icon(AfriIcons.back),
         ),
       ),
       body: _loading
@@ -173,9 +166,9 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   'Try returning to the communities list and opening it again.',
               onPressed: () => context.go('/contribute/groups'),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _loadGroup,
-              color: Theme.of(context).primaryColor,
+              color: ColorTokens.clubAccent,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
@@ -187,18 +180,17 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                         children: [
                           Text(
                             currency.format(currentTotal),
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 44,
-                              fontWeight: FontWeight.w900,
-                              color: ColorTokens.clubAccent,
-                            ),
+                            style: TypographyTokens.displayLarge(
+                              ColorTokens.clubAccent,
+                            ).copyWith(fontWeight: FontWeight.w900),
                           ),
                           const SizedBox(height: SpacingTokens.spacing1),
                           Text(
                             'Target ${currency.format(targetAmount)}  •  ${(progress * 100).round()}%',
                             style: TypographyTokens.bodyMedium(),
                           ),
-                          if (description != null && description.isNotEmpty) ...[
+                          if (description != null &&
+                              description.isNotEmpty) ...[
                             const SizedBox(height: SpacingTokens.spacing3),
                             Text(
                               description,
@@ -207,21 +199,19 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                             ),
                           ],
                           const SizedBox(height: SpacingTokens.spacing4),
-                          LinearProgressIndicator(
+                          AfriLinearProgressIndicator(
                             value: progress,
                             minHeight: 10,
                             borderRadius: BorderRadius.circular(999),
-                            color: Theme.of(context).colorScheme.primary,
-                            backgroundColor: ColorTokens.surfaceContainerHighest,
+                            color: ColorTokens.clubAccent,
+                            backgroundColor:
+                                ColorTokens.surfaceContainerHighest,
                           ),
                           const SizedBox(height: SpacingTokens.spacing4),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              _GroupMetaStat(
-                                label: 'TYPE',
-                                value: groupType,
-                              ),
+                              _GroupMetaStat(label: 'TYPE', value: groupType),
                               _GroupMetaStat(
                                 label: 'CONTRIBUTORS',
                                 value: '$memberCount',
@@ -244,52 +234,77 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: SpacingTokens.spacing6),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'LEDGER',
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: ColorTokens.onSurface,
-                              letterSpacing: 1.2,
-                            ),
-                          ),
-                        ),
-                      ],
+                    GroupLedgerSection(
+                      ledger: _ledger,
+                      currencyFormatter: currency,
                     ),
-                    const SizedBox(height: SpacingTokens.spacing3),
-                    if (_ledger.isEmpty)
-                      GlassCard(
-                        animate: false,
-                        child: Text(
-                          'No contributions have been recorded for this initiative yet.',
-                          style: TypographyTokens.bodyMedium(),
-                        ),
-                      ),
-                    ..._ledger.map((entry) {
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: SpacingTokens.spacing3,
-                        ),
-                        child: _LedgerRow(
-                          alias: entry['alias']?.toString() ?? '#------',
-                          amount: currency.format(
-                            (entry['amount'] as num?)?.toInt() ?? 0,
-                          ),
-                          time:
-                              '${entry['time']?.toString() ?? 'just now'}  •  ${_humanizeStatus(entry['status']?.toString())}',
-                        ),
-                      );
-                    }),
                   ],
                 ),
               ),
             ),
     );
   }
+}
+
+class GroupLedgerSection extends StatelessWidget {
+  const GroupLedgerSection({
+    required this.ledger,
+    required this.currencyFormatter,
+    super.key,
+  });
+
+  final List<Map<String, dynamic>> ledger;
+  final CurrencyFormatter currencyFormatter;
+
+  @override
+  Widget build(BuildContext context) {
+    if (ledger.isEmpty) {
+      return const SizedBox.shrink(key: ValueKey<String>('group-ledger-empty'));
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: SpacingTokens.spacing6),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'LEDGER',
+                style: TypographyTokens.titleLarge().copyWith(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.2,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: SpacingTokens.spacing3),
+        ...ledger.map((entry) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
+            child: _LedgerRow(
+              alias: entry['alias']?.toString() ?? '#------',
+              amount: currencyFormatter.format(
+                (entry['amount'] as num?)?.toInt() ?? 0,
+              ),
+              time:
+                  '${entry['time']?.toString() ?? 'just now'}  •  ${humanizeContributionStatus(entry['status']?.toString())}',
+            ),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+String humanizeContributionStatus(String? raw) {
+  return switch (raw?.toLowerCase().trim()) {
+    'confirmed' => 'CONFIRMED',
+    'rejected' || 'failed' => 'FAILED',
+    'pending' || '' || null => 'PROCESSING',
+    final other => other.toUpperCase(),
+  };
 }
 
 class _GroupMetaStat extends StatelessWidget {
@@ -368,19 +383,12 @@ class _LedgerRow extends StatelessWidget {
       animate: false,
       child: Row(
         children: [
-          Expanded(
-            child: Text(
-              alias,
-              style: TypographyTokens.numericAlias(fontSize: 15),
-            ),
-          ),
+          Expanded(child: Text(alias, style: TypographyTokens.titleMedium())),
           Text(
             amount,
-            style: TypographyTokens.monolithFont(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.clubAccent,
-            ),
+            style: TypographyTokens.headlineMedium(
+              ColorTokens.clubAccent,
+            ).copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(width: SpacingTokens.spacing4),
           Text(time, style: TypographyTokens.bodySmall()),

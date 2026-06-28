@@ -21,17 +21,18 @@ class SeatTypeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AfriPressFeedback(
       onTap: onTap,
-      builder: (context, state) => ClayCard(
+      builder: (context, state) => AfriSurfaceCard(
         padding: const EdgeInsets.all(SpacingTokens.spacing4),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           decoration: BoxDecoration(
             color: selected
                 ? ColorTokens.clubPrimary.withValues(alpha: 0.1)
-                : Colors.transparent,
+                : ColorTokens.transparent,
             borderRadius: ShapeTokens.cardRadius,
             border: BorderTokens.all(
-              color: selected ? ColorTokens.clubPrimary : Colors.transparent,
+              color:
+                  selected ? ColorTokens.clubPrimary : ColorTokens.transparent,
             ),
           ),
           padding: const EdgeInsets.all(SpacingTokens.spacing2),

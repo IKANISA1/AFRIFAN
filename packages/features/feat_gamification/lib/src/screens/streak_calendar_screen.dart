@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
-import 'package:core_utils/core_utils.dart';
 
 class StreakCalendarScreen extends ConsumerStatefulWidget {
   const StreakCalendarScreen({super.key});
@@ -24,7 +26,7 @@ class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
   @override
   void initState() {
     super.initState();
-    _loadStreak();
+    unawaited(_loadStreak());
   }
 
   Future<void> _loadStreak() async {
@@ -91,7 +93,12 @@ class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
         _isLoading = false;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('StreakCalendarScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'StreakCalendarScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) return;
       setState(() {
         _heat = List<int>.filled(35, 0);
@@ -102,25 +109,21 @@ class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final nextBonus = _currentStreak == 0
-        ? 3
-        : (((_currentStreak ~/ 7) + 1) * 7);
-
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'YOUR STREAK',
-          style: TypographyTokens.monolithFont(
-            fontSize: 22,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -128,66 +131,99 @@ class _StreakCalendarScreenState extends ConsumerState<StreakCalendarScreen> {
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),
             )
-          : Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
-              child: Column(
-                children: [
-                  Text(
-                    '$_currentStreak DAYS',
-                    style: TypographyTokens.monolithFont(
-                      fontSize: 56,
-                      fontWeight: FontWeight.w900,
-                      color: ColorTokens.clubAccent,
-                    ),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing2),
-                  Text(
-                    _currentStreak == 0
-                        ? 'No activity streak has started yet.'
-                        : 'Streak active.',
-                    style: TypographyTokens.bodyMedium(),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    children: _heat
-                        .map((value) {
-                          final normalized = value == 0
-                              ? 0.08
-                              : (value.clamp(1, 5) / 5);
-                          return Container(
-                            width: 20,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              color: ColorTokens.clubPrimary.withValues(
-                                alpha: normalized,
-                              ),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                          );
-                        })
-                        .toList(growable: false),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing6),
-                  GlassCard(
-                    animate: false,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _StreakMetric(
-                          label: 'CURRENT',
-                          value: '$_currentStreak',
-                        ),
-                        _StreakMetric(label: 'BEST', value: '$_bestStreak'),
-                        _StreakMetric(label: 'NEXT BONUS', value: '$nextBonus'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+          : StreakCalendarContent(
+              heat: _heat,
+              currentStreak: _currentStreak,
+              bestStreak: _bestStreak,
             ),
+    );
+  }
+}
+
+class StreakCalendarContent extends StatelessWidget {
+  const StreakCalendarContent({
+    super.key,
+    required this.heat,
+    required this.currentStreak,
+    required this.bestStreak,
+  });
+
+  final List<int> heat;
+  final int currentStreak;
+  final int bestStreak;
+
+  @override
+  Widget build(BuildContext context) {
+    final nextBonus = currentStreak == 0 ? 3 : (((currentStreak ~/ 7) + 1) * 7);
+
+    return Padding(
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      child: Column(
+        children: [
+          Text(
+            '$currentStreak DAYS',
+            style: TypographyTokens.displayLarge(
+              ColorTokens.clubAccent,
+            ).copyWith(fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          currentStreak == 0
+              ? const SizedBox.shrink(
+                  key: ValueKey<String>('streak-status-empty'),
+                )
+              : Text(
+                  'Streak active.',
+                  style: TypographyTokens.bodyMedium(),
+                  textAlign: TextAlign.center,
+                ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (var index = 0; index < heat.length; index++)
+                _StreakHeatCell(index: index, value: heat[index]),
+            ],
+          ),
+          const SizedBox(height: SpacingTokens.spacing6),
+          GlassCard(
+            animate: false,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _StreakMetric(label: 'CURRENT', value: '$currentStreak'),
+                _StreakMetric(label: 'BEST', value: '$bestStreak'),
+                _StreakMetric(label: 'NEXT BONUS', value: '$nextBonus'),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StreakHeatCell extends StatelessWidget {
+  const _StreakHeatCell({required this.index, required this.value});
+
+  final int index;
+  final int value;
+
+  @override
+  Widget build(BuildContext context) {
+    final normalized = value == 0 ? 0.08 : (value.clamp(1, 5) / 5);
+    final winsLabel = value == 1 ? '1 win' : '$value wins';
+
+    return Semantics(
+      label: 'Streak day ${index + 1}: $winsLabel',
+      child: Container(
+        width: 20,
+        height: 20,
+        decoration: BoxDecoration(
+          color: ColorTokens.clubPrimary.withValues(alpha: normalized),
+          borderRadius: BorderRadius.circular(6),
+        ),
+      ),
     );
   }
 }
@@ -206,10 +242,8 @@ class _StreakMetric extends StatelessWidget {
         const SizedBox(height: SpacingTokens.spacing2),
         Text(
           value,
-          style: TypographyTokens.monolithFont(
-            fontSize: 28,
+          style: TypographyTokens.headlineLarge().copyWith(
             fontWeight: FontWeight.w800,
-            color: ColorTokens.onSurface,
           ),
         ),
       ],

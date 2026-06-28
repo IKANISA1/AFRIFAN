@@ -1,0 +1,515 @@
+{
+  "activity": "rw.gikundiro.app.MainActivity",
+  "app_id": "rw.gikundiro.app",
+  "assessment": {
+    "collection_success": true,
+    "frame_sample_large_enough": false,
+    "issues": [
+      "Frame sample has 0 frame(s); minimum useful sample is 60."
+    ],
+    "jank_target_met": false,
+    "janky_percent": 0.0,
+    "max_janky_percent": 5.0,
+    "minimum_frame_sample": 60,
+    "performance_signoff_ready": false,
+    "startup_target_met": true,
+    "startup_target_ms": 3000
+  },
+  "build_mode": "profile",
+  "device": {
+    "android_version": "13",
+    "density": "Physical density: 440",
+    "model": "Pixel 4a",
+    "screen_size": "Physical size: 1080x2340",
+    "serial": "13111JEC215558"
+  },
+  "elapsed_seconds": 23.965,
+  "generated_at": "2026-06-28T12:01:02.537154+00:00",
+  "gfxinfo": {
+    "deadline_missed": 0,
+    "frame_stats_available": false,
+    "janky_frames": 0,
+    "janky_percent": "0.00%",
+    "missed_vsync": 0,
+    "p50_ms": null,
+    "p90_ms": null,
+    "p95_ms": null,
+    "p99_ms": null,
+    "raw_excerpt": [
+      "Applications Graphics Acceleration Info:",
+      "Uptime: 102350807 Realtime: 102350807",
+      "",
+      "** Graphics info for pid 27466 [rw.gikundiro.app] **",
+      "",
+      "Stats since: 102336331243496ns",
+      "Total frames rendered: 0",
+      "Janky frames: 0 (0.00%)",
+      "Janky frames (legacy): 0 (0.00%)",
+      "50th percentile: 4950ms",
+      "90th percentile: 4950ms",
+      "95th percentile: 4950ms",
+      "99th percentile: 4950ms",
+      "Number Missed Vsync: 0",
+      "Number High input latency: 0",
+      "Number Slow UI thread: 0",
+      "Number Slow bitmap uploads: 0",
+      "Number Slow issue draw commands: 0",
+      "Number Frame deadline missed: 0",
+      "Number Frame deadline missed (legacy): 0",
+      "HISTOGRAM: 5ms=0 6ms=0 7ms=0 8ms=0 9ms=0 10ms=0 11ms=0 12ms=0 13ms=0 14ms=0 15ms=0 16ms=0 17ms=0 18ms=0 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 26ms=0 27ms=0 28ms=0 29ms=0 30ms=0 31ms=0 32ms=0 34ms=0 36ms=0 38ms=0 40ms=0 42ms=0 44ms=0 46ms=0 48ms=0 53ms=0 57ms=0 61ms=0 65ms=0 69ms=0 73ms=0 77ms=0 81ms=0 85ms=0 89ms=0 93ms=0 97ms=0 101ms=0 105ms=0 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=0 200ms=0 250ms=0 300ms=0 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0",
+      "50th gpu percentile: 4950ms",
+      "90th gpu percentile: 4950ms",
+      "95th gpu percentile: 4950ms",
+      "99th gpu percentile: 4950ms",
+      "GPU HISTOGRAM: 1ms=0 2ms=0 3ms=0 4ms=0 5ms=0 6ms=0 7ms=0 8ms=0 9ms=0 10ms=0 11ms=0 12ms=0 13ms=0 14ms=0 15ms=0 16ms=0 17ms=0 18ms=0 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0",
+      "",
+      "Pipeline=Skia (OpenGL)",
+      "CPU Caches:",
+      "  Glyph Cache: 0.00 bytes (1 entry)",
+      "  Glyph Count: 0 ",
+      "Total CPU memory usage:",
+      "  0 bytes, 0.00 bytes (0.00 bytes is purgeable)",
+      "GPU Caches:",
+      "  Other:",
+      "    Other: 0.00 bytes (1 entry)",
+      "Total GPU memory usage:",
+      "  0 bytes, 0.00 bytes (0.00 bytes is purgeable)",
+      "",
+      "Profile data in ms:",
+      "",
+      "\trw.gikundiro.app/rw.gikundiro.app.MainActivity/android.view.ViewRootImpl@ceb53b6 (visibility=0)",
+      "Window: rw.gikundiro.app/rw.gikundiro.app.MainActivity",
+      "Stats since: 102336331242038ns",
+      "Total frames rendered: 0",
+      "Janky frames: 0 (0.00%)",
+      "Janky frames (legacy): 0 (0.00%)",
+      "50th percentile: 4950ms",
+      "90th percentile: 4950ms",
+      "95th percentile: 4950ms",
+      "99th percentile: 4950ms",
+      "Number Missed Vsync: 0",
+      "Number High input latency: 0",
+      "Number Slow UI thread: 0",
+      "Number Slow bitmap uploads: 0",
+      "Number Slow issue draw commands: 0",
+      "Number Frame deadline missed: 0",
+      "Number Frame deadline missed (legacy): 0",
+      "HISTOGRAM: 5ms=0 6ms=0 7ms=0 8ms=0 9ms=0 10ms=0 11ms=0 12ms=0 13ms=0 14ms=0 15ms=0 16ms=0 17ms=0 18ms=0 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 26ms=0 27ms=0 28ms=0 29ms=0 30ms=0 31ms=0 32ms=0 34ms=0 36ms=0 38ms=0 40ms=0 42ms=0 44ms=0 46ms=0 48ms=0 53ms=0 57ms=0 61ms=0 65ms=0 69ms=0 73ms=0 77ms=0 81ms=0 85ms=0 89ms=0 93ms=0 97ms=0 101ms=0 105ms=0 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=0 200ms=0 250ms=0 300ms=0 350ms=0 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=0 800ms=0 850ms=0 900ms=0 950ms=0 1000ms=0 1050ms=0 1100ms=0 1150ms=0 1200ms=0 1250ms=0 1300ms=0 1350ms=0 1400ms=0 1450ms=0 1500ms=0 1550ms=0 1600ms=0 1650ms=0 1700ms=0 1750ms=0 1800ms=0 1850ms=0 1900ms=0 1950ms=0 2000ms=0 2050ms=0 2100ms=0 2150ms=0 2200ms=0 2250ms=0 2300ms=0 2350ms=0 2400ms=0 2450ms=0 2500ms=0 2550ms=0 2600ms=0 2650ms=0 2700ms=0 2750ms=0 2800ms=0 2850ms=0 2900ms=0 2950ms=0 3000ms=0 3050ms=0 3100ms=0 3150ms=0 3200ms=0 3250ms=0 3300ms=0 3350ms=0 3400ms=0 3450ms=0 3500ms=0 3550ms=0 3600ms=0 3650ms=0 3700ms=0 3750ms=0 3800ms=0 3850ms=0 3900ms=0 3950ms=0 4000ms=0 4050ms=0 4100ms=0 4150ms=0 4200ms=0 4250ms=0 4300ms=0 4350ms=0 4400ms=0 4450ms=0 4500ms=0 4550ms=0 4600ms=0 4650ms=0 4700ms=0 4750ms=0 4800ms=0 4850ms=0 4900ms=0 4950ms=0",
+      "50th gpu percentile: 4950ms",
+      "90th gpu percentile: 4950ms",
+      "95th gpu percentile: 4950ms",
+      "99th gpu percentile: 4950ms",
+      "GPU HISTOGRAM: 1ms=0 2ms=0 3ms=0 4ms=0 5ms=0 6ms=0 7ms=0 8ms=0 9ms=0 10ms=0 11ms=0 12ms=0 13ms=0 14ms=0 15ms=0 16ms=0 17ms=0 18ms=0 19ms=0 20ms=0 21ms=0 22ms=0 23ms=0 24ms=0 25ms=0 4950ms=0",
+      "",
+      "",
+      "",
+      "---PROFILEDATA---",
+      "Flags,FrameTimelineVsyncId,IntendedVsync,Vsync,InputEventId,HandleInputStart,AnimationStart,PerformTraversalsStart,DrawStart,FrameDeadline,FrameInterval,FrameStartTime,SyncQueued,SyncStart,IssueDrawCommandsStart,SwapBuffers,FrameCompleted,DequeueBufferDuration,QueueBufferDuration,GpuCompleted,SwapBuffersCompleted,DisplayPresentTime,CommandSubmissionCompleted,",
+      "---PROFILEDATA---",
+      "",
+      "",
+      "View hierarchy:",
+      "",
+      "  rw.gikundiro.app/rw.gikundiro.app.MainActivity/android.view.ViewRootImpl@ceb53b6",
+      "  9 views, 16.39 kB of render nodes",
+      "",
+      "",
+      "Total ViewRootImpl   : 1",
+      "Total attached Views : 9"
+    ],
+    "slow_bitmap_uploads": 0,
+    "slow_draw_commands": 0,
+    "slow_ui_thread": 0,
+    "total_frames": 0
+  },
+  "gfxinfo_scope": "post_start_swipe_exercise",
+  "interaction_events": [
+    {
+      "direction": "left",
+      "duration_ms": 550,
+      "end": [
+        194,
+        1263
+      ],
+      "index": 1,
+      "start": [
+        885,
+        1263
+      ]
+    },
+    {
+      "direction": "right",
+      "duration_ms": 550,
+      "end": [
+        885,
+        1263
+      ],
+      "index": 2,
+      "start": [
+        194,
+        1263
+      ]
+    },
+    {
+      "direction": "left",
+      "duration_ms": 550,
+      "end": [
+        194,
+        1263
+      ],
+      "index": 3,
+      "start": [
+        885,
+        1263
+      ]
+    },
+    {
+      "direction": "right",
+      "duration_ms": 550,
+      "end": [
+        885,
+        1263
+      ],
+      "index": 4,
+      "start": [
+        194,
+        1263
+      ]
+    },
+    {
+      "direction": "left",
+      "duration_ms": 550,
+      "end": [
+        194,
+        1263
+      ],
+      "index": 5,
+      "start": [
+        885,
+        1263
+      ]
+    },
+    {
+      "direction": "right",
+      "duration_ms": 550,
+      "end": [
+        885,
+        1263
+      ],
+      "index": 6,
+      "start": [
+        194,
+        1263
+      ]
+    },
+    {
+      "direction": "left",
+      "duration_ms": 550,
+      "end": [
+        194,
+        1263
+      ],
+      "index": 7,
+      "start": [
+        885,
+        1263
+      ]
+    },
+    {
+      "direction": "right",
+      "duration_ms": 550,
+      "end": [
+        885,
+        1263
+      ],
+      "index": 8,
+      "start": [
+        194,
+        1263
+      ]
+    },
+    {
+      "direction": "left",
+      "duration_ms": 550,
+      "end": [
+        194,
+        1263
+      ],
+      "index": 9,
+      "start": [
+        885,
+        1263
+      ]
+    },
+    {
+      "direction": "right",
+      "duration_ms": 550,
+      "end": [
+        885,
+        1263
+      ],
+      "index": 10,
+      "start": [
+        194,
+        1263
+      ]
+    },
+    {
+      "direction": "left",
+      "duration_ms": 550,
+      "end": [
+        194,
+        1263
+      ],
+      "index": 11,
+      "start": [
+        885,
+        1263
+      ]
+    },
+    {
+      "direction": "right",
+      "duration_ms": 550,
+      "end": [
+        885,
+        1263
+      ],
+      "index": 12,
+      "start": [
+        194,
+        1263
+      ]
+    },
+    {
+      "direction": "left",
+      "duration_ms": 550,
+      "end": [
+        194,
+        1263
+      ],
+      "index": 13,
+      "start": [
+        885,
+        1263
+      ]
+    },
+    {
+      "direction": "right",
+      "duration_ms": 550,
+      "end": [
+        885,
+        1263
+      ],
+      "index": 14,
+      "start": [
+        194,
+        1263
+      ]
+    },
+    {
+      "direction": "left",
+      "duration_ms": 550,
+      "end": [
+        194,
+        1263
+      ],
+      "index": 15,
+      "start": [
+        885,
+        1263
+      ]
+    },
+    {
+      "direction": "right",
+      "duration_ms": 550,
+      "end": [
+        885,
+        1263
+      ],
+      "index": 16,
+      "start": [
+        194,
+        1263
+      ]
+    }
+  ],
+  "log_excerpt": [
+    "06-28 14:01:03.238 E/w.gikundiro.app(27466): hiddenapi: Accessing hidden method Landroid/window/BackEvent;->getTouchY()F (runtime_flags=0, domain=platform, api=blocked) from /data/app/~~Y4IbKPIchX-6-V2xONO1LA==/rw.gikundiro.app-tnaSI2LFur0a5bgB5qrXWA==/base.apk!classes19.dex (domain=app, TargetSdkVersion=36) using linking: denied",
+    "06-28 14:01:03.238 E/w.gikundiro.app(27466): hiddenapi: Accessing hidden method Landroid/window/BackEvent;->getProgress()F (runtime_flags=0, domain=platform, api=blocked) from /data/app/~~Y4IbKPIchX-6-V2xONO1LA==/rw.gikundiro.app-tnaSI2LFur0a5bgB5qrXWA==/base.apk!classes19.dex (domain=app, TargetSdkVersion=36) using linking: denied",
+    "06-28 14:01:03.238 E/w.gikundiro.app(27466): hiddenapi: Accessing hidden method Landroid/window/BackEvent;->getSwipeEdge()I (runtime_flags=0, domain=platform, api=blocked) from /data/app/~~Y4IbKPIchX-6-V2xONO1LA==/rw.gikundiro.app-tnaSI2LFur0a5bgB5qrXWA==/base.apk!classes19.dex (domain=app, TargetSdkVersion=36) using linking: denied",
+    "06-28 14:01:03.238 E/w.gikundiro.app(27466): hiddenapi: Accessing hidden method Landroid/window/BackEvent;->getProgress()F (runtime_flags=0, domain=platform, api=blocked) from /data/app/~~Y4IbKPIchX-6-V2xONO1LA==/rw.gikundiro.app-tnaSI2LFur0a5bgB5qrXWA==/base.apk!classes19.dex (domain=app, TargetSdkVersion=36) using linking: denied",
+    "06-28 14:01:03.238 E/w.gikundiro.app(27466): hiddenapi: Accessing hidden method Landroid/window/BackEvent;->getSwipeEdge()I (runtime_flags=0, domain=platform, api=blocked) from /data/app/~~Y4IbKPIchX-6-V2xONO1LA==/rw.gikundiro.app-tnaSI2LFur0a5bgB5qrXWA==/base.apk!classes19.dex (domain=app, TargetSdkVersion=36) using linking: denied",
+    "06-28 14:01:03.253 W/w.gikundiro.app(27466): type=1400 audit(0.0:11606): avc: denied { read } for name=\"max_map_count\" dev=\"proc\" ino=1065540 scontext=u:r:untrusted_app:s0:c175,c259,c512,c768 tcontext=u:object_r:proc_max_map_count:s0 tclass=file permissive=0 app=rw.gikundiro.app",
+    "06-28 14:01:03.280 D/vulkan  (27466): searching for layers in '/data/app/~~Y4IbKPIchX-6-V2xONO1LA==/rw.gikundiro.app-tnaSI2LFur0a5bgB5qrXWA==/lib/arm64'",
+    "06-28 14:01:03.280 D/vulkan  (27466): searching for layers in '/data/app/~~Y4IbKPIchX-6-V2xONO1LA==/rw.gikundiro.app-tnaSI2LFur0a5bgB5qrXWA==/base.apk!/lib/arm64-v8a'",
+    "06-28 14:01:03.292 I/flutter (27466): The Dart VM service is listening on http://127.0.0.1:40917/PTcq5pvUzuM=/",
+    "06-28 14:01:03.298 I/flutter (27466): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).",
+    "06-28 14:01:03.323 I/flutter (27466): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).",
+    "06-28 14:01:03.369 D/com.llfbandit.app_links(27466): Intent { flg=0x10000000 cmp=rw.gikundiro.app/.MainActivity }",
+    "06-28 14:01:03.411 I/w.gikundiro.app(27466): hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityNodeInfo;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported,test-api) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed",
+    "06-28 14:01:03.411 I/w.gikundiro.app(27466): hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityRecord;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed",
+    "06-28 14:01:03.411 I/w.gikundiro.app(27466): hiddenapi: Accessing hidden field Landroid/view/accessibility/AccessibilityNodeInfo;->mChildNodeIds:Landroid/util/LongArray; (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed",
+    "06-28 14:01:03.411 I/w.gikundiro.app(27466): hiddenapi: Accessing hidden method Landroid/util/LongArray;->get(I)J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed",
+    "06-28 14:01:03.445 D/FirebaseSessions(27466): App foregrounded on rw.gikundiro.app",
+    "06-28 14:01:03.445 D/FirebaseSessions(27466): Session 6729513bf4cc4f0aab3f092c8e5b9389 has not backgrounded yet",
+    "06-28 14:01:03.445 D/FirebaseSessions(27466): Process rw.gikundiro.app is stale",
+    "06-28 14:01:03.452 D/FirebaseSessions(27466): Session 6729513bf4cc4f0aab3f092c8e5b9389 has not backgrounded yet",
+    "06-28 14:01:03.454 D/FirebaseSessions(27466): Cold app start detected",
+    "06-28 14:01:03.454 D/FirebaseSessions(27466): Process rw.gikundiro.app is stale",
+    "06-28 14:01:03.458 D/FirebaseSessions(27466): Sessions SDK disabled through data collection. Events will not be sent.",
+    "06-28 14:01:03.477 D/FirebaseSessions(27466): Notified CRASHLYTICS of new session 0d7f4dcf1a2e4667be91e4292f90719d",
+    "06-28 14:01:03.479 D/CoreBackPreview( 1904): Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@21db1ad, mPriority=-1}",
+    "06-28 14:01:03.660 I/NetworkScheduler( 3472): (REDACTED) Error inserting %s",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466): Error when communicating with the Firebase Installations server API. HTTP response: [403 Forbidden: {",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):   \"error\": {",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):     \"code\": 403,",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):     \"message\": \"Permission denied: Consumer 'api_key:[REDACTED]' has been suspended.\",",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):     \"status\": \"PERMISSION_DENIED\",",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):     \"details\": [",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):       {",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):         \"@type\": \"type.googleapis.com/google.rpc.ErrorInfo\",",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):         \"reason\": \"CONSUMER_SUSPENDED\",",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):         \"domain\": \"googleapis.com\",",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):         \"metadata\": {",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):           \"containerInfo\": \"api_key:[REDACTED]\",",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):           \"service\": \"firebaseinstallations.googleapis.com\",",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):           \"consumer\": \"projects/1074154147498\"",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):         }",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):       },",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):       {",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):         \"@type\": \"type.googleapis.com/google.rpc.LocalizedMessage\",",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):         \"locale\": \"en-US\",",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):         \"message\": \"Permission denied: Consumer 'api_key:[REDACTED]' has been suspended.\"",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):       }",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):     ]",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466):   }",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466): }",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466): ]",
+    "06-28 14:01:03.882 W/Firebase-Installations(27466): Firebase options used while communicating with Firebase server APIs: [REDACTED_FIREBASE_API_KEY], gen-lang-client-0172279957, 1:1074154147498:android:e28b44350c337988dc4ad3",
+    "06-28 14:01:03.882 E/Firebase-Installations(27466): Firebase Installations can not communicate with Firebase server APIs due to invalid configuration. Please update your Firebase initialization process and set valid Firebase options (API key, Project ID, Application ID) when initializing Firebase.",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): Failed to get FIS auth token",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): java.util.concurrent.ExecutionException: com.google.firebase.installations.FirebaseInstallationsException",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.android.gms.tasks.Tasks.zza(com.google.android.gms:play-services-tasks@@18.4.0:5)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.android.gms.tasks.Tasks.await(com.google.android.gms:play-services-tasks@@18.4.0:9)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.messaging.GmsRpc.setDefaultAttributesToBundle(GmsRpc.java:280)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.messaging.GmsRpc.startRpc(GmsRpc.java:242)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.messaging.GmsRpc.getToken(GmsRpc.java:192)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.messaging.FirebaseMessaging.lambda$blockingGetToken$14$com-google-firebase-messaging-FirebaseMessaging(FirebaseMessaging.java:650)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.messaging.FirebaseMessaging$$ExternalSyntheticLambda14.start(D8$$SyntheticClass:0)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.messaging.RequestDeduplicator.getOrStartGetTokenRequest(RequestDeduplicator.java:67)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.messaging.FirebaseMessaging.blockingGetToken(FirebaseMessaging.java:646)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.messaging.SyncTask.maybeRefreshToken(SyncTask.java:123)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.messaging.SyncTask.run(SyncTask.java:93)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:520)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat java.util.concurrent.FutureTask.run(FutureTask.java:317)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:348)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.android.gms.common.util.concurrent.zza.run(com.google.android.gms:play-services-basement@@18.9.0:2)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat java.lang.Thread.run(Thread.java:1564)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): Caused by: com.google.firebase.installations.FirebaseInstallationsException",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.installations.FirebaseInstallations.doNetworkCallIfNecessary(FirebaseInstallations.java:415)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.installations.FirebaseInstallations.lambda$doRegistrationOrRefresh$3$com-google-firebase-installations-FirebaseInstallations(FirebaseInstallations.java:373)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.installations.FirebaseInstallations$$ExternalSyntheticLambda1.run(D8$$SyntheticClass:0)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.concurrent.SequentialExecutor$1.run(SequentialExecutor.java:117)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.concurrent.SequentialExecutor$QueueWorker.workOnQueue(SequentialExecutor.java:229)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.concurrent.SequentialExecutor$QueueWorker.run(SequentialExecutor.java:174)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.concurrent.CustomThreadFactory.lambda$newThread$0$com-google-firebase-concurrent-CustomThreadFactory(CustomThreadFactory.java:47)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \tat com.google.firebase.concurrent.CustomThreadFactory$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)",
+    "06-28 14:01:03.885 E/FirebaseMessaging(27466): \t... 1 more",
+    "06-28 14:01:03.961 D/ConnectivityService( 1904): requestNetwork for uid/pid:10943/27466 activeRequest: null callbackRequest: 12042 [NetworkRequest [ REQUEST id=12043, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10943 RequestorUid: 10943 RequestorPkg: rw.gikundiro.app UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false declaredMethods: AVAIL|LOST|NC",
+    "06-28 14:01:03.965 D/OemPaidWifiNetworkFactory( 1904): got request NetworkRequest [ REQUEST id=12043, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10943 RequestorUid: 10943 RequestorPkg: rw.gikundiro.app UnderlyingNetworks: Null] ]",
+    "06-28 14:01:03.966 D/MultiInternetWifiNetworkFactory( 1904): got request NetworkRequest [ REQUEST id=12043, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10943 RequestorUid: 10943 RequestorPkg: rw.gikundiro.app UnderlyingNetworks: Null] ]",
+    "06-28 14:01:03.967 D/WifiNetworkFactory( 1904): got request NetworkRequest [ REQUEST id=12043, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10943 RequestorUid: 10943 RequestorPkg: rw.gikundiro.app UnderlyingNetworks: Null] ]",
+    "06-28 14:01:03.967 D/UntrustedWifiNetworkFactory( 1904): got request NetworkRequest [ REQUEST id=12043, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10943 RequestorUid: 10943 RequestorPkg: rw.gikundiro.app UnderlyingNetworks: Null] ]",
+    "06-28 14:01:04.046 D/CoreBackPreview( 1904): Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@9f81bb7, mPriority=0}",
+    "06-28 14:01:04.050 I/ActivityTaskManager( 1904): Displayed rw.gikundiro.app/.MainActivity: +1s540ms",
+    "06-28 14:01:04.054 I/FLTFireBGExecutor(27466): Creating background FlutterEngine instance, with args: []",
+    "06-28 14:01:04.059 I/NetworkScheduler( 3472): (REDACTED) Error inserting %s",
+    "06-28 14:01:04.126 I/flutter (27466): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).",
+    "06-28 14:01:04.149 E/FirebaseMessaging(27466): Topic sync or token retrieval failed on hard failure exceptions: java.util.concurrent.ExecutionException: java.io.IOException: FIS_AUTH_ERROR. Won't retry the operation.",
+    "06-28 14:01:04.151 I/FLTFireMsgService(27466): FlutterFirebaseMessagingBackgroundService started!",
+    "06-28 14:01:04.155 I/flutter (27466): [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).",
+    "06-28 14:01:04.183 I/GoogleInputMethodService( 4645): GoogleInputMethodService.onStartInput():1454 onStartInput(EditorInfo{EditorInfo{packageName=rw.gikundiro.app, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)",
+    "06-28 14:01:04.187 I/NetworkScheduler( 3472): (REDACTED) Error inserting %s",
+    "06-28 14:01:04.305 I/flutter (27466): [ERROR] [CountryRepository] Failed to fetch countries; using hardcoded fallback.",
+    "06-28 14:01:04.305 I/flutter (27466):   Error: ClientException with SocketException: Failed host lookup: 'mmpbzcdhfvplxplnfucy.supabase.co' (OS Error: No address associated with hostname, errno = 7), uri=https://mmpbzcdhfvplxplnfucy.supabase.co/rest/v1/countries?select=%2A&is_active=eq.true&order=name.asc.nullslast",
+    "06-28 14:01:04.307 D/CoreBackPreview( 1904): Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@449cebc, mPriority=-1}",
+    "06-28 14:01:04.413 W/InputManager-JNI( 1904): Input channel object 'd687010 Splash Screen rw.gikundiro.app (client)' was disposed without first being removed with the input manager!",
+    "06-28 14:01:06.022 E/msys    (20948): E[N mns:DGWClient]_LogError(304)=>Failed to resolve using system DNS resolver, getaddrinfo(): No address associated with hostname",
+    "06-28 14:01:06.028 E/msys    (20948): E[N mns:DGWClient]_LogError(304)=>Failed to resolve using system DNS resolver, getaddrinfo(): No address associated with hostname",
+    "06-28 14:01:07.218 I/flutter (27466): [ERROR] [FeatureConfigRepo] RPC \"get_platform_config\" failed on attempt 3.",
+    "06-28 14:01:07.218 I/flutter (27466):   Error: ClientException with SocketException: Failed host lookup: 'mmpbzcdhfvplxplnfucy.supabase.co' (OS Error: No address associated with hostname, errno = 7), uri=https://mmpbzcdhfvplxplnfucy.supabase.co/rest/v1/rpc/get_platform_config",
+    "06-28 14:01:07.284 E/msys    (20948): E[N mns:DGWClient]_LogError(304)=>Failed to resolve using system DNS resolver, getaddrinfo(): No address associated with hostname",
+    "06-28 14:01:08.719 D/ProfileInstaller(27466): Installing profile for rw.gikundiro.app",
+    "06-28 14:01:11.421 I/NullBinder( 3472): NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0",
+    "06-28 14:01:13.243 E/msys    (20948): E[N mns:DGWClient]_LogError(304)=>Failed to resolve using system DNS resolver, getaddrinfo(): No address associated with hostname",
+    "06-28 14:01:13.250 E/msys    (20948): E[N mns:DGWClient]_LogError(304)=>Failed to resolve using system DNS resolver, getaddrinfo(): No address associated with hostname",
+    "06-28 14:01:14.424 I/NullBinder( 3472): NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0",
+    "06-28 14:01:15.413 E/MQTTBypassDGWStreamGroupCallbacks.cpp(20948): onStreamGroupError StreamGroupNetworkRequest request cancelled: max retries reached; last err (TransientError domain: MNSSecureTCP code: 1 detail: SecureTCP connection establish timeout)",
+    "06-28 14:01:15.413 W/MQTTBypassDGWStreamGroupConnection.cpp(20948): Restarting due to reason: StreamError",
+    "06-28 14:01:16.429 E/msys    (20948): E[N mns:DGWClient]_LogError(304)=>Failed to resolve using system DNS resolver, getaddrinfo(): No address associated with hostname",
+    "06-28 14:01:17.455 I/NullBinder( 3472): NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0",
+    "06-28 14:01:20.458 E/msys    (20948): E[N mns:DGWClient]_LogError(304)=>Failed to resolve using system DNS resolver, getaddrinfo(): No address associated with hostname",
+    "06-28 14:01:20.461 E/msys    (20948): E[N mns:DGWClient]_LogError(304)=>Failed to resolve using system DNS resolver, getaddrinfo(): No address associated with hostname"
+  ],
+  "output": "store_metadata/play_store/android_performance_pixel4a_profile_manifest.json",
+  "process_stopped_before_launch": true,
+  "settle_seconds": 8.0,
+  "start_command_returncode": 0,
+  "start_timing": {
+    "activity": "rw.gikundiro.app/.MainActivity",
+    "launchstate": "COLD",
+    "raw": [
+      "Starting: Intent { cmp=rw.gikundiro.app/.MainActivity }",
+      "Status: ok",
+      "LaunchState: COLD",
+      "Activity: rw.gikundiro.app/.MainActivity",
+      "TotalTime: 1540",
+      "WaitTime: 1542",
+      "Complete"
+    ],
+    "starting": "Intent { cmp=rw.gikundiro.app/.MainActivity }",
+    "status": "ok",
+    "totaltime_ms": 1540,
+    "waittime_ms": 1542
+  },
+  "success": true,
+  "window_state": {
+    "current_focus_is_app": true,
+    "raw": [
+      "Window #3: WindowStateAnimator{b28a7fa rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "mPackageName=rw.gikundiro.app",
+      "deepestLastOrientationSource=ActivityRecord{cadc70d u0 rw.gikundiro.app/.MainActivity} t26}",
+      "mCurrentFocus=Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "mFocusedApp=ActivityRecord{cadc70d u0 rw.gikundiro.app/.MainActivity} t26}",
+      "mPreferredTopFocusableRootTask=Task{5d5e437 #26 type=standard I=rw.gikundiro.app/.MainActivity}",
+      "mLastFocusedRootTask=Task{5d5e437 #26 type=standard I=rw.gikundiro.app/.MainActivity}",
+      "* Task{5d5e437 #26 type=standard I=rw.gikundiro.app/.MainActivity U=0 visible=true visibleRequested=true mode=fullscreen translucent=false sz=1}",
+      "* ActivityRecord{cadc70d u0 rw.gikundiro.app/.MainActivity} t26}",
+      "mFocusedWindow=Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "mTopFullscreenOpaqueWindowState=Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "mSystemBarColorApps={ActivityRecord{cadc70d u0 rw.gikundiro.app/.MainActivity} t26}}",
+      "mNavBarColorWindowCandidate=Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "mNavBarBackgroundWindow=Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "ITYPE_IME -> Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "ITYPE_NAVIGATION_BAR -> Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "ITYPE_STATUS_BAR -> Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "mControlTarget=Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "mControlTarget=Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "mControlTarget=Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "ActivityRecord{cadc70d u0 rw.gikundiro.app/.MainActivity} t26}",
+      "Window #10 Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}:",
+      "mOwnerUid=10943 showForAllUsers=false package=rw.gikundiro.app appop=NONE",
+      "WindowStateAnimator{b28a7fa rw.gikundiro.app/rw.gikundiro.app.MainActivity}:",
+      "imeLayeringTarget in display# 0 Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "imeInputTarget in display# 0 Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}",
+      "imeControlTarget in display# 0 Window{cb7b156 u0 rw.gikundiro.app/rw.gikundiro.app.MainActivity}"
+    ],
+    "splash_top_window": false,
+    "top_window_is_app": true
+  }
+}

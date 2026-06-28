@@ -40,7 +40,7 @@ class H2hTabBody extends StatelessWidget {
                 ),
                 alignment: Alignment.center,
                 child: Icon(
-                  Icons.compare_arrows_rounded,
+                  AfriIcons.versus,
                   size: 36,
                   color: ColorTokens.onSurfaceVariant,
                 ),
@@ -48,12 +48,9 @@ class H2hTabBody extends StatelessWidget {
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
                 'HEAD TO HEAD',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: ColorTokens.onSurfaceVariant,
-                  letterSpacing: 1.5,
-                ),
+                style: TypographyTokens.titleLarge(
+                  ColorTokens.onSurfaceVariant,
+                ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
@@ -67,10 +64,8 @@ class H2hTabBody extends StatelessWidget {
       );
     }
 
-    final homeWins =
-        encounters.where((e) => e.homeScore > e.awayScore).length;
-    final away =
-        encounters.where((e) => e.awayScore > e.homeScore).length;
+    final homeWins = encounters.where((e) => e.homeScore > e.awayScore).length;
+    final away = encounters.where((e) => e.awayScore > e.homeScore).length;
     final draws = encounters.length - homeWins - away;
 
     return ListView(
@@ -78,66 +73,65 @@ class H2hTabBody extends StatelessWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       children: [
         // ── Win Distribution ──
-        ClayCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'WIN DISTRIBUTION',
-                style: TypographyTokens.editorialFont(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  color: ColorTokens.onSurfaceVariant,
-                  letterSpacing: 1.2,
-                ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        AfriSurfaceCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _DistMetric(
-                    label: homeTeamShort,
-                    value: '$homeWins',
-                    highlight: true,
+                  Text(
+                    'WIN DISTRIBUTION',
+                    style: TypographyTokens.metricLabel(
+                      ColorTokens.onSurfaceVariant,
+                    ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
                   ),
-                  _DistMetric(label: 'DRAWS', value: '$draws'),
-                  _DistMetric(label: awayTeamShort, value: '$away'),
-                ],
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              // Visual bar
-              ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: SizedBox(
-                  height: 12,
-                  child: Row(
+                  const SizedBox(height: SpacingTokens.spacing3),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (homeWins > 0)
-                        Expanded(
-                          flex: homeWins,
-                          child: Container(color: ColorTokens.clubAccent),
-                        ),
-                      if (draws > 0)
-                        Expanded(
-                          flex: draws,
-                          child:
-                              Container(color: ColorTokens.surfaceContainerHigh),
-                        ),
-                      if (away > 0)
-                        Expanded(
-                          flex: away,
-                          child: Container(
-                            color: ColorTokens.onSurfaceVariant
-                                .withValues(alpha: 0.4),
-                          ),
-                        ),
+                      _DistMetric(
+                        label: homeTeamShort,
+                        value: '$homeWins',
+                        highlight: true,
+                      ),
+                      _DistMetric(label: 'DRAWS', value: '$draws'),
+                      _DistMetric(label: awayTeamShort, value: '$away'),
                     ],
                   ),
-                ),
+                  const SizedBox(height: SpacingTokens.spacing3),
+                  // Visual bar
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: SizedBox(
+                      height: 12,
+                      child: Row(
+                        children: [
+                          if (homeWins > 0)
+                            Expanded(
+                              flex: homeWins,
+                              child: Container(color: ColorTokens.clubAccent),
+                            ),
+                          if (draws > 0)
+                            Expanded(
+                              flex: draws,
+                              child: Container(
+                                color: ColorTokens.surfaceContainerHigh,
+                              ),
+                            ),
+                          if (away > 0)
+                            Expanded(
+                              flex: away,
+                              child: Container(
+                                color: ColorTokens.onSurfaceVariant.withValues(
+                                  alpha: 0.4,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        )
+            )
             .animate()
             .fadeIn(duration: 400.ms)
             .slideY(begin: 0.04, end: 0, duration: 400.ms),
@@ -154,11 +148,9 @@ class H2hTabBody extends StatelessWidget {
                   children: [
                     Text(
                       '${encounters.fold<int>(0, (sum, e) => sum + e.homeScore)}',
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        color: ColorTokens.clubAccent,
-                      ),
+                      style: TypographyTokens.headlineMedium(
+                        ColorTokens.clubAccent,
+                      ).copyWith(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 2),
                     Text(
@@ -179,8 +171,7 @@ class H2hTabBody extends StatelessWidget {
                   children: [
                     Text(
                       '${encounters.fold<int>(0, (sum, e) => sum + e.awayScore)}',
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 22,
+                      style: TypographyTokens.headlineMedium().copyWith(
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -202,12 +193,9 @@ class H2hTabBody extends StatelessWidget {
 
         Text(
           'RECENT ENCOUNTERS',
-          style: TypographyTokens.editorialFont(
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            color: ColorTokens.onSurfaceVariant,
-            letterSpacing: 1.2,
-          ),
+          style: TypographyTokens.metricLabel(
+            ColorTokens.onSurfaceVariant,
+          ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
 
@@ -237,8 +225,7 @@ class H2hTabBody extends StatelessWidget {
                     ),
                     child: Text(
                       '${e.homeScore} - ${e.awayScore}',
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 16,
+                      style: TypographyTokens.titleMedium().copyWith(
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -277,11 +264,9 @@ class _DistMetric extends StatelessWidget {
       children: [
         Text(
           value,
-          style: TypographyTokens.monolithFont(
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-            color: highlight ? ColorTokens.clubAccent : ColorTokens.onSurface,
-          ),
+          style: TypographyTokens.headlineMedium(
+            highlight ? ColorTokens.clubAccent : ColorTokens.onSurface,
+          ).copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 2),
         Text(

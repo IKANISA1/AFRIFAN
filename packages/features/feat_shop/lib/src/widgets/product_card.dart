@@ -38,7 +38,7 @@ class ArmouryProductCard extends StatelessWidget {
       semanticsHint: 'Open product',
       tooltip: name,
       excludeChildSemantics: true,
-      builder: (context, state) => ClayCard(
+      builder: (context, state) => AfriSurfaceCard(
         padding: EdgeInsets.zero,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +70,7 @@ class ArmouryProductCard extends StatelessWidget {
                     right: SpacingTokens.spacing3,
                     bottom: SpacingTokens.spacing3,
                     child: AfriIconButton(
-                      icon: Icons.add_rounded,
+                      icon: AfriIcons.add,
                       tooltip: 'Add to cart',
                       onTap: onAddToCart,
                     ),
@@ -128,7 +128,7 @@ class _ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gradient = _gradientForCategory(category);
+    final gradient = ColorTokens.productFallbackGradient(category);
 
     if (imageUrl != null && imageUrl!.isNotEmpty) {
       return CachedNetworkImage(
@@ -142,39 +142,16 @@ class _ProductImage extends StatelessWidget {
     return _fallback(gradient);
   }
 
-  Widget _fallback(List<Color> colors) {
+  Widget _fallback(Gradient gradient) {
     return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: colors,
-        ),
-      ),
+      decoration: BoxDecoration(gradient: gradient),
       child: Center(
         child: Icon(
-          Icons.shopping_bag_outlined,
+          AfriIcons.shop,
           size: 40,
           color: ColorTokens.onSurface.withValues(alpha: 0.7),
         ),
       ),
     );
-  }
-
-  List<Color> _gradientForCategory(String category) {
-    final lower = category.toLowerCase();
-    if (lower.contains('kit')) {
-      return [
-        ColorTokens.primaryTint(0.55),
-        ColorTokens.surfaceContainerHighest,
-      ];
-    }
-    if (lower.contains('access')) {
-      return [
-        ColorTokens.surfaceContainerHighest,
-        ColorTokens.surfaceContainerLow,
-      ];
-    }
-    return [ColorTokens.surfaceContainerHigh, ColorTokens.surfaceContainerLow];
   }
 }

@@ -1,5 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 Future<bool> showTicketPurchaseConfirmSheet(
   BuildContext context, {
@@ -62,10 +63,8 @@ class _TicketPurchaseConfirmSheet extends StatelessWidget {
         const SizedBox(height: SpacingTokens.spacing4),
         Text(
           'CONFIRM PURCHASE',
-          style: TypographyTokens.monolithFont(
-            fontSize: 26,
+          style: TypographyTokens.headlineMedium().copyWith(
             fontWeight: FontWeight.w800,
-            color: ColorTokens.onSurface,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing4),
@@ -97,14 +96,14 @@ class _TicketPurchaseConfirmSheet extends StatelessWidget {
         AfriButton(
           label: 'I completed payment',
           fullWidth: true,
-          onTap: () => Navigator.of(context).pop(true),
+          onTap: () => context.pop(true),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         AfriButton(
           label: 'I did not pay',
           variant: AfriButtonVariant.outline,
           fullWidth: true,
-          onTap: () => Navigator.of(context).pop(false),
+          onTap: () => context.pop(false),
         ),
       ],
     );
@@ -134,10 +133,10 @@ class _SheetRow extends StatelessWidget {
           Text(
             value,
             style: highlighted
-                ? TypographyTokens.monolithFont(
-                    fontSize: 28,
+                ? TypographyTokens.headlineLarge(
+                    ColorTokens.clubAccent,
+                  ).copyWith(
                     fontWeight: FontWeight.w800,
-                    color: ColorTokens.clubAccent,
                   )
                 : TypographyTokens.labelLarge(),
           ),

@@ -9,10 +9,7 @@ import 'package:flutter/material.dart';
 /// auto-hides after [autoDismissDuration] seconds, supports type-differentiated
 /// icons (challenge → swords, settlement → trophy, system → bell).
 class NotificationToastOverlay extends StatefulWidget {
-  const NotificationToastOverlay({
-    super.key,
-    required this.child,
-  });
+  const NotificationToastOverlay({super.key, required this.child});
 
   final Widget child;
 
@@ -24,8 +21,8 @@ class NotificationToastOverlay extends StatefulWidget {
     String type = 'system',
     Duration autoDismissDuration = const Duration(seconds: 4),
   }) {
-    final state =
-        context.findAncestorStateOfType<_NotificationToastOverlayState>();
+    final state = context
+        .findAncestorStateOfType<_NotificationToastOverlayState>();
     state?._showToast(
       title: title,
       message: message,
@@ -58,21 +55,17 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
       vsync: this,
       duration: const Duration(milliseconds: 350),
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, -1.2),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-      reverseCurve: Curves.easeInCubic,
-    ));
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, -1.2), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+            reverseCurve: Curves.easeInCubic,
+          ),
+        );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
   }
 
   @override
@@ -97,19 +90,21 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
       _isVisible = true;
     });
 
-    _animationController.forward();
+    unawaited(_animationController.forward());
 
     _dismissTimer = Timer(autoDismissDuration, _dismiss);
   }
 
   void _dismiss() {
-    _animationController.reverse().then((_) {
-      if (mounted) {
-        setState(() {
-          _isVisible = false;
-        });
-      }
-    });
+    unawaited(
+      _animationController.reverse().then((_) {
+        if (mounted) {
+          setState(() {
+            _isVisible = false;
+          });
+        }
+      }),
+    );
   }
 
   IconData _iconForType(String type) {
@@ -146,71 +141,76 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
               position: _slideAnimation,
               child: FadeTransition(
                 opacity: _fadeAnimation,
-                child: GestureDetector(
-                  onTap: _dismiss,
-                  onVerticalDragEnd: (details) {
-                    if (details.primaryVelocity != null &&
-                        details.primaryVelocity! < -100) {
-                      _dismiss();
-                    }
-                  },
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: ColorTokens.surfaceContainerHigh,
-                        borderRadius: BorderRadius.circular(20),
-                        border: BorderTokens.all(
-                          color: _colorForType(_type).withValues(alpha: 0.3),
+                child: Dismissible(
+                  key: ValueKey<String>('fanzone-toast-$_title-$_message'),
+                  direction: DismissDirection.up,
+                  onDismissed: (_) => _dismiss(),
+                  child: AfriPressFeedback(
+                    onTap: _dismiss,
+                    tooltip: 'Dismiss notification',
+                    semanticsLabel: 'Notification: $_title. $_message',
+                    semanticsHint: 'Tap or swipe up to dismiss',
+                    child: Material(
+                      color: ColorTokens.transparent,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: ColorTokens.surfaceContainerHigh,
+                          borderRadius: BorderRadius.circular(20),
+                          border: BorderTokens.all(
+                            color: _colorForType(_type).withValues(alpha: 0.3),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: ColorTokens.ambientShadow.withValues(
+                                alpha: 0.4,
+                              ),
+                              blurRadius: 24,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.4),
-                            blurRadius: 24,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(SpacingTokens.spacing4),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: _colorForType(_type)
-                                  .withValues(alpha: 0.14),
-                              borderRadius: BorderRadius.circular(12),
+                        padding: const EdgeInsets.all(SpacingTokens.spacing4),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: _colorForType(
+                                  _type,
+                                ).withValues(alpha: 0.14),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                _iconForType(_type),
+                                size: 20,
+                                color: _colorForType(_type),
+                              ),
                             ),
-                            child: Icon(
-                              _iconForType(_type),
-                              size: 20,
-                              color: _colorForType(_type),
+                            const SizedBox(width: SpacingTokens.spacing3),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    _title,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TypographyTokens.titleSmall(),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    _message,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TypographyTokens.bodySmall(),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: SpacingTokens.spacing3),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  _title,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TypographyTokens.titleSmall(),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  _message,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TypographyTokens.bodySmall(),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

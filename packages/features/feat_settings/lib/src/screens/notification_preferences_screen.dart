@@ -170,18 +170,18 @@ class _NotificationPreferencesScreenState
     return SettingsBackGuard(
       child: Scaffold(
         backgroundColor: ColorTokens.background,
-        appBar: AppBar(
+        appBar: AfriAppBar(
           title: Text(
             'NOTIFICATIONS',
-            style: TypographyTokens.monolithFont(
-              fontSize: 22,
+            style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: 1.6,
             ),
           ),
-          leading: IconButton(
-            onPressed: () => closeSettingsChild(context),
-            icon: const Icon(AfriIcons.back),
+          leading: AfriIconButton(
+            icon: AfriIcons.back,
+            onTap: () => closeSettingsChild(context),
+            tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           ),
         ),
         body: settings == null
@@ -234,11 +234,11 @@ class _NotificationPreferencesScreenState
                           ),
                         ],
                         const SizedBox(height: SpacingTokens.spacing4),
-                        OutlinedButton(
+                        AfriOutlinedButton(
                           onPressed: _isSaving
                               ? null
                               : () => _togglePush(settings),
-                          style: OutlinedButton.styleFrom(
+                          style: AfriOutlinedButton.styleFrom(
                             minimumSize: const Size(double.infinity, 56),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18),

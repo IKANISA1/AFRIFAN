@@ -44,20 +44,20 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Home Screen'), findsOneWidget);
-      expect(find.text('HOME'), findsOneWidget);
-      expect(find.text('FAN ZONE'), findsOneWidget);
-      expect(find.text('SETTINGS'), findsOneWidget);
+      expect(find.text('Home'), findsOneWidget);
+      expect(find.text('Fan Zone'), findsOneWidget);
+      expect(find.text('Settings'), findsOneWidget);
     });
 
     testWidgets('navigates between fan zone and settings tabs', (tester) async {
       await tester.pumpWidget(_buildApp(router));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('FAN ZONE'));
+      await tester.tap(find.text('Fan Zone'));
       await tester.pumpAndSettle();
       expect(find.text('Fan Zone Screen'), findsOneWidget);
 
-      await tester.tap(find.text('SETTINGS'));
+      await tester.tap(find.text('Settings'));
       await tester.pumpAndSettle();
       expect(find.text('Settings Screen'), findsOneWidget);
     });
@@ -101,10 +101,13 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   ClubColors get colors => const ClubColors(
-    primary: Color(0xFF0038A8),
-    secondary: Color(0xFF001742),
-    accent: Color(0xFFD9B24C),
-    gradient: <Color>[Color(0xFF001742), Color(0xFF0038A8)],
+    primary: ColorTokens.referenceAccountBlue,
+    secondary: ColorTokens.referenceChromeBlack,
+    accent: ColorTokens.referenceRewardsVioletHot,
+    gradient: <Color>[
+      ColorTokens.referenceChromeBlack,
+      ColorTokens.referenceAccountBlue,
+    ],
   );
 
   @override

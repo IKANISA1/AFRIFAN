@@ -1,5 +1,7 @@
 import 'dart:math' as math;
+
 import 'package:core_theme/core_theme.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -50,13 +52,14 @@ class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
+      appBar: AfriAppBar(
         title: Text('SELECT SEAT', style: TypographyTokens.headlineLarge()),
-        backgroundColor: Colors.transparent,
+        backgroundColor: ColorTokens.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(AfriIcons.back, color: ColorTokens.onSurface),
-          onPressed: () => context.pop(),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
       ),
       body: Column(
@@ -72,15 +75,10 @@ class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
                     builder: (context, constraints) {
                       final size =
                           Size(constraints.maxWidth, constraints.maxHeight);
-                      return GestureDetector(
-                        onTapUp: (details) =>
-                            _onSeatTap(details.localPosition, size),
-                        child: CustomPaint(
-                          size: size,
-                          painter: StadiumPainter(
-                            selectedSeat: _selectedSeat != null,
-                          ),
-                        ),
+                      return _TappableSeatMap(
+                        size: size,
+                        selectedSeat: _selectedSeat,
+                        onSeatTap: _onSeatTap,
                       );
                     },
                   ),
@@ -154,6 +152,72 @@ class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
             style: TypographyTokens.labelSmall()
                 .copyWith(color: ColorTokens.onSurfaceVariant)),
       ],
+    );
+  }
+}
+
+class _TappableSeatMap extends StatefulWidget {
+  const _TappableSeatMap({
+    required this.size,
+    required this.selectedSeat,
+    required this.onSeatTap,
+  });
+
+  final Size size;
+  final String? selectedSeat;
+  final void Function(Offset localPosition, Size size) onSeatTap;
+
+  @override
+  State<_TappableSeatMap> createState() => _TappableSeatMapState();
+}
+
+class _TappableSeatMapState extends State<_TappableSeatMap> {
+  Offset? _pointerDownPosition;
+
+  void _handlePointerDown(PointerDownEvent event) {
+    _pointerDownPosition = event.localPosition;
+  }
+
+  void _handlePointerCancel(PointerCancelEvent event) {
+    _pointerDownPosition = null;
+  }
+
+  void _handlePointerUp(PointerUpEvent event) {
+    final downPosition = _pointerDownPosition;
+    _pointerDownPosition = null;
+    if (downPosition == null) {
+      return;
+    }
+    if ((event.localPosition - downPosition).distance > kTouchSlop) {
+      return;
+    }
+    widget.onSeatTap(event.localPosition, widget.size);
+  }
+
+  void _handleSemanticTap() {
+    widget.onSeatTap(
+        Offset(widget.size.width * 0.75, widget.size.height / 2), widget.size);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: widget.selectedSeat == null
+          ? 'Interactive stadium seat map'
+          : 'Interactive stadium seat map, selected ${widget.selectedSeat}',
+      hint: 'Tap a stand to select a seat',
+      onTap: _handleSemanticTap,
+      child: Listener(
+        behavior: HitTestBehavior.opaque,
+        onPointerDown: _handlePointerDown,
+        onPointerCancel: _handlePointerCancel,
+        onPointerUp: _handlePointerUp,
+        child: CustomPaint(
+          size: widget.size,
+          painter: StadiumPainter(selectedSeat: widget.selectedSeat != null),
+        ),
+      ),
     );
   }
 }

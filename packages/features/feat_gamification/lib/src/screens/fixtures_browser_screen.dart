@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -87,7 +89,12 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
         _isLoading = false;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('FixturesBrowserScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FixturesBrowserScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) return;
       setState(() {
         _error = 'Could not load fixtures right now.';
@@ -127,8 +134,18 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
     final diff = sel.difference(today).inDays;
 
     const monthNames = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -145,25 +162,20 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(
-          widget.title,
-          style: TypographyTokens.headlineSmall(),
-        ),
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
+        title: Text(widget.title, style: TypographyTokens.headlineSmall()),
         leading: widget.showBackButton
-            ? IconButton(
-                onPressed: () => context.pop(),
-                icon: const Icon(AfriIcons.back),
+            ? AfriIconButton(
+                icon: AfriIcons.back,
+                onTap: () => context.pop(),
+                tooltip: 'Back',
               )
             : null,
         actions: [
-          IconButton(
-            onPressed: () => context.push('/fanzone/my'),
-            icon: Icon(
-              AfriIcons.myPicks,
-              color: ColorTokens.onSurfaceVariant,
-            ),
+          AfriIconButton(
+            icon: AfriIcons.myPicks,
+            onTap: () => unawaited(context.push('/fanzone/my')),
             tooltip: 'My Predictions',
           ),
         ],
@@ -212,7 +224,8 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                     ),
                   ),
                   AfriStatusChip(
-                    label: '${_fixtures.length} ${_fixtures.length == 1 ? 'match' : 'matches'}',
+                    label:
+                        '${_fixtures.length} ${_fixtures.length == 1 ? 'match' : 'matches'}',
                     tone: AfriStatusTone.live,
                   ),
                 ],
@@ -242,8 +255,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                       final competition = _competitions[index - 1];
                       return CompetitionFilterChip(
                         label: competition.shortName,
-                        isSelected:
-                            _selectedCompetition == competition.slug,
+                        isSelected: _selectedCompetition == competition.slug,
                         onTap: () => _onFilterChanged(competition.slug),
                       );
                     },
@@ -283,21 +295,12 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
     final grouped = _groupByCompetition();
 
     if (grouped.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(SpacingTokens.spacing6),
-          child: AfriEmptyView(
-            title: 'No fixtures on this date',
-            message:
-                'Try selecting another day on the calendar or change the league filter.',
-          ),
-        ),
-      );
+      return const SizedBox.shrink();
     }
 
     final competitionKeys = grouped.keys.toList(growable: false);
 
-    return RefreshIndicator(
+    return AfriRefreshIndicator(
       onRefresh: _loadData,
       color: ColorTokens.clubAccent,
       child: ListView.builder(
@@ -322,9 +325,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                 const SizedBox(height: SpacingTokens.spacing5),
               AfriSectionHeader(
                 title: compName,
-                padding: const EdgeInsets.only(
-                  bottom: SpacingTokens.spacing3,
-                ),
+                padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
               ),
               ...fixtures.asMap().entries.map((entry) {
                 final index = entry.key;
@@ -335,16 +336,17 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                         ? SpacingTokens.spacing3
                         : 0,
                   ),
-                  child: FixtureBrowserCard(
-                        fixture: fixture,
-                        onOpen: () {
-                          HapticFeedback.lightImpact();
-                          context.push('/fanzone/match/${fixture.id}');
-                        },
-                      )
-                      .animate(delay: (index * 50).ms)
-                      .fadeIn(duration: 300.ms)
-                      .slideY(begin: 0.04, end: 0, duration: 300.ms),
+                  child:
+                      FixtureBrowserCard(
+                            fixture: fixture,
+                            onOpen: () {
+                              HapticFeedback.lightImpact();
+                              context.push('/fanzone/match/${fixture.id}');
+                            },
+                          )
+                          .animate(delay: (index * 50).ms)
+                          .fadeIn(duration: 300.ms)
+                          .slideY(begin: 0.04, end: 0, duration: 300.ms),
                 );
               }),
             ],

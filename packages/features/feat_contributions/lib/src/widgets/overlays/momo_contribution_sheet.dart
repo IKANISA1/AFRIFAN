@@ -6,6 +6,7 @@ import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// Full contribution flow: Amount → USSD Confirmation → Record → Success.
 ///
@@ -19,7 +20,7 @@ Future<void> showMomoAmountEntrySheet(
 }) async {
   final amount = await showModalBottomSheet<int>(
     context: context,
-    backgroundColor: Colors.transparent,
+    backgroundColor: ColorTokens.transparent,
     builder: (context) => _AmountEntrySheet(title: title),
   );
 
@@ -27,7 +28,7 @@ Future<void> showMomoAmountEntrySheet(
 
   final confirmed = await showModalBottomSheet<bool>(
     context: context,
-    backgroundColor: Colors.transparent,
+    backgroundColor: ColorTokens.transparent,
     builder: (context) {
       final country =
           AfriCountryCatalog.byIsoCode(context.afriCountryCode) ??
@@ -60,7 +61,7 @@ Future<void> showMomoAmountEntrySheet(
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
-          'Could not open the MOMO dialer. No contribution was submitted.',
+          'Could not open the MOMO dialer. Contribution was not submitted.',
         ),
         backgroundColor: ColorTokens.error,
       ),
@@ -150,10 +151,8 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
               'HOW MUCH TO CONTRIBUTE?',
-              style: TypographyTokens.monolithFont(
-                fontSize: 24,
+              style: TypographyTokens.headlineMedium().copyWith(
                 fontWeight: FontWeight.w800,
-                color: ColorTokens.onSurface,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing2),
@@ -161,18 +160,16 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
               currency.format(_amount),
-              style: TypographyTokens.monolithFont(
-                fontSize: 48,
-                fontWeight: FontWeight.w900,
-                color: ColorTokens.clubAccent,
-              ),
+              style: TypographyTokens.displayLarge(
+                ColorTokens.clubAccent,
+              ).copyWith(fontWeight: FontWeight.w900),
             ),
             const SizedBox(height: SpacingTokens.spacing4),
             Wrap(
               spacing: SpacingTokens.spacing2,
               children: [1000, 2000, 5000, 10000]
                   .map(
-                    (value) => ChoiceChip(
+                    (value) => AfriChoiceChip(
                       selected: _amount == value,
                       label: Text('+$value'),
                       onSelected: (_) => setState(() => _amount = value),
@@ -184,7 +181,7 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
             AfriButton(
               label: 'Launch MOMO dialer',
               fullWidth: true,
-              onTap: () => Navigator.of(context).pop(_amount),
+              onTap: () => context.pop(_amount),
             ),
           ],
         ),
@@ -226,16 +223,14 @@ class _UssdConfirmationSheet extends StatelessWidget {
           children: [
             Text(
               'LAUNCHING MOMO',
-              style: TypographyTokens.monolithFont(
-                fontSize: 24,
+              style: TypographyTokens.headlineMedium().copyWith(
                 fontWeight: FontWeight.w800,
-                color: ColorTokens.onSurface,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
               ussdCode,
-              style: TypographyTokens.numericAlias(fontSize: 16),
+              style: TypographyTokens.titleMedium(),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: SpacingTokens.spacing2),
@@ -247,14 +242,14 @@ class _UssdConfirmationSheet extends StatelessWidget {
                   child: AfriButton(
                     label: 'Cancel',
                     variant: AfriButtonVariant.outline,
-                    onTap: () => Navigator.of(context).pop(false),
+                    onTap: () => context.pop(false),
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
                   child: AfriButton(
                     label: 'Dial now',
-                    onTap: () => Navigator.of(context).pop(true),
+                    onTap: () => context.pop(true),
                   ),
                 ),
               ],
@@ -346,7 +341,12 @@ class _ContributionSuccessDialogState
         return;
       }
     } catch (error, stackTrace) {
-      AfriLogger.warn('MomoContributionSheet', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'MomoContributionSheet',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       // Network error during poll — continue polling
     }
 
@@ -375,112 +375,94 @@ class _ContributionSuccessDialogState
         icon = AfriIcons.statusSuccess;
         iconColor = ColorTokens.success;
         heading = 'PAYMENT CONFIRMED';
-        body = 'Your contribution of ${currency.format(widget.amount)} '
+        body =
+            'Your contribution of ${currency.format(widget.amount)} '
             'has been verified and recorded.';
         break;
       case 'failed':
-        icon = Icons.warning_amber_rounded;
+        icon = AfriIcons.statusWarning;
         iconColor = ColorTokens.error;
         heading = 'PAYMENT FAILED';
-        body = 'The payment could not be verified. '
+        body =
+            'The payment could not be verified. '
             'Check your MoMo balance and try again, or contact support.';
         break;
       case 'timeout':
         icon = AfriIcons.statusPending;
         iconColor = ColorTokens.warning;
         heading = 'STILL PROCESSING';
-        body = 'Your payment is taking longer than usual. '
+        body =
+            'Your payment is taking longer than usual. '
             'Check the Group ledger for your updated status. '
             'If you completed the MoMo transfer, it will appear shortly.';
         break;
       case 'error':
-        icon = Icons.warning_amber_rounded;
+        icon = AfriIcons.statusWarning;
         iconColor = ColorTokens.error;
         heading = 'COULD NOT RECORD';
-        body = 'The MoMo dialer was launched but the contribution '
+        body =
+            'The MoMo dialer was launched but the contribution '
             'could not be saved. Return to the Group and try again.';
         break;
       default: // 'pending'
         icon = AfriIcons.statusPending;
         iconColor = ColorTokens.warning;
         heading = 'AWAITING PAYMENT';
-        body = 'Complete the MoMo payment on your phone. '
+        body =
+            'Complete the MoMo payment on your phone. '
             'Your contribution appears as "Processing" '
             'until we receive confirmation.';
     }
 
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      child: GlassCard(
-        animate: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: iconColor, size: 64),
-            const SizedBox(height: SpacingTokens.spacing4),
-            Text(
-              heading,
-              style: TypographyTokens.monolithFont(
-                fontSize: 28,
-                fontWeight: FontWeight.w800,
-                color: ColorTokens.onSurface,
-              ),
-              textAlign: TextAlign.center,
+    return AfriDialog(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: iconColor, size: 64),
+          const SizedBox(height: SpacingTokens.spacing4),
+          Text(
+            heading,
+            style: TypographyTokens.headlineLarge().copyWith(
+              fontWeight: FontWeight.w800,
             ),
-            const SizedBox(height: SpacingTokens.spacing2),
-            Text(
-              currency.format(widget.amount),
-              style: TypographyTokens.monolithFont(
-                fontSize: 34,
-                fontWeight: FontWeight.w800,
-                color: ColorTokens.clubAccent,
-              ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing2),
-            Text(widget.title, style: TypographyTokens.bodySmall()),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(
+            currency.format(widget.amount),
+            style: TypographyTokens.displaySmall(
+              ColorTokens.clubAccent,
+            ).copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(widget.title, style: TypographyTokens.bodySmall()),
+          const SizedBox(height: SpacingTokens.spacing3),
+          Text(
+            body,
+            textAlign: TextAlign.center,
+            style: TypographyTokens.bodyMedium(),
+          ),
+          if (_status == 'pending') ...[
             const SizedBox(height: SpacingTokens.spacing3),
+            const AfriLoadingIndicator(size: 20),
+            const SizedBox(height: SpacingTokens.spacing2),
             Text(
-              body,
-              textAlign: TextAlign.center,
-              style: TypographyTokens.bodyMedium(),
-            ),
-            if (_status == 'pending') ...[
-              const SizedBox(height: SpacingTokens.spacing3),
-              SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    ColorTokens.clubAccent,
-                  ),
-                ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing2),
-              Text(
-                'Checking payment status…',
-                style: TypographyTokens.bodySmall(
-                  ColorTokens.onSurfaceVariant,
-                ),
-              ),
-            ],
-            if (_status == 'verified') ...[
-              const SizedBox(height: SpacingTokens.spacing3),
-              AfriInfoChip(
-                label: 'VERIFIED',
-                color: ColorTokens.success,
-              ),
-            ],
-            const SizedBox(height: SpacingTokens.spacing4),
-            AfriButton(
-              label: _status == 'verified' ? 'Done' : 'Back to group',
-              fullWidth: true,
-              onTap: () => Navigator.of(context).pop(),
+              'Checking payment status…',
+              style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
             ),
           ],
-        ),
+          if (_status == 'verified') ...[
+            const SizedBox(height: SpacingTokens.spacing3),
+            AfriInfoChip(label: 'VERIFIED', color: ColorTokens.success),
+          ],
+          const SizedBox(height: SpacingTokens.spacing4),
+          AfriButton(
+            label: _status == 'verified' ? 'Done' : 'Back to group',
+            fullWidth: true,
+            onTap: () => context.pop(),
+          ),
+        ],
       ),
     );
   }
 }
-

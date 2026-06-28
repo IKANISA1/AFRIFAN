@@ -65,54 +65,49 @@ class _JackpotCountdownTimerState extends State<JackpotCountdownTimer> {
     final isExpired = _remaining == Duration.zero;
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.spacing5,
-        vertical: SpacingTokens.spacing4,
-      ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            ColorTokens.clubAccent.withValues(alpha: 0.12),
-            ColorTokens.surfaceContainerLow,
-          ],
-        ),
-        borderRadius: ShapeTokens.cardRadius,
-        border: BorderTokens.all(
-          color: ColorTokens.clubAccent.withValues(alpha: 0.25),
-        ),
-      ),
-      child: Column(
-        children: [
-          Text(
-            isExpired ? 'ENTRIES CLOSED' : 'ENTRIES CLOSE IN',
-            style: TypographyTokens.editorialFont(
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-              color: ColorTokens.onSurfaceVariant,
-              letterSpacing: 2,
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.spacing5,
+            vertical: SpacingTokens.spacing4,
+          ),
+          decoration: BoxDecoration(
+            gradient: ColorTokens.borrowedSurfaceGradient(
+              from: ColorTokens.clubAccent.withValues(alpha: 0.12),
+              to: ColorTokens.surfaceContainerLow,
+            ),
+            borderRadius: ShapeTokens.cardRadius,
+            border: BorderTokens.all(
+              color: ColorTokens.clubAccent.withValues(alpha: 0.25),
             ),
           ),
-          const SizedBox(height: SpacingTokens.spacing3),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(
             children: [
-              _TimeUnit(value: days, label: 'DAYS'),
-              _Separator(),
-              _TimeUnit(value: hours, label: 'HRS'),
-              _Separator(),
-              _TimeUnit(value: minutes, label: 'MIN'),
-              _Separator(),
-              _TimeUnit(value: seconds, label: 'SEC', highlight: !isExpired),
+              Text(
+                isExpired ? 'ENTRIES CLOSED' : 'ENTRIES CLOSE IN',
+                style: TypographyTokens.metricLabel(
+                  ColorTokens.onSurfaceVariant,
+                ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 2),
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _TimeUnit(value: days, label: 'DAYS'),
+                  _Separator(),
+                  _TimeUnit(value: hours, label: 'HRS'),
+                  _Separator(),
+                  _TimeUnit(value: minutes, label: 'MIN'),
+                  _Separator(),
+                  _TimeUnit(
+                    value: seconds,
+                    label: 'SEC',
+                    highlight: !isExpired,
+                  ),
+                ],
+              ),
             ],
           ),
-        ],
-      ),
-    )
-        .animate(
-          target: isExpired ? 1 : 0,
         )
+        .animate(target: isExpired ? 1 : 0)
         .tint(color: ColorTokens.error.withValues(alpha: 0.2));
   }
 }
@@ -134,22 +129,16 @@ class _TimeUnit extends StatelessWidget {
       children: [
         Text(
           value.toString().padLeft(2, '0'),
-          style: TypographyTokens.monolithFont(
-            fontSize: 28,
-            fontWeight: FontWeight.w900,
-            color:
-                highlight ? ColorTokens.clubAccent : ColorTokens.onSurface,
-          ),
+          style: TypographyTokens.metricValue(
+            highlight ? ColorTokens.clubAccent : ColorTokens.onSurface,
+          ).copyWith(fontWeight: FontWeight.w900),
         ),
         const SizedBox(height: 2),
         Text(
           label,
-          style: TypographyTokens.editorialFont(
-            fontSize: 9,
-            fontWeight: FontWeight.w700,
-            color: ColorTokens.onSurfaceVariant,
-            letterSpacing: 1.2,
-          ),
+          style: TypographyTokens.metricLabel(
+            ColorTokens.onSurfaceVariant,
+          ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2),
         ),
       ],
     );
@@ -163,11 +152,9 @@ class _Separator extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing2),
       child: Text(
         ':',
-        style: TypographyTokens.monolithFont(
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-          color: ColorTokens.onSurfaceVariant,
-        ),
+        style: TypographyTokens.headlineMedium(
+          ColorTokens.onSurfaceVariant,
+        ).copyWith(fontWeight: FontWeight.w700),
       ),
     );
   }

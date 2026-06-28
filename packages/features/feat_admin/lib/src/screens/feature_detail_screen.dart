@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../admin_providers.dart';
 import '../repositories/feature_management_repository.dart';
@@ -77,7 +78,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                       )
                     : _error != null
                     ? _buildError()
-                    : RefreshIndicator(
+                    : AfriRefreshIndicator(
                         onRefresh: _load,
                         child: _buildContent(),
                       ),
@@ -94,9 +95,10 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       child: Row(
         children: [
-          IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(AfriIcons.chevronLeft),
+          AfriIconButton(
+            icon: AfriIcons.chevronLeft,
+            onTap: () => context.pop(),
+            tooltip: 'Back',
           ),
           const SizedBox(width: SpacingTokens.spacing3),
           Expanded(
@@ -110,7 +112,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                 Text(
                   widget.featureKey,
                   style: TypographyTokens.bodySmall().copyWith(
-                    color: Colors.white38,
+                    color: ColorTokens.onDarkFaint,
                     fontFamily: TypographyTokens.borrowedFontFamily,
                     package: 'core_theme',
                   ),
@@ -144,9 +146,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
           const SizedBox(height: SpacingTokens.spacing6),
           _buildSectionTitle('CHANNEL CONFIG'),
           const SizedBox(height: SpacingTokens.spacing3),
-          if (feature.channels.isEmpty)
-            _buildEmptyState('No channel configs found')
-          else
+          if (feature.channels.isNotEmpty)
             ...feature.channels.map(_buildChannelCard),
           const SizedBox(height: SpacingTokens.spacing6),
           _buildSectionTitle('SCHEDULING'),
@@ -166,7 +166,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
     return Text(
       title,
       style: TypographyTokens.titleSmall().copyWith(
-        color: Theme.of(context).colorScheme.primary,
+        color: ColorTokens.clubAccent,
         letterSpacing: 1.5,
       ),
     );
@@ -183,7 +183,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
             value: feature.isEnabled,
             onChanged: (value) => _updateGlobalEnabled(value),
           ),
-          const Divider(color: Colors.white10),
+          const AfriDivider(color: ColorTokens.onDarkHairline),
           _buildVisibilityRow(
             current: feature.visibilityState,
             onChanged: _updateVisibility,
@@ -207,10 +207,10 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               children: [
                 Icon(
                   channel.channel == 'mobile'
-                      ? Icons.phone_android
-                      : Icons.language,
+                      ? AfriIcons.smartphone
+                      : AfriIcons.public,
                   size: 18,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: ColorTokens.clubAccent,
                 ),
                 const SizedBox(width: SpacingTokens.spacing2),
                 Text(
@@ -229,7 +229,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               onChanged: (value) =>
                   _updateChannel(channel.channel, {'is_enabled': value}),
             ),
-            const Divider(color: Colors.white10),
+            const AfriDivider(color: ColorTokens.onDarkHairline),
             _buildToggleRow(
               label: 'Visible',
               subtitle: 'Show in $channelName UI',
@@ -237,7 +237,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               onChanged: (value) =>
                   _updateChannel(channel.channel, {'is_visible': value}),
             ),
-            const Divider(color: Colors.white10),
+            const AfriDivider(color: ColorTokens.onDarkHairline),
             _buildToggleRow(
               label: 'Show in Navigation',
               subtitle: channel.channel == 'mobile'
@@ -248,7 +248,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                 'show_in_navigation': value,
               }),
             ),
-            const Divider(color: Colors.white10),
+            const AfriDivider(color: ColorTokens.onDarkHairline),
             _buildToggleRow(
               label: 'Show on Home',
               subtitle: 'Display on home screen',
@@ -256,7 +256,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               onChanged: (value) =>
                   _updateChannel(channel.channel, {'show_on_home': value}),
             ),
-            const Divider(color: Colors.white10),
+            const AfriDivider(color: ColorTokens.onDarkHairline),
             _buildSortOrderRow(
               current: channel.sortOrder,
               onChanged: (value) =>
@@ -284,7 +284,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               'schedule_start_at': date?.toUtc().toIso8601String(),
             }),
           ),
-          const Divider(color: Colors.white10),
+          const AfriDivider(color: ColorTokens.onDarkHairline),
           _buildDatePickerRow(
             label: 'Available Until',
             subtitle: 'Feature deactivates',
@@ -294,7 +294,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
             }),
           ),
           if (startDate != null || endDate != null) ...[
-            const Divider(color: Colors.white10),
+            const AfriDivider(color: ColorTokens.onDarkHairline),
             Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: SpacingTokens.spacing2,
@@ -302,20 +302,20 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               child: Row(
                 children: [
                   const Icon(
-                    Icons.info_outline,
+                    AfriIcons.statusInfo,
                     size: 16,
-                    color: Colors.white38,
+                    color: ColorTokens.onDarkFaint,
                   ),
                   const SizedBox(width: SpacingTokens.spacing2),
                   Expanded(
                     child: Text(
                       _scheduleDescription(startDate, endDate),
                       style: TypographyTokens.bodySmall().copyWith(
-                        color: Colors.white54,
+                        color: ColorTokens.onDarkSubtle,
                       ),
                     ),
                   ),
-                  TextButton(
+                  AfriTextButton(
                     onPressed: () => _updateRules({
                       'schedule_start_at': null,
                       'schedule_end_at': null,
@@ -323,7 +323,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                     child: Text(
                       'Clear',
                       style: TypographyTokens.bodySmall().copyWith(
-                        color: Colors.red.shade400,
+                        color: ColorTokens.error,
                       ),
                     ),
                   ),
@@ -370,7 +370,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                 Text(
                   subtitle,
                   style: TypographyTokens.bodySmall().copyWith(
-                    color: Colors.white38,
+                    color: ColorTokens.onDarkFaint,
                   ),
                 ),
               ],
@@ -379,7 +379,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
           Switch(
             value: value,
             onChanged: _isSaving ? null : onChanged,
-            activeThumbColor: Theme.of(context).colorScheme.primary,
+            activeThumbColor: ColorTokens.clubAccent,
           ),
         ],
       ),
@@ -391,10 +391,10 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
     required ValueChanged<String> onChanged,
   }) {
     final color = switch (current) {
-      'visible' => Colors.green.shade400,
-      'hidden' => Colors.red.shade400,
-      'maintenance' => Colors.orange.shade400,
-      _ => Colors.grey,
+      'visible' => ColorTokens.success,
+      'hidden' => ColorTokens.error,
+      'maintenance' => ColorTokens.warning,
+      _ => ColorTokens.onSurfaceVariant,
     };
 
     return Padding(
@@ -409,26 +409,25 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                 Text(
                   'Controls UI rendering state',
                   style: TypographyTokens.bodySmall().copyWith(
-                    color: Colors.white38,
+                    color: ColorTokens.onDarkFaint,
                   ),
                 ),
               ],
             ),
           ),
-          PopupMenuButton<String>(
-            onSelected: _isSaving ? null : onChanged,
+          AfriPopupMenuButton<String>(
+            onSelected: onChanged,
+            enabled: !_isSaving,
+            tooltip: 'Change visibility',
             itemBuilder: (_) => const [
               PopupMenuItem(value: 'visible', child: Text('Visible')),
               PopupMenuItem(value: 'hidden', child: Text('Hidden')),
               PopupMenuItem(value: 'maintenance', child: Text('Maintenance')),
             ],
-            child: Chip(
+            child: AfriChip(
               label: Text(
                 current.toUpperCase(),
-                style: TypographyTokens.bodySmall().copyWith(
-                  color: color,
-                  fontSize: 10,
-                ),
+                style: TypographyTokens.bodySmall().copyWith(color: color),
               ),
               side: BorderTokens.side(color: color, opacity: 0.3),
               backgroundColor: color.withValues(alpha: 0.1),
@@ -456,7 +455,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                 Text(
                   'Lower = higher priority in nav/home',
                   style: TypographyTokens.bodySmall().copyWith(
-                    color: Colors.white38,
+                    color: ColorTokens.onDarkFaint,
                   ),
                 ),
               ],
@@ -517,17 +516,23 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                 Text(
                   subtitle,
                   style: TypographyTokens.bodySmall().copyWith(
-                    color: Colors.white38,
+                    color: ColorTokens.onDarkFaint,
                   ),
                 ),
               ],
             ),
           ),
-          GestureDetector(
+          AfriPressFeedback(
             onTap: _isSaving ? null : () => _pickDateTime(value, onChanged),
+            tooltip: 'Set $label',
+            semanticsLabel: '$label: $formatted',
+            semanticsHint: 'Opens date and time picker',
             child: Container(
               decoration: BoxDecoration(
-                border: BorderTokens.all(color: Colors.white, opacity: 0.24),
+                border: BorderTokens.all(
+                  color: ColorTokens.onDark,
+                  opacity: 0.24,
+                ),
                 borderRadius: BorderRadius.circular(8),
               ),
               padding: const EdgeInsets.symmetric(
@@ -538,8 +543,8 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                 formatted,
                 style: TypographyTokens.bodySmall().copyWith(
                   color: value != null
-                      ? Theme.of(context).colorScheme.primary
-                      : Colors.white38,
+                      ? ColorTokens.clubAccent
+                      : ColorTokens.onDarkFaint,
                 ),
               ),
             ),
@@ -642,7 +647,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
   void _showError(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red.shade700),
+      SnackBar(content: Text(message), backgroundColor: ColorTokens.error),
     );
   }
 
@@ -662,18 +667,6 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
   String _formatDate(DateTime value) =>
       '${value.year}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';
 
-  Widget _buildEmptyState(String message) {
-    return Padding(
-      padding: const EdgeInsets.all(SpacingTokens.spacing4),
-      child: Center(
-        child: Text(
-          message,
-          style: TypographyTokens.bodySmall().copyWith(color: Colors.white38),
-        ),
-      ),
-    );
-  }
-
   Widget _buildError() {
     return Center(
       child: Padding(
@@ -681,7 +674,11 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 48, color: Colors.red.shade400),
+            const Icon(
+              AfriIcons.statusError,
+              size: 48,
+              color: ColorTokens.error,
+            ),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
               'Failed to load feature',
@@ -694,7 +691,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: SpacingTokens.spacing4),
-            ElevatedButton(onPressed: _load, child: const Text('Retry')),
+            AfriElevatedButton(onPressed: _load, child: const Text('Retry')),
           ],
         ),
       ),

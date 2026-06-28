@@ -41,22 +41,23 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('Challenge feature widgets', () {
-    testWidgets('feed renders empty state when no pools are available', (
-      tester,
-    ) async {
-      final challengeRepository = FakeChallengeRepository();
+    testWidgets(
+      'feed hides challenge list section when no pools are available',
+      (tester) async {
+        final challengeRepository = FakeChallengeRepository();
 
-      await pumpTestWidget(
-        tester,
-        child: const ChallengeFeedScreen(),
-        overrides: <Override>[
-          challengeRepositoryProvider.overrideWithValue(challengeRepository),
-        ],
-      );
+        await pumpTestWidget(
+          tester,
+          child: const ChallengeFeedScreen(),
+          overrides: <Override>[
+            challengeRepositoryProvider.overrideWithValue(challengeRepository),
+          ],
+        );
 
-      expect(find.text('No challenges yet'), findsOneWidget);
-      expect(find.text('CREATE A NEW CHALLENGE'), findsOneWidget);
-    });
+        expect(find.text('No challenges yet'), findsNothing);
+        expect(find.text('CREATE A NEW CHALLENGE'), findsOneWidget);
+      },
+    );
 
     testWidgets('feed renders featured, open, mine, and settled sections', (
       tester,

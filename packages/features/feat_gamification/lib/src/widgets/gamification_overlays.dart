@@ -1,5 +1,6 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 /// §2.4 LOCKED — no hardcoded tier names or perk descriptions.
 /// All display values are passed as parameters from the caller (DB-sourced).
@@ -12,46 +13,38 @@ Future<void> showXpLevelUpModal(
     context: context,
     barrierColor: ColorTokens.scrim,
     builder: (context) {
-      return Dialog(
-        backgroundColor: Colors.transparent,
-        child: GlassCard(
-          animate: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'LEVEL UP!',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 42,
-                  fontWeight: FontWeight.w900,
-                  color: ColorTokens.onSurface,
-                ),
+      return AfriDialog(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'LEVEL UP!',
+              style: TypographyTokens.displayMedium().copyWith(
+                fontWeight: FontWeight.w900,
               ),
-              const SizedBox(height: SpacingTokens.spacing3),
+            ),
+            const SizedBox(height: SpacingTokens.spacing3),
+            Text(
+              tierName.toUpperCase(),
+              style: TypographyTokens.headlineLarge(
+                ColorTokens.clubAccent,
+              ).copyWith(fontWeight: FontWeight.w800),
+            ),
+            if (perksText.isNotEmpty) ...[
+              const SizedBox(height: SpacingTokens.spacing2),
               Text(
-                tierName.toUpperCase(),
-                style: TypographyTokens.monolithFont(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: ColorTokens.clubAccent,
-                ),
-              ),
-              if (perksText.isNotEmpty) ...[
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(
-                  perksText,
-                  textAlign: TextAlign.center,
-                  style: TypographyTokens.bodyMedium(),
-                ),
-              ],
-              const SizedBox(height: SpacingTokens.spacing4),
-              AfriButton(
-                label: 'Awesome',
-                fullWidth: true,
-                onTap: () => Navigator.of(context).pop(),
+                perksText,
+                textAlign: TextAlign.center,
+                style: TypographyTokens.bodyMedium(),
               ),
             ],
-          ),
+            const SizedBox(height: SpacingTokens.spacing4),
+            AfriButton(
+              label: 'Awesome',
+              fullWidth: true,
+              onTap: () => context.pop(),
+            ),
+          ],
         ),
       );
     },
@@ -67,49 +60,43 @@ Future<void> showBadgeEarnedModal(
     context: context,
     barrierColor: ColorTokens.scrim,
     builder: (context) {
-      return Dialog(
-        backgroundColor: Colors.transparent,
-        child: GlassCard(
-          animate: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 88,
-                height: 88,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: ColorTokens.clubAccent.withValues(alpha: 0.16),
-                ),
-                child: Icon(
-                  Icons.workspace_premium_rounded,
-                  color: ColorTokens.clubAccent,
-                  size: 44,
-                ),
+      return AfriDialog(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 88,
+              height: 88,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: ColorTokens.clubAccent.withValues(alpha: 0.16),
               ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              Text(
-                badgeName,
-                style: TypographyTokens.monolithFont(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: ColorTokens.onSurface,
-                ),
+              child: Icon(
+                AfriIcons.premium,
+                color: ColorTokens.clubAccent,
+                size: 44,
               ),
-              const SizedBox(height: SpacingTokens.spacing2),
-              Text(
-                description,
-                textAlign: TextAlign.center,
-                style: TypographyTokens.bodyMedium(),
+            ),
+            const SizedBox(height: SpacingTokens.spacing4),
+            Text(
+              badgeName,
+              style: TypographyTokens.headlineLarge().copyWith(
+                fontWeight: FontWeight.w800,
               ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              AfriButton(
-                label: 'Keep going',
-                fullWidth: true,
-                onTap: () => Navigator.of(context).pop(),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: SpacingTokens.spacing2),
+            Text(
+              description,
+              textAlign: TextAlign.center,
+              style: TypographyTokens.bodyMedium(),
+            ),
+            const SizedBox(height: SpacingTokens.spacing4),
+            AfriButton(
+              label: 'Keep going',
+              fullWidth: true,
+              onTap: () => context.pop(),
+            ),
+          ],
         ),
       );
     },

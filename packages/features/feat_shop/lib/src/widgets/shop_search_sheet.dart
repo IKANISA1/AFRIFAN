@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -8,119 +10,119 @@ void showShopSearchSheet({
   required BuildContext context,
   required List<Map<String, dynamic>> products,
 }) {
+  final searchController = TextEditingController();
   var query = '';
 
-  showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (context) {
-      return StatefulBuilder(
-        builder: (context, setModalState) {
-          final results = products
-              .where((product) {
-                final haystack = [
-                  product['name']?.toString() ?? '',
-                  product['category']?.toString() ?? '',
-                  product['description']?.toString() ?? '',
-                ].join(' ').toLowerCase();
-                return haystack.contains(query.toLowerCase());
-              })
-              .toList(growable: false);
+  unawaited(
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: ColorTokens.transparent,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            final results = products
+                .where((product) {
+                  final haystack = [
+                    product['name']?.toString() ?? '',
+                    product['category']?.toString() ?? '',
+                    product['description']?.toString() ?? '',
+                  ].join(' ').toLowerCase();
+                  return haystack.contains(query.toLowerCase());
+                })
+                .toList(growable: false);
 
-          return Container(
-            decoration: BoxDecoration(
-              color: ColorTokens.surface,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(28),
+            return Container(
+              decoration: BoxDecoration(
+                color: ColorTokens.surface,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(28),
+                ),
+                border: BorderTokens.ghost(),
               ),
-              border: BorderTokens.ghost(),
-            ),
-            padding: EdgeInsets.fromLTRB(
-              SpacingTokens.spacing6,
-              SpacingTokens.spacing4,
-              SpacingTokens.spacing6,
-              MediaQuery.of(context).padding.bottom + SpacingTokens.spacing4,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  autofocus: true,
-                  onChanged: (value) => setModalState(() => query = value),
-                  decoration: const InputDecoration(
-                    hintText: 'Search kits, scarves, and drops',
-                    prefixIcon: Icon(AfriIcons.search),
+              padding: EdgeInsets.fromLTRB(
+                SpacingTokens.spacing6,
+                SpacingTokens.spacing4,
+                SpacingTokens.spacing6,
+                MediaQuery.of(context).padding.bottom + SpacingTokens.spacing4,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AfriInputField(
+                    controller: searchController,
+                    autofocus: true,
+                    onChanged: (value) => setModalState(() => query = value),
+                    hint: 'Search kits, scarves, and drops',
+                    prefixIcon: AfriIcons.search,
                   ),
-                ),
-                const SizedBox(height: SpacingTokens.spacing4),
-                Flexible(
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    itemCount: results.length,
-                    separatorBuilder: (_, __) =>
-                        const SizedBox(height: SpacingTokens.spacing2),
-                    itemBuilder: (context, index) {
-                      final currency = CurrencyFormatter(
-                        currencyCode: context.afriCurrencyCode,
-                        currencySymbol: context.afriCurrencySymbol,
-                      );
-                      final product = results[index];
-                      final id = product['id']?.toString() ?? '';
-                      final name = product['name']?.toString() ?? 'Product';
-                      final category =
-                          product['category']?.toString() ?? 'Merch';
-                      final price = (product['price'] as num?)?.toDouble() ?? 0;
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  Flexible(
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: results.length,
+                      separatorBuilder: (_, __) =>
+                          const SizedBox(height: SpacingTokens.spacing2),
+                      itemBuilder: (context, index) {
+                        final currency = CurrencyFormatter(
+                          currencyCode: context.afriCurrencyCode,
+                          currencySymbol: context.afriCurrencySymbol,
+                        );
+                        final product = results[index];
+                        final id = product['id']?.toString() ?? '';
+                        final name = product['name']?.toString() ?? 'Product';
+                        final category =
+                            product['category']?.toString() ?? 'Merch';
+                        final price =
+                            (product['price'] as num?)?.toDouble() ?? 0;
 
-                      return ClayCard(
-                        onTap: () {
-                          context.pop();
-                          context.push('/shop/product/$id');
-                        },
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    name.toUpperCase(),
-                                    style: TypographyTokens.monolithFont(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700,
-                                      color: ColorTokens.onSurface,
+                        return AfriSurfaceCard(
+                          onTap: () {
+                            context.pop();
+                            unawaited(context.push('/shop/product/$id'));
+                          },
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      name.toUpperCase(),
+                                      style: TypographyTokens.headlineSmall()
+                                          .copyWith(
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: SpacingTokens.spacing1,
-                                  ),
-                                  Text(
-                                    category,
-                                    style: TypographyTokens.bodySmall(),
-                                  ),
-                                ],
+                                    const SizedBox(
+                                      height: SpacingTokens.spacing1,
+                                    ),
+                                    Text(
+                                      category,
+                                      style: TypographyTokens.bodySmall(),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: SpacingTokens.spacing3),
-                            Text(
-                              currency.format(price),
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
-                                color: ColorTokens.clubAccent,
+                              const SizedBox(width: SpacingTokens.spacing3),
+                              Text(
+                                currency.format(price),
+                                style: TypographyTokens.headlineSmall(
+                                  ColorTokens.clubAccent,
+                                ).copyWith(fontWeight: FontWeight.w800),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-          );
-        },
-      );
-    },
+                ],
+              ),
+            );
+          },
+        );
+      },
+    ).whenComplete(searchController.dispose),
   );
 }

@@ -89,7 +89,7 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
       'is_active': _isActive,
     };
 
-    Navigator.of(context).pop(data);
+    context.pop(data);
   }
 
   @override
@@ -163,7 +163,7 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
             Wrap(
               spacing: SpacingTokens.spacing2,
               children: ['league', 'cup', 'tournament'].map((k) {
-                return ChoiceChip(
+                return AfriChoiceChip(
                   selected: _kind == k,
                   label: Text(k.toUpperCase()),
                   onSelected: (_) => setState(() => _kind = k),
@@ -184,7 +184,7 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
               children: ['africa', 'europe', 'international', 'global'].map((
                 r,
               ) {
-                return ChoiceChip(
+                return AfriChoiceChip(
                   selected: _region == r,
                   label: Text(r.toUpperCase()),
                   onSelected: (_) => setState(() => _region = r),
@@ -195,7 +195,7 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
             const SizedBox(height: SpacingTokens.spacing4),
 
             // Active toggle
-            SwitchListTile.adaptive(
+            AfriSwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: Text('ACTIVE', style: TypographyTokens.titleMedium()),
               subtitle: Text(
@@ -229,17 +229,7 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
-      child: TextField(
-        controller: controller,
-        style: TypographyTokens.bodyLarge(),
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          border: BorderTokens.input(borderRadius: BorderRadius.circular(16)),
-          filled: true,
-          fillColor: ColorTokens.surfaceContainerHigh,
-        ),
-      ),
+      child: AfriInputField(controller: controller, label: label, hint: hint),
     );
   }
 }
@@ -400,9 +390,9 @@ class _SeasonManagerSheetState extends State<_SeasonManagerSheet> {
                       ],
                     ),
                   ),
-                  IconButton(
-                    onPressed: _addSeason,
-                    icon: const Icon(Icons.add_rounded),
+                  AfriIconButton(
+                    icon: AfriIcons.add,
+                    onTap: _addSeason,
                     tooltip: 'Add season',
                   ),
                 ],
@@ -421,25 +411,7 @@ class _SeasonManagerSheetState extends State<_SeasonManagerSheet> {
                         ),
                       )
                     : _seasons.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.calendar_month_rounded,
-                              size: 48,
-                              color: ColorTokens.onSurfaceVariant,
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing4),
-                            Text(
-                              'No seasons yet',
-                              style: TypographyTokens.headlineMedium().copyWith(
-                                color: ColorTokens.onSurface,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
+                    ? const SizedBox.shrink()
                     : ListView.separated(
                         controller: scrollController,
                         itemCount: _seasons.length,
@@ -479,7 +451,7 @@ class _SeasonManagerSheetState extends State<_SeasonManagerSheet> {
                     _StatusBadge(isActive: isActive),
                     const SizedBox(width: SpacingTokens.spacing2),
                     _InfoChip(
-                      icon: Icons.schedule_rounded,
+                      icon: AfriIcons.statusPending,
                       label: status.toUpperCase(),
                     ),
                   ],
@@ -487,14 +459,9 @@ class _SeasonManagerSheetState extends State<_SeasonManagerSheet> {
               ],
             ),
           ),
-          IconButton(
-            onPressed: () => _toggleSeasonActive(season),
-            icon: Icon(
-              isActive
-                  ? Icons.visibility_off_rounded
-                  : Icons.visibility_rounded,
-              size: 20,
-            ),
+          AfriIconButton(
+            icon: isActive ? AfriIcons.visibilityOff : AfriIcons.visibility,
+            onTap: () => _toggleSeasonActive(season),
             tooltip: isActive ? 'Deactivate' : 'Activate',
           ),
         ],
@@ -535,7 +502,7 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
       return;
     }
 
-    Navigator.of(context).pop(<String, dynamic>{
+    context.pop(<String, dynamic>{
       'competition_id': widget.competitionId,
       'slug': _slugCtl.text.trim(),
       'label': _labelCtl.text.trim(),
@@ -548,8 +515,7 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: ColorTokens.surfaceContainerLow,
+    return AfriAlertDialog(
       title: Text(
         'ADD SEASON',
         style: TypographyTokens.titleLarge().copyWith(letterSpacing: 1.5),
@@ -558,37 +524,33 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
+            AfriInputField(
               controller: _slugCtl,
-              decoration: const InputDecoration(
-                labelText: 'Slug',
-                hintText: 'e.g. my-league-2026',
-              ),
+              label: 'Slug',
+              hint: 'e.g. my-league-2026',
             ),
             const SizedBox(height: SpacingTokens.spacing3),
-            TextField(
+            AfriInputField(
               controller: _labelCtl,
-              decoration: const InputDecoration(
-                labelText: 'Label',
-                hintText: 'e.g. 2025/2026',
-              ),
+              label: 'Label',
+              hint: 'e.g. 2025/2026',
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: AfriInputField(
                     controller: _yearStartCtl,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'Year Start'),
+                    label: 'Year Start',
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
-                  child: TextField(
+                  child: AfriInputField(
                     controller: _yearEndCtl,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'Year End'),
+                    label: 'Year End',
                   ),
                 ),
               ],
@@ -597,7 +559,7 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
             Wrap(
               spacing: SpacingTokens.spacing2,
               children: ['planned', 'active', 'finished', 'archived'].map((s) {
-                return ChoiceChip(
+                return AfriChoiceChip(
                   selected: _status == s,
                   label: Text(s.toUpperCase()),
                   onSelected: (_) => setState(() => _status = s),
@@ -608,11 +570,11 @@ class _SeasonFormDialogState extends State<_SeasonFormDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+        AfriTextButton(
+          onPressed: () => context.pop(),
           child: const Text('CANCEL'),
         ),
-        TextButton(onPressed: _submit, child: const Text('CREATE')),
+        AfriTextButton(onPressed: _submit, child: const Text('CREATE')),
       ],
     );
   }

@@ -83,7 +83,8 @@ class HubQuickRoutes extends StatelessWidget {
       children: [
         ...items.map(
           (item) => SizedBox(
-            width: (MediaQuery.of(context).size.width -
+            width:
+                (MediaQuery.of(context).size.width -
                     (SpacingTokens.screenPadding * 2) -
                     (SpacingTokens.listItemGap * 2)) /
                 3,
@@ -95,7 +96,8 @@ class HubQuickRoutes extends StatelessWidget {
           ),
         ),
         SizedBox(
-          width: (MediaQuery.of(context).size.width -
+          width:
+              (MediaQuery.of(context).size.width -
                   (SpacingTokens.screenPadding * 2) -
                   (SpacingTokens.listItemGap * 2)) /
               3,
@@ -179,8 +181,7 @@ class HubFixtureRow extends StatelessWidget {
             if (fixture.homeScore != null && fixture.awayScore != null)
               Text(
                 '${fixture.homeScore} - ${fixture.awayScore}',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 18,
+                style: TypographyTokens.titleLarge().copyWith(
                   fontWeight: FontWeight.w800,
                 ),
               )
@@ -214,13 +215,9 @@ class HubLeaderboardRow extends StatelessWidget {
           width: 34,
           child: Text(
             '#${entry.rank}',
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: entry.rank == 1
-                  ? ColorTokens.clubAccent
-                  : ColorTokens.onSurface,
-            ),
+            style: TypographyTokens.titleLarge(
+              entry.rank == 1 ? ColorTokens.clubAccent : ColorTokens.onSurface,
+            ).copyWith(fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(width: SpacingTokens.inlineGap),
@@ -238,11 +235,9 @@ class HubLeaderboardRow extends StatelessWidget {
         ),
         Text(
           '+${entry.totalFetEarned}',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            color: ColorTokens.clubAccent,
-          ),
+          style: TypographyTokens.titleLarge(
+            ColorTokens.clubAccent,
+          ).copyWith(fontWeight: FontWeight.w800),
         ),
       ],
     );
@@ -294,11 +289,9 @@ class HubChallengeRow extends StatelessWidget {
         ),
         Text(
           '+${item.fetValue}',
-          style: TypographyTokens.monolithFont(
-            fontSize: 16,
-            fontWeight: FontWeight.w800,
-            color: ColorTokens.clubAccent,
-          ),
+          style: TypographyTokens.titleMedium(
+            ColorTokens.clubAccent,
+          ).copyWith(fontWeight: FontWeight.w800),
         ),
       ],
     );

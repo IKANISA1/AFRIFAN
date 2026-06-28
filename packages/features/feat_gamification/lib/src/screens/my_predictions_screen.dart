@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,7 +9,6 @@ import 'package:go_router/go_router.dart';
 
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
-import 'package:core_utils/core_utils.dart';
 
 class MyPredictionsScreen extends ConsumerStatefulWidget {
   const MyPredictionsScreen({super.key});
@@ -28,7 +30,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _loadData();
+    unawaited(_loadData());
   }
 
   @override
@@ -57,7 +59,12 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
         _isLoading = false;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('MyPredictionsScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'MyPredictionsScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) return;
       setState(() {
         _error = 'Could not load your predictions right now.';
@@ -74,21 +81,21 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'MY PREDICTIONS',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
-        bottom: TabBar(
+        bottom: AfriTabBar.line(
           controller: _tabController,
           tabs: [
             Tab(text: 'ACTIVE (${_active.length})'),
@@ -117,24 +124,24 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
           : TabBarView(
               controller: _tabController,
               children: [
-                _PredictionList(
+                MyPredictionsList(
                   items: _active,
                   onRefresh: _loadData,
                   onCancel: _cancelPrediction,
                   onOpenDetail: (prediction) =>
-                      context.push('/fanzone/my/${prediction.id}'),
+                      unawaited(context.push('/fanzone/my/${prediction.id}')),
                 ),
-                _PredictionList(
+                MyPredictionsList(
                   items: _settled,
                   onRefresh: _loadData,
                   onOpenDetail: (prediction) =>
-                      context.push('/fanzone/my/${prediction.id}'),
+                      unawaited(context.push('/fanzone/my/${prediction.id}')),
                 ),
-                _PredictionList(
+                MyPredictionsList(
                   items: _history,
                   onRefresh: _loadData,
                   onOpenDetail: (prediction) =>
-                      context.push('/fanzone/my/${prediction.id}'),
+                      unawaited(context.push('/fanzone/my/${prediction.id}')),
                 ),
               ],
             ),
@@ -142,7 +149,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
   }
 
   Future<void> _cancelPrediction(UserPrediction prediction) async {
-    HapticFeedback.lightImpact();
+    unawaited(HapticFeedback.lightImpact());
 
     try {
       final result = await ref
@@ -159,7 +166,12 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
         context,
       ).showSnackBar(SnackBar(content: Text(result.message)));
     } catch (error, stackTrace) {
-      AfriLogger.warn('MyPredictionsScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'MyPredictionsScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Could not cancel this prediction.')),
@@ -168,8 +180,9 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
   }
 }
 
-class _PredictionList extends StatelessWidget {
-  const _PredictionList({
+class MyPredictionsList extends StatelessWidget {
+  const MyPredictionsList({
+    super.key,
     required this.items,
     required this.onRefresh,
     this.onCancel,
@@ -184,19 +197,12 @@ class _PredictionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(SpacingTokens.spacing6),
-          child: AfriEmptyView(
-            title: 'No predictions yet',
-            message:
-                'Lock in predictions from fixtures and they will appear here.',
-          ),
-        ),
+      return const SizedBox.shrink(
+        key: ValueKey<String>('my-predictions-empty'),
       );
     }
 
-    return RefreshIndicator(
+    return AfriRefreshIndicator(
       onRefresh: onRefresh,
       color: ColorTokens.clubAccent,
       child: ListView.separated(
@@ -268,10 +274,8 @@ class _PredictionCard extends StatelessWidget {
             Expanded(
               child: Text(
                 '${prediction.homeTeamShort.toUpperCase()} vs ${prediction.awayTeamShort.toUpperCase()}',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 16,
+                style: TypographyTokens.titleMedium().copyWith(
                   fontWeight: FontWeight.w700,
-                  color: ColorTokens.onSurface,
                 ),
               ),
             ),

@@ -11,6 +11,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'bootstrap.dart';
 import 'deferred_feature_initializer.dart';
 
+const Duration _criticalStartupServiceTimeout = Duration(seconds: 4);
+
 class AppStartupOptions {
   const AppStartupOptions({
     this.configureDeviceChrome = true,
@@ -101,7 +103,7 @@ class AppStartupCoordinator {
   Future<void> _configureDeviceChrome() async {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
+        statusBarColor: ColorTokens.transparent,
         statusBarIconBrightness: Brightness.light,
         systemNavigationBarColor: ColorTokens.background,
         systemNavigationBarIconBrightness: Brightness.light,
@@ -121,12 +123,27 @@ class AppStartupCoordinator {
       return;
     }
 
-    final firebaseReady = await FirebaseBootstrapService.initialize(
-      options: options.firebaseOptions,
+    final firebaseReady = await _runBestEffortStartupTask<bool>(
+      label: 'Firebase',
+      operation: () => FirebaseBootstrapService.initialize(
+        options: options.firebaseOptions,
+      ),
+      fallback: false,
     );
-    final appCheckReady = await AppCheckService.initialize();
-    await CrashlyticsService.initialize();
-    await ConnectivityService.initialize();
+    final appCheckReady = await _runBestEffortStartupTask<bool>(
+      label: 'AppCheck',
+      operation: AppCheckService.initialize,
+      fallback: false,
+    );
+    await _runBestEffortStartupTask<bool>(
+      label: 'Crashlytics',
+      operation: CrashlyticsService.initialize,
+      fallback: false,
+    );
+    await _runBestEffortStartupTask<void>(
+      label: 'Connectivity',
+      operation: ConnectivityService.initialize,
+    );
 
     if (kReleaseMode && !firebaseReady && !appCheckReady) {
       AfriLogger.warn(
@@ -183,4 +200,34 @@ class AppStartupCoordinator {
       );
     }
   }
+}
+
+Future<T> _runBestEffortStartupTask<T>({
+  required String label,
+  required Future<T> Function() operation,
+  T? fallback,
+}) async {
+  try {
+    return await operation().timeout(_criticalStartupServiceTimeout);
+  } on TimeoutException catch (error, stackTrace) {
+    AfriLogger.warn(
+      'Bootstrap',
+      '$label startup exceeded ${_criticalStartupServiceTimeout.inSeconds}s; '
+          'continuing without blocking first frame.',
+      error,
+      stackTrace,
+    );
+  } catch (error, stackTrace) {
+    AfriLogger.warn(
+      'Bootstrap',
+      '$label startup failed; continuing without blocking first frame.',
+      error,
+      stackTrace,
+    );
+  }
+
+  if (fallback is T) {
+    return fallback;
+  }
+  return null as T;
 }

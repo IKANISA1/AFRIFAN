@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'auth_providers.dart';
 import 'auth_repository.dart';
 import 'auth_state.dart';
+import 'models/admin_workspace_access.dart';
 import 'models/user_profile.dart';
 
 /// Core auth state notifier — manages the auth lifecycle.
@@ -161,6 +162,20 @@ class AuthNotifier extends Notifier<AuthState> {
       final adminAccess = await _repository.resolveAdminAccess(profile.id);
       state = AuthAuthenticated(profile: profile, workspace: adminAccess);
     } catch (e) {
+      if (_isAnonymousGuestFallbackError(e)) {
+        final profile = UserProfile.guest(clubId: _repository.clubId);
+        AfriLogger.warn(
+          'AuthNotifier',
+          'Anonymous sign-in could not reach the backend; continuing with a local guest session: $e',
+        );
+        unawaited(FirebaseAnalyticsService.setUserId(null));
+        unawaited(CrashlyticsService.setUserId(null));
+        state = AuthAuthenticated(
+          profile: profile,
+          workspace: AdminWorkspaceAccess.none,
+        );
+        return;
+      }
       state = AuthError('Sign-in failed', e);
     }
   }
@@ -381,5 +396,15 @@ class AuthNotifier extends Notifier<AuthState> {
       return const AuthUnauthenticated();
     }
     return previous;
+  }
+
+  bool _isAnonymousGuestFallbackError(Object error) {
+    final message = error.toString().toLowerCase();
+    return message.contains('failed host lookup') ||
+        message.contains('socketexception') ||
+        message.contains('authretryablefetchexception') ||
+        message.contains('connection timed out') ||
+        message.contains('network is unreachable') ||
+        message.contains('connection refused');
   }
 }

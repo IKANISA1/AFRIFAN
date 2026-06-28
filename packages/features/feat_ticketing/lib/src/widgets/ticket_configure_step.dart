@@ -38,7 +38,7 @@ class TicketConfigureStep extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClayCard(
+          AfriSurfaceCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -85,7 +85,7 @@ class TicketConfigureStep extends StatelessWidget {
             onTap: () => onSeatTypeChanged(SeatType.vip),
           ),
           const SizedBox(height: SpacingTokens.spacing6),
-          ClayCard(
+          AfriSurfaceCard(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -116,7 +116,7 @@ class TicketConfigureStep extends StatelessWidget {
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing6),
-          OutlinedButton.icon(
+          AfriOutlinedIconButton(
             onPressed: onSeatCodeRequested,
             icon: const Icon(AfriIcons.seat),
             label: Text(
@@ -124,7 +124,7 @@ class TicketConfigureStep extends StatelessWidget {
                   ? 'CHOOSE SPECIFIC SEAT'
                   : 'CHANGE SELECTED SEAT',
             ),
-            style: OutlinedButton.styleFrom(
+            style: AfriOutlinedButton.styleFrom(
               minimumSize: const Size(double.infinity, 56),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),

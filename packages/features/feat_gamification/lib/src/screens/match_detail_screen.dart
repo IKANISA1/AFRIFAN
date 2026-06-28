@@ -121,7 +121,12 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
         _error = _fixture == null ? 'Fixture not found.' : null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('MatchDetailScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'MatchDetailScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -187,11 +192,12 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
     if (_isLoading) {
       return Scaffold(
         backgroundColor: ColorTokens.background,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          leading: IconButton(
-            onPressed: () => context.pop(),
-            icon: const Icon(AfriIcons.back),
+        appBar: AfriAppBar(
+          backgroundColor: ColorTokens.transparent,
+          leading: AfriIconButton(
+            icon: AfriIcons.back,
+            onTap: () => context.pop(),
+            tooltip: 'Back',
           ),
         ),
         body: const Padding(
@@ -204,16 +210,16 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
     if (_fixture == null) {
       return Scaffold(
         backgroundColor: ColorTokens.background,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          leading: IconButton(
-            onPressed: () => context.pop(),
-            icon: const Icon(AfriIcons.back),
+        appBar: AfriAppBar(
+          backgroundColor: ColorTokens.transparent,
+          leading: AfriIconButton(
+            icon: AfriIcons.back,
+            onTap: () => context.pop(),
+            tooltip: 'Back',
           ),
           title: Text(
             'Match',
-            style: TypographyTokens.monolithFont(
-              fontSize: 20,
+            style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: 1.0,
             ),
@@ -236,23 +242,24 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           '${fixture.homeTeamShort} vs ${fixture.awayTeamShort}',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
+          style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 0.8,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
         actions: [
-          IconButton(
-            onPressed: _markets.isEmpty
+          AfriIconButton(
+            icon: AfriIcons.filter,
+            onTap: _markets.isEmpty
                 ? null
                 : () {
                     unawaited(
@@ -263,36 +270,14 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                       ),
                     );
                   },
-            icon: const Icon(AfriIcons.filter),
             tooltip: 'Markets',
           ),
         ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(48),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              SpacingTokens.screenPadding,
-              0,
-              SpacingTokens.screenPadding,
-              SpacingTokens.spacing2,
-            ),
-            child: TabBar(
-              controller: _tabController,
-              indicatorColor: ColorTokens.clubAccent,
-              indicatorWeight: 2.5,
-              labelColor: ColorTokens.clubAccent,
-              unselectedLabelColor: ColorTokens.onSurfaceVariant,
-              labelStyle: TypographyTokens.editorialFont(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1.0,
-              ),
-              dividerColor: Colors.transparent,
-              tabs: _tabLabels
-                  .map((label) => Tab(text: label))
-                  .toList(growable: false),
-            ),
-          ),
+        bottom: AfriTabBar.line(
+          controller: _tabController,
+          tabs: _tabLabels
+              .map((label) => Tab(text: label))
+              .toList(growable: false),
         ),
       ),
       bottomNavigationBar: PredictionSlipBar(onTap: _openSlip),
@@ -305,7 +290,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
               SpacingTokens.spacing6,
               0,
             ),
-            child: ClayCard(
+            child: AfriSurfaceCard(
               child: Column(
                 children: [
                   Text(
@@ -335,11 +320,9 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                                   fixture.awayScore != null
                               ? '${fixture.homeScore} - ${fixture.awayScore}'
                               : 'VS',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w800,
-                            color: ColorTokens.clubAccent,
-                          ),
+                          style: TypographyTokens.titleLarge(
+                            ColorTokens.clubAccent,
+                          ).copyWith(fontWeight: FontWeight.w800),
                         ),
                       ),
                       Expanded(

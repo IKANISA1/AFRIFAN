@@ -17,30 +17,24 @@ class ContributionHistorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (contributions.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'CONTRIBUTION HISTORY',
-          style: TypographyTokens.monolithFont(
-            fontSize: 16,
+          style: TypographyTokens.titleMedium().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.2,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
-        if (contributions.isEmpty)
-          GlassCard(
-            animate: false,
-            child: Text(
-              'No contributions have been recorded for your account yet.',
-              style: TypographyTokens.bodyMedium(),
-            ),
-          )
-        else
-          ...contributions.map(
-            (c) => _ContributionRow(record: c, currencySymbol: currencySymbol),
-          ),
+        ...contributions.map(
+          (c) => _ContributionRow(record: c, currencySymbol: currencySymbol),
+        ),
       ],
     );
   }
@@ -103,22 +97,16 @@ class _ContributionRow extends StatelessWidget {
               children: [
                 Text(
                   record.label.toUpperCase(),
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.clubAccent,
-                    letterSpacing: 1,
-                  ),
+                  style: TypographyTokens.labelMedium(
+                    ColorTokens.clubAccent,
+                  ).copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   record.status,
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: _statusColor(),
-                    letterSpacing: 0.5,
-                  ),
+                  style: TypographyTokens.labelSmall(
+                    _statusColor(),
+                  ).copyWith(fontWeight: FontWeight.w700),
                 ),
               ],
             ),

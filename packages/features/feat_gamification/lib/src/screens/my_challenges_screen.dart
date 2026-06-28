@@ -59,21 +59,21 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'MY CHALLENGES',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
+          style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.0,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
-        bottom: TabBar(
+        bottom: AfriTabBar.line(
           controller: _tabController,
           tabs: const [
             Tab(text: 'Open'),
@@ -83,7 +83,7 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
           ],
         ),
       ),
-      body: RefreshIndicator(
+      body: AfriRefreshIndicator(
         onRefresh: _loadForCurrentTab,
         child: state.when(
           loading: () => ListView(
@@ -109,15 +109,7 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
             ),
             padding: const EdgeInsets.all(SpacingTokens.screenPadding),
             children: items.isEmpty
-                ? const [
-                    AfriEmptyView(
-                      compact: true,
-                      title: 'No challenges in this tab',
-                      message:
-                          'Create or join a pool from the main challenge feed.',
-                      icon: AfriIcons.versus,
-                    ),
-                  ]
+                ? const [SizedBox.shrink()]
                 : items
                       .map(
                         (challenge) => Padding(

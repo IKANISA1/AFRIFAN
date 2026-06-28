@@ -36,10 +36,7 @@ class _FixtureSettlementScreenState
 
     try {
       final client = ref.read(supabaseClientProvider);
-      final baseQuery = client
-          .schema('football')
-          .from('fixtures')
-          .select('''
+      final baseQuery = client.schema('football').from('fixtures').select('''
             id, status, stage_name, group_name,
             kickoff_at, venue_city, venue_country,
             home_score, away_score,
@@ -88,7 +85,7 @@ class _FixtureSettlementScreenState
     showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) => const Center(child: CircularProgressIndicator()),
+      builder: (ctx) => const AfriLoadingIndicator(),
     );
 
     try {
@@ -111,7 +108,7 @@ class _FixtureSettlementScreenState
       );
 
       if (!mounted) return;
-      Navigator.of(context).pop(); // close loading
+      context.pop(); // close loading
 
       if (!rpcResult.isSuccess || rpcResult.data is! Map) {
         if (!mounted) return;
@@ -131,10 +128,8 @@ class _FixtureSettlementScreenState
           responseMap['settlement'] as Map<String, dynamic>? ?? {};
       final marketsProcessed =
           (responseMap['markets_settled'] as num?)?.toInt() ?? 0;
-      final totalWon =
-          (settlementData['total_won'] as num?)?.toInt() ?? 0;
-      final totalLost =
-          (settlementData['total_lost'] as num?)?.toInt() ?? 0;
+      final totalWon = (settlementData['total_won'] as num?)?.toInt() ?? 0;
+      final totalLost = (settlementData['total_lost'] as num?)?.toInt() ?? 0;
 
       await _loadFixtures();
 
@@ -150,7 +145,7 @@ class _FixtureSettlementScreenState
       );
     } catch (e) {
       if (!mounted) return;
-      Navigator.of(context).pop(); // close loading
+      context.pop(); // close loading
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Settlement failed: $e'),
@@ -164,12 +159,13 @@ class _FixtureSettlementScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text('SETTLE FIXTURES', style: TypographyTokens.titleLarge()),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -178,21 +174,21 @@ class _FixtureSettlementScreenState
               child: AfriSkeletonList(),
             )
           : _error != null
-              ? _buildError()
-              : RefreshIndicator(
-                  onRefresh: _loadFixtures,
-                  child: ListView(
-                    padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                    children: [
-                      _buildFilterChips(),
-                      const SizedBox(height: SpacingTokens.spacing4),
-                      if (_fixtures.isEmpty)
-                        _buildEmpty()
-                      else
-                        ..._fixtures.map(_buildFixtureCard),
-                    ],
-                  ),
-                ),
+          ? _buildError()
+          : AfriRefreshIndicator(
+              onRefresh: _loadFixtures,
+              child: ListView(
+                padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                children: [
+                  _buildFilterChips(),
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  if (_fixtures.isEmpty)
+                    _buildEmpty()
+                  else
+                    ..._fixtures.map(_buildFixtureCard),
+                ],
+              ),
+            ),
     );
   }
 
@@ -207,7 +203,7 @@ class _FixtureSettlementScreenState
       runSpacing: SpacingTokens.spacing2,
       children: filters.entries
           .map(
-            (e) => ChoiceChip(
+            (e) => AfriChoiceChip(
               selected: _statusFilter == e.key,
               label: Text(e.value),
               onSelected: (_) {
@@ -303,9 +299,10 @@ class _FixtureSettlementScreenState
               Padding(
                 padding: const EdgeInsets.only(top: SpacingTokens.spacing1),
                 child: Text(
-                  [fixture['stage_name'], fixture['group_name']]
-                      .where((v) => v != null)
-                      .join('  •  '),
+                  [
+                    fixture['stage_name'],
+                    fixture['group_name'],
+                  ].where((v) => v != null).join('  •  '),
                   style: TypographyTokens.bodySmall(),
                 ),
               ),
@@ -329,7 +326,7 @@ class _FixtureSettlementScreenState
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(
-                      Icons.check_circle_rounded,
+                      AfriIcons.statusSuccess,
                       size: 16,
                       color: ColorTokens.success,
                     ),
@@ -358,13 +355,13 @@ class _FixtureSettlementScreenState
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.sports_score_rounded,
+              AfriIcons.score,
               size: 48,
               color: ColorTokens.onSurfaceVariant,
             ),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
-              'No fixtures found',
+              'Adjust fixture filters',
               style: TypographyTokens.headlineMedium().copyWith(
                 color: ColorTokens.onSurface,
               ),
@@ -390,7 +387,7 @@ class _FixtureSettlementScreenState
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(
-              Icons.error_outline_rounded,
+              AfriIcons.statusError,
               size: 48,
               color: ColorTokens.error,
             ),
@@ -402,11 +399,7 @@ class _FixtureSettlementScreenState
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing5),
-            AfriButton(
-              label: 'Retry',
-              fullWidth: true,
-              onTap: _loadFixtures,
-            ),
+            AfriButton(label: 'Retry', fullWidth: true, onTap: _loadFixtures),
           ],
         ),
       ),
@@ -448,7 +441,7 @@ class _SettlementSheetState extends State<_SettlementSheet> {
     final htHome = int.tryParse(_htHomeScoreController.text);
     final htAway = int.tryParse(_htAwayScoreController.text);
 
-    Navigator.of(context).pop(<String, dynamic>{
+    context.pop(<String, dynamic>{
       'home_score': homeScore,
       'away_score': awayScore,
       'status': _status,
@@ -469,7 +462,8 @@ class _SettlementSheetState extends State<_SettlementSheet> {
         left: SpacingTokens.spacing6,
         right: SpacingTokens.spacing6,
         top: SpacingTokens.spacing6,
-        bottom: MediaQuery.of(context).viewInsets.bottom + SpacingTokens.spacing6,
+        bottom:
+            MediaQuery.of(context).viewInsets.bottom + SpacingTokens.spacing6,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -488,9 +482,7 @@ class _SettlementSheetState extends State<_SettlementSheet> {
           const SizedBox(height: SpacingTokens.spacing5),
           Text(
             'ENTER RESULT',
-            style: TypographyTokens.titleLarge().copyWith(
-              letterSpacing: 1.5,
-            ),
+            style: TypographyTokens.titleLarge().copyWith(letterSpacing: 1.5),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
@@ -507,23 +499,17 @@ class _SettlementSheetState extends State<_SettlementSheet> {
                   children: [
                     Text(
                       homeTeam['short_name']?.toString() ?? 'HOME',
-                      style: TypographyTokens.labelSmall()
-                          .copyWith(letterSpacing: 1),
+                      style: TypographyTokens.labelSmall().copyWith(
+                        letterSpacing: 1,
+                      ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
-                    TextField(
+                    AfriInputField(
                       controller: _homeScoreController,
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                       style: TypographyTokens.displaySmall(
                         ColorTokens.clubAccent,
-                      ),
-                      decoration: InputDecoration(
-                        border: BorderTokens.input(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        filled: true,
-                        fillColor: ColorTokens.surfaceContainerHigh,
                       ),
                     ),
                   ],
@@ -545,23 +531,17 @@ class _SettlementSheetState extends State<_SettlementSheet> {
                   children: [
                     Text(
                       awayTeam['short_name']?.toString() ?? 'AWAY',
-                      style: TypographyTokens.labelSmall()
-                          .copyWith(letterSpacing: 1),
+                      style: TypographyTokens.labelSmall().copyWith(
+                        letterSpacing: 1,
+                      ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
-                    TextField(
+                    AfriInputField(
                       controller: _awayScoreController,
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                       style: TypographyTokens.displaySmall(
                         ColorTokens.clubAccent,
-                      ),
-                      decoration: InputDecoration(
-                        border: BorderTokens.input(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        filled: true,
-                        fillColor: ColorTokens.surfaceContainerHigh,
                       ),
                     ),
                   ],
@@ -572,22 +552,27 @@ class _SettlementSheetState extends State<_SettlementSheet> {
           const SizedBox(height: SpacingTokens.spacing4),
 
           // Half-time score toggle
-          GestureDetector(
+          AfriPressFeedback(
             onTap: () => setState(() => _showHtScore = !_showHtScore),
+            selected: _showHtScore,
+            tooltip: 'Toggle half-time score',
+            semanticsLabel: 'Half-time score',
+            semanticsHint: _showHtScore
+                ? 'Hide half-time score fields'
+                : 'Show half-time score fields',
             child: Row(
               children: [
                 Icon(
-                  _showHtScore
-                      ? Icons.keyboard_arrow_up_rounded
-                      : Icons.keyboard_arrow_down_rounded,
+                  _showHtScore ? AfriIcons.up : AfriIcons.down,
                   size: 20,
                   color: ColorTokens.onSurfaceVariant,
                 ),
                 const SizedBox(width: SpacingTokens.spacing2),
                 Text(
                   'HALF-TIME SCORE (optional)',
-                  style: TypographyTokens.labelSmall()
-                      .copyWith(letterSpacing: 1),
+                  style: TypographyTokens.labelSmall().copyWith(
+                    letterSpacing: 1,
+                  ),
                 ),
               ],
             ),
@@ -597,21 +582,14 @@ class _SettlementSheetState extends State<_SettlementSheet> {
             Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: AfriInputField(
                     controller: _htHomeScoreController,
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
                     style: TypographyTokens.titleLarge(),
-                    decoration: InputDecoration(
-                      hintText: 'HT',
-                      border: BorderTokens.input(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      filled: true,
-                      fillColor: ColorTokens.surfaceContainerHigh,
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: SpacingTokens.spacing3,
-                      ),
+                    hint: 'HT',
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: SpacingTokens.spacing3,
                     ),
                   ),
                 ),
@@ -627,21 +605,14 @@ class _SettlementSheetState extends State<_SettlementSheet> {
                   ),
                 ),
                 Expanded(
-                  child: TextField(
+                  child: AfriInputField(
                     controller: _htAwayScoreController,
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
                     style: TypographyTokens.titleLarge(),
-                    decoration: InputDecoration(
-                      hintText: 'HT',
-                      border: BorderTokens.input(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      filled: true,
-                      fillColor: ColorTokens.surfaceContainerHigh,
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: SpacingTokens.spacing3,
-                      ),
+                    hint: 'HT',
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: SpacingTokens.spacing3,
                     ),
                   ),
                 ),
@@ -660,7 +631,7 @@ class _SettlementSheetState extends State<_SettlementSheet> {
             spacing: SpacingTokens.spacing2,
             children: ['finished', 'cancelled', 'postponed']
                 .map(
-                  (s) => ChoiceChip(
+                  (s) => AfriChoiceChip(
                     selected: _status == s,
                     label: Text(s.toUpperCase()),
                     onSelected: (_) => setState(() => _status = s),

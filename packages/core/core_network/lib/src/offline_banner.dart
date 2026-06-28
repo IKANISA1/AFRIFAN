@@ -1,3 +1,4 @@
+import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
 import 'connectivity_service.dart';
@@ -31,8 +32,8 @@ class OfflineBanner extends StatelessWidget {
               curve: Curves.easeInOut,
               child: isOnline
                   ? const SizedBox.shrink()
-                  : const Material(
-                      color: Color(0xFFEF6C00),
+                  : Material(
+                      color: ColorTokens.warning,
                       child: SafeArea(
                         bottom: false,
                         child: SizedBox(
@@ -42,18 +43,16 @@ class OfflineBanner extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Icon(
-                                  Icons.cloud_off_rounded,
-                                  size: 14,
-                                  color: Colors.white,
+                                const Icon(
+                                  AfriIcons.statusWarning,
+                                  size: AfriIcons.sizeChip,
+                                  color: ColorTokens.onDark,
                                 ),
-                                SizedBox(width: 6),
+                                const SizedBox(width: SpacingTokens.spacing2),
                                 Text(
-                                  'No internet connection',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
+                                  'Connection unavailable',
+                                  style: TypographyTokens.labelSmall(
+                                    ColorTokens.onDark,
                                   ),
                                 ),
                               ],

@@ -283,7 +283,7 @@ class SafeRpc {
       return 'This entry already exists.';
     }
     if (error.code == 'PGRST116') {
-      return 'No matching record found.';
+      return 'Matching record unavailable.';
     }
     if (error.message.contains('JWT')) {
       return 'Your session has expired. Please sign in again.';

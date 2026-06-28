@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:app_registry/app_registry.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
@@ -63,10 +61,7 @@ void main() {
     });
 
     test('/fanzone keeps the main engagement routes', () {
-      final root = fanzone.routes.whereType<GoRoute>().firstWhere(
-        (r) => r.path == '/fanzone',
-      );
-      final subPaths = root.routes
+      final subPaths = fanzone.routes
           .whereType<GoRoute>()
           .map((r) => r.path)
           .toSet();
@@ -108,9 +103,15 @@ void main() {
   group('Settings and admin', () {
     test('/settings keeps edit-profile, notifications, privacy', () {
       final settings = modules.firstWhere((m) => m.featureKey == 'settings');
-      final paths = settings.routes.whereType<GoRoute>().map((r) => r.path).toSet();
+      final paths = settings.routes
+          .whereType<GoRoute>()
+          .map((r) => r.path)
+          .toSet();
 
-      expect(paths, containsAll(<String>{'edit-profile', 'notifications', 'privacy'}));
+      expect(
+        paths,
+        containsAll(<String>{'edit-profile', 'notifications', 'privacy'}),
+      );
     });
 
     test('/admin keeps the operations routes', () {
@@ -140,7 +141,9 @@ void main() {
     late FeatureModule contributions;
 
     setUp(() {
-      contributions = modules.firstWhere((m) => m.featureKey == 'contributions');
+      contributions = modules.firstWhere(
+        (m) => m.featureKey == 'contributions',
+      );
     });
 
     test('/contribute resolves', () {
@@ -214,7 +217,10 @@ void main() {
           .whereType<GoRoute>()
           .map((r) => r.path)
           .toSet();
-      expect(paths, containsAll(<String>{'/tickets', '/my-tickets', '/e-ticket/:id'}));
+      expect(
+        paths,
+        containsAll(<String>{'/tickets', '/my-tickets', '/e-ticket/:id'}),
+      );
     });
   });
 
@@ -267,10 +273,13 @@ class _AllFeaturesConfig implements ClubConfig {
   String get currencySymbol => 'RWF';
   @override
   ClubColors get colors => const ClubColors(
-    primary: Color(0xFF0038A8),
-    secondary: Color(0xFF001742),
-    accent: Color(0xFFD9B24C),
-    gradient: <Color>[Color(0xFF001742), Color(0xFF0038A8)],
+    primary: ColorTokens.referenceAccountBlue,
+    secondary: ColorTokens.referenceChromeBlack,
+    accent: ColorTokens.referenceRewardsVioletHot,
+    gradient: <Color>[
+      ColorTokens.referenceChromeBlack,
+      ColorTokens.referenceAccountBlue,
+    ],
   );
   @override
   String get crestAsset => 'assets/crest/test.png';

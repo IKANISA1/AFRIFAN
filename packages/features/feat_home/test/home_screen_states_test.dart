@@ -1,3 +1,5 @@
+import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:feat_home/src/screens/home_screen.dart';
@@ -7,6 +9,7 @@ import 'package:feat_home/src/widgets/match_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:test_support/design_font_loader.dart';
 
 void main() {
@@ -42,7 +45,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 250));
       await tester.pump();
 
-      expect(find.byType(MatchScoreCard), findsOneWidget);
+      expect(find.byType(MatchScoreCard), findsNothing);
     });
 
     testWidgets('shows explicit hero error state when home feed fails', (
@@ -133,7 +136,9 @@ void main() {
   });
 
   group('LatestIntelSection states', () {
-    testWidgets('shows an empty state instead of disappearing', (tester) async {
+    testWidgets('stays hidden when no published articles exist', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _buildApp(
           homeRepository: const _FakeHomeFeedRepository(),
@@ -146,8 +151,9 @@ void main() {
 
       await tester.pump(const Duration(milliseconds: 300));
 
-      expect(find.text('News'), findsOneWidget);
-      expect(find.text('No news yet'), findsOneWidget);
+      expect(find.text('News'), findsNothing);
+      expect(find.text('No news yet'), findsNothing);
+      expect(find.byType(AfriEmptyView), findsNothing);
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
@@ -191,6 +197,10 @@ Widget _buildApp({
     overrides: [
       homeFeedRepositoryProvider.overrideWithValue(homeRepository),
       latestIntelRepositoryProvider.overrideWithValue(latestIntelRepository),
+      authRepositoryProvider.overrideWithValue(_FakeAuthRepository()),
+      initialFeatureConfigSnapshotProvider.overrideWithValue(
+        _testFeatureConfigSnapshot,
+      ),
     ],
     child: MaterialApp(
       builder: (context, child) {
@@ -218,6 +228,70 @@ void _setMobileSurface(WidgetTester tester) {
   addTearDown(tester.view.resetDevicePixelRatio);
 }
 
+const _testFeatureConfigSnapshot = PlatformConfigSnapshot(
+  features: [
+    PlatformFeature(
+      featureKey: 'fanzone',
+      displayName: 'Fan Zone',
+      channel: FeatureChannelConfig(showOnHome: true),
+    ),
+    PlatformFeature(
+      featureKey: 'contributions',
+      displayName: 'Contributions',
+      channel: FeatureChannelConfig(showOnHome: true),
+    ),
+    PlatformFeature(
+      featureKey: 'live',
+      displayName: 'Live',
+      channel: FeatureChannelConfig(showOnHome: true),
+    ),
+  ],
+  contentBlocks: [
+    ContentBlock(
+      blockKey: 'home_match_score',
+      blockType: 'widget',
+      placementKey: 'home_hero',
+      content: {'widget': 'match_score_card'},
+      sortOrder: 1,
+    ),
+    ContentBlock(
+      blockKey: 'home_primary_actions',
+      blockType: 'widget',
+      placementKey: 'home_top',
+      content: {'widget': 'primary_action_buttons'},
+      sortOrder: 2,
+    ),
+    ContentBlock(
+      blockKey: 'home_quick_actions',
+      blockType: 'widget',
+      placementKey: 'home_mid',
+      content: {'widget': 'quick_actions_grid'},
+      sortOrder: 3,
+    ),
+    ContentBlock(
+      blockKey: 'home_stats',
+      blockType: 'widget',
+      placementKey: 'home_mid',
+      content: {'widget': 'stats_row'},
+      sortOrder: 4,
+    ),
+    ContentBlock(
+      blockKey: 'home_leaderboard',
+      blockType: 'widget',
+      placementKey: 'home_bottom',
+      content: {'widget': 'contributor_leaderboard'},
+      sortOrder: 5,
+    ),
+    ContentBlock(
+      blockKey: 'home_latest_intel',
+      blockType: 'widget',
+      placementKey: 'home_bottom',
+      content: {'widget': 'latest_intel_section'},
+      sortOrder: 6,
+    ),
+  ],
+);
+
 class _FakeHomeFeedRepository implements HomeFeedRepository {
   const _FakeHomeFeedRepository({
     this.snapshot = const HomeFeedSnapshot(),
@@ -243,4 +317,20 @@ class _FakeLatestIntelRepository implements LatestIntelRepository {
 
   @override
   Future<LatestIntelSnapshot> loadPublishedArticles() async => snapshot;
+}
+
+class _FakeAuthRepository extends AuthRepository {
+  _FakeAuthRepository() : super(clubId: '24');
+
+  @override
+  Future<UserProfile?> restoreCurrentUser() async => null;
+
+  @override
+  Future<AdminWorkspaceAccess> resolveAdminAccess(String userId) async {
+    return AdminWorkspaceAccess.none;
+  }
+
+  @override
+  Stream<supabase.AuthState> get authStateChanges =>
+      const Stream<supabase.AuthState>.empty();
 }

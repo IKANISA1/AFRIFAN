@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:core_utils/core_utils.dart';
+import 'package:go_router/go_router.dart';
 
 /// Onboarding profile setup screen — step-based flow.
 ///
@@ -70,7 +71,12 @@ class _OnboardingProfileSetupScreenState
         _selectedTeam = selected;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('OnboardingProfileSetupScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'OnboardingProfileSetupScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) return;
       const fallbackOptions = <_TeamOption>[
         _TeamOption(label: 'My Club'),
@@ -125,8 +131,8 @@ class _OnboardingProfileSetupScreenState
 
     if (error == null) {
       widget.onComplete?.call();
-      if (context.mounted) {
-        unawaited(Navigator.of(context).maybePop());
+      if (context.mounted && context.canPop()) {
+        context.pop();
       }
     } else {
       ScaffoldMessenger.of(
@@ -151,8 +157,7 @@ class _OnboardingProfileSetupScreenState
                 // ── Title ──
                 Text(
                       'PROFILE SETUP',
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 32,
+                      style: TypographyTokens.displaySmall().copyWith(
                         fontWeight: FontWeight.w900,
                         letterSpacing: 2,
                       ),
@@ -173,12 +178,9 @@ class _OnboardingProfileSetupScreenState
                 // ── Username ──
                 Text(
                   'USERNAME',
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurfaceVariant,
-                    letterSpacing: 1.6,
-                  ),
+                  style: TypographyTokens.metricLabel(
+                    ColorTokens.onSurfaceVariant,
+                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.6),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 AfriInputField(
@@ -195,12 +197,9 @@ class _OnboardingProfileSetupScreenState
                 // ── Favorite Team ──
                 Text(
                   'FAVORITE TEAM',
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurfaceVariant,
-                    letterSpacing: 1.6,
-                  ),
+                  style: TypographyTokens.metricLabel(
+                    ColorTokens.onSurfaceVariant,
+                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.6),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Container(

@@ -180,13 +180,14 @@ class _SupporterPhoneAuthScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      backgroundColor: ColorTokens.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(AfriIcons.back),
-          onPressed: () {
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          tooltip: 'Back',
+          onTap: () {
             if (context.canPop()) {
               context.pop();
             } else {
@@ -318,7 +319,7 @@ class _SupporterPhoneAuthScreenState
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
-              TextButton(
+              AfriTextButton(
                 onPressed: _isLoading
                     ? null
                     : () async {

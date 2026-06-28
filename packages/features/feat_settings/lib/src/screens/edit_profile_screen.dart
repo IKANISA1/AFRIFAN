@@ -76,11 +76,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     return SettingsBackGuard(
       child: Scaffold(
         backgroundColor: ColorTokens.background,
-        appBar: AppBar(
+        appBar: AfriAppBar(
           title: Text('Profile', style: TypographyTokens.headlineSmall()),
-          leading: IconButton(
-            onPressed: () => closeSettingsChild(context),
-            icon: const Icon(AfriIcons.back),
+          leading: AfriIconButton(
+            icon: AfriIcons.back,
+            onTap: () => closeSettingsChild(context),
+            tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           ),
         ),
         body: SingleChildScrollView(
@@ -95,12 +96,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       width: 64,
                       height: 64,
                       decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.14),
-                        borderRadius: BorderRadius.circular(20),
+                        color: ColorTokens.clubAccent.withValues(alpha: 0.14),
+                        borderRadius: BorderRadius.circular(
+                          ShapeTokens.radiusMd,
+                        ),
                       ),
-                      child: Icon(AfriIcons.profile, size: 28),
+                      child: const Icon(AfriIcons.profile, size: 28),
                     ),
                     const SizedBox(width: SpacingTokens.spacing4),
                     Expanded(
@@ -141,14 +142,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               const SizedBox(height: SpacingTokens.spacing8),
               GlassCard(
                 animate: false,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(18),
+                child: AfriPressFeedback(
                   onTap: _isBusy
                       ? null
                       : () async {
-                          final confirmed = await showDeleteAccountConfirmDialog(
-                            context,
-                          );
+                          final confirmed =
+                              await showDeleteAccountConfirmDialog(context);
                           if (!context.mounted) return;
                           if (!confirmed) return;
                           setState(() => _isBusy = true);
@@ -163,9 +162,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           }
                           context.go('/onboarding');
                         },
+                  enabled: !_isBusy,
+                  tooltip: 'Delete account',
+                  semanticsLabel: 'Delete account',
+                  semanticsHint: 'Permanently delete this supporter account',
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         AfriIcons.delete,
                         color: ColorTokens.error,
                         size: 20,

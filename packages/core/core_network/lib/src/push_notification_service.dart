@@ -255,7 +255,7 @@ class PushNotificationService {
           .select('push_enabled')
           .eq('user_id', userId)
           .maybeSingle();
-      // Default to true (opt-out) when no settings row exists yet.
+      // Default to true (opt-out) until a settings row exists.
       if (row == null) return true;
       return row['push_enabled'] == true;
     } catch (error, stackTrace) {

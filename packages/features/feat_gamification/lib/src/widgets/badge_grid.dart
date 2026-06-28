@@ -4,8 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 /// Grid of achievement badges — earned and locked.
 ///
-/// Uses Material Icons instead of emoji. Each badge maps to a
-/// semantic icon that represents the achievement type.
+/// Uses shared semantic icons instead of emoji. Each badge maps to a
+/// design-system icon that represents the achievement type.
 class BadgeGrid extends StatelessWidget {
   final List<Map<String, dynamic>> achievements;
 
@@ -13,8 +13,6 @@ class BadgeGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
-
     // Default badges if API returns empty
     final badges = achievements.isNotEmpty ? achievements : _defaultBadges;
 
@@ -33,8 +31,10 @@ class BadgeGrid extends StatelessWidget {
         final isEarned = badge['is_earned'] == true || index < 4;
         final iconKey =
             badge['icon_key']?.toString() ??
-            _defaultIcons.keys.elementAt(index % _defaultIcons.length);
-        final icon = _defaultIcons[iconKey] ?? Icons.shield_rounded;
+            _defaultIconTokens.keys.elementAt(
+              index % _defaultIconTokens.length,
+            );
+        final icon = _defaultIconTokens[iconKey] ?? AfriIcons.shield;
         final name =
             badge['title']?.toString() ?? badge['name']?.toString() ?? 'Badge';
 
@@ -46,14 +46,14 @@ class BadgeGrid extends StatelessWidget {
                   height: 56,
                   decoration: BoxDecoration(
                     color: isEarned
-                        ? primary.withValues(alpha: 0.15)
+                        ? ColorTokens.clubAccent.withValues(alpha: 0.15)
                         : ColorTokens.surfaceContainerHigh.withValues(
                             alpha: 0.5,
                           ),
                     borderRadius: BorderRadius.circular(16),
                     border: BorderTokens.all(
                       color: isEarned
-                          ? primary.withValues(alpha: 0.3)
+                          ? ColorTokens.clubAccent.withValues(alpha: 0.3)
                           : ColorTokens.glassFill,
                     ),
                   ),
@@ -62,7 +62,7 @@ class BadgeGrid extends StatelessWidget {
                       icon,
                       size: isEarned ? 26 : 22,
                       color: isEarned
-                          ? primary
+                          ? ColorTokens.clubAccent
                           : ColorTokens.onSurface.withValues(alpha: 0.2),
                     ),
                   ),
@@ -70,14 +70,11 @@ class BadgeGrid extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   name.toUpperCase(),
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: isEarned
+                  style: TypographyTokens.labelLarge(
+                    isEarned
                         ? ColorTokens.onSurfaceVariant
                         : ColorTokens.onSurfaceVariant.withValues(alpha: 0.4),
-                    letterSpacing: 0.3,
-                  ),
+                  ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 0.3),
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -92,17 +89,17 @@ class BadgeGrid extends StatelessWidget {
   }
 }
 
-/// Icon map: semantic keys → Material Icons.
+/// Icon map: semantic keys -> shared AfriIcons.
 /// These replace all emoji badge icons.
-const _defaultIcons = <String, IconData>{
-  'match': Icons.sports_soccer_rounded,
-  'contributor': Icons.volunteer_activism_rounded,
-  'early_bird': Icons.alarm_on_rounded,
-  'fan_club': Icons.stadium_rounded,
-  'streak': Icons.local_fire_department_rounded,
-  'spender': Icons.shopping_bag_rounded,
-  'legend': Icons.emoji_events_rounded,
-  'mvp': Icons.star_rounded,
+const _defaultIconTokens = <String, IconData>{
+  'match': AfriIcons.fanzone,
+  'contributor': AfriIcons.contribute,
+  'early_bird': AfriIcons.statusWait,
+  'fan_club': AfriIcons.stadium,
+  'streak': AfriIcons.streak,
+  'spender': AfriIcons.shop,
+  'legend': AfriIcons.rank,
+  'mvp': AfriIcons.star,
 };
 
 final _defaultBadges = [

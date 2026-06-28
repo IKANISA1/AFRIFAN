@@ -36,7 +36,7 @@ class PredictionSlipBar extends ConsumerWidget {
         semanticsLabel: 'Prediction slip',
         tooltip: 'Prediction slip',
         excludeChildSemantics: true,
-        builder: (context, state) => ClayCard(
+        builder: (context, state) => AfriSurfaceCard(
           padding: const EdgeInsets.symmetric(
             horizontal: SpacingTokens.spacing4,
             vertical: SpacingTokens.spacing3,
@@ -53,11 +53,9 @@ class PredictionSlipBar extends ConsumerWidget {
                 alignment: Alignment.center,
                 child: Text(
                   slip.items.length.toString(),
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: ColorTokens.clubAccent,
-                  ),
+                  style: TypographyTokens.titleMedium(
+                    ColorTokens.clubAccent,
+                  ).copyWith(fontWeight: FontWeight.w800),
                 ),
               ),
               const SizedBox(width: SpacingTokens.spacing3),
@@ -123,7 +121,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
     if (slip.items.isEmpty) {
       return Padding(
         padding: const EdgeInsets.only(bottom: SpacingTokens.spacing4),
-        child: ClayCard(
+        child: AfriSurfaceCard(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -160,8 +158,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
               Expanded(
                 child: Text(
                   'PREDICTION SLIP',
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 22,
+                  style: TypographyTokens.headlineSmall().copyWith(
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.4,
                   ),
@@ -189,11 +186,9 @@ class _PredictionSlipSheet extends ConsumerWidget {
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             'Potential return: ${slip.totalPotential} FET',
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: ColorTokens.clubAccent,
-            ),
+            style: TypographyTokens.titleLarge(
+              ColorTokens.clubAccent,
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
           AfriButton(
@@ -217,7 +212,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
               final slipItems = List<FanzoneSlipSelection>.from(slip.items);
               final result = await controller.submit();
               if (!context.mounted) return;
-              Navigator.of(context).pop();
+              context.pop();
 
               if (result.submittedCount > 0) {
                 onSubmitted?.call();
@@ -290,8 +285,7 @@ Future<bool> _showPreSubmitConfirmation(
         children: [
           Text(
             'CONFIRM PREDICTIONS',
-            style: TypographyTokens.monolithFont(
-              fontSize: 20,
+            style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: 1.4,
             ),
@@ -301,8 +295,8 @@ Future<bool> _showPreSubmitConfirmation(
             accaMode && items.length > 1
                 ? 'You are locking ${items.length} selections as an Acca.'
                 : items.length == 1
-                    ? 'You are locking 1 prediction.'
-                    : 'You are locking ${items.length} predictions.',
+                ? 'You are locking 1 prediction.'
+                : 'You are locking ${items.length} predictions.',
             style: TypographyTokens.bodyMedium(),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -342,7 +336,7 @@ Future<bool> _showPreSubmitConfirmation(
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          ClayCard(
+          AfriSurfaceCard(
             child: Row(
               children: [
                 Expanded(
@@ -372,13 +366,13 @@ Future<bool> _showPreSubmitConfirmation(
           AfriButton(
             label: 'CONFIRM & LOCK IN',
             icon: AfriIcons.verified,
-            onTap: () => Navigator.of(context).pop(true),
+            onTap: () => context.pop(true),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           AfriButton(
             label: 'GO BACK',
             variant: AfriButtonVariant.secondary,
-            onTap: () => Navigator.of(context).pop(false),
+            onTap: () => context.pop(false),
           ),
         ],
       ),
@@ -424,7 +418,7 @@ class _ShareCardModalSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Success header ──
-          ClayCard(
+          AfriSurfaceCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -445,8 +439,7 @@ class _ShareCardModalSheet extends StatelessWidget {
                 const SizedBox(height: SpacingTokens.spacing4),
                 Text(
                   headline.toUpperCase(),
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 24,
+                  style: TypographyTokens.headlineMedium().copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: 1.2,
                   ),
@@ -545,15 +538,16 @@ class _ShareCardModalSheet extends StatelessWidget {
             icon: AfriIcons.myPicks,
             variant: AfriButtonVariant.secondary,
             onTap: () {
-              Navigator.of(context).pop();
-              context.push('/fanzone/my');
+              final router = GoRouter.of(context);
+              context.pop();
+              unawaited(router.push('/fanzone/my'));
             },
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           AfriButton(
             label: 'KEEP BROWSING',
             variant: AfriButtonVariant.secondary,
-            onTap: () => Navigator.of(context).pop(),
+            onTap: () => context.pop(),
           ),
         ],
       ),
@@ -616,9 +610,9 @@ class _SlipRow extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(
-            onPressed: onRemove,
-            icon: const Icon(AfriIcons.close),
+          AfriIconButton(
+            icon: AfriIcons.close,
+            onTap: onRemove,
             tooltip: 'Remove prediction',
           ),
         ],

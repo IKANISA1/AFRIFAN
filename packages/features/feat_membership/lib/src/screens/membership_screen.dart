@@ -92,7 +92,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
 
       final route = await _findActivePaymentRoute(client, resolver, scope);
       if (route == null) {
-        _showMessage('No active MOMO membership route is configured yet.');
+        _showMessage('Membership payment setup is pending club activation.');
         return;
       }
 
@@ -349,12 +349,12 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(AfriIcons.back, color: ColorTokens.onSurface),
-          onPressed: () => context.pop(),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
           tooltip: 'Back',
         ),
         title: Text('Membership', style: TypographyTokens.headlineSmall()),
@@ -634,17 +634,17 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
 
             if (!isLoading && errorMessage == null && packages.isEmpty)
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing6,
-                  ),
-                  child: AfriStateView.empty(
-                    title: 'No packages published',
-                    message:
-                        emptyMessage ??
-                        'Membership packages will appear once the club publishes them.',
-                  ),
-                ),
+                child: emptyMessage == null
+                    ? const SizedBox.shrink()
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: SpacingTokens.spacing6,
+                        ),
+                        child: AfriStateView.empty(
+                          title: 'Membership setup pending',
+                          message: emptyMessage,
+                        ),
+                      ),
               ),
 
             if (!isLoading && packages.isNotEmpty)
@@ -661,7 +661,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                       SpacingTokens.spacing6,
                       SpacingTokens.spacing3,
                     ),
-                    child: ClayCard(
+                    child: AfriSurfaceCard(
                       onTap: () => context.push('/membership/tier/$tierId'),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -824,7 +824,7 @@ class _PaymentStatusCard extends StatelessWidget {
       ),
     ];
 
-    return ClayCard(
+    return AfriSurfaceCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

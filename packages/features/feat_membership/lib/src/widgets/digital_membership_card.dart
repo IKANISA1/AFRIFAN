@@ -36,13 +36,9 @@ class DigitalMembershipCardFull extends StatelessWidget {
       height: 220,
       decoration: BoxDecoration(
         borderRadius: ShapeTokens.cardRadius,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            accent.withValues(alpha: 0.35),
-            ColorTokens.surfaceContainer,
-          ],
+        gradient: ColorTokens.borrowedSurfaceGradient(
+          from: accent.withValues(alpha: 0.35),
+          to: ColorTokens.surfaceContainer,
         ),
         boxShadow: [
           BoxShadow(
@@ -64,12 +60,9 @@ class DigitalMembershipCardFull extends StatelessWidget {
                 right: -8,
                 child: Text(
                   'FANZONE',
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w900,
-                    color: ColorTokens.onSurface.withValues(alpha: 0.04),
-                    letterSpacing: 6,
-                  ),
+                  style: TypographyTokens.displayLarge(
+                    ColorTokens.onSurface.withValues(alpha: 0.04),
+                  ).copyWith(fontWeight: FontWeight.w900, letterSpacing: 6),
                 ),
               ),
 
@@ -89,26 +82,31 @@ class DigitalMembershipCardFull extends StatelessWidget {
                         if (crest != null) ...[
                           Text(
                             crest!,
-                            style: const TextStyle(fontSize: 24),
+                            style: TypographyTokens.headlineMedium(),
                           ),
                           const SizedBox(width: SpacingTokens.spacing2),
                         ],
                         Expanded(
                           child: Text(
                             clubName.toUpperCase(),
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: ColorTokens.onSurface
-                                  .withValues(alpha: 0.7),
-                              letterSpacing: 2.0,
-                            ),
+                            style:
+                                TypographyTokens.labelLarge(
+                                  ColorTokens.onSurface.withValues(alpha: 0.7),
+                                ).copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 2.0,
+                                ),
                           ),
                         ),
                         if (onShare != null)
-                          GestureDetector(
+                          AfriPressFeedback(
                             onTap: onShare,
+                            tooltip: 'Share membership card',
+                            semanticsLabel: 'Share membership card',
+                            semanticsHint: 'Share your digital membership card',
+                            excludeChildSemantics: true,
                             child: Container(
+                              constraints: const BoxConstraints(minHeight: 44),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: SpacingTokens.spacing3,
                                 vertical: SpacingTokens.spacing2,
@@ -128,13 +126,9 @@ class DigitalMembershipCardFull extends StatelessWidget {
                                   const SizedBox(width: 4),
                                   Text(
                                     'SHARE',
-                                    style:
-                                        TypographyTokens.editorialFont(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w800,
-                                      color: accent,
-                                      letterSpacing: 1,
-                                    ),
+                                    style: TypographyTokens.labelSmall(
+                                      accent,
+                                    ).copyWith(fontWeight: FontWeight.w800),
                                   ),
                                 ],
                               ),
@@ -147,14 +141,12 @@ class DigitalMembershipCardFull extends StatelessWidget {
 
                     // Fan ID — large prominent display
                     Text(
-                      fanId,
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w900,
-                        color: ColorTokens.onSurface,
-                        letterSpacing: 4,
-                      ),
-                    )
+                          fanId,
+                          style: TypographyTokens.displaySmall().copyWith(
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 4,
+                          ),
+                        )
                         .animate()
                         .fadeIn(duration: 400.ms)
                         .slideX(begin: -0.03, end: 0, duration: 400.ms),
@@ -178,24 +170,18 @@ class DigitalMembershipCardFull extends StatelessWidget {
                           ),
                           child: Text(
                             tier.toUpperCase(),
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color: accent,
-                              letterSpacing: 1.5,
-                            ),
+                            style: TypographyTokens.labelMedium(
+                              accent,
+                            ).copyWith(fontWeight: FontWeight.w700),
                           ),
                         ),
                         const Spacer(),
                         if (memberSince != null)
                           Text(
                             'Since $memberSince',
-                            style: TypographyTokens.editorialFont(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              color: ColorTokens.onSurfaceVariant,
-                              letterSpacing: 0.5,
-                            ),
+                            style: TypographyTokens.bodySmall(
+                              ColorTokens.onSurfaceVariant,
+                            ).copyWith(fontWeight: FontWeight.w500),
                           ),
                       ],
                     ),

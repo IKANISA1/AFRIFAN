@@ -11,7 +11,6 @@ class LedgerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
     final currency = CurrencyFormatter(
       currencyCode: context.afriCurrencyCode,
       currencySymbol: context.afriCurrencySymbol,
@@ -52,18 +51,15 @@ class LedgerItem extends StatelessWidget {
               children: [
                 Text(
                   alias,
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 15,
+                  style: TypographyTokens.bodyLarge().copyWith(
                     fontWeight: FontWeight.w500,
-                    color: ColorTokens.onSurface,
                   ),
                 ),
                 if (date != null)
                   Text(
                     DateFormat('MMM d, HH:mm').format(date),
-                    style: TypographyTokens.editorialFont(
-                      fontSize: 15,
-                      color: ColorTokens.onSurfaceVariant,
+                    style: TypographyTokens.bodyLarge(
+                      ColorTokens.onSurfaceVariant,
                     ),
                   ),
               ],
@@ -73,11 +69,9 @@ class LedgerItem extends StatelessWidget {
           // Amount
           Text(
             currency.format(amount),
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: isConfirmed ? ColorTokens.success : primary,
-            ),
+            style: TypographyTokens.titleLarge(
+              isConfirmed ? ColorTokens.success : ColorTokens.clubAccent,
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
         ],
       ),

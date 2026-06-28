@@ -35,10 +35,16 @@ class LeaderboardPeriodChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return AfriPressFeedback(
       onTap: onTap,
+      tooltip: label,
+      semanticsLabel: label,
+      semanticsHint: selected ? 'Selected leaderboard period' : 'Select period',
+      selected: selected,
+      scaleEnd: 0.98,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
+        constraints: const BoxConstraints(minHeight: 44),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: selected
@@ -53,14 +59,15 @@ class LeaderboardPeriodChip extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: TypographyTokens.editorialFont(
-            fontSize: 11,
-            fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-            color: selected
-                ? ColorTokens.clubAccent
-                : ColorTokens.onSurfaceVariant,
-            letterSpacing: 0.8,
-          ),
+          style:
+              TypographyTokens.labelSmall(
+                selected
+                    ? ColorTokens.clubAccent
+                    : ColorTokens.onSurfaceVariant,
+              ).copyWith(
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                letterSpacing: 0.8,
+              ),
         ),
       ),
     );
@@ -73,50 +80,34 @@ class LeaderboardPeriodChip extends StatelessWidget {
 
 /// Podium card for FET ranking (top 3).
 class FetPodiumCard extends StatelessWidget {
-  const FetPodiumCard({
-    super.key,
-    required this.entry,
-    this.featured = false,
-  });
+  const FetPodiumCard({super.key, required this.entry, this.featured = false});
 
   final PredictionLeaderboardEntry? entry;
   final bool featured;
 
-  String get _medal {
-    if (entry == null) return '';
-    return switch (entry!.rank) {
-      1 => '🥇',
-      2 => '🥈',
-      3 => '🥉',
-      _ => '',
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
+    final rank = entry?.rank;
+
     return GlassCard(
       animate: false,
       child: Column(
         children: [
-          if (_medal.isNotEmpty)
-            Text(_medal, style: const TextStyle(fontSize: 28)),
-          if (_medal.isEmpty) const SizedBox(height: 28),
+          _RankBadge(rank: rank),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            entry == null
-                ? '--'
-                : '#${entry!.rank.toString().padLeft(2, '0')}',
-            style: TypographyTokens.monolithFont(
-              fontSize: featured ? 28 : 22,
-              fontWeight: FontWeight.w800,
-              color: featured
-                  ? ColorTokens.clubAccent
-                  : ColorTokens.onSurfaceVariant,
-            ),
+            entry == null ? '--' : '#${entry!.rank.toString().padLeft(2, '0')}',
+            style:
+                (featured
+                        ? TypographyTokens.headlineLarge(ColorTokens.clubAccent)
+                        : TypographyTokens.headlineMedium(
+                            ColorTokens.onSurfaceVariant,
+                          ))
+                    .copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            entry?.displayName ?? 'No rank',
+            entry?.displayName ?? 'Rank pending',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TypographyTokens.bodyMedium(),
@@ -125,11 +116,11 @@ class FetPodiumCard extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             entry == null ? '0 FET' : '+${entry!.totalFetEarned} FET',
-            style: TypographyTokens.monolithFont(
-              fontSize: featured ? 22 : 18,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.clubAccent,
-            ),
+            style:
+                (featured
+                        ? TypographyTokens.headlineSmall(ColorTokens.clubAccent)
+                        : TypographyTokens.titleLarge(ColorTokens.clubAccent))
+                    .copyWith(fontWeight: FontWeight.w800),
           ),
         ],
       ),
@@ -160,11 +151,9 @@ class FetUserRow extends StatelessWidget {
             width: 44,
             child: Text(
               '#${entry.rank.toString().padLeft(2, '0')}',
-              style: TypographyTokens.monolithFont(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: ColorTokens.clubAccent,
-              ),
+              style: TypographyTokens.headlineSmall(
+                ColorTokens.clubAccent,
+              ).copyWith(fontWeight: FontWeight.w800),
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
@@ -174,26 +163,12 @@ class FetUserRow extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(entry.displayName,
-                        style: TypographyTokens.titleSmall()),
-                    const SizedBox(width: SpacingTokens.spacing2),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: ColorTokens.clubAccent,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        'YOU',
-                        style: TypographyTokens.editorialFont(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w800,
-                          color: ColorTokens.background,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
+                    Text(
+                      entry.displayName,
+                      style: TypographyTokens.titleSmall(),
                     ),
+                    const SizedBox(width: SpacingTokens.spacing2),
+                    const _LeaderboardBadge(label: 'YOU', selected: true),
                   ],
                 ),
                 const SizedBox(height: 2),
@@ -206,11 +181,9 @@ class FetUserRow extends StatelessWidget {
           ),
           Text(
             '+${entry.totalFetEarned} FET',
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.clubAccent,
-            ),
+            style: TypographyTokens.titleLarge(
+              ColorTokens.clubAccent,
+            ).copyWith(fontWeight: FontWeight.w800),
           ),
         ],
       ),
@@ -220,11 +193,7 @@ class FetUserRow extends StatelessWidget {
 
 /// Standard list row for FET ranking.
 class FetListRow extends StatelessWidget {
-  const FetListRow({
-    super.key,
-    required this.entry,
-    required this.isMe,
-  });
+  const FetListRow({super.key, required this.entry, required this.isMe});
 
   final PredictionLeaderboardEntry entry;
   final bool isMe;
@@ -250,12 +219,11 @@ class FetListRow extends StatelessWidget {
             width: 44,
             child: Text(
               '#${entry.rank.toString().padLeft(2, '0')}',
-              style: TypographyTokens.monolithFont(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color:
-                    entry.rank <= 3 ? ColorTokens.clubAccent : ColorTokens.onSurface,
-              ),
+              style: TypographyTokens.headlineSmall(
+                entry.rank <= 3
+                    ? ColorTokens.clubAccent
+                    : ColorTokens.onSurface,
+              ).copyWith(fontWeight: FontWeight.w800),
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
@@ -266,29 +234,15 @@ class FetListRow extends StatelessWidget {
                 Row(
                   children: [
                     Flexible(
-                      child: Text(entry.displayName,
-                          style: TypographyTokens.titleSmall(),
-                          overflow: TextOverflow.ellipsis),
+                      child: Text(
+                        entry.displayName,
+                        style: TypographyTokens.titleSmall(),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     if (isMe) ...[
                       const SizedBox(width: SpacingTokens.spacing2),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: ColorTokens.clubAccent,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          'YOU',
-                          style: TypographyTokens.editorialFont(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w800,
-                            color: ColorTokens.background,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                      ),
+                      const _LeaderboardBadge(label: 'YOU', selected: true),
                     ],
                   ],
                 ),
@@ -305,11 +259,9 @@ class FetListRow extends StatelessWidget {
             children: [
               Text(
                 '+${entry.totalFetEarned} FET',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: ColorTokens.clubAccent,
-                ),
+                style: TypographyTokens.titleLarge(
+                  ColorTokens.clubAccent,
+                ).copyWith(fontWeight: FontWeight.w800),
               ),
               Text(
                 '${entry.totalSettled} settled',
@@ -338,41 +290,29 @@ class SupporterPodiumCard extends StatelessWidget {
   final FetLeaderboardRow? entry;
   final bool featured;
 
-  String get _medal {
-    if (entry == null) return '';
-    return switch (entry!.rank) {
-      1 => '🥇',
-      2 => '🥈',
-      3 => '🥉',
-      _ => '',
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
+    final rank = entry?.rank;
+
     return GlassCard(
       animate: false,
       child: Column(
         children: [
-          if (_medal.isNotEmpty)
-            Text(_medal, style: const TextStyle(fontSize: 28)),
-          if (_medal.isEmpty) const SizedBox(height: 28),
+          _RankBadge(rank: rank),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            entry == null
-                ? '--'
-                : '#${entry!.rank.toString().padLeft(2, '0')}',
-            style: TypographyTokens.monolithFont(
-              fontSize: featured ? 28 : 22,
-              fontWeight: FontWeight.w800,
-              color: featured
-                  ? ColorTokens.clubAccent
-                  : ColorTokens.onSurfaceVariant,
-            ),
+            entry == null ? '--' : '#${entry!.rank.toString().padLeft(2, '0')}',
+            style:
+                (featured
+                        ? TypographyTokens.headlineLarge(ColorTokens.clubAccent)
+                        : TypographyTokens.headlineMedium(
+                            ColorTokens.onSurfaceVariant,
+                          ))
+                    .copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            entry?.displayName ?? 'No rank',
+            entry?.displayName ?? 'Rank pending',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TypographyTokens.bodyMedium(),
@@ -383,31 +323,15 @@ class SupporterPodiumCard extends StatelessWidget {
             entry == null
                 ? '0 FET'
                 : '${formatLeaderboardNumber(entry!.totalFet)} FET',
-            style: TypographyTokens.monolithFont(
-              fontSize: featured ? 22 : 18,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.clubAccent,
-            ),
+            style:
+                (featured
+                        ? TypographyTokens.headlineSmall(ColorTokens.clubAccent)
+                        : TypographyTokens.titleLarge(ColorTokens.clubAccent))
+                    .copyWith(fontWeight: FontWeight.w800),
           ),
           if (entry != null) ...[
             const SizedBox(height: SpacingTokens.spacing1),
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: ColorTokens.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                entry!.tier.toUpperCase(),
-                style: TypographyTokens.editorialFont(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w700,
-                  color: ColorTokens.onSurfaceVariant,
-                  letterSpacing: 1.0,
-                ),
-              ),
-            ),
+            _LeaderboardBadge(label: entry!.tier.toUpperCase()),
           ],
         ],
       ),
@@ -438,11 +362,9 @@ class SupporterUserRow extends StatelessWidget {
             width: 44,
             child: Text(
               '#${entry.rank.toString().padLeft(2, '0')}',
-              style: TypographyTokens.monolithFont(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: ColorTokens.clubAccent,
-              ),
+              style: TypographyTokens.headlineSmall(
+                ColorTokens.clubAccent,
+              ).copyWith(fontWeight: FontWeight.w800),
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
@@ -452,26 +374,12 @@ class SupporterUserRow extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(entry.displayName,
-                        style: TypographyTokens.titleSmall()),
-                    const SizedBox(width: SpacingTokens.spacing2),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: ColorTokens.clubAccent,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        'YOU',
-                        style: TypographyTokens.editorialFont(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w800,
-                          color: ColorTokens.background,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
+                    Text(
+                      entry.displayName,
+                      style: TypographyTokens.titleSmall(),
                     ),
+                    const SizedBox(width: SpacingTokens.spacing2),
+                    const _LeaderboardBadge(label: 'YOU', selected: true),
                   ],
                 ),
                 const SizedBox(height: 2),
@@ -484,11 +392,9 @@ class SupporterUserRow extends StatelessWidget {
           ),
           Text(
             '${formatLeaderboardNumber(entry.totalFet)} FET',
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.clubAccent,
-            ),
+            style: TypographyTokens.titleLarge(
+              ColorTokens.clubAccent,
+            ).copyWith(fontWeight: FontWeight.w800),
           ),
         ],
       ),
@@ -498,11 +404,7 @@ class SupporterUserRow extends StatelessWidget {
 
 /// Standard list row for supporter ranking.
 class SupporterListRow extends StatelessWidget {
-  const SupporterListRow({
-    super.key,
-    required this.entry,
-    required this.isMe,
-  });
+  const SupporterListRow({super.key, required this.entry, required this.isMe});
 
   final FetLeaderboardRow entry;
   final bool isMe;
@@ -528,12 +430,11 @@ class SupporterListRow extends StatelessWidget {
             width: 44,
             child: Text(
               '#${entry.rank.toString().padLeft(2, '0')}',
-              style: TypographyTokens.monolithFont(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color:
-                    entry.rank <= 3 ? ColorTokens.clubAccent : ColorTokens.onSurface,
-              ),
+              style: TypographyTokens.headlineSmall(
+                entry.rank <= 3
+                    ? ColorTokens.clubAccent
+                    : ColorTokens.onSurface,
+              ).copyWith(fontWeight: FontWeight.w800),
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
@@ -544,29 +445,15 @@ class SupporterListRow extends StatelessWidget {
                 Row(
                   children: [
                     Flexible(
-                      child: Text(entry.displayName,
-                          style: TypographyTokens.titleSmall(),
-                          overflow: TextOverflow.ellipsis),
+                      child: Text(
+                        entry.displayName,
+                        style: TypographyTokens.titleSmall(),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     if (isMe) ...[
                       const SizedBox(width: SpacingTokens.spacing2),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: ColorTokens.clubAccent,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          'YOU',
-                          style: TypographyTokens.editorialFont(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w800,
-                            color: ColorTokens.background,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                      ),
+                      const _LeaderboardBadge(label: 'YOU', selected: true),
                     ],
                   ],
                 ),
@@ -580,13 +467,66 @@ class SupporterListRow extends StatelessWidget {
           ),
           Text(
             '${formatLeaderboardNumber(entry.totalFet)} FET',
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.clubAccent,
-            ),
+            style: TypographyTokens.titleLarge(
+              ColorTokens.clubAccent,
+            ).copyWith(fontWeight: FontWeight.w800),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _RankBadge extends StatelessWidget {
+  const _RankBadge({required this.rank});
+
+  final int? rank;
+
+  @override
+  Widget build(BuildContext context) {
+    if (rank == null || rank! > 3) {
+      return const SizedBox(height: 28);
+    }
+
+    return Semantics(
+      label: 'Podium rank $rank',
+      image: true,
+      child: Icon(
+        AfriIcons.rank,
+        size: 28,
+        color: rank == 1
+            ? ColorTokens.clubAccent
+            : ColorTokens.onSurfaceVariant,
+      ),
+    );
+  }
+}
+
+class _LeaderboardBadge extends StatelessWidget {
+  const _LeaderboardBadge({required this.label, this.selected = false});
+
+  final String label;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: selected
+            ? ColorTokens.clubAccent
+            : ColorTokens.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        label,
+        style:
+            TypographyTokens.labelSmall(
+              selected ? ColorTokens.background : ColorTokens.onSurfaceVariant,
+            ).copyWith(
+              fontWeight: selected ? FontWeight.w800 : FontWeight.w700,
+              letterSpacing: selected ? 1.2 : 1.0,
+            ),
       ),
     );
   }

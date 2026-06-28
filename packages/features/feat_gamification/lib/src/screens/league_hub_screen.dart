@@ -46,7 +46,7 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
           competitions.firstOrNull?.slug;
 
       if (resolvedSlug == null) {
-        throw Exception('No competitions available.');
+        throw Exception('Competition catalog is pending.');
       }
 
       final now = DateTime.now();
@@ -77,7 +77,12 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
         _error = _competition == null ? 'Competition not found.' : null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('LeagueHubScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'LeagueHubScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -102,19 +107,19 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           competition?.shortName.toUpperCase() ?? 'LEAGUE HUB',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -134,7 +139,7 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                 ),
               ),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: () => _load(competition?.slug),
               color: ColorTokens.clubAccent,
               child: ListView(
@@ -183,14 +188,13 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                       ),
                     ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  ClayCard(
+                  AfriSurfaceCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           competition?.name.toUpperCase() ?? 'COMPETITION',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 28,
+                          style: TypographyTokens.headlineLarge().copyWith(
                             fontWeight: FontWeight.w900,
                             height: 0.95,
                           ),
@@ -311,13 +315,11 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                                             : fixture.isFinished
                                             ? '${fixture.homeScore ?? 0}-${fixture.awayScore ?? 0}'
                                             : 'OPEN',
-                                        style: TypographyTokens.monolithFont(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w800,
-                                          color: fixture.isLive
+                                        style: TypographyTokens.titleMedium(
+                                          fixture.isLive
                                               ? ColorTokens.success
                                               : ColorTokens.clubAccent,
-                                        ),
+                                        ).copyWith(fontWeight: FontWeight.w800),
                                       ),
                                     ],
                                   ),
@@ -355,8 +357,7 @@ class _LeagueMetric extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             value,
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
+            style: TypographyTokens.titleLarge().copyWith(
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -381,7 +382,7 @@ class _LeagueSectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClayCard(
+    return AfriSurfaceCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -391,7 +392,7 @@ class _LeagueSectionCard extends StatelessWidget {
                 child: Text(title, style: TypographyTokens.titleLarge()),
               ),
               if (actionLabel != null && onAction != null)
-                TextButton(onPressed: onAction, child: Text(actionLabel!)),
+                AfriTextButton(onPressed: onAction, child: Text(actionLabel!)),
             ],
           ),
           const SizedBox(height: SpacingTokens.spacing3),
@@ -420,13 +421,11 @@ class _LeagueStandingRow extends StatelessWidget {
               width: 28,
               child: Text(
                 '${entry.position}',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                  color: entry.position <= 3
+                style: TypographyTokens.titleMedium(
+                  entry.position <= 3
                       ? ColorTokens.clubAccent
                       : ColorTokens.onSurface,
-                ),
+                ).copyWith(fontWeight: FontWeight.w800),
               ),
             ),
             const SizedBox(width: SpacingTokens.spacing3),
@@ -445,8 +444,7 @@ class _LeagueStandingRow extends StatelessWidget {
             ),
             Text(
               '${entry.points} pts',
-              style: TypographyTokens.monolithFont(
-                fontSize: 16,
+              style: TypographyTokens.titleMedium().copyWith(
                 fontWeight: FontWeight.w800,
               ),
             ),

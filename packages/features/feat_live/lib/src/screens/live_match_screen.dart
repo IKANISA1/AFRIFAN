@@ -25,7 +25,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
   @override
   void initState() {
     super.initState();
-    _loadMatch();
+    unawaited(_loadMatch());
   }
 
   @override
@@ -55,9 +55,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
       setState(() {
         _match = selected;
         _isLoading = false;
-        _error = selected == null
-            ? 'No live or upcoming fixture has been published yet.'
-            : null;
+        _error = null;
       });
 
       if (selected != null) {
@@ -170,7 +168,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     final matchDate = DateTime.tryParse(match['match_date']?.toString() ?? '');
 
     if ((status == 'live' || status == 'halftime') && liveMinute != null) {
-      return '${liveMinute.toString()}\'  •  ${venue.toUpperCase()}';
+      return '$liveMinute\'  •  ${venue.toUpperCase()}';
     }
 
     if (status == 'fulltime') {
@@ -219,7 +217,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     if (status == 'live' || status == 'halftime') {
       return <MatchIntelEvent>[
         MatchIntelEvent(
-          minute: liveMinute == null ? 'LIVE' : '${liveMinute.toString()}\'',
+          minute: liveMinute == null ? 'LIVE' : '$liveMinute\'',
           title: '${homeTeam.toUpperCase()} VS ${awayTeam.toUpperCase()}',
           body: summary.isEmpty
               ? 'Live mode active. Events appear in real time.'
@@ -306,46 +304,19 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                 Row(
                   children: [
                     if (context.canPop())
-                      IconButton(
-                        onPressed: () => context.pop(),
-                        icon: const Icon(AfriIcons.back),
+                      AfriIconButton(
+                        icon: AfriIcons.back,
+                        onTap: () => context.pop(),
+                        tooltip: 'Back',
                       ),
                   ],
                 ),
-                const Spacer(),
-                ClayCard(
-                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                  child: Column(
-                    children: [
-                      const Text(
-                        'LIVE CENTER UNAVAILABLE',
-                        style: TextStyle(
-                          fontFamily: TypographyTokens.borrowedFontFamily,
-                          package: 'core_theme',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w900,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: SpacingTokens.spacing3),
-                      Text(
-                        _error ??
-                            'No live or upcoming fixture is available for ${RuntimeBranding.displayClubName} right now.',
-                        style: TypographyTokens.bodyMedium(),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: SpacingTokens.spacing5),
-                      EliteButton(
-                        label: 'Refresh',
-                        fullWidth: true,
-                        onTap: _loadMatch,
-                      ),
-                    ],
+                Expanded(
+                  child: LiveMatchFallbackContent(
+                    error: _error,
+                    onRetry: () => unawaited(_loadMatch()),
                   ),
                 ),
-                const Spacer(),
               ],
             ),
           ),
@@ -374,26 +345,26 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
     final events = _eventsFor(match);
     final homeLogoUrl = match['home_team_logo']?.toString();
     final awayLogoUrl = match['away_team_logo']?.toString();
-    final competitionLogoUrl = match['competition_logo']?.toString();
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text('Match Center', style: TypographyTokens.headlineSmall()),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
         actions: [
-          IconButton(
-            onPressed: () => context.push('/fanzone/my'),
-            icon: const Icon(AfriIcons.history),
+          AfriIconButton(
+            icon: AfriIcons.history,
+            onTap: () => unawaited(context.push('/fanzone/my')),
             tooltip: 'My Predictions',
           ),
         ],
       ),
-      body: RefreshIndicator(
+      body: AfriRefreshIndicator(
         onRefresh: _loadMatch,
         color: ColorTokens.clubAccent,
         child: CustomScrollView(
@@ -487,13 +458,13 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                 ),
               ),
             ),
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.only(
+                padding: EdgeInsets.only(
                   top: SpacingTokens.spacing8,
                   bottom: SpacingTokens.spacing4,
                 ),
-                child: const AfriSectionHeader(title: 'Match Intel'),
+                child: AfriSectionHeader(title: 'Match Intel'),
               ),
             ),
             SliverList(
@@ -592,5 +563,51 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
       return token.substring(0, end);
     }
     return parts.take(3).map((part) => part[0].toUpperCase()).join();
+  }
+}
+
+class LiveMatchFallbackContent extends StatelessWidget {
+  const LiveMatchFallbackContent({
+    super.key,
+    required this.error,
+    required this.onRetry,
+  });
+
+  final String? error;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    if (error == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Center(
+      child: AfriSurfaceCard(
+        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'LIVE CENTER UNAVAILABLE',
+              style: TypographyTokens.headlineMedium(ColorTokens.onDark)
+                  .copyWith(
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: SpacingTokens.spacing3),
+            Text(
+              error!,
+              style: TypographyTokens.bodyMedium(),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: SpacingTokens.spacing5),
+            AfriButton(label: 'Refresh', fullWidth: true, onTap: onRetry),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../extensions.dart';
 import '../tokens/spacing_tokens.dart';
+import 'afri_material_buttons.dart';
 
 /// Widget-level error boundary that catches synchronous build errors
 /// in its subtree and displays a recovery UI instead of the red error screen.
@@ -140,7 +141,7 @@ class _BrandedErrorFallback extends StatelessWidget {
             ),
             if (onRetry != null) ...[
               const SizedBox(height: SpacingTokens.spacing6),
-              TextButton.icon(
+              AfriTextIconButton(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh_rounded, size: 18),
                 label: Text(
@@ -149,7 +150,7 @@ class _BrandedErrorFallback extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                style: TextButton.styleFrom(foregroundColor: colors.accent),
+                style: AfriTextButton.styleFrom(foregroundColor: colors.accent),
               ),
             ],
           ],

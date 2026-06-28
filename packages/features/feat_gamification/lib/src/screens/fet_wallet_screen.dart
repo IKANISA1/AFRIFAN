@@ -281,8 +281,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           children: [
             Text(
               title.toUpperCase(),
-              style: TypographyTokens.monolithFont(
-                fontSize: 20,
+              style: TypographyTokens.headlineSmall().copyWith(
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.4,
               ),
@@ -305,15 +304,12 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing5),
-            AfriButton(
-              label: confirmLabel,
-              onTap: () => Navigator.of(context).pop(true),
-            ),
+            AfriButton(label: confirmLabel, onTap: () => context.pop(true)),
             const SizedBox(height: SpacingTokens.spacing3),
             AfriButton(
               label: 'CANCEL',
               variant: AfriButtonVariant.secondary,
-              onTap: () => Navigator.of(context).pop(false),
+              onTap: () => context.pop(false),
             ),
           ],
         ),
@@ -364,17 +360,18 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text('Wallet', style: TypographyTokens.headlineSmall()),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
         actions: [
-          IconButton(
-            onPressed: _showOverflow,
-            icon: const Icon(AfriIcons.more),
+          AfriIconButton(
+            icon: AfriIcons.more,
+            onTap: _showOverflow,
             tooltip: 'More options',
           ),
         ],
@@ -404,7 +401,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     final wallet = snapshot.wallet;
     final transactions = snapshot.transactions;
 
-    return RefreshIndicator(
+    return AfriRefreshIndicator(
       onRefresh: () => ref.read(fetWalletProvider.notifier).refresh(),
       child: ListView(
         padding: const EdgeInsets.fromLTRB(
@@ -457,7 +454,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           ),
           if ((wallet?.legacyBalanceGap ?? 0) > 0) ...[
             const SizedBox(height: SpacingTokens.spacing4),
-            ClayCard(
+            AfriSurfaceCard(
               child: Row(
                 children: [
                   const Icon(AfriIcons.statusInfo, size: 20),
@@ -477,7 +474,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           const SizedBox(height: SpacingTokens.spacing8),
           const AfriSectionHeader(title: 'Transfer'),
           const SizedBox(height: SpacingTokens.spacing4),
-          ClayCard(
+          AfriSurfaceCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -488,16 +485,13 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                   suffixIcon: _isSearching
                       ? const Padding(
                           padding: EdgeInsets.all(12),
-                          child: SizedBox(
-                            height: 16,
-                            width: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
+                          child: AfriLoadingIndicator(size: 16),
                         )
                       : (_searchController.text.isEmpty
                             ? const Icon(AfriIcons.search)
-                            : IconButton(
-                                onPressed: () {
+                            : AfriIconButton(
+                                icon: AfriIcons.close,
+                                onTap: () {
                                   _searchController.clear();
                                   setState(() {
                                     _selectedSupporter = null;
@@ -505,7 +499,8 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                                         const <FetWalletSupporter>[];
                                   });
                                 },
-                                icon: const Icon(AfriIcons.close),
+                                tooltip: 'Clear search',
+                                filled: false,
                               )),
                 ),
                 if (_selectedSupporter != null) ...[
@@ -521,7 +516,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                 ] else if (_supporterMatches.isNotEmpty) ...[
                   const SizedBox(height: SpacingTokens.listItemGap),
                   ..._supporterMatches.map(
-                    (supporter) => ListTile(
+                    (supporter) => AfriListTile(
                       contentPadding: EdgeInsets.zero,
                       dense: true,
                       title: Text(
@@ -572,7 +567,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           const SizedBox(height: SpacingTokens.spacing8),
           const AfriSectionHeader(title: 'Redeem'),
           const SizedBox(height: SpacingTokens.spacing4),
-          ClayCard(
+          AfriSurfaceCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -610,7 +605,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           ),
           const SizedBox(height: SpacingTokens.spacing4),
           if (transactions.isEmpty)
-            ClayCard(
+            AfriSurfaceCard(
               child: Text(
                 'Wallet activity appears here once you start earning, sending, or redeeming FET.',
                 style: TypographyTokens.bodyMedium(
@@ -647,27 +642,21 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     );
   }
 
-  Widget _buildEliteStat(String label, String value) {
+  Widget _buildBorrowedStat(String label, String value) {
     return Column(
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 8,
-            fontWeight: FontWeight.w900,
-            color: Colors.black26,
-            letterSpacing: 1,
-          ),
+          style: TypographyTokens.metricLabel(
+            ColorTokens.borrowedInkFaint,
+          ).copyWith(fontWeight: FontWeight.w900, letterSpacing: 1),
         ),
         const SizedBox(height: 4),
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w900,
-            color: Colors.black,
-            letterSpacing: 0,
-          ),
+          style: TypographyTokens.titleSmall(
+            ColorTokens.borrowedInk,
+          ).copyWith(fontWeight: FontWeight.w900, letterSpacing: 0),
         ),
       ],
     );

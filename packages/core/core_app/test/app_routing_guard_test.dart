@@ -270,10 +270,13 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   ClubColors get colors => const ClubColors(
-    primary: Color(0xFF0038A8),
-    secondary: Color(0xFF001F5C),
-    accent: Color(0xFFD4A017),
-    gradient: <Color>[Color(0xFF001F5C), Color(0xFF0038A8)],
+    primary: ColorTokens.referenceAccountBlue,
+    secondary: ColorTokens.referenceChromeBlack,
+    accent: ColorTokens.referenceRewardsVioletHot,
+    gradient: <Color>[
+      ColorTokens.referenceChromeBlack,
+      ColorTokens.referenceAccountBlue,
+    ],
   );
 
   @override
@@ -352,8 +355,8 @@ class _HomeModule extends FeatureModule {
   TabRoute get tabRoute => TabRoute(
     path: '/home',
     label: 'Home',
-    icon: Icons.home_outlined,
-    activeIcon: Icons.home_rounded,
+    icon: AfriIcons.home,
+    activeIcon: AfriIcons.home,
     builder: (context, state) => const Scaffold(body: Text('Home')),
   );
 }
@@ -373,6 +376,9 @@ class _OnboardingModule extends FeatureModule {
       builder: (context, state) => const _FakeOnboardingScreen(),
     ),
   ];
+
+  @override
+  Set<String> get publicPaths => const <String>{'/splash', '/onboarding'};
 }
 
 class _SettingsModule extends FeatureModule {
@@ -380,12 +386,13 @@ class _SettingsModule extends FeatureModule {
   String get featureKey => 'settings';
 
   @override
-  List<RouteBase> get routes => <RouteBase>[
-    GoRoute(
-      path: '/settings',
-      builder: (context, state) => const _FakeSettingsScreen(),
-    ),
-  ];
+  TabRoute get tabRoute => TabRoute(
+    path: '/settings',
+    label: 'Settings',
+    icon: AfriIcons.settings,
+    activeIcon: AfriIcons.settings,
+    builder: (context, state) => const _FakeSettingsScreen(),
+  );
 }
 
 class _AdminModule extends FeatureModule {

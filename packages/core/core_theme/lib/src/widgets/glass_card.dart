@@ -15,7 +15,7 @@ import 'afri_press_feedback.dart';
 /// surface where the primary interaction is reading, not tapping.
 ///
 /// For **interactive surfaces** (tappable tiles, action shortcuts, navigation
-/// cards), prefer [ClayCard].
+/// cards), prefer [AfriSurfaceCard].
 class GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;

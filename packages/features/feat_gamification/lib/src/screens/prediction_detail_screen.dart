@@ -34,12 +34,13 @@ class _PredictionDetailScreenState
 
       if (!mounted) return;
       if (result.isError) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(result.message)));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(result.message)));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Prediction cancelled.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Prediction cancelled.')));
       }
     } finally {
       if (mounted) setState(() => _isCancelling = false);
@@ -128,9 +129,10 @@ class _PredictionDetailScreenState
                   Row(
                     children: [
                       if (context.canPop())
-                        IconButton(
-                          onPressed: () => context.pop(),
-                          icon: const Icon(AfriIcons.back),
+                        AfriIconButton(
+                          icon: AfriIcons.back,
+                          onTap: () => context.pop(),
+                          tooltip: 'Back',
                         ),
                     ],
                   ),
@@ -141,9 +143,11 @@ class _PredictionDetailScreenState
                         message: 'Could not load prediction detail right now.',
                         actionLabel: 'Retry',
                         onAction: () => ref
-                            .read(predictionDetailProvider(
-                              widget.predictionId,
-                            ).notifier)
+                            .read(
+                              predictionDetailProvider(
+                                widget.predictionId,
+                              ).notifier,
+                            )
                             .refresh(),
                       ),
                     ),
@@ -165,277 +169,268 @@ class _PredictionDetailScreenState
                   ),
                 );
               }
-              return RefreshIndicator(
+              return AfriRefreshIndicator(
                 onRefresh: () => ref
-                    .read(predictionDetailProvider(
-                      widget.predictionId,
-                    ).notifier)
+                    .read(
+                      predictionDetailProvider(widget.predictionId).notifier,
+                    )
                     .refresh(),
                 color: ColorTokens.clubAccent,
                 child: CustomScrollView(
-                    physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics(),
+                  physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics(),
+                  ),
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          SpacingTokens.spacing4,
+                          SpacingTokens.spacing4,
+                          SpacingTokens.spacing6,
+                          0,
+                        ),
+                        child: Row(
+                          children: [
+                            if (context.canPop())
+                              AfriIconButton(
+                                icon: AfriIcons.back,
+                                onTap: () => context.pop(),
+                                tooltip: 'Back',
+                              ),
+                            const SizedBox(width: SpacingTokens.spacing2),
+                            Expanded(
+                              child: Text(
+                                'PREDICTION DETAIL',
+                                style: TypographyTokens.headlineSmall()
+                                    .copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 1.6,
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    slivers: [
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            SpacingTokens.spacing4,
-                            SpacingTokens.spacing4,
-                            SpacingTokens.spacing6,
-                            0,
-                          ),
-                          child: Row(
-                            children: [
-                              if (context.canPop())
-                                IconButton(
-                                  onPressed: () => context.pop(),
-                                  icon: const Icon(AfriIcons.back),
-                                ),
-                              const SizedBox(width: SpacingTokens.spacing2),
-                              Expanded(
-                                child: Text(
-                                  'PREDICTION DETAIL',
-                                  style: TypographyTokens.monolithFont(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 1.6,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                          child: ClayCard(
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        detail.competitionName.toUpperCase(),
-                                        style: TypographyTokens.labelMedium(
-                                          ColorTokens.onSurfaceVariant,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: _statusColor(
-                                          detail,
-                                        ).withValues(alpha: 0.14),
-                                        borderRadius: BorderRadius.circular(
-                                          999,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        _statusLabel(detail),
-                                        style: TypographyTokens.labelSmall(
-                                          _statusColor(detail),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: SpacingTokens.spacing4),
-                                Text(
-                                  '${detail.homeTeamShort.toUpperCase()}  •  ${detail.awayTeamShort.toUpperCase()}',
-                                  textAlign: TextAlign.center,
-                                  style: TypographyTokens.monolithFont(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                                const SizedBox(height: SpacingTokens.spacing3),
-                                Text(
-                                  detail.hasScoreline
-                                      ? '${detail.homeScore} - ${detail.awayScore}'
-                                      : _formatDateTime(detail.kickoffAt),
-                                  style: TypographyTokens.monolithFont(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.w900,
-                                    color: detail.hasScoreline
-                                        ? ColorTokens.onSurface
-                                        : ColorTokens.clubAccent,
-                                  ),
-                                ),
-                                const SizedBox(height: SpacingTokens.spacing2),
-                                Text(
-                                  detail.venueName?.trim().isNotEmpty == true
-                                      ? detail.venueName!.toUpperCase()
-                                      : 'VENUE TBC',
-                                  style: TypographyTokens.bodySmall(),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: SpacingTokens.spacing6,
-                          ),
-                          child: Row(
-                            children: [
-                              _DetailMetric(
-                                label: 'MARKET',
-                                value:
-                                    (detail.marketShortName.isEmpty
-                                            ? detail.marketName
-                                            : detail.marketShortName)
-                                        .toUpperCase(),
-                              ),
-                              const SizedBox(width: SpacingTokens.spacing3),
-                              _DetailMetric(
-                                label: 'SELECTION',
-                                value: '${detail.selectedOutcome.toUpperCase()} (${detail.odds.toStringAsFixed(1)}x)',
-                                accent: true,
-                              ),
-                              const SizedBox(width: SpacingTokens.spacing3),
-                              _DetailMetric(
-                                label: detail.isWon ? 'EARNED' : 'POTENTIAL',
-                                value: detail.isWon
-                                    ? '+${detail.fetEarned}'
-                                    : '+${detail.fetPotential}',
-                                accent: true,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                          child: GlassCard(
-                            animate: false,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'SETTLEMENT',
-                                  style: TypographyTokens.labelMedium(
-                                    ColorTokens.onSurfaceVariant,
-                                  ),
-                                ),
-                                const SizedBox(height: SpacingTokens.spacing2),
-                                Text(
-                                  _settlementMessage(detail),
-                                  style: TypographyTokens.bodyMedium(),
-                                ),
-                                const SizedBox(height: SpacingTokens.spacing4),
-                                _TimelineRow(
-                                  label: 'Placed',
-                                  value: _formatDateTime(detail.placedAt),
-                                ),
-                                const SizedBox(height: SpacingTokens.spacing2),
-                                _TimelineRow(
-                                  label: 'Kickoff',
-                                  value: _formatDateTime(detail.kickoffAt),
-                                ),
-                                if (detail.settledAt != null) ...[
-                                  const SizedBox(
-                                    height: SpacingTokens.spacing2,
-                                  ),
-                                  _TimelineRow(
-                                    label: 'Settled',
-                                    value: _formatDateTime(detail.settledAt),
-                                  ),
-                                ],
-                                if ((detail.correctOutcome ?? '')
-                                    .trim()
-                                    .isNotEmpty) ...[
-                                  const SizedBox(
-                                    height: SpacingTokens.spacing2,
-                                  ),
-                                  _TimelineRow(
-                                    label: 'Official outcome',
-                                    value: detail.correctOutcome!.toUpperCase(),
-                                  ),
-                                ],
-                                if ((detail.slipId ?? '').isNotEmpty) ...[
-                                  const SizedBox(
-                                    height: SpacingTokens.spacing2,
-                                  ),
-                                  _TimelineRow(
-                                    label: 'Slip',
-                                    value: detail.slipId!,
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            SpacingTokens.spacing6,
-                            0,
-                            SpacingTokens.spacing6,
-                            SpacingTokens.spacing6,
-                          ),
-                          child: PredictionShareCard(
-                            data: PredictionShareData.fromDetail(detail),
-                          ),
-                        ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            SpacingTokens.spacing6,
-                            0,
-                            SpacingTokens.spacing6,
-                            SpacingTokens.spacing20,
-                          ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                        child: AfriSurfaceCard(
                           child: Column(
                             children: [
-                              if (detail.isPending)
-                                AfriButton(
-                                  label: 'CANCEL PREDICTION',
-                                  variant: AfriButtonVariant.secondary,
-                                  enabled: !_isCancelling,
-                                  isLoading: _isCancelling,
-                                  onTap: () => _cancelPrediction(detail),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      detail.competitionName.toUpperCase(),
+                                      style: TypographyTokens.labelMedium(
+                                        ColorTokens.onSurfaceVariant,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: _statusColor(
+                                        detail,
+                                      ).withValues(alpha: 0.14),
+                                      borderRadius: BorderRadius.circular(999),
+                                    ),
+                                    child: Text(
+                                      _statusLabel(detail),
+                                      style: TypographyTokens.labelSmall(
+                                        _statusColor(detail),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: SpacingTokens.spacing4),
+                              Text(
+                                '${detail.homeTeamShort.toUpperCase()}  •  ${detail.awayTeamShort.toUpperCase()}',
+                                textAlign: TextAlign.center,
+                                style: TypographyTokens.titleLarge().copyWith(
+                                  fontWeight: FontWeight.w800,
                                 ),
-                              if (detail.isPending)
-                                const SizedBox(height: SpacingTokens.spacing3),
-                              AfriButton(
-                                label: detail.isSettled
-                                    ? 'COPY RESULT'
-                                    : 'COPY SUMMARY',
-                                variant: AfriButtonVariant.secondary,
-                                onTap: () => _copySummary(detail),
                               ),
                               const SizedBox(height: SpacingTokens.spacing3),
-                              AfriButton(
-                                label: 'SHARE CARD',
-                                variant: AfriButtonVariant.secondary,
-                                onTap: () => PredictionShareService.share(
-                                  data: PredictionShareData.fromDetail(detail),
-                                  context: context,
-                                ),
+                              Text(
+                                detail.hasScoreline
+                                    ? '${detail.homeScore} - ${detail.awayScore}'
+                                    : _formatDateTime(detail.kickoffAt),
+                                style: TypographyTokens.metricValue(
+                                  detail.hasScoreline
+                                      ? ColorTokens.onSurface
+                                      : ColorTokens.clubAccent,
+                                ).copyWith(fontWeight: FontWeight.w900),
                               ),
-                              const SizedBox(height: SpacingTokens.spacing3),
-                              AfriButton(
-                                label: 'BROWSE FIXTURES',
-                                onTap: () => context.go('/fanzone/fixtures'),
+                              const SizedBox(height: SpacingTokens.spacing2),
+                              Text(
+                                detail.venueName?.trim().isNotEmpty == true
+                                    ? detail.venueName!.toUpperCase()
+                                    : 'VENUE TBC',
+                                style: TypographyTokens.bodySmall(),
                               ),
                             ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                );
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: SpacingTokens.spacing6,
+                        ),
+                        child: Row(
+                          children: [
+                            _DetailMetric(
+                              label: 'MARKET',
+                              value:
+                                  (detail.marketShortName.isEmpty
+                                          ? detail.marketName
+                                          : detail.marketShortName)
+                                      .toUpperCase(),
+                            ),
+                            const SizedBox(width: SpacingTokens.spacing3),
+                            _DetailMetric(
+                              label: 'SELECTION',
+                              value:
+                                  '${detail.selectedOutcome.toUpperCase()} (${detail.odds.toStringAsFixed(1)}x)',
+                              accent: true,
+                            ),
+                            const SizedBox(width: SpacingTokens.spacing3),
+                            _DetailMetric(
+                              label: detail.isWon ? 'EARNED' : 'POTENTIAL',
+                              value: detail.isWon
+                                  ? '+${detail.fetEarned}'
+                                  : '+${detail.fetPotential}',
+                              accent: true,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                        child: GlassCard(
+                          animate: false,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'SETTLEMENT',
+                                style: TypographyTokens.labelMedium(
+                                  ColorTokens.onSurfaceVariant,
+                                ),
+                              ),
+                              const SizedBox(height: SpacingTokens.spacing2),
+                              Text(
+                                _settlementMessage(detail),
+                                style: TypographyTokens.bodyMedium(),
+                              ),
+                              const SizedBox(height: SpacingTokens.spacing4),
+                              _TimelineRow(
+                                label: 'Placed',
+                                value: _formatDateTime(detail.placedAt),
+                              ),
+                              const SizedBox(height: SpacingTokens.spacing2),
+                              _TimelineRow(
+                                label: 'Kickoff',
+                                value: _formatDateTime(detail.kickoffAt),
+                              ),
+                              if (detail.settledAt != null) ...[
+                                const SizedBox(height: SpacingTokens.spacing2),
+                                _TimelineRow(
+                                  label: 'Settled',
+                                  value: _formatDateTime(detail.settledAt),
+                                ),
+                              ],
+                              if ((detail.correctOutcome ?? '')
+                                  .trim()
+                                  .isNotEmpty) ...[
+                                const SizedBox(height: SpacingTokens.spacing2),
+                                _TimelineRow(
+                                  label: 'Official outcome',
+                                  value: detail.correctOutcome!.toUpperCase(),
+                                ),
+                              ],
+                              if ((detail.slipId ?? '').isNotEmpty) ...[
+                                const SizedBox(height: SpacingTokens.spacing2),
+                                _TimelineRow(
+                                  label: 'Slip',
+                                  value: detail.slipId!,
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          SpacingTokens.spacing6,
+                          0,
+                          SpacingTokens.spacing6,
+                          SpacingTokens.spacing6,
+                        ),
+                        child: PredictionShareCard(
+                          data: PredictionShareData.fromDetail(detail),
+                        ),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          SpacingTokens.spacing6,
+                          0,
+                          SpacingTokens.spacing6,
+                          SpacingTokens.spacing20,
+                        ),
+                        child: Column(
+                          children: [
+                            if (detail.isPending)
+                              AfriButton(
+                                label: 'CANCEL PREDICTION',
+                                variant: AfriButtonVariant.secondary,
+                                enabled: !_isCancelling,
+                                isLoading: _isCancelling,
+                                onTap: () => _cancelPrediction(detail),
+                              ),
+                            if (detail.isPending)
+                              const SizedBox(height: SpacingTokens.spacing3),
+                            AfriButton(
+                              label: detail.isSettled
+                                  ? 'COPY RESULT'
+                                  : 'COPY SUMMARY',
+                              variant: AfriButtonVariant.secondary,
+                              onTap: () => _copySummary(detail),
+                            ),
+                            const SizedBox(height: SpacingTokens.spacing3),
+                            AfriButton(
+                              label: 'SHARE CARD',
+                              variant: AfriButtonVariant.secondary,
+                              onTap: () => PredictionShareService.share(
+                                data: PredictionShareData.fromDetail(detail),
+                                context: context,
+                              ),
+                            ),
+                            const SizedBox(height: SpacingTokens.spacing3),
+                            AfriButton(
+                              label: 'BROWSE FIXTURES',
+                              onTap: () => context.go('/fanzone/fixtures'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
             },
           ),
         ),
@@ -470,11 +465,9 @@ class _DetailMetric extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               value,
-              style: TypographyTokens.monolithFont(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: accent ? ColorTokens.clubAccent : ColorTokens.onSurface,
-              ),
+              style: TypographyTokens.titleLarge(
+                accent ? ColorTokens.clubAccent : ColorTokens.onSurface,
+              ).copyWith(fontWeight: FontWeight.w800),
             ),
           ],
         ),

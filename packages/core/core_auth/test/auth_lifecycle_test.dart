@@ -105,6 +105,28 @@ void main() {
 
       expect(container.read(authStateProvider), isA<AuthError>());
     });
+
+    test(
+      'uses a local guest session when anonymous backend is unreachable',
+      () async {
+        final container = _createContainer(
+          anonymousError: Exception(
+            "AuthRetryableFetchException(message: ClientException with SocketException: Failed host lookup: 'example.supabase.co')",
+          ),
+        );
+        addTearDown(container.dispose);
+
+        final notifier = container.read(authStateProvider.notifier);
+        await notifier.signInAnonymously();
+
+        final state = container.read(authStateProvider);
+        expect(state, isA<AuthAuthenticated>());
+        final authenticated = state as AuthAuthenticated;
+        expect(authenticated.user.id, isEmpty);
+        expect(authenticated.user.clubId, '1');
+        expect(authenticated.workspace, AdminWorkspaceAccess.none);
+      },
+    );
   });
 
   group('AuthNotifier — deleteAccount()', () {

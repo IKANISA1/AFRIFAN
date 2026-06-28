@@ -41,8 +41,8 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text('Settings', style: TypographyTokens.headlineSmall()),
       ),
       body: SafeArea(
@@ -72,7 +72,7 @@ class SettingsScreen extends ConsumerWidget {
                         alignment: Alignment.center,
                         child: const Icon(
                           AfriIcons.profile,
-                          color: Colors.white,
+                          color: ColorTokens.onDark,
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -112,7 +112,7 @@ class SettingsScreen extends ConsumerWidget {
                 onTap: () => context.push('/fanzone/history'),
               ),
               AfriListRow(
-                icon: Icons.auto_awesome_rounded,
+                icon: AfriIcons.star,
                 title: 'Hall of fame',
                 onTap: () => context.push('/fanzone/leaderboard'),
               ),
@@ -237,50 +237,45 @@ class SettingsScreen extends ConsumerWidget {
   Future<bool> _showAdminConfirmation(BuildContext context) async {
     final result = await showModalBottomSheet<bool>(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => EliteCard(
+      backgroundColor: ColorTokens.transparent,
+      builder: (context) => AfriPanelCard(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(AfriIcons.admin, color: ColorTokens.warning, size: 48),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'ADMIN ACCESS',
-              style: TextStyle(
-                fontFamily: TypographyTokens.borrowedFontFamily,
-                package: 'core_theme',
-                fontSize: 24,
-                fontWeight: FontWeight.w900,
-                fontStyle: FontStyle.italic,
-                color: Colors.white,
-              ),
+              style: TypographyTokens.headlineMedium(ColorTokens.onDark)
+                  .copyWith(
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
+                  ),
             ),
             const SizedBox(height: 12),
-            const Text(
+            Text(
               'You are entering the admin workspace with elevated permissions. Actions taken here affect all supporters.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.white60,
-                height: 1.5,
-              ),
+              style: TypographyTokens.bodyMedium(
+                ColorTokens.onDarkDim,
+              ).copyWith(height: 1.5),
             ),
             const SizedBox(height: 32),
             Row(
               children: [
                 Expanded(
-                  child: EliteButton(
+                  child: AfriButton(
                     label: 'Cancel',
-                    variant: EliteButtonVariant.outline,
-                    onTap: () => Navigator.of(context).pop(false),
+                    variant: AfriButtonVariant.outline,
+                    onTap: () => context.pop(false),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: EliteButton(
+                  child: AfriButton(
                     label: 'Continue',
-                    onTap: () => Navigator.of(context).pop(true),
+                    onTap: () => context.pop(true),
                   ),
                 ),
               ],

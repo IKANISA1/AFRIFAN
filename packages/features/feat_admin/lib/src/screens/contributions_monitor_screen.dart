@@ -39,11 +39,13 @@ class _ContributionsMonitorScreenState
       final resolver = ClubScopeResolver(client: client);
       final scope = await resolver.requireResolved();
 
-      var groupsQuery = client.from('contribution_groups').select(
-        'id, name, description, group_type, target_amount, '
-        'current_total, member_count, creator_id, '
-        'is_closed, created_at',
-      );
+      var groupsQuery = client
+          .from('contribution_groups')
+          .select(
+            'id, name, description, group_type, target_amount, '
+            'current_total, member_count, creator_id, '
+            'is_closed, created_at',
+          );
       groupsQuery = resolver.apply(groupsQuery, scope);
       final groups = List<Map<String, dynamic>>.from(
         ((await groupsQuery.order('created_at', ascending: false)) as List).map(
@@ -60,12 +62,14 @@ class _ContributionsMonitorScreenState
       if (groupIds.isNotEmpty) {
         contributions = List<Map<String, dynamic>>.from(
           (await client
-                  .from('group_contributions')
-                  .select('id, group_id, user_id, amount, status, created_at')
-                  .inFilter('group_id', groupIds)
-                  .order('created_at', ascending: false)
-                  .limit(500)
-              as List)
+                      .from('group_contributions')
+                      .select(
+                        'id, group_id, user_id, amount, status, created_at',
+                      )
+                      .inFilter('group_id', groupIds)
+                      .order('created_at', ascending: false)
+                      .limit(500)
+                  as List)
               .map((row) => Map<String, dynamic>.from(row as Map)),
         );
       }
@@ -94,7 +98,12 @@ class _ContributionsMonitorScreenState
             }
           }
         } catch (error, stackTrace) {
-      AfriLogger.warn('ContributionsMonitorScreen', 'Operation failed (non-critical).', error, stackTrace);
+          AfriLogger.warn(
+            'ContributionsMonitorScreen',
+            'Operation failed (non-critical).',
+            error,
+            stackTrace,
+          );
           // Alias resolution is best-effort for admin reporting.
         }
       }
@@ -228,12 +237,13 @@ class _ContributionsMonitorScreenState
     final currencySymbol = context.afriCurrencySymbol;
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text('CONTRIBUTIONS', style: TypographyTokens.titleLarge()),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -248,7 +258,7 @@ class _ContributionsMonitorScreenState
               actionLabel: 'Retry',
               onPressed: _loadMonitor,
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _loadMonitor,
               child: ListView(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
@@ -273,25 +283,23 @@ class _ContributionsMonitorScreenState
                         Wrap(
                           spacing: SpacingTokens.spacing2,
                           runSpacing: SpacingTokens.spacing2,
-                          children:
-                              ['ALL', 'TEAM PROJECTS', 'COMMUNITY']
-                                  .map(
-                                    (filter) => ChoiceChip(
-                                      selected: _selectedFilter == filter,
-                                      label: Text(filter),
-                                      onSelected: (_) => setState(
-                                        () => _selectedFilter = filter,
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
+                          children: ['ALL', 'TEAM PROJECTS', 'COMMUNITY']
+                              .map(
+                                (filter) => AfriChoiceChip(
+                                  selected: _selectedFilter == filter,
+                                  label: Text(filter),
+                                  onSelected: (_) =>
+                                      setState(() => _selectedFilter = filter),
+                                ),
+                              )
+                              .toList(),
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
                         Wrap(
                           spacing: SpacingTokens.spacing2,
                           children: ['RECENT', 'TOTAL']
                               .map(
-                                (mode) => ChoiceChip(
+                                (mode) => AfriChoiceChip(
                                   selected: _sortMode == mode,
                                   label: Text('SORT $mode'),
                                   onSelected: (_) =>
@@ -304,13 +312,7 @@ class _ContributionsMonitorScreenState
                     ),
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  if (_filteredGroups.isEmpty)
-                    const _AdminMonitorState(
-                      title: 'No active public groups',
-                      body: 'Groups will appear here after admin setup.',
-                      actionLabel: null,
-                    )
-                  else
+                  if (_filteredGroups.isNotEmpty)
                     ..._filteredGroups.map((group) {
                       final groupId = group['id']?.toString() ?? '';
                       final total =
@@ -337,7 +339,8 @@ class _ContributionsMonitorScreenState
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      (group['name']?.toString() ?? 'Public group')
+                                      (group['name']?.toString() ??
+                                              'Public group')
                                           .toUpperCase(),
                                       style: TypographyTokens.titleLarge()
                                           .copyWith(
@@ -369,7 +372,7 @@ class _ContributionsMonitorScreenState
                               const SizedBox(height: SpacingTokens.spacing2),
                               Text(
                                 '${_contributorCountForGroup(groupId, memberCount)} contributors  •  '
-                                '${lastActivity == null ? 'No payment activity yet' : 'Last activity ${DateFormat('dd MMM HH:mm').format(lastActivity.toLocal())}'}',
+                                '${lastActivity == null ? 'Payment activity pending' : 'Last activity ${DateFormat('dd MMM HH:mm').format(lastActivity.toLocal())}'}',
                                 style: TypographyTokens.bodyMedium(),
                               ),
                             ],

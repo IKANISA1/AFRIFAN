@@ -24,7 +24,7 @@ class FetWalletSnapshot {
 /// - Wallet data cached across navigations
 /// - Pull-to-refresh via refresh() preserves previous data
 /// - DevTools observability
-/// - No setState for load/error states
+/// - Riverpod-owned load/error state
 class FetWalletNotifier extends AsyncNotifier<FetWalletSnapshot> {
   @override
   Future<FetWalletSnapshot> build() async {
@@ -54,5 +54,5 @@ class FetWalletNotifier extends AsyncNotifier<FetWalletSnapshot> {
 /// Provider for the FET Wallet state.
 final fetWalletProvider =
     AsyncNotifierProvider<FetWalletNotifier, FetWalletSnapshot>(() {
-  return FetWalletNotifier();
-});
+      return FetWalletNotifier();
+    });

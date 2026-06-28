@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_press_feedback.dart';
 
-typedef EliteCardBuilder =
+typedef AfriPanelCardBuilder =
     Widget Function(BuildContext context, AfriPressState state);
 
-/// A world-class operational card surface.
-/// High density, sharp edges, and high contrast.
-class EliteCard extends StatelessWidget {
+/// Dense borrowed-system panel surface for operational content.
+class AfriPanelCard extends StatelessWidget {
   final Widget? child;
-  final EliteCardBuilder? builder;
+  final AfriPanelCardBuilder? builder;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final double? width;
@@ -22,7 +22,7 @@ class EliteCard extends StatelessWidget {
   final VoidCallback? onTap;
   final String? semanticsLabel;
 
-  const EliteCard({
+  const AfriPanelCard({
     super.key,
     this.child,
     this.builder,

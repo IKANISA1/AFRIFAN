@@ -13,8 +13,8 @@ import 'afri_button.dart';
 ///
 /// ```dart
 /// AfriEmptyView(
-///   title: 'No Matches Yet',
-///   message: 'Check back soon for upcoming fixtures.',
+///   title: 'Matches pending',
+///   message: 'Upcoming fixtures appear after publication.',
 ///   icon: Icons.sports_soccer_rounded,
 ///   actionLabel: 'Browse Clubs',
 ///   onAction: () => navigateToClubs(),

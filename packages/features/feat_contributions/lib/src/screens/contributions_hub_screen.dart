@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
@@ -26,7 +28,7 @@ class _ContributionsHubScreenState
   @override
   void initState() {
     super.initState();
-    _loadGroups();
+    unawaited(_loadGroups());
   }
 
   Future<void> _loadGroups() async {
@@ -69,7 +71,12 @@ class _ContributionsHubScreenState
         _error = null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('ContributionsHubScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'ContributionsHubScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) return;
       setState(() {
         _isLoading = false;
@@ -177,6 +184,7 @@ class _ContributionsHubScreenState
       0,
       (sum, group) => sum + ((group['target_amount'] as num?)?.toInt() ?? 0),
     );
+    final hasGroups = !_isLoading && _error == null && _groups.isNotEmpty;
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -189,28 +197,22 @@ class _ContributionsHubScreenState
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  IconButton(
-                    onPressed: () {
+                  AfriIconButton(
+                    icon: AfriIcons.back,
+                    tooltip: 'Back',
+                    onTap: () {
                       if (context.canPop()) {
                         context.pop();
                       } else {
                         context.go('/home');
                       }
                     },
-                    icon: Icon(
-                      AfriIcons.back,
-                      color: ColorTokens.onSurface,
-                    ),
-                    tooltip: 'Back',
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
                   ),
                   const SizedBox(width: SpacingTokens.spacing3),
                   Expanded(
                     child: Text(
                       'CONTRIBUTE',
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 20,
+                      style: TypographyTokens.headlineSmall().copyWith(
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.4,
                       ),
@@ -219,36 +221,33 @@ class _ContributionsHubScreenState
                 ],
               ),
               const SizedBox(height: SpacingTokens.spacing6),
-              _HubCard(
-                title: 'TEAM PROJECTS',
-                subtitle: totalRaised == 0
-                    ? 'No campaigns yet.'
-                    : '${currency.format(totalRaised)} of ${currency.format(totalTarget)} raised.',
-                accent: ColorTokens.clubPrimary,
-                metricLabel: '${_groups.length} OPEN',
-                onTap: () => context.push('/contribute/projects'),
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              _HubCard(
-                title: 'COMMUNITIES',
-                subtitle: _groups.isEmpty
-                    ? 'No public communities yet.'
-                    : '$_groupsCountLabel active.',
-                accent: ColorTokens.success,
-                metricLabel: '${_groups.length} LIVE',
-                onTap: () => context.push('/contribute/groups'),
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              _HubCard(
-                title: 'COMMUNITY',
-                subtitle: _groups.isEmpty
-                    ? 'No community activity yet.'
-                    : 'Fan clubs & local chapters.',
-                accent: ColorTokens.info,
-                metricLabel: _groups.isEmpty ? 'QUIET' : 'LIVE',
-                onTap: () => context.push('/fan-clubs'),
-              ),
-              const SizedBox(height: SpacingTokens.spacing4),
+              if (hasGroups) ...[
+                _HubCard(
+                  title: 'TEAM PROJECTS',
+                  subtitle:
+                      '${currency.format(totalRaised)} of ${currency.format(totalTarget)} raised.',
+                  accent: ColorTokens.clubPrimary,
+                  metricLabel: '${_groups.length} OPEN',
+                  onTap: () => context.push('/contribute/projects'),
+                ),
+                const SizedBox(height: SpacingTokens.spacing3),
+                _HubCard(
+                  title: 'COMMUNITIES',
+                  subtitle: '$_groupsCountLabel active.',
+                  accent: ColorTokens.success,
+                  metricLabel: '${_groups.length} LIVE',
+                  onTap: () => context.push('/contribute/groups'),
+                ),
+                const SizedBox(height: SpacingTokens.spacing3),
+                _HubCard(
+                  title: 'COMMUNITY',
+                  subtitle: 'Fan clubs & local chapters.',
+                  accent: ColorTokens.info,
+                  metricLabel: 'LIVE',
+                  onTap: () => context.push('/fan-clubs'),
+                ),
+                const SizedBox(height: SpacingTokens.spacing4),
+              ],
               AfriSectionCard(
                 title: 'MoMo SMS sync',
                 child: Column(
@@ -262,7 +261,7 @@ class _ContributionsHubScreenState
                         ),
                       )
                     else if (smsSyncEnabled) ...[
-                      AfriInfoChip(
+                      const AfriInfoChip(
                         label: 'ACTIVE',
                         color: ColorTokens.success,
                       ),
@@ -293,69 +292,69 @@ class _ContributionsHubScreenState
                   ],
                 ),
               ),
-              const SizedBox(height: SpacingTokens.spacing4),
-              AfriSectionCard(
-                title: 'Live campaigns',
-                child: Column(
-                  children: [
-                    if (_isLoading)
-                      const AfriSkeletonList()
-                    else if (_error != null)
-                      AfriStateView.offline(
-                        title: 'Groups unavailable',
-                        message: _error!,
-                        actionLabel: 'Retry',
-                        onAction: _loadGroups,
-                        compact: true,
-                      )
-                    else if (_groups.isEmpty)
-                      const AfriEmptyView(
-                        compact: true,
-                        title: 'No public groups yet',
-                        icon: AfriIcons.clubZone,
-                      )
-                    else
-                      ..._groups.take(3).map((group) {
-                        final groupId = group['id']?.toString() ?? '';
-                        final name = group['name']?.toString() ?? 'Group';
-                        final currentTotal =
-                            (group['current_total'] as num?)?.toInt() ?? 0;
-                        final targetAmount =
-                            (group['target_amount'] as num?)?.toInt() ?? 0;
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: SpacingTokens.listItemGap,
-                          ),
-                          child: AfriListRow(
-                            icon: AfriIcons.contribute,
-                            title: name,
-                            subtitle:
-                                '${currency.format(currentTotal)} of ${currency.format(targetAmount)}',
-                            onTap: () =>
-                                context.push('/contribute/group/$groupId'),
-                          ),
-                        );
-                      }),
-                    if (_groups.length > 3)
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap: () => context.push('/contribute/groups'),
-                          behavior: HitTestBehavior.opaque,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: SpacingTokens.spacing2,
+              if (_isLoading || _error != null || hasGroups) ...[
+                const SizedBox(height: SpacingTokens.spacing4),
+                AfriSectionCard(
+                  title: 'Live campaigns',
+                  child: Column(
+                    children: [
+                      if (_isLoading)
+                        const AfriSkeletonList()
+                      else if (_error != null)
+                        AfriStateView.offline(
+                          title: 'Groups unavailable',
+                          message: _error!,
+                          actionLabel: 'Retry',
+                          onAction: _loadGroups,
+                          compact: true,
+                        )
+                      else
+                        ..._groups.take(3).map((group) {
+                          final groupId = group['id']?.toString() ?? '';
+                          final name = group['name']?.toString() ?? 'Group';
+                          final currentTotal =
+                              (group['current_total'] as num?)?.toInt() ?? 0;
+                          final targetAmount =
+                              (group['target_amount'] as num?)?.toInt() ?? 0;
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: SpacingTokens.listItemGap,
                             ),
-                            child: Text(
-                              'See all ${_groups.length}',
-                              style: TypographyTokens.inlineAction(),
+                            child: AfriListRow(
+                              icon: AfriIcons.contribute,
+                              title: name,
+                              subtitle:
+                                  '${currency.format(currentTotal)} of ${currency.format(targetAmount)}',
+                              onTap: () =>
+                                  context.push('/contribute/group/$groupId'),
+                            ),
+                          );
+                        }),
+                      if (_groups.length > 3)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: AfriPressFeedback(
+                            onTap: () => context.push('/contribute/groups'),
+                            tooltip: 'See all contribution groups',
+                            semanticsLabel:
+                                'See all ${_groups.length} contribution groups',
+                            semanticsHint: 'Open contribution groups',
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: SpacingTokens.spacing2,
+                                horizontal: SpacingTokens.spacing2,
+                              ),
+                              child: Text(
+                                'See all ${_groups.length}',
+                                style: TypographyTokens.inlineAction(),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),
@@ -363,8 +362,9 @@ class _ContributionsHubScreenState
     );
   }
 
-  String get _groupsCountLabel =>
-      _groups.length == 1 ? '1 initiative is' : '${_groups.length} initiatives are';
+  String get _groupsCountLabel => _groups.length == 1
+      ? '1 initiative is'
+      : '${_groups.length} initiatives are';
 }
 
 class _HubCard extends StatelessWidget {
@@ -389,13 +389,9 @@ class _HubCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              accent.withValues(alpha: 0.18),
-              ColorTokens.surfaceContainerHighest,
-            ],
+          gradient: ColorTokens.borrowedSurfaceGradient(
+            from: accent.withValues(alpha: 0.18),
+            to: ColorTokens.surfaceContainerHighest,
           ),
           borderRadius: BorderRadius.circular(20),
         ),
@@ -409,10 +405,8 @@ class _HubCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 26,
+                      style: TypographyTokens.headlineMedium().copyWith(
                         fontWeight: FontWeight.w800,
-                        color: ColorTokens.onSurface,
                       ),
                     ),
                   ),
@@ -427,12 +421,13 @@ class _HubCard extends StatelessWidget {
                     ),
                     child: Text(
                       metricLabel,
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: ColorTokens.onSurfaceVariant,
-                        letterSpacing: 1.1,
-                      ),
+                      style:
+                          TypographyTokens.labelLarge(
+                            ColorTokens.onSurfaceVariant,
+                          ).copyWith(
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.1,
+                          ),
                     ),
                   ),
                 ],

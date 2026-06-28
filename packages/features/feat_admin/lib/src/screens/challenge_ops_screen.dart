@@ -84,19 +84,19 @@ class _ChallengeOpsScreenState extends ConsumerState<ChallengeOpsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'CHALLENGE OPS',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
+          style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.0,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _loading
@@ -114,7 +114,7 @@ class _ChallengeOpsScreenState extends ConsumerState<ChallengeOpsScreen> {
                 onAction: () => unawaited(_load()),
               ),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _load,
               child: ListView(
                 physics: const BouncingScrollPhysics(
@@ -133,7 +133,7 @@ class _ChallengeOpsScreenState extends ConsumerState<ChallengeOpsScreen> {
                           'settled',
                           'void',
                         ].map((filter) {
-                          return ChoiceChip(
+                          return AfriChoiceChip(
                             selected: _filter == filter,
                             label: Text(filter.toUpperCase()),
                             onSelected: (_) {
@@ -144,16 +144,7 @@ class _ChallengeOpsScreenState extends ConsumerState<ChallengeOpsScreen> {
                         }).toList(),
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
-                  if (_items.isEmpty)
-                    const AfriEmptyView(
-                      compact: true,
-                      title: 'No challenges in this filter',
-                      message:
-                          'Try another status or wait for new pools to enter the system.',
-                      icon: AfriIcons.versus,
-                    )
-                  else
-                    ..._items.map(_buildCard),
+                  if (_items.isNotEmpty) ..._items.map(_buildCard),
                 ],
               ),
             ),
@@ -189,8 +180,7 @@ class _ChallengeOpsScreenState extends ConsumerState<ChallengeOpsScreen> {
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
               '${fixture['home_team_short_name'] ?? 'HOME'} vs ${fixture['away_team_short_name'] ?? 'AWAY'}',
-              style: TypographyTokens.monolithFont(
-                fontSize: 16,
+              style: TypographyTokens.titleMedium().copyWith(
                 fontWeight: FontWeight.w800,
               ),
             ),

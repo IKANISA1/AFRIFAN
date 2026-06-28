@@ -11,7 +11,7 @@ class ShopModule extends FeatureModule {
   @override
   String get featureKey => 'shop';
 
-  // No tabRoute — accessed via Home quick actions
+  // Tab route omitted; accessed via Home quick actions.
 
   @override
   List<RouteBase> get routes => [

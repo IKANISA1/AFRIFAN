@@ -54,39 +54,4 @@ class AfriShadows {
       ),
     ];
   }
-
-  static ({BoxShadow topLeft, BoxShadow bottomRight}) clay({
-    bool pressed = false,
-  }) {
-    if (pressed) {
-      return (
-        topLeft: BoxShadow(
-          color: ColorTokens.ambientShadow.withValues(alpha: 0.12),
-          blurRadius: 8,
-          offset: const Offset(-2, -2),
-          spreadRadius: -6,
-        ),
-        bottomRight: BoxShadow(
-          color: Colors.white.withValues(alpha: 0.04),
-          blurRadius: 10,
-          offset: const Offset(3, 3),
-          spreadRadius: -6,
-        ),
-      );
-    }
-    return (
-      topLeft: BoxShadow(
-        color: Colors.white.withValues(alpha: 0.05),
-        blurRadius: 12,
-        offset: const Offset(-4, -4),
-        spreadRadius: -8,
-      ),
-      bottomRight: BoxShadow(
-        color: ColorTokens.ambientShadow.withValues(alpha: 0.16),
-        blurRadius: 16,
-        offset: const Offset(0, 8),
-        spreadRadius: -8,
-      ),
-    );
-  }
 }

@@ -378,7 +378,7 @@ class AdminRepository {
     required String slug,
     required String category,
     required String countryCode,
-    String emoji = '🤝',
+    String? emoji,
     String? subtitle,
     String? description,
     bool isActive = true,
@@ -557,9 +557,10 @@ class AdminRepository {
     final rows = List<Map<String, dynamic>>.from(
       (data as List).map((row) => Map<String, dynamic>.from(row as Map)),
     );
-    return _resolveScopedPlatformContentBlocks(rows, scopedClubId)
-        .take(limit)
-        .toList(growable: false);
+    return _resolveScopedPlatformContentBlocks(
+      rows,
+      scopedClubId,
+    ).take(limit).toList(growable: false);
   }
 
   /// Creates a new platform content block.
@@ -676,10 +677,10 @@ class AdminRepository {
                 'dependency_rules': feature.rules!.dependencyRules,
                 'rollout_rules': feature.rules!.rolloutRules,
                 'metadata': feature.rules!.metadata,
-                'schedule_start_at':
-                    feature.rules!.scheduleStartAt?.toIso8601String(),
-                'schedule_end_at':
-                    feature.rules!.scheduleEndAt?.toIso8601String(),
+                'schedule_start_at': feature.rules!.scheduleStartAt
+                    ?.toIso8601String(),
+                'schedule_end_at': feature.rules!.scheduleEndAt
+                    ?.toIso8601String(),
               },
             ],
     };
@@ -756,28 +757,30 @@ class AdminRepository {
       grouped.putIfAbsent(key, () => <Map<String, dynamic>>[]).add(row);
     }
 
-    final resolved = grouped.values.map((variants) {
-      if (clubId == null) {
-        return variants.firstWhere(
-          (row) => row['club_id'] == null,
-          orElse: () => variants.first,
-        );
-      }
+    final resolved = grouped.values
+        .map((variants) {
+          if (clubId == null) {
+            return variants.firstWhere(
+              (row) => row['club_id'] == null,
+              orElse: () => variants.first,
+            );
+          }
 
-      for (final row in variants) {
-        if (_asInt(row['club_id']) == clubId) {
-          return row;
-        }
-      }
+          for (final row in variants) {
+            if (_asInt(row['club_id']) == clubId) {
+              return row;
+            }
+          }
 
-      for (final row in variants) {
-        if (row['club_id'] == null) {
-          return row;
-        }
-      }
+          for (final row in variants) {
+            if (row['club_id'] == null) {
+              return row;
+            }
+          }
 
-      return variants.first;
-    }).toList(growable: false);
+          return variants.first;
+        })
+        .toList(growable: false);
 
     resolved.sort((left, right) {
       final placementCompare = (left['placement_key']?.toString() ?? '')
@@ -838,7 +841,12 @@ class AdminRepository {
           .map((item) => item['title']?.toString() ?? 'News update')
           .toList();
     } catch (error, stackTrace) {
-      AfriLogger.warn('AdminRepository', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'AdminRepository',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       return [];
     }
   }

@@ -1,12 +1,14 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../repositories/home_content_repository.dart';
-import 'package:core_utils/core_utils.dart';
 
 /// Latest Intel section -- horizontal scrolling news/article cards.
 ///
@@ -27,7 +29,7 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
   @override
   void initState() {
     super.initState();
-    _loadArticles();
+    unawaited(_loadArticles());
   }
 
   Future<void> _loadArticles() async {
@@ -138,7 +140,7 @@ class _IntelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    final primaryColor = ColorTokens.clubAccent;
     final articleId = article['id']?.toString();
     final title = article['title']?.toString() ?? '';
     final subtitle = article['subtitle']?.toString() ?? '';
@@ -237,8 +239,8 @@ class _IntelCard extends StatelessWidget {
   }
 }
 
-/// Gradient fallback when no image URL is available.
-/// Atmospheric stadium-vibe gradient -- no emoji, no placeholder icons.
+/// Gradient fallback used when the image URL is unavailable.
+/// Atmospheric stadium-vibe gradient without decorative emoji or filler icons.
 class _GradientFallback extends StatelessWidget {
   final Color primaryColor;
 
@@ -248,9 +250,7 @@ class _GradientFallback extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        gradient: ColorTokens.borrowedGradient(
           colors: [
             primaryColor.withValues(alpha: 0.35),
             ColorTokens.clubSecondary.withValues(alpha: 0.4),

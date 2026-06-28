@@ -120,7 +120,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         RuntimeBranding.displayAppName;
     final slides = _slidesFor(appName);
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: ColorTokens.transparent,
       body: GradientBackground(
         routePath: '/onboarding',
         child: SafeArea(
@@ -144,8 +144,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   SpacingTokens.spacing6,
                   SpacingTokens.spacing6,
                 ),
-                child: GlassCard(
-                  animate: false,
+                child: AfriSurfaceCard(
+                  backgroundColor: ColorTokens.surfaceContainerLow.withValues(
+                    alpha: 0.82,
+                  ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: SpacingTokens.spacing6,
                     vertical: SpacingTokens.spacing5,
@@ -176,15 +178,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       SizedBox(
                         width: 180,
                         child: _isSubmitting
-                            ? const Center(
-                                child: SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                              )
+                            ? const Center(child: AfriLoadingIndicator())
                             : AfriButton(
                                 label: _currentPage == slides.length - 1
                                     ? 'Get started'
@@ -217,7 +211,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   ),
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: TextButton.icon(
+                    child: AfriTextIconButton(
                       onPressed: _isSubmitting
                           ? null
                           : () => context.push(
@@ -285,7 +279,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 children: [
                   Transform.translate(
                     offset: Offset(0, isCompact ? 0 : -8),
-                    child: GlassCard(
+                    child: AfriSurfaceCard(
+                      backgroundColor: ColorTokens.surfaceContainerLow
+                          .withValues(alpha: 0.82),
                       height: isCompact ? 220 : 280,
                       width: double.infinity,
                       padding: EdgeInsets.all(
@@ -343,7 +339,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     ),
                   ),
                   Transform.translate(
-                    offset: Offset(0, isCompact ? -12 : -28),
+                    offset: Offset(0, isCompact ? 0 : SpacingTokens.spacing4),
                     child: Text(
                       slideContent['title']!,
                       style: TypographyTokens.displaySmall().copyWith(
@@ -354,7 +350,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     ),
                   ),
                   Transform.translate(
-                    offset: Offset(0, isCompact ? -4 : -12),
+                    offset: Offset(
+                      0,
+                      isCompact
+                          ? SpacingTokens.spacing2
+                          : SpacingTokens.spacing3,
+                    ),
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 320),
                       child: Text(

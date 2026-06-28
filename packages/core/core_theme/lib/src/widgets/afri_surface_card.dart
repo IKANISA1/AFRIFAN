@@ -12,8 +12,8 @@ import 'afri_press_feedback.dart';
 ///
 /// For **content containers** (read-only grouped info, transaction rows,
 /// stat displays), prefer [GlassCard].
-class ClayCard extends StatelessWidget {
-  const ClayCard({
+class AfriSurfaceCard extends StatelessWidget {
+  const AfriSurfaceCard({
     required this.child,
     this.backgroundColor,
     this.onTap,
@@ -43,7 +43,7 @@ class ClayCard extends StatelessWidget {
         ColorTokens.surfaceContainerLow.withValues(alpha: 0.78);
     final effectiveRadius = borderRadius ?? ShapeTokens.cardRadius;
 
-    final surface = _ClaySurface(
+    final surface = _AfriSurface(
       color: effectiveColor,
       radius: effectiveRadius,
       width: width,
@@ -61,7 +61,7 @@ class ClayCard extends StatelessWidget {
               semanticsLabel: semanticsLabel,
               tooltip: semanticsLabel,
               excludeChildSemantics: semanticsLabel != null,
-              builder: (context, state) => _ClaySurface(
+              builder: (context, state) => _AfriSurface(
                 color: effectiveColor,
                 radius: effectiveRadius,
                 width: width,
@@ -81,8 +81,8 @@ class ClayCard extends StatelessWidget {
   }
 }
 
-class _ClaySurface extends StatelessWidget {
-  const _ClaySurface({
+class _AfriSurface extends StatelessWidget {
+  const _AfriSurface({
     required this.color,
     required this.radius,
     required this.child,

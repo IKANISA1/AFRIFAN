@@ -127,7 +127,7 @@ class _AfriScannerShellState extends State<AfriScannerShell>
 
     return Stack(
       children: [
-        // ── Camera preview / gradient placeholder ────────────
+        // ── Camera preview / gradient fallback ────────────
         Positioned.fill(
           child: widget.isCameraReady && widget.cameraPreview != null
               ? widget.cameraPreview!
@@ -463,7 +463,7 @@ class _PrivacyBadge extends StatelessWidget {
           ),
           const SizedBox(width: 6),
           Text(
-            'No photos saved',
+            'Photo library empty',
             style: TypographyTokens.labelSmall().copyWith(
               color: ColorTokens.onSurface.withValues(alpha: 0.45),
               fontWeight: FontWeight.w600,

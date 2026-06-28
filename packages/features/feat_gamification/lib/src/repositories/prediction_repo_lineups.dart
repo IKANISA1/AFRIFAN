@@ -1,11 +1,9 @@
 part of 'prediction_repository.dart';
 
 extension PredictionRepoLineups on PredictionRepository {
-
-
   /// Loads fixture lineups from `football_roster_catalog` for both teams.
   ///
-  /// No dedicated lineups table exists per fixture; we return the current
+  /// A fixture-level lineups table is not present; return the current
   /// active roster for both teams as a proxy. When lineups become available
   /// via an external data provider, swap this for a dedicated table query.
   Future<Map<String, List<Map<String, dynamic>>>> loadFixtureLineups({
@@ -51,6 +49,4 @@ extension PredictionRepoLineups on PredictionRepository {
       'away': awayRoster,
     };
   }
-
-
 }

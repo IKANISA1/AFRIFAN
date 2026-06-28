@@ -19,12 +19,25 @@ class MarketOptionPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final semanticsLabel = odds == null
+        ? label
+        : '$label, odds ${odds!.toStringAsFixed(2)}';
+
+    return AfriPressFeedback(
       onTap: onTap,
+      selected: isSelected,
+      tooltip: semanticsLabel,
+      semanticsLabel: semanticsLabel,
+      semanticsHint: isSelected ? 'Selected market option' : 'Select option',
+      excludeChildSemantics: true,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOutCubic,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        constraints: const BoxConstraints(minHeight: 44),
+        padding: const EdgeInsets.symmetric(
+          horizontal: SpacingTokens.spacing4,
+          vertical: SpacingTokens.spacing3,
+        ),
         decoration: BoxDecoration(
           color: isSelected
               ? ColorTokens.clubAccent.withValues(alpha: 0.18)
@@ -43,26 +56,26 @@ class MarketOptionPill extends StatelessWidget {
               children: [
                 Text(
                   label.toUpperCase(),
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 12,
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                    color: isSelected
-                        ? ColorTokens.clubAccent
-                        : ColorTokens.onSurfaceVariant,
-                    letterSpacing: 0.5,
-                  ),
+                  style:
+                      TypographyTokens.labelMedium(
+                        isSelected
+                            ? ColorTokens.clubAccent
+                            : ColorTokens.onSurfaceVariant,
+                      ).copyWith(
+                        fontWeight: isSelected
+                            ? FontWeight.w700
+                            : FontWeight.w600,
+                      ),
                 ),
                 if (odds != null) ...[
                   const SizedBox(height: 2),
                   Text(
                     '${odds!.toStringAsFixed(2)}x',
-                    style: TypographyTokens.monolithFont(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w800,
-                      color: isSelected
+                    style: TypographyTokens.titleSmall(
+                      isSelected
                           ? ColorTokens.clubAccent
                           : ColorTokens.onSurface,
-                    ),
+                    ).copyWith(fontWeight: FontWeight.w800),
                   ),
                 ],
               ],

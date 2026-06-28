@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_auth/core_auth.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -9,10 +11,8 @@ import 'package:go_router/go_router.dart';
 import '../shop_cart_provider.dart';
 import '../widgets/checkout_bar.dart';
 import '../widgets/product_card.dart';
-import '../widgets/shop_category_chip.dart';
 import '../widgets/shop_loading_skeleton.dart';
 import '../widgets/shop_search_sheet.dart';
-import '../widgets/shop_top_bar.dart';
 
 /// Shop catalog with compact filters and a product-first grid.
 class ShopScreen extends ConsumerStatefulWidget {
@@ -34,7 +34,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProducts();
+    unawaited(_loadProducts());
   }
 
   Future<void> _loadProducts() async {
@@ -92,7 +92,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
     ref
         .read(shopCartProvider.notifier)
         .addRawProduct(product, partnerId: user.clubId);
-    HapticFeedback.lightImpact();
+    unawaited(HapticFeedback.lightImpact());
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${product['name'] ?? 'Product'} added to cart.'),
@@ -108,22 +108,22 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text('Store', style: TypographyTokens.headlineSmall()),
         actions: [
-          IconButton(
-            onPressed: () =>
+          AfriIconButton(
+            icon: AfriIcons.search,
+            onTap: () =>
                 showShopSearchSheet(context: context, products: _products),
-            icon: const Icon(AfriIcons.search),
             tooltip: 'Search products',
           ),
           Stack(
             alignment: Alignment.center,
             children: [
-              IconButton(
-                onPressed: () => context.push('/shop/cart'),
-                icon: const Icon(AfriIcons.cart),
+              AfriIconButton(
+                icon: AfriIcons.cart,
+                onTap: () => unawaited(context.push('/shop/cart')),
                 tooltip: 'View cart',
               ),
               if (cartItemCount > 0)
@@ -137,16 +137,14 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                       shape: BoxShape.circle,
                     ),
                     constraints: const BoxConstraints(
-                      minWidth: 16,
-                      minHeight: 16,
+                      minWidth: 20,
+                      minHeight: 20,
                     ),
                     child: Text(
                       '$cartItemCount',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TypographyTokens.labelSmall(
+                        ColorTokens.onDark,
+                      ).copyWith(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -165,135 +163,28 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                 parent: AlwaysScrollableScrollPhysics(),
               ),
               slivers: [
-                SliverToBoxAdapter(
-                  child: AfriSectionHeader(
-                    title: 'Club store',
-                    subtitle:
-                        '${_filteredProducts.length} items available now.',
-                    padding: const EdgeInsets.fromLTRB(
-                      SpacingTokens.spacing6,
-                      SpacingTokens.spacing4,
-                      SpacingTokens.spacing6,
-                      SpacingTokens.spacing4,
-                    ),
-                  ),
+                ShopCatalogSlivers(
+                  isLoading: _isLoading,
+                  error: _error,
+                  products: _products,
+                  filteredProducts: _filteredProducts,
+                  categories: _categories,
+                  selectedCategory: _selectedCategory,
+                  onCategorySelected: (category) =>
+                      setState(() => _selectedCategory = category),
+                  onRetry: () {
+                    setState(() {
+                      _isLoading = true;
+                      _error = null;
+                    });
+                    unawaited(_loadProducts());
+                  },
+                  onProductTap: (product) {
+                    final id = product['id']?.toString() ?? '';
+                    unawaited(context.push('/shop/product/$id'));
+                  },
+                  onAddToCart: _addToCart,
                 ),
-
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 40,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: SpacingTokens.spacing6,
-                      ),
-                      itemCount: _categories.length,
-                      itemBuilder: (context, index) {
-                        final cat = _categories[index];
-                        final isSelected = cat == _selectedCategory;
-
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                            right: SpacingTokens.spacing2,
-                          ),
-                          child: ChoiceChip(
-                            label: Text(cat),
-                            selected: isSelected,
-                            onSelected: (_) =>
-                                setState(() => _selectedCategory = cat),
-                            selectedColor: ColorTokens.clubAccent.withValues(
-                              alpha: 0.2,
-                            ),
-                            labelStyle: TypographyTokens.labelSmall(
-                              isSelected
-                                  ? ColorTokens.clubAccent
-                                  : ColorTokens.onSurfaceVariant,
-                            ),
-                            backgroundColor: Colors.transparent,
-                            side: BorderTokens.side(
-                              color: isSelected
-                                  ? ColorTokens.clubAccent
-                                  : ColorTokens.ghostBorder,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                ShapeTokens.radiusFull,
-                              ),
-                            ),
-                            showCheckmark: false,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: SpacingTokens.spacing6),
-                ),
-
-                if (_isLoading)
-                  const SliverToBoxAdapter(child: ShopLoadingSkeleton()),
-
-                if (_error != null && !_isLoading)
-                  SliverToBoxAdapter(
-                    child: _ShopErrorState(
-                      onRetry: () {
-                        setState(() {
-                          _isLoading = true;
-                          _error = null;
-                        });
-                        _loadProducts();
-                      },
-                    ),
-                  ),
-
-                if (!_isLoading &&
-                    _error == null &&
-                    _filteredProducts.isNotEmpty)
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: SpacingTokens.spacing6,
-                    ),
-                    sliver: SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: SpacingTokens.spacing4,
-                            crossAxisSpacing: SpacingTokens.spacing3,
-                            childAspectRatio: 0.65,
-                          ),
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final product = _filteredProducts[index];
-                        return RepaintBoundary(
-                          child: ArmouryProductCard(
-                            product: product,
-                            index: index,
-                            onTap: () {
-                              final id = product['id']?.toString() ?? '';
-                              context.push('/shop/product/$id');
-                            },
-                            onAddToCart: () => _addToCart(product),
-                          ),
-                        );
-                      }, childCount: _filteredProducts.length),
-                    ),
-                  ),
-
-                if (!_isLoading && _error == null && _filteredProducts.isEmpty)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: SpacingTokens.spacing6,
-                      ),
-                      child: AfriStateView.empty(
-                        title: 'No products found',
-                        message:
-                            'No items match this category yet. Try another filter.',
-                        compact: true,
-                      ),
-                    ),
-                  ),
 
                 // Bottom padding for checkout bar
                 SliverToBoxAdapter(
@@ -320,6 +211,137 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
             ),
         ],
       ),
+    );
+  }
+}
+
+class ShopCatalogSlivers extends StatelessWidget {
+  const ShopCatalogSlivers({
+    super.key,
+    required this.isLoading,
+    required this.error,
+    required this.products,
+    required this.filteredProducts,
+    required this.categories,
+    required this.selectedCategory,
+    required this.onCategorySelected,
+    required this.onRetry,
+    required this.onProductTap,
+    required this.onAddToCart,
+  });
+
+  final bool isLoading;
+  final String? error;
+  final List<Map<String, dynamic>> products;
+  final List<Map<String, dynamic>> filteredProducts;
+  final List<String> categories;
+  final String selectedCategory;
+  final ValueChanged<String> onCategorySelected;
+  final VoidCallback onRetry;
+  final ValueChanged<Map<String, dynamic>> onProductTap;
+  final ValueChanged<Map<String, dynamic>> onAddToCart;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return const SliverToBoxAdapter(child: ShopLoadingSkeleton());
+    }
+
+    if (error != null) {
+      return SliverToBoxAdapter(child: _ShopErrorState(onRetry: onRetry));
+    }
+
+    if (products.isEmpty || filteredProducts.isEmpty) {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
+
+    return SliverMainAxisGroup(
+      slivers: [
+        SliverToBoxAdapter(
+          child: AfriSectionHeader(
+            title: 'Club store',
+            subtitle: '${filteredProducts.length} items available now.',
+            padding: const EdgeInsets.fromLTRB(
+              SpacingTokens.spacing6,
+              SpacingTokens.spacing4,
+              SpacingTokens.spacing6,
+              SpacingTokens.spacing4,
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: 40,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.spacing6,
+              ),
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                final cat = categories[index];
+                final isSelected = cat == selectedCategory;
+
+                return Padding(
+                  padding: const EdgeInsets.only(right: SpacingTokens.spacing2),
+                  child: AfriChoiceChip(
+                    label: Text(cat),
+                    selected: isSelected,
+                    onSelected: (_) => onCategorySelected(cat),
+                    selectedColor: ColorTokens.clubAccent.withValues(
+                      alpha: 0.2,
+                    ),
+                    labelStyle: TypographyTokens.labelSmall(
+                      isSelected
+                          ? ColorTokens.clubAccent
+                          : ColorTokens.onSurfaceVariant,
+                    ),
+                    backgroundColor: ColorTokens.transparent,
+                    side: BorderTokens.side(
+                      color: isSelected
+                          ? ColorTokens.clubAccent
+                          : ColorTokens.ghostBorder,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        ShapeTokens.radiusFull,
+                      ),
+                    ),
+                    showCheckmark: false,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+        const SliverToBoxAdapter(
+          child: SizedBox(height: SpacingTokens.spacing6),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.spacing6,
+          ),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: SpacingTokens.spacing4,
+              crossAxisSpacing: SpacingTokens.spacing3,
+              childAspectRatio: 0.65,
+            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final product = filteredProducts[index];
+              return RepaintBoundary(
+                child: ArmouryProductCard(
+                  product: product,
+                  index: index,
+                  onTap: () => onProductTap(product),
+                  onAddToCart: () => onAddToCart(product),
+                ),
+              );
+            }, childCount: filteredProducts.length),
+          ),
+        ),
+      ],
     );
   }
 }

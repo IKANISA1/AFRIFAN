@@ -90,6 +90,9 @@ class AfriIcons {
   static const IconData gift = Icons.celebration_rounded;
   static const IconData pdf = Icons.picture_as_pdf_rounded;
   static const IconData excel = Icons.table_chart_rounded;
+  static const IconData diamond = Icons.diamond_rounded;
+  static const IconData campaign = Icons.campaign_rounded;
+  static const IconData today = Icons.today_rounded;
 
   // ── Transaction ──
   static const IconData earn = Icons.stars_rounded;
@@ -107,6 +110,7 @@ class AfriIcons {
   static const IconData expandMore = Icons.expand_more_rounded;
   static const IconData expandLess = Icons.expand_less_rounded;
   static const IconData up = Icons.keyboard_arrow_up_rounded;
+  static const IconData down = Icons.keyboard_arrow_down_rounded;
   static const IconData add = Icons.add_rounded;
   static const IconData remove = Icons.remove_rounded;
   static const IconData join = Icons.group_add_rounded;
@@ -140,6 +144,9 @@ class AfriIcons {
   static const IconData delete = Icons.delete_outline_rounded;
   static const IconData pin = Icons.push_pin_outlined;
   static const IconData copy = Icons.copy_rounded;
+  static const IconData publish = Icons.publish_rounded;
+  static const IconData unpublished = Icons.unpublished_rounded;
+  static const IconData toggleOn = Icons.toggle_on_outlined;
   static const IconData timer = Icons.timer_outlined;
   static const IconData users = Icons.people_outline_rounded;
   static const IconData grid = Icons.grid_view_rounded;

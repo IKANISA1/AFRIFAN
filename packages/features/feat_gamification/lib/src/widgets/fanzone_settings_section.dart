@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +39,9 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
   void initState() {
     super.initState();
     // Restore persisted values.
-    _oddsFormat = HiveCacheService.getJson<String>(_oddsFormatKey) ??
-        'Decimal (1.85)';
-    _kickoffAlerts =
-        HiveCacheService.getJson<bool>(_kickoffAlertsKey) ?? true;
+    _oddsFormat =
+        HiveCacheService.getJson<String>(_oddsFormatKey) ?? 'Decimal (1.85)';
+    _kickoffAlerts = HiveCacheService.getJson<bool>(_kickoffAlertsKey) ?? true;
     _settlementAlerts =
         HiveCacheService.getJson<bool>(_settlementAlertsKey) ?? true;
     _challengeAlerts =
@@ -49,22 +50,30 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
 
   void _setOddsFormat(String value) {
     setState(() => _oddsFormat = value);
-    HiveCacheService.putJson(_oddsFormatKey, value, ttl: _persistTtl);
+    unawaited(
+      HiveCacheService.putJson(_oddsFormatKey, value, ttl: _persistTtl),
+    );
   }
 
   void _setKickoffAlerts(bool value) {
     setState(() => _kickoffAlerts = value);
-    HiveCacheService.putJson(_kickoffAlertsKey, value, ttl: _persistTtl);
+    unawaited(
+      HiveCacheService.putJson(_kickoffAlertsKey, value, ttl: _persistTtl),
+    );
   }
 
   void _setSettlementAlerts(bool value) {
     setState(() => _settlementAlerts = value);
-    HiveCacheService.putJson(_settlementAlertsKey, value, ttl: _persistTtl);
+    unawaited(
+      HiveCacheService.putJson(_settlementAlertsKey, value, ttl: _persistTtl),
+    );
   }
 
   void _setChallengeAlerts(bool value) {
     setState(() => _challengeAlerts = value);
-    HiveCacheService.putJson(_challengeAlertsKey, value, ttl: _persistTtl);
+    unawaited(
+      HiveCacheService.putJson(_challengeAlertsKey, value, ttl: _persistTtl),
+    );
   }
 
   @override
@@ -75,15 +84,12 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
         // ── Preferences Section ──
         Text(
           'PREFERENCES',
-          style: TypographyTokens.editorialFont(
-            fontSize: 10,
-            fontWeight: FontWeight.w700,
-            color: ColorTokens.onSurfaceVariant,
-            letterSpacing: 1.6,
-          ),
+          style: TypographyTokens.labelSmall(
+            ColorTokens.onSurfaceVariant,
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
-        ClayCard(
+        AfriSurfaceCard(
           child: Column(
             children: [
               // Odds format dropdown
@@ -104,13 +110,15 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
                   DropdownButton<String>(
                     value: _oddsFormat,
                     items: _oddsFormatOptions
-                        .map((format) => DropdownMenuItem<String>(
-                              value: format,
-                              child: Text(
-                                format,
-                                style: TypographyTokens.bodySmall(),
-                              ),
-                            ))
+                        .map(
+                          (format) => DropdownMenuItem<String>(
+                            value: format,
+                            child: Text(
+                              format,
+                              style: TypographyTokens.bodySmall(),
+                            ),
+                          ),
+                        )
                         .toList(),
                     onChanged: (value) {
                       if (value != null) {
@@ -137,15 +145,12 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
         // ── Notifications Section ──
         Text(
           'NOTIFICATIONS',
-          style: TypographyTokens.editorialFont(
-            fontSize: 10,
-            fontWeight: FontWeight.w700,
-            color: ColorTokens.onSurfaceVariant,
-            letterSpacing: 1.6,
-          ),
+          style: TypographyTokens.labelSmall(
+            ColorTokens.onSurfaceVariant,
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
-        ClayCard(
+        AfriSurfaceCard(
           child: Column(
             children: [
               _ToggleRow(
@@ -154,14 +159,14 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
                 value: _kickoffAlerts,
                 onChanged: _setKickoffAlerts,
               ),
-              Divider(height: 1, color: ColorTokens.ghostBorder),
+              const AfriDivider(),
               _ToggleRow(
                 icon: AfriIcons.checkGroup,
                 title: 'Prediction Settlement',
                 value: _settlementAlerts,
                 onChanged: _setSettlementAlerts,
               ),
-              Divider(height: 1, color: ColorTokens.ghostBorder),
+              const AfriDivider(),
               _ToggleRow(
                 icon: AfriIcons.predict,
                 title: 'Friend Challenges',
@@ -197,9 +202,7 @@ class _ToggleRow extends StatelessWidget {
         children: [
           Icon(icon, size: 20, color: ColorTokens.onSurfaceVariant),
           const SizedBox(width: SpacingTokens.spacing3),
-          Expanded(
-            child: Text(title, style: TypographyTokens.titleSmall()),
-          ),
+          Expanded(child: Text(title, style: TypographyTokens.titleSmall())),
           Switch.adaptive(
             value: value,
             onChanged: onChanged,

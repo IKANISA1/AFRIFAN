@@ -101,23 +101,16 @@ class _StatBox extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing1),
           Text(
             value,
-            style: TypographyTokens.monolithFont(
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              color: highlight
-                  ? ColorTokens.clubAccent
-                  : ColorTokens.onSurface,
-            ),
+            style: TypographyTokens.titleMedium(
+              highlight ? ColorTokens.clubAccent : ColorTokens.onSurface,
+            ).copyWith(fontWeight: FontWeight.w900),
           ),
           const SizedBox(height: 2),
           Text(
             label,
-            style: TypographyTokens.editorialFont(
-              fontSize: 8,
-              fontWeight: FontWeight.w700,
-              color: ColorTokens.onSurfaceVariant,
-              letterSpacing: 1,
-            ),
+            style: TypographyTokens.metricLabel(
+              ColorTokens.onSurfaceVariant,
+            ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1),
           ),
         ],
       ),

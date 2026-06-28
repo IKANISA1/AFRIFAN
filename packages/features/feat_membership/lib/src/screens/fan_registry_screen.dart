@@ -35,7 +35,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_handleScroll);
-    _reloadFans();
+    unawaited(_reloadFans());
   }
 
   @override
@@ -89,7 +89,12 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
         _isLoadingMore = false;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('FanRegistryScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FanRegistryScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted || token != _reloadToken) return;
       setState(() {
         _fans = const [];
@@ -132,7 +137,12 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
         _isLoadingMore = false;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('FanRegistryScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FanRegistryScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted || token != _reloadToken) return;
       setState(() {
         _isLoadingMore = false;
@@ -146,26 +156,28 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
   void _handleScroll() {
     if (!_scrollController.hasClients) return;
     if (_scrollController.position.extentAfter < 280) {
-      _loadMore();
+      unawaited(_loadMore());
     }
   }
 
   void _handleSearchChanged(String _) {
     _searchDebounce?.cancel();
-    _searchDebounce = Timer(const Duration(milliseconds: 320), _reloadFans);
+    _searchDebounce = Timer(
+      const Duration(milliseconds: 320),
+      () => unawaited(_reloadFans()),
+    );
     setState(() {});
   }
 
   void _clearSearch() {
     _searchDebounce?.cancel();
     _searchController.clear();
-    _reloadFans();
+    unawaited(_reloadFans());
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final primary = theme.colorScheme.primary;
+    final primary = ColorTokens.clubPrimary;
     final fansLabel = _fans.length == 1
         ? '1 fan loaded'
         : '${_fans.length} fans loaded';
@@ -175,25 +187,23 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(AfriIcons.back, color: ColorTokens.onSurface),
-          onPressed: () => context.pop(),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
           tooltip: 'Back',
         ),
         title: Text(
           'FAN REGISTRY',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
+          style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
-            color: ColorTokens.onSurface,
             letterSpacing: 2.0,
           ),
         ),
       ),
-      body: RefreshIndicator(
+      body: AfriRefreshIndicator(
         color: ColorTokens.clubAccent,
         onRefresh: _reloadFans,
         child: CustomScrollView(
@@ -224,7 +234,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
                           ),
                         ),
                         child: Icon(
-                          Icons.badge_rounded,
+                          AfriIcons.members,
                           color: primary,
                           size: 28,
                         ),
@@ -236,18 +246,16 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
                           children: [
                             Text(
                               fansLabel.toUpperCase(),
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 16,
+                              style: TypographyTokens.titleMedium().copyWith(
                                 fontWeight: FontWeight.w700,
-                                color: ColorTokens.onSurface,
                                 letterSpacing: 1.1,
                               ),
                             ),
                             const SizedBox(height: SpacingTokens.spacing1),
                             Text(
                               summaryLabel,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: ColorTokens.onSurfaceVariant,
+                              style: TypographyTokens.bodyMedium(
+                                ColorTokens.onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -274,93 +282,116 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
                   textInputAction: TextInputAction.search,
                   suffixIcon: _searchController.text.isEmpty
                       ? null
-                      : IconButton(
-                          onPressed: _clearSearch,
-                          icon: const Icon(AfriIcons.close),
+                      : AfriIconButton(
+                          icon: AfriIcons.close,
+                          onTap: _clearSearch,
                           tooltip: 'Clear search',
+                          filled: false,
                         ),
                 ),
               ),
             ),
-            if (_isLoading)
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing6,
-                  ),
-                  child: AfriSkeletonList(),
-                ),
-              )
-            else if (_error != null)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing6,
-                  ),
-                  child: AfriStateView.offline(
-                    title: 'Registry unavailable',
-                    message: _error!,
-                    actionLabel: 'Retry',
-                    onAction: _reloadFans,
-                  ),
-                ),
-              )
-            else if (_fans.isEmpty)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing6,
-                  ),
-                  child: AfriStateView.empty(
-                    title: _searchQuery == null
-                        ? 'No registered fans yet'
-                        : 'No fan matches that search',
-                    message: _searchQuery == null
-                        ? 'Once supporters start registering, they will appear in this roster.'
-                        : 'Try a different fan name or clear the current search.',
-                    actionLabel: _searchQuery == null
-                        ? 'Refresh'
-                        : 'Clear search',
-                    onAction: _searchQuery == null ? _reloadFans : _clearSearch,
-                  ),
-                ),
-              )
-            else
-              SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final fan = _fans[index];
-                  return Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      SpacingTokens.spacing6,
-                      0,
-                      SpacingTokens.spacing6,
-                      index == _fans.length - 1 && !_isLoadingMore
-                          ? SpacingTokens.spacing20
-                          : SpacingTokens.spacing3,
-                    ),
-                    child: _FanRegistryCard(fan: fan),
-                  );
-                }, childCount: _fans.length),
-              ),
-            if (_isLoadingMore)
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    SpacingTokens.spacing6,
-                    SpacingTokens.spacing2,
-                    SpacingTokens.spacing6,
-                    SpacingTokens.spacing12,
-                  ),
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.6,
-                      color: ColorTokens.clubAccent,
-                    ),
-                  ),
-                ),
-              ),
+            FanRegistryResultsSliver(
+              isLoading: _isLoading,
+              error: _error,
+              fans: _fans,
+              isLoadingMore: _isLoadingMore,
+              onRetry: () => unawaited(_reloadFans()),
+            ),
+            FanRegistryLoadingMoreSliver(isLoadingMore: _isLoadingMore),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class FanRegistryResultsSliver extends StatelessWidget {
+  const FanRegistryResultsSliver({
+    super.key,
+    required this.isLoading,
+    required this.error,
+    required this.fans,
+    required this.isLoadingMore,
+    required this.onRetry,
+  });
+
+  final bool isLoading;
+  final String? error;
+  final List<FanMembership> fans;
+  final bool isLoadingMore;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return const SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: SpacingTokens.spacing6),
+          child: AfriSkeletonList(),
+        ),
+      );
+    }
+
+    if (error != null) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.spacing6,
+          ),
+          child: AfriStateView.offline(
+            title: 'Registry unavailable',
+            message: error!,
+            actionLabel: 'Retry',
+            onAction: onRetry,
+          ),
+        ),
+      );
+    }
+
+    if (fans.isEmpty) {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
+
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        final fan = fans[index];
+        return Padding(
+          padding: EdgeInsets.fromLTRB(
+            SpacingTokens.spacing6,
+            0,
+            SpacingTokens.spacing6,
+            index == fans.length - 1 && !isLoadingMore
+                ? SpacingTokens.spacing20
+                : SpacingTokens.spacing3,
+          ),
+          child: _FanRegistryCard(fan: fan),
+        );
+      }, childCount: fans.length),
+    );
+  }
+}
+
+class FanRegistryLoadingMoreSliver extends StatelessWidget {
+  const FanRegistryLoadingMoreSliver({super.key, required this.isLoadingMore});
+
+  final bool isLoadingMore;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!isLoadingMore) {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
+
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          SpacingTokens.spacing6,
+          SpacingTokens.spacing2,
+          SpacingTokens.spacing6,
+          SpacingTokens.spacing12,
+        ),
+        child: const AfriLoadingIndicator(strokeWidth: 2.6),
       ),
     );
   }
@@ -373,7 +404,6 @@ class _FanRegistryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final tierColor = _tierColor(fan.tier);
     final statusColor = _statusColor(fan.paymentStatus);
     final membershipNumber = fan.membershipNumber.trim();
@@ -404,10 +434,8 @@ class _FanRegistryCard extends StatelessWidget {
                       fan.displayName.toUpperCase(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TypographyTokens.monolithFont(
-                        fontSize: 17,
+                      style: TypographyTokens.titleMedium().copyWith(
                         fontWeight: FontWeight.w700,
-                        color: ColorTokens.onSurface,
                         letterSpacing: 0.8,
                       ),
                     ),
@@ -415,10 +443,9 @@ class _FanRegistryCard extends StatelessWidget {
                       const SizedBox(height: SpacingTokens.spacing1),
                       Text(
                         membershipNumber,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: ColorTokens.onSurfaceVariant,
-                          letterSpacing: 0.6,
-                        ),
+                        style: TypographyTokens.bodyMedium(
+                          ColorTokens.onSurfaceVariant,
+                        ).copyWith(letterSpacing: 0.6),
                       ),
                     ],
                   ],
@@ -427,12 +454,9 @@ class _FanRegistryCard extends StatelessWidget {
               const SizedBox(width: SpacingTokens.spacing3),
               Text(
                 '${fan.points} FET',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: ColorTokens.clubAccent,
-                  letterSpacing: 0.8,
-                ),
+                style: TypographyTokens.titleSmall(
+                  ColorTokens.clubAccent,
+                ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
               ),
             ],
           ),
@@ -459,10 +483,9 @@ class _FanRegistryCard extends StatelessWidget {
           Text(
             'Joined ${AfriDateFormatter.formatDate(fan.joinedAt.toLocal())}'
             '${fan.expiresAt != null ? '  •  Renews ${AfriDateFormatter.formatDate(fan.expiresAt!.toLocal())}' : ''}',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: ColorTokens.onSurfaceVariant,
-              height: 1.45,
-            ),
+            style: TypographyTokens.bodyMedium(
+              ColorTokens.onSurfaceVariant,
+            ).copyWith(height: 1.45),
           ),
         ],
       ),
@@ -503,12 +526,9 @@ class _RegistryChip extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TypographyTokens.monolithFont(
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-          color: color,
-          letterSpacing: 0.8,
-        ),
+        style: TypographyTokens.labelMedium(
+          color,
+        ).copyWith(fontWeight: FontWeight.w700),
       ),
     );
   }

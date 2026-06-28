@@ -12,28 +12,24 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final primary = theme.colorScheme.primary;
     final profile = ref.watch(currentUserProvider);
     final membershipSummary = ref.watch(_profileMembershipSummaryProvider);
     final alias = AliasGenerator.format(profile?.publicUserId ?? '000000');
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(AfriIcons.back, color: ColorTokens.onSurface),
-          onPressed: () => context.pop(),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
           tooltip: 'Back',
         ),
         title: Text(
           'PROFILE',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
+          style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
-            color: ColorTokens.onSurface,
             letterSpacing: 2.0,
           ),
         ),
@@ -57,42 +53,28 @@ class ProfileScreen extends ConsumerWidget {
                   child: Column(
                     children: [
                       // Avatar Group
-                      Container(
-                        width: 72,
-                        height: 72,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: primary.withValues(alpha: 0.15),
-                          border: BorderTokens.all(
-                            color: primary,
-                            width: 2,
-                            opacity: 0.3,
-                          ),
-                        ),
-                        child: Center(
-                          child: Icon(Icons.person, size: 36, color: primary),
-                        ),
-                      ),
+                      const _ProfileAvatar(),
                       const SizedBox(height: SpacingTokens.spacing4),
 
                       // Alias
                       Text(
                         alias,
-                        style: TypographyTokens.monolithFont(
-                          fontSize: 40,
-                          fontWeight: FontWeight.w900,
-                          color: ColorTokens.clubAccent,
-                          letterSpacing: 8.0,
-                          shadows: [
-                            Shadow(
-                              color: ColorTokens.clubAccent.withValues(
-                                alpha: 0.3,
-                              ),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
+                        style:
+                            TypographyTokens.displayMedium(
+                              ColorTokens.clubAccent,
+                            ).copyWith(
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 8.0,
+                              shadows: [
+                                Shadow(
+                                  color: ColorTokens.clubAccent.withValues(
+                                    alpha: 0.3,
+                                  ),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
                       ),
                       const SizedBox(height: SpacingTokens.spacing2),
                       if ((profile?.displayName ?? '').trim().isNotEmpty) ...[
@@ -109,75 +91,30 @@ class ProfileScreen extends ConsumerWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: primary.withValues(alpha: 0.15),
-                              borderRadius: ShapeTokens.chipRadius,
-                            ),
-                            child: membershipSummary.when(
-                              data: (summary) => Text(
-                                summary.tier,
-                                style: TypographyTokens.monolithFont(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: primary,
-                                  letterSpacing: 1.5,
-                                ),
-                              ),
-                              loading: () => SizedBox(
-                                width: 44,
-                                height: 18,
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 12,
-                                    height: 12,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: primary,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              error: (_, __) => Text(
-                                'FAN',
-                                style: TypographyTokens.monolithFont(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: primary,
-                                  letterSpacing: 1.5,
-                                ),
-                              ),
-                            ),
+                          membershipSummary.when(
+                            data: (summary) => _TierBadge(summary.tier),
+                            loading: () => const _TierBadge.loading(),
+                            error: (_, __) => const _TierBadge('FAN'),
                           ),
                           const SizedBox(width: SpacingTokens.spacing3),
                           membershipSummary.when(
                             data: (summary) => Text(
                               summary.fetLabel,
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: ColorTokens.onSurfaceVariant,
-                              ),
+                              style: TypographyTokens.titleMedium(
+                                ColorTokens.onSurfaceVariant,
+                              ).copyWith(fontWeight: FontWeight.w700),
                             ),
                             loading: () => Text(
-                              'Loading membership…',
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: ColorTokens.onSurfaceVariant,
-                              ),
+                              'Loading membership...',
+                              style: TypographyTokens.titleMedium(
+                                ColorTokens.onSurfaceVariant,
+                              ).copyWith(fontWeight: FontWeight.w700),
                             ),
                             error: (_, __) => Text(
                               'FET in Membership',
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: ColorTokens.onSurfaceVariant,
-                              ),
+                              style: TypographyTokens.titleMedium(
+                                ColorTokens.onSurfaceVariant,
+                              ).copyWith(fontWeight: FontWeight.w700),
                             ),
                           ),
                         ],
@@ -200,12 +137,9 @@ class ProfileScreen extends ConsumerWidget {
                 ),
                 child: Text(
                   'MY CLUB',
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurfaceVariant,
-                    letterSpacing: 1.5,
-                  ),
+                  style: TypographyTokens.labelMedium(
+                    ColorTokens.onSurfaceVariant,
+                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
                 ),
               ),
             ),
@@ -222,37 +156,37 @@ class ProfileScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     _MenuItem(
-                      icon: Icons.card_membership,
+                      icon: AfriIcons.membership,
                       label: 'Membership',
                       onTap: () => context.go('/membership'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
-                      icon: Icons.bolt_rounded,
+                      icon: AfriIcons.bolt,
                       label: 'Predict',
                       onTap: () => context.push('/fanzone/fixtures'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
-                      icon: Icons.sports_soccer_rounded,
+                      icon: AfriIcons.myPicks,
                       label: 'Predictions',
                       onTap: () => context.push('/fanzone/my'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
-                      icon: Icons.workspace_premium_rounded,
+                      icon: AfriIcons.premium,
                       label: 'Rewards & Progress',
                       onTap: () => context.push('/fanzone/challenges'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
-                      icon: Icons.group_work_rounded,
+                      icon: AfriIcons.contribute,
                       label: 'Contributions',
                       onTap: () => context.push('/contribute'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
-                      icon: Icons.shopping_bag_rounded,
+                      icon: AfriIcons.shop,
                       label: 'Shop',
                       onTap: () => context.push('/shop'),
                     ),
@@ -273,12 +207,9 @@ class ProfileScreen extends ConsumerWidget {
                 ),
                 child: Text(
                   'APP',
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: ColorTokens.onSurfaceVariant,
-                    letterSpacing: 1.5,
-                  ),
+                  style: TypographyTokens.labelMedium(
+                    ColorTokens.onSurfaceVariant,
+                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
                 ),
               ),
             ),
@@ -295,13 +226,13 @@ class ProfileScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     _MenuItem(
-                      icon: Icons.notifications_outlined,
+                      icon: AfriIcons.notifications,
                       label: 'Notifications',
                       onTap: () => context.push('/settings/notifications'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
-                      icon: Icons.history,
+                      icon: AfriIcons.history,
                       label: 'Activity History',
                       onTap: () => context.push('/my-tickets'),
                     ),
@@ -361,7 +292,7 @@ class _ProfileMembershipSummary {
 
   String get fetLabel {
     if (points <= 0) {
-      return 'No FET in Membership';
+      return 'Membership FET pending';
     }
     return '${_formatPoints(points)} FET in Membership';
   }
@@ -379,6 +310,57 @@ class _ProfileMembershipSummary {
   }
 }
 
+class _ProfileAvatar extends StatelessWidget {
+  const _ProfileAvatar();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 72,
+      height: 72,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: ColorTokens.clubAccent.withValues(alpha: 0.15),
+        border: BorderTokens.all(
+          color: ColorTokens.clubAccent,
+          width: BorderTokens.strong,
+          opacity: 0.3,
+        ),
+      ),
+      child: Center(
+        child: Icon(AfriIcons.profile, size: 36, color: ColorTokens.clubAccent),
+      ),
+    );
+  }
+}
+
+class _TierBadge extends StatelessWidget {
+  const _TierBadge(this.label) : isLoading = false;
+
+  const _TierBadge.loading() : label = '', isLoading = true;
+
+  final String label;
+  final bool isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return Container(
+        width: 44,
+        height: 24,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: ColorTokens.clubAccent.withValues(alpha: 0.15),
+          borderRadius: ShapeTokens.chipRadius,
+        ),
+        child: const AfriLoadingIndicator(size: 12),
+      );
+    }
+
+    return AfriInfoChip(label: label, color: ColorTokens.clubAccent);
+  }
+}
+
 class _MenuItem extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -392,35 +374,6 @@ class _MenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
-      animate: false,
-      onTap: onTap,
-      padding: const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.spacing4,
-        vertical: SpacingTokens.spacing3,
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Theme.of(context).colorScheme.primary, size: 22),
-          const SizedBox(width: SpacingTokens.spacing3),
-          Expanded(
-            child: Text(
-              label,
-              style: TypographyTokens.editorialFont(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                color: ColorTokens.onSurface,
-              ),
-            ),
-          ),
-          const SizedBox(width: SpacingTokens.spacing2),
-          Icon(
-            Icons.chevron_right,
-            color: ColorTokens.onSurfaceVariant,
-            size: 20,
-          ),
-        ],
-      ),
-    );
+    return AfriListRow(icon: icon, title: label, onTap: onTap);
   }
 }

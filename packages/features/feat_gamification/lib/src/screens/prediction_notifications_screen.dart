@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../models/fanzone_models.dart';
 import '../prediction_providers.dart';
-import 'package:core_utils/core_utils.dart';
 
 class PredictionNotificationsScreen extends ConsumerStatefulWidget {
   const PredictionNotificationsScreen({super.key});
@@ -25,7 +27,7 @@ class _PredictionNotificationsScreenState
   @override
   void initState() {
     super.initState();
-    _load();
+    unawaited(_load());
   }
 
   Future<void> _load() async {
@@ -46,7 +48,12 @@ class _PredictionNotificationsScreenState
         _isLoading = false;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('PredictionNotificationsScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'PredictionNotificationsScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -57,24 +64,16 @@ class _PredictionNotificationsScreenState
     }
   }
 
-  String _formatDate(DateTime? value) {
-    if (value == null) {
-      return 'Just now';
-    }
-    final local = value.toLocal();
-    return '${local.day}/${local.month} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
-  }
-
   void _openNotification(PredictionNotification notification) {
     final route = notification.route;
     final fixtureId = notification.fixtureId;
 
     if (route != null) {
-      context.push(route);
+      unawaited(context.push(route));
       return;
     }
     if (fixtureId != null) {
-      context.push('/fanzone/match/$fixtureId');
+      unawaited(context.push('/fanzone/match/$fixtureId'));
     }
   }
 
@@ -82,19 +81,19 @@ class _PredictionNotificationsScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'PREDICTION ALERTS',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -114,134 +113,173 @@ class _PredictionNotificationsScreenState
                 ),
               ),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _load,
               color: ColorTokens.clubAccent,
-              child: _notifications.isEmpty
-                  ? ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                      children: const [
-                        AfriEmptyView(
-                          compact: true,
-                          title: 'No prediction alerts yet',
-                          message:
-                              'Settlement and result notifications will appear here as your predictions complete.',
-                          icon: AfriIcons.notifications,
-                        ),
-                      ],
-                    )
-                  : ListView.separated(
-                      physics: const BouncingScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics(),
-                      ),
-                      padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                      itemCount: _notifications.length,
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(height: SpacingTokens.spacing3),
-                      itemBuilder: (context, index) {
-                        final notification = _notifications[index];
-                        final canOpen =
-                            notification.route != null ||
-                            notification.fixtureId != null;
-                        final isPositive = notification.earned > 0;
-                        final accent = isPositive
-                            ? ColorTokens.success
-                            : ColorTokens.clubAccent;
-
-                        return GlassCard(
-                          animate: false,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 38,
-                                    height: 38,
-                                    decoration: BoxDecoration(
-                                      color: accent.withValues(alpha: 0.14),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Icon(
-                                      isPositive
-                                          ? AfriIcons.gift
-                                          : AfriIcons.notificationsActive,
-                                      color: accent,
-                                      size: 20,
-                                    ),
-                                  ),
-                                  const SizedBox(width: SpacingTokens.spacing3),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          notification.title,
-                                          style: TypographyTokens.titleSmall(),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          _formatDate(notification.createdAt),
-                                          style: TypographyTokens.labelSmall(
-                                            ColorTokens.onSurfaceVariant,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  if (notification.earned > 0)
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: ColorTokens.success.withValues(
-                                          alpha: 0.14,
-                                        ),
-                                        borderRadius: BorderRadius.circular(
-                                          999,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        '+${notification.earned} FET',
-                                        style: TypographyTokens.editorialFont(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w700,
-                                          color: ColorTokens.success,
-                                          letterSpacing: 0.9,
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              const SizedBox(height: SpacingTokens.spacing3),
-                              Text(
-                                notification.body,
-                                style: TypographyTokens.bodyMedium(),
-                              ),
-                              if (canOpen) ...[
-                                const SizedBox(height: SpacingTokens.spacing4),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: AfriButton(
-                                    label: 'OPEN',
-                                    fullWidth: false,
-                                    variant: AfriButtonVariant.secondary,
-                                    onTap: () =>
-                                        _openNotification(notification),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+              child: PredictionNotificationsList(
+                notifications: _notifications,
+                onOpenNotification: _openNotification,
+              ),
             ),
     );
   }
+}
+
+class PredictionNotificationsList extends StatelessWidget {
+  const PredictionNotificationsList({
+    super.key,
+    required this.notifications,
+    this.onOpenNotification,
+  });
+
+  final List<PredictionNotification> notifications;
+  final void Function(PredictionNotification notification)? onOpenNotification;
+
+  @override
+  Widget build(BuildContext context) {
+    if (notifications.isEmpty) {
+      return const SizedBox.shrink(
+        key: ValueKey<String>('prediction-notifications-empty'),
+      );
+    }
+
+    return ListView.separated(
+      physics: const BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      itemCount: notifications.length,
+      separatorBuilder: (_, __) =>
+          const SizedBox(height: SpacingTokens.spacing3),
+      itemBuilder: (context, index) {
+        final notification = notifications[index];
+        return _PredictionNotificationCard(
+          notification: notification,
+          onOpen: onOpenNotification == null
+              ? null
+              : () => onOpenNotification!(notification),
+        );
+      },
+    );
+  }
+}
+
+class _PredictionNotificationCard extends StatelessWidget {
+  const _PredictionNotificationCard({required this.notification, this.onOpen});
+
+  final PredictionNotification notification;
+  final VoidCallback? onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final openNotification = onOpen;
+    final canOpen = openNotification != null;
+    final isPositive = notification.earned > 0;
+    final accent = isPositive ? ColorTokens.success : ColorTokens.clubAccent;
+    final dateLabel = _formatPredictionNotificationDate(notification.createdAt);
+    final rewardLabel = isPositive ? ', reward ${notification.earned} FET' : '';
+
+    return GlassCard(
+      animate: false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Semantics(
+            container: true,
+            excludeSemantics: true,
+            label:
+                'Prediction alert, ${notification.title}, '
+                '${notification.body}, $dateLabel$rewardLabel',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: accent.withValues(alpha: 0.14),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      alignment: Alignment.center,
+                      child: Icon(
+                        isPositive
+                            ? AfriIcons.gift
+                            : AfriIcons.notificationsActive,
+                        color: accent,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: SpacingTokens.spacing3),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            notification.title,
+                            style: TypographyTokens.titleSmall(),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            dateLabel,
+                            style: TypographyTokens.labelSmall(
+                              ColorTokens.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (isPositive)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: SpacingTokens.spacing3,
+                          vertical: SpacingTokens.spacing1,
+                        ),
+                        decoration: BoxDecoration(
+                          color: ColorTokens.success.withValues(alpha: 0.14),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          '+${notification.earned} FET',
+                          style:
+                              TypographyTokens.labelMedium(
+                                ColorTokens.success,
+                              ).copyWith(
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.9,
+                              ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: SpacingTokens.spacing3),
+                Text(notification.body, style: TypographyTokens.bodyMedium()),
+              ],
+            ),
+          ),
+          if (canOpen) ...[
+            const SizedBox(height: SpacingTokens.spacing4),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: AfriButton(
+                label: 'OPEN',
+                fullWidth: false,
+                variant: AfriButtonVariant.secondary,
+                onTap: openNotification,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+String _formatPredictionNotificationDate(DateTime? value) {
+  if (value == null) {
+    return 'Just now';
+  }
+  final local = value.toLocal();
+  return '${local.day}/${local.month} ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
 }

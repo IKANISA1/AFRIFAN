@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../extensions.dart';
 import '../tokens/color_tokens.dart';
@@ -6,6 +7,7 @@ import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_bottom_sheet.dart';
 import 'afri_button.dart';
+import 'afri_material_buttons.dart';
 import 'glass_card.dart';
 
 class AfriFilterOption {
@@ -104,7 +106,7 @@ Future<AfriFilterSortResult?> showAfriFilterSortSheet({
                   Expanded(
                     child: Text(title, style: TypographyTokens.headlineSmall()),
                   ),
-                  TextButton(
+                  AfriTextButton(
                     onPressed: () {
                       setState(() {
                         sortBy = sortOptions.isEmpty
@@ -232,7 +234,7 @@ Future<AfriFilterSortResult?> showAfriFilterSortSheet({
               AfriButton(
                 label: 'Apply filters',
                 fullWidth: true,
-                onTap: () => Navigator.of(context).pop(
+                onTap: () => context.pop(
                   AfriFilterSortResult(
                     sortBy: sortBy,
                     selectedTypes: selectedTypes,

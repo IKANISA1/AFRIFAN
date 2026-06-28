@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:app_registry/app_registry.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
@@ -278,10 +276,13 @@ class _FakeClubConfig implements ClubConfig {
   String get clubName => 'AFRICLUB Test Club';
   @override
   ClubColors get colors => const ClubColors(
-    primary: Color(0xFF0038A8),
-    secondary: Color(0xFF001F5C),
-    accent: Color(0xFFD4A017),
-    gradient: <Color>[Color(0xFF001F5C), Color(0xFF0038A8)],
+    primary: ColorTokens.referenceAccountBlue,
+    secondary: ColorTokens.referenceChromeBlack,
+    accent: ColorTokens.referenceRewardsVioletHot,
+    gradient: <Color>[
+      ColorTokens.referenceChromeBlack,
+      ColorTokens.referenceAccountBlue,
+    ],
   );
   @override
   String get country => 'Rwanda';

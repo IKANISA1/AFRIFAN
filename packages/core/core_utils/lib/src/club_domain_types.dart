@@ -1,6 +1,8 @@
-import 'package:core_utils/core_utils.dart' as jh;
+import 'package:core_theme/core_theme.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart' show IconData;
+
+import 'json_helpers.dart' as jh;
 
 // ═══════════════════════════════════════════════════════════════
 // Fan Tier — Gamification levels
@@ -41,10 +43,10 @@ extension FanTierX on FanTier {
   };
 
   IconData get icon => switch (this) {
-    FanTier.fan => Icons.sports_soccer_rounded,
-    FanTier.bronze => Icons.workspace_premium_rounded,
-    FanTier.gold => Icons.emoji_events_rounded,
-    FanTier.platinum => Icons.diamond_rounded,
+    FanTier.fan => AfriIcons.fanzone,
+    FanTier.bronze => AfriIcons.premium,
+    FanTier.gold => AfriIcons.rank,
+    FanTier.platinum => AfriIcons.diamond,
   };
 
   int get minPoints => switch (this) {
@@ -194,14 +196,14 @@ extension FetEventTypeX on FetEventType {
   };
 
   IconData get icon => switch (this) {
-    FetEventType.dailyOpen => Icons.today_rounded,
-    FetEventType.matchAttendance => Icons.stadium_rounded,
-    FetEventType.contribution => Icons.volunteer_activism_rounded,
-    FetEventType.inviteFriends => Icons.campaign_rounded,
-    FetEventType.shopPurchase => Icons.shopping_bag_rounded,
-    FetEventType.completeProfile => Icons.check_circle_rounded,
-    FetEventType.weekStreak => Icons.local_fire_department_rounded,
-    FetEventType.monthStreak => Icons.diamond_rounded,
+    FetEventType.dailyOpen => AfriIcons.today,
+    FetEventType.matchAttendance => AfriIcons.stadium,
+    FetEventType.contribution => AfriIcons.contribute,
+    FetEventType.inviteFriends => AfriIcons.campaign,
+    FetEventType.shopPurchase => AfriIcons.shop,
+    FetEventType.completeProfile => AfriIcons.statusSuccess,
+    FetEventType.weekStreak => AfriIcons.streak,
+    FetEventType.monthStreak => AfriIcons.diamond,
   };
 
   String get frequency => switch (this) {
@@ -280,8 +282,11 @@ extension ContributionGroupTypeX on ContributionGroupType {
     return switch ((value ?? '').toLowerCase()) {
       'project' || 'club' || 'team_project' => ContributionGroupType.project,
       'community' => ContributionGroupType.community,
-      'general' || 'savings' || 'emergency' || 'fan_group' || 'fangroup' =>
-        ContributionGroupType.community,
+      'general' ||
+      'savings' ||
+      'emergency' ||
+      'fan_group' ||
+      'fangroup' => ContributionGroupType.community,
       _ => ContributionGroupType.community,
     };
   }

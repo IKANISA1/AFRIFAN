@@ -20,16 +20,16 @@ void main() {
     expect(find.text('Edit profile'), findsOneWidget);
     expect(find.text('Notifications'), findsOneWidget);
 
-    // Privacy section
-    expect(find.text('Privacy controls'), findsOneWidget);
-
     // Scroll to reveal Support section
-    await tester.scrollUntilVisible(find.text('Sign out'), 200);
+    await tester.scrollUntilVisible(find.text('Help & support'), 200);
     await tester.pumpAndSettle();
 
     // Support section
-    expect(find.text('Help & Support'), findsOneWidget);
-    expect(find.text('Open-source licenses'), findsOneWidget);
+    expect(find.text('Help & support'), findsOneWidget);
+    expect(find.text('Privacy policy'), findsOneWidget);
+
+    await tester.scrollUntilVisible(find.text('Sign out'), 200);
+    await tester.pumpAndSettle();
     expect(find.text('Sign out'), findsOneWidget);
   });
 
@@ -108,10 +108,13 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   ClubColors get colors => const ClubColors(
-    primary: Color(0xFF0038A8),
-    secondary: Color(0xFF001742),
-    accent: Color(0xFFD9B24C),
-    gradient: <Color>[Color(0xFF001742), Color(0xFF0038A8)],
+    primary: ColorTokens.referenceAccountBlue,
+    secondary: ColorTokens.referenceChromeBlack,
+    accent: ColorTokens.referenceRewardsVioletHot,
+    gradient: <Color>[
+      ColorTokens.referenceChromeBlack,
+      ColorTokens.referenceAccountBlue,
+    ],
   );
 
   @override
@@ -168,6 +171,15 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   String get environment => 'test';
+
+  @override
+  Map<String, bool> get features => const <String, bool>{
+    'fan_clubs': true,
+    'shop': true,
+    'ticketing': true,
+    'chat': true,
+    'sms_ledger': true,
+  };
 }
 
 void _setMobileSurface(WidgetTester tester) {

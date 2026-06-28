@@ -42,12 +42,13 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.close, color: ColorTokens.onSurface),
-          onPressed: () => context.pop(),
+        leading: AfriIconButton(
+          icon: AfriIcons.close,
+          onTap: () => context.pop(),
+          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
         ),
       ),
       body: ticketAsync.when(
@@ -85,9 +86,9 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  EliteCard(
-                    backgroundColor: Colors.white,
-                    borderColor: Colors.transparent,
+                  AfriPanelCard(
+                    backgroundColor: ColorTokens.borrowedPaper,
+                    borderColor: ColorTokens.transparent,
                     padding: EdgeInsets.zero,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -101,7 +102,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                               Container(
                                 decoration: BoxDecoration(
                                   border: BorderTokens.all(
-                                    color: Colors.black,
+                                    color: ColorTokens.borrowedInk,
                                     opacity: 0.05,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
@@ -109,14 +110,14 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                 child: QrImageView(
                                   data: code,
                                   size: 220,
-                                  backgroundColor: Colors.white,
+                                  backgroundColor: ColorTokens.borrowedPaper,
                                   eyeStyle: const QrEyeStyle(
                                     eyeShape: QrEyeShape.square,
-                                    color: Colors.black,
+                                    color: ColorTokens.borrowedInk,
                                   ),
                                   dataModuleStyle: const QrDataModuleStyle(
                                     dataModuleShape: QrDataModuleShape.square,
-                                    color: Colors.black,
+                                    color: ColorTokens.borrowedInk,
                                   ),
                                 ),
                               ),
@@ -146,7 +147,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                       margin: const EdgeInsets.symmetric(
                                           horizontal: 2),
                                       height: 1,
-                                      color: Colors.black12,
+                                      color: ColorTokens.borrowedHairline,
                                     ),
                                   )),
                         ),
@@ -158,14 +159,11 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                             children: [
                               Text(
                                 ticket.matchTitle.toUpperCase(),
-                                style: const TextStyle(
-                                  fontFamily:
-                                      TypographyTokens.borrowedFontFamily,
-                                  package: 'core_theme',
-                                  fontSize: 24,
+                                style: TypographyTokens.headlineMedium(
+                                  ColorTokens.borrowedInk,
+                                ).copyWith(
                                   fontWeight: FontWeight.w900,
                                   fontStyle: FontStyle.italic,
-                                  color: Colors.black,
                                   height: 1,
                                 ),
                                 textAlign: TextAlign.center,
@@ -181,10 +179,10 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                 ),
                                 child: Text(
                                   ticket.seatType.label.toUpperCase(),
-                                  style: TextStyle(
-                                    fontSize: 16,
+                                  style: TypographyTokens.titleMedium(
+                                    ColorTokens.clubAccent,
+                                  ).copyWith(
                                     fontWeight: FontWeight.w900,
-                                    color: ColorTokens.clubAccent,
                                   ),
                                 ),
                               ),
@@ -219,21 +217,21 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                   Row(
                     children: [
                       Expanded(
-                        child: EliteButton(
+                        child: AfriButton(
                           label: 'Apple Wallet',
                           onTap: () {},
-                          variant: EliteButtonVariant.outline,
-                          icon: Icons.add_card_rounded,
+                          variant: AfriButtonVariant.outline,
+                          icon: AfriIcons.addCard,
                           enabled: false,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: EliteButton(
+                        child: AfriButton(
                           label: 'Google Wallet',
                           onTap: () {},
-                          variant: EliteButtonVariant.outline,
-                          icon: Icons.wallet_rounded,
+                          variant: AfriButtonVariant.outline,
+                          icon: AfriIcons.wallet,
                           enabled: false,
                         ),
                       ),
@@ -261,20 +259,20 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
       children: [
         Text(
           label,
-          style: const TextStyle(
-              fontSize: 8,
-              fontWeight: FontWeight.w900,
-              color: Colors.black26,
-              letterSpacing: 1),
+          style: TypographyTokens.labelSmall(
+            ColorTokens.borrowedInkFaint,
+          ).copyWith(
+            fontWeight: FontWeight.w900,
+          ),
         ),
         const SizedBox(height: 2),
         Text(
           value,
-          style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w900,
-              color: Colors.black,
-              letterSpacing: 0),
+          style: TypographyTokens.labelMedium(
+            ColorTokens.borrowedInk,
+          ).copyWith(
+            fontWeight: FontWeight.w900,
+          ),
         ),
       ],
     );
@@ -296,7 +294,7 @@ class _QrState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.qr_code_2_outlined,
+              AfriIcons.qrCode,
               size: 56,
               color: ColorTokens.onSurfaceVariant,
             ),

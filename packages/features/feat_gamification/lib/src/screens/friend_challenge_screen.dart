@@ -148,7 +148,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
     if (result.isSuccess) {
       await showDialog<void>(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (context) => AfriAlertDialog(
           title: const Text('Challenge sent'),
           content: Text(
             result.message.isEmpty
@@ -156,8 +156,8 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
                 : result.message,
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+            AfriTextButton(
+              onPressed: () => context.pop(),
               child: const Text('Close'),
             ),
           ],
@@ -187,19 +187,19 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'Challenge',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.0,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       bottomNavigationBar: SafeArea(
@@ -246,7 +246,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
                 ),
               ),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _load,
               color: ColorTokens.clubAccent,
               child: ListView(
@@ -305,12 +305,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
                   AfriSectionCard(
                     title: 'Fixture',
                     child: _fixtures.isEmpty
-                        ? const AfriEmptyView(
-                            compact: true,
-                            title: 'No fixtures available',
-                            message: 'Come back when a new round opens.',
-                            icon: AfriIcons.fixture,
-                          )
+                        ? const SizedBox.shrink()
                         : Column(
                             children: _fixtures
                                 .asMap()
@@ -322,11 +317,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
                                       _selectedFixture?.fixture.id;
                                   return Column(
                                     children: [
-                                      if (entry.key > 0)
-                                        Divider(
-                                          height: 1,
-                                          color: ColorTokens.ghostBorder,
-                                        ),
+                                      if (entry.key > 0) const AfriDivider(),
                                       _FixtureRow(
                                         fixtureLabel:
                                             fixture.fixture.fixtureLabel,

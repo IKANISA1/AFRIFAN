@@ -30,12 +30,9 @@ class CommunityPredictionBar extends StatelessWidget {
       children: [
         Text(
           'COMMUNITY PICKS',
-          style: TypographyTokens.editorialFont(
-            fontSize: 10,
-            fontWeight: FontWeight.w700,
-            color: ColorTokens.onSurfaceVariant,
-            letterSpacing: 1.2,
-          ),
+          style: TypographyTokens.labelSmall(
+            ColorTokens.onSurfaceVariant,
+          ).copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         ...sorted.asMap().entries.map((entry) {
@@ -85,7 +82,7 @@ class _CommunityPickRow extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 4),
                   child: Icon(
-                    Icons.person_rounded,
+                    AfriIcons.profile,
                     size: 12,
                     color: ColorTokens.clubAccent,
                   ),
@@ -95,13 +92,16 @@ class _CommunityPickRow extends StatelessWidget {
                   pick.selectedOutcome.toUpperCase(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 12,
-                    fontWeight: isUserPick ? FontWeight.w800 : FontWeight.w600,
-                    color: isUserPick
-                        ? ColorTokens.clubAccent
-                        : ColorTokens.onSurfaceVariant,
-                  ),
+                  style:
+                      TypographyTokens.labelMedium(
+                        isUserPick
+                            ? ColorTokens.clubAccent
+                            : ColorTokens.onSurfaceVariant,
+                      ).copyWith(
+                        fontWeight: isUserPick
+                            ? FontWeight.w800
+                            : FontWeight.w600,
+                      ),
                 ),
               ),
             ],
@@ -156,13 +156,11 @@ class _CommunityPickRow extends StatelessWidget {
           child: Text(
             '${pick.pickPercentage.toStringAsFixed(0)}%',
             textAlign: TextAlign.right,
-            style: TypographyTokens.monolithFont(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: isUserPick
+            style: TypographyTokens.labelMedium(
+              isUserPick
                   ? ColorTokens.clubAccent
                   : ColorTokens.onSurfaceVariant,
-            ),
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
         ),
       ],

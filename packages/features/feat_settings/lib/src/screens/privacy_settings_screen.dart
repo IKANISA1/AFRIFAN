@@ -3,6 +3,7 @@ import 'package:core_theme/core_theme.dart';
 import 'package:feat_sms_ledger/feat_sms_ledger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../models/user_privacy_settings.dart';
 import '../settings_actions.dart';
@@ -109,19 +110,19 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
-        return AlertDialog(
+        return AfriAlertDialog(
           title: const Text('Enable MoMo SMS sync'),
           content: const Text(
             'The app can read only approved Mobile Money verification SMS on this device to match your contribution payments automatically. This does not enable general message access in the app UI.',
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
+            AfriTextButton(
+              onPressed: () => context.pop(false),
               child: const Text('Not now'),
             ),
             AfriButton(
               label: 'Continue',
-              onTap: () => Navigator.of(context).pop(true),
+              onTap: () => context.pop(true),
               fullWidth: false,
             ),
           ],
@@ -147,18 +148,18 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     return SettingsBackGuard(
       child: Scaffold(
         backgroundColor: ColorTokens.background,
-        appBar: AppBar(
+        appBar: AfriAppBar(
           title: Text(
             'PRIVACY',
-            style: TypographyTokens.monolithFont(
-              fontSize: 22,
+            style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: 1.6,
             ),
           ),
-          leading: IconButton(
-            onPressed: () => closeSettingsChild(context),
-            icon: const Icon(AfriIcons.back),
+          leading: AfriIconButton(
+            icon: AfriIcons.back,
+            onTap: () => closeSettingsChild(context),
+            tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           ),
         ),
         body: settings == null
@@ -209,7 +210,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                         ),
                         const SizedBox(height: SpacingTokens.spacing4),
                         if (EnvConfig.enableAndroidMomoSmsAutoread)
-                          SwitchListTile(
+                          AfriSwitchListTile(
                             value: settings.momoSmsAutoreadEnabled,
                             onChanged: (value) => setState(
                               () => _draft = settings.copyWith(
@@ -272,11 +273,12 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                                   );
                                 }
                               : () {},
-                          enabled: AppLinks.hasSupportWhatsApp ||
+                          enabled:
+                              AppLinks.hasSupportWhatsApp ||
                               AppLinks.hasSupportEmail,
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
-                        OutlinedButton(
+                        AfriOutlinedButton(
                           onPressed: () async {
                             final uri = AppLinks.privacyPolicyUri;
                             if (uri == null) {
@@ -292,7 +294,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                                   'Privacy policy is not available yet.',
                             );
                           },
-                          style: OutlinedButton.styleFrom(
+                          style: AfriOutlinedButton.styleFrom(
                             minimumSize: const Size(double.infinity, 56),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18),
@@ -322,9 +324,9 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                     enabled: !_isSaving,
                   ),
                   const SizedBox(height: SpacingTokens.spacing3),
-                  OutlinedButton(
+                  AfriOutlinedButton(
                     onPressed: _isSaving ? null : _signOutOtherDevices,
-                    style: OutlinedButton.styleFrom(
+                    style: AfriOutlinedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 56),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18),

@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import '../models/fanzone_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/gamification_overlays.dart';
-import 'package:core_utils/core_utils.dart';
 
 class BadgesScreen extends ConsumerStatefulWidget {
   const BadgesScreen({super.key});
@@ -23,7 +25,7 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
   @override
   void initState() {
     super.initState();
-    _loadBadges();
+    unawaited(_loadBadges());
   }
 
   Future<void> _loadBadges() async {
@@ -39,7 +41,12 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
         _error = null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('BadgesScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'BadgesScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) return;
       setState(() {
         _badges = const <PredictionBadge>[];
@@ -53,19 +60,19 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'YOUR BADGES',
-          style: TypographyTokens.monolithFont(
-            fontSize: 22,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -85,49 +92,61 @@ class _BadgesScreenState extends ConsumerState<BadgesScreen> {
                 ),
               ),
             )
-          : _badges.isEmpty
-          ? const Center(
-              child: Padding(
-                padding: EdgeInsets.all(SpacingTokens.spacing6),
-                child: AfriEmptyView(
-                  title: 'No badges unlocked yet',
-                  message:
-                      'Prediction milestone badges appear here once you hit the first win thresholds.',
-                ),
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.all(SpacingTokens.spacing6),
-              child: GridView.builder(
-                itemCount: _badges.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  crossAxisSpacing: SpacingTokens.spacing3,
-                  mainAxisSpacing: SpacingTokens.spacing3,
-                ),
-                itemBuilder: (context, index) {
-                  final badge = _badges[index];
-                  return GestureDetector(
-                    onTap: () => showBadgeEarnedModal(
-                      context,
-                      badgeName: badge.badgeName,
-                      description: badge.badgeDescription,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: ColorTokens.clubAccent.withValues(alpha: 0.18),
-                        border: BorderTokens.all(color: ColorTokens.clubAccent),
-                      ),
-                      child: Icon(
-                        _iconForBadge(badge.badgeSlug),
-                        color: ColorTokens.clubAccent,
-                      ),
-                    ),
-                  );
-                },
+          : BadgesGrid(
+              badges: _badges,
+              onBadgeTap: (badge) => showBadgeEarnedModal(
+                context,
+                badgeName: badge.badgeName,
+                description: badge.badgeDescription,
               ),
             ),
+    );
+  }
+}
+
+class BadgesGrid extends StatelessWidget {
+  const BadgesGrid({super.key, required this.badges, required this.onBadgeTap});
+
+  final List<PredictionBadge> badges;
+  final ValueChanged<PredictionBadge> onBadgeTap;
+
+  @override
+  Widget build(BuildContext context) {
+    if (badges.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      child: GridView.builder(
+        itemCount: badges.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          crossAxisSpacing: SpacingTokens.spacing3,
+          mainAxisSpacing: SpacingTokens.spacing3,
+        ),
+        itemBuilder: (context, index) {
+          final badge = badges[index];
+          return AfriPressFeedback(
+            onTap: () => onBadgeTap(badge),
+            tooltip: badge.badgeName,
+            semanticsLabel: '${badge.badgeName} badge',
+            semanticsHint: 'Open badge details',
+            excludeChildSemantics: true,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: ColorTokens.clubAccent.withValues(alpha: 0.18),
+                border: BorderTokens.all(color: ColorTokens.clubAccent),
+              ),
+              child: Icon(
+                _iconForBadge(badge.badgeSlug),
+                color: ColorTokens.clubAccent,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

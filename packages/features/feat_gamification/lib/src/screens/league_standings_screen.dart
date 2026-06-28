@@ -46,7 +46,12 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
         _error = _competition == null ? 'Competition not found.' : null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('LeagueStandingsScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'LeagueStandingsScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -70,19 +75,19 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           _competition?.shortName.toUpperCase() ?? 'STANDINGS',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.5,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -102,7 +107,7 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                 ),
               ),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _load,
               color: ColorTokens.clubAccent,
               child: ListView(
@@ -111,7 +116,7 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                 ),
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 children: [
-                  ClayCard(
+                  AfriSurfaceCard(
                     child: Row(
                       children: [
                         const SizedBox(width: 32, child: Text('POS')),
@@ -149,13 +154,11 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                                     width: 32,
                                     child: Text(
                                       '${entry.position}',
-                                      style: TypographyTokens.monolithFont(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w800,
-                                        color: entry.position <= 3
+                                      style: TypographyTokens.titleLarge(
+                                        entry.position <= 3
                                             ? ColorTokens.clubAccent
                                             : ColorTokens.onSurface,
-                                      ),
+                                      ).copyWith(fontWeight: FontWeight.w800),
                                     ),
                                   ),
                                   Expanded(
@@ -178,10 +181,8 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                                   const SizedBox(width: SpacingTokens.spacing3),
                                   Text(
                                     '${entry.points}',
-                                    style: TypographyTokens.monolithFont(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w900,
-                                    ),
+                                    style: TypographyTokens.titleLarge()
+                                        .copyWith(fontWeight: FontWeight.w900),
                                   ),
                                 ],
                               ),

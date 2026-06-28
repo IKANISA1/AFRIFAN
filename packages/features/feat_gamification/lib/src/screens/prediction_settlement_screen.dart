@@ -51,7 +51,12 @@ class _PredictionSettlementScreenState
         _isLoading = false;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('PredictionSettlementScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'PredictionSettlementScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -104,7 +109,7 @@ class _PredictionSettlementScreenState
       return 'This selection did not settle in your favour.';
     }
     if (detail.status == PredictionStatus.void_) {
-      return 'This market was voided after review. No FET was gained or lost.';
+      return 'This market was voided after review. FET balance stayed unchanged.';
     }
     if (detail.status == PredictionStatus.cancelled) {
       return 'This prediction was removed before the fixture locked.';
@@ -158,9 +163,10 @@ class _PredictionSettlementScreenState
                       Row(
                         children: [
                           if (context.canPop())
-                            IconButton(
-                              onPressed: () => context.pop(),
-                              icon: const Icon(AfriIcons.back),
+                            AfriIconButton(
+                              icon: AfriIcons.back,
+                              onTap: () => context.pop(),
+                              tooltip: 'Back',
                             ),
                         ],
                       ),
@@ -177,7 +183,7 @@ class _PredictionSettlementScreenState
                     ],
                   ),
                 )
-              : RefreshIndicator(
+              : AfriRefreshIndicator(
                   onRefresh: _loadData,
                   color: ColorTokens.clubAccent,
                   child: ListView(
@@ -194,18 +200,17 @@ class _PredictionSettlementScreenState
                       Row(
                         children: [
                           if (context.canPop())
-                            IconButton(
-                              onPressed: () => context.pop(),
-                              icon: const Icon(AfriIcons.back),
+                            AfriIconButton(
+                              icon: AfriIcons.back,
+                              onTap: () => context.pop(),
+                              tooltip: 'Back',
                             ),
                           const SizedBox(width: SpacingTokens.spacing2),
                           Expanded(
                             child: Text(
                               'SETTLEMENT',
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 20,
+                              style: TypographyTokens.headlineSmall().copyWith(
                                 fontWeight: FontWeight.w700,
-                                color: ColorTokens.onSurface,
                                 letterSpacing: 1.6,
                               ),
                             ),
@@ -213,7 +218,7 @@ class _PredictionSettlementScreenState
                         ],
                       ),
                       const SizedBox(height: SpacingTokens.spacing4),
-                      ClayCard(
+                      AfriSurfaceCard(
                         child: Column(
                           children: [
                             Container(
@@ -234,10 +239,8 @@ class _PredictionSettlementScreenState
                             Text(
                               _headline(detail),
                               textAlign: TextAlign.center,
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 24,
+                              style: TypographyTokens.headlineMedium().copyWith(
                                 fontWeight: FontWeight.w900,
-                                color: ColorTokens.onSurface,
                                 letterSpacing: 1.4,
                               ),
                             ),
@@ -245,25 +248,24 @@ class _PredictionSettlementScreenState
                             Text(
                               '${detail.homeTeam.toUpperCase()}  •  ${detail.awayTeam.toUpperCase()}',
                               textAlign: TextAlign.center,
-                              style: TypographyTokens.editorialFont(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: ColorTokens.onSurfaceVariant,
-                                letterSpacing: 1.0,
-                              ),
+                              style:
+                                  TypographyTokens.labelSmall(
+                                    ColorTokens.onSurfaceVariant,
+                                  ).copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 1.0,
+                                  ),
                             ),
                             const SizedBox(height: SpacingTokens.spacing3),
                             Text(
                               detail.hasScoreline
                                   ? '${detail.homeScore} - ${detail.awayScore}'
                                   : _formatDateTime(detail.kickoffAt),
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 32,
-                                fontWeight: FontWeight.w900,
-                                color: detail.hasScoreline
+                              style: TypographyTokens.displaySmall(
+                                detail.hasScoreline
                                     ? ColorTokens.onSurface
                                     : ColorTokens.clubAccent,
-                              ),
+                              ).copyWith(fontWeight: FontWeight.w900),
                             ),
                             const SizedBox(height: SpacingTokens.spacing3),
                             Text(
@@ -320,12 +322,13 @@ class _PredictionSettlementScreenState
                           children: [
                             Text(
                               'TIMELINE',
-                              style: TypographyTokens.editorialFont(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                                color: ColorTokens.onSurfaceVariant,
-                                letterSpacing: 1.0,
-                              ),
+                              style:
+                                  TypographyTokens.labelSmall(
+                                    ColorTokens.onSurfaceVariant,
+                                  ).copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 1.0,
+                                  ),
                             ),
                             const SizedBox(height: SpacingTokens.spacing3),
                             _SettlementTimelineRow(
@@ -413,23 +416,18 @@ class _SettlementMetric extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TypographyTokens.editorialFont(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: ColorTokens.onSurfaceVariant,
-              letterSpacing: 1.0,
-            ),
+            style: TypographyTokens.labelSmall(
+              ColorTokens.onSurfaceVariant,
+            ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.0),
           ),
           const SizedBox(height: 4),
           Text(
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TypographyTokens.monolithFont(
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
-              color: accent ? ColorTokens.clubAccent : ColorTokens.onSurface,
-            ),
+            style: TypographyTokens.titleMedium(
+              accent ? ColorTokens.clubAccent : ColorTokens.onSurface,
+            ).copyWith(fontWeight: FontWeight.w800),
           ),
         ],
       ),
@@ -458,11 +456,9 @@ class _SettlementTimelineRow extends StatelessWidget {
           child: Text(
             value,
             textAlign: TextAlign.right,
-            style: TypographyTokens.monolithFont(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: ColorTokens.onSurface,
-            ),
+            style: TypographyTokens.labelMedium(
+              ColorTokens.onSurface,
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
         ),
       ],

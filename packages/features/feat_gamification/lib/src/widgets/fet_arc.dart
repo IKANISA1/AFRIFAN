@@ -20,7 +20,7 @@ class FetArc extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
+    final primary = ColorTokens.clubAccent;
     final progress = (currentFet / maxFet).clamp(0.0, 1.0);
 
     return SizedBox(
@@ -46,10 +46,8 @@ class FetArc extends StatelessWidget {
             children: [
               Text(
                 currentFet.toString(),
-                style: TypographyTokens.monolithFont(
-                  fontSize: 48,
+                style: TypographyTokens.displayLarge(primary).copyWith(
                   fontWeight: FontWeight.w800,
-                  color: primary,
                   height: 1.0,
                   letterSpacing: 0,
                 ),
@@ -57,12 +55,9 @@ class FetArc extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 'FET',
-                style: TypographyTokens.monolithFont(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: ColorTokens.onSurfaceVariant,
-                  letterSpacing: 2.0,
-                ),
+                style: TypographyTokens.labelLarge(
+                  ColorTokens.onSurfaceVariant,
+                ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 2.0),
               ),
               const SizedBox(height: 8),
               Container(
@@ -76,12 +71,9 @@ class FetArc extends StatelessWidget {
                 ),
                 child: Text(
                   tier,
-                  style: TypographyTokens.monolithFont(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: primary,
-                    letterSpacing: 1.5,
-                  ),
+                  style: TypographyTokens.labelLarge(
+                    primary,
+                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
                 ),
               ),
             ],

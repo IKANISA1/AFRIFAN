@@ -49,7 +49,7 @@ enum FanzoneHubStatus { ok, degraded, error }
 /// - Data cached across navigations (no refetch on every visit)
 /// - Proper loading states via AsyncValue.when()
 /// - DevTools observability
-/// - No race conditions from rapid navigation
+/// - Rapid navigation stays race-safe
 class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
   @override
   Future<FanzoneHubSnapshot> build() async {
@@ -89,22 +89,39 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
     try {
       dashboard = await predictionRepo.loadUserStats();
     } catch (error, stackTrace) {
-      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FanzoneHubProvider',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       failures++;
     }
 
     try {
       wallet = await fetRepo.loadWallet();
     } catch (error, stackTrace) {
-      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FanzoneHubProvider',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       failures++;
     }
 
     try {
-      liveFixtures =
-          await predictionRepo.loadFixtures(status: 'live', limit: 5);
+      liveFixtures = await predictionRepo.loadFixtures(
+        status: 'live',
+        limit: 5,
+      );
     } catch (error, stackTrace) {
-      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FanzoneHubProvider',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       failures++;
     }
 
@@ -114,7 +131,12 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
         dateTo: today,
       );
     } catch (error, stackTrace) {
-      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FanzoneHubProvider',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       failures++;
     }
 
@@ -125,28 +147,48 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
         limit: 8,
       );
     } catch (error, stackTrace) {
-      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FanzoneHubProvider',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       failures++;
     }
 
     try {
       leaderboard = await predictionRepo.loadLeaderboard(limit: 5);
     } catch (error, stackTrace) {
-      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FanzoneHubProvider',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       failures++;
     }
 
     try {
       markets = await predictionRepo.loadMarketCatalog();
     } catch (error, stackTrace) {
-      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FanzoneHubProvider',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       failures++;
     }
 
     try {
       challenges = await fetRepo.loadCatalog();
     } catch (error, stackTrace) {
-      AfriLogger.warn('FanzoneHubProvider', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FanzoneHubProvider',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       failures++;
     }
 
@@ -182,5 +224,5 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
 /// Provider for the Fanzone Hub state managed by [FanzoneHubNotifier].
 final fanzoneHubProvider =
     AsyncNotifierProvider<FanzoneHubNotifier, FanzoneHubSnapshot>(() {
-  return FanzoneHubNotifier();
-});
+      return FanzoneHubNotifier();
+    });

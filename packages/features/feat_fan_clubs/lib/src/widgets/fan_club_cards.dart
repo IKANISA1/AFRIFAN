@@ -13,9 +13,9 @@ class FanClubFeaturedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return EliteCard(
-      backgroundColor: Colors.white,
-      borderColor: Colors.transparent,
+    return AfriPanelCard(
+      backgroundColor: ColorTokens.borrowedPaper,
+      borderColor: ColorTokens.transparent,
       onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,50 +28,42 @@ class FanClubFeaturedCard extends StatelessWidget {
             ),
             child: Text(
               'FEATURED CHAPTER',
-              style: TextStyle(
-                fontSize: 9,
-                fontWeight: FontWeight.w900,
-                color: ColorTokens.clubAccent,
-                letterSpacing: 1,
-              ),
+              style: TypographyTokens.labelSmall(
+                ColorTokens.clubAccent,
+              ).copyWith(fontWeight: FontWeight.w900),
             ),
           ),
           const SizedBox(height: 16),
           Text(
             (club['name']?.toString() ?? 'FAN CLUB').toUpperCase(),
-            style: const TextStyle(
-              fontFamily: TypographyTokens.borrowedFontFamily,
-              package: 'core_theme',
-              fontSize: 32,
-              fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.italic,
-              color: Colors.black,
-              height: 0.9,
-            ),
+            style: TypographyTokens.displaySmall(ColorTokens.borrowedInk)
+                .copyWith(
+                  fontWeight: FontWeight.w900,
+                  fontStyle: FontStyle.italic,
+                  height: 0.9,
+                ),
           ),
           const SizedBox(height: 8),
           Text(
             club['description']?.toString() ?? 'Official supporter chapter.',
             maxLines: 2,
-            style: const TextStyle(
-              fontSize: 13,
-              color: Colors.black54,
-              height: 1.4,
-            ),
+            style: TypographyTokens.bodySmall(
+              ColorTokens.borrowedInkMuted,
+            ).copyWith(height: 1.4),
           ),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildEliteMeta(
+              _buildBorrowedMeta(
                 'REGION',
                 club['region']?.toString() ?? 'Unknown',
               ),
-              _buildEliteMeta(
+              _buildBorrowedMeta(
                 'MEMBERS',
                 '${(club['member_count'] as num?)?.toInt() ?? 0}',
               ),
-              _buildEliteMeta(
+              _buildBorrowedMeta(
                 'RATING',
                 '${(club['rating'] as num?)?.toDouble() ?? 0.0}',
               ),
@@ -82,28 +74,22 @@ class FanClubFeaturedCard extends StatelessWidget {
     );
   }
 
-  Widget _buildEliteMeta(String label, String value) {
+  Widget _buildBorrowedMeta(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 8,
-            fontWeight: FontWeight.w900,
-            color: Colors.black26,
-            letterSpacing: 1,
-          ),
+          style: TypographyTokens.labelSmall(
+            ColorTokens.borrowedInkFaint,
+          ).copyWith(fontWeight: FontWeight.w900),
         ),
         const SizedBox(height: 2),
         Text(
           value.toUpperCase(),
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w900,
-            color: Colors.black,
-            letterSpacing: 0,
-          ),
+          style: TypographyTokens.titleSmall(
+            ColorTokens.borrowedInk,
+          ).copyWith(fontWeight: FontWeight.w900, letterSpacing: 0),
         ),
       ],
     );
@@ -132,7 +118,7 @@ class FanClubListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final members = (club['member_count'] as num?)?.toInt() ?? 0;
 
-    return EliteCard(
+    return AfriPanelCard(
       onTap: onTap,
       padding: const EdgeInsets.all(SpacingTokens.spacing5),
       child: Column(
@@ -143,13 +129,9 @@ class FanClubListItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   (club['name']?.toString() ?? 'Fan Club').toUpperCase(),
-                  style: const TextStyle(
-                    fontFamily: TypographyTokens.borrowedFontFamily,
-                    package: 'core_theme',
-                    fontSize: 22,
+                  style: TypographyTokens.headlineSmall().copyWith(
                     fontWeight: FontWeight.w900,
                     fontStyle: FontStyle.italic,
-                    color: Colors.white,
                   ),
                 ),
               ),
@@ -164,32 +146,29 @@ class FanClubListItem extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             '${club['region']} • $members Members'.toUpperCase(),
-            style: const TextStyle(
-              fontSize: 9,
-              fontWeight: FontWeight.w900,
-              color: Colors.white38,
-              letterSpacing: 1,
-            ),
+            style: TypographyTokens.labelSmall(
+              ColorTokens.onSurfaceVariant,
+            ).copyWith(fontWeight: FontWeight.w900),
           ),
           const SizedBox(height: 16),
           Row(
             children: [
               Expanded(
-                child: EliteButton(
+                child: AfriButton(
                   label: isJoined ? 'Joined' : 'Join',
                   onTap: onJoinToggled,
                   isLoading: isPending,
                   variant: isJoined
-                      ? EliteButtonVariant.outline
-                      : EliteButtonVariant.primary,
+                      ? AfriButtonVariant.outline
+                      : AfriButtonVariant.primary,
                 ),
               ),
               const SizedBox(width: 12),
-              EliteButton(
+              AfriButton(
                 label: 'Details',
                 onTap: onTap,
                 fullWidth: false,
-                variant: EliteButtonVariant.secondary,
+                variant: AfriButtonVariant.secondary,
               ),
             ],
           ),

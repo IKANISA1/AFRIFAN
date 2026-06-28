@@ -65,11 +65,7 @@ class MatchPredictTabBody extends StatelessWidget {
                   );
                 },
           child: featuredMarkets.isEmpty
-              ? const AfriEmptyView(
-                  compact: true,
-                  title: 'No markets available',
-                  icon: Icons.grid_view_rounded,
-                )
+              ? const SizedBox.shrink()
               : Column(
                   children: featuredMarkets
                       .asMap()
@@ -130,14 +126,14 @@ class MatchStatsTabBody extends StatelessWidget {
             title: 'Stats not yet available',
             message:
                 'Match statistics will appear here once the match is live or completed.',
-            icon: Icons.bar_chart_rounded,
+            icon: AfriIcons.chart,
           ),
           const SizedBox(height: SpacingTokens.spacing4),
-          ClayCard(
+          AfriSurfaceCard(
             child: Row(
               children: [
                 Icon(
-                  Icons.info_outline_rounded,
+                  AfriIcons.statusInfo,
                   size: 16,
                   color: ColorTokens.onSurfaceVariant,
                 ),
@@ -166,11 +162,11 @@ class MatchStatsTabBody extends StatelessWidget {
             awayLabel: fixture.awayTeamShort,
           ),
           const SizedBox(height: SpacingTokens.spacing4),
-          ClayCard(
+          AfriSurfaceCard(
             child: Row(
               children: [
                 Icon(
-                  Icons.info_outline_rounded,
+                  AfriIcons.statusInfo,
                   size: 16,
                   color: ColorTokens.onSurfaceVariant,
                 ),
@@ -221,11 +217,11 @@ class MatchStatsTabBody extends StatelessWidget {
           awayLabel: fixture.awayTeamShort,
         ),
         const SizedBox(height: SpacingTokens.spacing4),
-        ClayCard(
+        AfriSurfaceCard(
           child: Row(
             children: [
               Icon(
-                Icons.info_outline_rounded,
+                AfriIcons.statusInfo,
                 size: 16,
                 color: ColorTokens.onSurfaceVariant,
               ),
@@ -273,7 +269,7 @@ class MatchMarketCard extends ConsumerWidget {
         ? null
         : selected.first.outcomeKey;
 
-    return ClayCard(
+    return AfriSurfaceCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -294,26 +290,26 @@ class MatchMarketCard extends ConsumerWidget {
                     ),
                     child: Text(
                       market.marketCategory,
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w700,
-                        color: ColorTokens.onSurfaceVariant,
-                        letterSpacing: 0.8,
-                      ),
+                      style:
+                          TypographyTokens.metricLabel(
+                            ColorTokens.onSurfaceVariant,
+                          ).copyWith(
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.8,
+                          ),
                     ),
                   ),
                   if (market.betType.isNotEmpty) ...[
                     const SizedBox(width: SpacingTokens.spacing2),
                     Text(
                       market.betType,
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w600,
-                        color: ColorTokens.onSurfaceVariant.withValues(
-                          alpha: 0.6,
-                        ),
-                        letterSpacing: 0.5,
-                      ),
+                      style:
+                          TypographyTokens.metricLabel(
+                            ColorTokens.onSurfaceVariant.withValues(alpha: 0.6),
+                          ).copyWith(
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
+                          ),
                     ),
                   ],
                 ],

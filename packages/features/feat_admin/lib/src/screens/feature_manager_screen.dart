@@ -88,7 +88,7 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
                       )
                     : _error != null
                     ? _buildError()
-                    : RefreshIndicator(
+                    : AfriRefreshIndicator(
                         onRefresh: _loadFeatures,
                         child: _buildFeatureList(),
                       ),
@@ -105,9 +105,10 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       child: Row(
         children: [
-          IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(AfriIcons.chevronLeft),
+          AfriIconButton(
+            icon: AfriIcons.chevronLeft,
+            onTap: () => context.pop(),
+            tooltip: 'Back',
           ),
           const SizedBox(width: SpacingTokens.spacing3),
           Expanded(
@@ -155,7 +156,7 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
             Text(
               cat,
               style: TypographyTokens.titleSmall().copyWith(
-                color: Theme.of(context).colorScheme.primary,
+                color: ColorTokens.clubAccent,
                 letterSpacing: 1.5,
               ),
             ),
@@ -185,8 +186,11 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
-      child: GestureDetector(
+      child: AfriPressFeedback(
         onTap: () => context.push('/admin/features/${feature.featureKey}'),
+        tooltip: 'Open ${feature.displayName}',
+        semanticsLabel: '${feature.displayName} feature',
+        semanticsHint: 'Opens feature settings',
         child: GlassCard(
           animate: false,
           child: Row(
@@ -204,7 +208,7 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
                     Text(
                       feature.featureKey,
                       style: TypographyTokens.bodySmall().copyWith(
-                        color: Colors.white38,
+                        color: ColorTokens.onDarkFaint,
                         fontFamily: TypographyTokens.borrowedFontFamily,
                         package: 'core_theme',
                       ),
@@ -212,8 +216,9 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
                   ],
                 ),
               ),
-              PopupMenuButton<String>(
+              AfriPopupMenuButton<String>(
                 onSelected: (v) => _changeVisibility(feature.id, v),
+                tooltip: 'Change visibility',
                 itemBuilder: (_) => [
                   const PopupMenuItem(value: 'visible', child: Text('Visible')),
                   const PopupMenuItem(value: 'hidden', child: Text('Hidden')),
@@ -234,9 +239,7 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
                   ),
                   child: Text(
                     visibility.toUpperCase(),
-                    style: TypographyTokens.labelSmall(
-                      visColor,
-                    ).copyWith(fontSize: 8),
+                    style: TypographyTokens.metricLabel(visColor),
                   ),
                 ),
               ),

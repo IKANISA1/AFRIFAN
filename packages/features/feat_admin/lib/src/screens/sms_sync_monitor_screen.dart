@@ -70,12 +70,13 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text('SMS PIPELINE', style: TypographyTokens.titleLarge()),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       body: _isLoading
@@ -83,7 +84,7 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _loadSmsData,
               child: ListView(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
@@ -157,25 +158,25 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
             step: '1',
             label: 'CAPTURE',
             description: 'Android SMS listener → approved sender filter',
-            icon: Icons.sms_rounded,
+            icon: AfriIcons.sms,
           ),
           const _PipelineStep(
             step: '2',
             label: 'INGEST',
             description: 'SHA256 dedup → Edge Function → momo_sms_raw',
-            icon: Icons.cloud_upload_rounded,
+            icon: AfriIcons.cloud,
           ),
           const _PipelineStep(
             step: '3',
             label: 'PARSE',
             description: 'Extract amount, tx_id, fee → momo_sms_parsed',
-            icon: Icons.auto_fix_high_rounded,
+            icon: AfriIcons.magic,
           ),
           const _PipelineStep(
             step: '4',
             label: 'LEDGER',
             description: 'Create wallet entry → reconcile contributions',
-            icon: Icons.account_balance_wallet_rounded,
+            icon: AfriIcons.wallet,
             isLast: true,
           ),
         ],
@@ -194,12 +195,7 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
             style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.2),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          if (_recentSyncRuns.isEmpty)
-            Text(
-              'No sync runs recorded yet. Waiting for first SMS sync from a device.',
-              style: TypographyTokens.bodyMedium(),
-            )
-          else
+          if (_recentSyncRuns.isNotEmpty)
             ..._recentSyncRuns.map(
               (run) => Padding(
                 padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
@@ -240,17 +236,11 @@ class _PipelineStep extends StatelessWidget {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.15),
+                  color: ColorTokens.clubAccent.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: Icon(
-                    icon,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  child: Icon(icon, size: 16, color: ColorTokens.clubAccent),
                 ),
               ),
               if (!isLast)

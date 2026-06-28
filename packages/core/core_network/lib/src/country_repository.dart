@@ -41,7 +41,7 @@ class CountryRepository {
       if (rows.isEmpty) {
         AfriLogger.warn(
           'CountryRepository',
-          'No active countries in DB; using hardcoded fallback.',
+          'Country DB returned an empty active catalog; using hardcoded fallback.',
         );
         return AfriCountryCatalog.all;
       }

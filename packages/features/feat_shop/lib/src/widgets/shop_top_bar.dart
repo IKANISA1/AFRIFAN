@@ -51,7 +51,7 @@ class ShopTopBar extends StatelessWidget {
             clipBehavior: Clip.none,
             children: [
               AfriIconButton(
-                icon: Icons.shopping_bag_outlined,
+                icon: AfriIcons.cart,
                 tooltip: 'Cart',
                 onTap: () => context.push('/shop/cart'),
               ),

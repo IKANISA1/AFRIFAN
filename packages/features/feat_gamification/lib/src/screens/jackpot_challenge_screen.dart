@@ -59,11 +59,16 @@ class _JackpotChallengeScreenState
         _leaders = results[1]! as List<PredictionLeaderboardEntry>;
         _isLoading = false;
         _error = round == null || round.fixtures.isEmpty
-            ? 'No active jackpot round is available right now.'
+            ? 'Jackpot round activation is pending.'
             : null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('JackpotChallengeScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'JackpotChallengeScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -119,7 +124,7 @@ class _JackpotChallengeScreenState
       if (result.isSuccess) {
         await showDialog<void>(
           context: context,
-          builder: (context) => AlertDialog(
+          builder: (context) => AfriAlertDialog(
             title: const Text('Entry submitted'),
             content: Text(
               result.message.isEmpty
@@ -127,8 +132,8 @@ class _JackpotChallengeScreenState
                   : result.message,
             ),
             actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
+              AfriTextButton(
+                onPressed: () => context.pop(),
                 child: const Text('Close'),
               ),
             ],
@@ -174,19 +179,19 @@ class _JackpotChallengeScreenState
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'Jackpot',
-          style: TypographyTokens.monolithFont(
-            fontSize: 20,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.0,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: 'Back',
         ),
       ),
       bottomNavigationBar: SafeArea(
@@ -237,7 +242,7 @@ class _JackpotChallengeScreenState
                 ),
               ),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _load,
               color: ColorTokens.clubAccent,
               child: ListView(
@@ -246,7 +251,7 @@ class _JackpotChallengeScreenState
                 ),
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 children: [
-                  ClayCard(
+                  AfriSurfaceCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -261,11 +266,9 @@ class _JackpotChallengeScreenState
                           round == null
                               ? '0 FET'
                               : '${_formatFet(round.prizePoolFet)} FET',
-                          style: TypographyTokens.monolithFont(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w900,
-                            color: ColorTokens.clubAccent,
-                          ),
+                          style: TypographyTokens.displaySmall(
+                            ColorTokens.clubAccent,
+                          ).copyWith(fontWeight: FontWeight.w900),
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
@@ -284,7 +287,7 @@ class _JackpotChallengeScreenState
                           ),
                         ],
                         const SizedBox(height: SpacingTokens.spacing4),
-                        LinearProgressIndicator(
+                        AfriLinearProgressIndicator(
                           value: completion,
                           minHeight: 8,
                           borderRadius: BorderRadius.circular(999),
@@ -310,11 +313,7 @@ class _JackpotChallengeScreenState
                   AfriSectionCard(
                     title: 'Fixtures',
                     child: round == null || round.fixtures.isEmpty
-                        ? const AfriEmptyView(
-                            compact: true,
-                            title: 'No fixtures in this round',
-                            icon: AfriIcons.fixture,
-                          )
+                        ? const SizedBox.shrink()
                         : Column(
                             children: round.fixtures
                                 .asMap()
@@ -325,11 +324,7 @@ class _JackpotChallengeScreenState
                                       _selections[data.fixtureMarketId];
                                   return Column(
                                     children: [
-                                      if (entry.key > 0)
-                                        Divider(
-                                          height: 1,
-                                          color: ColorTokens.ghostBorder,
-                                        ),
+                                      if (entry.key > 0) const AfriDivider(),
                                       _JackpotFixtureRow(
                                         fixtureLabel: data.fixtureLabel,
                                         details:
@@ -367,11 +362,7 @@ class _JackpotChallengeScreenState
                               final leader = entry.value;
                               return Column(
                                 children: [
-                                  if (entry.key > 0)
-                                    Divider(
-                                      height: 1,
-                                      color: ColorTokens.ghostBorder,
-                                    ),
+                                  if (entry.key > 0) const AfriDivider(),
                                   _LeaderRow(
                                     rank: leader.rank,
                                     name: leader.displayName,
@@ -460,8 +451,7 @@ class _LeaderRow extends StatelessWidget {
             width: 32,
             child: Text(
               '#$rank',
-              style: TypographyTokens.monolithFont(
-                fontSize: 14,
+              style: TypographyTokens.titleSmall().copyWith(
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -470,11 +460,9 @@ class _LeaderRow extends StatelessWidget {
           Expanded(child: Text(name, style: TypographyTokens.titleSmall())),
           Text(
             total,
-            style: TypographyTokens.monolithFont(
-              fontSize: 14,
-              fontWeight: FontWeight.w800,
-              color: ColorTokens.clubAccent,
-            ),
+            style: TypographyTokens.titleSmall(
+              ColorTokens.clubAccent,
+            ).copyWith(fontWeight: FontWeight.w800),
           ),
         ],
       ),

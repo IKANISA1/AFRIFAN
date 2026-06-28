@@ -93,7 +93,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                 )
               : _error != null
               ? _buildError()
-              : RefreshIndicator(
+              : AfriRefreshIndicator(
                   onRefresh: _loadDashboard,
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
@@ -130,16 +130,14 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
               ),
               Text(
                 'COMMAND CENTER',
-                style: TypographyTokens.displaySmall(
-                  Theme.of(context).colorScheme.primary,
-                ),
+                style: TypographyTokens.displaySmall(ColorTokens.clubAccent),
               ),
             ],
           ),
         ),
-        IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.close),
+        AfriIconButton(
+          icon: AfriIcons.close,
+          onTap: () => context.pop(),
           tooltip: 'Exit Admin',
         ),
       ],
@@ -263,12 +261,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
             style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.2),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          if (_activity.isEmpty)
-            Text(
-              'No recent admin activity is available yet.',
-              style: TypographyTokens.bodyMedium(),
-            )
-          else
+          if (_activity.isNotEmpty)
             ..._activity.map(
               (item) => Padding(
                 padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
@@ -307,7 +300,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
                     Text(
-                      'No admin privileges. Contact a club administrator.',
+                      'Admin privileges are required. Contact a club administrator.',
                       textAlign: TextAlign.center,
                       style: TypographyTokens.bodyMedium(),
                     ),
@@ -428,7 +421,7 @@ class _AdminActionTile extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          Icon(icon, size: 24, color: Theme.of(context).colorScheme.primary),
+          Icon(icon, size: 24, color: ColorTokens.clubAccent),
           const SizedBox(width: SpacingTokens.spacing4),
           Expanded(
             child: Column(

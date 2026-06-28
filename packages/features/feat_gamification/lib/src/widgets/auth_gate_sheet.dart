@@ -1,6 +1,7 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 
 /// Auth Gate Modal — bottom sheet that intercepts prediction actions
 /// for unauthenticated/unverified users.
@@ -8,11 +9,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 /// Mirrors the fanafrika store `openAuthGate()` interaction — prompts
 /// the user to verify their Fan ID before making predictions.
 class AuthGateSheet extends StatelessWidget {
-  const AuthGateSheet({
-    super.key,
-    this.onVerify,
-    this.onDismiss,
-  });
+  const AuthGateSheet({super.key, this.onVerify, this.onDismiss});
 
   /// Called when "Verify Now" is tapped.
   final VoidCallback? onVerify;
@@ -21,17 +18,14 @@ class AuthGateSheet extends StatelessWidget {
   final VoidCallback? onDismiss;
 
   /// Show the auth gate bottom sheet from any context.
-  static Future<bool?> show(
-    BuildContext context, {
-    VoidCallback? onVerify,
-  }) {
+  static Future<bool?> show(BuildContext context, {VoidCallback? onVerify}) {
     return showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => AuthGateSheet(
+      backgroundColor: ColorTokens.transparent,
+      builder: (sheetContext) => AuthGateSheet(
         onVerify: onVerify,
-        onDismiss: () => Navigator.of(context).pop(false),
+        onDismiss: () => sheetContext.pop(false),
       ),
     );
   }
@@ -67,22 +61,22 @@ class AuthGateSheet extends StatelessWidget {
 
           // Lock icon
           Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: ColorTokens.warning.withValues(alpha: 0.12),
-              border: BorderTokens.all(
-                color: ColorTokens.warning.withValues(alpha: 0.3),
-              ),
-            ),
-            alignment: Alignment.center,
-            child: const Icon(
-              AfriIcons.privacy,
-              size: 36,
-              color: ColorTokens.warning,
-            ),
-          )
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: ColorTokens.warning.withValues(alpha: 0.12),
+                  border: BorderTokens.all(
+                    color: ColorTokens.warning.withValues(alpha: 0.3),
+                  ),
+                ),
+                alignment: Alignment.center,
+                child: const Icon(
+                  AfriIcons.privacy,
+                  size: 36,
+                  color: ColorTokens.warning,
+                ),
+              )
               .animate()
               .scale(
                 begin: const Offset(0.8, 0.8),
@@ -97,8 +91,7 @@ class AuthGateSheet extends StatelessWidget {
           // Title
           Text(
             'VERIFY TO PREDICT',
-            style: TypographyTokens.monolithFont(
-              fontSize: 22,
+            style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w800,
               letterSpacing: 1.4,
             ),
@@ -115,19 +108,19 @@ class AuthGateSheet extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing6),
 
           // Benefits list
-          _BenefitRow(
+          const _BenefitRow(
             icon: AfriIcons.statusSuccess,
             title: 'Make Predictions',
             subtitle: 'Predict matches across all leagues',
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          _BenefitRow(
+          const _BenefitRow(
             icon: AfriIcons.earn,
             title: 'Earn FET',
             subtitle: 'Earn tokens for correct picks',
           ),
           const SizedBox(height: SpacingTokens.spacing3),
-          _BenefitRow(
+          const _BenefitRow(
             icon: AfriIcons.leaderboard,
             title: 'Climb Leaderboards',
             subtitle: 'Compete against friends and fans',
@@ -137,12 +130,12 @@ class AuthGateSheet extends StatelessWidget {
 
           // Verify button
           AfriButton(
-            label: 'Verify now',
-            onTap: () {
-              Navigator.of(context).pop(true);
-              onVerify?.call();
-            },
-          )
+                label: 'Verify now',
+                onTap: () {
+                  context.pop(true);
+                  onVerify?.call();
+                },
+              )
               .animate(delay: 200.ms)
               .fadeIn(duration: 300.ms)
               .slideY(begin: 0.06, end: 0, duration: 300.ms),
@@ -154,7 +147,7 @@ class AuthGateSheet extends StatelessWidget {
             label: 'Just browsing',
             variant: AfriButtonVariant.outline,
             onTap: () {
-              Navigator.of(context).pop(false);
+              context.pop(false);
               onDismiss?.call();
             },
           ),
@@ -164,12 +157,9 @@ class AuthGateSheet extends StatelessWidget {
           Text(
             'VERIFICATION IS ANONYMOUS — NO PERSONAL DATA IS SHARED.',
             textAlign: TextAlign.center,
-            style: TypographyTokens.editorialFont(
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-              color: ColorTokens.onSurfaceVariant,
-              letterSpacing: 1.6,
-            ),
+            style: TypographyTokens.labelSmall(
+              ColorTokens.onSurfaceVariant,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),

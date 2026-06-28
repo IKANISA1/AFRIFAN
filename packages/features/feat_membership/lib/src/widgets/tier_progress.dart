@@ -9,8 +9,6 @@ class TierProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
-
     final tiers = [
       ('FAN', 0),
       ('BRONZE', 1000),
@@ -46,13 +44,13 @@ class TierProgress extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: isCurrent
-                              ? primary.withValues(alpha: 0.2)
+                              ? ColorTokens.clubAccent.withValues(alpha: 0.2)
                               : isReached
                               ? ColorTokens.success.withValues(alpha: 0.18)
                               : ColorTokens.surfaceContainerHigh,
                           border: BorderTokens.all(
                             color: isCurrent
-                                ? primary
+                                ? ColorTokens.clubAccent
                                 : isReached
                                 ? ColorTokens.success
                                 : ColorTokens.ghostBorder,
@@ -61,9 +59,13 @@ class TierProgress extends StatelessWidget {
                         ),
                         child: Center(
                           child: isReached
-                              ? Icon(Icons.check, size: 16, color: primary)
+                              ? Icon(
+                                  AfriIcons.check,
+                                  size: 16,
+                                  color: ColorTokens.clubAccent,
+                                )
                               : Icon(
-                                  Icons.lock_outline,
+                                  AfriIcons.lock,
                                   size: 14,
                                   color: ColorTokens.onSurfaceVariant
                                       .withValues(alpha: 0.5),
@@ -79,18 +81,19 @@ class TierProgress extends StatelessWidget {
                           child: Text(
                             tier.$1,
                             maxLines: 1,
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: isCurrent
-                                  ? primary
-                                  : isReached
-                                  ? ColorTokens.success
-                                  : ColorTokens.onSurfaceVariant.withValues(
-                                      alpha: 0.5,
-                                    ),
-                              letterSpacing: 1.0,
-                            ),
+                            style:
+                                TypographyTokens.labelLarge(
+                                  isCurrent
+                                      ? ColorTokens.clubAccent
+                                      : isReached
+                                      ? ColorTokens.success
+                                      : ColorTokens.onSurfaceVariant.withValues(
+                                          alpha: 0.5,
+                                        ),
+                                ).copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 1.0,
+                                ),
                           ),
                         ),
                       ),
@@ -103,7 +106,7 @@ class TierProgress extends StatelessWidget {
                       height: 2,
                       margin: const EdgeInsets.only(bottom: 16),
                       color: isReached
-                          ? primary.withValues(alpha: 0.3)
+                          ? ColorTokens.clubAccent.withValues(alpha: 0.3)
                           : ColorTokens.surfaceContainerHigh,
                     ),
                   ),

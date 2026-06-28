@@ -11,7 +11,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
       runSpacing: SpacingTokens.spacing2,
       children: _CmsSection.values.map((section) {
         final selected = section == _section;
-        return ChoiceChip(
+        return AfriChoiceChip(
           label: Text(sectionLabel(section)),
           selected: selected,
           onSelected: (_) => setState(() => _section = section),
@@ -55,7 +55,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline_rounded, size: 48),
+              const Icon(AfriIcons.statusError, size: 48),
               const SizedBox(height: SpacingTokens.spacing4),
               Text(
                 'Failed to load content manager',
@@ -87,12 +87,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
           onAction: _showCreateArticleDialog,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
-        if (_articles.isEmpty)
-          const _EmptySectionState(
-            title: 'No articles yet',
-            message: 'Create the first article for the live intel feed.',
-          )
-        else
+        if (_articles.isNotEmpty)
           ..._articles.map(
             (article) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
@@ -121,12 +116,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
           onAction: _showQuickActionDialog,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
-        if (_quickActions.isEmpty)
-          const _EmptySectionState(
-            title: 'No quick actions configured',
-            message: 'Add shortcuts for the supporter home screen.',
-          )
-        else
+        if (_quickActions.isNotEmpty)
           ..._quickActions.map(
             (action) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
@@ -162,12 +152,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
           onAction: _showPartnerDialog,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
-        if (_partners.isEmpty)
-          const _EmptySectionState(
-            title: 'No partners configured',
-            message: 'Seed or create admin-managed partner rows here.',
-          )
-        else
+        if (_partners.isNotEmpty)
           ..._partners.map(
             (partner) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
@@ -206,12 +191,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
           onAction: _showPartnerServiceDialog,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
-        if (_partnerServices.isEmpty)
-          const _EmptySectionState(
-            title: 'No partner services configured',
-            message: 'Attach service journeys to the active partner catalog.',
-          )
-        else
+        if (_partnerServices.isNotEmpty)
           ..._partnerServices.map(
             (service) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
@@ -220,7 +200,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
                 subtitle:
                     '${(service['partner'] as Map?)?['name'] ?? 'Partner'} • ${service['category']?.toString() ?? 'general'}',
                 body:
-                    '${service['cta_label']?.toString() ?? 'No CTA'} → ${service['cta_action']?.toString() ?? 'n/a'}',
+                    '${service['cta_label']?.toString() ?? 'CTA pending'} → ${service['cta_action']?.toString() ?? 'n/a'}',
                 tags: <String>[
                   _countryLabel(service['country']),
                   service['gamification_enabled'] == true
@@ -252,13 +232,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
           onAction: _showPredictionCompetitionDialog,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
-        if (_predictionCompetitions.isEmpty)
-          const _EmptySectionState(
-            title: 'No prediction competitions configured',
-            message:
-                'Curate the competitions and fixtures exposed to predictions.',
-          )
-        else
+        if (_predictionCompetitions.isNotEmpty)
           ..._predictionCompetitions.map(
             (competition) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
@@ -298,12 +272,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
           onAction: _showContentBlockDialog,
         ),
         const SizedBox(height: SpacingTokens.spacing3),
-        if (_contentBlocks.isEmpty)
-          const _EmptySectionState(
-            title: 'No content blocks configured',
-            message: 'Add banners or custom sections for the platform home.',
-          )
-        else
+        if (_contentBlocks.isNotEmpty)
           ..._contentBlocks.map(
             (block) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
@@ -340,15 +309,11 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
           style: TypographyTokens.titleMedium().copyWith(letterSpacing: 1.1),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
-        if (_auditLogs.isEmpty)
-          const _EmptySectionState(
-            title: 'No audit logs yet',
-            message: 'Changes to platform features will appear here.',
-          )
-        else
+        if (_auditLogs.isNotEmpty)
           ..._auditLogs.map((log) {
             final feature = log['feature'] as Map<String, dynamic>?;
-            final featureName = feature?['display_name'] ??
+            final featureName =
+                feature?['display_name'] ??
                 feature?['feature_key'] ??
                 'Unknown Feature';
             final timestamp = DateTime.tryParse(

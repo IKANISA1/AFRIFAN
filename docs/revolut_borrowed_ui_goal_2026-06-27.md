@@ -43,7 +43,7 @@ Replace the previous local shell styling with a shared Revolut-borrowed finance 
 - Added route-family gradients, black chrome colors, stronger glass tokens, and reference colors in `ColorTokens`.
 - Registered `RevolutBorrowed` fonts in `core_theme` and added the copied local font/provenance files.
 - Added `AfriTopCommandBar` to `core_theme`.
-- Refactored `GradientBackground`, `GlassCard`, `ClayCard`, and `AfriClubBottomNav`.
+- Refactored `GradientBackground`, `GlassCard`, `AfriSurfaceCard`, and `AfriClubBottomNav`.
 - Applied `/home`, `/onboarding`, and `/membership` route backgrounds.
 - Added top command chrome to `HomeScreen`.
 - Kept club accents, crests, routes, and module ordering intact.

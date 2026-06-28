@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../extensions.dart';
+import '../tokens/icon_tokens.dart';
 import '../tokens/responsive_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
+import 'afri_icon_button.dart';
 
 /// Standardized screen scaffold with responsive layout, optional title,
 /// and back button.
@@ -45,10 +48,10 @@ class AfriScreenScaffold extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: showBackButton
-            ? IconButton(
-                onPressed: () => Navigator.of(context).pop(),
+            ? AfriIconButton(
+                icon: AfriIcons.back,
+                onTap: context.canPop() ? () => context.pop() : null,
                 tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-                icon: Icon(Icons.arrow_back_rounded, color: colors.primaryText),
               )
             : null,
         actions: actions,

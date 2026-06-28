@@ -563,7 +563,8 @@ class ClubRepository {
     try {
       await _client.from('cool_events').insert(payload);
     } catch (error, stackTrace) {
-      AfriLogger.warn('ClubRepository', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn('ClubRepository', 'Operation failed (non-critical).',
+          error, stackTrace);
       await _client.from('fet_events').insert(payload);
     }
   }
@@ -581,7 +582,8 @@ class ClubRepository {
           .limit(limit);
       return rows.map((r) => FetEvent.fromJson(r)).toList();
     } catch (error, stackTrace) {
-      AfriLogger.warn('ClubRepository', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn('ClubRepository', 'Operation failed (non-critical).',
+          error, stackTrace);
       final rows = await _client
           .from('fet_events')
           .select()
@@ -613,7 +615,8 @@ class ClubRepository {
           .maybeSingle();
       return (row?['fet_value'] as num?)?.toInt() ?? eventType.fetReward;
     } catch (error, stackTrace) {
-      AfriLogger.warn('ClubRepository', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn('ClubRepository', 'Operation failed (non-critical).',
+          error, stackTrace);
       return eventType.fetReward;
     }
   }
@@ -646,7 +649,7 @@ class ClubRepository {
     }
 
     throw StateError(
-      'No active payment route for partner '
+      'Payment route setup pending for partner '
       '${partnerId.trim().isEmpty ? 'current club' : partnerId}',
     );
   }

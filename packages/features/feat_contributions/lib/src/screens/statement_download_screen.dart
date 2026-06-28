@@ -91,7 +91,12 @@ class _StatementDownloadScreenState
         _isLoading = false;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('StatementDownloadScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'StatementDownloadScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) return;
       setState(() {
         _isLoading = false;
@@ -209,7 +214,7 @@ class _StatementDownloadScreenState
       SnackBar(
         content: Text(
           rows.isEmpty
-              ? 'No rows matched. Empty CSV copied.'
+              ? 'Filtered CSV copied without rows.'
               : 'CSV copied to clipboard.',
         ),
       ),
@@ -231,19 +236,19 @@ class _StatementDownloadScreenState
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
         title: Text(
           'DOWNLOAD STATEMENT',
-          style: TypographyTokens.monolithFont(
-            fontSize: 22,
+          style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(AfriIcons.back),
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          onTap: () => context.pop(),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         ),
       ),
       body: _isLoading
@@ -251,7 +256,7 @@ class _StatementDownloadScreenState
               padding: EdgeInsets.all(SpacingTokens.spacing6),
               child: AfriSkeletonList(),
             )
-          : RefreshIndicator(
+          : AfriRefreshIndicator(
               onRefresh: _loadEntries,
               child: ListView(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
@@ -313,7 +318,7 @@ class _StatementDownloadScreenState
                                       ('alias', 'BY ALIAS'),
                                     ]
                                     .map(
-                                      (option) => const ChoiceChip(
+                                      (option) => const AfriChoiceChip(
                                         selected: false,
                                         label: Text(''),
                                       ),
@@ -361,11 +366,9 @@ class _StatementDownloadScreenState
                               ),
                               Text(
                                 currency.format(_statementTotal),
-                                style: TypographyTokens.monolithFont(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w800,
-                                  color: ColorTokens.clubAccent,
-                                ),
+                                style: TypographyTokens.headlineMedium(
+                                  ColorTokens.clubAccent,
+                                ).copyWith(fontWeight: FontWeight.w800),
                               ),
                             ],
                           ),
@@ -377,7 +380,7 @@ class _StatementDownloadScreenState
                           const SizedBox(height: SpacingTokens.spacing3),
                           if (previewEntries.isEmpty)
                             Text(
-                              'No contributions in this range.',
+                              'Contribution range is empty.',
                               style: TypographyTokens.bodyMedium(),
                             )
                           else
@@ -451,8 +454,10 @@ class _DateInputCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassCard(
       animate: false,
-      child: InkWell(
+      child: AfriPressFeedback(
         onTap: onTap,
+        tooltip: label,
+        semanticsLabel: '$label, $value',
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -488,9 +493,11 @@ class _FormatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(24),
+    return AfriPressFeedback(
       onTap: onTap,
+      selected: selected,
+      tooltip: label,
+      semanticsLabel: '$label export format',
       child: GlassCard(
         animate: false,
         borderColor: selected
@@ -505,10 +512,8 @@ class _FormatCard extends StatelessWidget {
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
               label,
-              style: TypographyTokens.monolithFont(
-                fontSize: 22,
+              style: TypographyTokens.headlineSmall().copyWith(
                 fontWeight: FontWeight.w700,
-                color: ColorTokens.onSurface,
               ),
             ),
           ],

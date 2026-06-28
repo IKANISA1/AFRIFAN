@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../extensions.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
-import 'clay_card.dart';
+import 'afri_surface_card.dart';
 
 /// Shared borrowed modal sheet surface.
 class AfriBottomSheet extends StatelessWidget {
@@ -30,7 +30,7 @@ class AfriBottomSheet extends StatelessWidget {
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-          child: ClayCard(
+          child: AfriSurfaceCard(
             backgroundColor: colors.overlaySurface,
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(borderRadius),

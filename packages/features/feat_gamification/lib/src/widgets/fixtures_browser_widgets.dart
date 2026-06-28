@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../models/fanzone_models.dart';
 import '../models/prediction_models.dart';
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -40,8 +41,11 @@ class _FixturesCalendarStripState extends State<FixturesCalendarStrip> {
   void initState() {
     super.initState();
     final now = DateTime.now();
-    _baseDate = DateTime(now.year, now.month, now.day)
-        .subtract(const Duration(days: _pastDays));
+    _baseDate = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(const Duration(days: _pastDays));
 
     // Scroll to today after layout
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -53,15 +57,16 @@ class _FixturesCalendarStripState extends State<FixturesCalendarStrip> {
     if (!widget.controller.hasClients) return;
     final target = index * _cellWidth;
     final maxScroll = widget.controller.position.maxScrollExtent;
-    widget.controller.animateTo(
-      target.clamp(0, maxScroll),
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
+    unawaited(
+      widget.controller.animateTo(
+        target.clamp(0, maxScroll),
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      ),
     );
   }
 
-  DateTime _dateForIndex(int index) =>
-      _baseDate.add(Duration(days: index));
+  DateTime _dateForIndex(int index) => _baseDate.add(Duration(days: index));
 
   static String _dateKey(DateTime dt) =>
       '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
@@ -74,9 +79,7 @@ class _FixturesCalendarStripState extends State<FixturesCalendarStrip> {
         controller: widget.controller,
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(
-          horizontal: SpacingTokens.spacing6,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing6),
         itemCount: _totalDays,
         itemExtent: _cellWidth,
         itemBuilder: (context, index) {
@@ -89,15 +92,23 @@ class _FixturesCalendarStripState extends State<FixturesCalendarStrip> {
           final cellDate = DateTime(date.year, date.month, date.day);
           final isSelected = cellDate == sel;
           final now = DateTime.now();
-          final isToday =
-              cellDate == DateTime(now.year, now.month, now.day);
+          final isToday = cellDate == DateTime(now.year, now.month, now.day);
           final key = _dateKey(date);
           final count = widget.dateSummary[key] ?? 0;
           final hasFixtures = count > 0;
-          final hasLive = false;
+          const hasLive = false;
 
-          return GestureDetector(
+          return AfriPressFeedback(
             onTap: () => widget.onDateSelected(date),
+            selected: isSelected,
+            tooltip: isToday
+                ? 'Today, $count fixtures'
+                : '${date.day}, $count fixtures',
+            semanticsLabel: isToday
+                ? 'Today, $count fixtures'
+                : 'Date ${date.day}, $count fixtures',
+            semanticsHint: isSelected ? 'Selected date' : 'Select date',
+            excludeChildSemantics: true,
             child: FixturesCalendarCell(
               date: date,
               isSelected: isSelected,
@@ -142,77 +153,66 @@ class FixturesCalendarCell extends StatelessWidget {
       decoration: BoxDecoration(
         color: isSelected
             ? ColorTokens.clubAccent.withValues(alpha: 0.18)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(14),
+            : ColorTokens.transparent,
+        borderRadius: ShapeTokens.aliasPillRadius,
         border: isSelected
             ? BorderTokens.all(color: ColorTokens.clubAccent, width: 1.5)
             : isToday
-                ? BorderTokens.all(
-                    color: ColorTokens.clubAccent.withValues(alpha: 0.4),
-                    width: 1,
-                  )
-                : null,
+            ? BorderTokens.all(
+                color: ColorTokens.clubAccent.withValues(alpha: 0.4),
+                width: 1,
+              )
+            : null,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             _dayNames[date.weekday - 1],
-            style: TypographyTokens.editorialFont(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: isSelected
+            style: TypographyTokens.labelSmall(
+              isSelected
                   ? ColorTokens.clubAccent
                   : ColorTokens.onSurfaceVariant,
-              letterSpacing: 1,
-            ),
+            ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: SpacingTokens.spacing1),
           Text(
             '${date.day}',
-            style: TypographyTokens.monolithFont(
-              fontSize: 18,
-              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-              color: isSelected
-                  ? ColorTokens.clubAccent
-                  : isToday
+            style:
+                TypographyTokens.titleLarge(
+                  isSelected
+                      ? ColorTokens.clubAccent
+                      : isToday
                       ? ColorTokens.onSurface
                       : hasFixtures
-                          ? ColorTokens.onSurface
-                          : ColorTokens.onSurfaceVariant
-                              .withValues(alpha: 0.4),
-            ),
+                      ? ColorTokens.onSurface
+                      : ColorTokens.onSurfaceVariant.withValues(alpha: 0.4),
+                ).copyWith(
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                  letterSpacing: 1,
+                ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: SpacingTokens.spacing1),
           // Dot indicators
           if (hasFixtures)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  width: 5,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: hasLive
-                        ? ColorTokens.success
-                        : isSelected
-                            ? ColorTokens.clubAccent
-                            : ColorTokens.onSurfaceVariant,
-                  ),
+                _FixtureDot(
+                  color: hasLive
+                      ? ColorTokens.success
+                      : isSelected
+                      ? ColorTokens.clubAccent
+                      : ColorTokens.onSurfaceVariant,
                 ),
                 if (fixtureCount > 3) ...[
                   const SizedBox(width: 2),
-                  Container(
-                    width: 5,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: (isSelected
-                              ? ColorTokens.clubAccent
-                              : ColorTokens.onSurfaceVariant)
-                          .withValues(alpha: 0.5),
-                    ),
+                  _FixtureDot(
+                    color:
+                        (isSelected
+                                ? ColorTokens.clubAccent
+                                : ColorTokens.onSurfaceVariant)
+                            .withValues(alpha: 0.5),
                   ),
                 ],
               ],
@@ -276,33 +276,10 @@ class PredictionOverviewMetric extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GlassCard(
-        animate: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: TypographyTokens.editorialFont(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: ColorTokens.onSurfaceVariant,
-                letterSpacing: 1,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              value,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TypographyTokens.monolithFont(
-                fontSize: 15,
-                fontWeight: FontWeight.w800,
-                color: accent ? ColorTokens.clubAccent : ColorTokens.onSurface,
-              ),
-            ),
-          ],
-        ),
+      child: AfriMetricTile(
+        label: label,
+        value: value,
+        accentColor: accent ? ColorTokens.clubAccent : null,
       ),
     );
   }
@@ -323,35 +300,128 @@ class CompetitionFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        HapticFeedback.selectionClick();
+    return AfriChoiceChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (_) {
+        unawaited(HapticFeedback.selectionClick());
         onTap();
       },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? ColorTokens.clubAccent.withValues(alpha: 0.18)
-              : ColorTokens.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(999),
-          border: isSelected
-              ? BorderTokens.all(color: ColorTokens.clubAccent, width: 1.5)
-              : BorderTokens.ghost(),
-        ),
-        child: Text(
-          label,
-          style: TypographyTokens.editorialFont(
-            fontSize: 12,
+      labelStyle:
+          TypographyTokens.labelSmall(
+            isSelected ? ColorTokens.clubAccent : ColorTokens.onSurfaceVariant,
+          ).copyWith(
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-            color: isSelected
-                ? ColorTokens.clubAccent
-                : ColorTokens.onSurfaceVariant,
             letterSpacing: 1.2,
           ),
-        ),
+      backgroundColor: ColorTokens.surfaceContainerLow,
+      selectedColor: ColorTokens.clubAccent.withValues(alpha: 0.18),
+      side: BorderTokens.side(
+        color: isSelected ? ColorTokens.clubAccent : ColorTokens.ghostBorder,
+        width: isSelected ? BorderTokens.strong : BorderTokens.hairline,
       ),
+      shape: RoundedRectangleBorder(borderRadius: ShapeTokens.buttonRadius),
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing1,
+        vertical: SpacingTokens.spacing1,
+      ),
+      labelPadding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing3,
+      ),
+    );
+  }
+}
+
+class _FixtureActionPill extends StatelessWidget {
+  const _FixtureActionPill({
+    required this.label,
+    required this.color,
+    this.emphasized = false,
+  });
+
+  final String label;
+  final Color color;
+  final bool emphasized;
+
+  @override
+  Widget build(BuildContext context) {
+    return AfriChip(
+      label: Text(label),
+      backgroundColor: emphasized
+          ? color.withValues(alpha: 0.14)
+          : ColorTokens.surfaceContainerHigh,
+      side: BorderTokens.side(
+        color: emphasized ? color : ColorTokens.ghostBorder,
+        opacity: emphasized ? 0.42 : 1,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: ShapeTokens.aliasPillRadius),
+      labelStyle: TypographyTokens.labelSmall(
+        color,
+      ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2, height: 1.0),
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing1,
+        vertical: SpacingTokens.spacing1,
+      ),
+      labelPadding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing2,
+      ),
+    );
+  }
+}
+
+class _LiveDot extends StatelessWidget {
+  const _LiveDot({this.margin});
+
+  final EdgeInsetsGeometry? margin;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 6,
+      height: 6,
+      margin: margin,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: ColorTokens.success,
+      ),
+    );
+  }
+}
+
+class _FixtureDot extends StatelessWidget {
+  const _FixtureDot({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 5,
+      height: 5,
+      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+    );
+  }
+}
+
+class _ScoreColumn extends StatelessWidget {
+  const _ScoreColumn({required this.homeScore, required this.awayScore});
+
+  final int homeScore;
+  final int awayScore;
+
+  @override
+  Widget build(BuildContext context) {
+    final scoreStyle = TypographyTokens.headlineMedium().copyWith(
+      fontWeight: FontWeight.w900,
+      height: 1.0,
+    );
+
+    return Column(
+      children: [
+        Text(homeScore.toString(), style: scoreStyle),
+        const SizedBox(height: SpacingTokens.spacing1),
+        Text(awayScore.toString(), style: scoreStyle),
+      ],
     );
   }
 }
@@ -409,38 +479,17 @@ class FixtureBrowserCard extends StatelessWidget {
                     fixture.matchday != null
                         ? 'MD ${fixture.matchday}'
                         : _formatKickoff(),
-                    style: TypographyTokens.editorialFont(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: ColorTokens.onSurfaceVariant,
-                      letterSpacing: 1.5,
-                    ),
+                    style: TypographyTokens.labelSmall(
+                      ColorTokens.onSurfaceVariant,
+                    ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
                   ),
                 ),
                 if (isLive || isFinished)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: (isLive
-                              ? ColorTokens.success
-                              : ColorTokens.onSurfaceVariant)
-                          .withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      _statusLabel(),
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: isLive
-                            ? ColorTokens.success
-                            : ColorTokens.onSurfaceVariant,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
+                  AfriInfoChip(
+                    label: _statusLabel(),
+                    color: isLive
+                        ? ColorTokens.success
+                        : ColorTokens.onSurfaceVariant,
                   ),
               ],
             ),
@@ -455,99 +504,50 @@ class FixtureBrowserCard extends StatelessWidget {
                         fixture.homeTeamName.toUpperCase(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TypographyTokens.monolithFont(
-                          fontSize: 16,
+                        style: TypographyTokens.titleMedium().copyWith(
                           fontWeight: FontWeight.w700,
-                          color: ColorTokens.onSurface,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: SpacingTokens.spacing1),
                       Text(
                         fixture.awayTeamName.toUpperCase(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TypographyTokens.monolithFont(
-                          fontSize: 16,
+                        style: TypographyTokens.titleMedium().copyWith(
                           fontWeight: FontWeight.w700,
-                          color: ColorTokens.onSurface,
                         ),
                       ),
                     ],
                   ),
                 ),
                 if (hasScore)
-                  Column(
-                    children: [
-                      Text(
-                        fixture.homeScore.toString(),
-                        style: TypographyTokens.monolithFont(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w900,
-                          color: ColorTokens.onSurface,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        fixture.awayScore.toString(),
-                        style: TypographyTokens.monolithFont(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w900,
-                          color: ColorTokens.onSurface,
-                        ),
-                      ),
-                    ],
+                  _ScoreColumn(
+                    homeScore: fixture.homeScore!,
+                    awayScore: fixture.awayScore!,
                   )
                 else
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: fixture.isPredictable
-                          ? ColorTokens.clubAccent.withValues(alpha: 0.14)
-                          : ColorTokens.surfaceContainerHigh,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      fixture.isPredictable ? 'PREDICT' : _formatKickoff(),
-                      style: TypographyTokens.editorialFont(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: fixture.isPredictable
-                            ? ColorTokens.clubAccent
-                            : ColorTokens.onSurfaceVariant,
-                        letterSpacing: 1.5,
-                      ),
-                    ),
+                  _FixtureActionPill(
+                    label: fixture.isPredictable ? 'PREDICT' : _formatKickoff(),
+                    color: fixture.isPredictable
+                        ? ColorTokens.clubAccent
+                        : ColorTokens.onSurfaceVariant,
+                    emphasized: fixture.isPredictable,
                   ),
               ],
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             Row(
               children: [
-                if (isLive)
-                  Container(
-                    width: 6,
-                    height: 6,
-                    margin: const EdgeInsets.only(right: 6),
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: ColorTokens.success,
-                    ),
-                  ),
+                if (isLive) const _LiveDot(margin: EdgeInsets.only(right: 6)),
                 Text(
                   fixture.matchday != null
                       ? '${_formatKickoff()}  ·  ${fixture.venueName ?? ''}'
                       : fixture.venueName ?? '',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TypographyTokens.editorialFont(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: ColorTokens.onSurfaceVariant,
-                    letterSpacing: 1.2,
-                  ),
+                  style: TypographyTokens.labelSmall(
+                    ColorTokens.onSurfaceVariant,
+                  ).copyWith(fontWeight: FontWeight.w500, letterSpacing: 1.2),
                 ),
               ],
             ),

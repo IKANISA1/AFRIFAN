@@ -1,0 +1,65 @@
+import 'package:flutter/material.dart';
+
+import '../tokens/color_tokens.dart';
+import '../tokens/spacing_tokens.dart';
+
+/// Shared borrowed-system route chrome for secondary Flutter screens.
+class AfriAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const AfriAppBar({
+    super.key,
+    this.title,
+    this.leading,
+    this.actions,
+    this.bottom,
+    this.flexibleSpace,
+    this.centerTitle,
+    this.automaticallyImplyLeading = true,
+    this.backgroundColor,
+    this.elevation,
+  });
+
+  final Widget? title;
+  final Widget? leading;
+  final List<Widget>? actions;
+  final PreferredSizeWidget? bottom;
+  final Widget? flexibleSpace;
+  final bool? centerTitle;
+  final bool automaticallyImplyLeading;
+
+  /// Accepted for staged migration; the borrowed chrome owns the actual color.
+  final Color? backgroundColor;
+
+  /// Accepted for staged migration; the borrowed chrome remains flat.
+  final double? elevation;
+
+  @override
+  Size get preferredSize {
+    final bottomHeight = bottom?.preferredSize.height ?? 0;
+    return Size.fromHeight(kToolbarHeight + bottomHeight);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveBackground =
+        backgroundColor == Colors.transparent || backgroundColor == null
+        ? ColorTokens.chrome.withValues(alpha: 0.82)
+        : backgroundColor!.withValues(alpha: 0.88);
+
+    return AppBar(
+      automaticallyImplyLeading: automaticallyImplyLeading,
+      backgroundColor: effectiveBackground,
+      elevation: elevation == null ? 0 : 0,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
+      foregroundColor: ColorTokens.chromeForeground,
+      iconTheme: IconThemeData(color: ColorTokens.chromeForeground),
+      titleSpacing: leading == null ? SpacingTokens.spacing5 : 0,
+      centerTitle: centerTitle ?? false,
+      title: title,
+      leading: leading,
+      actions: actions,
+      bottom: bottom,
+      flexibleSpace: flexibleSpace,
+    );
+  }
+}

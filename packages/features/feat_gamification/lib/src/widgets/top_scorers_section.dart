@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 ///
 /// Mirrors the fanafrika `LeagueHub.tsx` `TopScorers` section.
 class TopScorersSection extends StatelessWidget {
-  const TopScorersSection({
-    super.key,
-    this.scorers = const <TopScorerEntry>[],
-  });
+  const TopScorersSection({super.key, this.scorers = const <TopScorerEntry>[]});
 
   final List<TopScorerEntry> scorers;
 
@@ -23,25 +20,20 @@ class TopScorersSection extends StatelessWidget {
       children: [
         Text(
           'TOP SCORERS',
-          style: TypographyTokens.monolithFont(
-            fontSize: 18,
+          style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w800,
             letterSpacing: 1.2,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
-        ClayCard(
+        AfriSurfaceCard(
           child: Column(
             children: scorers.asMap().entries.map((entry) {
               final index = entry.key;
               final scorer = entry.value;
               return Column(
                 children: [
-                  if (index > 0)
-                    Divider(
-                      height: 1,
-                      color: ColorTokens.ghostBorder,
-                    ),
+                  if (index > 0) const AfriDivider(),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: SpacingTokens.spacing3,
@@ -52,13 +44,11 @@ class TopScorersSection extends StatelessWidget {
                           width: 20,
                           child: Text(
                             '${scorer.rank}',
-                            style: TypographyTokens.monolithFont(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              color: scorer.rank <= 3
+                            style: TypographyTokens.titleSmall(
+                              scorer.rank <= 3
                                   ? ColorTokens.clubAccent
                                   : ColorTokens.onSurfaceVariant,
-                            ),
+                            ).copyWith(fontWeight: FontWeight.w800),
                           ),
                         ),
                         const SizedBox(width: SpacingTokens.spacing3),
@@ -72,12 +62,13 @@ class TopScorersSection extends StatelessWidget {
                               ),
                               Text(
                                 scorer.team,
-                                style: TypographyTokens.editorialFont(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
-                                  color: ColorTokens.onSurfaceVariant,
-                                  letterSpacing: 1.2,
-                                ),
+                                style:
+                                    TypographyTokens.metricLabel(
+                                      ColorTokens.onSurfaceVariant,
+                                    ).copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 1.2,
+                                    ),
                               ),
                             ],
                           ),
@@ -87,21 +78,20 @@ class TopScorersSection extends StatelessWidget {
                           children: [
                             Text(
                               '${scorer.goals}',
-                              style: TypographyTokens.monolithFont(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w900,
-                                color: ColorTokens.clubAccent,
-                              ),
+                              style: TypographyTokens.headlineSmall(
+                                ColorTokens.clubAccent,
+                              ).copyWith(fontWeight: FontWeight.w900),
                             ),
                             const SizedBox(width: 4),
                             Text(
                               'Goals',
-                              style: TypographyTokens.editorialFont(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: ColorTokens.onSurfaceVariant,
-                                letterSpacing: 1,
-                              ),
+                              style:
+                                  TypographyTokens.metricLabel(
+                                    ColorTokens.onSurfaceVariant,
+                                  ).copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 1,
+                                  ),
                             ),
                           ],
                         ),

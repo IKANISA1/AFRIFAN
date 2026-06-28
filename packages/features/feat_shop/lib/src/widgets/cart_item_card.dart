@@ -23,7 +23,7 @@ class CartItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final variant = item.selectedVariant?.trim();
 
-    return ClayCard(
+    return AfriSurfaceCard(
       padding: const EdgeInsets.all(SpacingTokens.spacing4),
       child: Row(
         children: [
@@ -35,7 +35,7 @@ class CartItemCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(18),
             ),
             alignment: Alignment.center,
-            child: const Icon(Icons.shopping_bag_outlined),
+            child: const Icon(AfriIcons.shop),
           ),
           const SizedBox(width: SpacingTokens.spacing4),
           Expanded(
@@ -62,7 +62,7 @@ class CartItemCard extends StatelessWidget {
                 Row(
                   children: [
                     AfriIconButton(
-                      icon: Icons.remove_rounded,
+                      icon: AfriIcons.remove,
                       tooltip: 'Decrease quantity',
                       onTap: onDecrement,
                     ),
@@ -77,12 +77,12 @@ class CartItemCard extends StatelessWidget {
                     ),
                     const SizedBox(width: SpacingTokens.spacing2),
                     AfriIconButton(
-                      icon: Icons.add_rounded,
+                      icon: AfriIcons.add,
                       tooltip: 'Increase quantity',
                       onTap: onIncrement,
                     ),
                     const SizedBox(width: SpacingTokens.spacing3),
-                    TextButton(
+                    AfriTextButton(
                       onPressed: onRemove,
                       child: const Text('Remove'),
                     ),
