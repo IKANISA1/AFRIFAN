@@ -9,6 +9,7 @@
 /// - FirebaseAnalyticsService: structured analytics events
 /// - OperationalHealthService: platform health monitoring
 /// - OfflineEventQueue: queued telemetry for offline-first delivery
+library;
 
 export 'src/crashlytics_service.dart';
 export 'src/firebase_analytics_service.dart';

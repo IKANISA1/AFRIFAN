@@ -15,13 +15,13 @@ String _normalizeFeatureKey(String value) {
 /// The only feature modules allowed to render in the mobile bottom nav.
 const List<String> primaryBottomTabFeatureOrder = <String>[
   'home',
-  'challenge',
+  'fanzone',
   'settings',
 ];
 
 const Set<String> primaryBottomTabFeatureKeys = <String>{
   'home',
-  'challenge',
+  'fanzone',
   'settings',
 };
 

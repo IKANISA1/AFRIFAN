@@ -8,15 +8,14 @@ import 'package:feat_home/src/widgets/match_card.dart';
 import 'package:feat_home/src/widgets/quick_actions_grid.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:rayon_sports/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
+import 'package:test_support/design_font_loader.dart';
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  setUpAll(() {
-    GoogleFonts.config.allowRuntimeFetching = false;
+  setUpAll(() async {
+    await loadDesignFonts();
   });
 
   setUp(() {
@@ -35,9 +34,9 @@ void main() {
   testWidgets('restores an authenticated fan into the production home shell', (
     tester,
   ) async {
-    await startRayonSportsApp(
-      options: AfriClubBootstrapOptions(
-        modules: AppModuleRegistry.build(const RayonSportsConfig()),
+    await _startSmokeApp(
+      AfriClubBootstrapOptions(
+        modules: AppModuleRegistry.build(const _SmokeRayonSportsConfig()),
         startupOptions: const AppStartupOptions.integrationTest(),
         authRepository: _FakeAuthRepository(
           restoreResult: const UserProfile(
@@ -103,9 +102,9 @@ void main() {
   testWidgets(
     'routes back to onboarding when an existing session cannot be restored safely',
     (tester) async {
-      await startRayonSportsApp(
-        options: AfriClubBootstrapOptions(
-          modules: AppModuleRegistry.build(const RayonSportsConfig()),
+      await _startSmokeApp(
+        AfriClubBootstrapOptions(
+          modules: AppModuleRegistry.build(const _SmokeRayonSportsConfig()),
           startupOptions: const AppStartupOptions.integrationTest(),
           authRepository: _FakeAuthRepository(
             restoreError: Exception('temporary profile hydration failure'),
@@ -159,9 +158,9 @@ void main() {
   testWidgets(
     'current production release keeps settings streamlined after the payment-surface cleanup',
     (tester) async {
-      await startRayonSportsApp(
-        options: AfriClubBootstrapOptions(
-          modules: AppModuleRegistry.build(const RayonSportsConfig()),
+      await _startSmokeApp(
+        AfriClubBootstrapOptions(
+          modules: AppModuleRegistry.build(const _SmokeRayonSportsConfig()),
           startupOptions: const AppStartupOptions.integrationTest(),
           authRepository: _FakeAuthRepository(
             restoreResult: const UserProfile(
@@ -193,22 +192,23 @@ void main() {
       );
 
       await _pumpAppStartup(tester);
+      await _pumpUntilVisible(tester, find.text('Settings'), maxPumps: 60);
+      await tester.scrollUntilVisible(find.text('Privacy policy'), 240);
       await _pumpUntilVisible(
         tester,
         find.text('Privacy policy'),
         maxPumps: 60,
       );
-      await tester.scrollUntilVisible(find.text('Help & support'), 240);
-      await _pumpUntilVisible(
-        tester,
-        find.text('Help & support'),
-        maxPumps: 60,
-      );
+      await tester.scrollUntilVisible(find.text('Help & support'), -240);
 
       expect(find.text('Privacy policy'), findsOneWidget);
       expect(find.text('Help & support'), findsOneWidget);
     },
   );
+}
+
+Future<void> _startSmokeApp(AfriClubBootstrapOptions options) {
+  return bootstrap(const _SmokeRayonSportsConfig(), options: options);
 }
 
 const _smokeFeatureSnapshot = PlatformConfigSnapshot(
@@ -236,6 +236,22 @@ const _smokeFeatureSnapshot = PlatformConfigSnapshot(
     ),
   ],
 );
+
+class _SmokeRayonSportsConfig extends RayonSportsConfig {
+  const _SmokeRayonSportsConfig();
+
+  @override
+  String get clubId => '24';
+
+  @override
+  String get supabaseUrl => 'https://example.supabase.co';
+
+  @override
+  String get supabaseAnonKey => 'anon';
+
+  @override
+  String get environment => 'test';
+}
 
 class _FakeAuthRepository extends AuthRepository {
   _FakeAuthRepository({this.restoreResult, this.restoreError})

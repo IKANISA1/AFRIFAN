@@ -1,3 +1,4 @@
+import 'package:core_auth/core_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/platform_feature_config.dart';
@@ -33,8 +34,9 @@ class FeatureConfigNotifier extends AsyncNotifier<PlatformConfigSnapshot> {
   /// Load the platform config for a specific club.
   /// Called once during app bootstrap.
   Future<void> loadForClub(int clubId, {String channel = 'mobile'}) async {
-    state = const AsyncLoading<PlatformConfigSnapshot>()
-        .copyWithPrevious(state);
+    state = const AsyncLoading<PlatformConfigSnapshot>().copyWithPrevious(
+      state,
+    );
     final repo = ref.read(featureConfigRepositoryProvider);
     state = await AsyncValue.guard(
       () => repo.loadConfig(clubId: clubId, channel: channel),
@@ -52,8 +54,9 @@ class FeatureConfigNotifier extends AsyncNotifier<PlatformConfigSnapshot> {
 
   /// Refresh the feature config from the server.
   Future<void> refresh(int clubId, {String channel = 'mobile'}) async {
-    state = const AsyncLoading<PlatformConfigSnapshot>()
-        .copyWithPrevious(state);
+    state = const AsyncLoading<PlatformConfigSnapshot>().copyWithPrevious(
+      state,
+    );
     final repo = ref.read(featureConfigRepositoryProvider);
     state = await AsyncValue.guard(
       () => repo.loadConfig(clubId: clubId, channel: channel),
@@ -62,10 +65,10 @@ class FeatureConfigNotifier extends AsyncNotifier<PlatformConfigSnapshot> {
 }
 
 /// Provider for the feature config state.
-final featureConfigProvider = AsyncNotifierProvider<
-    FeatureConfigNotifier, PlatformConfigSnapshot>(
-  FeatureConfigNotifier.new,
-);
+final featureConfigProvider =
+    AsyncNotifierProvider<FeatureConfigNotifier, PlatformConfigSnapshot>(
+      FeatureConfigNotifier.new,
+    );
 
 /// Derived provider for the [FeatureConfigService].
 ///
@@ -76,42 +79,55 @@ final featureConfigServiceProvider = Provider<FeatureConfigService>((ref) {
       asyncConfig.valueOrNull ??
       ref.watch(initialFeatureConfigSnapshotProvider) ??
       const PlatformConfigSnapshot();
-  return FeatureConfigService(snapshot);
+  final authState = ref.watch(authStateProvider);
+  final roles = <String>{
+    ...authState.adminAccess.activeRoles.map((role) => role.dbValue),
+    if (authState.user?.isAdmin ?? false) 'admin',
+  };
+  return FeatureConfigService(
+    snapshot,
+    isAuthenticated: authState.isAuthenticated,
+    roles: roles,
+  );
 });
 
 /// Check if a specific feature is enabled.
 ///
 /// Usage: `ref.watch(isFeatureEnabledProvider('ticketing'))`
-final isFeatureEnabledProvider = Provider.family<bool, String>(
-  (ref, featureKey) {
-    final service = ref.watch(featureConfigServiceProvider);
-    return service.isFeatureEnabled(featureKey);
-  },
-);
+final isFeatureEnabledProvider = Provider.family<bool, String>((
+  ref,
+  featureKey,
+) {
+  final service = ref.watch(featureConfigServiceProvider);
+  return service.isFeatureEnabled(featureKey);
+});
 
 /// Check if a feature should render in the current UI context.
-final canRenderFeatureProvider = Provider.family<bool, String>(
-  (ref, featureKey) {
-    final service = ref.watch(featureConfigServiceProvider);
-    return service.canRenderFeature(featureKey);
-  },
-);
+final canRenderFeatureProvider = Provider.family<bool, String>((
+  ref,
+  featureKey,
+) {
+  final service = ref.watch(featureConfigServiceProvider);
+  return service.canRenderFeature(featureKey);
+});
 
 /// Check if a feature should show in navigation.
-final shouldShowInNavProvider = Provider.family<bool, String>(
-  (ref, featureKey) {
-    final service = ref.watch(featureConfigServiceProvider);
-    return service.shouldShowInNav(featureKey);
-  },
-);
+final shouldShowInNavProvider = Provider.family<bool, String>((
+  ref,
+  featureKey,
+) {
+  final service = ref.watch(featureConfigServiceProvider);
+  return service.shouldShowInNav(featureKey);
+});
 
 /// Check if a feature should show on home.
-final shouldShowOnHomeProvider = Provider.family<bool, String>(
-  (ref, featureKey) {
-    final service = ref.watch(featureConfigServiceProvider);
-    return service.shouldShowOnHome(featureKey);
-  },
-);
+final shouldShowOnHomeProvider = Provider.family<bool, String>((
+  ref,
+  featureKey,
+) {
+  final service = ref.watch(featureConfigServiceProvider);
+  return service.shouldShowOnHome(featureKey);
+});
 
 /// Features to show in navigation, sorted by sort_order.
 final navFeaturesProvider = Provider<List<PlatformFeature>>((ref) {
@@ -126,9 +142,10 @@ final homeFeaturesProvider = Provider<List<PlatformFeature>>((ref) {
 });
 
 /// Content blocks for a specific placement.
-final contentBlocksProvider = Provider.family<List<ContentBlock>, String>(
-  (ref, placementKey) {
-    final service = ref.watch(featureConfigServiceProvider);
-    return service.getContentBlocks(placementKey);
-  },
-);
+final contentBlocksProvider = Provider.family<List<ContentBlock>, String>((
+  ref,
+  placementKey,
+) {
+  final service = ref.watch(featureConfigServiceProvider);
+  return service.getContentBlocks(placementKey);
+});

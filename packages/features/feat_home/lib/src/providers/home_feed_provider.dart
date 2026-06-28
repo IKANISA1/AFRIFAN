@@ -32,7 +32,12 @@ class HomeFeedNotifier extends AsyncNotifier<HomeFeedSnapshot> {
     try {
       return await repo.load();
     } catch (error, stackTrace) {
-      AfriLogger.warn('HomeFeedProvider', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'HomeFeedProvider',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       return const HomeFeedSnapshot(
         status: HomeFeedStatus.error,
         message: 'Live club data is temporarily unavailable. Pull to refresh.',
@@ -44,5 +49,5 @@ class HomeFeedNotifier extends AsyncNotifier<HomeFeedSnapshot> {
 /// Provider for the home feed state managed by [HomeFeedNotifier].
 final homeFeedProvider =
     AsyncNotifierProvider<HomeFeedNotifier, HomeFeedSnapshot>(() {
-  return HomeFeedNotifier();
-});
+      return HomeFeedNotifier();
+    });

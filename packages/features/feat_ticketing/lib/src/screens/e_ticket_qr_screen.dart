@@ -100,9 +100,10 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.05)),
+                                  border: BorderTokens.all(
+                                    color: Colors.black,
+                                    opacity: 0.05,
+                                  ),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: QrImageView(
@@ -158,7 +159,9 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                               Text(
                                 ticket.matchTitle.toUpperCase(),
                                 style: const TextStyle(
-                                  fontFamily: 'Display',
+                                  fontFamily:
+                                      TypographyTokens.borrowedFontFamily,
+                                  package: 'core_theme',
                                   fontSize: 24,
                                   fontWeight: FontWeight.w900,
                                   fontStyle: FontStyle.italic,
@@ -271,7 +274,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
               fontSize: 13,
               fontWeight: FontWeight.w900,
               color: Colors.black,
-              letterSpacing: -0.5),
+              letterSpacing: 0),
         ),
       ],
     );

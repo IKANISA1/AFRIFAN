@@ -1,4 +1,4 @@
-/// AFRICLUB Core Theme — Tactile Monolith Design System
+/// AFRICLUB Core Theme — Revolut-Borrowed Design System
 ///
 /// Shared mobile design-system source of truth for Flutter surfaces, tokens,
 /// and primitives.
@@ -51,6 +51,7 @@ export 'src/widgets/afri_stat_row.dart';
 export 'src/widgets/afri_state_view.dart';
 export 'src/widgets/afri_status_chip.dart';
 export 'src/widgets/afri_toast.dart';
+export 'src/widgets/afri_top_command_bar.dart';
 export 'src/widgets/africlub_bottom_nav.dart';
 export 'src/widgets/clay_card.dart';
 export 'src/widgets/elite_button.dart';
@@ -59,4 +60,3 @@ export 'src/widgets/glass_card.dart';
 export 'src/widgets/gradient_background.dart';
 export 'src/widgets/kill_switch_gate.dart';
 export 'src/widgets/numeric_alias.dart';
-

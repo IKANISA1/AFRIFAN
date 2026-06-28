@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:core_auth/core_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,9 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 void main() {
   group('AuthNotifier — restore()', () {
     test('transitions Initial → Loading → Authenticated on success', () async {
-      final container = _createContainer(
-        restoreResult: _testUser('u1'),
-      );
+      final container = _createContainer(restoreResult: _testUser('u1'));
       addTearDown(container.dispose);
 
       expect(container.read(authStateProvider), isA<AuthInitial>());
@@ -24,10 +21,7 @@ void main() {
 
       expect(states.first, isA<AuthLoading>());
       expect(states.last, isA<AuthAuthenticated>());
-      expect(
-        (states.last as AuthAuthenticated).user.id,
-        'u1',
-      );
+      expect((states.last as AuthAuthenticated).user.id, 'u1');
     });
 
     test('transitions to Unauthenticated when no session exists', () async {
@@ -60,9 +54,7 @@ void main() {
 
   group('AuthNotifier — signOut()', () {
     test('clears session and returns to Unauthenticated', () async {
-      final container = _createContainer(
-        restoreResult: _testUser('u1'),
-      );
+      final container = _createContainer(restoreResult: _testUser('u1'));
       addTearDown(container.dispose);
 
       final notifier = container.read(authStateProvider.notifier);
@@ -91,9 +83,7 @@ void main() {
 
   group('AuthNotifier — signInAnonymously()', () {
     test('sets Authenticated state on success', () async {
-      final container = _createContainer(
-        anonymousResult: _testUser('anon-1'),
-      );
+      final container = _createContainer(anonymousResult: _testUser('anon-1'));
       addTearDown(container.dispose);
 
       final notifier = container.read(authStateProvider.notifier);
@@ -119,9 +109,7 @@ void main() {
 
   group('AuthNotifier — deleteAccount()', () {
     test('returns null and sets Unauthenticated on success', () async {
-      final container = _createContainer(
-        restoreResult: _testUser('u1'),
-      );
+      final container = _createContainer(restoreResult: _testUser('u1'));
       addTearDown(container.dispose);
 
       final notifier = container.read(authStateProvider.notifier);
@@ -206,7 +194,7 @@ void main() {
       expect(state.isAuthenticated, isTrue);
       expect(state.isLoading, isFalse);
       expect(state.user, isNotNull);
-      expect(state.user!.id, 'u1');
+      expect(state.user.id, 'u1');
       expect(state.adminAccess.hasPlatformAccess, isTrue);
     });
 
@@ -261,10 +249,7 @@ void main() {
 
 // ─────────────────────────────── Helpers ──────────────────────────────── //
 
-UserProfile _testUser(
-  String id, {
-  String name = 'Test User',
-}) {
+UserProfile _testUser(String id, {String name = 'Test User'}) {
   return UserProfile(
     id: id,
     clubId: '1',

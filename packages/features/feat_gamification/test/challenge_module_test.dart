@@ -14,21 +14,21 @@ void main() {
       expect(module.featureKey, 'challenge');
     });
 
-    test('registers the challenge tab route', () {
-      expect(module.tabRoute.path, '/challenge');
-      expect(module.tabRoute.label, 'Fan Zone');
+    test('keeps challenge off the primary bottom tabs', () {
+      expect(module.tabRoute, isNull);
     });
 
-    test('registers create, my, and detail routes', () {
+    test('registers root, create, my, and detail routes', () {
       final paths = module.routes
           .whereType<GoRoute>()
           .map((route) => route.path)
           .toList(growable: false);
 
+      expect(paths, contains('/challenge'));
       expect(paths, contains('/challenge/create'));
       expect(paths, contains('/challenge/my'));
       expect(paths, contains('/challenge/:id'));
-      expect(paths, hasLength(3));
+      expect(paths, hasLength(4));
     });
   });
 }

@@ -1,8 +1,8 @@
 // ignore_for_file: implementation_imports
 
+import 'package:app_registry/app_registry.dart';
 import 'package:core_app/core_app.dart';
 import 'package:core_auth/core_auth.dart';
-import 'package:app_registry/app_registry.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';

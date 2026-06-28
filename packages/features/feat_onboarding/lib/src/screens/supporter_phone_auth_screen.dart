@@ -29,8 +29,7 @@ class _SupporterPhoneAuthScreenState
 
   String get _phoneValue => _phoneController.text.trim();
   String get _otpValue => _otpController.text.trim();
-  bool get _canSubmitPhone =>
-      _phoneValue.isNotEmpty && _resendCooldown == 0;
+  bool get _canSubmitPhone => _phoneValue.isNotEmpty && _resendCooldown == 0;
   bool get _canSubmitOtp =>
       (_pendingPhone?.isNotEmpty ?? false) && _otpValue.length >= 6;
 
@@ -231,7 +230,9 @@ class _SupporterPhoneAuthScreenState
                       decoration: BoxDecoration(
                         color: ColorTokens.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(18),
-                        border: BorderTokens.all(color: ColorTokens.ghostBorder),
+                        border: BorderTokens.all(
+                          color: ColorTokens.ghostBorder,
+                        ),
                       ),
                       child: Row(
                         children: [
@@ -267,8 +268,8 @@ class _SupporterPhoneAuthScreenState
                       label: _resendCooldown > 0
                           ? 'Resend in ${_resendCooldown}s'
                           : (_pendingPhone == null
-                              ? 'Send code'
-                              : 'Resend code'),
+                                ? 'Send code'
+                                : 'Resend code'),
                       onTap: _sendCode,
                       isLoading: _isLoading && _pendingPhone == null,
                       enabled: !_isLoading && _canSubmitPhone,
@@ -298,13 +299,16 @@ class _SupporterPhoneAuthScreenState
                       label: '6-digit OTP',
                       hint: '123456',
                       keyboardType: TextInputType.number,
-                      enabled: (_pendingPhone?.isNotEmpty ?? false) && !_isLoading,
+                      enabled:
+                          (_pendingPhone?.isNotEmpty ?? false) && !_isLoading,
                       prefixIcon: AfriIcons.privacy,
                       maxLength: 6,
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriButton(
-                      key: const ValueKey<String>('supporter-verify-otp-button'),
+                      key: const ValueKey<String>(
+                        'supporter-verify-otp-button',
+                      ),
                       label: 'Verify & continue',
                       onTap: _verifyCode,
                       isLoading: _isLoading,
@@ -322,7 +326,7 @@ class _SupporterPhoneAuthScreenState
                         await ref
                             .read(authStateProvider.notifier)
                             .signInAnonymously();
-                        if (!mounted) return;
+                        if (!mounted || !context.mounted) return;
                         setState(() => _isLoading = false);
 
                         final nextState = ref.read(authStateProvider);
@@ -333,9 +337,7 @@ class _SupporterPhoneAuthScreenState
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text(
-                              'Could not start anonymous session.',
-                            ),
+                            content: Text('Could not start anonymous session.'),
                           ),
                         );
                       },

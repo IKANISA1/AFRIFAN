@@ -84,8 +84,9 @@ class AfriActionRow extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Text(
                         badge! > 99 ? '99+' : '$badge',
-                        style: TypographyTokens.labelSmall(Colors.white)
-                            .copyWith(fontSize: 10, height: 1.0),
+                        style: TypographyTokens.labelSmall(
+                          Colors.white,
+                        ).copyWith(fontSize: 10, height: 1.0),
                       ),
                     ),
                   ),

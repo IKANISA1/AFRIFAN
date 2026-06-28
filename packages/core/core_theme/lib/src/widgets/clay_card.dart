@@ -39,7 +39,8 @@ class ClayCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveColor =
-        backgroundColor ?? Theme.of(context).colorScheme.surfaceContainerLow;
+        backgroundColor ??
+        ColorTokens.surfaceContainerLow.withValues(alpha: 0.78);
     final effectiveRadius = borderRadius ?? ShapeTokens.cardRadius;
 
     final surface = _ClaySurface(
@@ -119,7 +120,7 @@ class _ClaySurface extends StatelessWidget {
               )
             : BorderTokens.ghost(width: BorderTokens.standard),
         boxShadow: [
-          ...AfriShadows.standard(Brightness.dark),
+          ...AfriShadows.floating(Brightness.dark, strength: 0.82),
           if (isPressed)
             BoxShadow(
               color: ColorTokens.ambientShadow.withValues(alpha: 0.16),

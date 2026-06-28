@@ -248,7 +248,8 @@ class SettingsScreen extends ConsumerWidget {
             const Text(
               'ADMIN ACCESS',
               style: TextStyle(
-                fontFamily: 'Display',
+                fontFamily: TypographyTokens.borrowedFontFamily,
+                package: 'core_theme',
                 fontSize: 24,
                 fontWeight: FontWeight.w900,
                 fontStyle: FontStyle.italic,

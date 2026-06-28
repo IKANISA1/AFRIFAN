@@ -40,7 +40,8 @@ class FanClubFeaturedCard extends StatelessWidget {
           Text(
             (club['name']?.toString() ?? 'FAN CLUB').toUpperCase(),
             style: const TextStyle(
-              fontFamily: 'Display',
+              fontFamily: TypographyTokens.borrowedFontFamily,
+              package: 'core_theme',
               fontSize: 32,
               fontWeight: FontWeight.w900,
               fontStyle: FontStyle.italic,
@@ -52,15 +53,28 @@ class FanClubFeaturedCard extends StatelessWidget {
           Text(
             club['description']?.toString() ?? 'Official supporter chapter.',
             maxLines: 2,
-            style: const TextStyle(fontSize: 13, color: Colors.black54, height: 1.4),
+            style: const TextStyle(
+              fontSize: 13,
+              color: Colors.black54,
+              height: 1.4,
+            ),
           ),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildEliteMeta('REGION', club['region']?.toString() ?? 'Unknown'),
-              _buildEliteMeta('MEMBERS', '${(club['member_count'] as num?)?.toInt() ?? 0}'),
-              _buildEliteMeta('RATING', '${(club['rating'] as num?)?.toDouble() ?? 0.0}'),
+              _buildEliteMeta(
+                'REGION',
+                club['region']?.toString() ?? 'Unknown',
+              ),
+              _buildEliteMeta(
+                'MEMBERS',
+                '${(club['member_count'] as num?)?.toInt() ?? 0}',
+              ),
+              _buildEliteMeta(
+                'RATING',
+                '${(club['rating'] as num?)?.toDouble() ?? 0.0}',
+              ),
             ],
           ),
         ],
@@ -74,12 +88,22 @@ class FanClubFeaturedCard extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Colors.black26, letterSpacing: 1),
+          style: const TextStyle(
+            fontSize: 8,
+            fontWeight: FontWeight.w900,
+            color: Colors.black26,
+            letterSpacing: 1,
+          ),
         ),
         const SizedBox(height: 2),
         Text(
           value.toUpperCase(),
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Colors.black, letterSpacing: -0.5),
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+            color: Colors.black,
+            letterSpacing: 0,
+          ),
         ),
       ],
     );
@@ -120,7 +144,8 @@ class FanClubListItem extends StatelessWidget {
                 child: Text(
                   (club['name']?.toString() ?? 'Fan Club').toUpperCase(),
                   style: const TextStyle(
-                    fontFamily: 'Display',
+                    fontFamily: TypographyTokens.borrowedFontFamily,
+                    package: 'core_theme',
                     fontSize: 22,
                     fontWeight: FontWeight.w900,
                     fontStyle: FontStyle.italic,
@@ -129,7 +154,11 @@ class FanClubListItem extends StatelessWidget {
                 ),
               ),
               if (isOfficial)
-                Icon(AfriIcons.verified, color: ColorTokens.clubAccent, size: 20),
+                Icon(
+                  AfriIcons.verified,
+                  color: ColorTokens.clubAccent,
+                  size: 20,
+                ),
             ],
           ),
           const SizedBox(height: 4),
@@ -150,7 +179,9 @@ class FanClubListItem extends StatelessWidget {
                   label: isJoined ? 'Joined' : 'Join',
                   onTap: onJoinToggled,
                   isLoading: isPending,
-                  variant: isJoined ? EliteButtonVariant.outline : EliteButtonVariant.primary,
+                  variant: isJoined
+                      ? EliteButtonVariant.outline
+                      : EliteButtonVariant.primary,
                 ),
               ),
               const SizedBox(width: 12),

@@ -70,7 +70,7 @@ void main() {
       modules = AppModuleRegistry.build(const _FakeClubConfig());
     });
 
-    test('home, challenge, and settings are the only tabs', () {
+    test('home, fanzone, and settings are the only tabs', () {
       final tabs = modules
           .where((m) => m.tabRoute != null)
           .map((m) => (path: m.tabRoute!.path, label: m.tabRoute!.label))
@@ -79,7 +79,7 @@ void main() {
         tabs,
         orderedEquals(<({String path, String label})>[
           (path: '/home', label: 'Home'),
-          (path: '/challenge', label: 'Challenges'),
+          (path: '/fanzone', label: 'Fan Zone'),
           (path: '/settings', label: 'Settings'),
         ]),
       );
@@ -88,7 +88,7 @@ void main() {
     test('non-tab modules stay off the bottom navigation', () {
       for (final featureKey in const <String>[
         'live',
-        'fanzone',
+        'challenge',
         'onboarding',
         'membership',
         'contributions',
@@ -98,7 +98,11 @@ void main() {
         'shop',
       ]) {
         final module = modules.firstWhere((m) => m.featureKey == featureKey);
-        expect(module.tabRoute, isNull, reason: '$featureKey should not be a tab');
+        expect(
+          module.tabRoute,
+          isNull,
+          reason: '$featureKey should not be a tab',
+        );
       }
     });
   });
@@ -134,7 +138,7 @@ void main() {
         tabs,
         orderedEquals(<({String path, String label})>[
           (path: '/home', label: 'Home'),
-          (path: '/challenge', label: 'Challenges'),
+          (path: '/fanzone', label: 'Fan Zone'),
           (path: '/settings', label: 'Settings'),
         ]),
       );

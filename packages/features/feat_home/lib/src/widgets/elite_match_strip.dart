@@ -7,18 +7,16 @@ class EliteMatchStrip extends StatelessWidget {
   final MatchSlide slide;
   final VoidCallback? onTap;
 
-  const EliteMatchStrip({
-    super.key,
-    required this.slide,
-    this.onTap,
-  });
+  const EliteMatchStrip({super.key, required this.slide, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return EliteCard(
       onTap: onTap,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      margin: const EdgeInsets.symmetric(horizontal: SpacingTokens.screenPadding),
+      margin: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.screenPadding,
+      ),
       backgroundColor: Colors.white,
       borderColor: Colors.transparent,
       child: Row(
@@ -31,7 +29,10 @@ class EliteMatchStrip extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: ColorTokens.error.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
@@ -67,7 +68,8 @@ class EliteMatchStrip extends StatelessWidget {
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 18,
-                          fontFamily: 'Display',
+                          fontFamily: TypographyTokens.borrowedFontFamily,
+                          package: 'core_theme',
                           fontWeight: FontWeight.w900,
                           fontStyle: FontStyle.italic,
                           height: 0.9,

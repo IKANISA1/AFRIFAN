@@ -5,12 +5,10 @@ import 'package:feat_ticketing/src/ticketing_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:test_support/design_font_loader.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  GoogleFonts.config.allowRuntimeFetching = false;
   setUpAll(loadDesignFonts);
 
   testWidgets('matches the ticketing match list layout', (tester) async {

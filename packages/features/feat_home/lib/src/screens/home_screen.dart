@@ -28,6 +28,7 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       body: GradientBackground(
+        routePath: '/home',
         child: RefreshIndicator(
           onRefresh: () => notifier.refresh(),
           color: ColorTokens.clubAccent,
@@ -48,6 +49,7 @@ class HomeScreen extends ConsumerWidget {
         parent: AlwaysScrollableScrollPhysics(),
       ),
       slivers: [
+        SliverToBoxAdapter(child: _HomeTopChrome()),
         SliverToBoxAdapter(child: _HomeHeroSkeleton()),
         const SliverToBoxAdapter(
           child: Padding(
@@ -71,6 +73,7 @@ class HomeScreen extends ConsumerWidget {
         parent: AlwaysScrollableScrollPhysics(),
       ),
       slivers: [
+        SliverToBoxAdapter(child: _HomeTopChrome()),
         SliverToBoxAdapter(
           child: _HomeHeroStateCard(
             child: AfriErrorView(
@@ -93,11 +96,11 @@ class HomeScreen extends ConsumerWidget {
     HomeFeedSnapshot snapshot,
     bool isRefreshing,
   ) {
-    final refreshKey =
-        ref.read(homeFeedProvider.notifier).latestIntelRefreshKey;
+    final refreshKey = ref
+        .read(homeFeedProvider.notifier)
+        .latestIntelRefreshKey;
     final statusMessage = snapshot.message?.trim();
-    final hasStatusMessage =
-        statusMessage != null && statusMessage.isNotEmpty;
+    final hasStatusMessage = statusMessage != null && statusMessage.isNotEmpty;
 
     // ── Load all placements for home ──
     final heroBlocks = ref.watch(contentBlocksProvider('home_hero'));
@@ -117,6 +120,7 @@ class HomeScreen extends ConsumerWidget {
         parent: AlwaysScrollableScrollPhysics(),
       ),
       slivers: [
+        SliverToBoxAdapter(child: _HomeTopChrome()),
         // ── Degraded / partial error banner ──
         if (hasStatusMessage &&
             (snapshot.status == HomeFeedStatus.degraded ||
@@ -139,7 +143,10 @@ class HomeScreen extends ConsumerWidget {
           ),
 
         // ── Dynamic Blocks Loop ──
-        ...allBlocks.map((block) => _buildBlockRenderer(context, ref, block, snapshot, refreshKey)),
+        ...allBlocks.map(
+          (block) =>
+              _buildBlockRenderer(context, ref, block, snapshot, refreshKey),
+        ),
 
         // ── Refresh indicator skeleton ──
         if (isRefreshing)
@@ -168,7 +175,7 @@ class HomeScreen extends ConsumerWidget {
     int refreshKey,
   ) {
     final widgetKey = block.content['widget']?.toString() ?? '';
-    
+
     Widget content;
     switch (widgetKey) {
       case 'match_score_card':
@@ -239,7 +246,8 @@ class HomeScreen extends ConsumerWidget {
             globalFet: snapshot.userFet,
             fanRank: snapshot.fanRank,
             onFetTap: () => context.push('/fanzone/leaderboard?tab=fet'),
-            onRankTap: () => context.push('/fanzone/leaderboard?tab=supporters'),
+            onRankTap: () =>
+                context.push('/fanzone/leaderboard?tab=supporters'),
           ),
         );
         break;
@@ -278,14 +286,15 @@ class HomeScreen extends ConsumerWidget {
     }
 
     // Wrap in animations and FeatureGate if necessary
-    final wrapped = _buildAnimatedSection(context, content, delayMs: (block.sortOrder ?? 0) * 10);
-    
+    final wrapped = _buildAnimatedSection(
+      context,
+      content,
+      delayMs: (block.sortOrder ?? 0) * 10,
+    );
+
     if (block.featureKey != null) {
       return SliverToBoxAdapter(
-        child: FeatureGate(
-          featureKey: block.featureKey!,
-          child: wrapped,
-        ),
+        child: FeatureGate(featureKey: block.featureKey!, child: wrapped),
       );
     }
 
@@ -352,10 +361,14 @@ class HomeScreen extends ConsumerWidget {
       children: [
         Container(
           decoration: const BoxDecoration(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(ShapeTokens.radiusXl)),
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(ShapeTokens.radiusXl),
+            ),
           ),
           child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(ShapeTokens.radiusXl)),
+            borderRadius: const BorderRadius.vertical(
+              bottom: Radius.circular(ShapeTokens.radiusXl),
+            ),
             child: RepaintBoundary(
               child: _animationsEnabled(context)
                   ? MatchScoreCard(
@@ -370,7 +383,9 @@ class HomeScreen extends ConsumerWidget {
             padding: const EdgeInsets.only(top: 12),
             child: EliteMatchStrip(
               slide: slides.first,
-              onTap: slides.first.route != null ? () => context.push(slides.first.route!) : null,
+              onTap: slides.first.route != null
+                  ? () => context.push(slides.first.route!)
+                  : null,
             ),
           ),
       ],
@@ -392,6 +407,40 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
+class _HomeTopChrome extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      bottom: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          SpacingTokens.screenPadding,
+          SpacingTokens.spacing3,
+          SpacingTokens.screenPadding,
+          SpacingTokens.spacing3,
+        ),
+        child: AfriTopCommandBar(
+          searchHint: 'Search fans, fixtures, wallet',
+          onSearchTap: () => context.push('/fanzone'),
+          onAvatarTap: () => context.push('/settings'),
+          actions: [
+            AfriTopCommandAction(
+              icon: AfriIcons.notifications,
+              label: 'Notifications',
+              onTap: () => context.push('/settings/notifications'),
+            ),
+            AfriTopCommandAction(
+              icon: AfriIcons.wallet,
+              label: 'Wallet',
+              onTap: () => context.push('/fanzone/wallet'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _HomeHeroSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -399,7 +448,9 @@ class _HomeHeroSkeleton extends StatelessWidget {
     return Container(
       height: height,
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(ShapeTokens.radiusXl)),
+        borderRadius: const BorderRadius.vertical(
+          bottom: Radius.circular(ShapeTokens.radiusXl),
+        ),
         color: ColorTokens.surface,
       ),
       child: const SafeArea(
@@ -436,7 +487,9 @@ class _HomeHeroStateCard extends StatelessWidget {
     return Container(
       height: height,
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(ShapeTokens.radiusXl)),
+        borderRadius: const BorderRadius.vertical(
+          bottom: Radius.circular(ShapeTokens.radiusXl),
+        ),
         color: ColorTokens.surface,
       ),
       child: SafeArea(bottom: false, child: child),

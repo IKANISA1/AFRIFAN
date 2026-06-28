@@ -188,7 +188,12 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     try {
       scope = await ClubScopeResolver(client: client).requireResolved();
     } catch (error, stackTrace) {
-      AfriLogger.warn('HomeContentRepository', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'HomeContentRepository',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       return const HomeFeedSnapshot(
         status: HomeFeedStatus.error,
         message: 'Could not resolve the active club. Pull to refresh.',
@@ -391,7 +396,12 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
 
       result(userPoints, rank);
     } catch (error, stackTrace) {
-      AfriLogger.warn('HomeContentRepository', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'HomeContentRepository',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       // Best-effort — leave values at 0 so stats row hides gracefully.
     }
   }
@@ -415,7 +425,12 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
           profile[currentUserId] = selfAlias;
         }
       } catch (error, stackTrace) {
-      AfriLogger.warn('HomeContentRepository', 'Operation failed (non-critical).', error, stackTrace);
+        AfriLogger.warn(
+          'HomeContentRepository',
+          'Operation failed (non-critical).',
+          error,
+          stackTrace,
+        );
         // Keep rendering even if self alias lookup is restricted.
       }
     }
@@ -441,7 +456,12 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         }
       }
     } catch (error, stackTrace) {
-      AfriLogger.warn('HomeContentRepository', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'HomeContentRepository',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       // Alias lookup is best-effort only.
     }
   }
@@ -625,7 +645,12 @@ class SupabaseLatestIntelRepository implements LatestIntelRepository {
         articles: articles,
       );
     } catch (error, stackTrace) {
-      AfriLogger.warn('HomeContentRepository', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'HomeContentRepository',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       return const LatestIntelSnapshot(
         status: LatestIntelStatus.error,
         message: 'Latest Intel is temporarily unavailable. Pull to refresh.',

@@ -51,7 +51,7 @@ class FetArc extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                   color: primary,
                   height: 1.0,
-                  letterSpacing: -1,
+                  letterSpacing: 0,
                 ),
               ),
               const SizedBox(height: 2),

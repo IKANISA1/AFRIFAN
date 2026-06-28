@@ -38,8 +38,10 @@ build/
 **/ios/**/*.mode1v3
 **/ios/**/*.mode2v3
 **/ios/**/*.moved-aside
+**/ios/**/*.pbxproj.backup
 **/ios/**/*.pbxuser
 **/ios/**/*.perspectivev3
+**/ios/**/*.xcscheme.backup
 **/ios/**/DerivedData/
 **/ios/**/Flutter/App.framework
 **/ios/**/Flutter/Flutter.framework

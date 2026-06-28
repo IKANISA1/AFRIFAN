@@ -68,10 +68,7 @@ class AfriSection extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  title,
-                  style: TypographyTokens.sectionTitle(),
-                ),
+                child: Text(title, style: TypographyTokens.sectionTitle()),
               ),
               if (trailingWidget != null) ...[
                 const SizedBox(width: SpacingTokens.spacing3),
@@ -136,10 +133,7 @@ class AfriSectionCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: ColorTokens.surfaceContainerHigh.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: ColorTokens.ghostBorder,
-              width: 1.0,
-            ),
+            border: Border.all(color: ColorTokens.ghostBorder, width: 1.0),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

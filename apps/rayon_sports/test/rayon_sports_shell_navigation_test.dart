@@ -1,17 +1,19 @@
 import 'package:core_app/core_app.dart';
+import 'package:core_auth/core_auth.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
+import 'package:test_support/design_font_loader.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUpAll(() {
-    GoogleFonts.config.allowRuntimeFetching = false;
+  setUpAll(() async {
+    await loadDesignFonts();
   });
 
   group('Rayon Sports app shell', () {
@@ -23,18 +25,15 @@ void main() {
       config = const _FakeClubConfig();
       modules = <FeatureModule>[
         _FakeHomeModule(),
-        _FakeChallengeModule(),
+        _FakeFanzoneModule(),
         _FakeSettingsModule(),
       ];
       ColorTokens.init(config.colors);
       router = AppRouter(
         modules: modules,
         initialLocation: '/home',
-        shellBuilder: (context, shell) => AppShell(
-          shell: shell,
-          config: config,
-          modules: modules,
-        ),
+        shellBuilder: (context, shell) =>
+            AppShell(shell: shell, config: config, modules: modules),
       );
     });
 
@@ -46,19 +45,17 @@ void main() {
 
       expect(find.text('Home Screen'), findsOneWidget);
       expect(find.text('HOME'), findsOneWidget);
-      expect(find.text('CHALLENGES'), findsOneWidget);
+      expect(find.text('FAN ZONE'), findsOneWidget);
       expect(find.text('SETTINGS'), findsOneWidget);
     });
 
-    testWidgets('navigates between challenge and settings tabs', (
-      tester,
-    ) async {
+    testWidgets('navigates between fan zone and settings tabs', (tester) async {
       await tester.pumpWidget(_buildApp(router));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('CHALLENGES'));
+      await tester.tap(find.text('FAN ZONE'));
       await tester.pumpAndSettle();
-      expect(find.text('Challenge Screen'), findsOneWidget);
+      expect(find.text('Fan Zone Screen'), findsOneWidget);
 
       await tester.tap(find.text('SETTINGS'));
       await tester.pumpAndSettle();
@@ -69,6 +66,20 @@ void main() {
 
 Widget _buildApp(AppRouter router) {
   return ProviderScope(
+    overrides: [
+      authRepositoryProvider.overrideWithValue(
+        _FakeAuthRepository(
+          restoreResult: const UserProfile(
+            id: 'user-1',
+            clubId: '24',
+            publicUserId: '483912',
+          ),
+        ),
+      ),
+      initialFeatureConfigSnapshotProvider.overrideWithValue(
+        const PlatformConfigSnapshot(),
+      ),
+    ],
     child: MaterialApp.router(
       routerConfig: router.router,
       theme: ThemeData(useMaterial3: true),
@@ -128,7 +139,7 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   Map<String, bool> get features => const <String, bool>{
-    'challenge': true,
+    'fanzone': true,
     'home': true,
     'settings': true,
   };
@@ -174,18 +185,18 @@ class _FakeHomeModule extends FeatureModule {
   );
 }
 
-class _FakeChallengeModule extends FeatureModule {
+class _FakeFanzoneModule extends FeatureModule {
   @override
-  String get featureKey => 'challenge';
+  String get featureKey => 'fanzone';
 
   @override
   TabRoute get tabRoute => TabRoute(
-    path: '/challenge',
-    label: 'Challenges',
-    icon: AfriIcons.versus,
-    activeIcon: AfriIcons.versus,
+    path: '/fanzone',
+    label: 'Fan Zone',
+    icon: AfriIcons.fanzone,
+    activeIcon: AfriIcons.fanzone,
     builder: (context, state) =>
-        const Scaffold(body: Center(child: Text('Challenge Screen'))),
+        const Scaffold(body: Center(child: Text('Fan Zone Screen'))),
   );
 }
 
@@ -211,4 +222,25 @@ class _FakeSettingsModule extends FeatureModule {
           const Scaffold(body: Center(child: Text('Privacy Screen'))),
     ),
   ];
+}
+
+class _FakeAuthRepository extends AuthRepository {
+  _FakeAuthRepository({this.restoreResult}) : super(clubId: '24');
+
+  final UserProfile? restoreResult;
+
+  @override
+  Future<UserProfile?> restoreCurrentUser() async => restoreResult;
+
+  @override
+  Future<void> signOut() async {}
+
+  @override
+  Future<AdminWorkspaceAccess> resolveAdminAccess(String userId) async {
+    return AdminWorkspaceAccess.none;
+  }
+
+  @override
+  Stream<supabase.AuthState> get authStateChanges =>
+      const Stream<supabase.AuthState>.empty();
 }

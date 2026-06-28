@@ -86,6 +86,20 @@ void main() {
     rules: FeatureRuleConfig(authRequired: true),
   );
 
+  const _settingsAuthRequired = PlatformFeature(
+    featureKey: 'settings',
+    displayName: 'Settings',
+    isEnabled: true,
+    visibilityState: 'visible',
+    channel: FeatureChannelConfig(
+      isEnabled: true,
+      isVisible: true,
+      showInNavigation: true,
+      routeKey: '/settings',
+    ),
+    rules: FeatureRuleConfig(authRequired: true),
+  );
+
   const _outsideSchedule = PlatformFeature(
     featureKey: 'challenge',
     displayName: 'Challenge',
@@ -100,7 +114,9 @@ void main() {
     isEnabled: true,
     visibilityState: 'visible',
     rules: FeatureRuleConfig(
-      dependencyRules: {'requires': ['ticketing', 'shop']},
+      dependencyRules: {
+        'requires': ['ticketing', 'shop'],
+      },
     ),
   );
 
@@ -110,7 +126,9 @@ void main() {
     isEnabled: true,
     visibilityState: 'visible',
     rules: FeatureRuleConfig(
-      dependencyRules: {'requires': ['membership']},
+      dependencyRules: {
+        'requires': ['membership'],
+      },
     ),
   );
 
@@ -141,10 +159,12 @@ void main() {
       expect(service.hasConfig, isFalse);
     });
 
-    test('isFeatureEnabled returns true for unknown features (backward compat)',
-        () {
-      expect(service.isFeatureEnabled('anything'), isTrue);
-    });
+    test(
+      'isFeatureEnabled returns true for unknown features (backward compat)',
+      () {
+        expect(service.isFeatureEnabled('anything'), isTrue);
+      },
+    );
 
     test('shouldShowInNav returns false for unknown features', () {
       expect(service.shouldShowInNav('anything'), isFalse);
@@ -171,21 +191,23 @@ void main() {
     late FeatureConfigService service;
 
     setUp(() {
-      service = FeatureConfigService(_buildSnapshot(
-        features: [
-          _ticketing,
-          _shop,
-          _disabledGlobally,
-          _hiddenFeature,
-          _maintenanceFeature,
-          _channelDisabled,
-          _authRequired,
-          _outsideSchedule,
-          _withDeps,
-          _withBrokenDeps,
-          _navFeatureB,
-        ],
-      ));
+      service = FeatureConfigService(
+        _buildSnapshot(
+          features: [
+            _ticketing,
+            _shop,
+            _disabledGlobally,
+            _hiddenFeature,
+            _maintenanceFeature,
+            _channelDisabled,
+            _authRequired,
+            _outsideSchedule,
+            _withDeps,
+            _withBrokenDeps,
+            _navFeatureB,
+          ],
+        ),
+      );
     });
 
     test('hasConfig returns true', () {
@@ -204,8 +226,7 @@ void main() {
       expect(service.isFeatureEnabled('contributions'), isFalse);
     });
 
-    test('isFeatureEnabled — maintenance feature returns false',
-        () {
+    test('isFeatureEnabled — maintenance feature returns false', () {
       expect(service.isFeatureEnabled('contributions'), isFalse);
     });
 
@@ -226,9 +247,11 @@ void main() {
     late FeatureConfigService service;
 
     setUp(() {
-      service = FeatureConfigService(_buildSnapshot(
-        features: [_ticketing, _hiddenFeature, _maintenanceFeature],
-      ));
+      service = FeatureConfigService(
+        _buildSnapshot(
+          features: [_ticketing, _hiddenFeature, _maintenanceFeature],
+        ),
+      );
     });
 
     test('isFeatureVisible — visible feature returns true', () {
@@ -264,15 +287,17 @@ void main() {
     late FeatureConfigService service;
 
     setUp(() {
-      service = FeatureConfigService(_buildSnapshot(
-        features: [
-          _navFeatureB,
-          _ticketing,
-          _shop,
-          _channelDisabled,
-          _disabledGlobally,
-        ],
-      ));
+      service = FeatureConfigService(
+        _buildSnapshot(
+          features: [
+            _navFeatureB,
+            _ticketing,
+            _shop,
+            _channelDisabled,
+            _disabledGlobally,
+          ],
+        ),
+      );
     });
 
     test('shouldShowInNav — nav feature returns true', () {
@@ -301,9 +326,11 @@ void main() {
     late FeatureConfigService service;
 
     setUp(() {
-      service = FeatureConfigService(_buildSnapshot(
-        features: [_navFeatureB, _ticketing, _shop, _channelDisabled],
-      ));
+      service = FeatureConfigService(
+        _buildSnapshot(
+          features: [_navFeatureB, _ticketing, _shop, _channelDisabled],
+        ),
+      );
     });
 
     test('getNavFeatures returns only enabled nav features', () {
@@ -333,9 +360,9 @@ void main() {
     late FeatureConfigService service;
 
     setUp(() {
-      service = FeatureConfigService(_buildSnapshot(
-        features: [_ticketing, _authRequired, _outsideSchedule],
-      ));
+      service = FeatureConfigService(
+        _buildSnapshot(features: [_ticketing, _authRequired, _outsideSchedule]),
+      );
     });
 
     test('isAuthRequired — returns true for auth-required feature', () {
@@ -363,19 +390,43 @@ void main() {
     });
   });
 
+  group('FeatureConfigService — contextual auth gating', () {
+    late PlatformConfigSnapshot snapshot;
+
+    setUp(() {
+      snapshot = _buildSnapshot(features: [_settingsAuthRequired]);
+    });
+
+    test('signed-out service hides auth-required nav routes', () {
+      final service = FeatureConfigService(snapshot);
+
+      expect(service.shouldShowInNav('settings'), isFalse);
+      expect(service.isRouteAvailable('/settings'), isFalse);
+    });
+
+    test('signed-in service exposes auth-required nav routes', () {
+      final service = FeatureConfigService(snapshot, isAuthenticated: true);
+
+      expect(service.shouldShowInNav('settings'), isTrue);
+      expect(service.isRouteAvailable('/settings'), isTrue);
+    });
+  });
+
   group('FeatureConfigService — dependency queries', () {
     late FeatureConfigService service;
 
     setUp(() {
-      service = FeatureConfigService(_buildSnapshot(
-        features: [
-          _ticketing,
-          _shop,
-          _disabledGlobally,
-          _withDeps,
-          _withBrokenDeps,
-        ],
-      ));
+      service = FeatureConfigService(
+        _buildSnapshot(
+          features: [
+            _ticketing,
+            _shop,
+            _disabledGlobally,
+            _withDeps,
+            _withBrokenDeps,
+          ],
+        ),
+      );
     });
 
     test('areDependenciesSatisfied — all deps enabled returns true', () {
@@ -401,9 +452,9 @@ void main() {
     late FeatureConfigService service;
 
     setUp(() {
-      service = FeatureConfigService(_buildSnapshot(
-        features: [_ticketing, _shop, _disabledGlobally],
-      ));
+      service = FeatureConfigService(
+        _buildSnapshot(features: [_ticketing, _shop, _disabledGlobally]),
+      );
     });
 
     test('getRoute returns route key', () {
@@ -454,16 +505,18 @@ void main() {
     late FeatureConfigService service;
 
     setUp(() {
-      service = FeatureConfigService(_buildSnapshot(
-        features: [
-          _hiddenFeature,
-          _maintenanceFeature,
-          _authRequired,
-          _withDeps,
-          _ticketing,
-          _shop,
-        ],
-      ));
+      service = FeatureConfigService(
+        _buildSnapshot(
+          features: [
+            _hiddenFeature,
+            _maintenanceFeature,
+            _authRequired,
+            _withDeps,
+            _ticketing,
+            _shop,
+          ],
+        ),
+      );
     });
 
     test('hidden features stay operational but do not render', () {
@@ -503,7 +556,9 @@ void main() {
         isEnabled: true,
         visibilityState: 'visible',
         rules: FeatureRuleConfig(
-          dependencyRules: {'requires': ['cyclic_b']},
+          dependencyRules: {
+            'requires': ['cyclic_b'],
+          },
         ),
       );
 
@@ -513,7 +568,9 @@ void main() {
         isEnabled: true,
         visibilityState: 'visible',
         rules: FeatureRuleConfig(
-          dependencyRules: {'requires': ['cyclic_a']},
+          dependencyRules: {
+            'requires': ['cyclic_a'],
+          },
         ),
       );
 
@@ -530,48 +587,50 @@ void main() {
     late FeatureConfigService service;
 
     setUp(() {
-      service = FeatureConfigService(_buildSnapshot(
-        features: [_ticketing, _disabledGlobally],
-        blocks: [
-          const ContentBlock(
-            blockKey: 'hero',
-            blockType: 'banner',
-            placementKey: 'home_top',
-            isActive: true,
-            sortOrder: 1,
-          ),
-          const ContentBlock(
-            blockKey: 'promo',
-            blockType: 'card',
-            placementKey: 'home_top',
-            featureKey: 'ticketing',
-            isActive: true,
-            sortOrder: 2,
-          ),
-          const ContentBlock(
-            blockKey: 'member_promo',
-            blockType: 'card',
-            placementKey: 'home_top',
-            featureKey: 'membership',
-            isActive: true,
-            sortOrder: 3,
-          ),
-          const ContentBlock(
-            blockKey: 'inactive_block',
-            blockType: 'banner',
-            placementKey: 'home_top',
-            isActive: false,
-            sortOrder: 0,
-          ),
-          const ContentBlock(
-            blockKey: 'sidebar_block',
-            blockType: 'widget',
-            placementKey: 'sidebar',
-            isActive: true,
-            sortOrder: 1,
-          ),
-        ],
-      ));
+      service = FeatureConfigService(
+        _buildSnapshot(
+          features: [_ticketing, _disabledGlobally],
+          blocks: [
+            const ContentBlock(
+              blockKey: 'hero',
+              blockType: 'banner',
+              placementKey: 'home_top',
+              isActive: true,
+              sortOrder: 1,
+            ),
+            const ContentBlock(
+              blockKey: 'promo',
+              blockType: 'card',
+              placementKey: 'home_top',
+              featureKey: 'ticketing',
+              isActive: true,
+              sortOrder: 2,
+            ),
+            const ContentBlock(
+              blockKey: 'member_promo',
+              blockType: 'card',
+              placementKey: 'home_top',
+              featureKey: 'membership',
+              isActive: true,
+              sortOrder: 3,
+            ),
+            const ContentBlock(
+              blockKey: 'inactive_block',
+              blockType: 'banner',
+              placementKey: 'home_top',
+              isActive: false,
+              sortOrder: 0,
+            ),
+            const ContentBlock(
+              blockKey: 'sidebar_block',
+              blockType: 'widget',
+              placementKey: 'sidebar',
+              isActive: true,
+              sortOrder: 1,
+            ),
+          ],
+        ),
+      );
     });
 
     test('getContentBlocks filters by placementKey', () {

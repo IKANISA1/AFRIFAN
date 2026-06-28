@@ -36,7 +36,8 @@ class AfriIcons {
   static const IconData share = Icons.share_rounded;
   static const IconData friend = Icons.person_search_rounded;
   static const IconData notifications = Icons.notifications_none_rounded;
-  static const IconData notificationsActive = Icons.notifications_active_rounded;
+  static const IconData notificationsActive =
+      Icons.notifications_active_rounded;
   static const IconData search = Icons.search_rounded;
   static const IconData filter = Icons.tune_rounded;
   static const IconData back = Icons.arrow_back_rounded;
@@ -85,6 +86,7 @@ class AfriIcons {
   static const IconData premium = Icons.workspace_premium_rounded;
   static const IconData bolt = Icons.bolt_rounded;
   static const IconData star = Icons.star_rounded;
+  static const IconData fetToken = Icons.toll_rounded;
   static const IconData gift = Icons.celebration_rounded;
   static const IconData pdf = Icons.picture_as_pdf_rounded;
   static const IconData excel = Icons.table_chart_rounded;

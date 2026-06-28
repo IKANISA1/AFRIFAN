@@ -1,7 +1,7 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Design token assertions — Tactile Monolith compliance.
+/// Design token assertions — Revolut-Borrowed compliance.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 

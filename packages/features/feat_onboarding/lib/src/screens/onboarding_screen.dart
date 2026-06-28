@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -120,6 +122,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: GradientBackground(
+        routePath: '/onboarding',
         child: SafeArea(
           child: Column(
             children: [
@@ -190,11 +193,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                 onTap: _currentPage == slides.length - 1
                                     ? _handleGetStarted
                                     : () {
-                                        _pageController.nextPage(
-                                          duration: const Duration(
-                                            milliseconds: 300,
+                                        unawaited(
+                                          _pageController.nextPage(
+                                            duration: const Duration(
+                                              milliseconds: 300,
+                                            ),
+                                            curve: Curves.easeInOut,
                                           ),
-                                          curve: Curves.easeInOut,
                                         );
                                       },
                               ),

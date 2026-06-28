@@ -13,7 +13,7 @@ import 'tokens/typography_tokens.dart';
 /// Generates a complete [ThemeData] from any [ClubConfig].
 ///
 /// Club identity colors still come from tenant config, but the shared shell,
-/// surfaces, and typography flow through a calmer minimalist system in
+/// surfaces, and typography flow through a calmer Revolut-borrowed system in
 /// `core_theme`.
 class ClubTheme {
   ClubTheme._();

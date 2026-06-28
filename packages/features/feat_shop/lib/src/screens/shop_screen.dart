@@ -110,16 +110,11 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(
-          'Store',
-          style: TypographyTokens.headlineSmall(),
-        ),
+        title: Text('Store', style: TypographyTokens.headlineSmall()),
         actions: [
           IconButton(
-            onPressed: () => showShopSearchSheet(
-              context: context,
-              products: _products,
-            ),
+            onPressed: () =>
+                showShopSearchSheet(context: context, products: _products),
             icon: const Icon(AfriIcons.search),
             tooltip: 'Search products',
           ),
@@ -204,17 +199,26 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                           child: ChoiceChip(
                             label: Text(cat),
                             selected: isSelected,
-                            onSelected: (_) => setState(() => _selectedCategory = cat),
-                            selectedColor: ColorTokens.clubAccent.withValues(alpha: 0.2),
+                            onSelected: (_) =>
+                                setState(() => _selectedCategory = cat),
+                            selectedColor: ColorTokens.clubAccent.withValues(
+                              alpha: 0.2,
+                            ),
                             labelStyle: TypographyTokens.labelSmall(
-                              isSelected ? ColorTokens.clubAccent : ColorTokens.onSurfaceVariant,
+                              isSelected
+                                  ? ColorTokens.clubAccent
+                                  : ColorTokens.onSurfaceVariant,
                             ),
                             backgroundColor: Colors.transparent,
-                            side: BorderSide(
-                              color: isSelected ? ColorTokens.clubAccent : ColorTokens.ghostBorder,
+                            side: BorderTokens.side(
+                              color: isSelected
+                                  ? ColorTokens.clubAccent
+                                  : ColorTokens.ghostBorder,
                             ),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
+                              borderRadius: BorderRadius.circular(
+                                ShapeTokens.radiusFull,
+                              ),
                             ),
                             showCheckmark: false,
                           ),

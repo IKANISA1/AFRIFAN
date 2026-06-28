@@ -37,11 +37,7 @@ class AfriStat {
 /// )
 /// ```
 class AfriStatRow extends StatelessWidget {
-  const AfriStatRow({
-    super.key,
-    required this.stats,
-    this.compact = false,
-  });
+  const AfriStatRow({super.key, required this.stats, this.compact = false});
 
   final List<AfriStat> stats;
 
@@ -99,9 +95,7 @@ class _StatTile extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing1),
           Text(
             stat.value,
-            style: TypographyTokens.metricValue(
-              stat.accentColor,
-            ),
+            style: TypographyTokens.metricValue(stat.accentColor),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -142,15 +136,14 @@ class _CompactStat extends StatelessWidget {
         children: [
           Text(
             stat.label.toUpperCase(),
-            style: TypographyTokens.metricLabel(
-              ColorTokens.onSurfaceVariant,
-            ),
+            style: TypographyTokens.metricLabel(ColorTokens.onSurfaceVariant),
           ),
           const SizedBox(width: SpacingTokens.spacing2),
           Text(
             stat.value,
-            style: TypographyTokens.labelMedium(color)
-                .copyWith(fontWeight: FontWeight.w700),
+            style: TypographyTokens.labelMedium(
+              color,
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
         ],
       ),

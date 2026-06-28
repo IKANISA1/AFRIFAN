@@ -223,7 +223,7 @@ class _HeroSlide extends StatelessWidget {
                               fontWeight: FontWeight.w900,
                               color: Colors.white,
                               height: 0.90,
-                              letterSpacing: -1,
+                              letterSpacing: 0,
                             ),
                           ),
                           TextSpan(
@@ -233,7 +233,7 @@ class _HeroSlide extends StatelessWidget {
                               fontWeight: FontWeight.w900,
                               color: accentColor,
                               height: 0.90,
-                              letterSpacing: -1,
+                              letterSpacing: 0,
                             ),
                           ),
                           TextSpan(
@@ -243,7 +243,7 @@ class _HeroSlide extends StatelessWidget {
                               fontWeight: FontWeight.w900,
                               color: Colors.white,
                               height: 0.90,
-                              letterSpacing: -1,
+                              letterSpacing: 0,
                             ),
                           ),
                         ],

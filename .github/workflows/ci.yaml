@@ -121,6 +121,14 @@ jobs:
             exit 1
           fi
 
+          # Check for committed dev vars (contain Cloudflare/Supabase secrets)
+          TRACKED_DEV_VARS=$(git ls-files 'apps/**/web/.dev.vars' '*/.dev.vars' '.dev.vars' | grep -v '.example$' || true)
+          if [ -n "$TRACKED_DEV_VARS" ]; then
+            echo "❌ .dev.vars files must not be committed (contain secrets):"
+            echo "$TRACKED_DEV_VARS"
+            exit 1
+          fi
+
           echo "✅ No service role keys found"
 
   # ──────────────────────────────────────────────

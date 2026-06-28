@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/motion_tokens.dart';
 import '../tokens/shape_tokens.dart';
-import '../tokens/spacing_tokens.dart';
 
 enum EliteButtonVariant { primary, secondary, outline }
 
@@ -117,17 +116,23 @@ class _EliteButtonState extends State<EliteButton>
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: widget.fullWidth ? MainAxisSize.max : MainAxisSize.min,
+            mainAxisSize: widget.fullWidth
+                ? MainAxisSize.max
+                : MainAxisSize.min,
             children: [
               if (widget.isLoading)
                 const SizedBox(
                   width: 16,
                   height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation(Colors.white)),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation(Colors.white),
+                  ),
                 )
               else if (widget.icon != null)
                 Icon(widget.icon, size: 18, color: foreground),
-              if (widget.isLoading || widget.icon != null) const SizedBox(width: 8),
+              if (widget.isLoading || widget.icon != null)
+                const SizedBox(width: 8),
               Text(
                 widget.label.toUpperCase(),
                 style: TextStyle(

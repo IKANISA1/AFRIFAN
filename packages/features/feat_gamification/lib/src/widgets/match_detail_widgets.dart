@@ -52,9 +52,7 @@ class MatchPredictTabBody extends StatelessWidget {
       children: [
         AfriSectionCard(
           title: 'Markets',
-          trailingLabel: markets.isEmpty
-              ? null
-              : '${markets.length} markets',
+          trailingLabel: markets.isEmpty ? null : '${markets.length} markets',
           onTrailingTap: markets.isEmpty
               ? null
               : () {
@@ -311,8 +309,9 @@ class MatchMarketCard extends ConsumerWidget {
                       style: TypographyTokens.editorialFont(
                         fontSize: 9,
                         fontWeight: FontWeight.w600,
-                        color: ColorTokens.onSurfaceVariant
-                            .withValues(alpha: 0.6),
+                        color: ColorTokens.onSurfaceVariant.withValues(
+                          alpha: 0.6,
+                        ),
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -412,11 +411,7 @@ class MatchMarketCard extends ConsumerWidget {
 
 /// Mini pill link to league/team profiles from within the hero card.
 class MatchMetaLink extends StatelessWidget {
-  const MatchMetaLink({
-    super.key,
-    required this.label,
-    required this.onTap,
-  });
+  const MatchMetaLink({super.key, required this.label, required this.onTap});
 
   final String label;
   final VoidCallback onTap;
@@ -433,7 +428,7 @@ class MatchMetaLink extends StatelessWidget {
         decoration: BoxDecoration(
           color: ColorTokens.surfaceContainerLow,
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: ColorTokens.ghostBorder),
+          border: BorderTokens.all(color: ColorTokens.ghostBorder),
         ),
         child: Text(
           label,

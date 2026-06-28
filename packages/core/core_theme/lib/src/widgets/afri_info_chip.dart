@@ -50,8 +50,7 @@ class AfriInfoChip extends StatelessWidget {
           ],
           Text(
             label,
-            style: TypographyTokens.labelSmall(chipColor)
-                .copyWith(height: 1.0),
+            style: TypographyTokens.labelSmall(chipColor).copyWith(height: 1.0),
           ),
         ],
       ),

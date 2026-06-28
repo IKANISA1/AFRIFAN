@@ -123,7 +123,7 @@ class AfriSemanticColors extends ThemeExtension<AfriSemanticColors> {
   final LinearGradient surfaceGradient;
 
   // ─────────────────────────────────────────────────────────────────
-  // Dark theme — default Tactile Monolith palette
+  // Dark theme — default Revolut-Borrowed palette
   // ─────────────────────────────────────────────────────────────────
   static AfriSemanticColors get dark => AfriSemanticColors(
     // ── App-level surfaces ──

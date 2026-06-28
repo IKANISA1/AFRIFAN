@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../extensions.dart';
 import '../tokens/responsive_tokens.dart';
 import '../tokens/spacing_tokens.dart';
+import '../tokens/typography_tokens.dart';
 
 /// Standardized screen scaffold with responsive layout, optional title,
 /// and back button.
@@ -76,9 +77,10 @@ class AfriScreenScaffold extends StatelessWidget {
                               color: colors.primaryText,
                               fontWeight: FontWeight.w900,
                               fontStyle: FontStyle.italic,
-                              letterSpacing: -1.0,
+                              letterSpacing: 0,
                               height: 0.9,
-                              fontFamily: 'Display',
+                              fontFamily: TypographyTokens.borrowedFontFamily,
+                              package: 'core_theme',
                             ),
                           ),
                         ),

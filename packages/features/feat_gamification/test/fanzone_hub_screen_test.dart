@@ -9,7 +9,6 @@ import 'package:feat_gamification/src/screens/fanzone_hub_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
@@ -206,7 +205,6 @@ class _FakeFetRepository extends FetRepository {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  GoogleFonts.config.allowRuntimeFetching = false;
   setUpAll(loadDesignFonts);
 
   testWidgets('renders live FANZONE sections from repository data', (

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 import 'package:test_support/design_font_loader.dart';
@@ -101,8 +100,9 @@ Future<void> _pumpApp(
 
 void main() {
   final binding = TestWidgetsFlutterBinding.ensureInitialized();
-  GoogleFonts.config.allowRuntimeFetching = false;
-  setUpAll(loadDesignFonts);
+  setUpAll(() async {
+    await loadDesignFonts();
+  });
   setUp(() {
     binding.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(

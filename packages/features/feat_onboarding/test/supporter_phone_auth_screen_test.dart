@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 import 'package:test_support/design_font_loader.dart';
@@ -88,7 +87,6 @@ Future<void> _pumpApp(
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  GoogleFonts.config.allowRuntimeFetching = false;
   setUpAll(loadDesignFonts);
 
   testWidgets('requests OTP using the WhatsApp delivery channel', (

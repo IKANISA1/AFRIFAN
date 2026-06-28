@@ -39,12 +39,6 @@ Future<void> _scrollTo(
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(() {
-    TypographyTokens.debugUseFallbackFonts = true;
-  });
-  tearDownAll(() {
-    TypographyTokens.debugUseFallbackFonts = false;
-  });
 
   group('Challenge feature widgets', () {
     testWidgets('feed renders empty state when no pools are available', (

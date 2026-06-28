@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../club_config.dart';
 
-/// Shared color tokens for the AFRICLUB minimalist mobile system.
+/// Shared color tokens for the AFRICLUB Revolut-borrowed mobile system.
 ///
-/// The app stays club-branded through accent colors, but the foundation is a
-/// calmer neutral shell so information hierarchy comes from spacing, surface,
-/// and state rather than decorative gradients.
+/// Club identity remains available as accents, but the app canvas follows the
+/// COOL/MOBI finance-shell pattern: vertical dark gradients, black glass chrome,
+/// compact readable panels, and route families instead of screen-local colors.
 class ColorTokens {
   ColorTokens._();
 
@@ -22,6 +22,20 @@ class ColorTokens {
   static const Color _defaultAccent = Color(0xFFE2B85F);
 
   static const Color _inkBase = Color(0xFF09090B);
+  static const Color referenceChromeBlack = Color(0xFF050510);
+  static const Color referenceAccountNavy = Color(0xFF000840);
+  static const Color referenceAccountBlue = Color(0xFF0818A0);
+  static const Color referencePaymentsPurple = Color(0xFF181038);
+  static const Color referencePaymentsPurpleMid = Color(0xFF302848);
+  static const Color referencePaymentsPurpleDeep = Color(0xFF100820);
+  static const Color referenceAssetNavy = Color(0xFF101830);
+  static const Color referenceAssetNavyMid = Color(0xFF303870);
+  static const Color referenceRewardsViolet = Color(0xFF302878);
+  static const Color referenceRewardsVioletHot = Color(0xFF9838F0);
+  static const Color referenceWealthTeal = Color(0xFF102028);
+  static const Color referenceWealthTealMid = Color(0xFF204050);
+  static const Color referenceContentDark = Color(0xFF101018);
+  static const Color referenceStockTealBlack = Color(0xFF001010);
 
   static bool _isWhite(Color color) => color.computeLuminance() > 0.9;
 
@@ -63,31 +77,26 @@ class ColorTokens {
         ? colors.gradient
         : [_secondary, _primary];
 
-    _darkBackground = _stackColor(
-      _inkBase,
-      primaryAlpha: 0.01,
-      secondaryAlpha: 0.12,
+    _darkBackground = Color.alphaBlend(
+      _primary.withValues(alpha: 0.10),
+      referencePaymentsPurpleDeep,
     );
     _darkSurfaceDim = _darkBackground;
-    _darkSurfaceContainerLowest = _stackColor(
-      const Color(0xFF0E172A),
-      secondaryAlpha: 0.08,
-      primaryAlpha: 0.02,
+    _darkSurfaceContainerLowest = Color.alphaBlend(
+      _primary.withValues(alpha: 0.06),
+      referenceChromeBlack,
     );
-    _darkSurfaceContainerLow = _stackColor(
-      const Color(0xFF111C31),
-      secondaryAlpha: 0.08,
-      primaryAlpha: 0.03,
+    _darkSurfaceContainerLow = Color.alphaBlend(
+      _primary.withValues(alpha: 0.08),
+      referencePaymentsPurpleDeep,
     );
-    _darkSurfaceContainer = _stackColor(
-      const Color(0xFF142238),
-      secondaryAlpha: 0.06,
-      primaryAlpha: 0.04,
+    _darkSurfaceContainer = Color.alphaBlend(
+      _primary.withValues(alpha: 0.10),
+      referencePaymentsPurple,
     );
-    _darkSurface = _stackColor(
-      const Color(0xFF172740),
-      secondaryAlpha: 0.04,
-      primaryAlpha: 0.05,
+    _darkSurface = Color.alphaBlend(
+      _primary.withValues(alpha: 0.08),
+      referenceAssetNavy,
     );
     _darkSurfaceContainerHigh = _stackColor(
       const Color(0xFF1C2D49),
@@ -104,8 +113,8 @@ class ColorTokens {
       primaryAlpha: 0.10,
       whiteAlpha: 0.04,
     );
-    _darkPrimary = Color.lerp(_primary, Colors.white, 0.04)!;
-    _darkPrimaryContainer = Color.lerp(_primary, Colors.white, 0.16)!;
+    _darkPrimary = Color.lerp(_primary, Colors.white, 0.10)!;
+    _darkPrimaryContainer = Color.lerp(_primary, Colors.white, 0.24)!;
     _darkSecondaryContainer = Color.alphaBlend(
       _accent.withValues(alpha: 0.12),
       _darkSurfaceContainerHigh,
@@ -202,11 +211,14 @@ class ColorTokens {
       isDark ? const Color(0xFF9EABC2) : const Color(0xFF5E6B80);
 
   static Color get glassFill =>
-      Colors.white.withValues(alpha: isDark ? 0.05 : 0.08);
+      Colors.white.withValues(alpha: isDark ? 0.075 : 0.10);
   static Color get ghostBorder =>
-      Colors.white.withValues(alpha: isDark ? 0.10 : 0.12);
+      Colors.white.withValues(alpha: isDark ? 0.18 : 0.14);
 
-  static const double glassBlurSigma = 10.0;
+  static const double glassBlurSigma = 22.0;
+  static Color get chrome => referenceChromeBlack.withValues(alpha: 0.94);
+  static Color get chromeBorder => Colors.white.withValues(alpha: 0.28);
+  static Color get chromeForeground => const Color(0xFFFFFDFB);
 
   static Color get navActive => primaryContainer;
 
@@ -233,4 +245,72 @@ class ColorTokens {
 
   static Color accentTint(double alpha) =>
       clubAccent.withValues(alpha: alpha.clamp(0.0, 1.0));
+
+  static LinearGradient screenGradientForPath([String? path]) {
+    final normalized = (path ?? '').trim().toLowerCase();
+    if (normalized.contains('membership') ||
+        normalized.contains('wallet') ||
+        normalized.contains('contribute') ||
+        normalized.contains('payment')) {
+      return _verticalGradient(
+        referenceAssetNavyMid,
+        referenceAssetNavy,
+        referenceChromeBlack,
+      );
+    }
+    if (normalized.contains('settings') ||
+        normalized.contains('profile') ||
+        normalized.contains('privacy')) {
+      return _verticalGradient(
+        referenceContentDark,
+        referencePaymentsPurpleDeep,
+        referenceChromeBlack,
+      );
+    }
+    if (normalized.contains('shop') ||
+        normalized.contains('tickets') ||
+        normalized.contains('rewards')) {
+      return _verticalGradient(
+        referenceRewardsVioletHot,
+        referenceRewardsViolet,
+        referencePaymentsPurpleDeep,
+      );
+    }
+    if (normalized.contains('live') ||
+        normalized.contains('fanzone') ||
+        normalized.contains('league')) {
+      return _verticalGradient(
+        referenceWealthTealMid,
+        referenceWealthTeal,
+        referenceStockTealBlack,
+      );
+    }
+    if (normalized.contains('onboarding') || normalized.contains('auth')) {
+      return _verticalGradient(
+        Color.alphaBlend(
+          _primary.withValues(alpha: 0.28),
+          referenceAccountBlue,
+        ),
+        referenceAccountNavy,
+        referenceChromeBlack,
+      );
+    }
+    return _verticalGradient(
+      Color.alphaBlend(
+        _primary.withValues(alpha: 0.18),
+        referencePaymentsPurpleMid,
+      ),
+      referencePaymentsPurple,
+      referencePaymentsPurpleDeep,
+    );
+  }
+
+  static LinearGradient _verticalGradient(Color top, Color mid, Color bottom) {
+    return LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [top, mid, bottom],
+      stops: const [0, 0.52, 1],
+    );
+  }
 }

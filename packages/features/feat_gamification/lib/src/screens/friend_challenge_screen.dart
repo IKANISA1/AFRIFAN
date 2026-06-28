@@ -100,7 +100,12 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
         _error = null;
       });
     } catch (error, stackTrace) {
-      AfriLogger.warn('FriendChallengeScreen', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FriendChallengeScreen',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (!mounted) {
         return;
       }
@@ -407,10 +412,11 @@ class _SelectionChip extends StatelessWidget {
               ? ColorTokens.clubAccent.withValues(alpha: 0.12)
               : ColorTokens.surfaceContainerLow,
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(
+          border: BorderTokens.all(
             color: isSelected
-                ? ColorTokens.clubAccent.withValues(alpha: 0.35)
+                ? ColorTokens.clubAccent
                 : ColorTokens.ghostBorder,
+            opacity: isSelected ? 0.35 : 1,
           ),
         ),
         child: Text(

@@ -312,7 +312,7 @@ class _FloatingStatusChip extends StatelessWidget {
                 style: TypographyTokens.labelLarge().copyWith(
                   color: ColorTokens.onSurface,
                   fontWeight: FontWeight.w800,
-                  letterSpacing: -0.2,
+                  letterSpacing: 0,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

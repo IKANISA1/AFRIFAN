@@ -29,24 +29,25 @@ class AppShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final featureService = ref.watch(featureConfigServiceProvider);
-    final tabModules = modules
-        .where(
-          (module) =>
-              module.tabRoute != null &&
-              primaryBottomTabFeatureKeys.contains(module.featureKey),
-        )
-        .toList()
-      ..sort(
-        (left, right) => primaryBottomTabOrderForFeature(
-          left.featureKey,
-        ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
-      );
+    final tabModules =
+        modules
+            .where(
+              (module) =>
+                  module.tabRoute != null &&
+                  primaryBottomTabFeatureKeys.contains(module.featureKey),
+            )
+            .toList()
+          ..sort(
+            (left, right) => primaryBottomTabOrderForFeature(
+              left.featureKey,
+            ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
+          );
     final visibleEntries = tabModules.asMap().entries.where((entry) {
       final feature = featureService.getFeature(entry.value.featureKey);
-      if (feature == null) {
+      if (!featureService.hasConfig || feature == null) {
         return true;
       }
-      return featureService.isFeatureEnabled(entry.value.featureKey);
+      return featureService.shouldShowInNav(entry.value.featureKey);
     }).toList();
 
     final resolvedEntries = visibleEntries.isNotEmpty
@@ -55,6 +56,16 @@ class AppShell extends ConsumerWidget {
     final currentVisibleIndex = resolvedEntries.indexWhere(
       (entry) => entry.key == shell.currentIndex,
     );
+    if (currentVisibleIndex < 0 &&
+        resolvedEntries.isNotEmpty &&
+        shell.currentIndex != resolvedEntries.first.key) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) {
+          return;
+        }
+        shell.goBranch(resolvedEntries.first.key);
+      });
+    }
     final selectedIndex = currentVisibleIndex >= 0 ? currentVisibleIndex : 0;
 
     // In release/profile builds, wrap each tab's content in an error boundary

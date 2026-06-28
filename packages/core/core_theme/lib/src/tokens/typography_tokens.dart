@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'color_tokens.dart';
 
-/// Typography tokens for the AFRICLUB minimalist mobile system.
-///
-/// Space Grotesk remains available for high-impact brand moments, while the
-/// day-to-day UI uses a tighter, calmer scale focused on clarity.
+/// Typography tokens for the AFRICLUB Revolut-borrowed mobile system.
 class TypographyTokens {
   TypographyTokens._();
 
-  /// Test hook for widget suites that don't bundle Google Fonts assets.
+  /// Compatibility hook retained for older tests; typography always uses the
+  /// borrowed package font now.
   static bool debugUseFallbackFonts = false;
+  static const String borrowedFontFamily = 'RevolutBorrowed';
 
   static const Map<String, double> semanticSizes = {
     'displayLarge': 48.0,
@@ -51,7 +49,7 @@ class TypographyTokens {
     TextDecorationStyle? decorationStyle,
     double? decorationThickness,
   }) {
-    return _interFont(
+    return _borrowedFont(
       textStyle: textStyle,
       color: color,
       fontSize: fontSize,
@@ -93,7 +91,7 @@ class TypographyTokens {
     TextDecorationStyle? decorationStyle,
     double? decorationThickness,
   }) {
-    return _interFont(
+    return _borrowedFont(
       textStyle: textStyle,
       color: color,
       fontSize: fontSize,
@@ -135,7 +133,7 @@ class TypographyTokens {
     TextDecorationStyle? decorationStyle,
     double? decorationThickness,
   }) {
-    return _interFont(
+    return _borrowedFont(
       textStyle: textStyle,
       color: color,
       fontSize: fontSize,
@@ -157,7 +155,7 @@ class TypographyTokens {
     );
   }
 
-  static TextStyle _interFont({
+  static TextStyle _borrowedFont({
     TextStyle? textStyle,
     Color? color,
     double? fontSize,
@@ -177,30 +175,9 @@ class TypographyTokens {
     TextDecorationStyle? decorationStyle,
     double? decorationThickness,
   }) {
-    if (!debugUseFallbackFonts) {
-      return GoogleFonts.inter(
-        textStyle: textStyle,
-        color: color,
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        fontStyle: fontStyle,
-        letterSpacing: letterSpacing,
-        wordSpacing: wordSpacing,
-        textBaseline: textBaseline,
-        height: height,
-        locale: locale,
-        foreground: foreground,
-        background: background,
-        shadows: shadows,
-        fontFeatures: fontFeatures,
-        decoration: decoration,
-        decorationColor: decorationColor,
-        decorationStyle: decorationStyle,
-        decorationThickness: decorationThickness,
-      );
-    }
-
     return (textStyle ?? const TextStyle()).copyWith(
+      fontFamily: borrowedFontFamily,
+      package: 'core_theme',
       color: color,
       fontSize: fontSize,
       fontWeight: fontWeight,
@@ -226,7 +203,7 @@ class TypographyTokens {
     fontWeight: FontWeight.w700,
     color: color ?? ColorTokens.onSurface,
     height: 0.96,
-    letterSpacing: -1.6,
+    letterSpacing: 0,
   );
 
   static TextStyle displayMedium([Color? color]) => monolithFont(
@@ -234,7 +211,7 @@ class TypographyTokens {
     fontWeight: FontWeight.w700,
     color: color ?? ColorTokens.onSurface,
     height: 0.98,
-    letterSpacing: -1.2,
+    letterSpacing: 0,
   );
 
   static TextStyle displaySmall([Color? color]) => monolithFont(
@@ -242,7 +219,7 @@ class TypographyTokens {
     fontWeight: FontWeight.w700,
     color: color ?? ColorTokens.onSurface,
     height: 1.0,
-    letterSpacing: -0.9,
+    letterSpacing: 0,
   );
 
   static TextStyle headlineLarge([Color? color]) => utilityFont(
@@ -250,7 +227,7 @@ class TypographyTokens {
     fontWeight: FontWeight.w700,
     color: color ?? ColorTokens.onSurface,
     height: 1.1,
-    letterSpacing: -0.5,
+    letterSpacing: 0,
   );
 
   static TextStyle headlineMedium([Color? color]) => utilityFont(
@@ -258,7 +235,7 @@ class TypographyTokens {
     fontWeight: FontWeight.w700,
     color: color ?? ColorTokens.onSurface,
     height: 1.14,
-    letterSpacing: -0.3,
+    letterSpacing: 0,
   );
 
   static TextStyle headlineSmall([Color? color]) => utilityFont(
@@ -266,7 +243,7 @@ class TypographyTokens {
     fontWeight: FontWeight.w700,
     color: color ?? ColorTokens.onSurface,
     height: 1.18,
-    letterSpacing: -0.2,
+    letterSpacing: 0,
   );
 
   static TextStyle titleLarge([Color? color]) => utilityFont(
@@ -274,7 +251,7 @@ class TypographyTokens {
     fontWeight: FontWeight.w600,
     color: color ?? ColorTokens.onSurface,
     height: 1.22,
-    letterSpacing: -0.2,
+    letterSpacing: 0,
   );
 
   static TextStyle titleMedium([Color? color]) => utilityFont(
@@ -282,7 +259,7 @@ class TypographyTokens {
     fontWeight: FontWeight.w600,
     color: color ?? ColorTokens.onSurface,
     height: 1.24,
-    letterSpacing: -0.1,
+    letterSpacing: 0,
   );
 
   static TextStyle titleSmall([Color? color]) => utilityFont(
@@ -318,7 +295,7 @@ class TypographyTokens {
     fontWeight: FontWeight.w700,
     color: color ?? ColorTokens.onSurface,
     height: 1.18,
-    letterSpacing: 0.2,
+    letterSpacing: 0,
   );
 
   static TextStyle labelMedium([Color? color]) => utilityFont(
@@ -326,7 +303,7 @@ class TypographyTokens {
     fontWeight: FontWeight.w600,
     color: color ?? ColorTokens.onSurface,
     height: 1.15,
-    letterSpacing: 0.2,
+    letterSpacing: 0,
   );
 
   static TextStyle labelSmall([Color? color]) => utilityFont(
@@ -334,7 +311,7 @@ class TypographyTokens {
     fontWeight: FontWeight.w600,
     color: color ?? ColorTokens.onSurfaceVariant,
     height: 1.1,
-    letterSpacing: 0.25,
+    letterSpacing: 0,
   );
 
   static TextStyle numericAlias({double fontSize = 18, Color? color}) =>
@@ -342,7 +319,7 @@ class TypographyTokens {
         fontSize: fontSize,
         fontWeight: FontWeight.w700,
         color: color ?? ColorTokens.onSurface,
-        letterSpacing: 0.3,
+        letterSpacing: 0,
       );
 
   // ── Semantic  ──
@@ -353,7 +330,7 @@ class TypographyTokens {
     fontWeight: FontWeight.w600,
     color: color ?? ColorTokens.onSurface,
     height: 1.24,
-    letterSpacing: -0.1,
+    letterSpacing: 0,
   );
 
   /// Large metric value (wallet balance, score, stat hero).
@@ -362,7 +339,7 @@ class TypographyTokens {
     fontWeight: FontWeight.w800,
     color: color ?? ColorTokens.onSurface,
     height: 1.0,
-    letterSpacing: -0.4,
+    letterSpacing: 0,
   );
 
   /// Small uppercase metric label (below stat values).

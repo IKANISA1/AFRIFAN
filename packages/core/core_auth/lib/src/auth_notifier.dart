@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,13 +49,13 @@ class AuthNotifier extends Notifier<AuthState> {
     try {
       final profile = await _repository.restoreCurrentUser();
       if (profile != null) {
-        FirebaseAnalyticsService.setUserId(profile.id);
-        CrashlyticsService.setUserId(profile.id);
+        unawaited(FirebaseAnalyticsService.setUserId(profile.id));
+        unawaited(CrashlyticsService.setUserId(profile.id));
         final adminAccess = await _repository.resolveAdminAccess(profile.id);
         state = AuthAuthenticated(profile: profile, workspace: adminAccess);
       } else {
-        FirebaseAnalyticsService.setUserId(null);
-        CrashlyticsService.setUserId(null);
+        unawaited(FirebaseAnalyticsService.setUserId(null));
+        unawaited(CrashlyticsService.setUserId(null));
         state = const AuthUnauthenticated();
       }
     } catch (e) {
@@ -79,8 +81,8 @@ class AuthNotifier extends Notifier<AuthState> {
     if (change.event == supabase.AuthChangeEvent.signedOut || session == null) {
       _authHydrationEpoch += 1;
       _hydratingSessionUserId = null;
-      FirebaseAnalyticsService.setUserId(null);
-      CrashlyticsService.setUserId(null);
+      unawaited(FirebaseAnalyticsService.setUserId(null));
+      unawaited(CrashlyticsService.setUserId(null));
 
       // Distinguish intentional sign-out from involuntary session loss.
       final wasAuthenticated = state is AuthAuthenticated;
@@ -119,13 +121,13 @@ class AuthNotifier extends Notifier<AuthState> {
         return;
       }
       if (profile == null) {
-        FirebaseAnalyticsService.setUserId(null);
-        CrashlyticsService.setUserId(null);
+        unawaited(FirebaseAnalyticsService.setUserId(null));
+        unawaited(CrashlyticsService.setUserId(null));
         state = const AuthUnauthenticated();
         return;
       }
-      FirebaseAnalyticsService.setUserId(profile.id);
-      CrashlyticsService.setUserId(profile.id);
+      unawaited(FirebaseAnalyticsService.setUserId(profile.id));
+      unawaited(CrashlyticsService.setUserId(profile.id));
       final adminAccess = await _repository.resolveAdminAccess(profile.id);
       if (hydrationEpoch != _authHydrationEpoch) {
         return;
@@ -154,8 +156,8 @@ class AuthNotifier extends Notifier<AuthState> {
 
     try {
       final profile = await _repository.signInAnonymously();
-      FirebaseAnalyticsService.setUserId(profile.id);
-      CrashlyticsService.setUserId(profile.id);
+      unawaited(FirebaseAnalyticsService.setUserId(profile.id));
+      unawaited(CrashlyticsService.setUserId(profile.id));
       final adminAccess = await _repository.resolveAdminAccess(profile.id);
       state = AuthAuthenticated(profile: profile, workspace: adminAccess);
     } catch (e) {
@@ -189,8 +191,8 @@ class AuthNotifier extends Notifier<AuthState> {
         phone: phone,
         token: token,
       );
-      FirebaseAnalyticsService.setUserId(profile.id);
-      CrashlyticsService.setUserId(profile.id);
+      unawaited(FirebaseAnalyticsService.setUserId(profile.id));
+      unawaited(CrashlyticsService.setUserId(profile.id));
       final adminAccess = await _repository.resolveAdminAccess(profile.id);
       state = AuthAuthenticated(profile: profile, workspace: adminAccess);
       return null;
@@ -239,8 +241,8 @@ class AuthNotifier extends Notifier<AuthState> {
         phone: phone,
         token: token,
       );
-      FirebaseAnalyticsService.setUserId(profile.id);
-      CrashlyticsService.setUserId(profile.id);
+      unawaited(FirebaseAnalyticsService.setUserId(profile.id));
+      unawaited(CrashlyticsService.setUserId(profile.id));
       final adminAccess = await _repository.resolveAdminAccess(profile.id);
       state = AuthAuthenticated(profile: profile, workspace: adminAccess);
       return null;
@@ -304,8 +306,8 @@ class AuthNotifier extends Notifier<AuthState> {
         'Best-effort sign-out failed: $signOutError',
       );
     }
-    FirebaseAnalyticsService.setUserId(null);
-    CrashlyticsService.setUserId(null);
+    unawaited(FirebaseAnalyticsService.setUserId(null));
+    unawaited(CrashlyticsService.setUserId(null));
     state = const AuthUnauthenticated();
   }
 
@@ -344,8 +346,8 @@ class AuthNotifier extends Notifier<AuthState> {
 
     try {
       await _repository.deleteAccount(current.profile.id);
-      FirebaseAnalyticsService.setUserId(null);
-      CrashlyticsService.setUserId(null);
+      unawaited(FirebaseAnalyticsService.setUserId(null));
+      unawaited(CrashlyticsService.setUserId(null));
       state = const AuthUnauthenticated();
       return null;
     } catch (e) {

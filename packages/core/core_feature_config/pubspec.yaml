@@ -13,6 +13,8 @@ dependencies:
   flutter_riverpod: ^2.6.1
   supabase_flutter: ^2.12.2
   shared_preferences: ^2.5.3
+  core_auth:
+    path: ../core_auth
   core_network:
     path: ../core_network
   core_utils:

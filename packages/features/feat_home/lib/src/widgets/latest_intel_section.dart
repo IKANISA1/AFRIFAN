@@ -43,7 +43,12 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
         });
       }
     } catch (error, stackTrace) {
-      AfriLogger.warn('LatestIntelSection', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'LatestIntelSection',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       if (mounted) {
         setState(() {
           _snapshot = const LatestIntelSnapshot(

@@ -111,7 +111,8 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                   widget.featureKey,
                   style: TypographyTokens.bodySmall().copyWith(
                     color: Colors.white38,
-                    fontFamily: 'monospace',
+                    fontFamily: TypographyTokens.borrowedFontFamily,
+                    package: 'core_theme',
                   ),
                 ),
               ],
@@ -225,18 +226,16 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               label: 'Enabled',
               subtitle: 'Feature active on $channelName',
               value: channel.isEnabled,
-              onChanged: (value) => _updateChannel(channel.channel, {
-                'is_enabled': value,
-              }),
+              onChanged: (value) =>
+                  _updateChannel(channel.channel, {'is_enabled': value}),
             ),
             const Divider(color: Colors.white10),
             _buildToggleRow(
               label: 'Visible',
               subtitle: 'Show in $channelName UI',
               value: channel.isVisible,
-              onChanged: (value) => _updateChannel(channel.channel, {
-                'is_visible': value,
-              }),
+              onChanged: (value) =>
+                  _updateChannel(channel.channel, {'is_visible': value}),
             ),
             const Divider(color: Colors.white10),
             _buildToggleRow(
@@ -254,16 +253,14 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               label: 'Show on Home',
               subtitle: 'Display on home screen',
               value: channel.showOnHome,
-              onChanged: (value) => _updateChannel(channel.channel, {
-                'show_on_home': value,
-              }),
+              onChanged: (value) =>
+                  _updateChannel(channel.channel, {'show_on_home': value}),
             ),
             const Divider(color: Colors.white10),
             _buildSortOrderRow(
               current: channel.sortOrder,
-              onChanged: (value) => _updateChannel(channel.channel, {
-                'sort_order': value,
-              }),
+              onChanged: (value) =>
+                  _updateChannel(channel.channel, {'sort_order': value}),
             ),
           ],
         ),
@@ -433,7 +430,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                   fontSize: 10,
                 ),
               ),
-              side: BorderSide(color: color.withValues(alpha: 0.3)),
+              side: BorderTokens.side(color: color, opacity: 0.3),
               backgroundColor: color.withValues(alpha: 0.1),
               visualDensity: VisualDensity.compact,
             ),
@@ -472,13 +469,15 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
               style: TypographyTokens.bodyMedium(),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 isDense: true,
-                contentPadding: EdgeInsets.symmetric(
+                contentPadding: const EdgeInsets.symmetric(
                   horizontal: SpacingTokens.spacing2,
                   vertical: SpacingTokens.spacing2,
                 ),
-                border: OutlineInputBorder(),
+                border: BorderTokens.input(
+                  borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
+                ),
               ),
               onFieldSubmitted: _isSaving
                   ? null
@@ -503,7 +502,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
   }) {
     final formatted = value != null
         ? '${value.year}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')} '
-            '${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}'
+              '${value.hour.toString().padLeft(2, '0')}:${value.minute.toString().padLeft(2, '0')}'
         : 'Not set';
 
     return Padding(
@@ -528,7 +527,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
             onTap: _isSaving ? null : () => _pickDateTime(value, onChanged),
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.white24),
+                border: BorderTokens.all(color: Colors.white, opacity: 0.24),
                 borderRadius: BorderRadius.circular(8),
               ),
               padding: const EdgeInsets.symmetric(
@@ -643,10 +642,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
   void _showError(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red.shade700,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.red.shade700),
     );
   }
 

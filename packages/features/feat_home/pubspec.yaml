@@ -23,7 +23,6 @@ dependencies:
   flutter_riverpod: ^2.6.1
   go_router: ^14.8.1
   supabase_flutter: ^2.12.2
-  google_fonts: ^8.0.2
   flutter_animate: ^4.5.2
   cached_network_image: ^3.4.1
   intl: ^0.20.2
@@ -31,12 +30,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  core_auth:
+    path: ../../core/core_auth
   flutter_lints: ^5.0.0
   test_support:
     path: ../test_support
 
 resolution: workspace
-
-flutter:
-  assets:
-    - test/fonts/

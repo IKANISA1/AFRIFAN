@@ -320,7 +320,8 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                       const Text(
                         'LIVE CENTER UNAVAILABLE',
                         style: TextStyle(
-                          fontFamily: 'Display',
+                          fontFamily: TypographyTokens.borrowedFontFamily,
+                          package: 'core_theme',
                           fontSize: 24,
                           fontWeight: FontWeight.w900,
                           fontStyle: FontStyle.italic,
@@ -379,10 +380,7 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(
-          'Match Center',
-          style: TypographyTokens.headlineSmall(),
-        ),
+        title: Text('Match Center', style: TypographyTokens.headlineSmall()),
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: const Icon(AfriIcons.back),

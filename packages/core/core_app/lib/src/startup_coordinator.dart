@@ -6,7 +6,6 @@ import 'package:core_utils/core_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'bootstrap.dart';
@@ -57,11 +56,6 @@ class AppStartupCoordinator {
 
   Future<void> initialize(ClubConfig config) async {
     ColorTokens.init(config.colors);
-
-    // The app ships bundled fonts in each club's google_fonts/ directory.
-    // Disable runtime fetching to prevent unnecessary network calls on first
-    // launch — critical on slow/metered African mobile networks.
-    GoogleFonts.config.allowRuntimeFetching = false;
 
     if (options.configureDeviceChrome) {
       await _configureDeviceChrome();
@@ -150,7 +144,7 @@ class AppStartupCoordinator {
         client: SupabaseClientFactory.client,
       ).recordPayloadOrThrow,
     );
-    
+
     // E-001: Flush any errors that were logged locally before Supabase was ready.
     await flushPendingPreInitErrors();
   }

@@ -31,11 +31,11 @@ class OfflineBanner extends StatelessWidget {
               curve: Curves.easeInOut,
               child: isOnline
                   ? const SizedBox.shrink()
-                  : Material(
-                      color: Colors.orange.shade800,
+                  : const Material(
+                      color: Color(0xFFEF6C00),
                       child: SafeArea(
                         bottom: false,
-                        child: const SizedBox(
+                        child: SizedBox(
                           width: double.infinity,
                           height: 32,
                           child: Center(

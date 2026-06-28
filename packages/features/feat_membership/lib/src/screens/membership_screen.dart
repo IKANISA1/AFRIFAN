@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show SupabaseClient;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../providers/membership_provider.dart';
 import '../widgets/contribution_history.dart';
 import '../widgets/digital_membership_card.dart';
 import '../widgets/membership_card.dart';
@@ -30,162 +31,21 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     defaultValue: '',
   );
 
-  List<Map<String, dynamic>> _packages = [];
-  Map<String, dynamic>? _membership;
-  List<Map<String, dynamic>> _applications = const <Map<String, dynamic>>[];
-  List<ContributionRecord> _contributions = const <ContributionRecord>[];
-  bool _isLoading = true;
+  // M-3: Read-side data comes from membershipProvider (AsyncNotifier).
+  // Only write-side transient state remains here.
   bool _isJoining = false;
   String? _joiningTier;
-  String? _error;
-  String? _emptyMessage;
 
-  @override
-  void initState() {
-    super.initState();
-    unawaited(_loadPackages());
-  }
+  MembershipSnapshot? get _snapshot => ref.read(membershipProvider).valueOrNull;
 
-  Future<void> _loadPackages() async {
-    try {
-      final client = ref.read(supabaseClientProvider);
-      final resolver = ClubScopeResolver(client: client);
-      final scope = await resolver.requireResolved();
-      if (scope.clubId == null) {
-        throw StateError('Membership requires a numeric club_id scope.');
-      }
-      final clubId = scope.clubId!;
-      final packagesResponse = await client
-          .from('membership_packages')
-          .select()
-          .eq('club_id', clubId)
-          .eq('is_active', true)
-          .order('sort_order', ascending: true);
+  Map<String, dynamic>? get _membership => _snapshot?.membership;
 
-      Map<String, dynamic>? membership;
-      List<Map<String, dynamic>> applications = const <Map<String, dynamic>>[];
-      final userId = client.auth.currentUser?.id;
-      if (userId != null) {
-        membership = await client
-            .from('fan_memberships')
-            .select()
-            .eq('user_id', userId)
-            .eq('club_id', clubId)
-            .order('joined_at', ascending: false)
-            .limit(1)
-            .maybeSingle();
+  List<Map<String, dynamic>> get _applications =>
+      _snapshot?.applications ?? const <Map<String, dynamic>>[];
 
-        applications = List<Map<String, dynamic>>.from(
-          await client
-              .from('membership_applications')
-              .select()
-              .eq('user_id', userId)
-              .eq('club_id', clubId)
-              .order('application_date', ascending: false)
-              .limit(12),
-        );
-      }
-
-      final contributions = userId == null
-          ? const <ContributionRecord>[]
-          : await _loadContributionHistory(
-              client: client,
-              clubId: clubId,
-              userId: userId,
-              membership: membership,
-            );
-
-      if (mounted) {
-        setState(() {
-          final loadedPackages = List<Map<String, dynamic>>.from(
-            packagesResponse,
-          );
-          _packages = loadedPackages;
-          _membership = membership == null
-              ? null
-              : Map<String, dynamic>.from(membership);
-          _applications = applications;
-          _contributions = contributions;
-          _isLoading = false;
-          _error = null;
-          _emptyMessage = loadedPackages.isEmpty
-              ? 'Membership packages will appear once the club publishes them.'
-              : null;
-        });
-      }
-    } catch (error, stackTrace) {
-      AfriLogger.warn('MembershipScreen', 'Operation failed (non-critical).', error, stackTrace);
-      if (mounted) {
-        setState(() {
-          _contributions = const <ContributionRecord>[];
-          _applications = const <Map<String, dynamic>>[];
-          _isLoading = false;
-          _error = 'Membership details are temporarily unavailable.';
-          _emptyMessage = null;
-        });
-      }
-    }
-  }
-
-  Future<List<ContributionRecord>> _loadContributionHistory({
-    required SupabaseClient client,
-    required int clubId,
-    required String userId,
-    required Map<String, dynamic>? membership,
-  }) async {
-    final rows = List<Map<String, dynamic>>.from(
-      await client
-          .from('initiative_contributions')
-          .select('initiative_id, amount, status, created_at')
-          .eq('user_id', userId)
-          .eq('club_id', clubId)
-          .order('created_at', ascending: false)
-          .limit(8),
-    );
-    if (rows.isEmpty) {
-      return const <ContributionRecord>[];
-    }
-
-    final initiativeIds = rows
-        .map((row) => row['initiative_id']?.toString())
-        .whereType<String>()
-        .where((value) => value.isNotEmpty)
-        .toSet()
-        .toList(growable: false);
-
-    final initiativeTitles = <String, String>{};
-    if (initiativeIds.isNotEmpty) {
-      final initiatives = List<Map<String, dynamic>>.from(
-        await client
-            .from('initiatives')
-            .select('id, title')
-            .inFilter('id', initiativeIds),
-      );
-      for (final initiative in initiatives) {
-        final id = initiative['id']?.toString();
-        final title = initiative['title']?.toString().trim();
-        if (id != null && id.isNotEmpty && title != null && title.isNotEmpty) {
-          initiativeTitles[id] = title;
-        }
-      }
-    }
-
-    final fallbackLabel = membership == null
-        ? 'Club contribution'
-        : '${_currentTierLabel(membership['tier']?.toString(), (membership['points'] as num?)?.toInt() ?? 0)} contribution';
-
-    return rows
-        .map(
-          (row) => ContributionRecord(
-            date: _formatMembershipDate(row['created_at']?.toString()),
-            amount: (row['amount'] as num?)?.toInt() ?? 0,
-            label:
-                initiativeTitles[row['initiative_id']?.toString()] ??
-                fallbackLabel,
-            status: _normalizeContributionStatus(row['status']?.toString()),
-          ),
-        )
-        .toList(growable: false);
+  /// Refresh membership data from the provider after a write operation.
+  Future<void> _refreshMembership() async {
+    await ref.read(membershipProvider.notifier).refresh();
   }
 
   Future<void> _activatePackage(Map<String, dynamic> pkg) async {
@@ -224,7 +84,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
           user: user,
           tierValue: tierValue,
         );
-        await _loadPackages();
+        await _refreshMembership();
         if (!mounted) return;
         _showMessage('$tierLabel membership started.');
         return;
@@ -237,7 +97,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       }
 
       final paymentReference =
-          'membership-${tierValue}-${DateTime.now().millisecondsSinceEpoch}';
+          'membership-$tierValue-${DateTime.now().millisecondsSinceEpoch}';
       final launched = await MomoDialerService.launchMomoUssd(
         recipient: route.recipientCode,
         amount: amount,
@@ -261,7 +121,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
         route: route,
         pkg: pkg,
       );
-      await _loadPackages();
+      await _refreshMembership();
       if (!mounted) {
         return;
       }
@@ -409,12 +269,15 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   }
 
   bool _isCurrentTier(String tierValue) {
-    final currentTier = (_membership?['tier'] ?? '').toString().toLowerCase();
+    final membership = ref.read(membershipProvider).valueOrNull?.membership;
+    final currentTier = (membership?['tier'] ?? '').toString().toLowerCase();
     return currentTier.isNotEmpty && currentTier == tierValue.toLowerCase();
   }
 
   bool _hasPendingApplicationForTier(String tierValue) {
-    return _applications.any(
+    final applications =
+        ref.read(membershipProvider).valueOrNull?.applications ?? const [];
+    return applications.any(
       (application) =>
           (application['tier'] ?? '').toString().toLowerCase() ==
               tierValue.toLowerCase() &&
@@ -422,20 +285,12 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     );
   }
 
-  Map<String, dynamic>? _latestPendingApplication() {
-    for (final application in _applications) {
-      if ((application['status'] ?? '').toString().toLowerCase() == 'pending') {
-        return application;
-      }
-    }
-    return null;
-  }
-
   String _membershipActionLabel(String tierValue) {
     if (_hasPendingApplicationForTier(tierValue)) {
       return 'Pending review';
     }
-    if (_membership == null) {
+    final membership = ref.read(membershipProvider).valueOrNull?.membership;
+    if (membership == null) {
       return 'Activate';
     }
     if (_isCurrentTier(tierValue)) {
@@ -465,14 +320,31 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
     final user = ref.watch(currentUserProvider);
-    final currentFet = (_membership?['points'] as num?)?.toInt() ?? 0;
+
+    // M-3: Data from AsyncNotifier provider.
+    final asyncMembership = ref.watch(membershipProvider);
+    final snapshot = asyncMembership.valueOrNull;
+    final isLoading = asyncMembership.isLoading;
+    final errorMessage = asyncMembership.hasError
+        ? 'Membership details are temporarily unavailable.'
+        : null;
+    final packages = snapshot?.packages ?? const <Map<String, dynamic>>[];
+    final membership = snapshot?.membership;
+    final contributions =
+        snapshot?.contributions ?? const <ContributionRecord>[];
+    final emptyMessage =
+        (packages.isEmpty && !isLoading && errorMessage == null)
+        ? 'Membership packages will appear once the club publishes them.'
+        : null;
+
+    final currentFet = (membership?['points'] as num?)?.toInt() ?? 0;
     final currentTier = _currentTierLabel(
-      _membership?['tier']?.toString(),
+      membership?['tier']?.toString(),
       currentFet,
     );
-    final latestPendingApplication = _latestPendingApplication();
+    final latestPendingApplication = snapshot?.latestPendingApplication;
     final paymentStatus = PaymentStatusX.fromValue(
-      _membership?['payment_status']?.toString(),
+      membership?['payment_status']?.toString(),
     );
 
     return Scaffold(
@@ -487,375 +359,380 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
         ),
         title: Text('Membership', style: TypographyTokens.headlineSmall()),
       ),
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        slivers: [
-          // Digital membership card
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                SpacingTokens.spacing6,
-                SpacingTokens.spacing4,
-                SpacingTokens.spacing6,
-                SpacingTokens.spacing6,
-              ),
-              child: MembershipCard(
-                tierLabel: currentTier,
-                fet: currentFet,
-                paymentStatus: paymentStatus,
-              ),
-            ),
+      body: GradientBackground(
+        routePath: '/membership',
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
           ),
-
-          // Tier progress
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: SpacingTokens.spacing6,
-              ),
-              child: TierProgress(currentFet: currentFet),
-            ),
-          ),
-
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.spacing8),
-          ),
-
-          // ── Digital card ──
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: SpacingTokens.screenPadding,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AfriSectionHeader(
-                    title: 'Digital card',
-                    padding: EdgeInsets.zero,
-                    trailing: AfriInfoChip(
-                      icon: AfriIcons.share,
-                      label: 'Share',
-                      onTap: () async {
-                        final supporterId = user?.publicUserId != null
-                            ? AliasGenerator.format(user!.publicUserId!)
-                            : '000000';
-                        await Clipboard.setData(
-                          ClipboardData(
-                            text:
-                                '${RuntimeBranding.displayHomeTeamName} membership\n'
-                                'Tier: $currentTier\n'
-                                'Supporter ID: #$supporterId',
-                          ),
-                        );
-                        if (!context.mounted) {
-                          return;
-                        }
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Membership details copied.'),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  DigitalMembershipCardFull(
-                    clubName: RuntimeBranding.displayHomeTeamName,
-                    tier: currentTier,
-                    fanId: user?.publicUserId != null
-                        ? AliasGenerator.format(user!.publicUserId!)
-                        : '#000000',
-                    memberSince: _membership?['joined_at'] != null
-                        ? _formatMembershipDate(
-                            _membership?['joined_at']?.toString(),
-                          )
-                        : null,
-                    accentColor: primary,
-                  ),
-                ],
+          slivers: [
+            // Digital membership card
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  SpacingTokens.spacing6,
+                  SpacingTokens.spacing4,
+                  SpacingTokens.spacing6,
+                  SpacingTokens.spacing6,
+                ),
+                child: MembershipCard(
+                  tierLabel: currentTier,
+                  fet: currentFet,
+                  paymentStatus: paymentStatus,
+                ),
               ),
             ),
-          ),
 
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.spacing8),
-          ),
-
-          // ── Status summary ──
-          if (!_isLoading && _error == null)
+            // Tier progress
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: SpacingTokens.spacing6,
                 ),
-                child: GlassCard(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              currentTier,
-                              style: TypographyTokens.metricValue(
-                                ColorTokens.clubAccent,
-                              ),
-                            ),
-                            const SizedBox(height: SpacingTokens.spacing2),
-                            Text(
-                              latestPendingApplication != null
-                                  ? '${_membershipPackageLabel(latestPendingApplication['tier']?.toString() ?? 'fan')} request is awaiting payment verification.'
-                                  : currentFet == 0
-                                  ? 'Earn FET from tickets, fan clubs & contributions.'
-                                  : '$currentFet FET earned.',
-                              style: TypographyTokens.bodyMedium(),
-                            ),
-                            if (latestPendingApplication != null) ...[
-                              const SizedBox(height: SpacingTokens.spacing2),
-                              Text(
-                                'Your tier unlocks after the payment is verified and reviewed.',
-                                style: TypographyTokens.bodySmall(
-                                  ColorTokens.onSurfaceVariant,
-                                ),
-                              ),
-                            ],
-                            if (_membership?['expires_at'] != null) ...[
-                              const SizedBox(height: SpacingTokens.spacing2),
-                              Text(
-                                'Renews on ${_formatMembershipDate(_membership?['expires_at']?.toString())}',
-                                style: TypographyTokens.bodySmall(
-                                  ColorTokens.onSurfaceVariant,
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                child: TierProgress(currentFet: currentFet),
               ),
             ),
 
-
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.spacing6),
-          ),
-
-          // ── B-3: Payment Lifecycle Status Card ──
-          if (!_isLoading && _error == null && latestPendingApplication != null)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing6,
-                ),
-                child: _PaymentStatusCard(
-                  application: latestPendingApplication,
-                  tierLabel: _membershipPackageLabel(
-                    latestPendingApplication['tier']?.toString() ?? 'fan',
-                  ),
-                  formatDate: _formatMembershipDate,
-                  onContactSupport: () {
-                    final phoneNumber = _supportWhatsApp.trim();
-                    if (phoneNumber.isNotEmpty) {
-                      final sanitizedPhoneNumber = phoneNumber.replaceAll(
-                        '+',
-                        '',
-                      );
-                      final uri = Uri.parse(
-                        'https://wa.me/$sanitizedPhoneNumber?text=${Uri.encodeComponent('Hi, I need help with my membership payment verification.')}',
-                      );
-                      launchUrl(
-                        uri,
-                        mode: LaunchMode.externalApplication,
-                      ).then((launched) {
-                        if (!launched && mounted) {
-                          _showMessage(
-                            'Could not open WhatsApp. Please contact support.',
-                          );
-                        }
-                      });
-                    } else {
-                      _showMessage(
-                        'Support contact is not configured yet.',
-                      );
-                    }
-                  },
-                ),
-              ),
-            ),
-
-          // ── Contribution History ──
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: SpacingTokens.spacing6,
-              ),
-              child: ContributionHistorySection(
-                contributions: _contributions,
-                currencySymbol: context.afriCurrencySymbol,
-              ),
-            ),
-          ),
-
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.spacing8),
-          ),
-
-          // ── Registry ──
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: SpacingTokens.screenPadding,
-              ),
-              child: AfriListRow(
-                icon: AfriIcons.clubZone,
-                title: 'Fan registry',
-                subtitle: 'Browse all supporters',
-                onTap: () => context.push('/membership/fans'),
-              ),
-            ),
-          ),
-
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.spacing8),
-          ),
-
-          // ── Packages ──
-          const SliverToBoxAdapter(child: AfriSectionHeader(title: 'Packages')),
-
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.spacing4),
-          ),
-
-          // Loading
-          if (_isLoading)
             const SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing6,
-                ),
-                child: AfriSkeletonList(),
-              ),
+              child: SizedBox(height: SpacingTokens.spacing8),
             ),
 
-          if (!_isLoading && _error != null)
+            // ── Digital card ──
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing6,
+                  horizontal: SpacingTokens.screenPadding,
                 ),
-                child: AfriStateView.offline(
-                  title: 'Membership unavailable',
-                  message: _error!,
-                  actionLabel: 'Retry',
-                  onAction: _loadPackages,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AfriSectionHeader(
+                      title: 'Digital card',
+                      padding: EdgeInsets.zero,
+                      trailing: AfriInfoChip(
+                        icon: AfriIcons.share,
+                        label: 'Share',
+                        onTap: () async {
+                          final supporterId = user?.publicUserId != null
+                              ? AliasGenerator.format(user!.publicUserId!)
+                              : '000000';
+                          await Clipboard.setData(
+                            ClipboardData(
+                              text:
+                                  '${RuntimeBranding.displayHomeTeamName} membership\n'
+                                  'Tier: $currentTier\n'
+                                  'Supporter ID: #$supporterId',
+                            ),
+                          );
+                          if (!context.mounted) {
+                            return;
+                          }
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Membership details copied.'),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    DigitalMembershipCardFull(
+                      clubName: RuntimeBranding.displayHomeTeamName,
+                      tier: currentTier,
+                      fanId: user?.publicUserId != null
+                          ? AliasGenerator.format(user!.publicUserId!)
+                          : '#000000',
+                      memberSince: membership?['joined_at'] != null
+                          ? _formatMembershipDate(
+                              membership?['joined_at']?.toString(),
+                            )
+                          : null,
+                      accentColor: primary,
+                    ),
+                  ],
                 ),
               ),
             ),
 
-          if (!_isLoading && _error == null && _packages.isEmpty)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing6,
-                ),
-                child: AfriStateView.empty(
-                  title: 'No packages published',
-                  message:
-                      _emptyMessage ??
-                      'Membership packages will appear once the club publishes them.',
-                ),
-              ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: SpacingTokens.spacing8),
             ),
 
-          if (!_isLoading && _packages.isNotEmpty)
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                final pkg = _packages[index];
-                final tierId = (pkg['tier'] ?? 'bronze')
-                    .toString()
-                    .toLowerCase();
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    SpacingTokens.spacing6,
-                    0,
-                    SpacingTokens.spacing6,
-                    SpacingTokens.spacing3,
+            // ── Status summary ──
+            if (!isLoading && errorMessage == null)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: SpacingTokens.spacing6,
                   ),
-                  child: ClayCard(
-                    onTap: () => context.push('/membership/tier/$tierId'),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  child: GlassCard(
+                    child: Row(
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                (pkg['title'] ?? pkg['tier'] ?? 'Package')
-                                    .toString(),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TypographyTokens.titleMedium(),
-                              ),
-                            ),
-                            const SizedBox(width: SpacingTokens.spacing3),
-                            AfriStatusChip(
-                              label: (pkg['tier'] ?? '').toString(),
-                              tone: AfriStatusTone.info,
-                            ),
-                          ],
-                        ),
-                        if (pkg['description'] != null) ...[
-                          const SizedBox(height: SpacingTokens.spacing2),
-                          Text(
-                            pkg['description'].toString(),
-                            style: TypographyTokens.bodySmall(
-                              ColorTokens.onSurfaceVariant,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                        const SizedBox(height: SpacingTokens.spacing4),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                _packagePriceLabel(pkg),
-                                style: TypographyTokens.titleMedium(
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                currentTier,
+                                style: TypographyTokens.metricValue(
                                   ColorTokens.clubAccent,
                                 ),
                               ),
-                            ),
-                            if (user != null)
-                              AfriButton(
-                                label: _isJoining && _joiningTier == tierId
-                                    ? 'Processing…'
-                                    : _membershipActionLabel(tierId),
-                                onTap: () => _activatePackage(pkg),
-                                isLoading: _isJoining && _joiningTier == tierId,
-                                enabled:
-                                    !(_isJoining && _joiningTier == tierId) &&
-                                    !_hasPendingApplicationForTier(tierId),
-                                fullWidth: false,
+                              const SizedBox(height: SpacingTokens.spacing2),
+                              Text(
+                                latestPendingApplication != null
+                                    ? '${_membershipPackageLabel(latestPendingApplication['tier']?.toString() ?? 'fan')} request is awaiting payment verification.'
+                                    : currentFet == 0
+                                    ? 'Earn FET from tickets, fan clubs & contributions.'
+                                    : '$currentFet FET earned.',
+                                style: TypographyTokens.bodyMedium(),
                               ),
-                          ],
+                              if (latestPendingApplication != null) ...[
+                                const SizedBox(height: SpacingTokens.spacing2),
+                                Text(
+                                  'Your tier unlocks after the payment is verified and reviewed.',
+                                  style: TypographyTokens.bodySmall(
+                                    ColorTokens.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                              if (membership?['expires_at'] != null) ...[
+                                const SizedBox(height: SpacingTokens.spacing2),
+                                Text(
+                                  'Renews on ${_formatMembershipDate(membership?['expires_at']?.toString())}',
+                                  style: TypographyTokens.bodySmall(
+                                    ColorTokens.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                );
-              }, childCount: _packages.length),
+                ),
+              ),
+
+            const SliverToBoxAdapter(
+              child: SizedBox(height: SpacingTokens.spacing6),
             ),
 
-          const SliverToBoxAdapter(
-            child: SizedBox(height: SpacingTokens.spacing20),
-          ),
-        ],
+            // ── B-3: Payment Lifecycle Status Card ──
+            if (!isLoading &&
+                errorMessage == null &&
+                latestPendingApplication != null)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: SpacingTokens.spacing6,
+                  ),
+                  child: _PaymentStatusCard(
+                    application: latestPendingApplication,
+                    tierLabel: _membershipPackageLabel(
+                      latestPendingApplication['tier']?.toString() ?? 'fan',
+                    ),
+                    formatDate: _formatMembershipDate,
+                    onContactSupport: () {
+                      final phoneNumber = _supportWhatsApp.trim();
+                      if (phoneNumber.isNotEmpty) {
+                        final sanitizedPhoneNumber = phoneNumber.replaceAll(
+                          '+',
+                          '',
+                        );
+                        final uri = Uri.parse(
+                          'https://wa.me/$sanitizedPhoneNumber?text=${Uri.encodeComponent('Hi, I need help with my membership payment verification.')}',
+                        );
+                        launchUrl(
+                          uri,
+                          mode: LaunchMode.externalApplication,
+                        ).then((launched) {
+                          if (!launched && mounted) {
+                            _showMessage(
+                              'Could not open WhatsApp. Please contact support.',
+                            );
+                          }
+                        });
+                      } else {
+                        _showMessage('Support contact is not configured yet.');
+                      }
+                    },
+                  ),
+                ),
+              ),
+
+            // ── Contribution History ──
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: SpacingTokens.spacing6,
+                ),
+                child: ContributionHistorySection(
+                  contributions: contributions,
+                  currencySymbol: context.afriCurrencySymbol,
+                ),
+              ),
+            ),
+
+            const SliverToBoxAdapter(
+              child: SizedBox(height: SpacingTokens.spacing8),
+            ),
+
+            // ── Registry ──
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: SpacingTokens.screenPadding,
+                ),
+                child: AfriListRow(
+                  icon: AfriIcons.clubZone,
+                  title: 'Fan registry',
+                  subtitle: 'Browse all supporters',
+                  onTap: () => context.push('/membership/fans'),
+                ),
+              ),
+            ),
+
+            const SliverToBoxAdapter(
+              child: SizedBox(height: SpacingTokens.spacing8),
+            ),
+
+            // ── Packages ──
+            const SliverToBoxAdapter(
+              child: AfriSectionHeader(title: 'Packages'),
+            ),
+
+            const SliverToBoxAdapter(
+              child: SizedBox(height: SpacingTokens.spacing4),
+            ),
+
+            // Loading
+            if (isLoading)
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: SpacingTokens.spacing6,
+                  ),
+                  child: AfriSkeletonList(),
+                ),
+              ),
+
+            if (!isLoading && errorMessage != null)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: SpacingTokens.spacing6,
+                  ),
+                  child: AfriStateView.offline(
+                    title: 'Membership unavailable',
+                    message: errorMessage,
+                    actionLabel: 'Retry',
+                    onAction: _refreshMembership,
+                  ),
+                ),
+              ),
+
+            if (!isLoading && errorMessage == null && packages.isEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: SpacingTokens.spacing6,
+                  ),
+                  child: AfriStateView.empty(
+                    title: 'No packages published',
+                    message:
+                        emptyMessage ??
+                        'Membership packages will appear once the club publishes them.',
+                  ),
+                ),
+              ),
+
+            if (!isLoading && packages.isNotEmpty)
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final pkg = packages[index];
+                  final tierId = (pkg['tier'] ?? 'bronze')
+                      .toString()
+                      .toLowerCase();
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      SpacingTokens.spacing6,
+                      0,
+                      SpacingTokens.spacing6,
+                      SpacingTokens.spacing3,
+                    ),
+                    child: ClayCard(
+                      onTap: () => context.push('/membership/tier/$tierId'),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  (pkg['title'] ?? pkg['tier'] ?? 'Package')
+                                      .toString(),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TypographyTokens.titleMedium(),
+                                ),
+                              ),
+                              const SizedBox(width: SpacingTokens.spacing3),
+                              AfriStatusChip(
+                                label: (pkg['tier'] ?? '').toString(),
+                                tone: AfriStatusTone.info,
+                              ),
+                            ],
+                          ),
+                          if (pkg['description'] != null) ...[
+                            const SizedBox(height: SpacingTokens.spacing2),
+                            Text(
+                              pkg['description'].toString(),
+                              style: TypographyTokens.bodySmall(
+                                ColorTokens.onSurfaceVariant,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                          const SizedBox(height: SpacingTokens.spacing4),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  _packagePriceLabel(pkg),
+                                  style: TypographyTokens.titleMedium(
+                                    ColorTokens.clubAccent,
+                                  ),
+                                ),
+                              ),
+                              if (user != null)
+                                AfriButton(
+                                  label: _isJoining && _joiningTier == tierId
+                                      ? 'Processing…'
+                                      : _membershipActionLabel(tierId),
+                                  onTap: () => _activatePackage(pkg),
+                                  isLoading:
+                                      _isJoining && _joiningTier == tierId,
+                                  enabled:
+                                      !(_isJoining && _joiningTier == tierId) &&
+                                      !_hasPendingApplicationForTier(tierId),
+                                  fullWidth: false,
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }, childCount: packages.length),
+              ),
+
+            const SliverToBoxAdapter(
+              child: SizedBox(height: SpacingTokens.spacing20),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -873,14 +750,6 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       return _membershipPackageLabel(trimmed);
     }
     return _tierLabelFromFet(fet);
-  }
-
-  String _normalizeContributionStatus(String? rawStatus) {
-    return switch ((rawStatus ?? '').trim().toLowerCase()) {
-      'confirmed' || 'verified' => 'verified',
-      'failed' || 'cancelled' || 'reversed' => 'failed',
-      _ => 'pending',
-    };
   }
 
   String _formatMembershipDate(String? rawValue) {
@@ -930,8 +799,9 @@ class _PaymentStatusCard extends StatelessWidget {
     final metadata = application['metadata'] is Map
         ? Map<String, dynamic>.from(application['metadata'] as Map)
         : const <String, dynamic>{};
-    final paymentStatus =
-        (application['payment_status'] ?? 'unpaid').toString().toLowerCase();
+    final paymentStatus = (application['payment_status'] ?? 'unpaid')
+        .toString()
+        .toLowerCase();
     final applicationDate = application['application_date']?.toString();
     final amount = metadata['amount'];
     final currencySymbol = metadata['currency_symbol'] ?? 'RWF';
@@ -960,11 +830,7 @@ class _PaymentStatusCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                AfriIcons.statusInfo,
-                size: 20,
-                color: ColorTokens.warning,
-              ),
+              Icon(AfriIcons.statusInfo, size: 20, color: ColorTokens.warning),
               const SizedBox(width: SpacingTokens.spacing3),
               Expanded(
                 child: Text(
@@ -1000,8 +866,8 @@ class _PaymentStatusCard extends StatelessWidget {
                       color: step.isComplete
                           ? ColorTokens.success.withValues(alpha: 0.2)
                           : step.isCurrent
-                              ? ColorTokens.warning.withValues(alpha: 0.2)
-                              : ColorTokens.surfaceContainerHighest,
+                          ? ColorTokens.warning.withValues(alpha: 0.2)
+                          : ColorTokens.surfaceContainerHighest,
                     ),
                     alignment: Alignment.center,
                     child: step.isComplete
@@ -1011,15 +877,15 @@ class _PaymentStatusCard extends StatelessWidget {
                             color: ColorTokens.success,
                           )
                         : step.isCurrent
-                            ? Container(
-                                width: 8,
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: ColorTokens.warning,
-                                ),
-                              )
-                            : null,
+                        ? Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: ColorTokens.warning,
+                            ),
+                          )
+                        : null,
                   ),
                   const SizedBox(width: SpacingTokens.spacing3),
                   Text(
@@ -1028,8 +894,8 @@ class _PaymentStatusCard extends StatelessWidget {
                       step.isComplete
                           ? ColorTokens.success
                           : step.isCurrent
-                              ? ColorTokens.onSurface
-                              : ColorTokens.onSurfaceVariant,
+                          ? ColorTokens.onSurface
+                          : ColorTokens.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -1043,18 +909,14 @@ class _PaymentStatusCard extends StatelessWidget {
           Text(
             'Verification typically takes 1–24 hours. '
             'You will be notified once confirmed.',
-            style: TypographyTokens.bodySmall(
-              ColorTokens.onSurfaceVariant,
-            ),
+            style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
           ),
 
           if (applicationDate != null) ...[
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
               'Requested: ${formatDate(applicationDate)}',
-              style: TypographyTokens.labelSmall(
-                ColorTokens.onSurfaceVariant,
-              ),
+              style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
             ),
           ],
 

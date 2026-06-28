@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'color_tokens.dart';
 
-/// Border and outline tokens for the Tactile Monolith system.
+/// Border and outline tokens for the Revolut-Borrowed system.
 ///
 /// The system avoids hard 1px divider lines. When a boundary is needed, it
 /// should be expressed as a low-opacity ghost outline sourced from here so

@@ -146,7 +146,8 @@ class _AfriClubMaterialApp extends ConsumerStatefulWidget {
       _AfriClubMaterialAppState();
 }
 
-class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
+class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
+    with WidgetsBindingObserver {
   /// Aggregated public paths from all registered modules plus system routes.
   /// These paths bypass the authentication redirect guard.
   late final Set<String> _publicPaths = <String>{
@@ -156,18 +157,29 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
 
   late final ValueNotifier<int> _routerRefreshTick;
   late final ProviderSubscription<AuthState> _authSubscription;
+  late final ProviderSubscription<AsyncValue<PlatformConfigSnapshot>>
+  _featureConfigSubscription;
   late final AppRouter _appRouter;
   StreamSubscription<Uri>? _deepLinkSubscription;
   bool _initialDeepLinkProcessed = false;
+  late final int? _normalizedClubId;
 
   @override
   void initState() {
     super.initState();
 
+    _normalizedClubId = int.tryParse(widget.config.clubId);
     _routerRefreshTick = ValueNotifier<int>(0);
     _authSubscription = ref.listenManual<AuthState>(authStateProvider, (_, __) {
       _routerRefreshTick.value = _routerRefreshTick.value + 1;
     });
+    _featureConfigSubscription = ref
+        .listenManual<AsyncValue<PlatformConfigSnapshot>>(
+          featureConfigProvider,
+          (_, __) {
+            _routerRefreshTick.value = _routerRefreshTick.value + 1;
+          },
+        );
     _appRouter = AppRouter(
       modules: widget.modules,
       initialLocation: widget.initialLocation,
@@ -196,14 +208,46 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
       );
       unawaited(_applyInitialDeepLink());
     }
+
+    WidgetsBinding.instance.addObserver(this);
+    _scheduleFeatureConfigRefresh();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     unawaited(_deepLinkSubscription?.cancel());
     _authSubscription.close();
+    _featureConfigSubscription.close();
     _routerRefreshTick.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Purge expired cache entries after returning from background.
+      // Users may have been away for hours — stale data is worse than a
+      // fresh network fetch.
+      unawaited(HiveCacheService.purgeExpired());
+
+      // Re-sync push token — the OS may have rotated it while backgrounded.
+      unawaited(PushNotificationService.syncToken());
+    }
+  }
+
+  void _scheduleFeatureConfigRefresh() {
+    final clubId = _normalizedClubId;
+    if (clubId == null || !SupabaseClientFactory.isInitialized) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      unawaited(ref.read(featureConfigProvider.notifier).loadForClub(clubId));
+    });
   }
 
   Future<void> _applyInitialDeepLink() async {
@@ -247,7 +291,7 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp> {
       }
       // Use push (not go) to preserve the user's existing navigation history.
       // Deep links should add to the stack, not replace it entirely.
-      _appRouter.router.push(target);
+      unawaited(_appRouter.router.push(target));
     });
   }
 

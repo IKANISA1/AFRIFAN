@@ -57,6 +57,7 @@ class QuickActionsGrid extends ConsumerWidget {
       ],
     );
   }
+
   IconData _resolveActionIcon(HomeQuickAction action) {
     return switch (action.iconKey.trim()) {
       'groups' => AfriIcons.groups,

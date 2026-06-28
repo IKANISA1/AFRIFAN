@@ -83,8 +83,9 @@ class AfriSegmentedControl extends StatelessWidget {
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
-                              color: ColorTokens.ambientShadow
-                                  .withValues(alpha: 0.12),
+                              color: ColorTokens.ambientShadow.withValues(
+                                alpha: 0.12,
+                              ),
                               blurRadius: 8,
                               spreadRadius: -4,
                               offset: const Offset(0, 2),

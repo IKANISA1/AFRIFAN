@@ -5,7 +5,8 @@ import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_press_feedback.dart';
 
-typedef EliteCardBuilder = Widget Function(BuildContext context, AfriPressState state);
+typedef EliteCardBuilder =
+    Widget Function(BuildContext context, AfriPressState state);
 
 /// A world-class operational card surface.
 /// High density, sharp edges, and high contrast.
@@ -51,8 +52,8 @@ class EliteCard extends StatelessWidget {
             color: backgroundColor ?? ColorTokens.surface,
             borderRadius: ShapeTokens.cardRadius,
             border: BorderTokens.all(
-              color: state.isFocused 
-                  ? ColorTokens.clubAccent 
+              color: state.isFocused
+                  ? ColorTokens.clubAccent
                   : (borderColor ?? ColorTokens.ghostBorder),
               width: BorderTokens.standard,
             ),

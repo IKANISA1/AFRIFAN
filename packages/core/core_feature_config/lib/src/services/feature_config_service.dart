@@ -24,9 +24,15 @@ const List<MapEntry<String, String>> _fallbackRouteFeatureKeys =
 /// This is the single source of truth used by the mobile app, route guards,
 /// home composition, navigation, and deep link handlers.
 class FeatureConfigService {
-  const FeatureConfigService(this._snapshot);
+  const FeatureConfigService(
+    this._snapshot, {
+    this.isAuthenticated = false,
+    this.roles = const <String>{},
+  });
 
   final PlatformConfigSnapshot _snapshot;
+  final bool isAuthenticated;
+  final Set<String> roles;
 
   PlatformConfigSnapshot get snapshot => _snapshot;
 
@@ -34,13 +40,13 @@ class FeatureConfigService {
 
   FeatureAccessState getFeatureAccess(
     String featureKey, {
-    bool isAuthenticated = false,
-    Iterable<String> roles = const <String>[],
+    bool? isAuthenticated,
+    Iterable<String>? roles,
   }) {
     return _getFeatureAccess(
       featureKey,
-      isAuthenticated: isAuthenticated,
-      roles: roles,
+      isAuthenticated: isAuthenticated ?? this.isAuthenticated,
+      roles: roles ?? this.roles,
       visited: <String>{},
     );
   }
@@ -107,12 +113,11 @@ class FeatureConfigService {
     final authAllowed = !(rules?.authRequired ?? false) || isAuthenticated;
     final roleAllowed =
         roleRestrictions.isEmpty ||
-        (isAuthenticated &&
-            normalizedRoles.any(roleRestrictions.contains));
+        (isAuthenticated && normalizedRoles.any(roleRestrictions.contains));
     final isWithinSchedule = rules?.isWithinSchedule ?? true;
 
-    final isOperational = feature.isOperationallyEnabled &&
-        dependenciesSatisfied;
+    final isOperational =
+        feature.isOperationallyEnabled && dependenciesSatisfied;
     final isAvailable = isOperational && authAllowed && roleAllowed;
 
     var reason = 'ok';
@@ -238,17 +243,14 @@ class FeatureConfigService {
   }
 
   List<ContentBlock> getContentBlocks(String placementKey) {
-    return _snapshot.contentBlocks
-        .where((block) {
-          if (block.placementKey != placementKey) return false;
-          if (!block.isActive) return false;
-          if (block.featureKey != null) {
-            return canRenderFeature(block.featureKey!);
-          }
-          return true;
-        })
-        .toList()
-      ..sort(_byBlockSortOrder);
+    return _snapshot.contentBlocks.where((block) {
+      if (block.placementKey != placementKey) return false;
+      if (!block.isActive) return false;
+      if (block.featureKey != null) {
+        return canRenderFeature(block.featureKey!);
+      }
+      return true;
+    }).toList()..sort(_byBlockSortOrder);
   }
 
   String? getFeatureKeyForPath(String path) {
@@ -257,14 +259,19 @@ class FeatureConfigService {
       return null;
     }
 
-    final routeMatch = _snapshot.features
-        .map((feature) => MapEntry<String, String>(
-              feature.featureKey,
-              feature.channel?.routeKey?.trim().toLowerCase() ?? '',
-            ))
-        .where((entry) => entry.value.startsWith('/'))
-        .toList()
-      ..sort((left, right) => right.value.length.compareTo(left.value.length));
+    final routeMatch =
+        _snapshot.features
+            .map(
+              (feature) => MapEntry<String, String>(
+                feature.featureKey,
+                feature.channel?.routeKey?.trim().toLowerCase() ?? '',
+              ),
+            )
+            .where((entry) => entry.value.startsWith('/'))
+            .toList()
+          ..sort(
+            (left, right) => right.value.length.compareTo(left.value.length),
+          );
 
     for (final entry in routeMatch) {
       if (entry.value == normalizedPath ||

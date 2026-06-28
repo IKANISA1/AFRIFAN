@@ -35,7 +35,7 @@ class AfriClubBootstrapOptions {
   /// admin-controlled platform feature configuration snapshot.
   ///
   /// When provided, this takes precedence over the static [modules] list
-  /// and is called after the platform config is fetched from Supabase.
+  /// and is called with the cached bootstrap snapshot when one is available.
   final List<FeatureModule> Function(Map<String, dynamic>? snapshot)?
   moduleBuilder;
 
@@ -67,23 +67,25 @@ Future<void> bootstrap(
       const rawSupabaseUrl = String.fromEnvironment('SUPABASE_URL');
       const rawSupabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
 
-      if (rawClubId.isEmpty) {
-        throw StateError(
-          'CLUB_ID must be provided via --dart-define or '
-          '--dart-define-from-file before bootstrapping the app.',
-        );
-      }
-      if (rawSupabaseUrl.isEmpty) {
-        throw StateError(
-          'SUPABASE_URL must be provided via --dart-define or '
-          '--dart-define-from-file before bootstrapping the app.',
-        );
-      }
-      if (rawSupabaseAnonKey.isEmpty) {
-        throw StateError(
-          'SUPABASE_ANON_KEY must be provided via --dart-define or '
-          '--dart-define-from-file before bootstrapping the app.',
-        );
+      if (options.startupOptions.initializeBackend) {
+        if (rawClubId.isEmpty) {
+          throw StateError(
+            'CLUB_ID must be provided via --dart-define or '
+            '--dart-define-from-file before bootstrapping the app.',
+          );
+        }
+        if (rawSupabaseUrl.isEmpty) {
+          throw StateError(
+            'SUPABASE_URL must be provided via --dart-define or '
+            '--dart-define-from-file before bootstrapping the app.',
+          );
+        }
+        if (rawSupabaseAnonKey.isEmpty) {
+          throw StateError(
+            'SUPABASE_ANON_KEY must be provided via --dart-define or '
+            '--dart-define-from-file before bootstrapping the app.',
+          );
+        }
       }
 
       final normalizedClubId = int.tryParse(config.clubId);
@@ -112,49 +114,48 @@ Future<void> bootstrap(
       );
       AfriCountryCatalog.setPreferredCountryCode(config.countryCode);
 
-      final builtinCountries = await loadBuiltInCountries();
-      AfriCountryCatalog.addCountries(builtinCountries);
+      if (options.startupOptions.initializePersistence) {
+        final builtinCountries = await loadBuiltInCountries();
+        AfriCountryCatalog.addCountries(builtinCountries);
+      }
 
       final startupCoordinator = AppStartupCoordinator(
         options: options.startupOptions,
       );
       await startupCoordinator.initialize(config);
 
-      // Fetch the platform feature config from Supabase.
-      // This runs AFTER Supabase initialization (inside startupCoordinator)
-      // and BEFORE runApp, so the first frame already uses config-driven modules.
+      // Seed the first frame from cached feature config only.
+      // Network refresh happens after runApp so startup never blocks on RPC.
       Map<String, dynamic>? platformConfigSnapshot;
-      if (SupabaseClientFactory.isInitialized) {
-        try {
-          final featureConfigRepo = FeatureConfigRepository();
-          final snapshot = await featureConfigRepo.loadConfig(
-            clubId: normalizedClubId,
-            channel: 'mobile',
-          );
-          if (snapshot.isNotEmpty) {
-            platformConfigSnapshot = snapshot.toJson();
-            AfriLogger.info(
-              'Bootstrap',
-              'Platform config loaded: ${snapshot.features.length} features.',
-            );
-          }
-        } catch (error) {
-          AfriLogger.warn(
+      try {
+        final featureConfigRepo = FeatureConfigRepository();
+        final snapshot = await featureConfigRepo.loadCachedConfig(
+          clubId: normalizedClubId,
+          channel: 'mobile',
+        );
+        if (snapshot != null && snapshot.isNotEmpty) {
+          platformConfigSnapshot = snapshot.toJson();
+          AfriLogger.info(
             'Bootstrap',
-            'Platform config fetch failed (non-fatal): $error. '
-                'Using compile-time feature flags.',
+            'Platform config cache loaded: ${snapshot.features.length} features.',
+          );
+        } else {
+          AfriLogger.info(
+            'Bootstrap',
+            'No cached platform config found. Using compile-time feature flags '
+                'until background refresh completes.',
           );
         }
-      } else {
-        AfriLogger.info(
+      } catch (error) {
+        AfriLogger.warn(
           'Bootstrap',
-          'Skipping platform config fetch because backend initialization '
-              'is disabled for this startup mode.',
+          'Platform config cache load failed (non-fatal): $error. '
+              'Using compile-time feature flags.',
         );
       }
 
-      // Rebuild module list with config-aware enablement.
-      // If platformConfigSnapshot is null, falls back to compile-time flags.
+      // Rebuild module list with config-aware enablement when a cached snapshot
+      // is available. Otherwise fall back to compile-time flags for instant boot.
       final modules = options.moduleBuilder != null
           ? options.moduleBuilder!(platformConfigSnapshot)
           : (options.modules.isNotEmpty ? options.modules : <FeatureModule>[]);

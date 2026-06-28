@@ -6,7 +6,7 @@
 
 The mobile system now prioritizes:
 
-- calmer dark surfaces instead of heavy glass/clay ornament
+- calmer dark surfaces instead of legacy ornament
 - shorter labels and stronger spacing instead of repeated headings and helper copy
 - reusable widgets over screen-specific styling
 - icon-led scanning and compact status chips
@@ -20,7 +20,7 @@ The mobile system now prioritizes:
   - `ClayCard`
   - `GlassCard`
   - `AfriButton`
-  - `ClaymorphicButton`
+  - `AfriButton`
   - `AfriIconButton`
   - `AfriClubBottomNav`
   - `AfriSectionHeader`
@@ -46,4 +46,4 @@ The mobile system now prioritizes:
 6. Simplify copy last, once hierarchy is clear.
 
 Detailed audit and rollout guidance lives in
-[`docs/mobile_minimalist_ui_system_2026-04-11.md`](/Volumes/PRO-G40/AFRICLUB/docs/mobile_minimalist_ui_system_2026-04-11.md).
+[`docs/mobile_Revolut-borrowed_ui_system_2026-04-11.md`](/Volumes/PRO-G40/AFRICLUB/docs/mobile_Revolut-borrowed_ui_system_2026-04-11.md).

@@ -31,7 +31,7 @@ void main() {
       );
     });
 
-    test('GoogleFonts usage stays centralized in typography tokens', () {
+    test('GoogleFonts usage stays out of UI source', () {
       final violations = _scanDartFiles(
         roots: [
           Directory('${repoRoot.path}/packages'),
@@ -39,19 +39,69 @@ void main() {
         ],
         pattern: RegExp(r'\bGoogleFonts\.'),
         allow: (path) =>
-            path.endsWith(
-              '/packages/core/core_theme/lib/src/tokens/typography_tokens.dart',
-            ) ||
-            path.contains('/packages/features/test_support/') ||
-            path.contains('/test/') ||
-            path.contains('/integration_test/'),
+            path.contains('/test/') || path.contains('/integration_test/'),
       );
 
       expect(
         violations,
         isEmpty,
         reason: _formatViolations(
-          'Found direct GoogleFonts usage outside typography tokens.',
+          'Found GoogleFonts usage in UI source. Use RevolutBorrowed through TypographyTokens.',
+          violations,
+        ),
+      );
+    });
+
+    test('Typography uses borrowed font tokens without raw family strings', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages'),
+          Directory('${repoRoot.path}/apps'),
+        ],
+        pattern: RegExp(r'''fontFamily:\s*['"]'''),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found raw fontFamily strings. Use TypographyTokens.borrowedFontFamily.',
+          violations,
+        ),
+      );
+    });
+
+    test('Typography does not use negative letter spacing', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages'),
+          Directory('${repoRoot.path}/apps'),
+        ],
+        pattern: RegExp(r'letterSpacing:\s*-[0-9]'),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found negative letter spacing. Borrowed typography uses zero tracking.',
+          violations,
+        ),
+      );
+    });
+
+    test('Feature packages do not declare local font fixtures', () {
+      final violations = _scanTextFiles(
+        roots: [Directory('${repoRoot.path}/packages/features')],
+        extensions: const {'.yaml', '.yml'},
+        pattern: RegExp(r'test/fonts|google_fonts'),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found feature-local font fixture declarations.',
           violations,
         ),
       );
@@ -108,6 +158,7 @@ List<String> _scanDartFiles({
       if (entity is! File || !entity.path.endsWith('.dart')) continue;
 
       final normalizedPath = entity.path.replaceAll('\\', '/');
+      if (_isGeneratedPath(normalizedPath)) continue;
       if (normalizedPath.endsWith('.g.dart')) continue;
       if (allow != null && allow(normalizedPath)) continue;
 
@@ -120,6 +171,40 @@ List<String> _scanDartFiles({
 
   violations.sort();
   return violations;
+}
+
+List<String> _scanTextFiles({
+  required List<Directory> roots,
+  required Set<String> extensions,
+  required RegExp pattern,
+}) {
+  final violations = <String>[];
+
+  for (final root in roots) {
+    if (!root.existsSync()) continue;
+
+    for (final entity in root.listSync(recursive: true, followLinks: false)) {
+      if (entity is! File) continue;
+
+      final normalizedPath = entity.path.replaceAll('\\', '/');
+      if (_isGeneratedPath(normalizedPath)) continue;
+      if (!extensions.any(normalizedPath.endsWith)) continue;
+
+      final content = entity.readAsStringSync();
+      if (pattern.hasMatch(content)) {
+        violations.add(normalizedPath);
+      }
+    }
+  }
+
+  violations.sort();
+  return violations;
+}
+
+bool _isGeneratedPath(String normalizedPath) {
+  return normalizedPath.contains('/build/') ||
+      normalizedPath.contains('/.dart_tool/') ||
+      normalizedPath.contains('/ios/Pods/');
 }
 
 String _formatViolations(String heading, List<String> violations) {

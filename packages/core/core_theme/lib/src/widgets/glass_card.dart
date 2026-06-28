@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -114,36 +116,45 @@ class _GlassSurface extends StatelessWidget {
     final radius = ShapeTokens.cardRadius;
     final effectiveBorderColor = borderColor ?? ColorTokens.ghostBorder;
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 140),
-      curve: Curves.easeOutCubic,
-      width: width,
-      height: height,
-      padding: padding ?? const EdgeInsets.all(SpacingTokens.spacing5),
-      decoration: BoxDecoration(
-        color: ColorTokens.glassFill,
-        borderRadius: radius,
-        border: isFocused
-            ? BorderTokens.focusAll(
-                color: ColorTokens.primaryContainer,
-                opacity: 0.9,
-              )
-            : BorderTokens.all(
-                color: effectiveBorderColor,
-                width: BorderTokens.standard,
-              ),
-        boxShadow: [
-          ...AfriShadows.glass(strength: isPressed ? 0.65 : 1.0),
-          if (isFocused)
-            BoxShadow(
-              color: ColorTokens.primaryContainer.withValues(alpha: 0.14),
-              blurRadius: 14,
-              spreadRadius: -8,
-              offset: const Offset(0, 6),
-            ),
-        ],
+    return ClipRRect(
+      borderRadius: radius,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: ColorTokens.glassBlurSigma,
+          sigmaY: ColorTokens.glassBlurSigma,
+        ),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 140),
+          curve: Curves.easeOutCubic,
+          width: width,
+          height: height,
+          padding: padding ?? const EdgeInsets.all(SpacingTokens.spacing5),
+          decoration: BoxDecoration(
+            color: ColorTokens.glassFill,
+            borderRadius: radius,
+            border: isFocused
+                ? BorderTokens.focusAll(
+                    color: ColorTokens.primaryContainer,
+                    opacity: 0.9,
+                  )
+                : BorderTokens.all(
+                    color: effectiveBorderColor,
+                    width: BorderTokens.standard,
+                  ),
+            boxShadow: [
+              ...AfriShadows.glass(strength: isPressed ? 0.65 : 1.0),
+              if (isFocused)
+                BoxShadow(
+                  color: ColorTokens.primaryContainer.withValues(alpha: 0.18),
+                  blurRadius: 18,
+                  spreadRadius: -8,
+                  offset: const Offset(0, 8),
+                ),
+            ],
+          ),
+          child: child,
+        ),
       ),
-      child: child,
     );
   }
 }

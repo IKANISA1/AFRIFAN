@@ -18,10 +18,7 @@ class FeatureConfigRepository {
     // 1. Try to fetch from network
     final result = await SafeRpc.call(
       'get_platform_config',
-      params: {
-        'p_channel': channel,
-        'p_club_id': clubId,
-      },
+      params: {'p_channel': channel, 'p_club_id': clubId},
       tag: _tag,
     );
 
@@ -30,11 +27,7 @@ class FeatureConfigRepository {
         Map<String, dynamic>.from(result.requireData as Map),
       );
       // Cache success
-      await _cacheConfig(
-        clubId: clubId,
-        channel: channel,
-        snapshot: snapshot,
-      );
+      await _cacheConfig(clubId: clubId, channel: channel, snapshot: snapshot);
       return snapshot;
     }
 
@@ -51,6 +44,13 @@ class FeatureConfigRepository {
     // 3. Last resort, return empty
     AfriLogger.warn(_tag, 'No config available, returning empty snapshot');
     return PlatformConfigSnapshot.empty;
+  }
+
+  Future<PlatformConfigSnapshot?> loadCachedConfig({
+    required int clubId,
+    String channel = 'mobile',
+  }) {
+    return _loadCachedConfig(clubId: clubId, channel: channel);
   }
 
   Future<void> _cacheConfig({
@@ -88,8 +88,6 @@ class FeatureConfigRepository {
     }
   }
 
-  String _cacheKey({
-    required int clubId,
-    required String channel,
-  }) => '$_cacheKeyPrefix:$clubId:$channel';
+  String _cacheKey({required int clubId, required String channel}) =>
+      '$_cacheKeyPrefix:$clubId:$channel';
 }

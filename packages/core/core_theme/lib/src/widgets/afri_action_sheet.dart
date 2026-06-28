@@ -95,10 +95,7 @@ class _AfriActionSheetBody extends StatelessWidget {
                   ),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      title!,
-                      style: TypographyTokens.sectionTitle(),
-                    ),
+                    child: Text(title!, style: TypographyTokens.sectionTitle()),
                   ),
                 ),
               // ── Actions ──
@@ -124,11 +121,13 @@ class _AfriActionSheetBody extends StatelessWidget {
                           width: 36,
                           height: 36,
                           decoration: BoxDecoration(
-                            color: (action.destructive
-                                    ? ColorTokens.error
-                                    : ColorTokens.surfaceContainerHigh)
-                                .withValues(
-                                    alpha: action.destructive ? 0.14 : 1.0),
+                            color:
+                                (action.destructive
+                                        ? ColorTokens.error
+                                        : ColorTokens.surfaceContainerHigh)
+                                    .withValues(
+                                      alpha: action.destructive ? 0.14 : 1.0,
+                                    ),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           alignment: Alignment.center,
@@ -145,9 +144,7 @@ class _AfriActionSheetBody extends StatelessWidget {
                           child: Text(
                             action.label,
                             style: TypographyTokens.titleSmall(
-                              action.destructive
-                                  ? ColorTokens.error
-                                  : null,
+                              action.destructive ? ColorTokens.error : null,
                             ),
                           ),
                         ),

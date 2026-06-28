@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'color_tokens.dart';
 
-/// Shadow presets for the Tactile Monolith design system.
+/// Shadow presets for the Revolut-Borrowed design system.
 class AfriShadows {
   AfriShadows._();
 

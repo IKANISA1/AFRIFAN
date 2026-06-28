@@ -1,4 +1,4 @@
-/// Blur presets for the Tactile Monolith glass layers.
+/// Blur presets for the Revolut-Borrowed glass layers.
 class AfriBlur {
   AfriBlur._();
 

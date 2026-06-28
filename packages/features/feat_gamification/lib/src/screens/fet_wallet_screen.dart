@@ -86,7 +86,12 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           _isSearching = false;
         });
       } catch (error, stackTrace) {
-      AfriLogger.warn('FetWalletScreen', 'Operation failed (non-critical).', error, stackTrace);
+        AfriLogger.warn(
+          'FetWalletScreen',
+          'Operation failed (non-critical).',
+          error,
+          stackTrace,
+        );
         if (!mounted) {
           return;
         }
@@ -114,16 +119,20 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     }
 
     // M-7: Client-side balance validation.
-    final currentBalance = ref.read(fetWalletProvider).valueOrNull?.wallet?.balance ?? 0;
+    final currentBalance =
+        ref.read(fetWalletProvider).valueOrNull?.wallet?.balance ?? 0;
     if (amount > currentBalance) {
-      _showMessage('Insufficient FET balance. You have ${_formatFet(currentBalance)} FET.');
+      _showMessage(
+        'Insufficient FET balance. You have ${_formatFet(currentBalance)} FET.',
+      );
       return;
     }
 
     // B-2: Confirmation gate for FET transfer.
     final confirmed = await _showWalletConfirmation(
       title: 'Confirm Transfer',
-      message: 'Send ${_formatFet(amount)} FET to ${selectedSupporter.displayName}?',
+      message:
+          'Send ${_formatFet(amount)} FET to ${selectedSupporter.displayName}?',
       detail: 'Remaining balance: ${_formatFet(currentBalance - amount)} FET',
       confirmLabel: 'SEND FET',
     );
@@ -188,9 +197,12 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     }
 
     // M-7: Client-side balance validation.
-    final currentBalance = ref.read(fetWalletProvider).valueOrNull?.wallet?.balance ?? 0;
+    final currentBalance =
+        ref.read(fetWalletProvider).valueOrNull?.wallet?.balance ?? 0;
     if (amount > currentBalance) {
-      _showMessage('Insufficient FET balance. You have ${_formatFet(currentBalance)} FET.');
+      _showMessage(
+        'Insufficient FET balance. You have ${_formatFet(currentBalance)} FET.',
+      );
       return;
     }
 
@@ -354,10 +366,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
       backgroundColor: ColorTokens.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(
-          'Wallet',
-          style: TypographyTokens.headlineSmall(),
-        ),
+        title: Text('Wallet', style: TypographyTokens.headlineSmall()),
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: const Icon(AfriIcons.back),
@@ -429,9 +438,18 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildCompactStat('Weekly', '+${_formatFet(wallet?.weeklyEarned ?? 0)}'),
-                    _buildCompactStat('Monthly', '+${_formatFet(wallet?.monthlyEarned ?? 0)}'),
-                    _buildCompactStat('Spent', _formatFet(wallet?.lifetimeSpent ?? 0)),
+                    _buildCompactStat(
+                      'Weekly',
+                      '+${_formatFet(wallet?.weeklyEarned ?? 0)}',
+                    ),
+                    _buildCompactStat(
+                      'Monthly',
+                      '+${_formatFet(wallet?.monthlyEarned ?? 0)}',
+                    ),
+                    _buildCompactStat(
+                      'Spent',
+                      _formatFet(wallet?.lifetimeSpent ?? 0),
+                    ),
                   ],
                 ),
               ],
@@ -455,9 +473,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             ),
           ],
           const SizedBox(height: SpacingTokens.spacing6),
-          FetSplitModel(
-            currentTier: wallet?.tier ?? 'supporter',
-          ),
+          FetSplitModel(currentTier: wallet?.tier ?? 'supporter'),
           const SizedBox(height: SpacingTokens.spacing8),
           const AfriSectionHeader(title: 'Transfer'),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -475,9 +491,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                           child: SizedBox(
                             height: 16,
                             width: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
+                            child: CircularProgressIndicator(strokeWidth: 2),
                           ),
                         )
                       : (_searchController.text.isEmpty
@@ -510,18 +524,22 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                     (supporter) => ListTile(
                       contentPadding: EdgeInsets.zero,
                       dense: true,
-                      title: Text(supporter.displayName, style: TypographyTokens.titleSmall()),
+                      title: Text(
+                        supporter.displayName,
+                        style: TypographyTokens.titleSmall(),
+                      ),
                       subtitle: Text(
                         '#${supporter.publicUserId ?? '000000'} · ${supporter.tier}',
-                        style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+                        style: TypographyTokens.bodySmall(
+                          ColorTokens.onSurfaceVariant,
+                        ),
                       ),
                       trailing: const Icon(AfriIcons.out, size: 18),
                       onTap: () {
                         _searchController.text = supporter.displayName;
                         setState(() {
                           _selectedSupporter = supporter;
-                          _supporterMatches =
-                              const <FetWalletSupporter>[];
+                          _supporterMatches = const <FetWalletSupporter>[];
                         });
                       },
                     ),
@@ -543,9 +561,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                 ),
                 const SizedBox(height: SpacingTokens.spacing5),
                 AfriButton(
-                  key: const ValueKey<String>(
-                    'wallet-transfer-submit',
-                  ),
+                  key: const ValueKey<String>('wallet-transfer-submit'),
                   label: _isSubmittingTransfer ? 'Sending…' : 'Send FET',
                   onTap: _submitTransfer,
                   isLoading: _isSubmittingTransfer,
@@ -576,9 +592,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                 const SizedBox(height: SpacingTokens.spacing5),
                 AfriButton(
                   key: const ValueKey<String>('wallet-redeem-submit'),
-                  label: _isSubmittingRedemption
-                      ? 'Submitting…'
-                      : 'Redeem FET',
+                  label: _isSubmittingRedemption ? 'Submitting…' : 'Redeem FET',
                   onTap: _submitRedemption,
                   isLoading: _isSubmittingRedemption,
                   variant: AfriButtonVariant.secondary,
@@ -591,9 +605,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             title: 'Activity',
             trailing: Text(
               '${transactions.length}',
-              style: TypographyTokens.labelSmall(
-                ColorTokens.onSurfaceVariant,
-              ),
+              style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -601,16 +613,16 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             ClayCard(
               child: Text(
                 'Wallet activity appears here once you start earning, sending, or redeeming FET.',
-                style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
+                style: TypographyTokens.bodyMedium(
+                  ColorTokens.onSurfaceVariant,
+                ),
                 textAlign: TextAlign.center,
               ),
             )
           else
             ...transactions.map(
               (transaction) => Padding(
-                padding: const EdgeInsets.only(
-                  bottom: SpacingTokens.spacing3,
-                ),
+                padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
                 child: WalletTransactionRow(
                   transaction: transaction,
                   formatFet: _formatFet,
@@ -630,10 +642,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
         ),
         const SizedBox(height: 4),
-        Text(
-          value,
-          style: TypographyTokens.titleMedium(),
-        ),
+        Text(value, style: TypographyTokens.titleMedium()),
       ],
     );
   }
@@ -657,7 +666,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             fontSize: 14,
             fontWeight: FontWeight.w900,
             color: Colors.black,
-            letterSpacing: -0.5,
+            letterSpacing: 0,
           ),
         ),
       ],

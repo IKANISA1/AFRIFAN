@@ -13,7 +13,7 @@ dependencies:
   core_app:
     path: ../../core/core_app
   app_registry:
-    path: ../../core/core_modules
+    path: ../../app_registry
   core_auth:
     path: ../../core/core_auth
   core_router:
@@ -23,7 +23,6 @@ dependencies:
   feat_home:
     path: ../feat_home
   flutter_riverpod: ^2.6.1
-  google_fonts: ^8.0.2
   path_provider_platform_interface: ^2.1.2
   plugin_platform_interface: ^2.1.8
 

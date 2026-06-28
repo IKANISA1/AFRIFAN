@@ -12,7 +12,8 @@ class FeatureManagerScreen extends ConsumerStatefulWidget {
   const FeatureManagerScreen({super.key});
 
   @override
-  ConsumerState<FeatureManagerScreen> createState() => _FeatureManagerScreenState();
+  ConsumerState<FeatureManagerScreen> createState() =>
+      _FeatureManagerScreenState();
 }
 
 class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
@@ -33,7 +34,9 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
     });
 
     try {
-      final features = await ref.read(featureManagementRepositoryProvider).loadAllFeatures();
+      final features = await ref
+          .read(featureManagementRepositoryProvider)
+          .loadAllFeatures();
       if (mounted) {
         setState(() {
           _features = features;
@@ -84,11 +87,11 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
                         child: AfriSkeletonList(),
                       )
                     : _error != null
-                        ? _buildError()
-                        : RefreshIndicator(
-                            onRefresh: _loadFeatures,
-                            child: _buildFeatureList(),
-                          ),
+                    ? _buildError()
+                    : RefreshIndicator(
+                        onRefresh: _loadFeatures,
+                        child: _buildFeatureList(),
+                      ),
               ),
             ],
           ),
@@ -113,7 +116,9 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
               children: [
                 Text(
                   'FEATURE MANAGER',
-                  style: TypographyTokens.titleSmall().copyWith(letterSpacing: 2),
+                  style: TypographyTokens.titleSmall().copyWith(
+                    letterSpacing: 2,
+                  ),
                 ),
                 Text(
                   '${_features.length} features registered',
@@ -183,55 +188,67 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
       child: GestureDetector(
         onTap: () => context.push('/admin/features/${feature.featureKey}'),
         child: GlassCard(
-        animate: false,
-        child: Row(
-          children: [
-            Icon(visIcon, color: visColor, size: 20),
-            const SizedBox(width: SpacingTokens.spacing3),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(feature.displayName, style: TypographyTokens.bodyMedium()),
-                  Text(
-                    feature.featureKey,
-                    style: TypographyTokens.bodySmall().copyWith(
-                      color: Colors.white38,
-                      fontFamily: 'monospace',
+          animate: false,
+          child: Row(
+            children: [
+              Icon(visIcon, color: visColor, size: 20),
+              const SizedBox(width: SpacingTokens.spacing3),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      feature.displayName,
+                      style: TypographyTokens.bodyMedium(),
                     ),
+                    Text(
+                      feature.featureKey,
+                      style: TypographyTokens.bodySmall().copyWith(
+                        color: Colors.white38,
+                        fontFamily: TypographyTokens.borrowedFontFamily,
+                        package: 'core_theme',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuButton<String>(
+                onSelected: (v) => _changeVisibility(feature.id, v),
+                itemBuilder: (_) => [
+                  const PopupMenuItem(value: 'visible', child: Text('Visible')),
+                  const PopupMenuItem(value: 'hidden', child: Text('Hidden')),
+                  const PopupMenuItem(
+                    value: 'maintenance',
+                    child: Text('Maintenance'),
                   ),
                 ],
-              ),
-            ),
-            PopupMenuButton<String>(
-              onSelected: (v) => _changeVisibility(feature.id, v),
-              itemBuilder: (_) => [
-                const PopupMenuItem(value: 'visible', child: Text('Visible')),
-                const PopupMenuItem(value: 'hidden', child: Text('Hidden')),
-                const PopupMenuItem(value: 'maintenance', child: Text('Maintenance')),
-              ],
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: visColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(color: visColor.withValues(alpha: 0.3)),
-                ),
-                child: Text(
-                  visibility.toUpperCase(),
-                  style: TypographyTokens.labelSmall(visColor).copyWith(fontSize: 8),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: visColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(999),
+                    border: BorderTokens.all(color: visColor, opacity: 0.3),
+                  ),
+                  child: Text(
+                    visibility.toUpperCase(),
+                    style: TypographyTokens.labelSmall(
+                      visColor,
+                    ).copyWith(fontSize: 8),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: SpacingTokens.spacing2),
-            Switch.adaptive(
-              value: feature.isEnabled,
-              onChanged: (v) => _toggleFeature(feature.id, v),
-              activeTrackColor: ColorTokens.clubAccent,
-            ),
-          ],
+              const SizedBox(width: SpacingTokens.spacing2),
+              Switch.adaptive(
+                value: feature.isEnabled,
+                onChanged: (v) => _toggleFeature(feature.id, v),
+                activeTrackColor: ColorTokens.clubAccent,
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }

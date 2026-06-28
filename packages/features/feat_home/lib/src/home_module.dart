@@ -1,6 +1,5 @@
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'screens/home_screen.dart';

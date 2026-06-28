@@ -151,8 +151,7 @@ class AfriEmptyView extends StatelessWidget {
                 SizedBox(height: spacing),
                 if (title != null) ...[
                   titleWidget!,
-                  if (!compact)
-                    const SizedBox(height: SpacingTokens.spacing2),
+                  if (!compact) const SizedBox(height: SpacingTokens.spacing2),
                 ],
                 if (message != null && !compact) messageWidget!,
                 if (actionWidget != null) ...[

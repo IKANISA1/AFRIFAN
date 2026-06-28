@@ -5,7 +5,7 @@ import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'clay_card.dart';
 
-/// Shared minimalist modal sheet surface.
+/// Shared borrowed modal sheet surface.
 class AfriBottomSheet extends StatelessWidget {
   const AfriBottomSheet({
     required this.child,

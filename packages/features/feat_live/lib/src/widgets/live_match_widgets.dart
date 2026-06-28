@@ -50,10 +50,8 @@ class TeamBadge extends StatelessWidget {
               child: Image.network(
                 logoUrl!,
                 fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => _AbbreviationFallback(
-                  label: label,
-                  size: size,
-                ),
+                errorBuilder: (_, __, ___) =>
+                    _AbbreviationFallback(label: label, size: size),
                 loadingBuilder: (_, child, loadingProgress) {
                   if (loadingProgress == null) return child;
                   return Center(
@@ -65,7 +63,7 @@ class TeamBadge extends StatelessWidget {
                         color: Colors.white24,
                         value: loadingProgress.expectedTotalBytes != null
                             ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
+                                  loadingProgress.expectedTotalBytes!
                             : null,
                       ),
                     ),
@@ -90,7 +88,8 @@ class _AbbreviationFallback extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          fontFamily: 'Display',
+          fontFamily: TypographyTokens.borrowedFontFamily,
+          package: 'core_theme',
           fontSize: size * 0.38,
           fontWeight: FontWeight.w900,
           fontStyle: FontStyle.italic,
@@ -215,7 +214,8 @@ class LiveStatBox extends StatelessWidget {
               value,
               style: const TextStyle(
                 fontSize: 20,
-                fontFamily: 'Display',
+                fontFamily: TypographyTokens.borrowedFontFamily,
+                package: 'core_theme',
                 fontWeight: FontWeight.w900,
                 fontStyle: FontStyle.italic,
                 color: Colors.white,
@@ -270,10 +270,7 @@ class CommentaryCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: TypographyTokens.titleSmall(),
-                ),
+                Text(title, style: TypographyTokens.titleSmall()),
                 if (body.isNotEmpty) ...[
                   const SizedBox(height: SpacingTokens.spacing1),
                   Text(
@@ -298,4 +295,3 @@ class CommentaryCard extends StatelessWidget {
     );
   }
 }
-

@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:core_utils/core_utils.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -19,7 +21,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToNext();
+    unawaited(_navigateToNext());
   }
 
   Future<void> _navigateToNext() async {
@@ -35,7 +37,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       try {
         await authNotifier.restore().timeout(const Duration(seconds: 15));
       } catch (error, stackTrace) {
-      AfriLogger.warn('SplashScreen', 'Operation failed (non-critical).', error, stackTrace);
+        AfriLogger.warn(
+          'SplashScreen',
+          'Operation failed (non-critical).',
+          error,
+          stackTrace,
+        );
         // Timeout or restore failure — proceed to navigation logic below
       }
     }

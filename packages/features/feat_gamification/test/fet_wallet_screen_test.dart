@@ -5,7 +5,6 @@ import 'package:feat_gamification/src/screens/fet_wallet_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
@@ -144,7 +143,6 @@ Future<void> _scrollTo(WidgetTester tester, Finder finder) async {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  GoogleFonts.config.allowRuntimeFetching = false;
   setUpAll(loadDesignFonts);
 
   testWidgets('renders wallet balance and recent activity', (tester) async {

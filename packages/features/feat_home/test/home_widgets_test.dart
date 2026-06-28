@@ -1,3 +1,4 @@
+import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:feat_home/src/widgets/quick_actions_grid.dart';
@@ -6,14 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 /// Smoke tests for feat_home widgets — StatsRow and QuickActionsGrid.
 ///
 /// These verify rendering, formatting, and child counts.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  GoogleFonts.config.allowRuntimeFetching = false;
 
   // ═══════════════════════════════════════════════════════════
   // StatsRow
@@ -80,7 +80,7 @@ void main() {
         routes: [
           GoRoute(
             path: '/',
-            builder: (_, __) => Scaffold(
+            builder: (_, __) => const Scaffold(
               body: SingleChildScrollView(
                 child: QuickActionsGrid(actions: HomeQuickAction.fallbackItems),
               ),
@@ -111,6 +111,9 @@ void main() {
       );
 
       return ProviderScope(
+        overrides: [
+          authRepositoryProvider.overrideWithValue(_FakeAuthRepository()),
+        ],
         child: MaterialApp.router(
           routerConfig: router,
           theme: ThemeData(
@@ -127,12 +130,28 @@ void main() {
       await tester.pumpWidget(buildTestApp());
       await tester.pumpAndSettle();
 
+      expect(find.text('Groups'), findsOneWidget);
       expect(find.text('Predict'), findsOneWidget);
-      expect(find.text('My Picks'), findsOneWidget);
-      expect(find.text('Live'), findsOneWidget);
-      expect(find.text('Leaderboard'), findsOneWidget);
-      expect(find.text('Wallet'), findsOneWidget);
       expect(find.text('Tickets'), findsOneWidget);
+      expect(find.text('Shop'), findsOneWidget);
+      expect(find.text('Members'), findsOneWidget);
+      expect(find.text('Offers'), findsOneWidget);
     });
   });
+}
+
+class _FakeAuthRepository extends AuthRepository {
+  _FakeAuthRepository() : super(clubId: '24');
+
+  @override
+  Future<UserProfile?> restoreCurrentUser() async => null;
+
+  @override
+  Future<AdminWorkspaceAccess> resolveAdminAccess(String userId) async {
+    return AdminWorkspaceAccess.none;
+  }
+
+  @override
+  Stream<supabase.AuthState> get authStateChanges =>
+      const Stream<supabase.AuthState>.empty();
 }

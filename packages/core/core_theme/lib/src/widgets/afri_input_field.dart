@@ -85,12 +85,12 @@ class AfriInputField extends StatelessWidget {
       maxLengthEnforcement:
           maxLengthEnforcement ?? MaxLengthEnforcement.enforced,
       buildCounter: maxLength != null
-          ? (context, {
+          ? (
+              context, {
               required currentLength,
               required isFocused,
               required maxLength,
-            }) =>
-              null
+            }) => null
           : null,
       style: TypographyTokens.bodyLarge(colors.primaryText),
       decoration: InputDecoration(
