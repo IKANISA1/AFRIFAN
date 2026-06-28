@@ -32,13 +32,13 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
-    "@opennextjs/cloudflare": "^1.18.0",
+    "@opennextjs/cloudflare": "^1.20.1",
     "@supabase/ssr": "^0.10.0",
     "@supabase/supabase-js": "^2.101.1",
     "clsx": "^2.1.1",
     "exceljs": "^4.4.0",
     "lucide-react": "^1.7.0",
-    "next": "^16.2.3",
+    "next": "^16.3.0-canary.69",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "web-push": "^3.6.7",
@@ -50,7 +50,7 @@
     "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.59.1",
     "@size-limit/file": "^12.0.1",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.3.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -58,20 +58,33 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/web-push": "^3.6.4",
-    "@vitest/coverage-v8": "^4.1.2",
-    "esbuild": "^0.27.0",
+    "@vitest/coverage-v8": "^4.1.9",
+    "esbuild": "^0.28.1",
     "eslint": "^9",
-    "eslint-config-next": "^16.2.3",
-    "jsdom": "^29.0.1",
+    "eslint-config-next": "^16.3.0-canary.69",
+    "jsdom": "^29.1.1",
     "size-limit": "^12.0.1",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^4.1.2",
-    "wrangler": "^4.80.0"
+    "vitest": "^4.1.9",
+    "wrangler": "^4.105.0"
   },
   "overrides": {
-    "basic-ftp": "^5.2.2",
-    "tmp": "^0.2.5",
-    "vite": "^8.0.8"
+    "@babel/core": "^7.29.6",
+    "basic-ftp": "^5.3.1",
+    "form-data": "^4.0.6",
+    "ip-address": "^10.1.1",
+    "js-yaml": "^4.2.0",
+    "minimatch@10.2.5": {
+      "brace-expansion": "^5.0.6"
+    },
+    "qs": "^6.15.3",
+    "tmp": "^0.2.7",
+    "uuid": "^11.1.1",
+    "vite": "^8.1.0",
+    "ws": "^8.21.0",
+    "lighthouse": {
+      "ws": "^7.5.11"
+    }
   }
 }
