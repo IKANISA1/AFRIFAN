@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../models/prediction_models.dart';
 import '../models/fanzone_models.dart';
+import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/fixtures_browser_widgets.dart';
-import 'package:core_utils/core_utils.dart';
 
 class FixturesBrowserScreen extends ConsumerStatefulWidget {
   const FixturesBrowserScreen({
@@ -45,7 +45,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
   @override
   void initState() {
     super.initState();
-    _loadData();
+    unawaited(_loadData());
   }
 
   Future<void> _loadData() async {
@@ -109,9 +109,9 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
   }
 
   void _onDateSelected(DateTime date) {
-    HapticFeedback.selectionClick();
+    unawaited(HapticFeedback.selectionClick());
     setState(() => _selectedDate = date);
-    _loadData();
+    unawaited(_loadData());
   }
 
   Map<String, List<FixtureSummary>> _groupByCompetition() {
@@ -340,8 +340,10 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                       FixtureBrowserCard(
                             fixture: fixture,
                             onOpen: () {
-                              HapticFeedback.lightImpact();
-                              context.push('/fanzone/match/${fixture.id}');
+                              unawaited(HapticFeedback.lightImpact());
+                              unawaited(
+                                context.push('/fanzone/match/${fixture.id}'),
+                              );
                             },
                           )
                           .animate(delay: (index * 50).ms)

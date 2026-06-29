@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -40,7 +42,7 @@ class _AnimatedFetCounterState extends State<AnimatedFetCounter>
       begin: 0,
       end: widget.value,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
-    _controller.forward();
+    unawaited(_controller.forward());
   }
 
   @override
@@ -50,9 +52,8 @@ class _AnimatedFetCounterState extends State<AnimatedFetCounter>
       _animation = IntTween(begin: _animation.value, end: widget.value).animate(
         CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
       );
-      _controller
-        ..reset()
-        ..forward();
+      _controller.reset();
+      unawaited(_controller.forward());
     }
   }
 

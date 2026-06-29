@@ -20,8 +20,8 @@ Future<bool> showDeleteAccountConfirmDialog(BuildContext context) async {
                 Row(
                   children: [
                     Container(
-                      width: 48,
-                      height: 48,
+                      width: SizeTokens.iconXl,
+                      height: SizeTokens.iconXl,
                       decoration: BoxDecoration(
                         color: ColorTokens.error.withValues(alpha: 0.14),
                         shape: BoxShape.circle,
@@ -67,7 +67,10 @@ Future<bool> showDeleteAccountConfirmDialog(BuildContext context) async {
                 AfriOutlinedButton(
                   onPressed: () => context.pop(false),
                   style: AfriOutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 56),
+                    minimumSize: const Size(
+                      double.infinity,
+                      SizeTokens.buttonMinHeight,
+                    ),
                   ),
                   child: const Text('CANCEL'),
                 ),
@@ -102,7 +105,7 @@ Future<bool> showNotificationPermissionModal(BuildContext context) async {
             Icon(
               AfriIcons.notificationsActive,
               color: ColorTokens.clubPrimary,
-              size: 56,
+              size: SizeTokens.iconXxl,
             ),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
@@ -150,11 +153,11 @@ Future<bool> showSignOutConfirmationSheet(BuildContext context) async {
         children: [
           Center(
             child: Container(
-              width: 42,
-              height: 4,
+              width: SizeTokens.sheetHandleWidth,
+              height: SizeTokens.sheetHandleHeight,
               decoration: BoxDecoration(
                 color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.35),
-                borderRadius: BorderRadius.circular(999),
+                borderRadius: ShapeTokens.buttonRadius,
               ),
             ),
           ),
@@ -175,9 +178,12 @@ Future<bool> showSignOutConfirmationSheet(BuildContext context) async {
           AfriOutlinedButton(
             onPressed: () => context.pop(true),
             style: AfriOutlinedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 56),
+              minimumSize: const Size(
+                double.infinity,
+                SizeTokens.buttonMinHeight,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: ShapeTokens.buttonRadius,
               ),
             ),
             child: const Text('SIGN OUT'),
@@ -205,11 +211,11 @@ Future<bool> showSignOutOtherDevicesSheet(BuildContext context) async {
         children: [
           Center(
             child: Container(
-              width: 42,
-              height: 4,
+              width: SizeTokens.sheetHandleWidth,
+              height: SizeTokens.sheetHandleHeight,
               decoration: BoxDecoration(
                 color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.35),
-                borderRadius: BorderRadius.circular(999),
+                borderRadius: ShapeTokens.buttonRadius,
               ),
             ),
           ),
@@ -230,9 +236,12 @@ Future<bool> showSignOutOtherDevicesSheet(BuildContext context) async {
           AfriOutlinedButton(
             onPressed: () => context.pop(true),
             style: AfriOutlinedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 56),
+              minimumSize: const Size(
+                double.infinity,
+                SizeTokens.buttonMinHeight,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: ShapeTokens.buttonRadius,
               ),
             ),
             child: const Text('SIGN OUT OTHERS'),
@@ -265,7 +274,7 @@ class _BenefitRow extends StatelessWidget {
           const Icon(
             AfriIcons.statusSuccess,
             color: ColorTokens.success,
-            size: 18,
+            size: SizeTokens.iconSm,
           ),
           const SizedBox(width: SpacingTokens.spacing2),
           Expanded(child: Text(label, style: TypographyTokens.bodyMedium())),

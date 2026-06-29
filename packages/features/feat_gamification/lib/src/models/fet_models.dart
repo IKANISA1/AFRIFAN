@@ -240,7 +240,7 @@ class FetLeaderboardRow {
       supporterAlias: json['supporter_alias']?.toString() ?? '000000',
       displayName: json['display_name']?.toString() ?? 'Supporter',
       totalFet: (json['total_fet'] as num?)?.toInt() ?? 0,
-      tier: json['tier']?.toString() ?? 'fan',
+      tier: json['tier']?.toString() ?? 'imena',
       isCurrentUser: json['is_current_user'] == true,
     );
   }
@@ -280,7 +280,7 @@ class FetWalletSummary {
     required this.lifetimeEarned,
     required this.lifetimeSpent,
     required this.transactionCount,
-    required this.legacyBalanceGap,
+    required this.historicalBalanceGap,
   });
 
   final String userId;
@@ -293,7 +293,7 @@ class FetWalletSummary {
   final int lifetimeEarned;
   final int lifetimeSpent;
   final int transactionCount;
-  final int legacyBalanceGap;
+  final int historicalBalanceGap;
 
   factory FetWalletSummary.fromJson(Map<String, dynamic> json) {
     return FetWalletSummary(
@@ -301,13 +301,14 @@ class FetWalletSummary {
       clubId: int.tryParse(json['club_id']?.toString() ?? ''),
       membershipId: json['membership_id']?.toString() ?? '',
       balance: (json['balance'] as num?)?.toInt() ?? 0,
-      tier: json['tier']?.toString() ?? 'fan',
+      tier: json['tier']?.toString() ?? 'imena',
       weeklyEarned: (json['weekly_earned'] as num?)?.toInt() ?? 0,
       monthlyEarned: (json['monthly_earned'] as num?)?.toInt() ?? 0,
       lifetimeEarned: (json['lifetime_earned'] as num?)?.toInt() ?? 0,
       lifetimeSpent: (json['lifetime_spent'] as num?)?.toInt() ?? 0,
       transactionCount: (json['transaction_count'] as num?)?.toInt() ?? 0,
-      legacyBalanceGap: (json['legacy_balance_gap'] as num?)?.toInt() ?? 0,
+      historicalBalanceGap:
+          (json['historical_balance_gap'] as num?)?.toInt() ?? 0,
     );
   }
 }
@@ -372,6 +373,14 @@ class FetWalletTransaction {
 
   String get headline {
     switch (entryType) {
+      case 'partner_promotion_earn':
+        return 'Partner FET earned';
+      case 'partner_pool_entry':
+        return 'Partner pool entry';
+      case 'partner_pool_payout':
+        return 'Partner pool payout';
+      case 'partner_pool_refund':
+        return 'Partner pool refund';
       case 'transfer_in':
         return 'Transfer received';
       case 'transfer_out':
@@ -411,7 +420,7 @@ class FetWalletSupporter {
       userId: json['user_id']?.toString() ?? '',
       publicUserId: _normalizeNullableString(json['public_user_id']),
       displayName: json['display_name']?.toString() ?? 'Supporter',
-      tier: json['tier']?.toString() ?? 'fan',
+      tier: json['tier']?.toString() ?? 'imena',
       balance: (json['balance'] as num?)?.toInt() ?? 0,
     );
   }
@@ -479,7 +488,7 @@ class FetFriendProfile {
       userId: json['user_id']?.toString() ?? '',
       publicUserId: _normalizeNullableString(json['public_user_id']),
       displayName: json['display_name']?.toString() ?? 'Supporter',
-      tier: json['tier']?.toString() ?? 'fan',
+      tier: json['tier']?.toString() ?? 'imena',
       balance: (json['balance'] as num?)?.toInt() ?? 0,
       friendshipId: _normalizeNullableString(json['friendship_id']),
       friendshipStatus: json['friendship_status']?.toString() ?? 'none',

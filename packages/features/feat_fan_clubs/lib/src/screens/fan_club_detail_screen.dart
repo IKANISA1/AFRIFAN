@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../official_fanclub_register.dart';
+
 class FanClubDetailScreen extends ConsumerStatefulWidget {
   const FanClubDetailScreen({required this.clubId, super.key});
 
@@ -31,8 +33,8 @@ void _reportNonCriticalError(Object error, StackTrace stackTrace) {
 class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
   Map<String, dynamic>? _club;
   Map<String, dynamic>? _upcomingMatch;
-  bool _joined = false;
-  bool _isJoinMutationPending = false;
+  final bool _joined = false;
+  final bool _isJoinMutationPending = false;
   bool _isLoading = true;
   String? _error;
 
@@ -55,12 +57,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
       if (scope.clubId == null) {
         throw StateError('Fan clubs require a numeric club scope.');
       }
-      final clubRow = await client
-          .from('fan_clubs')
-          .select()
-          .eq('id', widget.clubId)
-          .eq('club_id', scope.clubId!)
-          .maybeSingle();
+      final clubRow = await _loadFanclubRow();
 
       if (clubRow == null) {
         if (!mounted) return;
@@ -87,30 +84,12 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
         matchRow = null;
       }
 
-      var joined = false;
-      final userId = client.auth.currentUser?.id;
-      if (userId != null) {
-        try {
-          final membership = await client
-              .from('fan_club_members')
-              .select('club_id')
-              .eq('club_id', widget.clubId)
-              .eq('user_id', userId)
-              .maybeSingle();
-          joined = membership != null;
-        } catch (error, stackTrace) {
-          _reportNonCriticalError(error, stackTrace);
-          joined = false;
-        }
-      }
-
       if (!mounted) return;
       setState(() {
-        _club = Map<String, dynamic>.from(clubRow);
+        _club = normalizeFanclubRow(Map<String, dynamic>.from(clubRow));
         _upcomingMatch = matchRow == null
             ? null
             : Map<String, dynamic>.from(matchRow);
-        _joined = joined;
         _isLoading = false;
       });
     } catch (error, stackTrace) {
@@ -142,47 +121,10 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     }
 
     unawaited(HapticFeedback.mediumImpact());
-    setState(() => _isJoinMutationPending = true);
-    try {
-      if (_joined) {
-        await ref
-            .read(supabaseClientProvider)
-            .from('fan_club_members')
-            .delete()
-            .eq('club_id', clubId)
-            .eq('user_id', userId);
-      } else {
-        await ref.read(supabaseClientProvider).from('fan_club_members').insert({
-          'club_id': clubId,
-          'user_id': userId,
-        });
-      }
-
-      if (!mounted) return;
-      final currentMembers = (club['member_count'] as num?)?.toInt() ?? 0;
-      setState(() {
-        _joined = !_joined;
-        _club = <String, dynamic>{
-          ...club,
-          'member_count': _joined
-              ? currentMembers + 1
-              : (currentMembers - 1).clamp(0, currentMembers),
-        };
-      });
-    } catch (error, stackTrace) {
-      _reportNonCriticalError(error, stackTrace);
-      if (!mounted) return;
-      AfriToast.error(
-        context,
-        _joined
-            ? 'Could not leave this fan club right now.'
-            : 'Could not join this fan club right now.',
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _isJoinMutationPending = false);
-      }
-    }
+    AfriToast.info(
+      context,
+      'Fanclub requests use the protected review path before joining is confirmed.',
+    );
   }
 
   Future<void> _copyShareLink() async {
@@ -247,9 +189,10 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     final name = club['name']?.toString() ?? 'Fan Club';
     final description = club['description']?.toString() ?? '';
     final region = club['region']?.toString() ?? 'Unknown';
-    final members = (club['member_count'] as num?)?.toInt() ?? 0;
-    final events = (club['event_count'] as num?)?.toInt() ?? 0;
-    final rating = (club['rating'] as num?)?.toDouble() ?? 0;
+    final members = fanclubMemberLabel(club);
+    final statusLabel = fanclubStatusLabel(club);
+    final sourceLabel =
+        club['source_label']?.toString() ?? 'Protected request path';
     final isActive = club['is_active'] as bool? ?? true;
     final match = _upcomingMatch;
 
@@ -288,14 +231,14 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                         children: [
                           Icon(
                             AfriIcons.groups,
-                            size: 32,
+                            size: SizeTokens.iconXlg,
                             color: ColorTokens.onSurface,
                           ),
                           const SizedBox(width: SpacingTokens.spacing3),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
+                              horizontal: SpacingTokens.spacing2,
+                              vertical: SpacingTokens.spacing1,
                             ),
                             decoration: BoxDecoration(
                               color: isActive
@@ -303,19 +246,15 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                                       alpha: 0.14,
                                     )
                                   : ColorTokens.warning.withValues(alpha: 0.14),
-                              borderRadius: BorderRadius.circular(999),
+                              borderRadius: ShapeTokens.buttonRadius,
                             ),
                             child: Text(
                               isActive ? 'ACTIVE' : 'PENDING REVIEW',
-                              style:
-                                  TypographyTokens.labelMedium(
-                                    isActive
-                                        ? ColorTokens.clubAccent
-                                        : ColorTokens.warning,
-                                  ).copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 1.2,
-                                  ),
+                              style: TypographyTokens.labelMedium(
+                                isActive
+                                    ? ColorTokens.clubAccent
+                                    : ColorTokens.warning,
+                              ).copyWith(fontWeight: FontWeight.w700),
                             ),
                           ),
                         ],
@@ -325,8 +264,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                         name.toUpperCase(),
                         style: TypographyTokens.displaySmall().copyWith(
                           fontWeight: FontWeight.w800,
-                          height: 1,
-                          letterSpacing: 0.6,
+                          height: TypographyTokens.lineHeightSolid,
                         ),
                       ),
                       const SizedBox(height: SpacingTokens.spacing2),
@@ -350,20 +288,15 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: _DetailStat(label: 'MEMBERS', value: '$members'),
+                        child: _DetailStat(label: 'MEMBERS', value: members),
                       ),
                       const SizedBox(width: SpacingTokens.spacing3),
                       Expanded(
-                        child: _DetailStat(label: 'EVENTS', value: '$events'),
+                        child: _DetailStat(label: 'STATUS', value: statusLabel),
                       ),
                       const SizedBox(width: SpacingTokens.spacing3),
                       Expanded(
-                        child: _DetailStat(
-                          label: 'RATING',
-                          value: rating == 0
-                              ? 'NEW'
-                              : rating.toStringAsFixed(1),
-                        ),
+                        child: _DetailStat(label: 'REGION', value: region),
                       ),
                     ],
                   ),
@@ -377,7 +310,6 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                           'ABOUT THIS CLUB',
                           style: TypographyTokens.titleLarge().copyWith(
                             fontWeight: FontWeight.w700,
-                            letterSpacing: 1.2,
                           ),
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
@@ -400,7 +332,6 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                           'Group SNAPSHOT',
                           style: TypographyTokens.titleLarge().copyWith(
                             fontWeight: FontWeight.w700,
-                            letterSpacing: 1.2,
                           ),
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
@@ -412,9 +343,13 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                               : 'Join for updates & matchday coordination.',
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
-                        _SnapshotRow(title: '$events events recorded.'),
+                        _SnapshotRow(title: 'Region: $region.'),
                         const SizedBox(height: SpacingTokens.spacing2),
-                        _SnapshotRow(title: '$members fans in this Group.'),
+                        _SnapshotRow(title: sourceLabel),
+                        const SizedBox(height: SpacingTokens.spacing2),
+                        _SnapshotRow(
+                          title: '$members supporters listed publicly.',
+                        ),
                       ],
                     ),
                   ),
@@ -433,8 +368,8 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                               : _isJoinMutationPending
                               ? 'UPDATING...'
                               : _joined
-                              ? 'JOINED'
-                              : 'JOIN CLUB',
+                              ? 'REQUESTED'
+                              : 'REQUEST ACCESS',
                           variant: AfriButtonVariant.primary,
                           enabled: isActive && !_isJoinMutationPending,
                           isLoading: isActive && _isJoinMutationPending,
@@ -444,14 +379,14 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                       const SizedBox(width: SpacingTokens.spacing3),
                       if (isActive)
                         SizedBox(
-                          width: 58,
-                          height: 58,
+                          width: SizeTokens.buttonMinHeight,
+                          height: SizeTokens.buttonMinHeight,
                           child: AfriOutlinedButton(
                             onPressed: _copyShareLink,
                             style: AfriOutlinedButton.styleFrom(
                               side: BorderTokens.side(color: primary),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
+                                borderRadius: ShapeTokens.buttonRadius,
                               ),
                             ),
                             child: const Icon(AfriIcons.share),
@@ -466,6 +401,57 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
         ],
       ),
     );
+  }
+}
+
+extension on _FanClubDetailScreenState {
+  Future<Map<String, dynamic>?> _loadFanclubRow() async {
+    final client = ref.read(supabaseClientProvider);
+    final routeId = widget.clubId;
+
+    try {
+      if (_looksLikeUuid(routeId)) {
+        final byId = await client
+            .from('fanclubs')
+            .select()
+            .eq('id', routeId)
+            .eq('approval_status', 'approved')
+            .eq('active', true)
+            .eq('visibility', 'public')
+            .maybeSingle();
+        if (byId != null) {
+          return Map<String, dynamic>.from(byId);
+        }
+      }
+
+      final bySlug = await client
+          .from('fanclubs')
+          .select()
+          .eq('slug', routeId)
+          .eq('approval_status', 'approved')
+          .eq('active', true)
+          .eq('visibility', 'public')
+          .maybeSingle();
+      if (bySlug != null) {
+        return Map<String, dynamic>.from(bySlug);
+      }
+    } catch (_) {
+      // Fall through to the verified register fallback.
+    }
+
+    for (final fanclub in officialFanclubRegister()) {
+      if (fanclub['id']?.toString() == routeId ||
+          fanclub['slug']?.toString() == routeId) {
+        return fanclub;
+      }
+    }
+    return null;
+  }
+
+  bool _looksLikeUuid(String value) {
+    return RegExp(
+      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+    ).hasMatch(value);
   }
 }
 
@@ -497,7 +483,6 @@ class FanClubMatchdayAgendaSection extends StatelessWidget {
             'MATCHDAY AGENDA',
             style: TypographyTokens.titleLarge().copyWith(
               fontWeight: FontWeight.w700,
-              letterSpacing: 1.2,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
@@ -561,7 +546,7 @@ class _SnapshotRow extends StatelessWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing3),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
       ),
       child: Text(title, style: TypographyTokens.bodyMedium()),
     );

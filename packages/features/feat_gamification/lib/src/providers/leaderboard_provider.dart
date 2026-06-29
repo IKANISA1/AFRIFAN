@@ -4,8 +4,6 @@ import '../fet_providers.dart';
 import '../models/fet_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
-import '../repositories/fet_repository.dart';
-import '../repositories/prediction_repository.dart';
 
 // ══════════════════════════════════════════════════════════════════════════
 // FET LEADERBOARD

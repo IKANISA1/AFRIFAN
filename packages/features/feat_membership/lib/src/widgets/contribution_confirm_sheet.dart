@@ -112,7 +112,6 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
             'CONFIRM CONTRIBUTION',
             style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w800,
-              letterSpacing: 1.6,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing2),

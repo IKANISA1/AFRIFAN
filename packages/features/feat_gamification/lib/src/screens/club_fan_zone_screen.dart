@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
   @override
   void initState() {
     super.initState();
-    _load();
+    unawaited(_load());
   }
 
   Future<void> _load([String? competitionSlug]) async {

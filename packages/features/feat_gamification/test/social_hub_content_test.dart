@@ -110,7 +110,7 @@ void main() {
         supporterAlias: '991122',
         displayName: 'Supporter 991122',
         totalFet: 1800,
-        tier: 'fan',
+        tier: 'imena',
         isCurrentUser: false,
       ),
     ];

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,7 +11,6 @@ import '../models/fet_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/market_option_pill.dart';
-import 'package:core_utils/core_utils.dart';
 
 class FriendChallengeScreen extends ConsumerStatefulWidget {
   const FriendChallengeScreen({super.key, this.selectedOpponentUserId});
@@ -263,7 +263,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
                           ),
                           const SizedBox(height: SpacingTokens.spacing4),
                           AfriButton(
-                            onTap: () => context.push('/fanzone/friends'),
+                            onTap: () => context.push('/fanzone'),
                             label: 'Find friends',
                             variant: AfriButtonVariant.secondary,
                           ),

@@ -191,7 +191,7 @@ class _FriendsTabState extends ConsumerState<_FriendsTab> {
               ),
               const SizedBox(width: SpacingTokens.spacing3),
               AfriButton(
-                onTap: () => context.push('/fanzone/friends'),
+                onTap: () => context.push('/fanzone'),
                 label: 'Browse',
                 variant: AfriButtonVariant.ghost,
                 fullWidth: false,
@@ -201,11 +201,9 @@ class _FriendsTabState extends ConsumerState<_FriendsTab> {
           const SizedBox(height: SpacingTokens.spacing4),
           SocialHubFriendsSection(
             friends: visibleFriends,
-            onViewAll: () => context.push('/fanzone/friends'),
+            onViewAll: () => context.push('/fanzone'),
             onChallenge: (friend) {
-              unawaited(
-                context.push('/fanzone/challenge?opponent=${friend.userId}'),
-              );
+              unawaited(context.push('/fanzone'));
             },
           ),
         ],

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
+import '../models/partner_pool_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 
@@ -18,6 +19,7 @@ class FanzoneHubSnapshot {
     this.liveFixtures = const <FixtureSummary>[],
     this.todayFixtures = const <FixtureSummary>[],
     this.upcomingFixtures = const <FixtureSummary>[],
+    this.partnerPools = const <PartnerPredictionPool>[],
     this.leaderboard = const <PredictionLeaderboardEntry>[],
     this.markets = const <PredictionMarket>[],
     this.challenges = const <FetCatalogItem>[],
@@ -30,6 +32,7 @@ class FanzoneHubSnapshot {
   final List<FixtureSummary> liveFixtures;
   final List<FixtureSummary> todayFixtures;
   final List<FixtureSummary> upcomingFixtures;
+  final List<PartnerPredictionPool> partnerPools;
   final List<PredictionLeaderboardEntry> leaderboard;
   final List<PredictionMarket> markets;
   final List<FetCatalogItem> challenges;
@@ -66,6 +69,7 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
   Future<FanzoneHubSnapshot> _load() async {
     final predictionRepo = ref.read(predictionRepositoryProvider);
     final fetRepo = ref.read(fetRepositoryProvider);
+    final partnerPoolRepo = ref.read(partnerPoolRepositoryProvider);
 
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -73,7 +77,7 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
     final weekEnd = today.add(const Duration(days: 7));
 
     var failures = 0;
-    const totalCalls = 8;
+    const totalCalls = 9;
 
     Future<T?> guarded<T>(Future<T?> Function() load) async {
       try {
@@ -110,6 +114,9 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
     final leaderboardFuture = guarded<List<PredictionLeaderboardEntry>>(
       () => predictionRepo.loadLeaderboard(limit: 5),
     );
+    final partnerPoolsFuture = guarded<List<PartnerPredictionPool>>(
+      () => partnerPoolRepo.loadPools(limit: 4),
+    );
     final marketsFuture = guarded<List<PredictionMarket>>(
       predictionRepo.loadMarketCatalog,
     );
@@ -123,6 +130,8 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
         await upcomingFixturesFuture ?? const <FixtureSummary>[];
     final leaderboard =
         await leaderboardFuture ?? const <PredictionLeaderboardEntry>[];
+    final partnerPools =
+        await partnerPoolsFuture ?? const <PartnerPredictionPool>[];
     final markets = await marketsFuture ?? const <PredictionMarket>[];
     final challenges = await challengesFuture ?? const <FetCatalogItem>[];
 
@@ -146,6 +155,7 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
       liveFixtures: liveFixtures,
       todayFixtures: todayFixtures,
       upcomingFixtures: upcomingFixtures,
+      partnerPools: partnerPools,
       leaderboard: leaderboard,
       markets: markets,
       challenges: challenges,

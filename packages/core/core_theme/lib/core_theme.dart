@@ -22,6 +22,7 @@ export 'src/tokens/motion_tokens.dart';
 export 'src/tokens/responsive_tokens.dart';
 export 'src/tokens/shadow_tokens.dart';
 export 'src/tokens/shape_tokens.dart';
+export 'src/tokens/size_tokens.dart';
 export 'src/tokens/spacing_tokens.dart';
 export 'src/tokens/tap_tokens.dart';
 export 'src/tokens/typography_tokens.dart';

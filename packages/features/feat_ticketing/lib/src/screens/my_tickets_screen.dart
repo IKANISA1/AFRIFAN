@@ -207,7 +207,6 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
                           ticket.status.label.toUpperCase(),
                           style: TypographyTokens.labelSmall().copyWith(
                             color: statusColor,
-                            letterSpacing: 1,
                           ),
                         ),
                       ),

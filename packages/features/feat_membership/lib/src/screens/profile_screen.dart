@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../official_membership_tiers.dart';
+
 /// Settings screen — fan identity, feature links, and app settings.
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -30,7 +32,6 @@ class ProfileScreen extends ConsumerWidget {
           'PROFILE',
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 2.0,
           ),
         ),
       ),
@@ -64,7 +65,6 @@ class ProfileScreen extends ConsumerWidget {
                               ColorTokens.clubAccent,
                             ).copyWith(
                               fontWeight: FontWeight.w900,
-                              letterSpacing: 8.0,
                               shadows: [
                                 Shadow(
                                   color: ColorTokens.clubAccent.withValues(
@@ -87,19 +87,19 @@ class ProfileScreen extends ConsumerWidget {
                         const SizedBox(height: SpacingTokens.spacing2),
                       ],
 
-                      // Tier + FET
+                      // Membership category + activity status
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           membershipSummary.when(
                             data: (summary) => _TierBadge(summary.tier),
                             loading: () => const _TierBadge.loading(),
-                            error: (_, __) => const _TierBadge('FAN'),
+                            error: (_, __) => const _TierBadge('IMENA'),
                           ),
                           const SizedBox(width: SpacingTokens.spacing3),
                           membershipSummary.when(
                             data: (summary) => Text(
-                              summary.fetLabel,
+                              summary.activityLabel,
                               style: TypographyTokens.titleMedium(
                                 ColorTokens.onSurfaceVariant,
                               ).copyWith(fontWeight: FontWeight.w700),
@@ -111,7 +111,7 @@ class ProfileScreen extends ConsumerWidget {
                               ).copyWith(fontWeight: FontWeight.w700),
                             ),
                             error: (_, __) => Text(
-                              'FET in Membership',
+                              'Membership review pending',
                               style: TypographyTokens.titleMedium(
                                 ColorTokens.onSurfaceVariant,
                               ).copyWith(fontWeight: FontWeight.w700),
@@ -139,7 +139,7 @@ class ProfileScreen extends ConsumerWidget {
                   'MY CLUB',
                   style: TypographyTokens.labelMedium(
                     ColorTokens.onSurfaceVariant,
-                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
+                  ).copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
             ),
@@ -163,20 +163,20 @@ class ProfileScreen extends ConsumerWidget {
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
                       icon: AfriIcons.bolt,
-                      label: 'Predict',
+                      label: 'Matchday',
                       onTap: () => context.push('/fanzone/fixtures'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
                       icon: AfriIcons.myPicks,
-                      label: 'Predictions',
+                      label: 'My Picks',
                       onTap: () => context.push('/fanzone/my'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
                       icon: AfriIcons.premium,
-                      label: 'Rewards & Progress',
-                      onTap: () => context.push('/fanzone/challenges'),
+                      label: 'Club Benefits',
+                      onTap: () => context.push('/fanzone/rewards'),
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _MenuItem(
@@ -209,7 +209,7 @@ class ProfileScreen extends ConsumerWidget {
                   'APP',
                   style: TypographyTokens.labelMedium(
                     ColorTokens.onSurfaceVariant,
-                  ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.5),
+                  ).copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
             ),
@@ -275,26 +275,22 @@ final _profileMembershipSummaryProvider =
       }
 
       return _ProfileMembershipSummary(
-        tier:
-            ((row['tier']?.toString() ?? 'fan').trim().isEmpty
-                    ? 'fan'
-                    : row['tier']!.toString())
-                .toUpperCase(),
+        tier: officialMembershipLabel(row['tier']?.toString()).toUpperCase(),
         points: (row['points'] as num?)?.toInt() ?? 0,
       );
     });
 
 class _ProfileMembershipSummary {
-  const _ProfileMembershipSummary({this.tier = 'FAN', this.points = 0});
+  const _ProfileMembershipSummary({this.tier = 'IMENA', this.points = 0});
 
   final String tier;
   final int points;
 
-  String get fetLabel {
+  String get activityLabel {
     if (points <= 0) {
-      return 'Membership FET pending';
+      return 'Membership review pending';
     }
-    return '${_formatPoints(points)} FET in Membership';
+    return '${_formatPoints(points)} activity points';
   }
 
   static String _formatPoints(int value) {

@@ -45,10 +45,13 @@ class ClubMatch extends Equatable {
   bool isAccessibleForTier(jh.FanTier tier) {
     if (!isOnSale || capacity <= 0 || isSoldOut) return false;
     final accessStart = switch (tier) {
-      jh.FanTier.platinum => saleStartsAt.subtract(const Duration(hours: 72)),
       jh.FanTier.gold => saleStartsAt.subtract(const Duration(hours: 48)),
+      jh.FanTier.silver => saleStartsAt.subtract(const Duration(hours: 48)),
       jh.FanTier.bronze => saleStartsAt.subtract(const Duration(hours: 24)),
-      jh.FanTier.fan => saleStartsAt,
+      jh.FanTier.imena ||
+      jh.FanTier.inyamibwa ||
+      jh.FanTier.ingenziImanzi =>
+        saleStartsAt,
     };
     return !DateTime.now().isBefore(accessStart);
   }

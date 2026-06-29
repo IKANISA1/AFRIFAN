@@ -28,7 +28,6 @@ class ContributionHistorySection extends StatelessWidget {
           'CONTRIBUTION HISTORY',
           style: TypographyTokens.titleMedium().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.2,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing3),

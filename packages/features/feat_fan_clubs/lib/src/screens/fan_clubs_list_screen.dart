@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show SupabaseClient;
 
+import '../official_fanclub_register.dart';
 import '../widgets/fan_club_cards.dart';
 
 class FanClubsListScreen extends ConsumerStatefulWidget {
@@ -51,40 +53,14 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
       if (scope.clubId == null) {
         throw StateError('Fan clubs require a numeric club scope.');
       }
-      final clubs = await client
-          .from('fan_clubs')
-          .select()
-          .eq('club_id', scope.clubId!)
-          .eq('is_active', true)
-          .order('member_count', ascending: false);
-
-      final userId = client.auth.currentUser?.id;
-      final joined = <String>{};
-      if (userId != null) {
-        try {
-          final memberships = await client
-              .from('fan_club_members')
-              .select('club_id')
-              .eq('user_id', userId);
-          for (final row in memberships) {
-            final clubId = row['club_id']?.toString();
-            if (clubId != null && clubId.isNotEmpty) {
-              joined.add(clubId);
-            }
-          }
-        } catch (_) {
-          // Keep rendering the list even if membership lookups are locked down.
-        }
-      }
+      final clubs = await _loadPublicFanclubs(client: client);
 
       if (!mounted) return;
-      final loadedClubs = List<Map<String, dynamic>>.from(clubs);
+      final loadedClubs = clubs;
       final availableFilters = _buildFilters(loadedClubs);
       setState(() {
         _clubs = loadedClubs;
-        _joinedClubIds
-          ..clear()
-          ..addAll(joined);
+        _joinedClubIds.clear();
         if (!availableFilters.contains(_activeFilter)) {
           _activeFilter = 'ALL';
         }
@@ -97,6 +73,30 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
         _error = 'Could not load fan clubs right now.';
       });
     }
+  }
+
+  Future<List<Map<String, dynamic>>> _loadPublicFanclubs({
+    required SupabaseClient client,
+  }) async {
+    try {
+      final rows = await client
+          .from('fanclubs')
+          .select()
+          .eq('approval_status', 'approved')
+          .eq('active', true)
+          .eq('visibility', 'public')
+          .order('sort_order', ascending: true);
+      final clubs = List<Map<String, dynamic>>.from(
+        rows,
+      ).map(normalizeFanclubRow).toList(growable: false);
+      if (clubs.isNotEmpty) {
+        return clubs;
+      }
+    } catch (_) {
+      // Use the verified Gikundiro register as the offline public fallback.
+    }
+
+    return officialFanclubRegister();
   }
 
   Future<void> _toggleJoin(Map<String, dynamic> club) async {
@@ -112,62 +112,11 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
       return;
     }
 
-    final isJoined = _joinedClubIds.contains(clubId);
     unawaited(HapticFeedback.lightImpact());
-    setState(() => _pendingClubIds.add(clubId));
-
-    try {
-      if (isJoined) {
-        await ref
-            .read(supabaseClientProvider)
-            .from('fan_club_members')
-            .delete()
-            .eq('club_id', clubId)
-            .eq('user_id', userId);
-      } else {
-        await ref.read(supabaseClientProvider).from('fan_club_members').insert({
-          'club_id': clubId,
-          'user_id': userId,
-        });
-      }
-
-      if (!mounted) return;
-      setState(() {
-        if (isJoined) {
-          _joinedClubIds.remove(clubId);
-        } else {
-          _joinedClubIds.add(clubId);
-        }
-
-        _clubs = _clubs
-            .map((entry) {
-              if (entry['id']?.toString() != clubId) {
-                return entry;
-              }
-
-              final current = (entry['member_count'] as num?)?.toInt() ?? 0;
-              return <String, dynamic>{
-                ...entry,
-                'member_count': isJoined
-                    ? (current - 1).clamp(0, current)
-                    : current + 1,
-              };
-            })
-            .toList(growable: false);
-      });
-    } catch (error) {
-      if (!mounted) return;
-      AfriToast.error(
-        context,
-        isJoined
-            ? 'Could not leave this fan club right now.'
-            : 'Could not join this fan club right now.',
-      );
-    } finally {
-      if (mounted) {
-        setState(() => _pendingClubIds.remove(clubId));
-      }
-    }
+    AfriToast.info(
+      context,
+      'Fanclub requests use the protected review path before joining is confirmed.',
+    );
   }
 
   List<String> _buildFilters(List<Map<String, dynamic>> clubs) {
@@ -233,7 +182,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                       SpacingTokens.spacing6,
                       SpacingTokens.spacing4,
                       SpacingTokens.spacing6,
-                      0,
+                      SpacingTokens.spacing0,
                     ),
                     child: Row(
                       children: [
@@ -249,13 +198,9 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                             children: [
                               Text(
                                 'THE COMMUNITY',
-                                style:
-                                    TypographyTokens.labelLarge(
-                                      ColorTokens.onSurfaceVariant,
-                                    ).copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: 2.0,
-                                    ),
+                                style: TypographyTokens.labelLarge(
+                                  ColorTokens.onSurfaceVariant,
+                                ).copyWith(fontWeight: FontWeight.w700),
                               ),
                               Text(
                                 'FAN CLUBS',
@@ -413,7 +358,7 @@ class FanClubsResultsSliver extends StatelessWidget {
             club: club,
             isJoined: joined,
             isPending: isPending,
-            isOfficial: false,
+            isOfficial: club['is_official'] as bool? ?? false,
             onTap: () => onOpenClub(clubId),
             onJoinToggled: () => onJoinToggled(club),
           ),

@@ -100,30 +100,29 @@ void main() {
       });
     }
 
-    test('fan tier can only access after sale_starts_at', () {
+    test('Imena tier can only access after sale_starts_at', () {
       // Sale starts in the future
       final futureSale = matchWithSaleStart(
         DateTime.now().add(const Duration(days: 1)),
       );
-      expect(futureSale.isAccessibleForTier(FanTier.fan), isFalse);
+      expect(futureSale.isAccessibleForTier(FanTier.imena), isFalse);
 
       // Sale started in the past
       final pastSale = matchWithSaleStart(
         DateTime.now().subtract(const Duration(days: 1)),
       );
-      expect(pastSale.isAccessibleForTier(FanTier.fan), isTrue);
+      expect(pastSale.isAccessibleForTier(FanTier.imena), isTrue);
     });
 
-    test('platinum gets 72h early access', () {
-      // Sale starts 60h from now — platinum (72h early) should have access
-      // but gold (48h early) should NOT
+    test('Gold and Silver get 48h early access', () {
+      // Sale starts 36h from now, so Gold and Silver early access is open.
       final match = matchWithSaleStart(
-        DateTime.now().add(const Duration(hours: 60)),
+        DateTime.now().add(const Duration(hours: 36)),
       );
-      expect(match.isAccessibleForTier(FanTier.platinum), isTrue);
-      expect(match.isAccessibleForTier(FanTier.gold), isFalse);
+      expect(match.isAccessibleForTier(FanTier.gold), isTrue);
+      expect(match.isAccessibleForTier(FanTier.silver), isTrue);
       expect(match.isAccessibleForTier(FanTier.bronze), isFalse);
-      expect(match.isAccessibleForTier(FanTier.fan), isFalse);
+      expect(match.isAccessibleForTier(FanTier.imena), isFalse);
     });
 
     test('sold out match is not accessible to any tier', () {
@@ -279,7 +278,7 @@ void main() {
       final fan = FanMembership.fromJson({
         'user_id': 'u',
         'partner_id': 'p',
-        'tier': 'fan',
+        'tier': 'imena',
         'points': 500,
         'chapter': 'Main',
         'membership_number': 'FAN-1',
@@ -287,37 +286,37 @@ void main() {
       });
       expect(fan.nextTierPoints, 1000);
 
-      final gold = FanMembership.fromJson({
+      final silver = FanMembership.fromJson({
         'user_id': 'u',
         'partner_id': 'p',
-        'tier': 'gold',
+        'tier': 'silver',
         'points': 3000,
         'chapter': 'Main',
         'membership_number': 'FAN-2',
         'joined_at': '2025-01-01T00:00:00Z',
       });
-      expect(gold.nextTierPoints, 5000);
+      expect(silver.nextTierPoints, 5000);
     });
 
-    test('platinum has 0 pointsToNextTier', () {
-      final plat = FanMembership.fromJson({
+    test('gold has 0 pointsToNextTier', () {
+      final gold = FanMembership.fromJson({
         'user_id': 'u',
         'partner_id': 'p',
-        'tier': 'platinum',
+        'tier': 'gold',
         'points': 8000,
         'chapter': 'Main',
         'membership_number': 'FAN-3',
         'joined_at': '2025-01-01T00:00:00Z',
       });
-      expect(plat.pointsToNextTier, 0);
-      expect(plat.progressToNextTier, 1.0);
+      expect(gold.pointsToNextTier, 0);
+      expect(gold.progressToNextTier, 1.0);
     });
 
     test('isExpired checks expiresAt', () {
       final expired = FanMembership.fromJson({
         'user_id': 'u',
         'partner_id': 'p',
-        'tier': 'fan',
+        'tier': 'imena',
         'points': 0,
         'chapter': 'Main',
         'membership_number': 'FAN-4',

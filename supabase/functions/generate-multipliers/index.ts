@@ -2,9 +2,12 @@
  * ============================================================================
  * Generate Multipliers — Edge Function
  * ============================================================================
- * Reads fixture features from the DB, estimates probabilities, applies
- * overround + liability adjustment, and writes multipliers back to
- * fixture_markets.
+ * Legacy multiplier generator.
+ *
+ * AFRICLUB launch gamification now uses partner-funded WDW pools and fixed
+ * fan entry FET. Dynamic multipliers, overround, house edge, and liability
+ * adjustment are quarantined from the launch path. This function is fail-closed
+ * unless AFRICLUB_ENABLE_LEGACY_MULTIPLIERS=true is set deliberately.
  *
  * Commands:
  *   POST { command: "generate", fixture_id: "..." }
@@ -68,6 +71,17 @@ Deno.serve(async (req: Request) => {
 
   if (req.method !== 'POST') {
     return json({ error: 'POST required' }, 405);
+  }
+
+  const allowLegacyMultipliers =
+    Deno.env.get('AFRICLUB_ENABLE_LEGACY_MULTIPLIERS') === 'true';
+
+  if (!allowLegacyMultipliers) {
+    return json({
+      error: 'Legacy multiplier generation is disabled for AFRICLUB launch.',
+      launch_model: 'partner_centered_wdw_pools',
+      allowed_prediction_scope: ['home_win', 'draw', 'away_win'],
+    }, 410);
   }
 
   // Auth: CRON_JOB_SECRET or admin Bearer token

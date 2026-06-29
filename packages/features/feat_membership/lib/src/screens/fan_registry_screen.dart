@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../official_membership_tiers.dart';
+
 /// Fan registry screen — searchable supporter list for the active club scope.
 class FanRegistryScreen extends ConsumerStatefulWidget {
   const FanRegistryScreen({super.key});
@@ -197,7 +199,6 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
           'FAN REGISTRY',
           style: TypographyTokens.titleLarge().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 2.0,
           ),
         ),
       ),
@@ -246,7 +247,6 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
                               fansLabel.toUpperCase(),
                               style: TypographyTokens.titleMedium().copyWith(
                                 fontWeight: FontWeight.w700,
-                                letterSpacing: 1.1,
                               ),
                             ),
                             const SizedBox(height: SpacingTokens.spacing1),
@@ -434,7 +434,6 @@ class _FanRegistryCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: TypographyTokens.titleMedium().copyWith(
                         fontWeight: FontWeight.w700,
-                        letterSpacing: 0.8,
                       ),
                     ),
                     if (membershipNumber.isNotEmpty) ...[
@@ -443,7 +442,7 @@ class _FanRegistryCard extends StatelessWidget {
                         membershipNumber,
                         style: TypographyTokens.bodyMedium(
                           ColorTokens.onSurfaceVariant,
-                        ).copyWith(letterSpacing: 0.6),
+                        ),
                       ),
                     ],
                   ],
@@ -451,10 +450,10 @@ class _FanRegistryCard extends StatelessWidget {
               ),
               const SizedBox(width: SpacingTokens.spacing3),
               Text(
-                '${fan.points} FET',
+                fan.points <= 0 ? 'Pending' : '${fan.points} activity',
                 style: TypographyTokens.titleSmall(
                   ColorTokens.clubAccent,
-                ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
+                ).copyWith(fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -464,7 +463,7 @@ class _FanRegistryCard extends StatelessWidget {
             runSpacing: SpacingTokens.spacing2,
             children: [
               _RegistryChip(
-                label: fan.tier.label.toUpperCase(),
+                label: officialMembershipLabel(fan.tier.value).toUpperCase(),
                 color: tierColor,
               ),
               _RegistryChip(
@@ -491,11 +490,11 @@ class _FanRegistryCard extends StatelessWidget {
   }
 
   Color _tierColor(FanTier tier) {
-    return switch (tier) {
-      FanTier.fan => ColorTokens.info,
-      FanTier.bronze => ColorTokens.warning,
-      FanTier.gold => ColorTokens.clubAccent,
-      FanTier.platinum => ColorTokens.success,
+    return switch (normalizeMembershipSlug(tier.value)) {
+      'gold' => ColorTokens.clubAccent,
+      'silver' => ColorTokens.success,
+      'bronze' => ColorTokens.warning,
+      _ => ColorTokens.info,
     };
   }
 

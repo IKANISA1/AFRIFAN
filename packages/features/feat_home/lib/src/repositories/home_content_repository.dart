@@ -52,27 +52,27 @@ class HomeQuickAction {
 
   static const List<HomeQuickAction> fallbackItems = <HomeQuickAction>[
     HomeQuickAction(
-      actionKey: 'groups',
-      title: 'Groups',
-      route: '/contribute',
-      iconKey: 'groups',
-      subtitle: 'Savings & fundraising',
-      sortOrder: 10,
-    ),
-    HomeQuickAction(
-      actionKey: 'predict',
-      title: 'Predict',
-      route: '/fanzone',
-      iconKey: 'predict',
-      subtitle: 'Fixtures, picks & live',
-      sortOrder: 20,
-    ),
-    HomeQuickAction(
       actionKey: 'tickets',
       title: 'Tickets',
       route: '/tickets',
       iconKey: 'tickets',
-      subtitle: 'Match access',
+      subtitle: 'Official match access',
+      sortOrder: 10,
+    ),
+    HomeQuickAction(
+      actionKey: 'membership',
+      title: 'Join Gikundiro',
+      route: '/membership',
+      iconKey: 'membership',
+      subtitle: 'Official supporter categories',
+      sortOrder: 20,
+    ),
+    HomeQuickAction(
+      actionKey: 'fanclubs',
+      title: 'Fanclubs',
+      route: '/fan-clubs',
+      iconKey: 'groups',
+      subtitle: 'Find a supporter chapter',
       sortOrder: 30,
     ),
     HomeQuickAction(
@@ -80,23 +80,23 @@ class HomeQuickAction {
       title: 'Shop',
       route: '/shop',
       iconKey: 'shop',
-      subtitle: 'Rewards & merchandise',
+      subtitle: 'Official merchandise',
       sortOrder: 40,
     ),
     HomeQuickAction(
-      actionKey: 'members',
-      title: 'Members',
-      route: '/membership',
-      iconKey: 'members',
-      subtitle: 'Club supporters',
+      actionKey: 'matchday',
+      title: 'Matchday',
+      route: '/fanzone/fixtures',
+      iconKey: 'predict',
+      subtitle: 'Fixtures and live updates',
       sortOrder: 50,
     ),
     HomeQuickAction(
-      actionKey: 'offers',
-      title: 'Offers',
-      route: '/fanzone/offers',
-      iconKey: 'offers',
-      subtitle: 'Earn with partners',
+      actionKey: 'contribute',
+      title: 'Contribute',
+      route: '/contribute',
+      iconKey: 'groups',
+      subtitle: 'Club projects and support',
       sortOrder: 60,
     ),
   ];
@@ -118,7 +118,7 @@ class HomeFeedSnapshot {
   final List<ContributorEntry> leaderboard;
   final List<HomeQuickAction> quickActions;
 
-  /// The current user's own FET (fan engagement points).
+  /// The current user's own activity balance.
   final int userFet;
   final int fanRank;
   final HomeFeedStatus status;
@@ -315,7 +315,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         })
         .toList(growable: false);
 
-    // ── Derive the current user's personal FET and rank ──
+    // ── Derive the current user's personal activity balance and rank ──
     var userFet = 0;
     var fanRank = 0;
     if (currentUserId != null) {
@@ -379,7 +379,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     );
   }
 
-  /// Resolves the current user's FET balance and rank when they fall outside
+  /// Resolves the current user's activity balance and rank when they fall outside
   /// the top-20 batch fetched for the leaderboard.
   Future<void> _resolveUserFetAndRank({
     required ClubScope scope,

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 /// Glassmorphic Digital Membership Card — enhanced version with club crest,
-/// tier badge, Fan ID, member-since date, and FANZONE watermark.
+/// tier badge, Fan ID, member-since date, and Gikundiro watermark.
 ///
 /// Mirrors the fanafrika `DigitalMembershipCard.tsx`.
 class DigitalMembershipCardFull extends StatelessWidget {
@@ -54,15 +54,15 @@ class DigitalMembershipCardFull extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
           child: Stack(
             children: [
-              // FANZONE watermark
+              // Gikundiro watermark
               Positioned(
                 bottom: -20,
                 right: -8,
                 child: Text(
-                  'FANZONE',
+                  'GIKUNDIRO',
                   style: TypographyTokens.displayLarge(
                     ColorTokens.onSurface.withValues(alpha: 0.04),
-                  ).copyWith(fontWeight: FontWeight.w900, letterSpacing: 6),
+                  ).copyWith(fontWeight: FontWeight.w900),
                 ),
               ),
 
@@ -89,13 +89,9 @@ class DigitalMembershipCardFull extends StatelessWidget {
                         Expanded(
                           child: Text(
                             clubName.toUpperCase(),
-                            style:
-                                TypographyTokens.labelLarge(
-                                  ColorTokens.onSurface.withValues(alpha: 0.7),
-                                ).copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 2.0,
-                                ),
+                            style: TypographyTokens.labelLarge(
+                              ColorTokens.onSurface.withValues(alpha: 0.7),
+                            ).copyWith(fontWeight: FontWeight.w700),
                           ),
                         ),
                         if (onShare != null)
@@ -150,7 +146,6 @@ class DigitalMembershipCardFull extends StatelessWidget {
                           fanId,
                           style: TypographyTokens.displaySmall().copyWith(
                             fontWeight: FontWeight.w900,
-                            letterSpacing: 4,
                           ),
                         )
                         .animate()

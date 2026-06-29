@@ -32,8 +32,8 @@ void main() {
     ) async {
       final clubs = [
         {
-          'id': 'kigali-ultras',
-          'name': 'Kigali Ultras',
+          'id': 'ikipe-yacu-nyarugenge',
+          'name': 'Ikipe Yacu Nyarugenge',
           'region': 'Kigali',
           'member_count': 42,
         },
@@ -54,9 +54,9 @@ void main() {
         ),
       );
 
-      expect(find.text('KIGALI ULTRAS'), findsOneWidget);
+      expect(find.text('IKIPE YACU NYARUGENGE'), findsOneWidget);
       expect(find.text('KIGALI • 42 MEMBERS'), findsOneWidget);
-      expect(find.text('Join'), findsOneWidget);
+      expect(find.text('Request'), findsOneWidget);
       expect(find.textContaining('No fan clubs'), findsNothing);
     });
   });

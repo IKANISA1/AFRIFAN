@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import '../models/fanzone_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
-import 'package:core_utils/core_utils.dart';
 
 class LeagueHubScreen extends ConsumerStatefulWidget {
   const LeagueHubScreen({super.key, this.competitionSlug});
@@ -28,7 +30,7 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
   @override
   void initState() {
     super.initState();
-    _load();
+    unawaited(_load());
   }
 
   Future<void> _load([String? competitionSlug]) async {

@@ -5,67 +5,10 @@ import 'package:flutter/material.dart';
 import '../models/fet_models.dart';
 
 // ══════════════════════════════════════════════════════════════════════════════
-// Selected supporter tile
-// ══════════════════════════════════════════════════════════════════════════════
-
-/// Shows the currently selected supporter recipient for a transfer.
-class WalletSelectedSupporterTile extends StatelessWidget {
-  const WalletSelectedSupporterTile({
-    super.key,
-    required this.supporter,
-    required this.onClear,
-  });
-
-  final FetWalletSupporter supporter;
-  final VoidCallback onClear;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(SpacingTokens.spacing3),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
-        color: ColorTokens.surfaceContainerHigh,
-      ),
-      child: Row(
-        children: [
-          const Icon(AfriIcons.profile),
-          const SizedBox(width: SpacingTokens.spacing3),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  supporter.displayName,
-                  style: TypographyTokens.bodyLarge().copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                Text(
-                  '#${supporter.publicUserId ?? '000000'} • ${supporter.tier.toUpperCase()}',
-                  style: TypographyTokens.bodySmall(
-                    ColorTokens.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          AfriIconButton(
-            icon: AfriIcons.close,
-            onTap: onClear,
-            tooltip: 'Clear supporter',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
 // Transaction row
 // ══════════════════════════════════════════════════════════════════════════════
 
-/// Single wallet transaction row (earn, transfer, redeem, etc.).
+/// Single wallet transaction row for audited FET ledger activity.
 class WalletTransactionRow extends StatelessWidget {
   const WalletTransactionRow({
     super.key,
@@ -84,6 +27,14 @@ class WalletTransactionRow extends StatelessWidget {
 
   IconData _transactionIcon() {
     switch (transaction.entryType) {
+      case 'partner_promotion_earn':
+        return AfriIcons.rewards;
+      case 'partner_pool_entry':
+        return AfriIcons.predict;
+      case 'partner_pool_payout':
+        return AfriIcons.earn;
+      case 'partner_pool_refund':
+        return AfriIcons.refresh;
       case 'transfer_in':
         return AfriIcons.receiveFet;
       case 'transfer_out':

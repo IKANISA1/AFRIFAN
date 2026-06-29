@@ -85,3 +85,7 @@ Future<T?> showAfriBottomSheet<T>({
     useSafeArea: useSafeArea,
   );
 }
+
+void closeAfriBottomSheet(BuildContext context, [Object? result]) {
+  Navigator.of(context).pop(result);
+}

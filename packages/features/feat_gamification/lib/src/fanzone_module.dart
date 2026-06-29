@@ -3,15 +3,11 @@ import 'package:core_theme/core_theme.dart';
 import 'package:go_router/go_router.dart';
 
 import 'screens/badges_screen.dart';
-import 'screens/challenges_screen.dart';
 import 'screens/club_fan_zone_screen.dart';
 import 'screens/fan_id_screen.dart';
 import 'screens/fanzone_hub_screen.dart';
 import 'screens/fet_wallet_screen.dart';
 import 'screens/fixtures_browser_screen.dart';
-import 'screens/friend_challenge_screen.dart';
-import 'screens/friends_list_screen.dart';
-import 'screens/jackpot_challenge_screen.dart';
 import 'screens/leaderboard_screen.dart';
 import 'screens/league_hub_screen.dart';
 import 'screens/league_standings_screen.dart';
@@ -135,11 +131,6 @@ class FanzoneModule extends FeatureModule {
       builder: (context, state) => const PredictionNotificationsScreen(),
     ),
     GoRoute(
-      path: 'challenges',
-      name: 'fanzone-challenges',
-      builder: (context, state) => const ChallengesScreen(),
-    ),
-    GoRoute(
       path: 'badges',
       name: 'fanzone-badges',
       builder: (context, state) => const BadgesScreen(),
@@ -150,24 +141,9 @@ class FanzoneModule extends FeatureModule {
       builder: (context, state) => const StreakCalendarScreen(),
     ),
     GoRoute(
-      path: 'jackpot',
-      name: 'fanzone-jackpot',
-      builder: (context, state) => const JackpotChallengeScreen(),
-    ),
-    GoRoute(
       path: 'share',
       name: 'fanzone-share',
       builder: (context, state) => const ShareCardGeneratorScreen(),
-    ),
-    GoRoute(
-      path: 'friends',
-      name: 'fanzone-friends',
-      builder: (context, state) => const FriendsListScreen(),
-    ),
-    GoRoute(
-      path: 'challenge',
-      name: 'fanzone-friend-challenge',
-      builder: (context, state) => const FriendChallengeScreen(),
     ),
     GoRoute(
       path: 'league',

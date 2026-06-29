@@ -126,19 +126,15 @@ All routes in this section are nested under `/fanzone` and owned by
 | Prediction Detail | `/fanzone/my/:predictionId` | Authenticated fan | loading, data, not found, error | Verify market/outcome semantics and back path. |
 | Prediction Settlement | `/fanzone/my/:predictionId/settlement` | Authenticated fan | loading, settled, pending, error | Verify result status is not color-only. |
 | Match Detail | `/fanzone/match/:fixtureId` | Authenticated fan | loading, data, not found, error | Verify tabs, stats, H2H, lineups, responsive tables. |
-| FET Wallet | `/fanzone/wallet` | Authenticated fan | loading, balance, transfer, redeem, error | Verify privacy, amount validation, transfer confirmation. |
+| FET Wallet | `/fanzone/wallet` | Authenticated fan | loading, balance, partner rewards, ledger activity, empty, error | Verify privacy, partner-led ledger copy, and no public transfer/manual redemption controls. |
 | Offers | `/fanzone/offers` | Authenticated fan | loading, offers, empty, error | Hide empty offer sections. Verify deep-link CTA states. |
 | Rewards Store | `/fanzone/rewards` | Authenticated fan | loading, rewards, empty, error | Verify item grid, redemption controls, unavailable state. |
 | Token History | `/fanzone/history` | Authenticated fan | loading, history, empty, error | Verify list semantics and filter controls. |
 | Leaderboard | `/fanzone/leaderboard` | Authenticated fan | loading, ranked users, fewer than 3, error | Hide top supporters if fewer than 3 ranked users exist. Verify semantic rank icons. |
 | Notifications | `/fanzone/notifications` | Authenticated fan | loading, notifications, empty, error | Verify notification toggles and read/unread semantics. |
-| Challenges | `/fanzone/challenges` | Authenticated fan | loading, challenges, empty, error | Verify challenge cards and CTA states. |
 | Badges | `/fanzone/badges` | Authenticated fan | loading, badges, empty, error | Verify responsive layout and empty behavior. |
 | Streak | `/fanzone/streak` | Authenticated fan | loading, calendar, empty, error | Verify calendar semantics and small-screen scrolling. |
-| Jackpot | `/fanzone/jackpot` | Authenticated fan | loading, data, closed, error | Verify countdown semantics and reduced motion. |
 | Share Card | `/fanzone/share` | Authenticated fan | data, generation, error | Verify no generated/embedded image asset is added without owner approval. |
-| Friends | `/fanzone/friends` | Authenticated fan | loading, list, empty, error | Verify privacy, search, invite CTA. |
-| Friend Challenge | `/fanzone/challenge` | Authenticated fan | input, review, submit, error | Verify validation, amount fields, focus order. |
 | League Hub | `/fanzone/league` | Authenticated fan | loading, data, empty, error | Verify competition tabs and standings previews. |
 | League Hub Detail | `/fanzone/league/:competitionSlug` | Authenticated fan | loading, data, not found, error | Verify slug not found handling. |
 | League Standings | `/fanzone/standings/:competitionSlug` | Authenticated fan | loading, table, empty, error | Verify table readability on narrow screens. |
@@ -148,11 +144,15 @@ All routes in this section are nested under `/fanzone` and owned by
 | Social Hub | `/fanzone/social` | Authenticated fan | loading, data, empty, error | Verify moderation and privacy states. |
 | Fan Zone Privacy | `/fanzone/privacy` | Authenticated fan | data, saved, error | Verify toggles, confirmations, screen-reader labels. |
 
-## Challenge Standalone Routes
+## Legacy Challenge Standalone Routes
+
+These routes are outside AFRICLUB launch scope and require an explicit
+`legacy_prediction_games` or `challenge` feature flag. Partner WDW pools are
+the launch prediction-game surface.
 
 | Screen | Route | Module | Auth | States To Verify | Accessibility And Responsive Notes |
 | --- | --- | --- | --- | --- | --- |
-| Challenge Hub | `/challenge` | `ChallengeModule` | Authenticated fan | loading, challenges, empty, error | Overlaps Fan Zone challenge surface; verify route ownership in Phase 3. |
+| Challenge Hub | `/challenge` | `ChallengeModule` | Authenticated fan | loading, challenges, empty, error | Legacy opt-in only; do not expose in launch navigation. |
 | Create Challenge | `/challenge/create` | `ChallengeModule` | Authenticated fan | input, review, submit, error | Verify form validation and keyboard behavior. |
 | My Challenges | `/challenge/my` | `ChallengeModule` | Authenticated fan | loading, list, empty, error | Hide empty sections. |
 | Challenge Detail | `/challenge/:id` | `ChallengeModule` | Authenticated fan | loading, data, not found, error | Verify participant list, stake visibility, status semantics. |

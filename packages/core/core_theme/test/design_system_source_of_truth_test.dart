@@ -559,6 +559,56 @@ void main() {
       );
     });
 
+    test('Migrated settings dimensions and typography route through tokens', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages/features/feat_settings/lib'),
+        ],
+        pattern: RegExp(
+          r'(?:horizontal|vertical|width|height|size|minHeight|minWidth):\s*[0-9]|'
+          r'Size\(\s*double\.infinity\s*,\s*[0-9]|'
+          r'Radius\.circular\([0-9]|'
+          r'BorderRadius\.circular\([0-9]|'
+          r'EdgeInsets\.all\([0-9]|'
+          r'letterSpacing:\s*[0-9]',
+        ),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found raw settings dimensions or typography tracking. Use SizeTokens, ShapeTokens, SpacingTokens, and TypographyTokens instead.',
+          violations,
+        ),
+      );
+    });
+
+    test('Migrated fan club dimensions and typography route through tokens', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages/features/feat_fan_clubs/lib'),
+        ],
+        pattern: RegExp(
+          r'(?:horizontal|vertical|width|height|size|minHeight|minWidth):\s*[0-9]|'
+          r'Size\(\s*double\.infinity\s*,\s*[0-9]|'
+          r'Radius\.circular\([0-9]|'
+          r'BorderRadius\.circular\([0-9]|'
+          r'EdgeInsets\.all\([0-9]|'
+          r'letterSpacing:\s*[0-9]',
+        ),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found raw fan-club dimensions or typography tracking. Use SizeTokens, ShapeTokens, SpacingTokens, and TypographyTokens instead.',
+          violations,
+        ),
+      );
+    });
+
     test('Feature packages use shared button primitives', () {
       final violations = _scanDartFiles(
         roots: [

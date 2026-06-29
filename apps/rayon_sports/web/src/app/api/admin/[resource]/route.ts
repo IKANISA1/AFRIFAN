@@ -68,6 +68,10 @@ import {
   saveAdminSeason,
   getAdminFixtures,
   saveAdminFixture,
+  getAdminPartnerOptions,
+  getAdminPartnerPredictionPools,
+  saveAdminPartnerPredictionPool,
+  settleAdminPartnerPredictionPool,
 } from "@/lib/data/admin";
 import {
   rejectInsecureMutation,
@@ -311,6 +315,14 @@ export async function GET(
         return NextResponse.json({
           data: await getAdminFixtures(adminClient, access),
         });
+      case "partner-options":
+        return NextResponse.json({
+          data: await getAdminPartnerOptions(adminClient, access),
+        });
+      case "partner-prediction-pools":
+        return NextResponse.json({
+          data: await getAdminPartnerPredictionPools(serverClient, access),
+        });
       default:
         return NextResponse.json(
           { error: "Unknown admin resource." },
@@ -498,6 +510,26 @@ export async function POST(
         return NextResponse.json({
           data: await saveAdminFixture(adminClient, access, body as never),
         });
+      case "partner-prediction-pools":
+        return withScopedFeatureGuard(access, "fanzone", async () =>
+          NextResponse.json({
+            data: await saveAdminPartnerPredictionPool(
+              serverClient,
+              access,
+              body as never,
+            ),
+          }),
+        );
+      case "partner-prediction-pool-settlement":
+        return withScopedFeatureGuard(access, "fanzone", async () =>
+          NextResponse.json({
+            data: await settleAdminPartnerPredictionPool(
+              serverClient,
+              access,
+              String(body.poolId ?? ""),
+            ),
+          }),
+        );
       default:
         return NextResponse.json(
           { error: "Unknown admin resource." },

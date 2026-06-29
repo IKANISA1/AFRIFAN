@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'models/prediction_models.dart';
 import 'repositories/challenge_repository.dart';
+import 'repositories/partner_pool_repository.dart';
 import 'repositories/prediction_repository.dart';
 export 'repositories/challenge_repository.dart';
+export 'repositories/partner_pool_repository.dart';
 export 'repositories/prediction_repository.dart';
 
 final predictionRepositoryProvider = Provider<PredictionRepository>(
@@ -13,6 +15,10 @@ final predictionRepositoryProvider = Provider<PredictionRepository>(
 
 final challengeRepositoryProvider = Provider<ChallengeRepository>(
   (ref) => ChallengeRepository(client: ref.watch(supabaseClientProvider)),
+);
+
+final partnerPoolRepositoryProvider = Provider<PartnerPoolRepository>(
+  (ref) => PartnerPoolRepository(client: ref.watch(supabaseClientProvider)),
 );
 
 class ChallengeFixturesGateway {

@@ -173,7 +173,6 @@ class _NotificationPreferencesScreenState
             'NOTIFICATIONS',
             style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
-              letterSpacing: 1.6,
             ),
           ),
           leading: AfriIconButton(
@@ -237,9 +236,12 @@ class _NotificationPreferencesScreenState
                               ? null
                               : () => _togglePush(settings),
                           style: AfriOutlinedButton.styleFrom(
-                            minimumSize: const Size(double.infinity, 56),
+                            minimumSize: const Size(
+                              double.infinity,
+                              SizeTokens.buttonMinHeight,
+                            ),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
+                              borderRadius: ShapeTokens.buttonRadius,
                             ),
                           ),
                           child: Text(

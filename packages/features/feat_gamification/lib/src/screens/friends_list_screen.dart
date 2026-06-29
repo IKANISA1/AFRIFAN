@@ -154,9 +154,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
 
   Future<void> _handlePrimaryAction(FetFriendProfile supporter) async {
     if (supporter.isFriend) {
-      unawaited(
-        context.push('/fanzone/challenge?opponent=${supporter.userId}'),
-      );
+      unawaited(context.push('/fanzone'));
       return;
     }
 

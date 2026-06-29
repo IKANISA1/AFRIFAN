@@ -73,7 +73,7 @@ The app does NOT actively monitor connectivity changes. Instead:
 | Open Fan Zone tab | Shows cached challenges, stale data served |
 | Open Fixture browser | Shows cached fixtures if available |
 | Submit prediction | Fails with error snackbar after timeout |
-| Transfer FET | Fails with error snackbar after timeout |
+| Join partner WDW pool | Fails with error snackbar after timeout |
 | Pull to refresh | Shows loading, then error state if still offline |
 | View membership | Shows cached membership data |
 
@@ -81,7 +81,8 @@ The app does NOT actively monitor connectivity changes. Instead:
 
 ## Intentional Limitations
 
-1. **No offline queue**: Write operations (predictions, transfers, redemptions)
+1. **No offline queue**: Write operations (predictions, partner pool joins,
+   partner earn claims, catalog reward redemptions, and admin adjustments)
    are NOT queued for later submission. They fail immediately with user feedback.
    This is intentional — stale predictions could be invalid after kickoff.
 

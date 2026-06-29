@@ -19,10 +19,10 @@ void main() {
     await tester.pumpWidget(
       buildSubject(
         const TeamMembersContent(
-          legendCount: 0,
-          ultraCount: 0,
-          memberCount: 0,
-          supporterCount: 0,
+          goldCount: 0,
+          silverCount: 0,
+          bronzeCount: 0,
+          imenaCount: 0,
           contributors: <ClubMemberEntry>[],
         ),
       ),
@@ -43,10 +43,10 @@ void main() {
     await tester.pumpWidget(
       buildSubject(
         const TeamMembersContent(
-          legendCount: 1,
-          ultraCount: 2,
-          memberCount: 3,
-          supporterCount: 4,
+          goldCount: 1,
+          silverCount: 2,
+          bronzeCount: 3,
+          imenaCount: 4,
           contributors: <ClubMemberEntry>[
             ClubMemberEntry(
               userId: 'user-1',
@@ -65,7 +65,7 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('#123456', skipOffstage: false), findsOneWidget);
-    expect(find.text('GOLD', skipOffstage: false), findsOneWidget);
+    expect(find.text('GOLD', skipOffstage: false), findsNWidgets(2));
     expect(find.text('900 FET', skipOffstage: false), findsOneWidget);
     expect(find.text('YOU', skipOffstage: false), findsOneWidget);
   });

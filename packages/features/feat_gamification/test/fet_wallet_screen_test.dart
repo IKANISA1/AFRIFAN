@@ -16,11 +16,6 @@ class _MockSupabaseClient extends Mock implements supabase.SupabaseClient {}
 class _FakeFetRepository extends FetRepository {
   _FakeFetRepository() : super(client: _MockSupabaseClient());
 
-  String? transferRecipientUserId;
-  int? transferAmount;
-  String? redeemNote;
-  int? redeemAmount;
-
   @override
   Future<FetWalletSummary?> loadWallet() async {
     return const FetWalletSummary(
@@ -34,7 +29,7 @@ class _FakeFetRepository extends FetRepository {
       lifetimeEarned: 1600,
       lifetimeSpent: 350,
       transactionCount: 3,
-      legacyBalanceGap: 0,
+      historicalBalanceGap: 0,
     );
   }
 
@@ -46,72 +41,47 @@ class _FakeFetRepository extends FetRepository {
     return <FetWalletTransaction>[
       FetWalletTransaction(
         id: 'entry-1',
-        entryType: 'transfer_in',
+        entryType: 'partner_promotion_earn',
         direction: FetWalletEntryDirection.credit,
         amount: 300,
         balanceAfter: 1250,
-        counterpartyUserId: 'supporter-2',
-        counterpartyDisplayName: 'Jeanne',
-        counterpartyPublicUserId: '483912',
-        note: 'Away-day refund',
-        referenceType: 'transfer',
-        referenceId: 'ref-1',
+        counterpartyUserId: null,
+        counterpartyDisplayName: null,
+        counterpartyPublicUserId: null,
+        note: 'BK Arena match-day initiative',
+        referenceType: 'partner_initiative',
+        referenceId: 'initiative-1',
         createdAt: DateTime.utc(2026, 4, 12, 8),
       ),
-    ];
-  }
-
-  @override
-  Future<List<FetWalletSupporter>> findSupporters(
-    String query, {
-    int limit = 8,
-  }) async {
-    return const <FetWalletSupporter>[
-      FetWalletSupporter(
-        userId: 'supporter-2',
-        publicUserId: '483912',
-        displayName: 'Jeanne Mukamana',
-        tier: 'fan',
-        balance: 640,
+      FetWalletTransaction(
+        id: 'entry-2',
+        entryType: 'partner_pool_entry',
+        direction: FetWalletEntryDirection.debit,
+        amount: 50,
+        balanceAfter: 1200,
+        counterpartyUserId: null,
+        counterpartyDisplayName: null,
+        counterpartyPublicUserId: null,
+        note: 'WDW pool entry',
+        referenceType: 'partner_prediction_pool',
+        referenceId: 'pool-1',
+        createdAt: DateTime.utc(2026, 4, 12, 9),
+      ),
+      FetWalletTransaction(
+        id: 'entry-3',
+        entryType: 'partner_pool_payout',
+        direction: FetWalletEntryDirection.credit,
+        amount: 100,
+        balanceAfter: 1300,
+        counterpartyUserId: null,
+        counterpartyDisplayName: null,
+        counterpartyPublicUserId: null,
+        note: 'WDW pool payout',
+        referenceType: 'partner_prediction_pool',
+        referenceId: 'pool-1',
+        createdAt: DateTime.utc(2026, 4, 12, 11),
       ),
     ];
-  }
-
-  @override
-  Future<FetWalletOperationResult> transferFet({
-    required String recipientUserId,
-    required int amount,
-    String? note,
-    String? idempotencyKey,
-  }) async {
-    transferRecipientUserId = recipientUserId;
-    transferAmount = amount;
-    return const FetWalletOperationResult(
-      status: 'success',
-      amount: 150,
-      balance: 1100,
-      referenceId: 'transfer-ref',
-      alreadyProcessed: false,
-      recipientUserId: 'supporter-2',
-    );
-  }
-
-  @override
-  Future<FetWalletOperationResult> redeemFet({
-    required int amount,
-    String? note,
-    String? idempotencyKey,
-  }) async {
-    redeemAmount = amount;
-    redeemNote = note;
-    return const FetWalletOperationResult(
-      status: 'success',
-      amount: 200,
-      balance: 900,
-      referenceId: 'redeem-ref',
-      alreadyProcessed: false,
-      recipientUserId: null,
-    );
   }
 }
 
@@ -158,76 +128,52 @@ void main() {
 
     expect(find.textContaining('1,250'), findsOneWidget);
 
-    await _scrollTo(
-      tester,
-      find.byKey(const ValueKey<String>('wallet-transfer-submit')),
+    await _scrollTo(tester, find.text('Partner rewards'));
+
+    expect(find.text('Partner rewards'), findsOneWidget);
+    expect(
+      find.text('Earn FET from partner initiatives and promotions.'),
+      findsOneWidget,
     );
-    expect(find.text('Send FET'), findsOneWidget);
 
-    await _scrollTo(tester, find.text('Transfer received'));
+    await _scrollTo(tester, find.text('Partner FET earned'));
 
-    expect(find.text('Transfer received'), findsOneWidget);
-    expect(find.textContaining('Jeanne'), findsOneWidget);
+    expect(find.text('Partner FET earned'), findsOneWidget);
+    expect(find.text('Partner pool entry'), findsOneWidget);
+    expect(find.text('Partner pool payout'), findsOneWidget);
   });
 
-  testWidgets('transfers FET to a searched supporter', (tester) async {
+  testWidgets('does not expose public transfer controls', (tester) async {
     final repository = _FakeFetRepository();
     await _pumpApp(tester, repository: repository);
 
-    await _scrollTo(
-      tester,
+    expect(
       find.byKey(const ValueKey<String>('wallet-transfer-search')),
+      findsNothing,
     );
-    await tester.enterText(
-      find.byKey(const ValueKey<String>('wallet-transfer-search')),
-      'Jea',
-    );
-    await tester.pump(const Duration(milliseconds: 300));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Jeanne Mukamana'));
-    await tester.pumpAndSettle();
-
-    await tester.enterText(
+    expect(
       find.byKey(const ValueKey<String>('wallet-transfer-amount')),
-      '150',
+      findsNothing,
     );
-    await _scrollTo(
-      tester,
+    expect(
       find.byKey(const ValueKey<String>('wallet-transfer-submit')),
+      findsNothing,
     );
-    await tester.tap(
-      find.byKey(const ValueKey<String>('wallet-transfer-submit')),
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('SEND FET'));
-    await tester.pumpAndSettle();
-
-    expect(repository.transferRecipientUserId, 'supporter-2');
-    expect(repository.transferAmount, 150);
-    expect(find.text('Transferred 150 FET.'), findsOneWidget);
+    expect(find.text('Send FET'), findsNothing);
   });
 
-  testWidgets('submits a redemption request', (tester) async {
+  testWidgets('does not expose manual redemption controls', (tester) async {
     final repository = _FakeFetRepository();
     await _pumpApp(tester, repository: repository);
 
-    await _scrollTo(
-      tester,
-      find.byKey(const ValueKey<String>('wallet-redeem-submit')),
-    );
-    await tester.enterText(
+    expect(
       find.byKey(const ValueKey<String>('wallet-redeem-amount')),
-      '200',
+      findsNothing,
     );
-    await tester.tap(
+    expect(
       find.byKey(const ValueKey<String>('wallet-redeem-submit')),
+      findsNothing,
     );
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('REDEEM FET'));
-    await tester.pumpAndSettle();
-
-    expect(repository.redeemAmount, 200);
-    expect(find.text('Redeemed 200 FET.'), findsOneWidget);
+    expect(find.text('Redeem FET'), findsNothing);
   });
 }

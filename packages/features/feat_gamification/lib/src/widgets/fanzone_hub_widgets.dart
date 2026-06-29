@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../models/fet_models.dart';
+import '../models/partner_pool_models.dart';
 import '../models/prediction_models.dart';
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -73,7 +74,7 @@ class HubQuickRoutes extends StatelessWidget {
         route: '/fanzone/leaderboard',
       ),
       (label: 'Wallet', icon: AfriIcons.wallet, route: '/fanzone/wallet'),
-      (label: 'Jackpot', icon: AfriIcons.rank, route: '/fanzone/jackpot'),
+      (label: 'Rewards', icon: AfriIcons.rewards, route: '/fanzone/rewards'),
       (label: 'Offers', icon: AfriIcons.offers, route: '/fanzone/offers'),
     ];
 
@@ -240,6 +241,169 @@ class HubLeaderboardRow extends StatelessWidget {
           ).copyWith(fontWeight: FontWeight.w800),
         ),
       ],
+    );
+  }
+}
+
+class HubPartnerPoolRow extends StatelessWidget {
+  const HubPartnerPoolRow({super.key, required this.pool, this.onJoin});
+
+  final PartnerPredictionPool pool;
+  final VoidCallback? onJoin;
+
+  @override
+  Widget build(BuildContext context) {
+    final viewerEntry = pool.viewerEntry;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: SpacingTokens.spacing9,
+              height: SpacingTokens.spacing9,
+              decoration: BoxDecoration(
+                color: ColorTokens.clubAccent.withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                AfriIcons.predict,
+                size: SpacingTokens.spacing5,
+                color: ColorTokens.clubAccent,
+              ),
+            ),
+            const SizedBox(width: SpacingTokens.listItemGap),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(pool.title, style: TypographyTokens.titleSmall()),
+                  const SizedBox(height: SpacingTokens.spacing1),
+                  Text(
+                    '${pool.partnerName} · ${pool.eligibilityLabel}',
+                    style: TypographyTokens.bodySmall(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '${pool.partnerStakeFet}',
+                  style: TypographyTokens.titleMedium(
+                    ColorTokens.clubAccent,
+                  ).copyWith(fontWeight: FontWeight.w800),
+                ),
+                Text('FET pool', style: TypographyTokens.labelSmall()),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: SpacingTokens.spacing3),
+        Wrap(
+          spacing: SpacingTokens.spacing2,
+          runSpacing: SpacingTokens.spacing2,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            AfriInfoChip(
+              label: '${pool.fanEntryFet} FET entry',
+              color: ColorTokens.info,
+            ),
+            AfriInfoChip(
+              label: '${pool.totalEntries} fans',
+              color: ColorTokens.onSurfaceVariant,
+            ),
+            if (viewerEntry != null)
+              AfriInfoChip(
+                label: viewerEntry.selectedOutcome.label,
+                icon: AfriIcons.check,
+                color: ColorTokens.success,
+              )
+            else if (pool.isOpen)
+              AfriInfoChip(
+                label: 'Choose W/D/W',
+                icon: AfriIcons.forward,
+                color: ColorTokens.clubAccent,
+                onTap: onJoin,
+              )
+            else
+              AfriInfoChip(
+                label: pool.status.toUpperCase(),
+                color: ColorTokens.onSurfaceVariant,
+              ),
+          ],
+        ),
+        if (!pool.hasJoined && pool.isOpen && onJoin != null) ...[
+          const SizedBox(height: SpacingTokens.spacing3),
+          AfriButton(
+            label: 'Join pool',
+            icon: AfriIcons.predict,
+            variant: AfriButtonVariant.secondary,
+            onTap: onJoin!,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class PartnerPoolOutcomeOption extends StatelessWidget {
+  const PartnerPoolOutcomeOption({
+    super.key,
+    required this.outcome,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final PartnerPoolOutcome outcome;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isSelected ? ColorTokens.clubAccent : ColorTokens.ghostBorder;
+
+    return AfriPressFeedback(
+      onTap: onTap,
+      tooltip: outcome.label,
+      semanticsLabel: outcome.label,
+      builder: (context, state) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(SpacingTokens.spacing4),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? ColorTokens.clubAccent.withValues(alpha: 0.14)
+              : ColorTokens.surfaceContainerLow,
+          border: BorderTokens.all(color: color),
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              isSelected ? AfriIcons.check : AfriIcons.predict,
+              color: isSelected
+                  ? ColorTokens.clubAccent
+                  : ColorTokens.onSurfaceVariant,
+              size: SpacingTokens.spacing5,
+            ),
+            const SizedBox(width: SpacingTokens.spacing3),
+            Expanded(
+              child: Text(
+                outcome.label,
+                style: TypographyTokens.titleSmall(
+                  isSelected ? ColorTokens.clubAccent : ColorTokens.onSurface,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

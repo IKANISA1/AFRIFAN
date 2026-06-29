@@ -151,7 +151,6 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
             'PRIVACY',
             style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
-              letterSpacing: 1.6,
             ),
           ),
           leading: AfriIconButton(
@@ -293,9 +292,12 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                             );
                           },
                           style: AfriOutlinedButton.styleFrom(
-                            minimumSize: const Size(double.infinity, 56),
+                            minimumSize: const Size(
+                              double.infinity,
+                              SizeTokens.buttonMinHeight,
+                            ),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
+                              borderRadius: ShapeTokens.buttonRadius,
                             ),
                           ),
                           child: const Text('OPEN PRIVACY POLICY'),
@@ -325,9 +327,12 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                   AfriOutlinedButton(
                     onPressed: _isSaving ? null : _signOutOtherDevices,
                     style: AfriOutlinedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 56),
+                      minimumSize: const Size(
+                        double.infinity,
+                        SizeTokens.buttonMinHeight,
+                      ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
+                        borderRadius: ShapeTokens.buttonRadius,
                       ),
                     ),
                     child: const Text('SIGN OUT OTHER DEVICES'),

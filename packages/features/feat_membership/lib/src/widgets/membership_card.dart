@@ -59,13 +59,9 @@ class MembershipCard extends ConsumerWidget {
                   children: [
                     Text(
                       RuntimeBranding.displayHomeTeamName.toUpperCase(),
-                      style:
-                          TypographyTokens.labelLarge(
-                            ColorTokens.onSurface.withValues(alpha: 0.7),
-                          ).copyWith(
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 2.0,
-                          ),
+                      style: TypographyTokens.labelLarge(
+                        ColorTokens.onSurface.withValues(alpha: 0.7),
+                      ).copyWith(fontWeight: FontWeight.w700),
                     ),
                     if (paymentStatus == PaymentStatus.pendingVerification)
                       Container(
@@ -88,13 +84,9 @@ class MembershipCard extends ConsumerWidget {
                       const Spacer(),
                       Text(
                         'FAN CARD',
-                        style:
-                            TypographyTokens.labelLarge(
-                              ColorTokens.onSurface.withValues(alpha: 0.5),
-                            ).copyWith(
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 1.0,
-                            ),
+                        style: TypographyTokens.labelLarge(
+                          ColorTokens.onSurface.withValues(alpha: 0.5),
+                        ).copyWith(fontWeight: FontWeight.w600),
                       ),
                     ],
                   ],
@@ -107,7 +99,6 @@ class MembershipCard extends ConsumerWidget {
                   alias,
                   style: TypographyTokens.displayMedium().copyWith(
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 4.0,
                   ),
                 ),
 
@@ -128,13 +119,14 @@ class MembershipCard extends ConsumerWidget {
                         resolvedTier,
                         style: TypographyTokens.labelLarge().copyWith(
                           fontWeight: FontWeight.w700,
-                          letterSpacing: 1.5,
                         ),
                       ),
                     ),
                     const Spacer(),
                     Text(
-                      '$resolvedFet FET',
+                      resolvedFet <= 0
+                          ? 'REVIEW PENDING'
+                          : '$resolvedFet ACTIVITY',
                       style: TypographyTokens.titleLarge(
                         ColorTokens.clubAccent,
                       ).copyWith(fontWeight: FontWeight.w700),

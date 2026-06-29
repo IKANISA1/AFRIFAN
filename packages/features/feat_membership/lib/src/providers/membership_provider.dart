@@ -2,6 +2,7 @@ import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show SupabaseClient;
 
+import '../official_membership_tiers.dart';
 import '../widgets/contribution_history.dart';
 
 /// M-3: Read-side snapshot for the MembershipScreen.
@@ -47,15 +48,7 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
     final clubId = scope.clubId!;
     final userId = client.auth.currentUser?.id;
 
-    // Load packages (always)
-    final packagesResponse = await client
-        .from('membership_packages')
-        .select()
-        .eq('club_id', clubId)
-        .eq('is_active', true)
-        .order('sort_order', ascending: true);
-
-    final packages = List<Map<String, dynamic>>.from(packagesResponse);
+    final packages = await _loadPackages(client: client, clubId: clubId);
 
     // Load user-specific data
     Map<String, dynamic>? membership;
@@ -104,6 +97,29 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
   Future<void> refresh() async {
     state = const AsyncLoading<MembershipSnapshot>();
     state = await AsyncValue.guard(build);
+  }
+
+  Future<List<Map<String, dynamic>>> _loadPackages({
+    required SupabaseClient client,
+    required int clubId,
+  }) async {
+    try {
+      final tiersResponse = await client
+          .from('membership_tiers')
+          .select()
+          .eq('active', true)
+          .order('sort_order', ascending: true);
+      final tiers = List<Map<String, dynamic>>.from(
+        tiersResponse,
+      ).map(normalizeMembershipTierRow).toList(growable: false);
+      if (tiers.isNotEmpty) {
+        return tiers;
+      }
+    } catch (_) {
+      // Fall through to the official launch-safe categories.
+    }
+
+    return officialMembershipPackages();
   }
 
   Future<List<ContributionRecord>> _loadContributionHistory({

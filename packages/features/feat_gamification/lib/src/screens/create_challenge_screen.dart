@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,7 +12,6 @@ import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../providers/fet_wallet_provider.dart';
 import '../widgets/challenge_card.dart';
-import 'package:core_utils/core_utils.dart';
 
 class CreateChallengeScreen extends ConsumerStatefulWidget {
   const CreateChallengeScreen({super.key});

@@ -3,6 +3,7 @@ import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 
+import '../official_ticket_categories.dart';
 import 'ticket_checkout_shared.dart';
 
 class TicketConfigureStep extends StatelessWidget {
@@ -70,8 +71,8 @@ class TicketConfigureStep extends StatelessWidget {
           Text('CHOOSE ACCESS', style: TypographyTokens.labelLarge()),
           const SizedBox(height: SpacingTokens.spacing3),
           SeatTypeCard(
-            title: 'GENERAL ADMISSION',
-            subtitle: 'Fast entry and general stand access',
+            title: 'GENERAL',
+            subtitle: 'Open stands / Bleachers area',
             amount: currency.format(match.ticketGeneralPrice),
             selected: generalSelected,
             onTap: () => onSeatTypeChanged(SeatType.general),
@@ -79,11 +80,13 @@ class TicketConfigureStep extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing3),
           SeatTypeCard(
             title: 'VIP',
-            subtitle: 'Premium zone access and best sight lines',
+            subtitle: 'Premium lounge seating',
             amount: currency.format(match.ticketVipPrice),
             selected: !generalSelected,
             onTap: () => onSeatTypeChanged(SeatType.vip),
           ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          _OfficialTicketCategoryReference(currency: currency),
           const SizedBox(height: SpacingTokens.spacing6),
           AfriSurfaceCard(
             child: Row(
@@ -125,9 +128,12 @@ class TicketConfigureStep extends StatelessWidget {
                   : 'CHANGE SELECTED SEAT',
             ),
             style: AfriOutlinedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 56),
+              minimumSize: const Size(
+                double.infinity,
+                SizeTokens.buttonMinHeight,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
+                borderRadius: ShapeTokens.buttonRadius,
               ),
             ),
           ),
@@ -137,6 +143,53 @@ class TicketConfigureStep extends StatelessWidget {
             onTap: onReviewRequested,
             enabled: !match.isSoldOut && match.isOnSale,
             fullWidth: true,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OfficialTicketCategoryReference extends StatelessWidget {
+  const _OfficialTicketCategoryReference({required this.currency});
+
+  final CurrencyFormatter currency;
+
+  @override
+  Widget build(BuildContext context) {
+    return AfriSurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('OFFICIAL CATEGORIES', style: TypographyTokens.labelLarge()),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(
+            'Approved public ticket tiers. Sale-specific availability appears when the club activates an official sale.',
+            style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+          ),
+          const SizedBox(height: SpacingTokens.spacing4),
+          ...officialTicketCategories.map(
+            (category) => Padding(
+              padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      category.name,
+                      style: TypographyTokens.bodyMedium().copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    currency.format(category.priceRwf),
+                    style: TypographyTokens.labelMedium(
+                      ColorTokens.clubAccent,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

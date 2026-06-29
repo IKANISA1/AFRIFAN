@@ -10,10 +10,11 @@ class TierProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tiers = [
-      ('FAN', 0),
+      ('IMENA', 0),
+      ('INYAMIBWA', 250),
       ('BRONZE', 1000),
-      ('GOLD', 2000),
-      ('PLATINUM', 5000),
+      ('SILVER', 2000),
+      ('GOLD', 5000),
     ];
 
     return GlassCard(
@@ -81,19 +82,15 @@ class TierProgress extends StatelessWidget {
                           child: Text(
                             tier.$1,
                             maxLines: 1,
-                            style:
-                                TypographyTokens.labelLarge(
-                                  isCurrent
-                                      ? ColorTokens.clubAccent
-                                      : isReached
-                                      ? ColorTokens.success
-                                      : ColorTokens.onSurfaceVariant.withValues(
-                                          alpha: 0.5,
-                                        ),
-                                ).copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 1.0,
-                                ),
+                            style: TypographyTokens.labelLarge(
+                              isCurrent
+                                  ? ColorTokens.clubAccent
+                                  : isReached
+                                  ? ColorTokens.success
+                                  : ColorTokens.onSurfaceVariant.withValues(
+                                      alpha: 0.5,
+                                    ),
+                            ).copyWith(fontWeight: FontWeight.w700),
                           ),
                         ),
                       ),

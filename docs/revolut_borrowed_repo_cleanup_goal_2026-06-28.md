@@ -2252,6 +2252,73 @@ patterns.
   `bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings`
   reported 0 total findings, and `git diff --check` was clean.
 
+## 2026-06-29 Borrowed Settings Dimension Tokenization Slice
+
+- Added `SizeTokens` in `core_theme` as the shared source for fixed-format
+  borrowed UI dimensions such as sheet handles, icon sizes, avatar sizes, and
+  full-width button minimum height. The token file is exported through
+  `core_theme.dart` for feature packages.
+- Migrated Settings surfaces away from raw sizing and local typography
+  contradictions. `settings_overlays.dart`, `settings_screen.dart`,
+  `notification_preferences_screen.dart`, `privacy_settings_screen.dart`, and
+  `edit_profile_screen.dart` now route avatar sizes, dialog icons, sheet
+  handles, outline button heights/radii, profile/delete icons, admin-panel
+  padding, and relaxed admin warning copy through `SizeTokens`,
+  `SpacingTokens`, `ShapeTokens`, and `TypographyTokens`.
+- Removed the positive `letterSpacing: 1.6` overrides from Settings child
+  route titles so they follow the borrowed typography contract instead of
+  carrying local tracking behavior.
+- Added the `Migrated settings dimensions and typography route through tokens`
+  guardrail to `design_system_source_of_truth_test.dart`. It fails if raw
+  fixed dimensions, raw full-width button heights, raw radii,
+  `EdgeInsets.all(<number>)`, or positive letter-spacing return to
+  `packages/features/feat_settings/lib`.
+- Refreshed only the Settings golden fixture
+  `packages/features/feat_settings/test/goldens/settings_screen.png` after the
+  intended tokenized layout shift.
+- Validation passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_settings`
+  exited 0 with the existing 16 nonfatal `core_theme` info-level issues and no
+  Settings-specific analyzer findings.
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 33/33 tests, including the new Settings guardrail.
+  `flutter test --update-goldens packages/features/feat_settings/test/settings_screens_test.dart`
+  passed 4/4 tests and updated the Settings golden.
+  `flutter test packages/features/feat_settings/test` passed 16/16 tests.
+  `flutter test packages/app_registry/test/navigation_journeys_test.dart`
+  passed 10/10 tests.
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings`
+  reported 0 total findings. The Settings raw-dimension/letter-spacing scan
+  returned no hits, and `git diff --check` was clean before the report update.
+
+## 2026-06-29 Borrowed Fan Clubs Dimension Tokenization Slice
+
+- Migrated Fan Clubs surfaces away from raw chip, icon, row, and share-button
+  geometry. `fan_club_cards.dart`, `fan_club_detail_screen.dart`, and
+  `fan_clubs_list_screen.dart` now route featured badges, compact status
+  chips, hero/group icons, verified icons, row gaps, snapshot-row radii,
+  share-button dimensions, and list-header padding through `SizeTokens`,
+  `SpacingTokens`, `ShapeTokens`, and `TypographyTokens`.
+- Removed local positive letter-spacing overrides from Fan Clubs titles,
+  status chips, section headers, and list headers. Intentional compressed title
+  height now uses `TypographyTokens.lineHeightHero` or
+  `TypographyTokens.lineHeightSolid` instead of feature-local numeric heights.
+- Added `SizeTokens.iconXlg` for the 32dp icon size used by the Fan Clubs
+  detail hero and future borrowed surfaces.
+- Added the `Migrated fan club dimensions and typography route through tokens`
+  guardrail to `design_system_source_of_truth_test.dart`. It fails if raw
+  fixed dimensions, raw full-width button heights, raw radii,
+  `EdgeInsets.all(<number>)`, or positive letter-spacing return to
+  `packages/features/feat_fan_clubs/lib`.
+- Validation passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_fan_clubs`
+  exited 0 with the existing 16 nonfatal `core_theme` info-level issues and no
+  Fan Clubs-specific analyzer findings.
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 34/34 tests, including the new Fan Clubs guardrail.
+  `flutter test packages/features/feat_fan_clubs/test` passed 12/12 tests.
+  The Fan Clubs raw-dimension/letter-spacing scan returned no hits.
+
 ## 2026-06-28 Expected Offline Observability Cleanup Slice
 
 - Reclassified transient mobile connectivity failures in
@@ -2565,3 +2632,47 @@ patterns.
   PATH for local signer-certificate verification; Flutter still warns about
   future Kotlin Gradle Plugin migration; and the repo remains too dirty for a
   clean release branch without isolating this mobile remediation slice.
+
+## 2026-06-29 Gikundiro Ticketing, Membership, Fanclubs, Admin, and Home Data Slice
+
+- Added official Gikundiro/Rayon Sports public data helpers:
+  `official_membership_tiers.dart` with the six official membership
+  categories (`Gold`, `Silver`, `Bronze`, `Imena`, `Inyamibwa`,
+  `Ingenzi / Imanzi`), `official_ticket_categories.dart` with the ten
+  approved ticket tiers from `General` through `SkyBox`, and
+  `official_fanclub_register.dart` with the real user-provided fanclub
+  register source/fallback.
+- Membership now prefers approved `membership_tiers` rows, normalizes them to
+  the existing package UI contract, falls back to legacy
+  `membership_packages`, and finally falls back to the official six category
+  list. The tier detail screen no longer renders the old Platinum/FET perk
+  model and now resolves official categories, benefits, seating/match access,
+  annual prices, and source labels.
+- Membership visible surfaces were cleaned of the old FET/Platinum/Fanzone
+  terminology and tracked-letter typography in the card, profile, registry,
+  contribution, and progress widgets; they now use official category and
+  activity-review wording.
+- Fan Clubs now prefer approved, active, public `fanclubs` rows, preserve
+  legacy `fan_clubs` compatibility, and fall back to the verified Gikundiro
+  register when the live data path is unavailable. Cards and detail pages no
+  longer show fake ratings or event counts; they render public member labels,
+  register status, source labels, region, and protected review-path copy.
+- Ticket configuration now exposes the official Gikundiro ticket tier ladder
+  and uses official General/VIP placement copy while keeping the current
+  two-path purchase model until the underlying ticket order schema is expanded.
+  The remaining raw seat-button dimensions in this widget were routed through
+  shared size/shape tokens.
+- Admin match composition now defaults newly created matches to the official
+  General and VIP prices (`3,000 RWF` and `30,000 RWF`) while leaving existing
+  match records untouched.
+- Home fallback shortcuts now mirror the Gikundiro public action model:
+  `Tickets`, `Join Gikundiro`, `Fanclubs`, `Shop`, `Matchday`, and
+  `Contribute`, mapped to valid Flutter routes such as `/membership` and
+  `/fan-clubs`.
+- Validation passed with the workspace Flutter SDK:
+  focused analyzer exited 0 for `core_theme`, Home, Admin, Ticketing,
+  Membership, and Fan Clubs; `design_system_source_of_truth_test.dart` passed
+  34/34; Fan Clubs tests passed 12/12; Membership tests passed 14/14 after
+  refreshing the intended golden; Ticketing tests passed 8/8; navigation
+  journeys passed 10/10; and the Rayon mobile design-drift report returned
+  0 findings.

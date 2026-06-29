@@ -1,5 +1,4 @@
 import 'package:feat_gamification/src/models/challenge_models.dart';
-import 'package:feat_gamification/src/models/prediction_models.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -71,10 +70,7 @@ void main() {
         'stake_fet': 500,
         'status': 'winner',
         'payout_fet': 1500,
-        'user': {
-          'id': 'u1',
-          'display_name': 'Jean',
-        },
+        'user': {'id': 'u1', 'display_name': 'Jean'},
       });
 
       expect(entry.id, 'e1');
@@ -117,8 +113,11 @@ void main() {
         'cancelled': ChallengeEntryStatus.cancelled,
       }.entries) {
         final result = ChallengeEntry.fromJson({'status': entry.key});
-        expect(result.status, entry.value,
-            reason: '${entry.key} should map to ${entry.value}');
+        expect(
+          result.status,
+          entry.value,
+          reason: '${entry.key} should map to ${entry.value}',
+        );
       }
     });
 
@@ -188,10 +187,7 @@ void main() {
           'can_join': true,
           'is_creator': false,
         },
-        'creator': {
-          'id': 'u1',
-          'display_name': 'Jean',
-        },
+        'creator': {'id': 'u1', 'display_name': 'Jean'},
       });
 
       expect(challenge.id, 'c1');
@@ -214,8 +210,11 @@ void main() {
         'cancelled': ChallengeStatus.cancelled,
       }.entries) {
         final result = Challenge.fromJson({'status': entry.key});
-        expect(result.status, entry.value,
-            reason: '${entry.key} should map to ${entry.value}');
+        expect(
+          result.status,
+          entry.value,
+          reason: '${entry.key} should map to ${entry.value}',
+        );
       }
     });
 
@@ -235,18 +234,9 @@ void main() {
     });
 
     test('isSettled and isVoid and isCancelled', () {
-      expect(
-        Challenge.fromJson({'status': 'settled'}).isSettled,
-        true,
-      );
-      expect(
-        Challenge.fromJson({'status': 'void'}).isVoid,
-        true,
-      );
-      expect(
-        Challenge.fromJson({'status': 'cancelled'}).isCancelled,
-        true,
-      );
+      expect(Challenge.fromJson({'status': 'settled'}).isSettled, true);
+      expect(Challenge.fromJson({'status': 'void'}).isVoid, true);
+      expect(Challenge.fromJson({'status': 'cancelled'}).isCancelled, true);
     });
 
     test('creatorDisplayName fallback chain', () {
@@ -280,8 +270,7 @@ void main() {
         'already_processed',
       ]) {
         final result = ChallengeMutationResult.fromJson({'status': status});
-        expect(result.isSuccess, true,
-            reason: '$status should be success');
+        expect(result.isSuccess, true, reason: '$status should be success');
       }
     });
 

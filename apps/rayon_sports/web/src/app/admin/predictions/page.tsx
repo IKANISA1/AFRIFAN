@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { Target, Trophy, Calendar, Globe } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { Target, Trophy, Calendar, Globe, Handshake } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
@@ -26,23 +26,48 @@ import type {
   AdminSeason,
   AdminFixture,
 } from "@/lib/data/admin/predictions";
+import {
+  getAdminPartnerOptions,
+  getAdminPartnerPredictionPools,
+  saveAdminPartnerPredictionPool,
+  settleAdminPartnerPredictionPool,
+} from "@/lib/data/admin/partner-pools";
+import type {
+  AdminPartnerOption,
+  AdminPartnerPredictionPool,
+} from "@/lib/data/admin/partner-pools";
 
-type Tab = "markets" | "fixtures" | "competitions" | "seasons";
+type Tab = "markets" | "partnerPools" | "fixtures" | "competitions" | "seasons";
 
 const tabs: { key: Tab; label: string; icon: typeof Target }[] = [
-  { key: "markets", label: "Markets", icon: Target },
+  { key: "markets", label: "Templates", icon: Target },
+  { key: "partnerPools", label: "Partner Pools", icon: Handshake },
   { key: "fixtures", label: "Fixtures", icon: Calendar },
   { key: "competitions", label: "Competitions", icon: Trophy },
   { key: "seasons", label: "Seasons", icon: Globe },
 ];
 
+const defaultPoolForm = {
+  partnerId: "",
+  fixtureId: "",
+  title: "",
+  partnerStakeFet: "5000",
+  fanEntryFet: "100",
+  eligibilityMode: "partner_earn_required",
+  maxEntries: "",
+};
+
 export default function AdminPredictionsPage() {
   const { access, client } = useAdminPortal();
-  const [activeTab, setActiveTab] = useState<Tab>("markets");
+  const [activeTab, setActiveTab] = useState<Tab>("partnerPools");
   const [markets, setMarkets] = useState<AdminPredictionMarket[]>([]);
   const [competitions, setCompetitions] = useState<AdminCompetition[]>([]);
   const [seasons, setSeasons] = useState<AdminSeason[]>([]);
   const [fixtures, setFixtures] = useState<AdminFixture[]>([]);
+  const [partnerPools, setPartnerPools] = useState<AdminPartnerPredictionPool[]>([]);
+  const [partnerOptions, setPartnerOptions] = useState<AdminPartnerOption[]>([]);
+  const [poolForm, setPoolForm] = useState(defaultPoolForm);
+  const [submittingPool, setSubmittingPool] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -50,16 +75,20 @@ export default function AdminPredictionsPage() {
     if (client == null) return;
     setLoading(true);
     try {
-      const [m, c, s, f] = await Promise.all([
+      const [m, c, s, f, pools, partners] = await Promise.all([
         getAdminPredictionMarkets(client, access),
         getAdminCompetitions(client, access),
         getAdminSeasons(client, access),
         getAdminFixtures(client, access),
+        getAdminPartnerPredictionPools(client, access),
+        getAdminPartnerOptions(client, access),
       ]);
       setMarkets(m);
       setCompetitions(c);
       setSeasons(s);
       setFixtures(f);
+      setPartnerPools(pools);
+      setPartnerOptions(partners);
       setLoadError(null);
     } catch (caught) {
       const message = caught instanceof Error ? caught.message : "Could not load predictions data.";
@@ -69,6 +98,22 @@ export default function AdminPredictionsPage() {
       setLoading(false);
     }
   }, [access, client]);
+
+  const fixtureById = useMemo(() => {
+    const map = new Map<string, AdminFixture>();
+    fixtures.forEach((fixture) => {
+      map.set(fixture.id, fixture);
+    });
+    return map;
+  }, [fixtures]);
+
+  const upcomingFixtures = useMemo(
+    () =>
+      fixtures.filter((fixture) =>
+        ["scheduled", "pending"].includes(fixture.status.toLowerCase()),
+      ),
+    [fixtures],
+  );
 
   useEffect(() => {
     if (client == null || !access.hasAccess) return;
@@ -116,6 +161,43 @@ export default function AdminPredictionsPage() {
     }
   }
 
+  async function handleCreatePartnerPool(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (client == null) return;
+
+    setSubmittingPool(true);
+    try {
+      await saveAdminPartnerPredictionPool(client, access, {
+        partnerId: poolForm.partnerId,
+        fixtureId: poolForm.fixtureId,
+        title: poolForm.title,
+        partnerStakeFet: Number(poolForm.partnerStakeFet),
+        fanEntryFet: Number(poolForm.fanEntryFet),
+        eligibilityMode: poolForm.eligibilityMode as "open_to_all" | "partner_earn_required" | "initiative_earn_required",
+        maxEntries: poolForm.maxEntries ? Number(poolForm.maxEntries) : null,
+        idempotencyKey: `admin-partner-pool:${poolForm.partnerId}:${poolForm.fixtureId}:${poolForm.title.trim().toLowerCase()}`,
+      });
+      setPoolForm(defaultPoolForm);
+      await load();
+      showAdminToast("Partner WDW pool created.", "success");
+    } catch (caught) {
+      showAdminToast(caught instanceof Error ? caught.message : "Could not create partner pool.", "error");
+    } finally {
+      setSubmittingPool(false);
+    }
+  }
+
+  async function settlePartnerPool(pool: AdminPartnerPredictionPool) {
+    if (client == null) return;
+    try {
+      await settleAdminPartnerPredictionPool(client, access, pool.id);
+      await load();
+      showAdminToast(`${pool.title} settlement refreshed.`, "success");
+    } catch (caught) {
+      showAdminToast(caught instanceof Error ? caught.message : "Could not settle partner pool.", "error");
+    }
+  }
+
   function formatKickoff(iso: string) {
     try {
       return new Intl.DateTimeFormat("en-US", {
@@ -137,8 +219,9 @@ export default function AdminPredictionsPage() {
     <div className="section-grid">
       <AdminPageHeader eyebrow="Platform" title="Predictions" />
 
-      <div className="grid gap-5 md:grid-cols-4">
-        <AdminStateCard label="Markets" value={loading ? "..." : markets.length.toString()} helper="Bet types." icon={Target} />
+      <div className="grid gap-5 md:grid-cols-5">
+        <AdminStateCard label="WDW pools" value={loading ? "..." : partnerPools.length.toString()} helper="Partner-funded." icon={Handshake} tone="accent" />
+        <AdminStateCard label="Templates" value={loading ? "..." : markets.length.toString()} helper="Legacy prediction catalog." icon={Target} />
         <AdminStateCard label="Competitions" value={loading ? "..." : competitions.length.toString()} helper="Leagues & cups." icon={Trophy} />
         <AdminStateCard label="Seasons" value={loading ? "..." : seasons.length.toString()} helper="Active seasons." icon={Globe} />
         <AdminStateCard label="Fixtures" value={loading ? "..." : fixtures.length.toString()} helper="Scheduled matches." icon={Calendar} />
@@ -182,17 +265,181 @@ export default function AdminPredictionsPage() {
           <AdminErrorState title="Data could not be loaded" description={loadError} onRetry={() => { load().catch(() => {}); }} />
         ) : (
           <>
+            {/* Partner pools tab */}
+            {activeTab === "partnerPools" && (
+              <div className="space-y-6">
+                <div>
+                  <p className="font-display text-2xl font-bold uppercase">Partner WDW Pools ({partnerPools.length})</p>
+                  <p className="mt-1 text-sm text-slate-400">
+                    Partner-funded football result pools using fixed fan entry FET and Home win / Draw / Away win picks.
+                  </p>
+                </div>
+
+                <form onSubmit={handleCreatePartnerPool} className="grid gap-4 rounded-[24px] border border-border-soft bg-white/5 p-5">
+                  <div className="grid gap-4 lg:grid-cols-2">
+                    <label className="grid gap-2 text-sm text-slate-300">
+                      Partner
+                      <select
+                        required
+                        value={poolForm.partnerId}
+                        onChange={(event) => setPoolForm((current) => ({ ...current, partnerId: event.target.value }))}
+                        className="admin-input"
+                      >
+                        <option value="">Select partner</option>
+                        {partnerOptions.map((partner) => (
+                          <option key={partner.id} value={partner.id}>
+                            {partner.name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="grid gap-2 text-sm text-slate-300">
+                      Fixture
+                      <select
+                        required
+                        value={poolForm.fixtureId}
+                        onChange={(event) => setPoolForm((current) => ({ ...current, fixtureId: event.target.value }))}
+                        className="admin-input"
+                      >
+                        <option value="">Select upcoming fixture</option>
+                        {upcomingFixtures.map((fixture) => (
+                          <option key={fixture.id} value={fixture.id}>
+                            {fixture.homeTeamShortName || fixture.homeTeamName} vs {fixture.awayTeamShortName || fixture.awayTeamName} · {formatKickoff(fixture.kickoffAt)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+
+                  <label className="grid gap-2 text-sm text-slate-300">
+                    Pool title
+                    <input
+                      required
+                      value={poolForm.title}
+                      onChange={(event) => setPoolForm((current) => ({ ...current, title: event.target.value }))}
+                      className="admin-input"
+                      placeholder="Partner Derby WDW Pool"
+                    />
+                  </label>
+
+                  <div className="grid gap-4 md:grid-cols-4">
+                    <label className="grid gap-2 text-sm text-slate-300">
+                      Partner-funded FET
+                      <input
+                        required
+                        type="number"
+                        min={1}
+                        value={poolForm.partnerStakeFet}
+                        onChange={(event) => setPoolForm((current) => ({ ...current, partnerStakeFet: event.target.value }))}
+                        className="admin-input"
+                      />
+                    </label>
+                    <label className="grid gap-2 text-sm text-slate-300">
+                      Fan entry FET
+                      <input
+                        required
+                        type="number"
+                        min={1}
+                        value={poolForm.fanEntryFet}
+                        onChange={(event) => setPoolForm((current) => ({ ...current, fanEntryFet: event.target.value }))}
+                        className="admin-input"
+                      />
+                    </label>
+                    <label className="grid gap-2 text-sm text-slate-300">
+                      Eligibility
+                      <select
+                        value={poolForm.eligibilityMode}
+                        onChange={(event) => setPoolForm((current) => ({ ...current, eligibilityMode: event.target.value }))}
+                        className="admin-input"
+                      >
+                        <option value="partner_earn_required">Partner earn required</option>
+                        <option value="open_to_all">Open to all fans</option>
+                      </select>
+                    </label>
+                    <label className="grid gap-2 text-sm text-slate-300">
+                      Entry limit
+                      <input
+                        type="number"
+                        min={1}
+                        value={poolForm.maxEntries}
+                        onChange={(event) => setPoolForm((current) => ({ ...current, maxEntries: event.target.value }))}
+                        className="admin-input"
+                        placeholder="No limit"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <p className="text-xs text-slate-500">
+                      WDW only: Home win, Draw, Away win. No multipliers or dynamic odds are used.
+                    </p>
+                    <button
+                      type="submit"
+                      disabled={submittingPool || partnerOptions.length === 0 || upcomingFixtures.length === 0}
+                      className="admin-button admin-button-primary disabled:opacity-60"
+                    >
+                      {submittingPool ? "Creating..." : "Create WDW pool"}
+                    </button>
+                  </div>
+                </form>
+
+                {partnerPools.length === 0 ? (
+                  <p className="rounded-[24px] border border-dashed border-border-soft bg-white/5 p-5 text-sm text-slate-400">
+                    No partner WDW pools yet.
+                  </p>
+                ) : null}
+
+                <div className="space-y-3">
+                  {partnerPools.map((pool) => {
+                    const fixture = fixtureById.get(pool.fixtureId);
+                    return (
+                      <article key={pool.id} className="rounded-[24px] border border-border-soft bg-white/5 p-5">
+                        <div className="flex flex-wrap items-start justify-between gap-4">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <p className="font-semibold text-white">{pool.title}</p>
+                              <AdminStatusBadge label={pool.status} tone={statusTone(pool.status)} />
+                            </div>
+                            <p className="mt-1 text-sm text-slate-400">
+                              {pool.partnerName} · {fixture ? `${fixture.homeTeamShortName || fixture.homeTeamName} vs ${fixture.awayTeamShortName || fixture.awayTeamName}` : pool.fixtureId}
+                            </p>
+                            <p className="mt-2 text-xs text-slate-500">
+                              Partner {pool.partnerStakeFet.toLocaleString()} FET · Fan entry {pool.fanEntryFet.toLocaleString()} FET · {pool.totalEntries} entries · {pool.eligibilityMode.replaceAll("_", " ")}
+                            </p>
+                            {pool.settlement ? (
+                              <p className="mt-2 text-xs text-slate-400">
+                                Settlement: {pool.settlement.settlementMode.replaceAll("_", " ")} · paid {pool.settlement.totalPaidFet.toLocaleString()} FET · ineligible winners {pool.settlement.ineligibleWinners}
+                              </p>
+                            ) : null}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => { settlePartnerPool(pool).catch(() => {}); }}
+                            disabled={pool.status === "settled" || pool.status === "void" || pool.status === "cancelled"}
+                            className="admin-button admin-button-secondary disabled:opacity-50"
+                          >
+                            Settle
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Markets tab */}
             {activeTab === "markets" && (
               <div className="space-y-3">
-                <p className="font-display text-2xl font-bold uppercase">Prediction Markets ({markets.length})</p>
-                {markets.length === 0 ? <p className="text-sm text-slate-400">No prediction markets found.</p> : null}
+                <p className="font-display text-2xl font-bold uppercase">Legacy Templates ({markets.length})</p>
+                {markets.length === 0 ? <p className="text-sm text-slate-400">No legacy templates found.</p> : null}
                 <div className="space-y-2">
                   {markets.map((market) => (
                     <div key={market.id} className={cn("flex items-center gap-4 rounded-[22px] border border-border-soft p-4 transition", market.isActive ? "bg-white/5" : "bg-white/[0.02] opacity-60")}>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-white truncate">{market.name}</p>
-                        <p className="text-xs text-slate-400 mt-0.5">{market.marketCategory} · {market.betType} · {market.difficultyTier} · {market.defaultFetValue} FET</p>
+                        <p className="text-xs text-slate-400 mt-0.5">{market.marketCategory} · {market.difficultyTier} · {market.defaultFetValue} FET</p>
                         {market.leagueAvailability.length > 0 && (
                           <div className="mt-2 flex flex-wrap gap-1">
                             {market.leagueAvailability.map((league) => (

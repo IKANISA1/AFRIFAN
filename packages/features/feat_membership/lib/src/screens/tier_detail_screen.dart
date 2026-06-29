@@ -1,47 +1,35 @@
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
-import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../official_membership_tiers.dart';
+
 final _tierDetailProvider = FutureProvider.autoDispose
     .family<_TierDetailData?, String>((ref, rawTierId) async {
-      final tier = FanTierX.fromValue(rawTierId);
+      final normalizedTier = normalizeMembershipSlug(rawTierId);
       final client = ref.watch(supabaseClientProvider);
-      final resolver = ClubScopeResolver(client: client);
-      final scope = await resolver.requireResolved();
 
-      var query = client
-          .from('membership_packages')
-          .select('club_id, tier, title, subtitle, description, benefits')
-          .eq('tier', tier.value)
-          .eq('is_active', true);
-
-      if (scope.clubId != null) {
-        query = query.or('club_id.is.null,club_id.eq.${scope.clubId}');
-      } else {
-        query = query.isFilter('club_id', null);
-      }
-
-      final rows = List<Map<String, dynamic>>.from(
-        await query
-            .order('club_id', ascending: false)
-            .order('sort_order', ascending: true)
-            .limit(5),
-      );
-      if (rows.isEmpty) {
+      try {
+        final rows = List<Map<String, dynamic>>.from(
+          await client
+              .from('membership_tiers')
+              .select()
+              .eq('category_slug', normalizedTier)
+              .eq('active', true)
+              .order('sort_order', ascending: true)
+              .limit(1),
+        );
+        if (rows.isNotEmpty) {
+          return _TierDetailData.fromPackage(
+            normalizeMembershipTierRow(rows.first),
+          );
+        }
+      } catch (_) {
         return null;
       }
-
-      final preferred = scope.clubId == null
-          ? rows.first
-          : rows.cast<Map<String, dynamic>?>().firstWhere(
-              (row) => (row?['club_id'] as num?)?.toInt() == scope.clubId,
-              orElse: () => rows.first,
-            )!;
-
-      return _TierDetailData.fromJson(preferred, tier: tier);
+      return null;
     });
 
 class TierDetailScreen extends ConsumerWidget {
@@ -51,9 +39,8 @@ class TierDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tier = FanTierX.fromValue(tierId);
     final detailAsync = ref.watch(_tierDetailProvider(tierId.toLowerCase()));
-    final detail = detailAsync.valueOrNull ?? _TierDetailData.fallback(tier);
+    final detail = detailAsync.valueOrNull ?? _TierDetailData.fallback(tierId);
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -62,7 +49,6 @@ class TierDetailScreen extends ConsumerWidget {
           detail.title,
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
           ),
         ),
         leading: AfriIconButton(
@@ -80,8 +66,8 @@ class TierDetailScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   Container(
-                    width: 104,
-                    height: 104,
+                    width: SizeTokens.iconXxl * 2,
+                    height: SizeTokens.iconXxl * 2,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: ColorTokens.borrowedGradient(
@@ -92,11 +78,11 @@ class TierDetailScreen extends ConsumerWidget {
                       ),
                     ),
                     alignment: Alignment.center,
-                    child: Icon(tier.icon, size: 48),
+                    child: Icon(detail.icon, size: SizeTokens.iconXl),
                   ),
                   const SizedBox(height: SpacingTokens.spacing4),
                   Text(
-                    detail.xpBand,
+                    detail.priceLabel,
                     style: TypographyTokens.headlineLarge().copyWith(
                       fontWeight: FontWeight.w800,
                     ),
@@ -125,15 +111,7 @@ class TierDetailScreen extends ConsumerWidget {
             const SizedBox(height: SpacingTokens.spacing4),
             _PerkCard(title: 'Tier perks', items: detail.benefits),
             const SizedBox(height: SpacingTokens.spacing4),
-            const _PerkCard(
-              title: 'How to earn FET faster',
-              items: [
-                'Attend matchdays and scan tickets',
-                'Contribute to club projects',
-                'Complete weekly challenges',
-                'Join verified fan-club events',
-              ],
-            ),
+            _PerkCard(title: 'Membership access', items: detail.accessItems),
           ],
         ),
       ),
@@ -147,15 +125,27 @@ class _TierDetailData {
     required this.subtitle,
     required this.description,
     required this.benefits,
-    required this.xpBand,
+    required this.priceLabel,
+    required this.accessItems,
+    required this.icon,
   });
 
-  factory _TierDetailData.fromJson(
-    Map<String, dynamic> json, {
-    required FanTier tier,
-  }) {
-    final fallback = _TierDetailData.fallback(tier);
-    final benefits = _parseBenefits(json['benefits']);
+  factory _TierDetailData.fromPackage(Map<String, dynamic> json) {
+    final fallback = _TierDetailData.fromOfficialSlug(
+      json['tier']?.toString() ?? '',
+    );
+    final benefits = parseMembershipBenefits(json['benefits']);
+    final amount =
+        (json['annual_price'] as num?)?.toInt() ??
+        (json['price'] as num?)?.toInt() ??
+        0;
+    final billingPeriod = json['billing_period']?.toString() ?? 'annual';
+    final accessItems = <String>[
+      json['seating_access']?.toString() ?? '',
+      json['match_access']?.toString() ?? '',
+      json['source_label']?.toString() ?? '',
+    ].where((entry) => entry.trim().isNotEmpty).toList(growable: false);
+
     return _TierDetailData(
       title: (json['title']?.toString().trim().isNotEmpty ?? false)
           ? json['title'].toString().trim().toUpperCase()
@@ -163,90 +153,52 @@ class _TierDetailData {
       subtitle: json['subtitle']?.toString().trim() ?? fallback.subtitle,
       description: json['description']?.toString().trim() ?? '',
       benefits: benefits.isEmpty ? fallback.benefits : benefits,
-      xpBand: fallback.xpBand,
+      priceLabel: amount <= 0
+          ? fallback.priceLabel
+          : '$amount RWF / $billingPeriod',
+      accessItems: accessItems.isEmpty ? fallback.accessItems : accessItems,
+      icon: fallback.icon,
     );
   }
 
-  factory _TierDetailData.fallback(FanTier tier) {
-    return switch (tier) {
-      FanTier.platinum => const _TierDetailData(
-        title: 'PLATINUM Group',
-        subtitle: 'VIP supporter access and top-tier benefits.',
-        description: '',
-        benefits: <String>[
-          '15% shop discount',
-          'Priority support',
-          'Early ticket access',
-          'VIP event invites',
-        ],
-        xpBand: '5,000+ FET',
-      ),
-      FanTier.gold => const _TierDetailData(
-        title: 'GOLD FAITHFUL',
-        subtitle: 'Expanded member rewards and priority access.',
-        description: '',
-        benefits: <String>[
-          '10% shop discount',
-          '48-hour ticket priority',
-          'Priority club updates',
-          'Season rewards eligibility',
-        ],
-        xpBand: '2,000 - 4,999 FET',
-      ),
-      FanTier.bronze => const _TierDetailData(
-        title: 'BRONZE SUPPORTER',
-        subtitle: 'Core member benefits for active supporters.',
-        description: '',
-        benefits: <String>[
-          '5% shop discount',
-          '24-hour ticket priority',
-          'Member badge on profile',
-          'Access to supporter campaigns',
-        ],
-        xpBand: '1,000 - 1,999 FET',
-      ),
-      FanTier.fan => const _TierDetailData(
-        title: 'FAN MEMBERSHIP',
-        subtitle: 'Official supporter identity and starter benefits.',
-        description: '',
-        benefits: <String>[
-          'Official fan identity',
-          'Access to supporter campaigns',
-          'Progress tracking toward Bronze',
-          'Club news and matchday access',
-        ],
-        xpBand: '0 - 999 FET',
-      ),
-    };
+  factory _TierDetailData.fallback(String rawTier) {
+    return _TierDetailData.fromOfficialSlug(rawTier);
+  }
+
+  factory _TierDetailData.fromOfficialSlug(String rawTier) {
+    final normalized = normalizeMembershipSlug(rawTier);
+    final tier = officialMembershipTiers.firstWhere(
+      (entry) => entry.slug == normalized,
+      orElse: () =>
+          officialMembershipTiers.firstWhere((entry) => entry.slug == 'imena'),
+    );
+    return _TierDetailData(
+      title: tier.name.toUpperCase(),
+      subtitle: tier.track,
+      description: tier.summary,
+      benefits: tier.benefits,
+      priceLabel: '${tier.priceRwf} RWF / ${tier.billingPeriod}',
+      accessItems: <String>[
+        if (tier.seatingAccess != null) tier.seatingAccess!,
+        if (tier.matchAccess != null) tier.matchAccess!,
+        'User-provided official Rayon Sports membership category list, 2026-06-27',
+      ],
+      icon: switch (tier.slug) {
+        'gold' => AfriIcons.rank,
+        'silver' => AfriIcons.premium,
+        'bronze' => AfriIcons.verified,
+        _ => AfriIcons.membership,
+      },
+    );
   }
 
   final String title;
   final String subtitle;
   final String description;
   final List<String> benefits;
-  final String xpBand;
-
-  static List<String> _parseBenefits(dynamic raw) {
-    if (raw is! List) {
-      return const <String>[];
-    }
-
-    return raw
-        .map((entry) {
-          if (entry is String) {
-            return entry.trim();
-          }
-          if (entry is Map) {
-            final map = Map<String, dynamic>.from(entry);
-            return (map['label'] ?? map['title'] ?? map['value'] ?? '')
-                .toString()
-                .trim();
-          }
-          return '';
-        })
-        .where((entry) => entry.isNotEmpty)
-        .toList(growable: false);
-  }
+  final String priceLabel;
+  final List<String> accessItems;
+  final IconData icon;
 }
 
 class _PerkCard extends StatelessWidget {
@@ -266,7 +218,6 @@ class _PerkCard extends StatelessWidget {
             title.toUpperCase(),
             style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
-              letterSpacing: 0.8,
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing3),
@@ -278,7 +229,7 @@ class _PerkCard extends StatelessWidget {
                   const Icon(
                     AfriIcons.checkGroup,
                     color: ColorTokens.success,
-                    size: 18,
+                    size: SizeTokens.iconSm,
                   ),
                   const SizedBox(width: SpacingTokens.spacing2),
                   Expanded(

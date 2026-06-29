@@ -18,6 +18,11 @@ void main() {
       expect(module.tabRoute, isNull);
     });
 
+    test('is opt-in for challenge launches', () {
+      expect(module.isEnabled(const <String, bool>{}), isFalse);
+      expect(module.isEnabled(const <String, bool>{'challenge': true}), isTrue);
+    });
+
     test('registers root, create, my, and detail routes', () {
       final paths = module.routes
           .whereType<GoRoute>()

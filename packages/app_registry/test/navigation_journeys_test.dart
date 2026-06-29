@@ -79,13 +79,9 @@ void main() {
           'offers',
           'leaderboard',
           'notifications',
-          'challenges',
           'badges',
           'streak',
-          'jackpot',
           'share',
-          'friends',
-          'challenge',
           'league',
           'league/:competitionSlug',
           'standings/:competitionSlug',
@@ -96,6 +92,10 @@ void main() {
           'privacy',
         }),
       );
+      expect(subPaths, isNot(contains('challenges')));
+      expect(subPaths, isNot(contains('jackpot')));
+      expect(subPaths, isNot(contains('friends')));
+      expect(subPaths, isNot(contains('challenge')));
     });
   });
 

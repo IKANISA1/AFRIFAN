@@ -91,15 +91,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 child: Row(
                   children: [
                     Container(
-                      width: 64,
-                      height: 64,
+                      width: SizeTokens.avatarLg,
+                      height: SizeTokens.avatarLg,
                       decoration: BoxDecoration(
                         color: ColorTokens.clubAccent.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(
                           ShapeTokens.radiusMd,
                         ),
                       ),
-                      child: const Icon(AfriIcons.profile, size: 28),
+                      child: const Icon(
+                        AfriIcons.profile,
+                        size: SizeTokens.iconLg,
+                      ),
                     ),
                     const SizedBox(width: SpacingTokens.spacing4),
                     Expanded(
@@ -169,7 +172,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       const Icon(
                         AfriIcons.delete,
                         color: ColorTokens.error,
-                        size: 20,
+                        size: SizeTokens.iconMd,
                       ),
                       const SizedBox(width: SpacingTokens.spacing3),
                       Text(

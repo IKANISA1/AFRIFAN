@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show SupabaseClient;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../official_membership_tiers.dart';
 import '../providers/membership_provider.dart';
 import '../widgets/contribution_history.dart';
 import '../widgets/digital_membership_card.dart';
@@ -56,7 +57,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       return;
     }
 
-    final tierValue = (pkg['tier'] ?? 'fan').toString().toLowerCase();
+    final tierValue = (pkg['tier'] ?? 'imena').toString().toLowerCase();
     final tierLabel = _membershipPackageLabel(tierValue);
     final amount = _packagePrice(pkg);
 
@@ -209,7 +210,6 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     required UserProfile user,
     required String tierValue,
   }) async {
-    final tier = FanTierX.fromValue(tierValue);
     final now = DateTime.now().toUtc();
     final expiry = now.add(const Duration(days: 365));
     final existing = await client
@@ -224,9 +224,9 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       await client.from('fan_memberships').insert({
         'user_id': user.id,
         ...ClubScopeResolver(client: client).payload(scope),
-        'tier': tier.value,
+        'tier': tierValue,
         'status': 'active',
-        'points': tier.minPoints,
+        'points': 0,
         'chapter': 'Main',
         'payment_status': PaymentStatus.verified.value,
         'renewed_at': now.toIso8601String(),
@@ -239,12 +239,10 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     await client
         .from('fan_memberships')
         .update({
-          'tier': tier.value,
+          'tier': tierValue,
           'status': 'active',
           'payment_status': PaymentStatus.verified.value,
-          'points': currentPoints >= tier.minPoints
-              ? currentPoints
-              : tier.minPoints,
+          'points': currentPoints,
           'renewed_at': now.toIso8601String(),
           'expires_at': expiry.toIso8601String(),
         })
@@ -300,12 +298,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   }
 
   String _membershipPackageLabel(String tierValue) {
-    return switch (FanTierX.fromValue(tierValue)) {
-      FanTier.fan => 'Fan',
-      FanTier.bronze => 'Bronze',
-      FanTier.gold => 'Gold',
-      FanTier.platinum => 'Platinum',
-    };
+    return officialMembershipLabel(tierValue);
   }
 
   void _showInfo(String message) {
@@ -488,10 +481,10 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                               const SizedBox(height: SpacingTokens.spacing2),
                               Text(
                                 latestPendingApplication != null
-                                    ? '${_membershipPackageLabel(latestPendingApplication['tier']?.toString() ?? 'fan')} request is awaiting payment verification.'
+                                    ? '${_membershipPackageLabel(latestPendingApplication['tier']?.toString() ?? 'imena')} request is awaiting payment verification.'
                                     : currentFet == 0
-                                    ? 'Earn FET from tickets, fan clubs & contributions.'
-                                    : '$currentFet FET earned.',
+                                    ? 'Membership activity appears after ticket, fanclub, and contribution reviews.'
+                                    : '$currentFet activity points recorded.',
                                 style: TypographyTokens.bodyMedium(),
                               ),
                               if (latestPendingApplication != null) ...[
@@ -537,7 +530,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                   child: _PaymentStatusCard(
                     application: latestPendingApplication,
                     tierLabel: _membershipPackageLabel(
-                      latestPendingApplication['tier']?.toString() ?? 'fan',
+                      latestPendingApplication['tier']?.toString() ?? 'imena',
                     ),
                     formatDate: _formatMembershipDate,
                     onContactSupport: () {
@@ -686,7 +679,9 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                               ),
                               const SizedBox(width: SpacingTokens.spacing3),
                               AfriStatusChip(
-                                label: (pkg['tier'] ?? '').toString(),
+                                label: _membershipPackageLabel(
+                                  pkg['tier']?.toString() ?? '',
+                                ),
                                 tone: AfriStatusTone.info,
                               ),
                             ],
@@ -745,10 +740,10 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   }
 
   String _tierLabelFromFet(int fet) {
-    if (fet >= 5000) return 'Platinum';
+    if (fet >= 5000) return 'Gold';
     if (fet >= 2000) return 'Gold';
     if (fet >= 1000) return 'Bronze';
-    return 'Fan';
+    return 'Imena';
   }
 
   String _currentTierLabel(String? tierValue, int fet) {

@@ -1,5 +1,5 @@
-import 'package:feat_gamification/src/models/fet_models.dart';
 import 'package:feat_gamification/src/models/fanzone_models.dart';
+import 'package:feat_gamification/src/models/fet_models.dart';
 import 'package:feat_gamification/src/models/prediction_models.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -95,7 +95,7 @@ void main() {
         'supporter_alias': '123456',
         'display_name': 'Kagame Fan',
         'total_fet': 5000,
-        'tier': 'platinum',
+        'tier': 'gold',
         'is_current_user': true,
       };
 
@@ -128,7 +128,7 @@ void main() {
         'lifetime_earned': 3000,
         'lifetime_spent': 500,
         'transaction_count': 45,
-        'legacy_balance_gap': 0,
+        'historical_balance_gap': 0,
       };
 
       final wallet = FetWalletSummary.fromJson(json);
@@ -177,9 +177,14 @@ void main() {
       expect(_txWith('transfer_in').headline, 'Transfer received');
       expect(_txWith('transfer_out').headline, 'Transfer sent');
       expect(_txWith('redeem').headline, 'Wallet redemption');
-      expect(_txWith('admin_adjustment', credit: true).headline, 'Admin top-up');
-      expect(_txWith('admin_adjustment', credit: false).headline,
-          'Admin deduction');
+      expect(
+        _txWith('admin_adjustment', credit: true).headline,
+        'Admin top-up',
+      );
+      expect(
+        _txWith('admin_adjustment', credit: false).headline,
+        'Admin deduction',
+      );
       expect(_txWith('opening_balance').headline, 'Opening balance');
       expect(_txWith('earn').headline, 'FET earned');
       expect(_txWith('unknown_type').headline, 'FET earned'); // default

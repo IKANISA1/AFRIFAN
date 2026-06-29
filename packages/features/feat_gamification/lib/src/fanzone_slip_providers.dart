@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:core_network/core_network.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'models/fanzone_slip_models.dart';
 import 'models/prediction_models.dart';
 import 'prediction_providers.dart';
-import 'repositories/prediction_repository.dart';
-import 'package:core_utils/core_utils.dart';
 
 final fanzoneSlipProvider =
     NotifierProvider<FanzoneSlipController, FanzoneSlipState>(

@@ -19,6 +19,29 @@ const List<MapEntry<String, String>> _fallbackRouteFeatureKeys =
       MapEntry<String, String>('/admin', 'admin'),
     ];
 
+const String _legacyPredictionGamesFeatureKey = 'legacy_prediction_games';
+
+const List<MapEntry<String, String>> _launchOptInRouteFeatureKeys =
+    <MapEntry<String, String>>[
+      MapEntry<String, String>(
+        '/fanzone/jackpot',
+        _legacyPredictionGamesFeatureKey,
+      ),
+      MapEntry<String, String>(
+        '/fanzone/challenges',
+        _legacyPredictionGamesFeatureKey,
+      ),
+      MapEntry<String, String>(
+        '/fanzone/challenge',
+        _legacyPredictionGamesFeatureKey,
+      ),
+      MapEntry<String, String>(
+        '/fanzone/friends',
+        _legacyPredictionGamesFeatureKey,
+      ),
+      MapEntry<String, String>('/challenge', _legacyPredictionGamesFeatureKey),
+    ];
+
 /// Central service answering all feature-availability questions.
 ///
 /// This is the single source of truth used by the mobile app, route guards,
@@ -298,12 +321,37 @@ class FeatureConfigService {
       return true;
     }
 
+    final launchOptInFeatureKey = _getLaunchOptInFeatureKeyForPath(
+      normalizedPath,
+    );
+    if (launchOptInFeatureKey != null) {
+      return _canRenderRegisteredFeature(launchOptInFeatureKey);
+    }
+
     final featureKey = getFeatureKeyForPath(path);
     if (featureKey == null) {
       return true;
     }
 
     return canRenderFeature(featureKey);
+  }
+
+  String? _getLaunchOptInFeatureKeyForPath(String normalizedPath) {
+    for (final route in _launchOptInRouteFeatureKeys) {
+      if (route.key == normalizedPath ||
+          normalizedPath.startsWith('${route.key}/')) {
+        return route.value;
+      }
+    }
+    return null;
+  }
+
+  bool _canRenderRegisteredFeature(String featureKey) {
+    final normalizedKey = normalizePlatformFeatureKey(featureKey);
+    if (_snapshot.featureByKey(normalizedKey) == null) {
+      return false;
+    }
+    return canRenderFeature(normalizedKey);
   }
 
   static int _bySortOrder(PlatformFeature a, PlatformFeature b) {

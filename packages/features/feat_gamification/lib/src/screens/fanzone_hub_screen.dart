@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../models/partner_pool_models.dart';
+import '../prediction_providers.dart';
 import '../providers/fanzone_hub_provider.dart';
 import '../widgets/fanzone_hub_widgets.dart';
-import '../widgets/prediction_slip_widgets.dart';
 
-/// Fanzone Hub — predictions, wallet, fixtures, leaderboard, and challenges.
+/// Fanzone Hub — partner WDW pools, wallet, fixtures, leaderboard, and rewards.
 ///
 /// Uses [FanzoneHubNotifier] via Riverpod for async state management instead
 /// of manual setState, enabling proper caching and DevTools integration.
@@ -28,13 +29,10 @@ class FanzoneHubScreen extends ConsumerWidget {
         actions: [
           AfriIconButton(
             icon: AfriIcons.more,
-            onTap: () => _showOverflow(context, ref),
+            onTap: () => _showOverflow(context),
             tooltip: 'More options',
           ),
         ],
-      ),
-      bottomNavigationBar: PredictionSlipBar(
-        onTap: () => _openSlip(context, ref),
       ),
       body: asyncHub.when(
         loading: () => _buildPendingContent(context, ref),
@@ -86,7 +84,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                 SpacingTokens.screenPadding,
                 0,
               ),
-              child: HubQuickRoutes(onMore: () => _showOverflow(context, ref)),
+              child: HubQuickRoutes(onMore: () => _showOverflow(context)),
             ),
           ),
           const SliverToBoxAdapter(
@@ -166,9 +164,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                   SpacingTokens.screenPadding,
                   0,
                 ),
-                child: HubQuickRoutes(
-                  onMore: () => _showOverflow(context, ref),
-                ),
+                child: HubQuickRoutes(onMore: () => _showOverflow(context)),
               ),
             ),
 
@@ -278,40 +274,40 @@ class FanzoneHubScreen extends ConsumerWidget {
                 ),
               ),
 
-            // ── Markets ──
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.screenPadding,
-                  SpacingTokens.sectionGap,
-                  SpacingTokens.screenPadding,
-                  0,
-                ),
-                child: AfriSectionCard(
-                  title: 'Markets',
-                  child: snapshot.markets.isEmpty
-                      ? _sectionState(
-                          title: 'Markets unavailable',
-                          message:
-                              'Prediction markets will appear when live data is reachable.',
-                        )
-                      : Wrap(
-                          spacing: SpacingTokens.inlineGap,
-                          runSpacing: SpacingTokens.inlineGap,
-                          children: snapshot.markets
-                              .take(8)
-                              .map(
-                                (market) => AfriInfoChip(
-                                  label:
-                                      '${market.shortName} +${market.defaultFetValue}',
-                                  color: ColorTokens.onSurfaceVariant,
+            // ── Partner WDW pools ──
+            if (snapshot.partnerPools.isNotEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    SpacingTokens.screenPadding,
+                    SpacingTokens.sectionGap,
+                    SpacingTokens.screenPadding,
+                    0,
+                  ),
+                  child: AfriSectionCard(
+                    title: 'Partner WDW Pools',
+                    child: Column(
+                      children: snapshot.partnerPools
+                          .map(
+                            (pool) => Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: SpacingTokens.listItemGap,
+                              ),
+                              child: HubPartnerPoolRow(
+                                pool: pool,
+                                onJoin: () => _showPartnerPoolJoinSheet(
+                                  context,
+                                  ref,
+                                  pool,
                                 ),
-                              )
-                              .toList(growable: false),
-                        ),
+                              ),
+                            ),
+                          )
+                          .toList(growable: false),
+                    ),
+                  ),
                 ),
               ),
-            ),
 
             // ── Leaderboard ──
             SliverToBoxAdapter(
@@ -348,39 +344,9 @@ class FanzoneHubScreen extends ConsumerWidget {
               ),
             ),
 
-            // ── Challenges ──
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  SpacingTokens.screenPadding,
-                  SpacingTokens.sectionGap,
-                  SpacingTokens.screenPadding,
-                  120,
-                ),
-                child: AfriSectionCard(
-                  title: 'Challenges',
-                  trailingLabel: 'Open',
-                  onTrailingTap: () => context.push('/fanzone/challenges'),
-                  child: snapshot.challenges.isEmpty
-                      ? _sectionState(
-                          title: 'Challenges unavailable',
-                          message:
-                              'FET challenges will appear when the rewards catalog is reachable.',
-                        )
-                      : Column(
-                          children: snapshot.challenges
-                              .take(4)
-                              .map(
-                                (item) => Padding(
-                                  padding: const EdgeInsets.only(
-                                    bottom: SpacingTokens.listItemGap,
-                                  ),
-                                  child: HubChallengeRow(item: item),
-                                ),
-                              )
-                              .toList(growable: false),
-                        ),
-                ),
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: SpacingTokens.spacing20 + SpacingTokens.spacing10,
               ),
             ),
           ],
@@ -393,15 +359,106 @@ class FanzoneHubScreen extends ConsumerWidget {
     return AfriStateView.offline(title: title, message: message, compact: true);
   }
 
-  Future<void> _openSlip(BuildContext context, WidgetRef ref) async {
-    await showPredictionSlipSheet(
-      context,
-      ref,
-      onSubmitted: () => ref.read(fanzoneHubProvider.notifier).refresh(),
+  Future<void> _showPartnerPoolJoinSheet(
+    BuildContext parentContext,
+    WidgetRef ref,
+    PartnerPredictionPool pool,
+  ) {
+    const outcomes = <PartnerPoolOutcome>[
+      PartnerPoolOutcome.homeWin,
+      PartnerPoolOutcome.draw,
+      PartnerPoolOutcome.awayWin,
+    ];
+
+    var selectedOutcome = PartnerPoolOutcome.homeWin;
+    var isSubmitting = false;
+
+    return showAfriBottomSheet<void>(
+      context: parentContext,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            Future<void> submit() async {
+              if (isSubmitting) return;
+              setSheetState(() => isSubmitting = true);
+
+              final result = await ref
+                  .read(partnerPoolRepositoryProvider)
+                  .joinPool(
+                    poolId: pool.id,
+                    selectedOutcome: selectedOutcome.rpcValue,
+                    idempotencyKey:
+                        '${pool.id}-${selectedOutcome.rpcValue}-${DateTime.now().microsecondsSinceEpoch}',
+                  );
+
+              if (!sheetContext.mounted) return;
+
+              if (result.status == 'error') {
+                setSheetState(() => isSubmitting = false);
+                AfriToast.error(
+                  sheetContext,
+                  'Pool entry could not be recorded.',
+                );
+                return;
+              }
+
+              closeAfriBottomSheet(sheetContext);
+              await ref.read(fanzoneHubProvider.notifier).refresh();
+
+              if (!parentContext.mounted) return;
+              AfriToast.success(
+                parentContext,
+                '${selectedOutcome.label} joined for ${pool.fanEntryFet} FET.',
+              );
+            }
+
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(pool.title, style: TypographyTokens.sectionTitle()),
+                const SizedBox(height: SpacingTokens.spacing2),
+                Text(
+                  '${pool.partnerName} funds ${pool.partnerStakeFet} FET. '
+                  'Your fixed entry is ${pool.fanEntryFet} FET.',
+                  style: TypographyTokens.bodyMedium(),
+                ),
+                const SizedBox(height: SpacingTokens.spacing2),
+                Text(
+                  pool.eligibilityLabel,
+                  style: TypographyTokens.labelMedium(ColorTokens.clubAccent),
+                ),
+                const SizedBox(height: SpacingTokens.spacing5),
+                ...outcomes.map(
+                  (outcome) => Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: SpacingTokens.spacing3,
+                    ),
+                    child: PartnerPoolOutcomeOption(
+                      outcome: outcome,
+                      isSelected: selectedOutcome == outcome,
+                      onTap: () =>
+                          setSheetState(() => selectedOutcome = outcome),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: SpacingTokens.spacing2),
+                AfriButton(
+                  label: 'Stake ${pool.fanEntryFet} FET',
+                  icon: AfriIcons.predict,
+                  isLoading: isSubmitting,
+                  onTap: submit,
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
-  void _showOverflow(BuildContext context, WidgetRef ref) {
+  void _showOverflow(BuildContext context) {
     unawaited(
       showAfriActionSheet(
         context: context,
@@ -436,16 +493,6 @@ class FanzoneHubScreen extends ConsumerWidget {
             icon: AfriIcons.history,
             label: 'Token history',
             onTap: () => context.push('/fanzone/history'),
-          ),
-          AfriSheetAction(
-            icon: AfriIcons.friend,
-            label: 'Friends',
-            onTap: () => context.push('/fanzone/friends'),
-          ),
-          AfriSheetAction(
-            icon: AfriIcons.versus,
-            label: 'Challenge a friend',
-            onTap: () => context.push('/fanzone/challenge'),
           ),
           AfriSheetAction(
             icon: AfriIcons.share,

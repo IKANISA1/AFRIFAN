@@ -1,20 +1,19 @@
 import 'dart:async';
 
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../models/fanzone_models.dart';
+import '../models/partner_pool_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
+import '../widgets/fanzone_hub_widgets.dart';
 import '../widgets/h2h_tab_body.dart';
 import '../widgets/lineups_tab_body.dart';
-import '../widgets/market_selector_sheet.dart';
 import '../widgets/match_detail_widgets.dart';
-import '../widgets/prediction_slip_widgets.dart';
 import '../widgets/stats_panel.dart';
-import 'package:core_utils/core_utils.dart';
 
 class MatchDetailScreen extends ConsumerStatefulWidget {
   const MatchDetailScreen({super.key, required this.fixtureId});
@@ -28,9 +27,7 @@ class MatchDetailScreen extends ConsumerStatefulWidget {
 class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
     with SingleTickerProviderStateMixin {
   FixtureSummary? _fixture;
-  List<FixtureMarket> _markets = const <FixtureMarket>[];
-  Map<String, List<CommunityPick>> _communityPicks =
-      const <String, List<CommunityPick>>{};
+  List<PartnerPredictionPool> _partnerPools = const <PartnerPredictionPool>[];
   List<MatchStatRow> _stats = const <MatchStatRow>[];
   List<H2hEncounter> _h2hEncounters = const <H2hEncounter>[];
   List<LineupPlayer> _homeLineup = const <LineupPlayer>[];
@@ -40,7 +37,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
 
   late final TabController _tabController;
 
-  static const _tabLabels = <String>['Predict', 'Stats', 'H2H', 'Lineups'];
+  static const _tabLabels = <String>['Pools', 'Stats', 'H2H', 'Lineups'];
 
   @override
   void initState() {
@@ -63,31 +60,25 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
 
     try {
       final repo = ref.read(predictionRepositoryProvider);
+      final partnerPoolRepo = ref.read(partnerPoolRepositoryProvider);
       final results = await Future.wait<Object?>([
         repo.loadFixture(widget.fixtureId),
-        repo.loadFixtureMarkets(widget.fixtureId),
-        repo.loadFixtureCommunityPicks(widget.fixtureId),
         repo.loadMatchCenter(widget.fixtureId),
+        partnerPoolRepo.loadPools(limit: 50),
       ]);
 
       if (!mounted) {
         return;
       }
 
-      final communityRows = results[2]! as List<CommunityPick>;
-      final communityPicks = <String, List<CommunityPick>>{};
-      for (final row in communityRows) {
-        communityPicks
-            .putIfAbsent(row.fixtureMarketId, () => <CommunityPick>[])
-            .add(row);
-      }
-
-      final matchCenter = results[3] as PredictionMatchCenter?;
+      final matchCenter = results[1] as PredictionMatchCenter?;
+      final partnerPools = (results[2]! as List<PartnerPredictionPool>)
+          .where((pool) => pool.fixtureId == widget.fixtureId)
+          .toList(growable: false);
 
       setState(() {
         _fixture = results[0] as FixtureSummary?;
-        _markets = results[1]! as List<FixtureMarket>;
-        _communityPicks = communityPicks;
+        _partnerPools = partnerPools;
         _stats =
             matchCenter?.stats
                 .map(
@@ -155,10 +146,6 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
           ),
         )
         .toList(growable: false);
-  }
-
-  Future<void> _openSlip() async {
-    await showPredictionSlipSheet(context, ref, onSubmitted: _loadData);
   }
 
   String _formatKickoff() {
@@ -258,19 +245,9 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
         ),
         actions: [
           AfriIconButton(
-            icon: AfriIcons.filter,
-            onTap: _markets.isEmpty
-                ? null
-                : () {
-                    unawaited(
-                      showMarketSelectorSheet(
-                        context: context,
-                        fixture: fixture,
-                        markets: _markets,
-                      ),
-                    );
-                  },
-            tooltip: 'Markets',
+            icon: AfriIcons.predict,
+            onTap: () => context.go('/fanzone'),
+            tooltip: 'Partner pools',
           ),
         ],
         bottom: AfriTabBar.line(
@@ -280,7 +257,6 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
               .toList(growable: false),
         ),
       ),
-      bottomNavigationBar: PredictionSlipBar(onTap: _openSlip),
       body: Column(
         children: [
           Padding(
@@ -406,10 +382,10 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
             child: TabBarView(
               controller: _tabController,
               children: [
-                MatchPredictTabBody(
+                _MatchPartnerPoolsTabBody(
                   fixture: fixture,
-                  markets: _markets,
-                  communityPicks: _communityPicks,
+                  pools: _partnerPools,
+                  onJoin: (pool) => _showPartnerPoolJoinSheet(pool),
                 ),
                 MatchStatsTabBody(fixture: fixture, stats: _stats),
                 H2hTabBody(
@@ -432,6 +408,170 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _showPartnerPoolJoinSheet(PartnerPredictionPool pool) {
+    const outcomes = <PartnerPoolOutcome>[
+      PartnerPoolOutcome.homeWin,
+      PartnerPoolOutcome.draw,
+      PartnerPoolOutcome.awayWin,
+    ];
+
+    var selectedOutcome = PartnerPoolOutcome.homeWin;
+    var isSubmitting = false;
+
+    return showAfriBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (modalContext, setSheetState) {
+            Future<void> submit() async {
+              if (isSubmitting) return;
+              setSheetState(() => isSubmitting = true);
+
+              final result = await ref
+                  .read(partnerPoolRepositoryProvider)
+                  .joinPool(
+                    poolId: pool.id,
+                    selectedOutcome: selectedOutcome.rpcValue,
+                    idempotencyKey:
+                        '${pool.id}-${selectedOutcome.rpcValue}-${DateTime.now().microsecondsSinceEpoch}',
+                  );
+
+              if (!sheetContext.mounted) return;
+
+              if (result.status == 'error') {
+                setSheetState(() => isSubmitting = false);
+                AfriToast.error(
+                  sheetContext,
+                  'Pool entry could not be recorded.',
+                );
+                return;
+              }
+
+              closeAfriBottomSheet(sheetContext);
+              await _loadData();
+
+              if (!mounted) return;
+              AfriToast.success(
+                context,
+                '${selectedOutcome.label} joined for ${pool.fanEntryFet} FET.',
+              );
+            }
+
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(pool.title, style: TypographyTokens.sectionTitle()),
+                const SizedBox(height: SpacingTokens.spacing2),
+                Text(
+                  '${pool.partnerName} funds ${pool.partnerStakeFet} FET. '
+                  'Your fixed entry is ${pool.fanEntryFet} FET.',
+                  style: TypographyTokens.bodyMedium(),
+                ),
+                const SizedBox(height: SpacingTokens.spacing2),
+                Text(
+                  pool.eligibilityLabel,
+                  style: TypographyTokens.labelMedium(ColorTokens.clubAccent),
+                ),
+                const SizedBox(height: SpacingTokens.spacing5),
+                ...outcomes.map(
+                  (outcome) => Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: SpacingTokens.spacing3,
+                    ),
+                    child: PartnerPoolOutcomeOption(
+                      outcome: outcome,
+                      isSelected: selectedOutcome == outcome,
+                      onTap: () =>
+                          setSheetState(() => selectedOutcome = outcome),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: SpacingTokens.spacing2),
+                AfriButton(
+                  label: 'Stake ${pool.fanEntryFet} FET',
+                  icon: AfriIcons.predict,
+                  isLoading: isSubmitting,
+                  onTap: submit,
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _MatchPartnerPoolsTabBody extends StatelessWidget {
+  const _MatchPartnerPoolsTabBody({
+    required this.fixture,
+    required this.pools,
+    required this.onJoin,
+  });
+
+  final FixtureSummary fixture;
+  final List<PartnerPredictionPool> pools;
+  final ValueChanged<PartnerPredictionPool> onJoin;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      children: [
+        AfriSectionCard(
+          title: 'Partner WDW Pools',
+          child: pools.isEmpty
+              ? AfriEmptyView(
+                  compact: true,
+                  title: 'No partner pool for this match',
+                  message:
+                      'Football predictions open only when a partner creates a fixed-entry WDW pool for this fixture.',
+                  icon: AfriIcons.predict,
+                  actionLabel: 'View Fanzone',
+                  onAction: () => context.go('/fanzone'),
+                )
+              : Column(
+                  children: pools
+                      .map(
+                        (pool) => Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: SpacingTokens.listItemGap,
+                          ),
+                          child: HubPartnerPoolRow(
+                            pool: pool,
+                            onJoin: () => onJoin(pool),
+                          ),
+                        ),
+                      )
+                      .toList(growable: false),
+                ),
+        ),
+        const SizedBox(height: SpacingTokens.spacing4),
+        AfriSurfaceCard(
+          child: Row(
+            children: [
+              Icon(
+                AfriIcons.statusInfo,
+                size: SpacingTokens.spacing4,
+                color: ColorTokens.onSurfaceVariant,
+              ),
+              const SizedBox(width: SpacingTokens.spacing2),
+              Expanded(
+                child: Text(
+                  '${fixture.homeTeamShort} vs ${fixture.awayTeamShort} uses partner-funded WDW pools only.',
+                  style: TypographyTokens.bodySmall(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

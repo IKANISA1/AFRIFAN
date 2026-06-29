@@ -22,7 +22,6 @@ void main() {
           'home',
           'live',
           'fanzone',
-          'challenge',
           'settings',
           'onboarding',
           'membership',
@@ -41,7 +40,6 @@ void main() {
           'home',
           'live',
           'fanzone',
-          'challenge',
           'settings',
           'onboarding',
           'membership',
@@ -58,6 +56,22 @@ void main() {
       final modules = AppModuleRegistry.build(const _FakeClubConfig());
       final keys = modules.map((m) => m.featureKey).toList(growable: false);
       expect(keys.toSet().length, keys.length);
+    });
+
+    test('challenge module is opt-in behind legacy prediction-game flags', () {
+      final defaultModules = AppModuleRegistry.build(const _FakeClubConfig());
+      final enabledModules = AppModuleRegistry.build(
+        const _FakeClubConfig(hasLegacyPredictionGames: true),
+      );
+
+      expect(
+        defaultModules.map((module) => module.featureKey),
+        isNot(contains('challenge')),
+      );
+      expect(
+        enabledModules.map((module) => module.featureKey),
+        contains('challenge'),
+      );
     });
   });
 
@@ -86,7 +100,6 @@ void main() {
     test('non-tab modules stay off the bottom navigation', () {
       for (final featureKey in const <String>[
         'live',
-        'challenge',
         'onboarding',
         'membership',
         'contributions',
@@ -259,6 +272,7 @@ class _FakeClubConfig implements ClubConfig {
     this.hasFanClubs = true,
     this.hasShop = true,
     this.hasTicketing = true,
+    this.hasLegacyPredictionGames = false,
   });
 
   @override
@@ -267,6 +281,7 @@ class _FakeClubConfig implements ClubConfig {
   final bool hasShop;
   @override
   final bool hasTicketing;
+  final bool hasLegacyPredictionGames;
 
   @override
   String get appName => 'AFRICLUB Test';
@@ -305,6 +320,7 @@ class _FakeClubConfig implements ClubConfig {
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,
+    'legacy_prediction_games': hasLegacyPredictionGames,
     'chat': hasChat,
     'sms_ledger': hasSmsLedger,
   };

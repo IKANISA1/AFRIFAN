@@ -9,7 +9,7 @@ class FanMembership extends Equatable {
     this.id = '',
     required this.userId,
     required this.partnerId,
-    this.displayName = 'Fan',
+    this.displayName = 'Supporter',
     required this.tier,
     required this.points,
     required this.chapter,
@@ -37,19 +37,21 @@ class FanMembership extends Equatable {
       expiresAt != null && expiresAt!.isBefore(DateTime.now());
 
   int get nextTierPoints => switch (tier) {
-        jh.FanTier.fan => 1000,
+        jh.FanTier.ingenziImanzi => 250,
+        jh.FanTier.inyamibwa => 500,
+        jh.FanTier.imena => 1000,
         jh.FanTier.bronze => 2000,
-        jh.FanTier.gold => 5000,
-        jh.FanTier.platinum => points,
+        jh.FanTier.silver => 5000,
+        jh.FanTier.gold => points,
       };
 
   int get pointsToNextTier => switch (tier) {
-        jh.FanTier.platinum => 0,
+        jh.FanTier.gold => 0,
         _ => (nextTierPoints - points).clamp(0, nextTierPoints),
       };
 
   double get progressToNextTier {
-    if (tier == jh.FanTier.platinum) return 1;
+    if (tier == jh.FanTier.gold) return 1;
     final floor = tier.minPoints;
     final span = nextTierPoints - floor;
     if (span <= 0) return 1;
@@ -68,7 +70,7 @@ class FanMembership extends Equatable {
       partnerId: jh.asStringOrNull(json['partner_id']) ??
           jh.asStringOrNull(json['club_id']) ??
           '',
-      displayName: jh.asStringOrNull(json['display_name']) ?? 'Fan',
+      displayName: jh.asStringOrNull(json['display_name']) ?? 'Supporter',
       tier: tier,
       points: points,
       chapter: jh.asStringOrNull(json['chapter']) ?? 'Main',
@@ -76,7 +78,8 @@ class FanMembership extends Equatable {
       joinedAt: jh.parseDateTime(json['joined_at']) ?? DateTime.now(),
       expiresAt: jh.parseDateTime(json['expires_at']),
       renewedAt: jh.parseDateTime(json['renewed_at']),
-      paymentStatus: jh.PaymentStatusX.fromValue(json['payment_status'] as String?),
+      paymentStatus:
+          jh.PaymentStatusX.fromValue(json['payment_status'] as String?),
     );
   }
 
@@ -176,12 +179,19 @@ class FanClub extends Equatable {
           jh.asStringOrNull(json['club_id']) ??
           '',
       name: jh.asStringOrNull(json['name']) ?? '',
-      region: jh.asStringOrNull(json['region']) ?? '',
-      description: jh.asStringOrNull(json['description']) ?? '',
-      memberCount: jh.asInt(json['member_count']),
-      eventCount: jh.asInt(json['event_count']),
+      region: jh.asStringOrNull(json['region']) ??
+          jh.asStringOrNull(json['district']) ??
+          jh.asStringOrNull(json['province']) ??
+          '',
+      description: jh.asStringOrNull(json['description']) ??
+          jh.asStringOrNull(json['notes']) ??
+          '',
+      memberCount: jh.asInt(json['member_count'] ?? json['members_count']),
+      eventCount: jh.asInt(json['event_count'] ?? json['events_count']),
       rating: jh.asDouble(json['rating']),
-      bannerImageUrl: jh.asStringOrNull(json['banner_image_url']),
+      bannerImageUrl: jh.asStringOrNull(json['banner_image_url']) ??
+          jh.asStringOrNull(json['cover_image_url']) ??
+          jh.asStringOrNull(json['logo_url']),
     );
   }
 

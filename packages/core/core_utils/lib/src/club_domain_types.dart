@@ -5,62 +5,79 @@ import 'package:flutter/widgets.dart' show IconData;
 import 'json_helpers.dart' as jh;
 
 // ═══════════════════════════════════════════════════════════════
-// Fan Tier — Gamification levels
+// Membership categories — official Gikundiro categories
 // ═══════════════════════════════════════════════════════════════
 
-enum FanTier { fan, bronze, gold, platinum }
+enum FanTier { ingenziImanzi, inyamibwa, imena, bronze, silver, gold }
 
 extension FanTierX on FanTier {
   static FanTier fromValue(String? value) {
     return switch ((value ?? '').toLowerCase()) {
-      'fan' || 'blue' => FanTier.fan,
-      'bronze' || 'silver' => FanTier.bronze,
+      'ingenzi-imanzi' ||
+      'ingenzi_imanzi' ||
+      'ingenzi' ||
+      'imanzi' => FanTier.ingenziImanzi,
+      'inyamibwa' => FanTier.inyamibwa,
+      'imena' => FanTier.imena,
+      'bronze' => FanTier.bronze,
+      'silver' => FanTier.silver,
       'gold' => FanTier.gold,
-      'platinum' => FanTier.platinum,
-      _ => FanTier.fan,
+      _ => FanTier.imena,
     };
   }
 
   static FanTier fromPoints(int points) {
-    if (points >= 5000) return FanTier.platinum;
-    if (points >= 2000) return FanTier.gold;
+    if (points >= 5000) return FanTier.gold;
+    if (points >= 2000) return FanTier.silver;
     if (points >= 1000) return FanTier.bronze;
-    return FanTier.fan;
+    if (points >= 500) return FanTier.imena;
+    if (points >= 250) return FanTier.inyamibwa;
+    return FanTier.ingenziImanzi;
   }
 
   String get value => switch (this) {
-    FanTier.fan => 'fan',
+    FanTier.ingenziImanzi => 'ingenzi-imanzi',
+    FanTier.inyamibwa => 'inyamibwa',
+    FanTier.imena => 'imena',
     FanTier.bronze => 'bronze',
+    FanTier.silver => 'silver',
     FanTier.gold => 'gold',
-    FanTier.platinum => 'platinum',
   };
 
   String get label => switch (this) {
-    FanTier.fan => 'Fan',
+    FanTier.ingenziImanzi => 'Ingenzi / Imanzi',
+    FanTier.inyamibwa => 'Inyamibwa',
+    FanTier.imena => 'Imena',
     FanTier.bronze => 'Bronze',
+    FanTier.silver => 'Silver',
     FanTier.gold => 'Gold',
-    FanTier.platinum => 'Platinum',
   };
 
   IconData get icon => switch (this) {
-    FanTier.fan => AfriIcons.fanzone,
+    FanTier.ingenziImanzi => AfriIcons.membership,
+    FanTier.inyamibwa => AfriIcons.members,
+    FanTier.imena => AfriIcons.verified,
     FanTier.bronze => AfriIcons.premium,
-    FanTier.gold => AfriIcons.rank,
-    FanTier.platinum => AfriIcons.diamond,
+    FanTier.silver => AfriIcons.rank,
+    FanTier.gold => AfriIcons.diamond,
   };
 
   int get minPoints => switch (this) {
-    FanTier.fan => 0,
+    FanTier.ingenziImanzi => 0,
+    FanTier.inyamibwa => 250,
+    FanTier.imena => 500,
     FanTier.bronze => 1000,
-    FanTier.gold => 2000,
-    FanTier.platinum => 5000,
+    FanTier.silver => 2000,
+    FanTier.gold => 5000,
   };
 
   double get membershipDiscount => switch (this) {
-    FanTier.fan => 0,
-    FanTier.bronze => 5,
-    FanTier.gold => 10,
-    FanTier.platinum => 15,
+    FanTier.ingenziImanzi => 0,
+    FanTier.inyamibwa => 5,
+    FanTier.imena => 10,
+    FanTier.bronze => 0,
+    FanTier.silver => 0,
+    FanTier.gold => 0,
   };
 }
 

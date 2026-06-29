@@ -132,6 +132,20 @@ void main() {
     ),
   );
 
+  const _legacyPredictionGames = PlatformFeature(
+    featureKey: 'legacy_prediction_games',
+    displayName: 'Legacy prediction games',
+    isEnabled: true,
+    visibilityState: 'visible',
+  );
+
+  const _disabledLegacyPredictionGames = PlatformFeature(
+    featureKey: 'legacy_prediction_games',
+    displayName: 'Legacy prediction games',
+    isEnabled: false,
+    visibilityState: 'visible',
+  );
+
   const _navFeatureB = PlatformFeature(
     featureKey: 'home',
     displayName: 'Home',
@@ -499,6 +513,31 @@ void main() {
       expect(service.isRouteAvailable('/membership'), isFalse);
       expect(service.isRouteAvailable('/somewhere-else'), isTrue);
     });
+
+    test('isRouteAvailable fail-closes legacy prediction game routes', () {
+      expect(service.isRouteAvailable('/fanzone/jackpot'), isFalse);
+      expect(service.isRouteAvailable('/fanzone/challenges'), isFalse);
+      expect(service.isRouteAvailable('/fanzone/challenge'), isFalse);
+      expect(service.isRouteAvailable('/fanzone/friends'), isFalse);
+      expect(service.isRouteAvailable('/challenge/create'), isFalse);
+    });
+
+    test(
+      'isRouteAvailable allows legacy prediction games only when enabled',
+      () {
+        final enabledService = FeatureConfigService(
+          _buildSnapshot(features: [_legacyPredictionGames]),
+        );
+        final disabledService = FeatureConfigService(
+          _buildSnapshot(features: [_disabledLegacyPredictionGames]),
+        );
+
+        expect(enabledService.isRouteAvailable('/fanzone/jackpot'), isTrue);
+        expect(enabledService.isRouteAvailable('/challenge/create'), isTrue);
+        expect(disabledService.isRouteAvailable('/fanzone/jackpot'), isFalse);
+        expect(disabledService.isRouteAvailable('/challenge/create'), isFalse);
+      },
+    );
   });
 
   group('FeatureConfigService — access semantics', () {

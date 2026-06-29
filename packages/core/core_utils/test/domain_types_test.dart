@@ -7,37 +7,44 @@ import 'package:flutter_test/flutter_test.dart';
 /// FetEventType, and ContributionGroupType.
 void main() {
   // ═══════════════════════════════════════════════════════════
-  // FAN TIER — Gamification Levels
+  // FAN TIER — official Gikundiro membership categories
   // ═══════════════════════════════════════════════════════════
 
   group('FanTier', () {
     test('fromValue parses canonical values', () {
-      expect(FanTierX.fromValue('fan'), FanTier.fan);
+      expect(FanTierX.fromValue('ingenzi-imanzi'), FanTier.ingenziImanzi);
+      expect(FanTierX.fromValue('inyamibwa'), FanTier.inyamibwa);
+      expect(FanTierX.fromValue('imena'), FanTier.imena);
       expect(FanTierX.fromValue('bronze'), FanTier.bronze);
+      expect(FanTierX.fromValue('silver'), FanTier.silver);
       expect(FanTierX.fromValue('gold'), FanTier.gold);
-      expect(FanTierX.fromValue('platinum'), FanTier.platinum);
     });
 
-    test('fromValue handles ', () {
-      expect(FanTierX.fromValue('blue'), FanTier.fan);
-      expect(FanTierX.fromValue('silver'), FanTier.bronze);
+    test('fromValue handles Ingenzi / Imanzi aliases', () {
+      expect(FanTierX.fromValue('ingenzi_imanzi'), FanTier.ingenziImanzi);
+      expect(FanTierX.fromValue('ingenzi'), FanTier.ingenziImanzi);
+      expect(FanTierX.fromValue('imanzi'), FanTier.ingenziImanzi);
     });
 
-    test('fromValue defaults to fan for unknown input', () {
-      expect(FanTierX.fromValue('diamond'), FanTier.fan);
-      expect(FanTierX.fromValue(null), FanTier.fan);
-      expect(FanTierX.fromValue(''), FanTier.fan);
+    test('fromValue defaults to Imena for unknown input', () {
+      expect(FanTierX.fromValue('diamond'), FanTier.imena);
+      expect(FanTierX.fromValue(null), FanTier.imena);
+      expect(FanTierX.fromValue(''), FanTier.imena);
     });
 
     test('fromPoints returns correct tier boundaries', () {
-      expect(FanTierX.fromPoints(0), FanTier.fan);
-      expect(FanTierX.fromPoints(999), FanTier.fan);
+      expect(FanTierX.fromPoints(0), FanTier.ingenziImanzi);
+      expect(FanTierX.fromPoints(249), FanTier.ingenziImanzi);
+      expect(FanTierX.fromPoints(250), FanTier.inyamibwa);
+      expect(FanTierX.fromPoints(499), FanTier.inyamibwa);
+      expect(FanTierX.fromPoints(500), FanTier.imena);
+      expect(FanTierX.fromPoints(999), FanTier.imena);
       expect(FanTierX.fromPoints(1000), FanTier.bronze);
       expect(FanTierX.fromPoints(1999), FanTier.bronze);
-      expect(FanTierX.fromPoints(2000), FanTier.gold);
-      expect(FanTierX.fromPoints(4999), FanTier.gold);
-      expect(FanTierX.fromPoints(5000), FanTier.platinum);
-      expect(FanTierX.fromPoints(99999), FanTier.platinum);
+      expect(FanTierX.fromPoints(2000), FanTier.silver);
+      expect(FanTierX.fromPoints(4999), FanTier.silver);
+      expect(FanTierX.fromPoints(5000), FanTier.gold);
+      expect(FanTierX.fromPoints(99999), FanTier.gold);
     });
 
     test('value round-trips correctly', () {

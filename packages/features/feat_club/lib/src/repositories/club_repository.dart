@@ -77,13 +77,13 @@ class ClubRepository {
     String userId, {
     required String partnerId,
     String chapter = 'Main',
-    FanTier tier = FanTier.fan,
+    FanTier tier = FanTier.imena,
     int? points,
     DateTime? expiresAt,
     DateTime? renewedAt,
   }) async {
     final scope = await _scopeResolver.requireResolved(partnerId);
-    final membershipNumber = 'FAN-${DateTime.now().millisecondsSinceEpoch}';
+    final membershipNumber = 'MEM-${DateTime.now().millisecondsSinceEpoch}';
     final effectivePoints = points ?? tier.minPoints;
 
     final row = await _client
@@ -221,10 +221,16 @@ class ClubRepository {
 
   Future<List<FanClub>> getFanClubs(String partnerId, String? region) async {
     final scope = await _scopeResolver.requireResolved(partnerId);
-    var query = _client.from('fan_clubs').select();
-    query = _scopeResolver.apply(query, scope);
-    if (region != null) query = query.eq('region', region);
-    final rows = await query.order('member_count', ascending: false);
+    if (scope.clubId == null) {
+      return const <FanClub>[];
+    }
+    var query = _client.from('fanclubs').select();
+    query = query.eq('club_id', scope.clubId!);
+    if (region != null) query = query.eq('district', region);
+    final rows = await query
+        .eq('approval_status', 'approved')
+        .eq('active', true)
+        .order('sort_order', ascending: true);
     return rows.map((r) => FanClub.fromJson(r)).toList();
   }
 
@@ -232,21 +238,18 @@ class ClubRepository {
     required String clubId,
     required String userId,
   }) async {
-    await _client.from('fan_club_members').insert({
-      'club_id': clubId,
-      'user_id': userId,
-    });
+    throw UnsupportedError(
+      'Fanclub membership changes must go through the reviewed request flow.',
+    );
   }
 
   Future<void> leaveClub({
     required String clubId,
     required String userId,
   }) async {
-    await _client
-        .from('fan_club_members')
-        .delete()
-        .eq('club_id', clubId)
-        .eq('user_id', userId);
+    throw UnsupportedError(
+      'Fanclub membership changes must go through the reviewed request flow.',
+    );
   }
 
   // ═══════════════════════════════════════════════════════════

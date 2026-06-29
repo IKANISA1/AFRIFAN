@@ -13,6 +13,7 @@ class TypographyTokens {
   static const double lineHeightHero = 0.90;
   static const double lineHeightCompact = 0.95;
   static const double lineHeightSolid = 1.0;
+  static const double lineHeightRelaxed = 1.5;
 
   static const Map<String, double> semanticSizes = {
     'displayLarge': 48.0,

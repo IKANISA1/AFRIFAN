@@ -61,8 +61,8 @@ class SettingsScreen extends ConsumerWidget {
                   Row(
                     children: [
                       Container(
-                        width: 56,
-                        height: 56,
+                        width: SizeTokens.avatarMd,
+                        height: SizeTokens.avatarMd,
                         decoration: BoxDecoration(
                           color: ColorTokens.surfaceContainerHigh,
                           borderRadius: BorderRadius.circular(
@@ -75,13 +75,13 @@ class SettingsScreen extends ConsumerWidget {
                           color: ColorTokens.onDark,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: SpacingTokens.spacing4),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(alias, style: TypographyTokens.titleLarge()),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: SpacingTokens.spacing1),
                             AfriStatusChip(
                               label: profile?.isAdmin == true
                                   ? 'Admin'
@@ -93,7 +93,7 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: SpacingTokens.spacing5),
                   AfriButton(
                     label: 'Membership details',
                     onTap: () => context.push('/membership'),
@@ -156,7 +156,7 @@ class SettingsScreen extends ConsumerWidget {
             // ── Account actions ──
             if (profile?.isAdmin == true)
               Padding(
-                padding: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
                 child: AfriButton(
                   label: 'Admin workspace',
                   onTap: () => _openAdminWorkspace(context, ref),
@@ -234,12 +234,16 @@ class SettingsScreen extends ConsumerWidget {
     final result = await showAfriBottomSheet<bool>(
       context: context,
       builder: (context) => AfriPanelCard(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(SpacingTokens.spacing8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(AfriIcons.admin, color: ColorTokens.warning, size: 48),
-            const SizedBox(height: 16),
+            const Icon(
+              AfriIcons.admin,
+              color: ColorTokens.warning,
+              size: SizeTokens.iconXl,
+            ),
+            const SizedBox(height: SpacingTokens.spacing4),
             Text(
               'ADMIN ACCESS',
               style: TypographyTokens.headlineMedium(ColorTokens.onDark)
@@ -248,15 +252,15 @@ class SettingsScreen extends ConsumerWidget {
                     fontStyle: FontStyle.italic,
                   ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: SpacingTokens.spacing3),
             Text(
               'You are entering the admin workspace with elevated permissions. Actions taken here affect all supporters.',
               textAlign: TextAlign.center,
               style: TypographyTokens.bodyMedium(
                 ColorTokens.onDarkDim,
-              ).copyWith(height: 1.5),
+              ).copyWith(height: TypographyTokens.lineHeightRelaxed),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: SpacingTokens.spacing8),
             Row(
               children: [
                 Expanded(
@@ -266,7 +270,7 @@ class SettingsScreen extends ConsumerWidget {
                     onTap: () => context.pop(false),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
                   child: AfriButton(
                     label: 'Continue',

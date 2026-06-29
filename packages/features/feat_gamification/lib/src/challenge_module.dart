@@ -12,6 +12,11 @@ class ChallengeModule extends FeatureModule {
   String get featureKey => 'challenge';
 
   @override
+  bool isEnabled(Map<String, bool> featureFlags) {
+    return featureFlags[featureKey] == true;
+  }
+
+  @override
   List<RouteBase> get routes => [
     GoRoute(
       path: '/challenge',

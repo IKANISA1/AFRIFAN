@@ -28,7 +28,7 @@ class MembershipModule extends FeatureModule {
     GoRoute(
       path: '/membership/tier/:tierId',
       builder: (context, state) =>
-          TierDetailScreen(tierId: state.pathParameters['tierId'] ?? 'fan'),
+          TierDetailScreen(tierId: state.pathParameters['tierId'] ?? 'imena'),
     ),
   ];
 }

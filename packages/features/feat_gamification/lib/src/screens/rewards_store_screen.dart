@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
 import '../models/reward_store_content.dart';
-import 'package:core_utils/core_utils.dart';
 
 class RewardsStoreScreen extends ConsumerStatefulWidget {
   const RewardsStoreScreen({super.key});

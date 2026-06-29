@@ -6,6 +6,8 @@ const {
   resolveAdminAccessMock,
   saveAdminContributionGroupMock,
   saveAdminClubProfileMock,
+  saveAdminPartnerPredictionPoolMock,
+  settleAdminPartnerPredictionPoolMock,
   deleteAdminContributionGroupMock,
   rejectInsecureMutationMock,
   rejectRateLimitedRequestMock,
@@ -19,6 +21,8 @@ const {
     resolveAdminAccessMock: vi.fn(),
     saveAdminContributionGroupMock: vi.fn(),
     saveAdminClubProfileMock: vi.fn(),
+    saveAdminPartnerPredictionPoolMock: vi.fn(),
+    settleAdminPartnerPredictionPoolMock: vi.fn(),
     deleteAdminContributionGroupMock: vi.fn(),
     rejectInsecureMutationMock: vi.fn(),
     rejectRateLimitedRequestMock: vi.fn(),
@@ -75,6 +79,8 @@ vi.mock("@/lib/data/admin", () => {
     getAdminNotificationContext: noop,
     getAdminOffers: noop,
     getAdminPredictionMarkets: noop,
+    getAdminPartnerPredictionPools: noop,
+    getAdminPartnerOptions: noop,
     getAdminProducts: noop,
     getAdminRoleAssignments: noop,
     getAdminSeasons: noop,
@@ -100,11 +106,13 @@ vi.mock("@/lib/data/admin", () => {
     saveAdminMembershipPackage: noop,
     saveAdminOffer: noop,
     saveAdminPredictionMarket: noop,
+    saveAdminPartnerPredictionPool: saveAdminPartnerPredictionPoolMock,
     saveAdminProduct: noop,
     saveAdminSeason: noop,
     saveAdminSquadPlayer: noop,
     saveAdminStandingRow: noop,
     sendAdminNotification: noop,
+    settleAdminPartnerPredictionPool: settleAdminPartnerPredictionPoolMock,
   };
 });
 
@@ -138,6 +146,8 @@ describe("admin resource route", () => {
     resolveAdminAccessMock.mockReset();
     saveAdminContributionGroupMock.mockReset();
     saveAdminClubProfileMock.mockReset();
+    saveAdminPartnerPredictionPoolMock.mockReset();
+    settleAdminPartnerPredictionPoolMock.mockReset();
     deleteAdminContributionGroupMock.mockReset();
     rejectInsecureMutationMock.mockReset();
     rejectRateLimitedRequestMock.mockReset();
@@ -163,6 +173,8 @@ describe("admin resource route", () => {
     getRequestedAdminClubIdMock.mockReturnValue(null);
     saveAdminContributionGroupMock.mockResolvedValue("group-1");
     saveAdminClubProfileMock.mockResolvedValue({ success: true });
+    saveAdminPartnerPredictionPoolMock.mockResolvedValue({ id: "pool-1" });
+    settleAdminPartnerPredictionPoolMock.mockResolvedValue({ id: "pool-1", status: "settled" });
     deleteAdminContributionGroupMock.mockResolvedValue(undefined);
   });
 
@@ -190,6 +202,70 @@ describe("admin resource route", () => {
       adminClient,
       expect.objectContaining({ clubId: "24" }),
       expect.objectContaining({ name: "Circle" }),
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("uses the server client for partner WDW pool creation", async () => {
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/partner-prediction-pools",
+      {
+        method: "POST",
+        headers: {
+          origin: "https://admin.gikundiro.com",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          partnerId: "partner-1",
+          fixtureId: "fixture-1",
+          title: "Partner Derby Pool",
+          partnerStakeFet: 5000,
+          fanEntryFet: 100,
+          eligibilityMode: "partner_earn_required",
+        }),
+      },
+    );
+
+    const response = (await POST(request, {
+      params: Promise.resolve({ resource: "partner-prediction-pools" }),
+    })) as Response;
+
+    expect(saveAdminPartnerPredictionPoolMock).toHaveBeenCalledWith(
+      serverClient,
+      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({
+        partnerId: "partner-1",
+        fixtureId: "fixture-1",
+        title: "Partner Derby Pool",
+        partnerStakeFet: 5000,
+        fanEntryFet: 100,
+        eligibilityMode: "partner_earn_required",
+      }),
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("uses the server client for partner WDW pool settlement", async () => {
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/partner-prediction-pool-settlement",
+      {
+        method: "POST",
+        headers: {
+          origin: "https://admin.gikundiro.com",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ poolId: "pool-1" }),
+      },
+    );
+
+    const response = (await POST(request, {
+      params: Promise.resolve({ resource: "partner-prediction-pool-settlement" }),
+    })) as Response;
+
+    expect(settleAdminPartnerPredictionPoolMock).toHaveBeenCalledWith(
+      serverClient,
+      expect.objectContaining({ clubId: "24" }),
+      "pool-1",
     );
     expect(response.status).toBe(200);
   });

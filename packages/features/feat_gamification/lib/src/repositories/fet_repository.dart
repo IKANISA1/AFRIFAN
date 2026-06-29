@@ -1,9 +1,9 @@
 import 'package:core_network/core_network.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/fet_models.dart';
 import '../models/reward_store_content.dart';
-import 'package:core_utils/core_utils.dart';
 
 class FetRepository {
   FetRepository({required SupabaseClient client}) : _client = client;
@@ -372,16 +372,6 @@ class FetRepository {
       if (userId != null)
         _safeList(
           _client
-              .from('fan_club_members')
-              .select('id')
-              .eq('user_id', userId)
-              .limit(1),
-        )
-      else
-        Future.value(<Map<String, dynamic>>[]),
-      if (userId != null)
-        _safeList(
-          _client
               .from('group_members')
               .select('id')
               .eq('user_id', userId)
@@ -411,14 +401,11 @@ class FetRepository {
     final privateContact = results.length > 5
         ? results[5] as Map<String, dynamic>?
         : null;
-    final fanClubs = results.length > 6
+    final groups = results.length > 6
         ? List<Map<String, dynamic>>.from(results[6]! as List)
         : const <Map<String, dynamic>>[];
-    final groups = results.length > 7
+    final tickets = results.length > 7
         ? List<Map<String, dynamic>>.from(results[7]! as List)
-        : const <Map<String, dynamic>>[];
-    final tickets = results.length > 8
-        ? List<Map<String, dynamic>>.from(results[8]! as List)
         : const <Map<String, dynamic>>[];
 
     final currentFet = (membership?['points'] as num?)?.toInt() ?? 0;
@@ -445,7 +432,6 @@ class FetRepository {
         userId: userId,
         profile: profile,
         privateContact: privateContact,
-        fanClubs: fanClubs,
         groups: groups,
         tickets: tickets,
         eventRows: eventRows,
@@ -711,7 +697,6 @@ class FetRepository {
     required String? userId,
     required Map<String, dynamic>? profile,
     required Map<String, dynamic>? privateContact,
-    required List<Map<String, dynamic>> fanClubs,
     required List<Map<String, dynamic>> groups,
     required List<Map<String, dynamic>> tickets,
     required List<Map<String, dynamic>> eventRows,
@@ -736,9 +721,6 @@ class FetRepository {
     if ((hasProfileName && hasAlias) || hasPrivateContact) {
       earnedCodes.add('G001');
     }
-    if (fanClubs.isNotEmpty) {
-      earnedCodes.add('G002');
-    }
     if (eventKeys.contains('match_attendance')) {
       earnedCodes.addAll(const <String>{'G006'});
     }
@@ -760,25 +742,30 @@ class FetRepository {
 
   String _normalizeTier(String? tier, {required int fallbackPoints}) {
     final normalized = tier?.trim().toLowerCase() ?? '';
-    if (normalized == 'bronze' ||
+    if (normalized == 'ingenzi-imanzi' ||
+        normalized == 'inyamibwa' ||
+        normalized == 'imena' ||
+        normalized == 'bronze' ||
+        normalized == 'silver' ||
         normalized == 'gold' ||
-        normalized == 'platinum') {
-      return normalized.toUpperCase();
+        normalized == 'ingenzi imanzi') {
+      return normalized.replaceAll('-', ' ').toUpperCase();
     }
-    if (normalized == 'fan') {
-      return 'FAN';
-    }
-    if (fallbackPoints >= 5000) return 'PLATINUM';
-    if (fallbackPoints >= 2000) return 'GOLD';
+    if (fallbackPoints >= 5000) return 'GOLD';
+    if (fallbackPoints >= 2000) return 'SILVER';
     if (fallbackPoints >= 1000) return 'BRONZE';
-    return 'FAN';
+    if (fallbackPoints >= 500) return 'IMENA';
+    if (fallbackPoints >= 250) return 'INYAMIBWA';
+    return 'INGENZI IMANZI';
   }
 
   String _nextTierFromFet(int currentFet) {
-    if (currentFet >= 5000) return 'PLATINUM';
-    if (currentFet >= 2000) return 'PLATINUM';
-    if (currentFet >= 1000) return 'GOLD';
-    return 'BRONZE';
+    if (currentFet >= 5000) return 'GOLD';
+    if (currentFet >= 2000) return 'GOLD';
+    if (currentFet >= 1000) return 'SILVER';
+    if (currentFet >= 500) return 'BRONZE';
+    if (currentFet >= 250) return 'IMENA';
+    return 'INYAMIBWA';
   }
 
   Future<Map<String, dynamic>?> _safeMaybeSingle(

@@ -76,10 +76,10 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
           RuntimeBranding.displayHomeVenueName,
     );
     _generalController = TextEditingController(
-      text: '${(_existing?['ticket_general_price'] as num?)?.toInt() ?? 18000}',
+      text: '${(_existing?['ticket_general_price'] as num?)?.toInt() ?? 3000}',
     );
     _vipController = TextEditingController(
-      text: '${(_existing?['ticket_vip_price'] as num?)?.toInt() ?? 45000}',
+      text: '${(_existing?['ticket_vip_price'] as num?)?.toInt() ?? 30000}',
     );
     _capacityController = TextEditingController(
       text: '${(_existing?['capacity'] as num?)?.toInt() ?? 18000}',

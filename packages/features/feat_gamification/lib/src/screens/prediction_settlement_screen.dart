@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/prediction_share_card.dart';
-import 'package:core_utils/core_utils.dart';
 
 class PredictionSettlementScreen extends ConsumerStatefulWidget {
   const PredictionSettlementScreen({super.key, required this.predictionId});
@@ -27,7 +29,7 @@ class _PredictionSettlementScreenState
   @override
   void initState() {
     super.initState();
-    _loadData();
+    unawaited(_loadData());
   }
 
   Future<void> _loadData() async {

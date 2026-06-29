@@ -152,10 +152,10 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
   bool _isLoading = true;
   String? _message;
 
-  int _legendCount = 0;
-  int _ultraCount = 0;
-  int _memberCount = 0;
-  int _supporterCount = 0;
+  int _goldCount = 0;
+  int _silverCount = 0;
+  int _bronzeCount = 0;
+  int _imenaCount = 0;
 
   @override
   void initState() {
@@ -192,13 +192,13 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
             .from('fan_memberships')
             .select('id')
             .eq('club_id', clubId)
-            .eq('tier', 'platinum')
+            .eq('tier', 'gold')
             .count(CountOption.exact),
         client
             .from('fan_memberships')
             .select('id')
             .eq('club_id', clubId)
-            .eq('tier', 'gold')
+            .eq('tier', 'silver')
             .count(CountOption.exact),
         client
             .from('fan_memberships')
@@ -210,7 +210,7 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
             .from('fan_memberships')
             .select('id')
             .eq('club_id', clubId)
-            .eq('tier', 'fan')
+            .eq('tier', 'imena')
             .count(CountOption.exact),
       ]);
 
@@ -223,7 +223,7 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
                 displayName: row['display_name']?.toString(),
                 membershipNumber: row['membership_number']?.toString(),
               ),
-              tier: row['tier']?.toString() ?? 'fan',
+              tier: row['tier']?.toString() ?? 'imena',
               points: (row['points'] as num?)?.toInt() ?? 0,
               isCurrentUser:
                   currentUserId != null && row['user_id'] == currentUserId,
@@ -233,10 +233,10 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
 
       setState(() {
         _contributors = contributors;
-        _legendCount = ((results[1] as dynamic).count as int?) ?? 0;
-        _ultraCount = ((results[2] as dynamic).count as int?) ?? 0;
-        _memberCount = ((results[3] as dynamic).count as int?) ?? 0;
-        _supporterCount = ((results[4] as dynamic).count as int?) ?? 0;
+        _goldCount = ((results[1] as dynamic).count as int?) ?? 0;
+        _silverCount = ((results[2] as dynamic).count as int?) ?? 0;
+        _bronzeCount = ((results[3] as dynamic).count as int?) ?? 0;
+        _imenaCount = ((results[4] as dynamic).count as int?) ?? 0;
         _isLoading = false;
         _message = null;
       });
@@ -292,10 +292,10 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
     }
 
     return TeamMembersContent(
-      legendCount: _legendCount,
-      ultraCount: _ultraCount,
-      memberCount: _memberCount,
-      supporterCount: _supporterCount,
+      goldCount: _goldCount,
+      silverCount: _silverCount,
+      bronzeCount: _bronzeCount,
+      imenaCount: _imenaCount,
       contributors: _contributors,
     );
   }
@@ -304,17 +304,17 @@ class _TeamMembersTabState extends ConsumerState<TeamMembersTab> {
 class TeamMembersContent extends StatelessWidget {
   const TeamMembersContent({
     super.key,
-    required this.legendCount,
-    required this.ultraCount,
-    required this.memberCount,
-    required this.supporterCount,
+    required this.goldCount,
+    required this.silverCount,
+    required this.bronzeCount,
+    required this.imenaCount,
     required this.contributors,
   });
 
-  final int legendCount;
-  final int ultraCount;
-  final int memberCount;
-  final int supporterCount;
+  final int goldCount;
+  final int silverCount;
+  final int bronzeCount;
+  final int imenaCount;
   final List<ClubMemberEntry> contributors;
 
   @override
@@ -341,23 +341,23 @@ class TeamMembersContent extends StatelessWidget {
           children: [
             TierCountCard(
               icon: AfriIcons.premium,
-              label: 'Legends',
-              count: legendCount,
+              label: 'Gold',
+              count: goldCount,
             ),
             TierCountCard(
               icon: AfriIcons.streak,
-              label: 'Ultras',
-              count: ultraCount,
+              label: 'Silver',
+              count: silverCount,
             ),
             TierCountCard(
               icon: AfriIcons.badge,
-              label: 'Members',
-              count: memberCount,
+              label: 'Bronze',
+              count: bronzeCount,
             ),
             TierCountCard(
               icon: AfriIcons.fanzone,
-              label: 'Supporters',
-              count: supporterCount,
+              label: 'Imena',
+              count: imenaCount,
             ),
           ],
         ),

@@ -332,7 +332,7 @@ FetWalletSummary buildWallet({int balance = 5000}) {
     lifetimeEarned: 1600,
     lifetimeSpent: 350,
     transactionCount: 3,
-    legacyBalanceGap: 0,
+    historicalBalanceGap: 0,
   );
 }
 
