@@ -108,10 +108,12 @@ export function NotificationForm({
             }
             className="dashboard-input"
           >
-            <option value="fan">Fan</option>
+            <option value="ingenzi-imanzi">Ingenzi / Imanzi</option>
+            <option value="inyamibwa">Inyamibwa</option>
+            <option value="imena">Imena</option>
             <option value="bronze">Bronze</option>
+            <option value="silver">Silver</option>
             <option value="gold">Gold</option>
-            <option value="platinum">Platinum</option>
           </select>
         </label>
       ) : null}

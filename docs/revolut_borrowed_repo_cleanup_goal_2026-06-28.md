@@ -2643,20 +2643,19 @@ patterns.
   `official_fanclub_register.dart` with the real user-provided fanclub
   register source/fallback.
 - Membership now prefers approved `membership_tiers` rows, normalizes them to
-  the existing package UI contract, falls back to legacy
-  `membership_packages`, and finally falls back to the official six category
-  list. The tier detail screen no longer renders the old Platinum/FET perk
+  the existing package UI contract, and falls back only to the official six
+  category list. The tier detail screen no longer renders the old FET perk
   model and now resolves official categories, benefits, seating/match access,
   annual prices, and source labels.
-- Membership visible surfaces were cleaned of the old FET/Platinum/Fanzone
+- Membership visible surfaces were cleaned of the old FET/Fanzone
   terminology and tracked-letter typography in the card, profile, registry,
   contribution, and progress widgets; they now use official category and
   activity-review wording.
-- Fan Clubs now prefer approved, active, public `fanclubs` rows, preserve
-  legacy `fan_clubs` compatibility, and fall back to the verified Gikundiro
-  register when the live data path is unavailable. Cards and detail pages no
-  longer show fake ratings or event counts; they render public member labels,
-  register status, source labels, region, and protected review-path copy.
+- Fan Clubs now prefer approved, active, public `fanclubs` rows and fall back
+  to the verified Gikundiro register when the live data path is unavailable.
+  Cards and detail pages no longer show fake ratings or event counts; they
+  render public member labels, register status, source labels, region, and
+  protected review-path copy.
 - Ticket configuration now exposes the official Gikundiro ticket tier ladder
   and uses official General/VIP placement copy while keeping the current
   two-path purchase model until the underlying ticket order schema is expanded.

@@ -1,6 +1,7 @@
 /**
  * Fan-facing authenticated types.
  */
+import type { MembershipTierSlug } from "./site";
 
 export interface FanProfile {
   id: string;
@@ -18,7 +19,7 @@ export interface FanMembership {
   id: string;
   clubId: number | null;
   partnerId?: string | null;
-  tier: "fan" | "bronze" | "gold" | "platinum";
+  tier: MembershipTierSlug;
   points: number;
   chapter: string;
   membershipNumber?: string | null;

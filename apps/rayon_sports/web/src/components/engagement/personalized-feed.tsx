@@ -16,7 +16,7 @@ export function PersonalizedFeed({
   supporterName,
   tier,
 }: PersonalizedFeedProps) {
-  const isVip = tier === "platinum" || tier === "gold";
+  const isVip = tier === "gold" || tier === "silver";
 
   const recommendations = [
     {

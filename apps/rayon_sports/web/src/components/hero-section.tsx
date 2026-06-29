@@ -45,7 +45,8 @@ export function HeroSection({
   const copy = getSiteCopy(club.defaultLanguage);
   const heroGroup = contributionGroups[0] ?? null;
   const premiumTier =
-    membershipPackages.find((entry) => entry.tier === "platinum") ??
+    membershipPackages.find((entry) => entry.tier === "gold") ??
+    membershipPackages.find((entry) => entry.tier === "silver") ??
     membershipPackages[membershipPackages.length - 1] ??
     null;
 

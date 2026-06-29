@@ -15,8 +15,8 @@ interface MembershipListProps {
 }
 
 function tierTone(tier: string) {
-  if (tier === "gold" || tier === "platinum") return "accent" as const;
-  if (tier === "bronze" || tier === "silver") return "warning" as const;
+  if (tier === "gold" || tier === "silver") return "accent" as const;
+  if (tier === "bronze") return "warning" as const;
   return "neutral" as const;
 }
 

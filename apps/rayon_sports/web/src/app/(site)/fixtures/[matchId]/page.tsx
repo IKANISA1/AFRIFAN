@@ -210,7 +210,7 @@ export default async function FixtureDetailPage({
                     <span className="font-black italic">{formatCurrency(match.generalPrice)}</span>
                   </div>
                   <div className="flex justify-between border-b border-black/10 pb-2">
-                    <span className="text-xs font-bold uppercase">Platinum VIP</span>
+                    <span className="text-xs font-bold uppercase">Gold Priority</span>
                     <span className="font-black italic">{formatCurrency(match.vipPrice)}</span>
                   </div>
                </div>

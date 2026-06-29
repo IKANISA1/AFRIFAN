@@ -2,7 +2,11 @@
  * Admin membership — tier packages CRUD.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { AdminAccess, AdminMembershipPackage } from "@/lib/types";
+import type {
+  AdminAccess,
+  AdminMembershipPackage,
+  MembershipTierSlug,
+} from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import {
@@ -15,14 +19,11 @@ import {
 function mapAdminMembershipPackage(row: Record<string, unknown>): AdminMembershipPackage {
   const title = safeString(row.title, "Membership tier");
   const description = safeString(row.description, "Priority access and supporter benefits.");
+  const tier = normalizeMembershipTier(safeString(row.tier));
   return {
     id: toIdString(row.id, crypto.randomUUID()),
     clubId: typeof row.club_id === "number" ? row.club_id : null,
-    tier:
-      safeString(row.tier).toLowerCase() === "platinum" ? "platinum"
-        : safeString(row.tier).toLowerCase() === "gold" ? "gold"
-        : safeString(row.tier).toLowerCase() === "bronze" ? "bronze"
-        : "fan",
+    tier,
     title,
     description,
     sortOrder: safeNumber(row.sort_order, 0),
@@ -35,6 +36,28 @@ function mapAdminMembershipPackage(row: Record<string, unknown>): AdminMembershi
     isActive: row.is_active !== false,
     createdAt: safeString(row.created_at, new Date().toISOString()),
   };
+}
+
+function normalizeMembershipTier(value: string): MembershipTierSlug {
+  switch (value.trim().toLowerCase()) {
+    case "ingenzi-imanzi":
+    case "ingenzi_imanzi":
+    case "ingenzi":
+    case "imanzi":
+      return "ingenzi-imanzi";
+    case "inyamibwa":
+      return "inyamibwa";
+    case "imena":
+      return "imena";
+    case "bronze":
+      return "bronze";
+    case "silver":
+      return "silver";
+    case "gold":
+      return "gold";
+    default:
+      return "imena";
+  }
 }
 
 export async function getAdminMembershipPackages(

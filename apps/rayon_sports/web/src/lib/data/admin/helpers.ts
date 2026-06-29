@@ -26,7 +26,7 @@ export const squadTableCandidates = [
   "club_players",
   "rs_squad_players",
 ];
-export const membershipTable = "membership_packages";
+export const membershipTable = "membership_tiers";
 export const fanClubTable = "fan_clubs";
 export const clubTable = "african_football_clubs";
 export const contributionTable = "contribution_groups";

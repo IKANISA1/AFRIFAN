@@ -47,6 +47,33 @@ export interface AdminSyncOverview {
   apiCallsLimit: number;
 }
 
+export interface AdminLiveScoreCompetitionSource {
+  id: string;
+  clubId: number | null;
+  sourceKey: string;
+  displayName: string;
+  matchAliases: string[];
+  countryAliases: string[];
+  externalCompetitionIds: string[];
+  sourceUrls: string[];
+  priority: number;
+  isActive: boolean;
+  updatedAt: string;
+}
+
+export interface AdminLiveScoreCompetitionSourceInput {
+  id?: string | null;
+  clubId?: number | null;
+  sourceKey: string;
+  displayName: string;
+  matchAliases: string[];
+  countryAliases?: string[];
+  externalCompetitionIds?: string[];
+  sourceUrls: string[];
+  priority?: number;
+  isActive: boolean;
+}
+
 /* ---------- Mappers ---------- */
 
 function mapSyncConfig(row: Record<string, unknown>): AdminSyncConfig {
@@ -87,12 +114,42 @@ function mapSyncLog(row: Record<string, unknown>): AdminSyncLog {
   };
 }
 
+function stringArray(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((entry) => safeString(entry)).filter(Boolean);
+  }
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+  }
+  return [];
+}
+
+function mapLiveScoreSource(row: Record<string, unknown>): AdminLiveScoreCompetitionSource {
+  return {
+    id: toIdString(row.id, crypto.randomUUID()),
+    clubId: row.club_id == null ? null : safeNumber(row.club_id, 0),
+    sourceKey: safeString(row.source_key),
+    displayName: safeString(row.display_name, "LiveScore source"),
+    matchAliases: stringArray(row.match_aliases),
+    countryAliases: stringArray(row.country_aliases),
+    externalCompetitionIds: stringArray(row.external_competition_ids),
+    sourceUrls: stringArray(row.source_urls),
+    priority: safeNumber(row.priority, 100),
+    isActive: row.is_active !== false,
+    updatedAt: safeString(row.updated_at, new Date().toISOString()),
+  };
+}
+
 /* ---------- Queries ---------- */
 
 export async function getAdminSyncConfigs(
   client: SupabaseClient,
   _access: AdminAccess,
 ): Promise<AdminSyncConfig[]> {
+  void _access;
   if (typeof window !== "undefined") {
     return requestAdminApi<AdminSyncConfig[]>("football-sync-configs");
   }
@@ -113,6 +170,7 @@ export async function getAdminSyncLogs(
   _access: AdminAccess,
   limit: number = 50,
 ): Promise<AdminSyncLog[]> {
+  void _access;
   if (typeof window !== "undefined") {
     return requestAdminApi<AdminSyncLog[]>(`football-sync-logs?limit=${limit}`);
   }
@@ -133,6 +191,7 @@ export async function getAdminSyncOverview(
   client: SupabaseClient,
   _access: AdminAccess,
 ): Promise<AdminSyncOverview> {
+  void _access;
   if (typeof window !== "undefined") {
     return requestAdminApi<AdminSyncOverview>("football-sync-overview");
   }
@@ -183,6 +242,27 @@ export async function getAdminSyncOverview(
   };
 }
 
+export async function getAdminLiveScoreCompetitionSources(
+  client: SupabaseClient,
+  _access: AdminAccess,
+): Promise<AdminLiveScoreCompetitionSource[]> {
+  void _access;
+  if (typeof window !== "undefined") {
+    return requestAdminApi<AdminLiveScoreCompetitionSource[]>("livescore-sources");
+  }
+
+  const { data, error } = await client
+    .from("livescore_competition_sources")
+    .select("*")
+    .order("priority", { ascending: true })
+    .order("display_name", { ascending: true });
+
+  if (error) throw new Error(error.message);
+  return Array.isArray(data)
+    ? data.map((row) => mapLiveScoreSource(row as Record<string, unknown>))
+    : [];
+}
+
 /* ---------- Actions ---------- */
 
 export async function triggerSyncCommand(
@@ -203,6 +283,67 @@ export async function triggerSyncCommand(
 
   if (error) throw new Error(error.message);
   return { message: `Sync command '${command}' triggered`, data };
+}
+
+export async function saveAdminLiveScoreCompetitionSource(
+  client: SupabaseClient,
+  access: AdminAccess,
+  input: AdminLiveScoreCompetitionSourceInput,
+): Promise<string> {
+  if (typeof window !== "undefined") {
+    return requestAdminApi<string>("livescore-sources", { method: "POST", body: input });
+  }
+
+  const clubId = access.isSuperAdmin ? (input.clubId ?? null) : Number(access.clubId);
+  const payload = {
+    club_id: Number.isFinite(clubId as number) ? clubId : null,
+    source_provider: "livescore",
+    source_key: safeString(input.sourceKey, input.displayName.toLowerCase().replace(/[^a-z0-9]+/g, "-")),
+    display_name: input.displayName.trim(),
+    match_aliases: input.matchAliases.map((entry) => entry.trim()).filter(Boolean),
+    country_aliases: (input.countryAliases ?? []).map((entry) => entry.trim()).filter(Boolean),
+    external_competition_ids: (input.externalCompetitionIds ?? []).map((entry) => entry.trim()).filter(Boolean),
+    source_urls: input.sourceUrls.map((entry) => entry.trim()).filter(Boolean),
+    priority: safeNumber(input.priority, 100),
+    is_active: input.isActive,
+  };
+
+  if (!payload.display_name || payload.match_aliases.length === 0 || payload.source_urls.length === 0) {
+    throw new Error("Display name, match aliases, and source URLs are required.");
+  }
+
+  if (input.id) {
+    const { error } = await client
+      .from("livescore_competition_sources")
+      .update(payload)
+      .eq("id", input.id);
+    if (error) throw new Error(error.message);
+    return input.id;
+  }
+
+  const { data, error } = await client
+    .from("livescore_competition_sources")
+    .insert(payload)
+    .select("id")
+    .single();
+  if (error) throw new Error(error.message);
+  return toIdString(data?.id, crypto.randomUUID());
+}
+
+export async function deleteAdminLiveScoreCompetitionSource(
+  client: SupabaseClient,
+  _access: AdminAccess,
+  id: string,
+): Promise<void> {
+  if (typeof window !== "undefined") {
+    await requestAdminApi<{ success: boolean }>(`livescore-sources?id=${encodeURIComponent(id)}`, {
+      method: "DELETE",
+    });
+    return;
+  }
+
+  const { error } = await client.from("livescore_competition_sources").delete().eq("id", id);
+  if (error) throw new Error(error.message);
 }
 
 export async function triggerMultiplierGeneration(

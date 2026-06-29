@@ -54,7 +54,7 @@ The feature-management schema is implemented through additive migrations.
 - `20260416230000_restore_canonicalize_feature_key.sql`
   - restores `canonicalize_platform_feature_key(...)` and its execute grants when the hardening chain is missing that helper
 - `20260416233000_preserve_explicit_fan_membership_tier.sql`
-  - preserves explicit membership tiers such as `gold` or `platinum` during `fan_memberships` writes instead of forcing every row back to a points-derived `fan/bronze/gold/platinum` band
+  - preserves explicit official membership categories during `fan_memberships` writes instead of forcing every row back to an old points-derived band
 
 ## 4. RLS and Permission Model
 RLS is designed so public clients only consume sanitized configuration through RPC, while admin writes stay server-controlled.
@@ -130,7 +130,7 @@ The website now consumes the same source of truth and applies it consistently in
   - nav/home/content-block filtering
   - last-known-valid in-memory fallback per club for server-side fetch failures
 - `apps/rayon_sports/web/src/components/feature-gate.tsx`
-  - uses the resolved access service instead of a legacy boolean helper
+  - uses the resolved access service instead of the earlier boolean helper
 - `apps/rayon_sports/web/src/components/nav/global-nav.tsx`
   - navigation renders from admin-configured features and ordering
 - `apps/rayon_sports/web/src/components/app-bottom-nav.tsx`
@@ -228,7 +228,7 @@ Rollout should remain incremental and low-risk.
 - Confirm seeded feature keys match the actual module keys used by Flutter and web routes.
 - Validate admin write permissions in staging before granting operational use.
 - Populate channel flags and route keys for every major module before enabling UI composition from admin.
-- Roll out backend/API guards first for sensitive business actions, then remove remaining legacy frontend-only checks.
+- Roll out backend/API guards first for sensitive business actions, then remove remaining frontend-only checks.
 - Monitor audit logs for feature and content-block changes during the first admin release.
 - Use the release verification commands in [admin_live_uat_runbook.md](/Volumes/PRO-G40/AFRICLUB/docs/admin_live_uat_runbook.md):
   - `npm run qa:supabase:verify`

@@ -19,27 +19,13 @@ const List<MapEntry<String, String>> _fallbackRouteFeatureKeys =
       MapEntry<String, String>('/admin', 'admin'),
     ];
 
-const String _legacyPredictionGamesFeatureKey = 'legacy_prediction_games';
-
 const List<MapEntry<String, String>> _launchOptInRouteFeatureKeys =
     <MapEntry<String, String>>[
-      MapEntry<String, String>(
-        '/fanzone/jackpot',
-        _legacyPredictionGamesFeatureKey,
-      ),
-      MapEntry<String, String>(
-        '/fanzone/challenges',
-        _legacyPredictionGamesFeatureKey,
-      ),
-      MapEntry<String, String>(
-        '/fanzone/challenge',
-        _legacyPredictionGamesFeatureKey,
-      ),
-      MapEntry<String, String>(
-        '/fanzone/friends',
-        _legacyPredictionGamesFeatureKey,
-      ),
-      MapEntry<String, String>('/challenge', _legacyPredictionGamesFeatureKey),
+      MapEntry<String, String>('/fanzone/jackpot', 'challenge'),
+      MapEntry<String, String>('/fanzone/challenges', 'challenge'),
+      MapEntry<String, String>('/fanzone/challenge', 'challenge'),
+      MapEntry<String, String>('/fanzone/friends', 'challenge'),
+      MapEntry<String, String>('/challenge', 'challenge'),
     ];
 
 /// Central service answering all feature-availability questions.
@@ -180,9 +166,9 @@ class FeatureConfigService {
     );
   }
 
-  /// Backward-compatible enablement check used by legacy call sites.
+  /// Enablement check for existing UI entry points.
   ///
-  /// This keeps hidden features out of existing UI entry points while
+  /// This keeps hidden features out of UI entry points while
   /// [`isFeatureOperational`] and [`canUseFeature`] preserve the more precise
   /// operational distinction for routing and business actions.
   bool isFeatureEnabled(String featureKey) {

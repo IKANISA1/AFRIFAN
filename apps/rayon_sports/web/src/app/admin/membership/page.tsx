@@ -188,7 +188,7 @@ export default function AdminMembershipPage() {
                 <p className="admin-row-meta">{s.phone || s.membershipNumber}</p>
               </td>
               <td>
-                <AdminStatusBadge label={s.tier} tone={s.tier === "platinum" || s.tier === "gold" ? "accent" : "neutral"} />
+                <AdminStatusBadge label={s.tier} tone={s.tier === "gold" || s.tier === "silver" ? "accent" : "neutral"} />
               </td>
               <td>
                 <AdminStatusBadge label={s.status} tone={s.status === "active" ? "success" : s.status === "suspended" ? "danger" : "warning"} />

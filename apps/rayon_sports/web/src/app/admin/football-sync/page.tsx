@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Zap, RefreshCw, Database, Globe, Activity, Clock, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Zap, RefreshCw, Database, Globe, Activity, Clock, AlertTriangle, CheckCircle2, Save, Trash2 } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
@@ -14,22 +14,39 @@ import {
   getAdminSyncConfigs,
   getAdminSyncLogs,
   getAdminSyncOverview,
+  getAdminLiveScoreCompetitionSources,
+  saveAdminLiveScoreCompetitionSource,
+  deleteAdminLiveScoreCompetitionSource,
   triggerSyncCommand,
   triggerMultiplierGeneration,
 } from "@/lib/data/admin/football-sync";
 import type {
+  AdminLiveScoreCompetitionSource,
   AdminSyncConfig,
   AdminSyncLog,
   AdminSyncOverview,
 } from "@/lib/data/admin/football-sync";
 
-type Tab = "overview" | "leagues" | "logs";
+type Tab = "overview" | "leagues" | "sources" | "logs";
 
 const tabs: { key: Tab; label: string; icon: typeof Zap }[] = [
   { key: "overview", label: "Overview", icon: Activity },
   { key: "leagues", label: "Tracked Leagues", icon: Globe },
+  { key: "sources", label: "LiveScore Sources", icon: Database },
   { key: "logs", label: "Sync Logs", icon: Clock },
 ];
+
+const emptySourceForm = {
+  id: "",
+  sourceKey: "",
+  displayName: "",
+  matchAliases: "",
+  countryAliases: "",
+  externalCompetitionIds: "",
+  sourceUrls: "https://www.livescore.com/en/",
+  priority: 100,
+  isActive: true,
+};
 
 const syncCommands = [
   { command: "full-sync", label: "Full Sync", description: "Fixtures + standings for all tracked leagues", icon: RefreshCw },
@@ -44,6 +61,8 @@ export default function AdminFootballSyncPage() {
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [overview, setOverview] = useState<AdminSyncOverview | null>(null);
   const [configs, setConfigs] = useState<AdminSyncConfig[]>([]);
+  const [liveScoreSources, setLiveScoreSources] = useState<AdminLiveScoreCompetitionSource[]>([]);
+  const [sourceForm, setSourceForm] = useState(emptySourceForm);
   const [logs, setLogs] = useState<AdminSyncLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -58,8 +77,10 @@ export default function AdminFootballSyncPage() {
         getAdminSyncConfigs(client, access),
         getAdminSyncLogs(client, access, 30),
       ]);
+      const sources = await getAdminLiveScoreCompetitionSources(client, access);
       setOverview(ov);
       setConfigs(cf);
+      setLiveScoreSources(sources);
       setLogs(lg);
       setLoadError(null);
     } catch (caught) {
@@ -102,6 +123,66 @@ export default function AdminFootballSyncPage() {
       showAdminToast(caught instanceof Error ? caught.message : "Multiplier generation failed.", "error");
     } finally {
       setRunningCommand(null);
+    }
+  }
+
+  function listToText(values: string[]) {
+    return values.join(", ");
+  }
+
+  function textToList(value: string) {
+    return value
+      .split(",")
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+  }
+
+  function editSource(source: AdminLiveScoreCompetitionSource) {
+    setSourceForm({
+      id: source.id,
+      sourceKey: source.sourceKey,
+      displayName: source.displayName,
+      matchAliases: listToText(source.matchAliases),
+      countryAliases: listToText(source.countryAliases),
+      externalCompetitionIds: listToText(source.externalCompetitionIds),
+      sourceUrls: listToText(source.sourceUrls),
+      priority: source.priority,
+      isActive: source.isActive,
+    });
+    setActiveTab("sources");
+  }
+
+  async function handleSaveSource() {
+    if (client == null) return;
+    try {
+      await saveAdminLiveScoreCompetitionSource(client, access, {
+        id: sourceForm.id || null,
+        sourceKey: sourceForm.sourceKey,
+        displayName: sourceForm.displayName,
+        matchAliases: textToList(sourceForm.matchAliases),
+        countryAliases: textToList(sourceForm.countryAliases),
+        externalCompetitionIds: textToList(sourceForm.externalCompetitionIds),
+        sourceUrls: textToList(sourceForm.sourceUrls),
+        priority: sourceForm.priority,
+        isActive: sourceForm.isActive,
+      });
+      showAdminToast("LiveScore source saved.", "success");
+      setSourceForm(emptySourceForm);
+      await load();
+    } catch (caught) {
+      showAdminToast(caught instanceof Error ? caught.message : "Could not save LiveScore source.", "error");
+    }
+  }
+
+  async function handleDeleteSource(id: string) {
+    if (client == null) return;
+    try {
+      await deleteAdminLiveScoreCompetitionSource(client, access, id);
+      showAdminToast("LiveScore source deleted.", "success");
+      if (sourceForm.id === id) setSourceForm(emptySourceForm);
+      await load();
+    } catch (caught) {
+      showAdminToast(caught instanceof Error ? caught.message : "Could not delete LiveScore source.", "error");
     }
   }
 
@@ -327,6 +408,155 @@ export default function AdminFootballSyncPage() {
                       )}
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* Logs tab */}
+            {activeTab === "sources" && (
+              <div className="space-y-5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <p className="font-display text-2xl font-bold uppercase">
+                    LiveScore Sources ({liveScoreSources.length})
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setSourceForm(emptySourceForm)}
+                    className="admin-action-button"
+                  >
+                    New Source
+                  </button>
+                </div>
+
+                <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_420px]">
+                  <div className="space-y-2">
+                    {liveScoreSources.length === 0 ? (
+                      <p className="text-sm text-slate-400">
+                        No active LiveScore competition sources are configured. The sync script will not write fixtures until at least one source exists.
+                      </p>
+                    ) : null}
+                    {liveScoreSources.map((source) => (
+                      <div
+                        key={source.id}
+                        className="rounded-[22px] border border-border-soft bg-white/5 p-4"
+                      >
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="font-semibold text-white">{source.displayName}</p>
+                            <p className="mt-1 text-xs text-slate-400">
+                              {source.sourceKey} · priority {source.priority}
+                            </p>
+                          </div>
+                          <AdminStatusBadge
+                            label={source.isActive ? "Active" : "Disabled"}
+                            tone={source.isActive ? "success" : "neutral"}
+                          />
+                        </div>
+                        <p className="mt-3 text-xs text-slate-300">
+                          Aliases: {source.matchAliases.join(", ")}
+                        </p>
+                        <p className="mt-1 text-xs text-slate-400">
+                          Countries: {source.countryAliases.join(", ") || "Any"} · URLs: {source.sourceUrls.length}
+                        </p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <button type="button" onClick={() => editSource(source)} className="admin-action-button">
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { handleDeleteSource(source.id).catch(() => {}); }}
+                            className="admin-action-button admin-action-button-danger"
+                          >
+                            <Trash2 size={14} />
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="rounded-[22px] border border-border-soft bg-white/5 p-4">
+                    <p className="font-semibold text-white">
+                      {sourceForm.id ? "Edit LiveScore Source" : "New LiveScore Source"}
+                    </p>
+                    <div className="mt-4 space-y-3">
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        Display name
+                        <input
+                          value={sourceForm.displayName}
+                          onChange={(event) => setSourceForm({ ...sourceForm, displayName: event.target.value })}
+                          className="admin-input mt-1"
+                        />
+                      </label>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        Source key
+                        <input
+                          value={sourceForm.sourceKey}
+                          onChange={(event) => setSourceForm({ ...sourceForm, sourceKey: event.target.value })}
+                          className="admin-input mt-1"
+                        />
+                      </label>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        Match aliases
+                        <textarea
+                          value={sourceForm.matchAliases}
+                          onChange={(event) => setSourceForm({ ...sourceForm, matchAliases: event.target.value })}
+                          className="admin-input mt-1 min-h-[72px]"
+                        />
+                      </label>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        Country aliases
+                        <input
+                          value={sourceForm.countryAliases}
+                          onChange={(event) => setSourceForm({ ...sourceForm, countryAliases: event.target.value })}
+                          className="admin-input mt-1"
+                        />
+                      </label>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        External competition IDs
+                        <input
+                          value={sourceForm.externalCompetitionIds}
+                          onChange={(event) => setSourceForm({ ...sourceForm, externalCompetitionIds: event.target.value })}
+                          className="admin-input mt-1"
+                        />
+                      </label>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        LiveScore URLs
+                        <textarea
+                          value={sourceForm.sourceUrls}
+                          onChange={(event) => setSourceForm({ ...sourceForm, sourceUrls: event.target.value })}
+                          className="admin-input mt-1 min-h-[72px]"
+                        />
+                      </label>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                          Priority
+                          <input
+                            type="number"
+                            value={sourceForm.priority}
+                            onChange={(event) => setSourceForm({ ...sourceForm, priority: Number(event.target.value) })}
+                            className="admin-input mt-1"
+                          />
+                        </label>
+                        <label className="flex items-center gap-2 pt-6 text-sm font-semibold text-slate-200">
+                          <input
+                            type="checkbox"
+                            checked={sourceForm.isActive}
+                            onChange={(event) => setSourceForm({ ...sourceForm, isActive: event.target.checked })}
+                          />
+                          Active
+                        </label>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { handleSaveSource().catch(() => {}); }}
+                        className="admin-action-button !bg-club-accent !text-white"
+                      >
+                        <Save size={14} />
+                        Save Source
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

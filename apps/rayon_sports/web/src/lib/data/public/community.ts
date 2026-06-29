@@ -16,6 +16,7 @@ import type {
   ContributionGroup,
   FanClubItem,
   MembershipPackage,
+  MembershipTierSlug,
   SquadPlayer,
   StandingRow,
 } from "@/lib/types";
@@ -28,6 +29,28 @@ import {
 } from "./helpers";
 
 // ─── Mappers ─────────────────────────────────────────────
+
+function normalizeMembershipTier(value: string): MembershipTierSlug {
+  switch (value.trim().toLowerCase()) {
+    case "ingenzi-imanzi":
+    case "ingenzi_imanzi":
+    case "ingenzi":
+    case "imanzi":
+      return "ingenzi-imanzi";
+    case "inyamibwa":
+      return "inyamibwa";
+    case "imena":
+      return "imena";
+    case "bronze":
+      return "bronze";
+    case "silver":
+      return "silver";
+    case "gold":
+      return "gold";
+    default:
+      return "imena";
+  }
+}
 
 function mapMembershipRow(row: Record<string, unknown>): MembershipPackage {
   const title = safeString(row.title, "Membership tier");
@@ -55,14 +78,7 @@ function mapMembershipRow(row: Record<string, unknown>): MembershipPackage {
 
   return {
     id: toIdString(row.id, crypto.randomUUID()),
-    tier:
-      tierValue == "gold"
-        ? "gold"
-        : tierValue == "platinum"
-          ? "platinum"
-          : tierValue == "bronze"
-            ? "bronze"
-            : "fan",
+    tier: normalizeMembershipTier(tierValue),
     title,
     description,
     sortOrder: safeNumber(row.sort_order, 0),
@@ -178,7 +194,7 @@ export const getMembershipPackages = cache(
 
     try {
       const { data } = await client
-        .from("membership_packages")
+        .from("membership_tiers")
         .select("*")
         .eq("club_id", activeClub.numericId)
         .eq("is_active", true)

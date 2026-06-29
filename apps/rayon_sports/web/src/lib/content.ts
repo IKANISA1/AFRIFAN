@@ -136,7 +136,7 @@ export const fallbackNewsArticles: NewsArticle[] = [
     excerpt:
       "Witness the mobilization of Rwanda's most passionate fanbase as we prepare for the headline clash against Police FC.",
     content:
-      `${fallbackClubProfile.clubName} is finalizing a world-class matchday experience for our supporters. From the choreographed Blue Wall tifo to enhanced hospitality in the Platinum Lounge, every detail is being refined to ensure matchday remains the heartbeat of Rwandan football. Gates open at 14:00. Arrive early, wear your colors, and be the twelfth man.`,
+      `${fallbackClubProfile.clubName} is finalizing a world-class matchday experience for our supporters. From the choreographed Blue Wall tifo to enhanced Gold member hospitality, every detail is being refined to ensure matchday remains the heartbeat of Rwandan football. Gates open at 14:00. Arrive early, wear your colors, and be the twelfth man.`,
     category: "Matchday",
     coverImageUrl: "/media/stadium-hero.jpg",
     publishedAt: "2026-04-15T07:00:00.000Z",
@@ -212,25 +212,43 @@ export const fallbackProducts: ShopProduct[] = [
 
 export const fallbackMembershipPackages: MembershipPackage[] = [
   {
-    id: "fan-core",
-    tier: "fan",
-    title: "Fan Core",
-    description: "Your digital supporter identity across mobile and web.",
+    id: "ingenzi-imanzi",
+    tier: "ingenzi-imanzi",
+    title: "Ingenzi / Imanzi",
+    description: "Official entry supporter identity across mobile and web.",
     sortOrder: 0,
     annualPrice: 0,
     perks: [
-      "Digital fan card",
-      "Fan app access",
+      "Digital supporter card",
+      "Supporter app access",
       "News and match reminders",
       "Support Groups access",
     ],
+  },
+  {
+    id: "inyamibwa",
+    tier: "inyamibwa",
+    title: "Inyamibwa",
+    description: "Recognized supporter status for regular club followers.",
+    sortOrder: 1,
+    annualPrice: 5000,
+    perks: ["Supporter badge", "Club news updates", "Support Groups access"],
+  },
+  {
+    id: "imena",
+    tier: "imena",
+    title: "Imena",
+    description: "Standard official membership for active supporters.",
+    sortOrder: 2,
+    annualPrice: 10000,
+    perks: ["Digital membership card", "Ticket updates", "Member campaigns"],
   },
   {
     id: "bronze-beloved",
     tier: "bronze",
     title: "Bronze Beloved",
     description: "Priority access for active local supporters.",
-    sortOrder: 1,
+    sortOrder: 3,
     annualPrice: 15000,
     perks: [
       "Early ticket window",
@@ -239,32 +257,26 @@ export const fallbackMembershipPackages: MembershipPackage[] = [
     ],
   },
   {
+    id: "silver-priority",
+    tier: "silver",
+    title: "Silver Priority",
+    description: "Priority ticket and campaign access for committed members.",
+    sortOrder: 4,
+    annualPrice: 30000,
+    perks: ["Priority ticket window", "Shop drops", "Member-only campaigns"],
+  },
+  {
     id: "gold-heritage",
     tier: "gold",
     title: "Gold Heritage",
     description: "Premium supporter access for the club's core Group.",
-    sortOrder: 2,
+    sortOrder: 5,
     annualPrice: 50000,
     perks: [
       "Priority ticketing",
       "Shop discount",
       "Exclusive events",
       "Premium badge",
-    ],
-  },
-  {
-    id: "platinum-matchday",
-    tier: "platinum",
-    title: "Platinum Matchday",
-    description:
-      "Top-tier club access for corporate hosts, donors, and matchday leaders.",
-    sortOrder: 3,
-    annualPrice: 120000,
-    perks: [
-      "VIP priority access",
-      "Hospitality experiences",
-      "Concierge service",
-      "Limited-edition drops",
     ],
   },
 ];

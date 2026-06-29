@@ -30,7 +30,7 @@ export function MembershipEditorForm({
       await saveAdminMembershipPackage(client, access, {
         id: form.id || null,
         tier: String(
-          formData.get("tier") ?? "fan",
+          formData.get("tier") ?? "imena",
         ) as AdminMembershipPackage["tier"],
         title: String(formData.get("title") ?? ""),
         description: String(formData.get("description") ?? ""),
@@ -84,10 +84,12 @@ export function MembershipEditorForm({
             }
             className="dashboard-input"
           >
-            <option value="fan">Fan</option>
+            <option value="ingenzi-imanzi">Ingenzi / Imanzi</option>
+            <option value="inyamibwa">Inyamibwa</option>
+            <option value="imena">Imena</option>
             <option value="bronze">Bronze</option>
+            <option value="silver">Silver</option>
             <option value="gold">Gold</option>
-            <option value="platinum">Platinum</option>
           </select>
         </label>
         <label className="grid gap-2 text-sm">

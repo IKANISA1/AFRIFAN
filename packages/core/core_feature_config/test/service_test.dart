@@ -132,16 +132,16 @@ void main() {
     ),
   );
 
-  const _legacyPredictionGames = PlatformFeature(
-    featureKey: 'legacy_prediction_games',
-    displayName: 'Legacy prediction games',
+  const _challengeFeature = PlatformFeature(
+    featureKey: 'challenge',
+    displayName: 'Challenge',
     isEnabled: true,
     visibilityState: 'visible',
   );
 
-  const _disabledLegacyPredictionGames = PlatformFeature(
-    featureKey: 'legacy_prediction_games',
-    displayName: 'Legacy prediction games',
+  const _disabledChallengeFeature = PlatformFeature(
+    featureKey: 'challenge',
+    displayName: 'Challenge',
     isEnabled: false,
     visibilityState: 'visible',
   );
@@ -514,7 +514,7 @@ void main() {
       expect(service.isRouteAvailable('/somewhere-else'), isTrue);
     });
 
-    test('isRouteAvailable fail-closes legacy prediction game routes', () {
+    test('isRouteAvailable fail-closes challenge routes', () {
       expect(service.isRouteAvailable('/fanzone/jackpot'), isFalse);
       expect(service.isRouteAvailable('/fanzone/challenges'), isFalse);
       expect(service.isRouteAvailable('/fanzone/challenge'), isFalse);
@@ -522,22 +522,19 @@ void main() {
       expect(service.isRouteAvailable('/challenge/create'), isFalse);
     });
 
-    test(
-      'isRouteAvailable allows legacy prediction games only when enabled',
-      () {
-        final enabledService = FeatureConfigService(
-          _buildSnapshot(features: [_legacyPredictionGames]),
-        );
-        final disabledService = FeatureConfigService(
-          _buildSnapshot(features: [_disabledLegacyPredictionGames]),
-        );
+    test('isRouteAvailable allows challenge routes only when enabled', () {
+      final enabledService = FeatureConfigService(
+        _buildSnapshot(features: [_challengeFeature]),
+      );
+      final disabledService = FeatureConfigService(
+        _buildSnapshot(features: [_disabledChallengeFeature]),
+      );
 
-        expect(enabledService.isRouteAvailable('/fanzone/jackpot'), isTrue);
-        expect(enabledService.isRouteAvailable('/challenge/create'), isTrue);
-        expect(disabledService.isRouteAvailable('/fanzone/jackpot'), isFalse);
-        expect(disabledService.isRouteAvailable('/challenge/create'), isFalse);
-      },
-    );
+      expect(enabledService.isRouteAvailable('/fanzone/jackpot'), isTrue);
+      expect(enabledService.isRouteAvailable('/challenge/create'), isTrue);
+      expect(disabledService.isRouteAvailable('/fanzone/jackpot'), isFalse);
+      expect(disabledService.isRouteAvailable('/challenge/create'), isFalse);
+    });
   });
 
   group('FeatureConfigService — access semantics', () {

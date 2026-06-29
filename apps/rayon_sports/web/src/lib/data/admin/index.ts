@@ -171,6 +171,17 @@ export {
 } from "./predictions";
 
 export {
+  getAdminSyncConfigs,
+  getAdminSyncLogs,
+  getAdminSyncOverview,
+  getAdminLiveScoreCompetitionSources,
+  saveAdminLiveScoreCompetitionSource,
+  deleteAdminLiveScoreCompetitionSource,
+  triggerSyncCommand,
+  triggerMultiplierGeneration,
+} from "./football-sync";
+
+export {
   getAdminPartnerOptions,
   getAdminPartnerPredictionPools,
   saveAdminPartnerPredictionPool,

@@ -21,7 +21,7 @@ function mapOverviewRow(
     userId: safeString(row.user_id),
     publicUserId: safeString(row.public_user_id) || null,
     displayName: safeString(row.display_name, "Supporter"),
-    tier: safeString(row.tier, "fan"),
+    tier: safeString(row.tier, "imena"),
     balance: safeNumber(row.balance, 0),
     transactionCount: safeNumber(row.transaction_count, 0),
     lastTransactionAt: safeString(row.last_transaction_at) || null,

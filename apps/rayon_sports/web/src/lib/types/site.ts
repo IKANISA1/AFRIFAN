@@ -96,9 +96,17 @@ export interface ShopProduct {
   collection?: string | null;
 }
 
+export type MembershipTierSlug =
+  | "ingenzi-imanzi"
+  | "inyamibwa"
+  | "imena"
+  | "bronze"
+  | "silver"
+  | "gold";
+
 export interface MembershipPackage {
   id: string;
-  tier: "fan" | "bronze" | "gold" | "platinum";
+  tier: MembershipTierSlug;
   title: string;
   description: string;
   sortOrder: number;

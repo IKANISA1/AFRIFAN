@@ -2,7 +2,12 @@
  * Admin membership operations — supporter registry and application review.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { AdminAccess, AdminMembershipApplication, AdminSupporter } from "@/lib/types";
+import type {
+  AdminAccess,
+  AdminMembershipApplication,
+  AdminSupporter,
+  MembershipTierSlug,
+} from "@/lib/types";
 import { safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import { requireAdminClubId, resolveClubFootballPartnerId } from "./helpers";
@@ -41,6 +46,28 @@ type MembershipApplicationRow = {
       }
     | null;
 };
+
+function normalizeMembershipTier(value: string | null | undefined): MembershipTierSlug {
+  switch ((value ?? "").trim().toLowerCase()) {
+    case "ingenzi-imanzi":
+    case "ingenzi_imanzi":
+    case "ingenzi":
+    case "imanzi":
+      return "ingenzi-imanzi";
+    case "inyamibwa":
+      return "inyamibwa";
+    case "imena":
+      return "imena";
+    case "bronze":
+      return "bronze";
+    case "silver":
+      return "silver";
+    case "gold":
+      return "gold";
+    default:
+      return "imena";
+  }
+}
 
 type ProfileRow = {
   id: string | null;
@@ -89,7 +116,7 @@ export async function getAdminSupporterRegistry(
     userId: safeString(row.user_id, toIdString(row.id, "")),
     displayName: safeString(row.display_name, "Anonymous Supporter"),
     phone: safeString(row.profiles?.phone) || null,
-    tier: row.tier ?? "fan",
+    tier: normalizeMembershipTier(row.tier),
     status: (safeString(row.status, "active") as AdminSupporter["status"]),
     points: row.points || 0,
     chapter: safeString(row.chapter, "General"),
@@ -175,7 +202,7 @@ export async function getAdminMembershipApplications(
       id: toIdString(row.id, ""),
       userId,
       clubId,
-      tier: safeString(row.tier, "fan") as AdminMembershipApplication["tier"],
+      tier: normalizeMembershipTier(safeString(row.tier, "imena")),
       status: safeString(row.status, "pending") as AdminMembershipApplication["status"],
       paymentStatus: safeString(
         row.payment_status,

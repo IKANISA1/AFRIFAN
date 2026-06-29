@@ -15,7 +15,7 @@ Rayon Sports is the reference club profile and seeded default. The platform is n
 - One canonical tenant model:
   - `club_id` for database scoping.
   - `club_slug` for routing, host mapping, and branding resolution.
-  - `partner_id` treated as legacy compatibility only.
+  - `partner_id` retained only for archived migration compatibility.
 
 ## Product Surfaces
 

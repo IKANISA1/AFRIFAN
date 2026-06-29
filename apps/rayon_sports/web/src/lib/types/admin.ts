@@ -6,6 +6,7 @@ import type {
   ContributionGroup,
   FanClubItem,
   MatchItem,
+  MembershipTierSlug,
   MembershipPackage,
   ShopProduct,
 } from "./site";
@@ -133,7 +134,7 @@ export interface AdminMembershipApplication {
   id: string;
   userId: string;
   clubId: number;
-  tier: "fan" | "bronze" | "gold" | "platinum";
+  tier: MembershipTierSlug;
   status: "pending" | "approved" | "rejected";
   paymentStatus: "unpaid" | "paid" | "failed";
   applicationDate: string;
@@ -149,7 +150,7 @@ export interface AdminSupporter {
   userId: string;
   displayName: string;
   phone: string | null;
-  tier: "fan" | "bronze" | "gold" | "platinum";
+  tier: MembershipTierSlug;
   status: "active" | "pending" | "suspended" | "expired";
   points: number;
   chapter: string;

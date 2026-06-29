@@ -144,15 +144,15 @@ All routes in this section are nested under `/fanzone` and owned by
 | Social Hub | `/fanzone/social` | Authenticated fan | loading, data, empty, error | Verify moderation and privacy states. |
 | Fan Zone Privacy | `/fanzone/privacy` | Authenticated fan | data, saved, error | Verify toggles, confirmations, screen-reader labels. |
 
-## Legacy Challenge Standalone Routes
+## Challenge Standalone Routes
 
 These routes are outside AFRICLUB launch scope and require an explicit
-`legacy_prediction_games` or `challenge` feature flag. Partner WDW pools are
-the launch prediction-game surface.
+`challenge` feature flag. Partner WDW pools are the launch prediction-game
+surface.
 
 | Screen | Route | Module | Auth | States To Verify | Accessibility And Responsive Notes |
 | --- | --- | --- | --- | --- | --- |
-| Challenge Hub | `/challenge` | `ChallengeModule` | Authenticated fan | loading, challenges, empty, error | Legacy opt-in only; do not expose in launch navigation. |
+| Challenge Hub | `/challenge` | `ChallengeModule` | Authenticated fan | loading, challenges, empty, error | Opt-in only; do not expose in launch navigation. |
 | Create Challenge | `/challenge/create` | `ChallengeModule` | Authenticated fan | input, review, submit, error | Verify form validation and keyboard behavior. |
 | My Challenges | `/challenge/my` | `ChallengeModule` | Authenticated fan | loading, list, empty, error | Hide empty sections. |
 | Challenge Detail | `/challenge/:id` | `ChallengeModule` | Authenticated fan | loading, data, not found, error | Verify participant list, stake visibility, status semantics. |

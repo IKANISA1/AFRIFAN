@@ -68,7 +68,7 @@ function mapLeaderboardRow(
     supporterAlias: safeString(row.supporter_alias, "000000"),
     displayName: safeString(row.display_name, "Supporter"),
     totalFet: safeNumber(row.total_fet, 0),
-    tier: safeString(row.tier, "fan"),
+    tier: safeString(row.tier, "imena"),
     isCurrentUser: row.is_current_user === true,
   };
 }

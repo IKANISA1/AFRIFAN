@@ -58,19 +58,12 @@ void main() {
       expect(keys.toSet().length, keys.length);
     });
 
-    test('challenge module is opt-in behind legacy prediction-game flags', () {
+    test('challenge module is not registered from club feature flags', () {
       final defaultModules = AppModuleRegistry.build(const _FakeClubConfig());
-      final enabledModules = AppModuleRegistry.build(
-        const _FakeClubConfig(hasLegacyPredictionGames: true),
-      );
 
       expect(
         defaultModules.map((module) => module.featureKey),
         isNot(contains('challenge')),
-      );
-      expect(
-        enabledModules.map((module) => module.featureKey),
-        contains('challenge'),
       );
     });
   });
@@ -272,7 +265,6 @@ class _FakeClubConfig implements ClubConfig {
     this.hasFanClubs = true,
     this.hasShop = true,
     this.hasTicketing = true,
-    this.hasLegacyPredictionGames = false,
   });
 
   @override
@@ -281,8 +273,6 @@ class _FakeClubConfig implements ClubConfig {
   final bool hasShop;
   @override
   final bool hasTicketing;
-  final bool hasLegacyPredictionGames;
-
   @override
   String get appName => 'AFRICLUB Test';
   @override
@@ -320,7 +310,6 @@ class _FakeClubConfig implements ClubConfig {
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,
-    'legacy_prediction_games': hasLegacyPredictionGames,
     'chat': hasChat,
     'sms_ledger': hasSmsLedger,
   };

@@ -221,7 +221,7 @@ export default function AdminPredictionsPage() {
 
       <div className="grid gap-5 md:grid-cols-5">
         <AdminStateCard label="WDW pools" value={loading ? "..." : partnerPools.length.toString()} helper="Partner-funded." icon={Handshake} tone="accent" />
-        <AdminStateCard label="Templates" value={loading ? "..." : markets.length.toString()} helper="Legacy prediction catalog." icon={Target} />
+        <AdminStateCard label="Templates" value={loading ? "..." : markets.length.toString()} helper="Prediction catalog." icon={Target} />
         <AdminStateCard label="Competitions" value={loading ? "..." : competitions.length.toString()} helper="Leagues & cups." icon={Trophy} />
         <AdminStateCard label="Seasons" value={loading ? "..." : seasons.length.toString()} helper="Active seasons." icon={Globe} />
         <AdminStateCard label="Fixtures" value={loading ? "..." : fixtures.length.toString()} helper="Scheduled matches." icon={Calendar} />
@@ -432,8 +432,8 @@ export default function AdminPredictionsPage() {
             {/* Markets tab */}
             {activeTab === "markets" && (
               <div className="space-y-3">
-                <p className="font-display text-2xl font-bold uppercase">Legacy Templates ({markets.length})</p>
-                {markets.length === 0 ? <p className="text-sm text-slate-400">No legacy templates found.</p> : null}
+                <p className="font-display text-2xl font-bold uppercase">Prediction Templates ({markets.length})</p>
+                {markets.length === 0 ? <p className="text-sm text-slate-400">No prediction templates found.</p> : null}
                 <div className="space-y-2">
                   {markets.map((market) => (
                     <div key={market.id} className={cn("flex items-center gap-4 rounded-[22px] border border-border-soft p-4 transition", market.isActive ? "bg-white/5" : "bg-white/[0.02] opacity-60")}>
