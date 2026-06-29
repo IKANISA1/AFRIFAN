@@ -95,7 +95,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                       children: [
                         // Upper Pass: QR Code
                         Padding(
-                          padding: const EdgeInsets.all(32),
+                          padding: const EdgeInsets.all(SpacingTokens.spacing8),
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
@@ -105,7 +105,9 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                     color: ColorTokens.borrowedInk,
                                     opacity: 0.05,
                                   ),
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(
+                                    ShapeTokens.radiusSm,
+                                  ),
                                 ),
                                 child: QrImageView(
                                   data: code,
@@ -141,20 +143,22 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                         // Perforated Divider
                         Row(
                           children: List.generate(
-                              20,
-                              (i) => Expanded(
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 2),
-                                      height: 1,
-                                      color: ColorTokens.borrowedHairline,
-                                    ),
-                                  )),
+                            20,
+                            (i) => Expanded(
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: SpacingTokens.spacing1 / 2,
+                                ),
+                                height: BorderTokens.hairline,
+                                color: ColorTokens.borrowedHairline,
+                              ),
+                            ),
+                          ),
                         ),
 
                         // Lower Pass: Details
                         Padding(
-                          padding: const EdgeInsets.all(32),
+                          padding: const EdgeInsets.all(SpacingTokens.spacing8),
                           child: Column(
                             children: [
                               Text(
@@ -168,14 +172,18 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: SpacingTokens.spacing3),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 4),
+                                  horizontal: SpacingTokens.spacing3,
+                                  vertical: SpacingTokens.spacing1,
+                                ),
                                 decoration: BoxDecoration(
                                   color: ColorTokens.clubAccent
                                       .withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(4),
+                                  borderRadius: BorderRadius.circular(
+                                    ShapeTokens.radiusSm,
+                                  ),
                                 ),
                                 child: Text(
                                   ticket.seatType.label.toUpperCase(),
@@ -186,7 +194,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 24),
+                              const SizedBox(height: SpacingTokens.spacing6),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
@@ -201,7 +209,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: SpacingTokens.spacing4),
                               _buildPassMeta(
                                   'VENUE', ticket.match.venue.toUpperCase()),
                             ],
@@ -213,7 +221,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                         duration: 400.ms,
                         curve: Curves.easeOutBack,
                       ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: SpacingTokens.spacing8),
                   Row(
                     children: [
                       Expanded(
@@ -225,7 +233,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                           enabled: false,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: SpacingTokens.spacing3),
                       Expanded(
                         child: AfriButton(
                           label: 'Google Wallet',
@@ -237,7 +245,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: SpacingTokens.spacing3),
                   Text(
                     'Wallet export is not available in this release yet.',
                     style: TypographyTokens.bodySmall(
@@ -265,7 +273,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
             fontWeight: FontWeight.w900,
           ),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: SpacingTokens.spacing1 / 2),
         Text(
           value,
           style: TypographyTokens.labelMedium(

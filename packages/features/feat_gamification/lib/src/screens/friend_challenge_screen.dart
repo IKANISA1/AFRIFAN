@@ -164,15 +164,11 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            result.message.isEmpty
-                ? 'Could not send the challenge right now.'
-                : result.message,
-          ),
-          behavior: SnackBarBehavior.floating,
-        ),
+      AfriToast.error(
+        context,
+        result.message.isEmpty
+            ? 'Could not send the challenge right now.'
+            : result.message,
       );
     }
 
@@ -402,7 +398,7 @@ class _SelectionChip extends StatelessWidget {
           color: isSelected
               ? ColorTokens.clubAccent.withValues(alpha: 0.12)
               : ColorTokens.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
           border: BorderTokens.all(
             color: isSelected
                 ? ColorTokens.clubAccent
@@ -449,7 +445,7 @@ class _FixtureRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(fixtureLabel, style: TypographyTokens.titleSmall()),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: SpacingTokens.spacing1 / 2),
                   Text(
                     '$competitionLabel · $kickoffLabel',
                     style: TypographyTokens.bodySmall(),

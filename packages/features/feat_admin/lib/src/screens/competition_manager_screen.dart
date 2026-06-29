@@ -86,37 +86,24 @@ class _CompetitionManagerScreenState
       await _loadCompetitions();
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            currentlyActive
-                ? '${competition['name']} deactivated'
-                : '${competition['name']} activated',
-          ),
-          backgroundColor: currentlyActive
-              ? ColorTokens.error
-              : ColorTokens.success,
-        ),
-      );
+      final message = currentlyActive
+          ? '${competition['name']} deactivated'
+          : '${competition['name']} activated';
+      if (currentlyActive) {
+        AfriToast.error(context, message);
+      } else {
+        AfriToast.success(context, message);
+      }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed: $e'),
-          backgroundColor: ColorTokens.error,
-        ),
-      );
+      AfriToast.error(context, 'Failed: $e');
     }
   }
 
   Future<void> _openCompetitionForm([Map<String, dynamic>? existing]) async {
-    final result = await showModalBottomSheet<Map<String, dynamic>>(
+    final result = await showAfriBottomSheet<Map<String, dynamic>>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: ColorTokens.surfaceContainerLow,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (ctx) => _CompetitionFormSheet(existing: existing),
     );
 
@@ -150,34 +137,21 @@ class _CompetitionManagerScreenState
       await _loadCompetitions();
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            existing != null ? 'Competition updated' : 'Competition created',
-          ),
-          backgroundColor: ColorTokens.success,
-        ),
+      AfriToast.success(
+        context,
+        existing != null ? 'Competition updated' : 'Competition created',
       );
     } catch (e) {
       if (!mounted) return;
       context.pop(); // close loading
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed: $e'),
-          backgroundColor: ColorTokens.error,
-        ),
-      );
+      AfriToast.error(context, 'Failed: $e');
     }
   }
 
   Future<void> _openSeasonManager(Map<String, dynamic> competition) async {
-    await showModalBottomSheet<void>(
+    await showAfriBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: ColorTokens.surfaceContainerLow,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (ctx) => _SeasonManagerSheet(
         competitionId: competition['id'].toString(),
         competitionName: competition['name']?.toString() ?? '',

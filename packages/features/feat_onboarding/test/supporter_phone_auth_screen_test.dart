@@ -60,6 +60,10 @@ GoRouter _buildRouter() {
         builder: (context, state) => const SupporterPhoneAuthScreen(),
       ),
       GoRoute(
+        path: '/auth/otp',
+        builder: (context, state) => const SupporterOtpVerificationScreen(),
+      ),
+      GoRoute(
         path: '/home',
         builder: (context, state) => const Scaffold(body: Text('Home Route')),
       ),
@@ -97,20 +101,18 @@ void main() {
 
     await tester.enterText(
       find.byKey(const ValueKey<String>('supporter-phone-input')),
-      '+250788123456',
+      supporterPhoneAuthTestNumber,
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
     await tester.tap(
       find.byKey(const ValueKey<String>('supporter-send-otp-button')),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
 
-    expect(repository.requestedPhone, '+250788123456');
+    expect(repository.requestedPhone, supporterPhoneAuthTestNumber);
     expect(repository.requestedChannel, supabase.OtpChannel.whatsapp);
-    expect(
-      find.textContaining('Verification code sent to WhatsApp'),
-      findsOneWidget,
-    );
+    expect(find.byType(SupporterOtpVerificationScreen), findsOneWidget);
   });
 
   testWidgets('verifies OTP and continues into the supporter app', (
@@ -121,23 +123,22 @@ void main() {
         id: 'supporter-1',
         clubId: '24',
         publicUserId: '483912',
-        phone: '+250788123456',
-        momoNumber: '+250788123456',
+        phone: supporterPhoneAuthTestNumber,
+        momoNumber: supporterPhoneAuthTestNumber,
       ),
     );
     await _pumpApp(tester, repository: repository);
 
     await tester.enterText(
       find.byKey(const ValueKey<String>('supporter-phone-input')),
-      '+250788123456',
+      supporterPhoneAuthTestNumber,
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
     await tester.tap(
       find.byKey(const ValueKey<String>('supporter-send-otp-button')),
     );
-    await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 4));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
 
     expect(
       find.byKey(const ValueKey<String>('supporter-phone-otp-input')),
@@ -145,18 +146,17 @@ void main() {
     );
     await tester.enterText(
       find.byKey(const ValueKey<String>('supporter-phone-otp-input')),
-      '123456',
+      supporterPhoneAuthTestOtp,
     );
-    await tester.pumpAndSettle();
-    final verifyButton = tester.widget<FilledButton>(
+    await tester.pump();
+    await tester.tap(
       find.byKey(const ValueKey<String>('supporter-verify-otp-button')),
     );
-    expect(verifyButton.onPressed, isNotNull);
-    verifyButton.onPressed!.call();
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
 
-    expect(repository.verifiedPhone, '+250788123456');
-    expect(repository.verifiedToken, '123456');
+    expect(repository.verifiedPhone, supporterPhoneAuthTestNumber);
+    expect(repository.verifiedToken, supporterPhoneAuthTestOtp);
     expect(find.text('Home Route'), findsOneWidget);
   });
 }

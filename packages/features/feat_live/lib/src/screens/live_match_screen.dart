@@ -509,12 +509,9 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
                           ),
                         );
                         if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Match update copied to clipboard.',
-                              ),
-                            ),
+                          AfriToast.success(
+                            context,
+                            'Match update copied to clipboard.',
                           );
                         }
                       },

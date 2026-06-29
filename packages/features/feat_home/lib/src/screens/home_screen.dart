@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -114,6 +116,7 @@ class HomeScreen extends ConsumerWidget {
       ...midBlocks,
       ...bottomBlocks,
     ];
+    final blocks = allBlocks.isEmpty ? _fallbackHomeBlocks : allBlocks;
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(
@@ -143,7 +146,7 @@ class HomeScreen extends ConsumerWidget {
           ),
 
         // ── Dynamic Blocks Loop ──
-        ...allBlocks.map(
+        ...blocks.map(
           (block) =>
               _buildBlockRenderer(context, ref, block, snapshot, refreshKey),
         ),
@@ -195,8 +198,9 @@ class HomeScreen extends ConsumerWidget {
                 featureKey: 'fanzone',
                 child: Expanded(
                   child: AfriButton(
-                    label: 'Fan Zone',
-                    onTap: () => context.push('/fanzone'),
+                    label: 'Fans',
+                    semanticsLabel: 'Fan Zone',
+                    onTap: () => context.go('/fanzone'),
                     variant: AfriButtonVariant.secondary,
                   ),
                 ),
@@ -206,8 +210,8 @@ class HomeScreen extends ConsumerWidget {
                 featureKey: 'contributions',
                 child: Expanded(
                   child: AfriButton(
-                    label: 'Contribute',
-                    onTap: () => context.push('/contribute'),
+                    label: 'Support',
+                    onTap: () => unawaited(context.push('/contribute')),
                     variant: AfriButtonVariant.primary,
                   ),
                 ),
@@ -218,7 +222,7 @@ class HomeScreen extends ConsumerWidget {
                 child: Expanded(
                   child: AfriButton(
                     label: 'Live',
-                    onTap: () => context.push('/live'),
+                    onTap: () => unawaited(context.push('/live')),
                     variant: AfriButtonVariant.secondary,
                   ),
                 ),
@@ -388,6 +392,37 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
+const List<ContentBlock> _fallbackHomeBlocks = <ContentBlock>[
+  ContentBlock(
+    blockKey: 'fallback_home_match_score',
+    blockType: 'widget',
+    placementKey: 'home_hero',
+    content: <String, Object>{'widget': 'match_score_card'},
+    sortOrder: 1,
+  ),
+  ContentBlock(
+    blockKey: 'fallback_home_primary_actions',
+    blockType: 'widget',
+    placementKey: 'home_top',
+    content: <String, Object>{'widget': 'primary_action_buttons'},
+    sortOrder: 2,
+  ),
+  ContentBlock(
+    blockKey: 'fallback_home_quick_actions',
+    blockType: 'widget',
+    placementKey: 'home_mid',
+    content: <String, Object>{'widget': 'quick_actions_grid'},
+    sortOrder: 3,
+  ),
+  ContentBlock(
+    blockKey: 'fallback_home_latest_intel',
+    blockType: 'widget',
+    placementKey: 'home_bottom',
+    content: <String, Object>{'widget': 'latest_intel_section'},
+    sortOrder: 4,
+  ),
+];
+
 class _HomeTopChrome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -401,9 +436,10 @@ class _HomeTopChrome extends StatelessWidget {
           SpacingTokens.spacing3,
         ),
         child: AfriTopCommandBar(
-          searchHint: 'Search fans, fixtures, wallet',
-          onSearchTap: () => context.push('/fanzone'),
-          onAvatarTap: () => context.push('/settings'),
+          searchHint: 'Find',
+          searchSemanticsLabel: 'Search fans, fixtures, wallet',
+          onSearchTap: () => context.go('/fanzone'),
+          onAvatarTap: () => context.go('/settings'),
           actions: [
             AfriTopCommandAction(
               icon: AfriIcons.notifications,
@@ -437,18 +473,48 @@ class _HomeHeroSkeleton extends StatelessWidget {
       child: const SafeArea(
         bottom: false,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(22, 20, 22, 22),
+          padding: EdgeInsets.fromLTRB(
+            SpacingTokens.spacing5 + SpacingTokens.spacing1 / 2,
+            SpacingTokens.spacing5,
+            SpacingTokens.spacing5 + SpacingTokens.spacing1 / 2,
+            SpacingTokens.spacing5 + SpacingTokens.spacing1 / 2,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Spacer(flex: 4),
-              AfriSkeleton(width: 220, height: 28),
-              SizedBox(height: 10),
-              AfriSkeleton(width: 170, height: 28),
-              SizedBox(height: 14),
-              AfriSkeleton(width: 140, height: 12),
-              SizedBox(height: 8),
-              AfriSkeleton(width: 180, height: 12),
+              AfriSkeleton(
+                width:
+                    SpacingTokens.spacing20 * 2 +
+                    SpacingTokens.spacing10 +
+                    SpacingTokens.spacing5,
+                height: SpacingTokens.spacing7,
+              ),
+              SizedBox(
+                height: SpacingTokens.spacing2 + SpacingTokens.spacing1 / 2,
+              ),
+              AfriSkeleton(
+                width:
+                    SpacingTokens.spacing20 * 2 +
+                    SpacingTokens.spacing2 +
+                    SpacingTokens.spacing1 / 2,
+                height: SpacingTokens.spacing7,
+              ),
+              SizedBox(
+                height: SpacingTokens.spacing3 + SpacingTokens.spacing1 / 2,
+              ),
+              AfriSkeleton(
+                width:
+                    SpacingTokens.spacing20 +
+                    SpacingTokens.spacing12 +
+                    SpacingTokens.spacing3,
+                height: SpacingTokens.spacing3,
+              ),
+              SizedBox(height: SpacingTokens.spacing2),
+              AfriSkeleton(
+                width: SpacingTokens.spacing20 * 2 + SpacingTokens.spacing5,
+                height: SpacingTokens.spacing3,
+              ),
             ],
           ),
         ),

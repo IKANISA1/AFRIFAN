@@ -133,7 +133,7 @@ class _TimeUnit extends StatelessWidget {
             highlight ? ColorTokens.clubAccent : ColorTokens.onSurface,
           ).copyWith(fontWeight: FontWeight.w900),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: SpacingTokens.spacing1 / 2),
         Text(
           label,
           style: TypographyTokens.metricLabel(

@@ -75,6 +75,69 @@ void main() {
       expect(find.text('NO FIXTURE'), findsNothing);
     });
 
+    testWidgets('renders fallback home actions when CMS blocks are unavailable', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _buildApp(
+          homeRepository: const _FakeHomeFeedRepository(
+            snapshot: HomeFeedSnapshot(
+              status: HomeFeedStatus.error,
+              message:
+                  'Live club data is temporarily unavailable. Pull to refresh.',
+            ),
+          ),
+          latestIntelRepository: const _FakeLatestIntelRepository(
+            LatestIntelSnapshot(status: LatestIntelStatus.empty),
+          ),
+          featureConfigSnapshot: const PlatformConfigSnapshot(),
+          child: const HomeScreen(),
+        ),
+      );
+
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump();
+
+      expect(find.textContaining('temporarily unavailable'), findsOneWidget);
+      expect(find.text('Fans'), findsOneWidget);
+      expect(find.text('Support'), findsOneWidget);
+      expect(find.text('Groups'), findsOneWidget);
+      expect(find.text('Tickets'), findsOneWidget);
+      expect(find.text('Shop'), findsOneWidget);
+      expect(find.text('Members'), findsOneWidget);
+    });
+
+    testWidgets(
+      'renders local shortcuts when active club scope is unavailable',
+      (tester) async {
+        await tester.pumpWidget(
+          _buildApp(
+            homeRepository: _FakeHomeFeedRepository(
+              snapshot: localHomeFeedFallbackSnapshot(),
+            ),
+            latestIntelRepository: const _FakeLatestIntelRepository(
+              LatestIntelSnapshot(status: LatestIntelStatus.empty),
+            ),
+            featureConfigSnapshot: const PlatformConfigSnapshot(),
+            child: const HomeScreen(),
+          ),
+        );
+
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump();
+
+        expect(find.byType(AfriErrorView), findsNothing);
+        expect(find.textContaining('Could not resolve'), findsNothing);
+        expect(find.text(homeFeedLocalFallbackMessage), findsOneWidget);
+        expect(find.text('Fans'), findsOneWidget);
+        expect(find.text('Support'), findsOneWidget);
+        expect(find.text('Groups'), findsOneWidget);
+        expect(find.text('Tickets'), findsOneWidget);
+        expect(find.text('Shop'), findsOneWidget);
+        expect(find.text('Members'), findsOneWidget);
+      },
+    );
+
     testWidgets('matches the redesigned home command center layout', (
       tester,
     ) async {
@@ -192,6 +255,7 @@ Widget _buildApp({
   required HomeFeedRepository homeRepository,
   required LatestIntelRepository latestIntelRepository,
   required Widget child,
+  PlatformConfigSnapshot featureConfigSnapshot = _testFeatureConfigSnapshot,
 }) {
   return ProviderScope(
     overrides: [
@@ -199,7 +263,7 @@ Widget _buildApp({
       latestIntelRepositoryProvider.overrideWithValue(latestIntelRepository),
       authRepositoryProvider.overrideWithValue(_FakeAuthRepository()),
       initialFeatureConfigSnapshotProvider.overrideWithValue(
-        _testFeatureConfigSnapshot,
+        featureConfigSnapshot,
       ),
     ],
     child: MaterialApp(

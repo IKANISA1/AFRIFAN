@@ -57,15 +57,23 @@ class ShopTopBar extends StatelessWidget {
               ),
               if (cartItemCount > 0)
                 Positioned(
-                  top: -2,
-                  right: -2,
+                  top: -(SpacingTokens.spacing1 / 2),
+                  right: -(SpacingTokens.spacing1 / 2),
                   child: Container(
-                    constraints: const BoxConstraints(minWidth: 18),
-                    height: 18,
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    constraints: const BoxConstraints(
+                      minWidth:
+                          SpacingTokens.spacing5 - (SpacingTokens.spacing1 / 2),
+                    ),
+                    height:
+                        SpacingTokens.spacing5 - (SpacingTokens.spacing1 / 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.spacing1,
+                    ),
                     decoration: BoxDecoration(
                       color: ColorTokens.primaryContainer,
-                      borderRadius: BorderRadius.circular(999),
+                      borderRadius: BorderRadius.circular(
+                        ShapeTokens.radiusFull,
+                      ),
                       border: BorderTokens.all(
                         color: ColorTokens.background,
                         width: 2,

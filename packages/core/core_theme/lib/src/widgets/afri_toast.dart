@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../extensions.dart';
 import '../tokens/border_tokens.dart';
+import '../tokens/icon_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 
 /// Themed snackbar system for the AFRICLUB platform.
@@ -18,24 +19,59 @@ import '../tokens/spacing_tokens.dart';
 /// ```
 abstract final class AfriToast {
   /// Green accent toast for successful operations.
-  static void success(BuildContext context, String message) {
-    _show(context, message: message, variant: _Variant.success);
+  static void success(
+    BuildContext context,
+    String message, {
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
+    _show(
+      context,
+      message: message,
+      variant: _Variant.success,
+      actionLabel: actionLabel,
+      onAction: onAction,
+    );
   }
 
   /// Red toast for errors that need user attention.
-  static void error(BuildContext context, String message) {
-    _show(context, message: message, variant: _Variant.error);
+  static void error(
+    BuildContext context,
+    String message, {
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
+    _show(
+      context,
+      message: message,
+      variant: _Variant.error,
+      actionLabel: actionLabel,
+      onAction: onAction,
+    );
   }
 
   /// Blue toast for informational messages.
-  static void info(BuildContext context, String message) {
-    _show(context, message: message, variant: _Variant.info);
+  static void info(
+    BuildContext context,
+    String message, {
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
+    _show(
+      context,
+      message: message,
+      variant: _Variant.info,
+      actionLabel: actionLabel,
+      onAction: onAction,
+    );
   }
 
   static void _show(
     BuildContext context, {
     required String message,
     required _Variant variant,
+    String? actionLabel,
+    VoidCallback? onAction,
   }) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
@@ -87,6 +123,13 @@ abstract final class AfriToast {
           SpacingTokens.spacing4,
           SpacingTokens.spacing4,
         ),
+        action: actionLabel == null || onAction == null
+            ? null
+            : SnackBarAction(
+                label: actionLabel,
+                textColor: config.color,
+                onPressed: onAction,
+              ),
         duration: variant == _Variant.error
             ? const Duration(seconds: 4)
             : const Duration(seconds: 3),
@@ -98,15 +141,15 @@ abstract final class AfriToast {
   static _VariantConfig _config(_Variant variant, colors) {
     return switch (variant) {
       _Variant.success => _VariantConfig(
-        icon: Icons.check_circle_outline_rounded,
+        icon: AfriIcons.statusSuccess,
         color: colors.success,
       ),
       _Variant.error => _VariantConfig(
-        icon: Icons.error_outline_rounded,
+        icon: AfriIcons.statusError,
         color: colors.danger,
       ),
       _Variant.info => _VariantConfig(
-        icon: Icons.info_outline_rounded,
+        icon: AfriIcons.statusInfo,
         color: colors.info,
       ),
     };

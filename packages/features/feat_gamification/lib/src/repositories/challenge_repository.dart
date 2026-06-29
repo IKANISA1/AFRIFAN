@@ -81,7 +81,9 @@ class ChallengeRepository {
         .toList(growable: false);
   }
 
-  Future<ChallengeDetailPayload?> loadChallengeDetail(String challengeId) async {
+  Future<ChallengeDetailPayload?> loadChallengeDetail(
+    String challengeId,
+  ) async {
     final scope = await _scopeResolver.requireResolved();
     if (scope.clubId == null) {
       return null;

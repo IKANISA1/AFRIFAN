@@ -28,6 +28,7 @@ class AfriTopCommandBar extends StatelessWidget {
   const AfriTopCommandBar({
     super.key,
     this.searchHint = 'Search',
+    this.searchSemanticsLabel,
     this.onSearchTap,
     this.onAvatarTap,
     this.showSearch = true,
@@ -36,6 +37,7 @@ class AfriTopCommandBar extends StatelessWidget {
   });
 
   final String searchHint;
+  final String? searchSemanticsLabel;
   final VoidCallback? onSearchTap;
   final VoidCallback? onAvatarTap;
   final bool showSearch;
@@ -59,6 +61,7 @@ class AfriTopCommandBar extends StatelessWidget {
             Expanded(
               child: _CommandSearchButton(
                 label: searchHint,
+                semanticsLabel: searchSemanticsLabel ?? searchHint,
                 onTap: onSearchTap,
               ),
             ),
@@ -171,48 +174,67 @@ class _CommandAvatar extends StatelessWidget {
 }
 
 class _CommandSearchButton extends StatelessWidget {
-  const _CommandSearchButton({required this.label, this.onTap});
+  const _CommandSearchButton({
+    required this.label,
+    required this.semanticsLabel,
+    this.onTap,
+  });
 
   final String label;
+  final String semanticsLabel;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return AfriPressFeedback(
       onTap: onTap,
-      semanticsLabel: label,
-      tooltip: label,
-      builder: (context, state) => Container(
-        height: 58,
-        padding: const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing4),
-        decoration: BoxDecoration(
-          color: ColorTokens.chrome,
-          borderRadius: ShapeTokens.buttonRadius,
-          border: state.isFocused
-              ? BorderTokens.focusAll(color: ColorTokens.primaryContainer)
-              : Border.all(color: ColorTokens.chromeBorder, width: 1.15),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              AfriIcons.search,
-              color: ColorTokens.chromeForeground,
-              size: 27,
+      semanticsLabel: semanticsLabel,
+      tooltip: semanticsLabel,
+      builder: (context, state) => LayoutBuilder(
+        builder: (context, constraints) {
+          final showLabel = constraints.maxWidth >= 142;
+          return Container(
+            height: 58,
+            padding: EdgeInsets.symmetric(
+              horizontal: showLabel
+                  ? SpacingTokens.spacing4
+                  : SpacingTokens.spacing3,
             ),
-            const SizedBox(width: SpacingTokens.spacing3),
-            Expanded(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                softWrap: false,
-                style: TypographyTokens.titleLarge(
-                  ColorTokens.chromeForeground,
-                ).copyWith(fontWeight: FontWeight.w700),
-              ),
+            decoration: BoxDecoration(
+              color: ColorTokens.chrome,
+              borderRadius: ShapeTokens.buttonRadius,
+              border: state.isFocused
+                  ? BorderTokens.focusAll(color: ColorTokens.primaryContainer)
+                  : Border.all(color: ColorTokens.chromeBorder, width: 1.15),
             ),
-          ],
-        ),
+            child: Row(
+              mainAxisAlignment: showLabel
+                  ? MainAxisAlignment.start
+                  : MainAxisAlignment.center,
+              children: [
+                Icon(
+                  AfriIcons.search,
+                  color: ColorTokens.chromeForeground,
+                  size: 27,
+                ),
+                if (showLabel) ...[
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.clip,
+                      softWrap: false,
+                      style: TypographyTokens.titleLarge(
+                        ColorTokens.chromeForeground,
+                      ).copyWith(fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          );
+        },
       ),
     );
   }

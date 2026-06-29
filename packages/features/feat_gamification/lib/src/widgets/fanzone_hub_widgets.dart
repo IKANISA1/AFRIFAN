@@ -68,7 +68,7 @@ class HubQuickRoutes extends StatelessWidget {
       (label: 'Fixtures', icon: AfriIcons.fixture, route: '/fanzone/fixtures'),
       (label: 'My Picks', icon: AfriIcons.myPicks, route: '/fanzone/my'),
       (
-        label: 'Leaderboard',
+        label: 'Leaders',
         icon: AfriIcons.leaderboard,
         route: '/fanzone/leaderboard',
       ),
@@ -212,7 +212,7 @@ class HubLeaderboardRow extends StatelessWidget {
     return Row(
       children: [
         SizedBox(
-          width: 34,
+          width: SpacingTokens.spacing8 + SpacingTokens.spacing1 / 2,
           child: Text(
             '#${entry.rank}',
             style: TypographyTokens.titleLarge(
@@ -260,14 +260,18 @@ class HubChallengeRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 36,
-          height: 36,
+          width: SpacingTokens.spacing9,
+          height: SpacingTokens.spacing9,
           decoration: BoxDecoration(
             color: ColorTokens.clubAccent.withValues(alpha: 0.18),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
           ),
           alignment: Alignment.center,
-          child: Icon(AfriIcons.earn, size: 18, color: ColorTokens.clubAccent),
+          child: Icon(
+            AfriIcons.earn,
+            size: SpacingTokens.spacing5,
+            color: ColorTokens.clubAccent,
+          ),
         ),
         const SizedBox(width: SpacingTokens.listItemGap),
         Expanded(

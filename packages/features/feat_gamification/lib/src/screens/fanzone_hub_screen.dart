@@ -37,10 +37,7 @@ class FanzoneHubScreen extends ConsumerWidget {
         onTap: () => _openSlip(context, ref),
       ),
       body: asyncHub.when(
-        loading: () => const Padding(
-          padding: EdgeInsets.all(SpacingTokens.screenPadding),
-          child: AfriSkeletonList(),
-        ),
+        loading: () => _buildPendingContent(context, ref),
         error: (error, _) => Center(
           child: Padding(
             padding: const EdgeInsets.all(SpacingTokens.screenPadding),
@@ -54,6 +51,56 @@ class FanzoneHubScreen extends ConsumerWidget {
         ),
         data: (snapshot) =>
             _buildContent(context, ref, snapshot, asyncHub.isRefreshing),
+      ),
+    );
+  }
+
+  Widget _buildPendingContent(BuildContext context, WidgetRef ref) {
+    return GradientBackground(
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                SpacingTokens.screenPadding,
+                SpacingTokens.spacing4,
+                SpacingTokens.screenPadding,
+                0,
+              ),
+              child: AfriStateView.loading(
+                title: 'Opening Fanzone',
+                message:
+                    'Fixtures, wallet, predictions, and rewards are loading.',
+                compact: true,
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                SpacingTokens.screenPadding,
+                SpacingTokens.sectionGap,
+                SpacingTokens.screenPadding,
+                0,
+              ),
+              child: HubQuickRoutes(onMore: () => _showOverflow(context, ref)),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                SpacingTokens.screenPadding,
+                SpacingTokens.sectionGap,
+                SpacingTokens.screenPadding,
+                120,
+              ),
+              child: AfriSkeletonList(itemCount: 2),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -76,7 +123,7 @@ class FanzoneHubScreen extends ConsumerWidget {
           ),
           slivers: [
             // ── Degraded / partial error banner ──
-            if (snapshot.status == FanzoneHubStatus.degraded &&
+            if (snapshot.status != FanzoneHubStatus.ok &&
                 snapshot.message != null)
               SliverToBoxAdapter(
                 child: Padding(
@@ -242,20 +289,26 @@ class FanzoneHubScreen extends ConsumerWidget {
                 ),
                 child: AfriSectionCard(
                   title: 'Markets',
-                  child: Wrap(
-                    spacing: SpacingTokens.inlineGap,
-                    runSpacing: SpacingTokens.inlineGap,
-                    children: snapshot.markets
-                        .take(8)
-                        .map(
-                          (market) => AfriInfoChip(
-                            label:
-                                '${market.shortName} +${market.defaultFetValue}',
-                            color: ColorTokens.onSurfaceVariant,
-                          ),
+                  child: snapshot.markets.isEmpty
+                      ? _sectionState(
+                          title: 'Markets unavailable',
+                          message:
+                              'Prediction markets will appear when live data is reachable.',
                         )
-                        .toList(growable: false),
-                  ),
+                      : Wrap(
+                          spacing: SpacingTokens.inlineGap,
+                          runSpacing: SpacingTokens.inlineGap,
+                          children: snapshot.markets
+                              .take(8)
+                              .map(
+                                (market) => AfriInfoChip(
+                                  label:
+                                      '${market.shortName} +${market.defaultFetValue}',
+                                  color: ColorTokens.onSurfaceVariant,
+                                ),
+                              )
+                              .toList(growable: false),
+                        ),
                 ),
               ),
             ),
@@ -273,18 +326,24 @@ class FanzoneHubScreen extends ConsumerWidget {
                   title: 'Leaderboard',
                   trailingLabel: 'Open',
                   onTrailingTap: () => context.push('/fanzone/leaderboard'),
-                  child: Column(
-                    children: snapshot.leaderboard
-                        .map(
-                          (entry) => Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: SpacingTokens.listItemGap,
-                            ),
-                            child: HubLeaderboardRow(entry: entry),
-                          ),
+                  child: snapshot.leaderboard.isEmpty
+                      ? _sectionState(
+                          title: 'Leaderboard unavailable',
+                          message:
+                              'Supporter rankings will appear after live updates resume.',
                         )
-                        .toList(growable: false),
-                  ),
+                      : Column(
+                          children: snapshot.leaderboard
+                              .map(
+                                (entry) => Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: SpacingTokens.listItemGap,
+                                  ),
+                                  child: HubLeaderboardRow(entry: entry),
+                                ),
+                              )
+                              .toList(growable: false),
+                        ),
                 ),
               ),
             ),
@@ -302,19 +361,25 @@ class FanzoneHubScreen extends ConsumerWidget {
                   title: 'Challenges',
                   trailingLabel: 'Open',
                   onTrailingTap: () => context.push('/fanzone/challenges'),
-                  child: Column(
-                    children: snapshot.challenges
-                        .take(4)
-                        .map(
-                          (item) => Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: SpacingTokens.listItemGap,
-                            ),
-                            child: HubChallengeRow(item: item),
-                          ),
+                  child: snapshot.challenges.isEmpty
+                      ? _sectionState(
+                          title: 'Challenges unavailable',
+                          message:
+                              'FET challenges will appear when the rewards catalog is reachable.',
                         )
-                        .toList(growable: false),
-                  ),
+                      : Column(
+                          children: snapshot.challenges
+                              .take(4)
+                              .map(
+                                (item) => Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: SpacingTokens.listItemGap,
+                                  ),
+                                  child: HubChallengeRow(item: item),
+                                ),
+                              )
+                              .toList(growable: false),
+                        ),
                 ),
               ),
             ),
@@ -322,6 +387,10 @@ class FanzoneHubScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Widget _sectionState({required String title, required String message}) {
+    return AfriStateView.offline(title: title, message: message, compact: true);
   }
 
   Future<void> _openSlip(BuildContext context, WidgetRef ref) async {

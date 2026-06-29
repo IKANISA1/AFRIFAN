@@ -210,9 +210,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
     if (!mounted) {
       return;
     }
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    AfriToast.info(context, message);
   }
 
   Future<void> _dialMomoUssd() async {
@@ -296,9 +294,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                 controller.text.replaceAll(RegExp(r'[^0-9]'), ''),
               );
               if (parsed == null || parsed <= 0) {
-                ScaffoldMessenger.of(dialogContext).showSnackBar(
-                  const SnackBar(content: Text('Enter a valid amount.')),
-                );
+                AfriToast.error(dialogContext, 'Enter a valid amount.');
                 return;
               }
               dialogContext.pop(parsed);
@@ -373,7 +369,7 @@ class _TeamProfileScreenState extends ConsumerState<TeamProfileScreen>
                             team?.name.toUpperCase() ?? 'TEAM',
                             style: TypographyTokens.headlineLarge().copyWith(
                               fontWeight: FontWeight.w900,
-                              height: 0.95,
+                              height: TypographyTokens.lineHeightCompact,
                             ),
                           ),
                           const SizedBox(height: SpacingTokens.spacing3),

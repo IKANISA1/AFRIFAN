@@ -293,7 +293,8 @@ class Challenge {
       stakeFet: (json['stake_fet'] as num?)?.toInt() ?? 0,
       currencyCode: json['currency_code']?.toString() ?? 'FET',
       status: _parseStatus(json['status']?.toString()),
-      lockAt: DateTime.tryParse(json['lock_at']?.toString() ?? '') ??
+      lockAt:
+          DateTime.tryParse(json['lock_at']?.toString() ?? '') ??
           DateTime.now(),
       settledAt: DateTime.tryParse(json['settled_at']?.toString() ?? ''),
       cancelledAt: DateTime.tryParse(json['cancelled_at']?.toString() ?? ''),
@@ -302,8 +303,7 @@ class Challenge {
       totalPoolFet: (json['total_pool_fet'] as num?)?.toInt() ?? 0,
       winnerCount: (json['winner_count'] as num?)?.toInt() ?? 0,
       loserCount: (json['loser_count'] as num?)?.toInt() ?? 0,
-      payoutPerWinnerFet:
-          (json['payout_per_winner_fet'] as num?)?.toInt() ?? 0,
+      payoutPerWinnerFet: (json['payout_per_winner_fet'] as num?)?.toInt() ?? 0,
       officialHomeScore: (json['official_home_score'] as num?)?.toInt(),
       officialAwayScore: (json['official_away_score'] as num?)?.toInt(),
       createdAt: DateTime.tryParse(json['created_at']?.toString() ?? ''),
@@ -391,9 +391,10 @@ class ChallengeDetailPayload {
       entries: rawEntries is List
           ? rawEntries
                 .whereType<Map>()
-                .map((row) => ChallengeEntry.fromJson(
-                      Map<String, dynamic>.from(row),
-                    ))
+                .map(
+                  (row) =>
+                      ChallengeEntry.fromJson(Map<String, dynamic>.from(row)),
+                )
                 .toList(growable: false)
           : const <ChallengeEntry>[],
     );
@@ -401,23 +402,19 @@ class ChallengeDetailPayload {
 }
 
 class ChallengeMutationResult {
-  const ChallengeMutationResult({
-    required this.status,
-    this.challenge,
-  });
+  const ChallengeMutationResult({required this.status, this.challenge});
 
   final String status;
   final Challenge? challenge;
 
   bool get isSuccess => switch (status) {
-        'created' ||
-        'joined' ||
-        'cancelled' ||
-        'already_joined' ||
-        'already_processed' =>
-          true,
-        _ => false,
-      };
+    'created' ||
+    'joined' ||
+    'cancelled' ||
+    'already_joined' ||
+    'already_processed' => true,
+    _ => false,
+  };
 
   factory ChallengeMutationResult.fromJson(Map<String, dynamic> json) {
     final rawChallenge = json['challenge'];

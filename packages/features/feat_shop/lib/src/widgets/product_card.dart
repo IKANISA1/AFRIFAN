@@ -49,7 +49,7 @@ class ArmouryProductCard extends StatelessWidget {
                   Positioned.fill(
                     child: ClipRRect(
                       borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(24),
+                        top: Radius.circular(ShapeTokens.radiusXl),
                       ),
                       child: _ProductImage(
                         imageUrl: imageUrl,

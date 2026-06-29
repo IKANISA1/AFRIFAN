@@ -222,8 +222,12 @@ class _PredictionSettlementScreenState
                         child: Column(
                           children: [
                             Container(
-                              width: 72,
-                              height: 72,
+                              width:
+                                  SpacingTokens.spacing16 +
+                                  SpacingTokens.spacing2,
+                              height:
+                                  SpacingTokens.spacing16 +
+                                  SpacingTokens.spacing2,
                               decoration: BoxDecoration(
                                 color: _accent(detail).withValues(alpha: 0.14),
                                 shape: BoxShape.circle,
@@ -232,7 +236,9 @@ class _PredictionSettlementScreenState
                               child: Icon(
                                 _icon(detail),
                                 color: _accent(detail),
-                                size: 34,
+                                size:
+                                    SpacingTokens.spacing8 +
+                                    SpacingTokens.spacing1 / 2,
                               ),
                             ),
                             const SizedBox(height: SpacingTokens.spacing4),
@@ -420,7 +426,7 @@ class _SettlementMetric extends StatelessWidget {
               ColorTokens.onSurfaceVariant,
             ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.0),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: SpacingTokens.spacing1),
           Text(
             value,
             maxLines: 1,

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,7 +10,6 @@ import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 import '../widgets/jackpot_countdown_timer.dart';
 import '../widgets/market_option_pill.dart';
-import 'package:core_utils/core_utils.dart';
 
 class JackpotChallengeScreen extends ConsumerStatefulWidget {
   const JackpotChallengeScreen({super.key});
@@ -141,15 +141,11 @@ class _JackpotChallengeScreenState
         );
         await _load();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              result.message.isEmpty
-                  ? 'Could not submit the jackpot entry right now.'
-                  : result.message,
-            ),
-            behavior: SnackBarBehavior.floating,
-          ),
+        AfriToast.error(
+          context,
+          result.message.isEmpty
+              ? 'Could not submit the jackpot entry right now.'
+              : result.message,
         );
       }
     } finally {
@@ -289,8 +285,10 @@ class _JackpotChallengeScreenState
                         const SizedBox(height: SpacingTokens.spacing4),
                         AfriLinearProgressIndicator(
                           value: completion,
-                          minHeight: 8,
-                          borderRadius: BorderRadius.circular(999),
+                          minHeight: SpacingTokens.spacing2,
+                          borderRadius: BorderRadius.circular(
+                            ShapeTokens.radiusFull,
+                          ),
                           color: ColorTokens.clubAccent,
                           backgroundColor: ColorTokens.surfaceContainerHighest,
                         ),
@@ -300,7 +298,7 @@ class _JackpotChallengeScreenState
                           style: TypographyTokens.bodySmall(),
                         ),
                         if ((round?.remainingEntries ?? 0) > 0) ...[
-                          const SizedBox(height: 2),
+                          const SizedBox(height: SpacingTokens.spacing1 / 2),
                           Text(
                             '${round!.remainingEntries} entries remaining',
                             style: TypographyTokens.bodySmall(),
@@ -375,7 +373,9 @@ class _JackpotChallengeScreenState
                       ),
                     ),
                   ],
-                  const SizedBox(height: 120),
+                  const SizedBox(
+                    height: SpacingTokens.spacing20 + SpacingTokens.spacing10,
+                  ),
                 ],
               ),
             ),
@@ -408,7 +408,7 @@ class _JackpotFixtureRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(fixtureLabel, style: TypographyTokens.titleSmall()),
-          const SizedBox(height: 2),
+          const SizedBox(height: SpacingTokens.spacing1 / 2),
           Text(details, style: TypographyTokens.bodySmall()),
           const SizedBox(height: SpacingTokens.spacing3),
           Wrap(
@@ -448,7 +448,7 @@ class _LeaderRow extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 32,
+            width: SpacingTokens.spacing8,
             child: Text(
               '#$rank',
               style: TypographyTokens.titleSmall().copyWith(

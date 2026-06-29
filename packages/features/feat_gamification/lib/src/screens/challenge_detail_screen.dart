@@ -40,21 +40,11 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
 
     setState(() => _joining = false);
     if (!result.isSuccess) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Could not join this challenge right now.'),
-          backgroundColor: ColorTokens.error,
-        ),
-      );
+      AfriToast.error(context, 'Could not join this challenge right now.');
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Challenge joined successfully.'),
-        backgroundColor: ColorTokens.success,
-      ),
-    );
+    AfriToast.success(context, 'Challenge joined successfully.');
   }
 
   Future<void> _cancelChallenge(Challenge challenge) async {
@@ -72,21 +62,11 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
 
     setState(() => _cancelling = false);
     if (!result.isSuccess) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Could not cancel this challenge.'),
-          backgroundColor: ColorTokens.error,
-        ),
-      );
+      AfriToast.error(context, 'Could not cancel this challenge.');
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Challenge cancelled.'),
-        backgroundColor: ColorTokens.success,
-      ),
-    );
+    AfriToast.success(context, 'Challenge cancelled.');
   }
 
   @override
@@ -337,7 +317,9 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                                     entry.displayName,
                                     style: TypographyTokens.titleSmall(),
                                   ),
-                                  const SizedBox(height: 2),
+                                  const SizedBox(
+                                    height: SpacingTokens.spacing1 / 2,
+                                  ),
                                   Text(
                                     entry.status.name.toUpperCase(),
                                     style: TypographyTokens.labelSmall(
@@ -438,11 +420,11 @@ class _MetaChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing3,
-        vertical: 6,
+        vertical: SpacingTokens.spacing2 - SpacingTokens.spacing1 / 2,
       ),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
         label,

@@ -87,7 +87,7 @@ class _ContributionRow extends StatelessWidget {
                     '${record.amount} $currencySymbol',
                     style: TypographyTokens.titleSmall(),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: SpacingTokens.spacing1 / 2),
                   Text(record.date, style: TypographyTokens.bodySmall()),
                 ],
               ),
@@ -101,7 +101,7 @@ class _ContributionRow extends StatelessWidget {
                     ColorTokens.clubAccent,
                   ).copyWith(fontWeight: FontWeight.w700),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(
                   record.status,
                   style: TypographyTokens.labelSmall(

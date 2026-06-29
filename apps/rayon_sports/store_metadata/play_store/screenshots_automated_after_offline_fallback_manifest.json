@@ -1,0 +1,74 @@
+{
+  "app_id": "rw.gikundiro.app",
+  "device": {
+    "android_version": "13",
+    "density": "Physical density: 440",
+    "model": "Pixel 4a",
+    "screen_size": "Physical size: 1080x2340",
+    "serial": "13111JEC215558"
+  },
+  "fastlane_dir": "android/fastlane/metadata/android/en-US/images/phoneScreenshots",
+  "generated_at": "2026-06-28T18:06:50.682764+00:00",
+  "min_count": 7,
+  "mode": "automated",
+  "screenshot_count": 7,
+  "screenshots": [
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_offline_fallback_2026-06-28/01_home_dashboard.png",
+      "size_bytes": 237769,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_offline_fallback_2026-06-28/02_fanzone.png",
+      "size_bytes": 196285,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_offline_fallback_2026-06-28/03_membership.png",
+      "size_bytes": 314669,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_offline_fallback_2026-06-28/04_ticketing.png",
+      "size_bytes": 100875,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_offline_fallback_2026-06-28/05_shop.png",
+      "size_bytes": 77547,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_offline_fallback_2026-06-28/06_contributions.png",
+      "size_bytes": 103721,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_offline_fallback_2026-06-28/07_settings.png",
+      "size_bytes": 185728,
+      "valid": true,
+      "width": 1080
+    }
+  ],
+  "success": true
+}

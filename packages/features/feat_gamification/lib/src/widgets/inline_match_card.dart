@@ -63,7 +63,7 @@ class InlineMatchCard extends ConsumerWidget {
           children: [
             // ── Accent bar ──
             Container(
-              height: 3,
+              height: SpacingTokens.spacing1,
               decoration: BoxDecoration(
                 color: isLive
                     ? ColorTokens.clubAccent
@@ -203,8 +203,8 @@ class _TeamAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 48,
-      height: 48,
+      width: SpacingTokens.spacing12,
+      height: SpacingTokens.spacing12,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: ColorTokens.surfaceContainerHigh,
@@ -274,7 +274,9 @@ class _InlinePredictionGrid extends ConsumerWidget {
               excludeChildSemantics: true,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                constraints: const BoxConstraints(minHeight: 48),
+                constraints: const BoxConstraints(
+                  minHeight: SpacingTokens.spacing12,
+                ),
                 padding: const EdgeInsets.symmetric(
                   vertical: SpacingTokens.spacing3,
                 ),

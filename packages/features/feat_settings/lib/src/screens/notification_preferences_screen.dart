@@ -139,9 +139,7 @@ class _NotificationPreferencesScreenState
 
   void _showMessage(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    AfriToast.info(context, message);
   }
 
   @override

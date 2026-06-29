@@ -233,8 +233,10 @@ class StadiumPainter extends CustomPainter {
 
     // Draw Stadium Outer
     final outerRect = Rect.fromCenter(center: center, width: 280, height: 400);
-    final outerRRect =
-        RRect.fromRectAndRadius(outerRect, const Radius.circular(100));
+    final outerRRect = RRect.fromRectAndRadius(
+      outerRect,
+      const Radius.circular(ShapeTokens.radiusFull / 100),
+    );
     canvas.drawRRect(
       outerRRect,
       Paint()

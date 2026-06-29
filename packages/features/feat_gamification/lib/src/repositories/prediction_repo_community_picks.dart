@@ -1,8 +1,6 @@
 part of 'prediction_repository.dart';
 
 extension PredictionRepoCommunityPicks on PredictionRepository {
-
-
   Future<List<CommunityPick>> loadCommunityPicks(String fixtureMarketId) async {
     return _cachedListQuery(
       cacheKey: _cacheKey('community_market', <Object?>[fixtureMarketId]),
@@ -44,6 +42,4 @@ extension PredictionRepoCommunityPicks on PredictionRepository {
       decoder: CommunityPick.fromJson,
     );
   }
-
-
 }

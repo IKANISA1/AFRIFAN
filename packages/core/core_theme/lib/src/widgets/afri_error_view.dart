@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../extensions.dart';
+import '../tokens/icon_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_button.dart';
 
@@ -18,7 +19,7 @@ class AfriErrorView extends StatelessWidget {
     this.message,
     this.onRetry,
     this.actionLabel,
-    this.icon = Icons.error_outline_rounded,
+    this.icon = AfriIcons.statusError,
     this.compact = false,
     super.key,
   });

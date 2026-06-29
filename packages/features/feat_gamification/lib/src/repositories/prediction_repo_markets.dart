@@ -1,8 +1,6 @@
 part of 'prediction_repository.dart';
 
 extension PredictionRepoMarkets on PredictionRepository {
-
-
   Future<List<FixtureMarket>> loadFixtureMarkets(String fixtureId) async {
     final cacheKey = _cacheKey('fixture_markets', <Object?>[fixtureId]);
     final result = await SafeRpc.call(
@@ -131,6 +129,4 @@ extension PredictionRepoMarkets on PredictionRepository {
         )
         .toList(growable: false);
   }
-
-
 }

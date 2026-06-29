@@ -68,15 +68,15 @@ class _ChallengeOpsScreenState extends ConsumerState<ChallengeOpsScreen> {
     if (!mounted) {
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          result['status']?.toString() == 'error'
-              ? result['message']?.toString() ?? 'Retry failed.'
-              : 'Settlement retry executed.',
-        ),
-      ),
-    );
+    final isError = result['status']?.toString() == 'error';
+    final message = isError
+        ? result['message']?.toString() ?? 'Retry failed.'
+        : 'Settlement retry executed.';
+    if (isError) {
+      AfriToast.error(context, message);
+    } else {
+      AfriToast.success(context, message);
+    }
     await _load();
   }
 

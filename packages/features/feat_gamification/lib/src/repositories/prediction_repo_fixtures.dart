@@ -1,8 +1,6 @@
 part of 'prediction_repository.dart';
 
 extension PredictionRepoFixtures on PredictionRepository {
-
-
   Future<List<FixtureSummary>> loadFixtures({
     String? competitionSlug,
     String? status,
@@ -60,6 +58,4 @@ extension PredictionRepoFixtures on PredictionRepository {
       decoder: FixtureSummary.fromJson,
     );
   }
-
-
 }

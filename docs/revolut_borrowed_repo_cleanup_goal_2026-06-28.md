@@ -88,6 +88,156 @@ patterns.
   `SwitchListTile` usages to the shared wrappers.
 - Added a source guardrail that fails tests if direct Material list/toggle rows
   return to feature/app UI.
+
+## 2026-06-28 Borrowed Onboarding Toast Migration Slice
+
+- Migrated the onboarding entry flow away from direct Material snackbar
+  feedback. Anonymous-session failures in
+  `packages/features/feat_onboarding/lib/src/screens/onboarding_screen.dart`
+  now route through `AfriToast.error`.
+- Migrated WhatsApp phone-auth and OTP feedback in
+  `packages/features/feat_onboarding/lib/src/screens/supporter_phone_auth_screen.dart`
+  to shared borrowed toasts: validation/auth failures use `AfriToast.error`,
+  while successful OTP resend confirmation uses `AfriToast.success`.
+- Expanded the `Migrated packages use shared toast primitives` source
+  guardrail to include `packages/features/feat_onboarding` alongside
+  contributions and settings, preventing raw `ScaffoldMessenger.of`,
+  `showSnackBar`, or `SnackBar` from returning to the migrated packages.
+- Production scan result:
+  `rg -n "ScaffoldMessenger\.of|\bSnackBar\b|showSnackBar|SnackBarAction" packages/features/feat_onboarding -g '*.dart' -g '!**/test/**'`
+  returns no hits.
+- Focused analyzer gate passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_onboarding`
+  exits 0. Output still includes existing nonfatal `core_theme` info-level
+  lint/debt items such as discarded futures and directive ordering.
+- Focused tests passed:
+  `flutter test packages/core/core_theme/test/design_system_source_of_truth_test.dart packages/features/feat_onboarding/test/onboarding_flow_test.dart packages/features/feat_onboarding/test/onboarding_module_test.dart packages/features/feat_onboarding/test/supporter_phone_auth_screen_test.dart`
+  passed 46/46 tests, including the expanded migrated-package toast guardrail.
+- Drift and whitespace guardrails passed after the report update:
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings`
+  reports 0 total findings, and `git diff --check` is clean.
+
+## 2026-06-28 Borrowed Ticketing Toast And Golden Stabilization Slice
+
+- Migrated ticket purchase feedback in
+  `packages/features/feat_ticketing/lib/src/screens/match_detail_screen.dart`
+  away from direct Material `ScaffoldMessenger` and `SnackBar` usage.
+  Guest sign-in guidance now uses `AfriToast.info`, MOMO setup/dialer and
+  reservation failures use `AfriToast.error`, and successful ticket requests
+  use `AfriToast.success`.
+- Expanded the `Migrated packages use shared toast primitives` guardrail to
+  include `packages/features/feat_ticketing` alongside contributions,
+  onboarding, and settings. The guardrail now catches `ScaffoldMessenger.of`,
+  `showSnackBar`, `SnackBar`, and `SnackBarAction` in migrated packages.
+- Fixed a shared button typography leak in
+  `packages/core/core_theme/lib/src/widgets/afri_button.dart`: `AfriButton`
+  now renders labels through `TypographyTokens.labelLarge` instead of ambient
+  Material `ThemeData` text styles, keeping borrowed font and zero tracking in
+  golden/test paths and production surfaces.
+- Stabilized the ticketing golden fixture in
+  `packages/features/feat_ticketing/test/match_list_golden_test.dart` by
+  replacing the expired April 18, 2026 fixture with a far-future April 18, 2099
+  fixture and restoring the intended `Rayon Sports vs APR` card state. The
+  previous fixture had aged into the past as of June 28, 2026, causing the
+  upcoming tab to render blank.
+- Regenerated only the ticketing match-list golden:
+  `flutter test --update-goldens packages/features/feat_ticketing/test/match_list_golden_test.dart`
+  passed 1/1 and produced a visible borrowed ticket card with readable
+  `AfriButton` typography.
+- Production scan result:
+  `rg -n "ScaffoldMessenger\.of|\bSnackBar\b|showSnackBar|SnackBarAction" packages/features/feat_ticketing packages/features/feat_onboarding packages/features/feat_contributions packages/features/feat_settings -g '*.dart' -g '!**/test/**'`
+  returns no hits in the migrated packages.
+- Focused analyzer gate passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_ticketing`
+  exits 0. Output still includes existing nonfatal info-level lint/debt items
+  such as discarded futures and directive ordering.
+- Focused tests passed:
+  `flutter test packages/core/core_theme/test/design_system_source_of_truth_test.dart packages/features/feat_ticketing/test/ticketing_module_test.dart packages/features/feat_ticketing/test/match_list_golden_test.dart`
+  passed 34/34 tests, including the expanded migrated-package toast guardrail
+  and the stabilized ticketing golden.
+- Drift and whitespace guardrails passed after the report update:
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings`
+  reports 0 total findings, and `git diff --check` is clean.
+
+## 2026-06-28 Borrowed Fan Clubs Toast Migration Slice
+
+- Migrated fan-club join/leave and share-link feedback in
+  `packages/features/feat_fan_clubs` away from direct Material snackbar
+  usage. Join/leave failures in list and detail screens now use
+  `AfriToast.error`, while copied share links use `AfriToast.success`.
+- Expanded the `Migrated packages use shared toast primitives` guardrail to
+  include `packages/features/feat_fan_clubs` alongside contributions,
+  onboarding, settings, and ticketing.
+- Production scan result:
+  `rg -n "ScaffoldMessenger\.of|\bSnackBar\b|showSnackBar|SnackBarAction" packages/features/feat_fan_clubs packages/features/feat_ticketing packages/features/feat_onboarding packages/features/feat_contributions packages/features/feat_settings -g '*.dart' -g '!**/test/**'`
+  returns no hits in the migrated packages.
+- Focused analyzer gate passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_fan_clubs`
+  exits 0. Output still includes existing nonfatal info-level lint/debt items
+  such as discarded futures and directive ordering.
+- Focused tests passed:
+  `flutter test packages/core/core_theme/test/design_system_source_of_truth_test.dart packages/features/feat_fan_clubs/test/fan_clubs_module_test.dart packages/features/feat_fan_clubs/test/fan_clubs_results_test.dart packages/features/feat_fan_clubs/test/fan_club_matchday_agenda_section_test.dart`
+  passed 38/38 tests, including the expanded migrated-package toast guardrail.
+- Drift and whitespace guardrails passed after the report update:
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings`
+  reports 0 total findings, and `git diff --check` is clean.
+
+## 2026-06-28 Borrowed Membership And Live Toast Migration Slice
+
+- Migrated membership and live-match feedback away from direct Material
+  snackbars. Fan-registry pagination failures now use `AfriToast.error`;
+  membership activation states now route through explicit `AfriToast.info`,
+  `AfriToast.success`, or `AfriToast.error` helpers; copied membership details
+  use `AfriToast.success`; live match-share copy confirmation uses
+  `AfriToast.success`.
+- Expanded the `Migrated packages use shared toast primitives` guardrail to
+  include `packages/features/feat_membership` and
+  `packages/features/feat_live` alongside contributions, fan clubs,
+  onboarding, settings, and ticketing.
+- Production scan result:
+  `rg -n "ScaffoldMessenger\.of|\bSnackBar\b|showSnackBar|SnackBarAction" packages/features/feat_membership packages/features/feat_live packages/features/feat_fan_clubs packages/features/feat_ticketing packages/features/feat_onboarding packages/features/feat_contributions packages/features/feat_settings -g '*.dart' -g '!**/test/**'`
+  returns no hits in the migrated packages.
+- Focused analyzer gate passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_membership packages/features/feat_live`
+  exits 0. Output still includes existing nonfatal info-level lint/debt items
+  such as discarded futures, directive ordering, and pre-existing membership
+  const suggestions.
+- Focused tests passed:
+  `flutter test packages/core/core_theme/test/design_system_source_of_truth_test.dart packages/features/feat_membership/test/membership_module_test.dart packages/features/feat_membership/test/fan_registry_results_test.dart packages/features/feat_membership/test/contribution_history_test.dart packages/features/feat_live/test/live_module_test.dart packages/features/feat_live/test/live_match_fallback_test.dart`
+  passed 50/50 tests, including the expanded migrated-package toast guardrail.
+- Drift and whitespace guardrails passed after the report update:
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings`
+  reports 0 total findings, and `git diff --check` is clean.
+
+## 2026-06-28 Borrowed Shop Toast And Action Migration Slice
+
+- Extended `AfriToast` with optional `actionLabel` and `onAction` support so
+  feature packages can preserve short snackbar actions, such as `View Cart`,
+  without owning raw Material `SnackBarAction` usage.
+- Migrated shop catalog, product detail, and cart checkout feedback away from
+  direct Material snackbars. Add-to-cart and order-created states use
+  `AfriToast.success`; validation prompts such as missing size/address use
+  `AfriToast.info`; stock, MOMO, setup, and checkout failures use
+  `AfriToast.error`.
+- Preserved the product-detail `View Cart` action through the shared
+  `AfriToast.success(..., actionLabel: 'View Cart', onAction: ...)` API.
+- Expanded the `Migrated packages use shared toast primitives` guardrail to
+  include `packages/features/feat_shop` alongside contributions, fan clubs,
+  live, membership, onboarding, settings, and ticketing.
+- Production scan result:
+  `rg -n "ScaffoldMessenger\.of|\bSnackBar\b|showSnackBar|SnackBarAction" packages/features/feat_shop packages/features/feat_membership packages/features/feat_live packages/features/feat_fan_clubs packages/features/feat_ticketing packages/features/feat_onboarding packages/features/feat_contributions packages/features/feat_settings -g '*.dart' -g '!**/test/**'`
+  returns no hits in the migrated packages.
+- Focused analyzer gate passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_shop`
+  exits 0. Output still includes existing nonfatal info-level lint/debt items
+  such as discarded futures, directive ordering, and pre-existing shop
+  noop/const suggestions.
+- Focused tests passed:
+  `flutter test packages/core/core_theme/test/design_system_source_of_truth_test.dart packages/features/feat_shop/test/shop_module_test.dart packages/features/feat_shop/test/shop_cart_provider_test.dart packages/features/feat_shop/test/shop_screen_catalog_test.dart packages/features/feat_shop/test/checkout_bar_test.dart`
+  passed 46/46 tests, including the expanded migrated-package toast guardrail.
+- Drift and whitespace guardrails passed after the report update:
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings`
+  reports 0 total findings, and `git diff --check` is clean.
 - Replaced remaining direct feature/app `style: TextStyle(...)` constructors
   with `TypographyTokens` calls, including borrowed-paper badges, ticket pass
   metadata, cart counters, and decorative glyph sizing.
@@ -1133,6 +1283,132 @@ patterns.
   `bash tools/scripts/rayon_mobile_design_drift_report.sh` reports 0 total
   findings, and `git diff --check` is clean.
 
+## 2026-06-28 Borrowed Contributions Toast Migration Slice
+
+- Migrated all direct contributions-package `ScaffoldMessenger.of(...).showSnackBar`
+  and `SnackBar` usage to `AfriToast`, continuing the transient-feedback
+  cleanup started in settings.
+- Routed MoMo dialer launch failure and SMS sync permission/sync failures
+  through `AfriToast.error`.
+- Routed CSV export completion, successful SMS sync enablement, and manual SMS
+  sync completion through `AfriToast.success`; neutral unsupported-PDF and SMS
+  disabled messages now use `AfriToast.info`.
+- Expanded the focused design-system toast guardrail to cover both migrated
+  packages: `feat_settings` and `feat_contributions`.
+- Production scan result:
+  `rg -n "ScaffoldMessenger\.of|\bSnackBar\b" packages/features/feat_contributions packages/features/feat_settings -g '*.dart' -g '!**/test/**'`
+  returns no production hits in the migrated packages.
+- Focused analyzer gate passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_contributions packages/features/feat_settings`
+  exits 0. Output still includes existing nonfatal lint/debt items such as
+  discarded futures, directive ordering, and a pre-existing const suggestion in
+  the MoMo contribution overlay.
+- Focused tests passed:
+  `flutter test packages/core/core_theme/test/design_system_source_of_truth_test.dart packages/features/feat_contributions/test/group_detail_ledger_section_test.dart packages/features/feat_contributions/test/groups_screen_empty_state_test.dart packages/features/feat_settings/test/settings_module_test.dart`
+  passed 41/41 tests, including the expanded migrated-package toast guardrail.
+- Drift and whitespace guardrails passed after the report update:
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh` reports 0 total
+  findings, and `git diff --check` is clean.
+
+## 2026-06-28 Borrowed Settings Toast Migration Slice
+
+- Migrated all direct settings-package `ScaffoldMessenger.of(...).showSnackBar`
+  and `SnackBar` usage to `AfriToast`, centralizing settings feedback chrome
+  through the borrowed toast primitive.
+- Routed support-link launch failures, missing WhatsApp support configuration,
+  missing support contact configuration, and expired-session admin access
+  feedback through `AfriToast.error`.
+- Routed edit-profile, privacy, and notification-preference helper messages
+  through `AfriToast.info`, preserving their existing neutral message behavior
+  while applying borrowed card surface, icon, typography, haptics, and
+  accessibility treatment.
+- Added a focused design-system guardrail that fails if `feat_settings`
+  reintroduces direct `ScaffoldMessenger.of` or `SnackBar` usage before the
+  remaining feature packages are migrated.
+- Production scan result:
+  `rg -n "ScaffoldMessenger\.of|\bSnackBar\b" packages/features/feat_settings -g '*.dart' -g '!**/test/**'`
+  returns no settings production hits.
+- Focused analyzer gate passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_settings`
+  exits 0. Output still includes existing nonfatal core lint/debt items such
+  as discarded futures and directive ordering.
+- Focused tests passed:
+  `flutter test packages/core/core_theme/test/design_system_source_of_truth_test.dart packages/features/feat_settings/test/settings_module_test.dart packages/features/feat_settings/test/settings_screens_test.dart`
+  passed 38/38 tests, including the new settings toast guardrail.
+- Drift and whitespace guardrails passed after the report update:
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh` reports 0 total
+  findings, and `git diff --check` is clean.
+
+## 2026-06-28 Borrowed Bottom Sheet Route Migration Slice
+
+- Extended `showAfriBottomSheet` in `core_theme` with a
+  `useBorrowedSurface` option so feature sheets can centralize route chrome
+  while preserving custom draggable or already-tokenized sheet bodies.
+- Updated `AfriBottomSheet` so large content receives flexible bounded height
+  inside the borrowed surface instead of overflowing the modal shell.
+- Migrated all active feature/app direct `showModalBottomSheet` route calls to
+  `showAfriBottomSheet` across gamification, shop, settings, contributions,
+  admin, and membership surfaces. Existing return types, scroll-controlled
+  behavior, confirmation results, and custom sheet bodies were preserved.
+- Added a design-system guardrail test that fails on future feature/app direct
+  `showModalBottomSheet` calls and directs authors to `showAfriBottomSheet`.
+- Production scan result:
+  `rg -n "\bshowModalBottomSheet\s*(?:<[^>]+>)?\s*\(" packages/features apps packages/core -g '*.dart' -g '!**/test/**'`
+  now reports only core wrapper internals:
+  `afri_bottom_sheet.dart` and `afri_action_sheet.dart`.
+- Focused analyzer gate passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_gamification packages/features/feat_shop packages/features/feat_settings packages/features/feat_contributions packages/features/feat_admin packages/features/feat_membership`
+  exits 0. Output still includes existing nonfatal lint/debt items such as
+  discarded futures, directive ordering, unused imports/elements, const
+  suggestions, and the existing protected-member warning in admin CMS builders.
+- Validation caught and fixed one migration-specific layout issue: the first
+  focused test run found the challenge confirmation sheet overflowing inside
+  the shared shell, so `AfriBottomSheet` now wraps sheet content with
+  `Flexible(fit: FlexFit.loose, ...)`.
+- Focused tests passed after the shell fix:
+  `flutter test packages/core/core_theme/test/design_system_source_of_truth_test.dart packages/features/feat_admin/test/admin_module_test.dart packages/features/feat_gamification/test/challenge_feature_test.dart packages/features/feat_settings/test/settings_module_test.dart packages/features/feat_contributions/test/group_detail_ledger_section_test.dart packages/features/feat_membership/test/contribution_history_test.dart`
+  passed 51/51 tests, including the new raw-bottom-sheet-route guardrail.
+- Drift and whitespace guardrails passed after the report update:
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh` reports 0 total
+  findings, and `git diff --check` is clean.
+
+## 2026-06-28 Borrowed Form And Toggle Control Migration Slice
+
+- Added `AfriTextFormField` in `core_theme` for form-backed borrowed-system
+  inputs. The remaining Flutter `TextFormField` constructor now lives inside
+  the design-system boundary and shares the same tokenized input surface,
+  typography, content padding, max-length behavior, and focus border treatment
+  as `AfriInputField`.
+- Added `AfriSwitch` in `core_theme` for compact inline toggle rows. The
+  remaining Flutter `Switch` constructor now lives inside the design-system
+  boundary and applies shared club accent, borrowed active track, and dark
+  inactive track/thumb colors.
+- Exported the compact switch primitive from `core_theme`; `AfriTextFormField`
+  is exported through the existing input field export.
+- Migrated the remaining active feature/app direct `TextFormField` and `Switch`
+  usage in the admin feature detail rules/sort-order editor to
+  `AfriTextFormField` and `AfriSwitch`, preserving numeric entry, centered
+  alignment, disabled saving state, and submit parsing behavior.
+- Added design-system guardrail tests that fail on future feature/app direct
+  `TextField`/`TextFormField` usage and future direct compact
+  `Switch`/`Checkbox`/`Radio`/`Slider` usage.
+- Production scan result:
+  `rg -n "\b(TextField|TextFormField|Switch|Checkbox|Radio|Slider)\s*\(" packages/features apps packages/core -g '*.dart' -g '!**/test/**'`
+  now reports only core wrapper internals:
+  `afri_input_field.dart` and `afri_switch.dart`.
+- Focused analyzer gate passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_admin`
+  exits 0. Output still includes existing nonfatal lint/debt items such as
+  discarded futures, directive ordering, const suggestions, and the existing
+  protected-member warning in admin CMS builders.
+- Focused tests passed:
+  `flutter test packages/core/core_theme/test/design_system_source_of_truth_test.dart packages/features/feat_admin/test/admin_module_test.dart`
+  passed 31/31 tests, including the new raw-input and raw-compact-toggle
+  guardrails.
+- Drift and whitespace guardrails passed after the report update:
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh` reports 0 total
+  findings, and `git diff --check` is clean.
+
 ## 2026-06-28 Borrowed Dialog Surface Migration Slice
 
 - Added `AfriDialog` in `core_theme` as the shared borrowed modal surface. The
@@ -1346,3 +1622,946 @@ patterns.
 - Drift and whitespace guardrails passed after the report update:
   `bash tools/scripts/rayon_mobile_design_drift_report.sh` reports 0 total
   findings, and `git diff --check` is clean.
+
+## 2026-06-28 Guest Auth And Live Route Evidence Slice
+
+- Added an anonymous-auth resilience path in `AuthNotifier`: when Supabase
+  anonymous sign-in fails with raw network errors or SafeRpc's normalized
+  "Unable to connect / check your internet connection" message, the app now
+  continues with a local guest `UserProfile` and `AdminWorkspaceAccess.none`
+  instead of trapping supporters on onboarding.
+- Added focused coverage in
+  `packages/core/core_auth/test/auth_lifecycle_test.dart` for both raw
+  Supabase DNS failures and normalized connection failures. Validation passed:
+  `flutter test --no-pub packages/core/core_auth/test/auth_lifecycle_test.dart`
+  completed 21/21 tests, and focused `flutter analyze --no-pub` reported no
+  issues for the touched auth files and screenshot helper.
+- Hardened `apps/rayon_sports/scripts/capture_screenshots.py` with an
+  automated ADB mode that force-stops, launches, waits through transient
+  Flutter semantics frames, advances onboarding by accessibility label, captures
+  screenshots, and records JSON manifests. The helper now parses Android UI XML
+  defensively and treats XML element existence explicitly.
+- Built and installed a fresh debug APK for device proof after the profile AOT
+  build stalled twice and was interrupted with exit 130. Debug artifact evidence:
+  `apps/rayon_sports/build/app/outputs/flutter-apk/app-debug.apk`, 224 MB,
+  SHA-256
+  `22fd38f541649cb070091ac1a0aa091b9ac8ca08847d8d616df4f7a33dd5500a`,
+  installed successfully on Pixel 4a `13111JEC215558`.
+- Device evidence captured on Pixel 4a:
+  `apps/rayon_sports/store_metadata/play_store/screenshots/automated_2026-06-28/01_home_dashboard.png`,
+  `02_fanzone.png`, and `07_settings_manual.png`; Settings manifest:
+  `apps/rayon_sports/store_metadata/play_store/screenshots_settings_manual_manifest.json`.
+- Critical blocker found: the guest/offline Home screen reaches the shell but
+  renders only top chrome and bottom navigation; the body is blank, so quick
+  actions such as Members, Tickets, Shop, and Groups are not visible or
+  accessible. Fan Zone reaches its tab but remains skeleton-only under the same
+  Supabase DNS failure. This is not store-ready: authenticated-shell reachability
+  is fixed, but offline/degraded body states for primary routes still need real
+  fallback content or explicit empty/error states.
+- Additional blocker: feature data providers still log repeated Supabase DNS
+  failures and Crashlytics records during offline guest navigation. These should
+  degrade to bounded UI states and non-crashing/non-Crashlytics expected-offline
+  handling before release evidence is considered clean.
+- Hygiene after this slice: `python3 -m py_compile
+  apps/rayon_sports/scripts/capture_screenshots.py` passed and
+  `git diff --check` is clean.
+
+## 2026-06-28 Offline Guest Home And Fanzone Fallback Slice
+
+- Fixed the primary Home regression found in live device evidence: when remote
+  CMS content blocks are unavailable, Home now composes a local fallback block
+  sequence for the hero/error state, primary actions, quick actions, and latest
+  intel. This keeps the shell usable even when Supabase/config cannot be
+  reached.
+- Fixed the Fan Zone first-load experience: loading now shows bounded state copy
+  plus route shortcuts instead of skeleton-only cards, and fully offline
+  snapshots show explicit section states for markets, leaderboard, and
+  challenges.
+- Corrected `FanzoneHubNotifier` to actually launch its eight upstream loads
+  concurrently. The previous implementation described concurrent loading but
+  awaited calls sequentially, amplifying DNS/offline delays.
+- Added focused widget coverage:
+  `HomeScreen states renders fallback home actions when CMS blocks are
+  unavailable`, `loading state still exposes fanzone route shortcuts`, and
+  `offline snapshot shows bounded degraded sections`.
+- Refreshed the Home golden after confirming the current rendered image exposes
+  proper button labels instead of the stale masked-label baseline.
+- Validation passed:
+  `flutter analyze --no-pub packages/features/feat_home/lib/src/screens/home_screen.dart packages/features/feat_home/test/home_screen_states_test.dart packages/features/feat_gamification/lib/src/providers/fanzone_hub_provider.dart packages/features/feat_gamification/lib/src/screens/fanzone_hub_screen.dart packages/features/feat_gamification/test/fanzone_hub_screen_test.dart`
+  reported no issues, and
+  `flutter test --no-pub packages/features/feat_home/test/home_screen_states_test.dart packages/features/feat_gamification/test/fanzone_hub_screen_test.dart`
+  passed 9/9 tests.
+- Device evidence passed on Pixel 4a after rebuilding/installing a fresh debug
+  APK. Debug artifact:
+  `apps/rayon_sports/build/app/outputs/flutter-apk/app-debug.apk`, 224 MB,
+  SHA-256
+  `4efd0e909d26c287bc3153d6cc02486fd658ee959d46e93244ffb0ebf7279bd6`.
+  Automated capture manifest:
+  `apps/rayon_sports/store_metadata/play_store/screenshots_automated_after_offline_fallback_manifest.json`.
+  It captured 7/7 valid screenshots across Home, Fan Zone, Membership,
+  Ticketing, Shop, Contributions, and Settings under the offline/guest path.
+- Remaining release gaps: the evidence screenshots still include the Android
+  accessibility shortcut overlay, so they are QA proof, not final Play Store
+  marketing screenshots. Home still reports "Could not resolve the active club"
+  under the tested DNS failure, and Fan Zone still depends on downstream
+  repositories that log network failures. Those are now bounded in the UI, but
+  final release readiness still needs clean profile/release evidence and
+  expected-offline observability cleanup.
+
+## 2026-06-28 Clean Automated Screenshot Capture Slice
+
+- Hardened `apps/rayon_sports/scripts/capture_screenshots.py` so automated
+  captures temporarily hide the Android accessibility shortcut overlay before
+  taking screenshots and restore the previous device settings afterward. The
+  helper snapshots `accessibility_button_targets` and
+  `accessibility_button_mode`, deletes the shortcut target during capture, then
+  restores the original Sound Amplifier target.
+- The first implementation attempt used an empty secure setting value and failed
+  on-device with Android settings exit 255. The final implementation uses
+  `settings delete secure accessibility_button_targets` for the temporary hide
+  step, which was verified on Pixel 4a `13111JEC215558`.
+- Clean Pixel evidence captured successfully:
+  `apps/rayon_sports/store_metadata/play_store/screenshots_automated_clean_accessibility_manifest.json`.
+  The manifest reports `success: true`, `screenshot_count: 7`,
+  `accessibility_shortcut_hidden: true`, and
+  `accessibility_shortcut_restored: true`.
+- Captured routes are stored in
+  `apps/rayon_sports/store_metadata/play_store/screenshots/automated_clean_accessibility_2026-06-28/`:
+  Home, Fan Zone, Membership, Ticketing, Shop, Contributions, and Settings.
+  Visual inspection confirmed the Sound Amplifier accessibility overlay is no
+  longer present in the Home and Fan Zone screenshots.
+- Device restore proof: after capture, `adb shell settings get secure
+  accessibility_button_targets` returned
+  `com.google.android.accessibility.soundamplifier/com.google.android.accessibility.soundamplifier.ui.SoundAmplifierSettingActivity`.
+- Validation passed: `python3 -m py_compile
+  apps/rayon_sports/scripts/capture_screenshots.py` and `git diff --check`.
+- Remaining release gaps: this evidence still comes from a debug APK, not a
+  profile/release build. Home still shows "Could not resolve the active club"
+  under the tested DNS failure, so the app now has better bounded fallback
+  surfaces but is not product-ready for final store screenshots or release
+  submission until active-club fallback, expected-offline logging, and
+  profile/release performance evidence are completed.
+
+## 2026-06-28 Home Active-Scope Local Fallback Slice
+
+- Removed the user-visible active-club scope blocker from offline/guest Home.
+  `SupabaseHomeFeedRepository` now converts unresolved local club scope into a
+  degraded local Home snapshot instead of returning an error snapshot with
+  internal tenancy copy.
+- Added an explicit local fallback message:
+  `Live club data is temporarily unavailable. Home shortcuts remain available.`
+  The Home surface keeps the primary actions and fallback quick actions visible
+  for Fan Zone, Contributions, Live, Groups, Predict, Tickets, Shop, Members,
+  and Offers.
+- Fixed the secondary Home issue found in device evidence: Latest Intel now
+  treats unresolved local club scope as an empty local news state, so offline
+  guest Home does not render a retryable News error card behind the bottom
+  navigation. Real query/network failures can still produce the existing
+  retryable Latest Intel error state.
+- Added focused coverage in
+  `packages/features/feat_home/test/home_content_repository_test.dart`,
+  `packages/features/feat_home/test/home_screen_states_test.dart`, and
+  `packages/features/feat_home/test/latest_intel_empty_state_test.dart`.
+- Validation passed with the Flutter 3.38.9 toolchain after clearing a stale
+  test compiler cache and pinning PATH/FLUTTER_ROOT away from an older
+  `/Volumes/PRO-G40/Apps/SDKs/flutter` checkout:
+  `flutter analyze --no-pub packages/features/feat_home/lib/src/repositories/home_content_repository.dart packages/features/feat_home/test/home_content_repository_test.dart packages/features/feat_home/test/home_screen_states_test.dart packages/features/feat_home/test/latest_intel_empty_state_test.dart`
+  and
+  `flutter test --no-pub packages/features/feat_home/test/home_content_repository_test.dart packages/features/feat_home/test/home_screen_states_test.dart packages/features/feat_home/test/latest_intel_empty_state_test.dart`
+  passed 12/12 tests.
+- Built and installed a fresh debug APK using
+  `apps/rayon_sports/assets/flavors/production.local.json`. Debug artifact:
+  `apps/rayon_sports/build/app/outputs/flutter-apk/app-debug.apk`, 161 MB,
+  SHA-256
+  `2e53f695e11779f6969240e7af6e30a0d7d948b1c81ee340f9c27ee1f3048253`.
+- Clean Pixel evidence captured successfully:
+  `apps/rayon_sports/store_metadata/play_store/screenshots_automated_after_home_local_fallback_manifest.json`.
+  The manifest reports `success: true`, `screenshot_count: 7`,
+  `accessibility_shortcut_hidden: true`, and
+  `accessibility_shortcut_restored: true`.
+- Captured routes are stored in
+  `apps/rayon_sports/store_metadata/play_store/screenshots/automated_after_home_local_fallback_2026-06-28/`.
+  Visual inspection of `01_home_dashboard.png` confirmed the internal
+  "Could not resolve the active club" copy is gone, the News error card is no
+  longer present behind the bottom navigation, and the local degraded Home
+  actions remain visible.
+- Device restore proof: after capture, `adb shell settings get secure
+  accessibility_button_targets` returned
+  `com.google.android.accessibility.soundamplifier/com.google.android.accessibility.soundamplifier.ui.SoundAmplifierSettingActivity`.
+- Remaining release gaps: this is still debug APK evidence. Release readiness
+  still needs profile/release build proof, expected-offline observability cleanup
+  so routine degraded data does not create noisy crash/performance signals, and
+  screen-by-screen responsive/accessibility review across the rest of the app.
+
+## 2026-06-28 Borrowed Admin Toast Migration Slice
+
+- Replaced remaining raw `ScaffoldMessenger`/`SnackBar` feedback in
+  `packages/features/feat_admin` with `AfriToast.success`,
+  `AfriToast.error`, or `AfriToast.info`. Covered competition and season
+  management, fixture settlement, match management, CMS content, push
+  notifications, challenge operations, feature detail errors, and contribution
+  CSV export.
+- Preserved existing message intent while removing Material snackbar styling:
+  validation and failed RPC paths now use borrowed error chrome, create/update
+  and clipboard confirmations use success chrome, and neutral CMS helper
+  messages use the informational toast.
+- Extended `packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  so `feat_admin` is part of the migrated-package toast guardrail. The
+  guardrail now prevents reintroducing `ScaffoldMessenger.of`, `showSnackBar`,
+  `SnackBar`, or `SnackBarAction` in admin production source.
+- Production scan passed with no raw snackbar matches across admin plus the
+  already migrated settings, contributions, onboarding, ticketing, fan clubs,
+  membership, live, and shop feature packages.
+- Validation passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_admin`
+  exited 0. It still reports existing nonfatal lint noise and one pre-existing
+  admin warning in `cms_section_builders.dart`.
+- Focused tests passed:
+  `flutter test packages/core/core_theme/test/design_system_source_of_truth_test.dart packages/features/feat_admin/test/admin_module_test.dart`
+  passed 33/33 tests, including the expanded migrated-toast guardrail.
+- Remaining UI cleanup: `packages/features/feat_gamification` still has raw
+  snackbar usage and is the next large feature package to migrate before the
+  repo-wide toast guardrail can cover all feature source.
+
+## 2026-06-28 Borrowed Gamification Toast Migration Slice
+
+- Replaced remaining raw `ScaffoldMessenger`/`SnackBar` feedback in
+  `packages/features/feat_gamification` with shared `AfriToast` variants.
+  Covered prediction slip, market selection, match markets, prediction share
+  and detail actions, my predictions cancellation, fan ID copy, FET wallet
+  helper messages, team profile validation, jackpot entry, rewards redemption,
+  friend challenge actions, friends list actions, challenge join/cancel, and
+  create-challenge failure feedback.
+- Preserved async context behavior in `prediction_slip_widgets.dart` by showing
+  post-submit failure toasts through the preserved host context after the sheet
+  closes.
+- Removed the now-unused `core_utils` import from
+  `prediction_detail_screen.dart`, which became dead after replacing the raw
+  snackbar code path.
+- Extended the migrated-toast guardrail so `feat_gamification` is covered
+  alongside admin, settings, contributions, onboarding, ticketing, fan clubs,
+  membership, live, and shop. The guardrail now blocks raw snackbars across all
+  currently migrated feature packages.
+- Production scan passed with no raw snackbar matches across the migrated
+  feature packages:
+  `feat_admin`, `feat_gamification`, `feat_shop`, `feat_membership`,
+  `feat_live`, `feat_fan_clubs`, `feat_ticketing`, `feat_onboarding`,
+  `feat_contributions`, and `feat_settings`.
+- Validation passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_admin packages/features/feat_gamification`
+  exited 0. Remaining output is pre-existing nonfatal lint debt in core/admin
+  and gamification.
+- Focused tests passed:
+  `flutter test packages/core/core_theme/test/design_system_source_of_truth_test.dart packages/features/feat_admin/test/admin_module_test.dart packages/features/feat_gamification/test/fanzone_hub_screen_test.dart packages/features/feat_gamification/test/challenge_models_test.dart packages/features/feat_gamification/test/fet_models_test.dart`
+  passed 79/79 tests, including the expanded migrated-toast guardrail.
+
+## 2026-06-28 Borrowed Icon Token Centralization Slice
+
+- Centralized remaining direct platform icon choices in shared Flutter UI
+  source. Core shared widgets now consume `AfriIcons` instead of direct
+  `Icons.*` constants for maintenance gates, branded error fallbacks, filter
+  sheets, action-sheet chevrons, empty/error/state views, list rows, scanner
+  states, scanner privacy badges, and toast variants.
+- Added semantic icon tokens for `maintenance`, `statusLoading`, and `offline`
+  in `packages/core/core_theme/lib/src/tokens/icon_tokens.dart`, keeping
+  Material icon selection localized to the single icon-token source of truth.
+- Updated shared widget examples to reference `AfriIcons` rather than raw
+  Material constants so copied examples do not reintroduce old icon selection
+  patterns.
+- Added the design-system guardrail
+  `Icon choices route through AfriIcons tokens`, which scans authored Dart
+  source in `packages` and `apps` and allows direct `Icons.*` /
+  `CupertinoIcons.*` only in `icon_tokens.dart`, tests, and integration tests.
+- Production scan passed: direct platform icon constants now appear only in
+  `packages/core/core_theme/lib/src/tokens/icon_tokens.dart` outside test and
+  generated build source.
+- Validation passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme`
+  exited 0 with existing nonfatal lint debt, and
+  `flutter test packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 27/27 tests including the new icon-token guardrail.
+
+## 2026-06-28 Tracked Visual Artifact And Font Audit Slice
+
+- Audited tracked visual and font artifacts using `git ls-files` so generated
+  `build/unit_test_assets` copies did not distort the result.
+- No tracked `test/failures`, `maskedDiff`, `isolatedDiff`, `testImage`, or
+  `masterImage` artifacts remain in the repository.
+- The only tracked feature golden baselines are the expected reviewed files:
+  `feat_home/test/goldens/home_screen.png`,
+  `feat_membership/test/goldens/membership_screen.png`,
+  `feat_onboarding/test/goldens/onboarding_screen.png`,
+  `feat_settings/test/goldens/settings_screen.png`, and
+  `feat_ticketing/test/goldens/match_list_screen.png`.
+- Font declarations are centralized: tracked pubspec declarations show only
+  `packages/core/core_theme/pubspec.yaml` declaring the
+  `RevolutBorrowed` family. Feature packages do not declare local font
+  fixtures in tracked pubspecs.
+- Authored assets remain concentrated in app branding/launcher/crest/stadium
+  media, core utility data, core borrowed font assets, and the gamification
+  reward catalog. No stale feature-local visual failure artifacts were found.
+
+## 2026-06-28 Borrowed Shop Shape And Spacing Tokenization Slice
+
+- Migrated the shop production UI away from local raw shape and spacing values
+  toward the borrowed design-system tokens. The product card, loading skeleton,
+  cart item row, checkout bar, shop top bar, shop screen badge/category rail,
+  search sheet, and product detail quantity/variant controls now use
+  `ShapeTokens` and `SpacingTokens` for the updated radii and layout sizes.
+- Replaced the remaining direct Material bottom-sheet route in the shop search
+  sheet with `showAfriBottomSheet`, preserving the existing search behavior
+  while routing modal chrome through the shared borrowed surface primitive.
+- Added the guardrail `Migrated shop routes shape and spacing through tokens`
+  in `packages/core/core_theme/test/design_system_source_of_truth_test.dart`.
+  The scanner now fails future `feat_shop` authored source that reintroduces
+  raw `BorderRadius`, `Radius.circular`, `EdgeInsets`, or fixed `SizedBox`
+  shape/spacing literals covered by this migration.
+- A direct scan with the same matcher over `packages/features/feat_shop/lib`
+  returned `hits=0`.
+- Validation passed:
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 28/28 tests,
+  `flutter test packages/features/feat_shop/test/checkout_bar_test.dart`
+  passed 2/2 tests, and
+  `flutter test packages/features/feat_shop/test/shop_screen_catalog_test.dart`
+  passed 2/2 tests.
+- Hygiene passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_shop`
+  exited 0 with existing info-level lint debt,
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings`
+  reported 0 total findings, and `git diff --check` was clean.
+
+## 2026-06-28 Borrowed Ticketing Shape And Spacing Tokenization Slice
+
+- Migrated the ticketing production UI away from local raw shape and spacing
+  literals in the QR pass, wallet ticket card, match list metadata row, seat map
+  painter shell, ticket purchase sheet handle, and ticket configuration CTA.
+  The migrated surfaces now use `SpacingTokens`, `ShapeTokens`, and
+  `BorderTokens.hairline` for borrowed-system rhythm and radii.
+- Kept the match-list golden stable while replacing the old 4px metadata gaps
+  with `SpacingTokens.spacing1`, preserving the visible spacing through the
+  shared token scale.
+- Added the guardrail `Migrated ticketing routes shape and spacing through
+  tokens` in `packages/core/core_theme/test/design_system_source_of_truth_test.dart`.
+  The scanner now fails future `feat_ticketing` authored source that
+  reintroduces raw `BorderRadius`, `Radius.circular`, `EdgeInsets`, or fixed
+  `SizedBox` shape/spacing literals covered by this migration.
+- A direct scan with the same matcher over
+  `packages/features/feat_ticketing/lib` returned `hits=0`.
+- Validation passed:
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 29/29 tests, and
+  `flutter test packages/features/feat_ticketing/test/ticketing_module_test.dart packages/features/feat_ticketing/test/match_list_golden_test.dart`
+  passed 8/8 tests, including the ticketing golden.
+- Hygiene passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_ticketing`
+  exited 0 with existing info-level lint debt,
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings`
+  reported 0 total findings, and `git diff --check` was clean.
+
+## 2026-06-28 Borrowed Membership Shape, Spacing, And Golden Slice
+
+- Migrated remaining membership raw shape and spacing literals in contribution
+  history rows, the digital membership card share pill, tier progress labels,
+  and the contribution confirmation sheet. The updated widgets now route
+  micro-gaps, pill radii, and label heights through `SpacingTokens` and
+  `ShapeTokens`.
+- Added the guardrail `Migrated membership routes shape and spacing through
+  tokens` in `packages/core/core_theme/test/design_system_source_of_truth_test.dart`.
+  The scanner now fails future `feat_membership` authored source that
+  reintroduces raw `BorderRadius`, `Radius.circular`, `EdgeInsets`, or fixed
+  `SizedBox` shape/spacing literals covered by this migration.
+- A direct scan with the same matcher over
+  `packages/features/feat_membership/lib` returned `hits=0`.
+- The membership golden was stale against the current borrowed dark/gold
+  membership surface already present in the worktree. The previous master image
+  showed the older purple membership layout; `--update-goldens` refreshed
+  `packages/features/feat_membership/test/goldens/membership_screen.png` to
+  the current rendered screen, then generated failure artifacts were removed.
+- Validation passed:
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 30/30 tests, and
+  `flutter test packages/features/feat_membership/test/contribution_history_test.dart packages/features/feat_membership/test/fan_registry_results_test.dart packages/features/feat_membership/test/membership_module_test.dart packages/features/feat_membership/test/membership_screen_golden_test.dart`
+  passed 14/14 tests after the golden refresh.
+- Hygiene passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_membership`
+  exited 0 with existing info-level lint debt,
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings`
+  reported 0 total findings, and `git diff --check` was clean.
+
+## 2026-06-28 Borrowed Gamification Surface Tokenization Slice
+
+- Migrated the highest-density clean gamification shape/spacing file,
+  `packages/features/feat_gamification/lib/src/widgets/leaderboard_widgets.dart`,
+  away from local raw UI literals. Leaderboard period chips, FET/supporter list
+  rows, pinned user rows, rank placeholders, and leaderboard badges now route
+  their spacing and radii through `SpacingTokens` and `ShapeTokens`.
+- Migrated the repeated challenge card component,
+  `packages/features/feat_gamification/lib/src/widgets/challenge_card.dart`,
+  away from local raw UI literals. Challenge metadata gaps, kickoff/status
+  spacing, stake badges, status chips, score prediction pills, and info chips
+  now use `SpacingTokens` and `ShapeTokens` for borrowed-system card and pill
+  treatment.
+- Migrated the FET split model,
+  `packages/features/feat_gamification/lib/src/widgets/fet_split_model.dart`,
+  away from local raw UI literals and removed the stale competing reference
+  comment. Tier badges, the split progress bar, active-tier rows, and the
+  explanatory information panel now route through shared borrowed shape and
+  spacing tokens.
+- Migrated the match-detail H2H tab,
+  `packages/features/feat_gamification/lib/src/widgets/h2h_tab_body.dart`,
+  away from local raw UI literals and removed the stale competing reference
+  comment. Empty-state icon radii, win-distribution bars, goal metric gaps, and
+  score capsules now route through shared borrowed shape and spacing tokens.
+- Migrated the match-detail lineups tab,
+  `packages/features/feat_gamification/lib/src/widgets/lineups_tab_body.dart`,
+  away from local raw UI literals and removed the stale competing reference
+  comment. Empty-state icon radii, formation chip radii, and lineup number
+  column sizing now route through shared borrowed shape and spacing tokens.
+- Migrated the market selector sheet,
+  `packages/features/feat_gamification/lib/src/widgets/market_selector_sheet.dart`,
+  away from its remaining local raw shape and spacing literals. The sheet drag
+  handle, category rail, category count badges, active-section accent bar, FET
+  badge, and compact bet-type gap now route through shared borrowed spacing and
+  full-pill shape tokens.
+- Migrated the FET wallet screen,
+  `packages/features/feat_gamification/lib/src/screens/fet_wallet_screen.dart`,
+  away from remaining local raw shape and spacing literals. The wallet hero
+  card padding, balance/stat gaps, search loading affordance, compact stat gap,
+  and stale unused borrowed-stat helper were removed or routed through shared
+  spacing tokens.
+- Migrated the League Hub screen,
+  `packages/features/feat_gamification/lib/src/screens/league_hub_screen.dart`,
+  away from remaining local raw shape and spacing literals. Competition chips,
+  fixture metadata gaps, league metrics, and standing row rank columns now use
+  shared spacing and full-pill shape tokens.
+- Migrated the Club Fan Zone screen,
+  `packages/features/feat_gamification/lib/src/screens/club_fan_zone_screen.dart`,
+  away from remaining local raw shape, spacing, and progress thickness
+  literals. Competition filter pills, top-club rank columns, supporter-lean
+  micro-gaps, and progress bars now use shared borrowed spacing and full-pill
+  shape tokens.
+- Migrated the Jackpot Challenge screen and its shared market option pill,
+  `packages/features/feat_gamification/lib/src/screens/jackpot_challenge_screen.dart`
+  and
+  `packages/features/feat_gamification/lib/src/widgets/market_option_pill.dart`,
+  away from remaining local raw shape, spacing, minimum-size, and progress
+  thickness literals. Jackpot progress bars, tight helper-text gaps, bottom
+  scroll clearance, leaderboard rank columns, and outcome pill min-height/radii
+  now route through `SpacingTokens` and `ShapeTokens`.
+- Migrated the League Standings screen,
+  `packages/features/feat_gamification/lib/src/screens/league_standings_screen.dart`,
+  away from remaining local raw spacing, width, and pill-radius literals.
+  Header columns, standings rank columns, team metadata gaps, and recent-form
+  badges now route through `SpacingTokens` and `ShapeTokens`.
+- Migrated the Fanzone Privacy Settings screen,
+  `packages/features/feat_gamification/lib/src/screens/privacy_settings_screen.dart`,
+  away from remaining local raw spacing and fixed container-size literals.
+  Privacy guarantee rows, visibility controls, the privacy badge, and bottom
+  scroll clearance now route through shared spacing tokens; visibility toggles
+  now use the shared `AfriSwitch`; the stale competing external-reference
+  comment was replaced with the borrowed privacy-pattern contract; and profile
+  sync calls now use explicit `unawaited` fire-and-forget semantics.
+- Migrated the Fan ID screen,
+  `packages/features/feat_gamification/lib/src/screens/fan_id_screen.dart`,
+  away from remaining local fixed sizes and raw pill/card radii. The hero Fan
+  ID emblem, tier pill, copy affordance, privacy badge icons, identity-rule
+  number pills, and rule text offset now route through `SpacingTokens` and
+  `ShapeTokens`, while the existing copy-to-clipboard toast remains on
+  `AfriToast`.
+- Migrated the Challenges screen and first-time FET tutorial,
+  `packages/features/feat_gamification/lib/src/screens/challenges_screen.dart`,
+  away from remaining local progress height/radii, custom modal surface
+  geometry, drag-handle sizing, step-indicator sizing, and tutorial icon size.
+  The tutorial now uses the shared borrowed bottom-sheet surface, progress and
+  step indicators use tokenized full-pill radii, and first-load/tutorial
+  persistence futures use explicit fire-and-forget semantics.
+- Migrated the community-prediction bar and prediction slip widgets,
+  `packages/features/feat_gamification/lib/src/widgets/community_prediction_bar.dart`
+  and
+  `packages/features/feat_gamification/lib/src/widgets/prediction_slip_widgets.dart`,
+  away from remaining local bar heights, row widths, chip radii, success badge
+  dimensions, and tiny helper gaps. The prediction slip Acca toggle now uses
+  the shared `AfriSwitch`, while share/copy actions use explicit
+  `unawaited(...)` semantics.
+- Completed the remaining `feat_gamification` raw geometry and fixed-dimension
+  sweep. Prediction share cards, token-history rows, match/stat panels,
+  notification toasts, prediction notifications, auth gates, badge grids,
+  fixture browsers, FET arcs, social/team/profile rows, prediction detail and
+  share-card generator chips, challenge detail/create/friend controls,
+  fanzone settings/hub rows, streak/rewards/offers/friends/match detail
+  surfaces, overlays, wallet widgets, and settlement headers now route icon
+  sizes, widths, heights, compact gaps, border widths, pill radii, and line
+  heights through `SpacingTokens`, `ShapeTokens`, `BorderTokens`, and
+  `TypographyTokens`.
+- Added `SpacingTokens.spacing0`,
+  `TypographyTokens.lineHeightCompact`, and
+  `TypographyTokens.lineHeightSolid` so zero insets and compact headline/score
+  typography are explicitly tokenized instead of feature-local literals.
+- Extended the migrated-surface cleanup to fixed container dimensions exposed
+  by the stronger matcher. The challenge avatar badge in
+  `challenge_card.dart` and the empty-state icon containers in
+  `h2h_tab_body.dart` and `lineups_tab_body.dart` now use shared spacing tokens
+  instead of raw 36px/72px sizes.
+- Strengthened migrated route guardrails for shop, ticketing, membership, and
+  the migrated gamification allowlist so raw `minWidth`/`minHeight` literals
+  are caught alongside raw `BorderRadius`, `EdgeInsets`, and `SizedBox`
+  geometry. The strengthened scan exposed and fixed the shop cart badge
+  minimum dimensions in `shop_screen.dart` and `shop_top_bar.dart`, plus the
+  digital membership share-chip minimum height in
+  `digital_membership_card.dart`.
+- Fixed the shared `AfriListTile` and `AfriSwitchListTile` primitives so their
+  Material list controls render inside a local transparent `Material` ancestor.
+  This preserves ink/tile behavior when the borrowed list rows are placed inside
+  decorated card surfaces and removes Flutter's decorated-box/ListTile assertion
+  from wallet interaction tests.
+- Refreshed `packages/features/feat_gamification/test/fet_wallet_screen_test.dart`
+  against the current borrowed wallet flow: the test harness now provides a
+  `GoRouter` context, scrolls to below-fold borrowed controls, and confirms the
+  shared wallet bottom sheet before asserting transfer/redemption effects.
+- Preserved existing leaderboard layout intent with token-derived values where
+  the previous UI used intermediate measurements, such as
+  `SpacingTokens.spacing10 + SpacingTokens.spacing1` for the 44px period chip
+  minimum height and `SpacingTokens.spacing1 / 2` for tight label gaps.
+- Added the guardrail `Migrated gamification surfaces shape and spacing
+  through tokens` in
+  `packages/core/core_theme/test/design_system_source_of_truth_test.dart`. The
+  scanner now fails future `BorderRadius`, `EdgeInsets`, `SizedBox`, fixed
+  `Container`/`AnimatedContainer` dimension, and minimum-dimension raw-literal
+  regressions across the whole `feat_gamification/lib` package. Added the
+  guardrail `Gamification fixed dimensions route through tokens` so direct
+  numeric icon sizes, widths, heights, minimum dimensions, raw radii, and
+  feature-local typography heights cannot return.
+- A direct scan with the strengthened matchers over
+  `packages/features/feat_gamification/lib` returned no raw shape/spacing
+  violations and no direct numeric width/height/size/min-dimension/line-height
+  hits. The strengthened package guardrail scan over migrated shop, ticketing,
+  and membership surfaces returned `package_guardrail_violations=0`.
+- Validation passed:
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 31/31 tests, and
+  `flutter test packages/features/feat_gamification/test/leaderboard_content_test.dart`
+  passed 4/4 tests, while
+  `flutter test packages/features/feat_gamification/test/challenge_feature_test.dart`
+  passed 7/7 tests. A combined focused run of
+  `challenge_feature_test.dart` and `leaderboard_content_test.dart` passed
+  11/11 tests after the lineups migration. After the market-selector migration,
+  `flutter test packages/features/feat_gamification/test/fanzone_hub_screen_test.dart`
+  passed 3/3 tests. After the FET split/list primitive and wallet-test refresh,
+  `flutter test packages/features/feat_gamification/test/fet_wallet_screen_test.dart packages/features/feat_gamification/test/fanzone_hub_screen_test.dart`
+  passed 6/6 tests. After the wallet-screen tokenization pass,
+  `flutter test packages/features/feat_gamification/test/fet_wallet_screen_test.dart`
+  passed 3/3 tests. After the League Hub tokenization pass,
+  `flutter test packages/app_registry/test/navigation_journeys_test.dart`
+  passed 10/10 tests. After the Club Fan Zone and strengthened minimum-size
+  guardrail pass,
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 31/31 tests, and
+  `flutter test packages/app_registry/test/navigation_journeys_test.dart`
+  passed 10/10 tests. After the Jackpot Challenge and market-option pill
+  tokenization pass,
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 31/31 tests, and
+  `flutter test packages/app_registry/test/navigation_journeys_test.dart`
+  passed 10/10 tests. After the League Standings and fixed-container-dimension
+  guardrail pass,
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 31/31 tests, and
+  `flutter test packages/app_registry/test/navigation_journeys_test.dart`
+  passed 10/10 tests. After the Fanzone Privacy Settings tokenization and
+  shared-switch migration pass,
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 31/31 tests, and
+  `flutter test packages/app_registry/test/navigation_journeys_test.dart`
+  passed 10/10 tests. After the Fan ID tokenization pass,
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 31/31 tests, and
+  `flutter test packages/app_registry/test/navigation_journeys_test.dart`
+  passed 10/10 tests. After the Challenges, community-prediction bar, and
+  prediction-slip tokenization pass,
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 31/31 tests,
+  `flutter test packages/app_registry/test/navigation_journeys_test.dart`
+  passed 10/10 tests, and
+  `flutter test packages/features/feat_gamification/test/challenge_feature_test.dart`
+  passed 7/7 tests. After the package-wide gamification geometry and
+  fixed-dimension sweep,
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 32/32 tests,
+  `flutter test packages/features/feat_gamification/test` passed 121/121
+  tests, and
+  `flutter test packages/app_registry/test/navigation_journeys_test.dart`
+  passed 10/10 tests.
+- Hygiene passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_gamification`
+  exited 0 with existing warning/info debt outside the migrated surface slice.
+  Removing the stale unused wallet helper reduced analyzer output from 69 to 68
+  nonfatal issues.
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_gamification packages/features/feat_shop packages/features/feat_membership`
+  exited 0 with 84 existing nonfatal issues after the Club Fan Zone import
+  ordering cleanup.
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_gamification`
+  exited 0 with 62 existing nonfatal issues after the jackpot import ordering
+  cleanup.
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_gamification`
+  exited 0 with 61 existing nonfatal issues after the League Standings
+  tokenization and import ordering cleanup.
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/features/feat_gamification/lib/src/screens/privacy_settings_screen.dart`
+  reported `No issues found`, and
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_gamification`
+  exited 0 with 51 existing nonfatal issues after the privacy async cleanup.
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/features/feat_gamification/lib/src/screens/fan_id_screen.dart`
+  reported `No issues found`, and
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_gamification`
+  exited 0 with 50 existing nonfatal issues after the Fan ID tokenization pass.
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/features/feat_gamification/lib/src/widgets/prediction_slip_widgets.dart packages/features/feat_gamification/lib/src/widgets/community_prediction_bar.dart packages/features/feat_gamification/lib/src/screens/challenges_screen.dart`
+  reported `No issues found`, and
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_gamification`
+  exited 0 with 44 existing nonfatal issues after the Challenges/community
+  prediction/prediction-slip tokenization pass.
+  After the package-wide gamification geometry and fixed-dimension sweep,
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_gamification`
+  exited 0 with the same 44 existing nonfatal issues; direct raw-dimension scans
+  over `packages/features/feat_gamification/lib` returned no hits.
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings`
+  reported 0 total findings, and `git diff --check` was clean.
+
+## 2026-06-28 Borrowed Home Non-Locked Dimension Tokenization Slice
+
+- Migrated non-locked Home surfaces away from direct UI dimensions and
+  feature-local typography heights. `borrowed_match_strip.dart`,
+  `latest_intel_section.dart`, `home_screen.dart`, and
+  `contributor_leaderboard.dart` now route match-strip padding, status-chip
+  gaps/radii, divider sizing, chevron size, latest-intel card width/image
+  height/skeleton sizes, loading skeleton dimensions, contributor rank badges,
+  and compressed match-strip title line-height through `SpacingTokens`,
+  `ShapeTokens`, `BorderTokens`, and `TypographyTokens`.
+- Added `TypographyTokens.lineHeightHero` for the compressed borrowed match
+  strip title treatment. Existing `match_card.dart` still contains raw hero
+  geometry by design because the file carries an explicit product-owner lock
+  prohibiting visual layout, sizing, typography, or widget-tree edits.
+- Validation passed:
+  `flutter analyze --no-fatal-infos --no-fatal-warnings packages/core/core_theme packages/features/feat_home`
+  exited 0 with 16 existing nonfatal `core_theme` info-level issues and no
+  Home-specific analyzer findings.
+  `flutter test packages/features/feat_home/test` passed 22/22 tests.
+  `flutter test packages/app_registry/test/navigation_journeys_test.dart`
+  passed 10/10 tests.
+  `flutter test --timeout 180s packages/core/core_theme/test/design_system_source_of_truth_test.dart`
+  passed 32/32 tests after the token additions.
+  `bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings`
+  reported 0 total findings, and `git diff --check` was clean.
+
+## 2026-06-28 Expected Offline Observability Cleanup Slice
+
+- Reclassified transient mobile connectivity failures in
+  `packages/core/core_network/lib/src/safe_rpc.dart` through the public
+  `SafeRpc.isTransientConnectivityError` helper. DNS failures, missing hostname
+  addresses, `getaddrinfo`, socket, connection, timeout, network, EOF, and reset
+  conditions now share the same expected-offline path.
+- Preserved retries for transient reads while fixing the RPC retry branch so a
+  retryable failure continues to the next attempt instead of falling through to
+  the non-transient error path.
+- Suppressed Crashlytics recording for exhausted transient connectivity
+  failures in `SafeRpc.call` and `SafeRpc.query`. These paths now return the
+  normalized offline failure and log a warning, while PostgREST and non-transient
+  failures still log as errors and record diagnostic events.
+- Updated `packages/core/core_network/lib/src/country_repository.dart` so a
+  transient country-catalog load failure uses a warning and the hardcoded
+  offline fallback instead of emitting an error with stack trace. Unexpected
+  country-catalog failures still retain the error-level log.
+- Added focused coverage in
+  `packages/core/core_network/test/safe_rpc_test.dart` for exhausted DNS/socket
+  retry handling and transient-connectivity classification.
+- Validation passed with the pinned Flutter SDK:
+  `flutter analyze --no-pub packages/core/core_network/lib/src/safe_rpc.dart packages/core/core_network/lib/src/country_repository.dart packages/core/core_network/test/safe_rpc_test.dart`
+  exited 0, and
+  `flutter test --no-pub packages/core/core_network/test/safe_rpc_test.dart`
+  passed 16/16 tests.
+- Tooling note: the first test run failed because `.dart_tool` still referenced
+  `/Volumes/PRO-G40/Apps/SDKs/flutter` while the active validated SDK is
+  `/usr/local/share/flutter` 3.38.9. Refreshing package config with the pinned
+  SDK resolved the mismatch.
+- Remaining release gap: this is deterministic code and unit-test proof. The
+  performance/readiness phase still needs a fresh profile or release device
+  run, logcat review, and performance capture to prove the expected-offline
+  runtime noise is reduced on device.
+
+## 2026-06-28 Profile Performance Evidence After Expected-Offline Cleanup
+
+- Rebuilt and installed a fresh Flutter profile APK after the SafeRpc and
+  country-catalog observability cleanup. Artifact:
+  `apps/rayon_sports/build/app/outputs/flutter-apk/app-profile.apk`, 96 MB,
+  SHA-256
+  `f6e858f807be4e02bff342d92197b2b5a1fe303df008484f39fdf9cef803af12`.
+- Captured a new Pixel 4a Android 13 profile run with the existing collector:
+  `python3 apps/rayon_sports/scripts/collect_android_performance_evidence.py
+  --device 13111JEC215558 --build-mode profile --settle-seconds 8
+  --exercise-swipes 16 --perfetto-duration-seconds 30 --output
+  apps/rayon_sports/store_metadata/play_store/android_performance_pixel4a_profile_perfetto_after_expected_offline_observability_manifest.json`.
+- Manifest evidence:
+  `apps/rayon_sports/store_metadata/play_store/android_performance_pixel4a_profile_perfetto_after_expected_offline_observability_manifest.json`
+  reports successful launch/window collection, cold start `TotalTime: 2004 ms`,
+  app focused/top window after settle, and Perfetto trace pull success.
+- Pulled trace:
+  `apps/rayon_sports/store_metadata/play_store/performance_traces/rayon-profile-flow-2026-06-28T18-51-40-883593-00-00.pftrace`,
+  33,360,042 bytes, decoded with Perfetto `trace_processor` v56.1.
+- Observability result: the manifest excerpt and current filtered logcat search
+  for `FeatureConfigRepo`, `CountryRepository`, `SafeRpc`,
+  `get_platform_config`, `Failed host lookup`, `[ERROR]`, and `[WARN]` returned
+  no app SafeRpc/offline fallback noise for this run. This proves the previous
+  `FeatureConfigRepo` DNS failure is no longer emitted as a profile-device
+  error in the exercised flow.
+- Perfetto frame timeline result: 379 SurfaceFlinger actual frame rows, 2 late
+  or jank frames, 0.53% jank rate, and max actual-frame duration 29.480 ms.
+  This remains under the current 5% jank threshold in this single run.
+- Perfetto raster result: 355 `GPURasterizer::Draw` slices, 0 slices over 16 ms,
+  0 slices over 33 ms, average draw duration 7.808 ms, and max draw duration
+  15.096 ms. This is the cleanest captured raster profile so far and materially
+  improves on the previous final scoped-log run, where 321/370 draw slices were
+  over 16 ms.
+- Performance signoff remains open. `dumpsys gfxinfo ... framestats` still
+  returned 0 rendered frames for this profile/Impeller run, so the frame claim
+  depends on Perfetto rather than app-level `gfxinfo`; the profile capture is
+  still a single-device/single-run sample; and Firebase Installations/Firebase
+  Messaging still emits invalid/suspended configuration errors during startup.
+- Updated
+  `apps/rayon_sports/store_metadata/play_store/performance_traces/rayon_profile_perfetto_summary_2026-06-28.md`
+  with the new trace, startup, frame-timeline, raster, and observability
+  comparison.
+- Post-capture validation passed: `python3 -m py_compile
+  apps/rayon_sports/scripts/collect_android_performance_evidence.py
+  apps/rayon_sports/scripts/capture_screenshots.py`; JSON/trace existence
+  checks passed for the new manifest and pulled `.pftrace`; focused analyzer
+  passed for `safe_rpc.dart`, `country_repository.dart`, and
+  `safe_rpc_test.dart`; and the focused SafeRpc test passed 16/16 when run
+  consistently with the workspace-resolved Flutter 3.44.3 SDK at
+  `/Volumes/PRO-G40/Apps/SDKs/flutter`.
+- Tooling note: attempts to rerun the SafeRpc test with
+  `/usr/local/share/flutter` hit the known mixed-SDK failure because the
+  generated root `.dart_tool` state was rewritten to Flutter 3.44.3 during test
+  startup. The final test/analyze result above used one SDK consistently.
+
+## 2026-06-28 FCM Startup Gate And Profile Evidence Slice
+
+- Added a native Android startup guard in
+  `apps/rayon_sports/android/app/src/main/kotlin/rw/gikundiro/app/RayonSportsApplication.kt`
+  and registered it from `android/app/src/main/AndroidManifest.xml`. It
+  disables persisted Firebase Messaging auto-init before Dart/plugin startup,
+  covering upgrade installs where earlier builds had already enabled FCM.
+- Preserved manifest-level opt-out metadata:
+  `firebase_messaging_auto_init_enabled=false` and
+  `firebase_analytics_collection_enabled=false`.
+- Tightened `packages/core/core_network/lib/src/push_notification_service.dart`
+  so deferred app startup no longer registers `onBackgroundMessage`,
+  `onTokenRefresh`, or foreground `onMessage` listeners. Those Messaging
+  runtime hooks are now registered only after notification permission and token
+  sync eligibility are reached.
+- Added
+  `apps/rayon_sports/test/firebase_startup_contract_test.dart` to lock the
+  manifest, native application guard, and Dart startup contract.
+- Validation passed with the workspace Flutter 3.44.3 SDK:
+  `flutter analyze --no-pub packages/core/core_network/lib/src/push_notification_service.dart apps/rayon_sports/test/firebase_startup_contract_test.dart`
+  exited 0; `flutter test --no-pub apps/rayon_sports/test/firebase_startup_contract_test.dart packages/core/core_network/test/safe_rpc_test.dart`
+  passed 19/19 tests; and profile APK build succeeded at 127 MB with SHA-256
+  `31c85f7b8c27b1fd789af21f55caa00fc957700d65c6737b2c68e5f5ac02d436`.
+- Captured two Pixel 4a profile runs. The Dart-only gate run proved the first
+  fix was insufficient because `FirebaseMessaging`, `FIS_AUTH_ERROR`, and the
+  FlutterFire background messaging service still appeared. The native + Dart
+  gate run removed those Messaging startup errors in the log excerpt.
+- Native + Dart gate profile evidence:
+  `apps/rayon_sports/store_metadata/play_store/android_performance_pixel4a_profile_perfetto_after_native_fcm_startup_gate_manifest.json`
+  with trace
+  `apps/rayon_sports/store_metadata/play_store/performance_traces/rayon-profile-flow-2026-06-28T19-17-42-389411-00-00.pftrace`.
+  Cold startup was 2409 ms, app/window focus was correct after settle, and the
+  Perfetto frame timeline reported 391 actual frame rows with 0 late/jank
+  frames and max actual-frame duration 10.495 ms.
+- Remaining blocker: Firebase Installations still emits
+  `CONSUMER_SUSPENDED` against the current Firebase project through
+  Crashlytics/Sessions even after Messaging startup is gated. Release readiness
+  still requires a valid production Firebase project/API key or an explicit
+  decision to gate Crashlytics/Firebase services until that configuration is
+  corrected.
+
+## 2026-06-28 Firebase Clean Startup Gate Evidence Slice
+
+- Added `FirebaseObservabilityConfig` in
+  `packages/core/core_network/lib/src/firebase_observability_config.dart`.
+  Firebase-backed observability is now disabled by default and can only be
+  re-enabled with explicit build defines:
+  `ENABLE_FIREBASE_OBSERVABILITY=true` and, separately,
+  `ENABLE_FIREBASE_APP_CHECK=true`.
+- Updated Firebase startup code so disabled observability is a no-touch path:
+  `FirebaseBootstrapService` no longer touches Firebase Performance unless
+  observability is enabled; `CrashlyticsService` returns before touching
+  `FirebaseCrashlytics.instance`; `FirebaseAnalyticsService` returns null while
+  observability is disabled; and `AppCheckService` skips activation unless the
+  App Check define is enabled.
+- Added Android manifest defaults for
+  `firebase_data_collection_default_enabled=false`,
+  `firebase_crashlytics_collection_enabled=false`,
+  `firebase_performance_collection_enabled=false`, and
+  `firebase_sessions_enabled=false`. The manifest now also removes the
+  Crashlytics, Sessions, Performance, and Analytics component registrars from
+  `ComponentDiscoveryService` so those SDKs cannot auto-start against the
+  suspended Firebase project.
+- Verified the merged profile manifest after rebuild: Crashlytics, Sessions,
+  Performance, and Analytics registrars were absent; Firebase Core/Installations
+  remained available for Firebase Core dependency wiring.
+- Rebuilt and installed the final profile APK. Artifact:
+  `apps/rayon_sports/build/app/outputs/flutter-apk/app-profile.apk`, 113 MB,
+  SHA-256
+  `f98b56dcc53ba175af0456a70f010be01a38db895069318806ae4b51abf395d3`.
+- Captured final Pixel 4a evidence:
+  `apps/rayon_sports/store_metadata/play_store/android_performance_pixel4a_profile_perfetto_after_firebase_clean_startup_gate_manifest.json`
+  with trace
+  `apps/rayon_sports/store_metadata/play_store/performance_traces/rayon-profile-flow-2026-06-28T19-38-44-385530-00-00.pftrace`.
+- Final clean log result: no `Firebase-Installations`, no
+  `CONSUMER_SUSPENDED`, no `FirebaseMessaging`, no `FIS_AUTH_ERROR`, no
+  `FLTFireBGExecutor`, no local Crashlytics component error, and no `[ERROR]`
+  or `[WARN]` entries in the collector excerpt.
+- Final clean performance result: cold startup `2086 ms`; Perfetto frame
+  timeline `372` rows, `0` late/jank frames, max actual-frame duration
+  `10.379 ms`; raster thread `357` `GPURasterizer::Draw` slices with `1`
+  slice over 16 ms, `0` over 33 ms, average draw `7.092 ms`, max draw
+  `21.774 ms`.
+- Validation passed with the workspace Flutter 3.44.3 SDK:
+  focused analyzer exited 0 for Firebase bootstrap/observability/App Check and
+  the startup contract test; focused tests passed 24/24 across
+  `firebase_startup_contract_test.dart`, `crashlytics_service_test.dart`, and
+  `safe_rpc_test.dart`; profile APK build succeeded; merged manifest checks
+  confirmed registrar removal; and the device collector completed successfully.
+- Remaining release condition: Firebase observability/App Check are now safely
+  gated rather than proven production-ready. Before final release, provide a
+  valid production Firebase project, restore/allow the required registrars for
+  the enabled SDKs, build with explicit enablement defines, and repeat the
+  profile/logcat evidence pass.
+
+## 2026-06-28 Profile Screenshot Responsive Navigation Slice
+
+- Hardened `apps/rayon_sports/scripts/capture_screenshots.py` so automated
+  profile captures wait for Home quick-action labels instead of relying on one
+  immediate UI hierarchy snapshot. The manifest now records the installed
+  build mode and APK metadata, including SHA-256, so screenshot evidence can be
+  tied to a concrete profile artifact.
+- Fixed Home navigation semantics for primary tab targets. Home quick actions
+  and the top Fan Zone/search entry now use `go()` for `/fanzone` and
+  `/settings` instead of pushing a duplicate tab route over the Home branch.
+  This resolves the profile-device defect where the visible Fan Zone route kept
+  the Home bottom tab selected.
+- Improved responsive text fitting in shared chrome without retaining the
+  higher-raster-cost `FittedBox` approach. The Home command search button shows
+  the compact visible label `Search` while preserving the fuller accessibility
+  label `Search fans, fixtures, wallet`; the cramped Home primary action uses
+  `Support`; and the compact Fan Zone leaderboard route uses `Leaders`.
+- Refreshed the Home golden after the intended label-fitting change.
+- Final profile APK:
+  `apps/rayon_sports/build/app/outputs/flutter-apk/app-profile.apk`, 113 MB,
+  SHA-256
+  `c7b89e0e88379efe0c42aa70700fc4860dc94fee09eb127aa08b9036efbd88d4`.
+- Final Pixel 4a screenshot evidence:
+  `apps/rayon_sports/store_metadata/play_store/screenshots_automated_profile_after_low_cost_label_fit_manifest.json`.
+  The manifest reports `success: true`, `build_mode: profile`,
+  `screenshot_count: 7`, `accessibility_shortcut_hidden: true`, and
+  `accessibility_shortcut_restored: true`.
+- Captured routes are stored in
+  `apps/rayon_sports/store_metadata/play_store/screenshots/automated_profile_after_low_cost_label_fit_2026-06-28/`.
+  Visual inspection confirmed Home no longer truncates `Search` or
+  the primary support action; Fan Zone now has the Fan Zone bottom tab
+  selected; and the compact leaderboard route label fits as `Leaders`.
+- Final Pixel 4a performance evidence:
+  `apps/rayon_sports/store_metadata/play_store/android_performance_pixel4a_profile_perfetto_after_low_cost_label_fit_manifest.json`
+  with trace
+  `apps/rayon_sports/store_metadata/play_store/performance_traces/rayon-profile-flow-2026-06-28T20-57-40-290801-00-00.pftrace`.
+  Cold startup was `1763 ms`, the app window was focused after settle, and
+  critical Firebase startup-noise terms remained absent from the collector log
+  excerpt (`Firebase-Installations`, `CONSUMER_SUSPENDED`, `FIS_AUTH_ERROR`,
+  `FirebaseMessaging`, `FLTFireBGExecutor`, `Crashlytics`).
+- Final Perfetto decode for this slice: frame timeline `377` rows, `1`
+  not-on-time/jank frame, average frame duration `10.122 ms`, max frame
+  duration `23.814 ms`. Raster remains below full signoff: `370`
+  `GPURasterizer::Draw` slices, `341` over 16 ms, `0` over 33 ms, average draw
+  `16.630 ms`, max draw `20.160 ms`.
+- Validation passed with the workspace Flutter 3.44.3 SDK:
+  focused analyzer passed for the touched Home and core_theme widgets; focused
+  Home/shell/bottom-nav/Fan Zone tests passed 18/18; the Home golden update
+  test passed 7/7; `design_system_source_of_truth_test.dart` passed 31/31; the
+  source design-drift report returned 0 findings; `git diff --check` passed;
+  profile APK build succeeded; install to Pixel 4a `13111JEC215558` succeeded;
+  final automated profile screenshot collection completed successfully; and the
+  final profile Perfetto capture/decode completed.
+- Remaining release conditions: this closes the debug-only screenshot evidence
+  gap for the seven primary marketing/readiness surfaces, but it is still a
+  single-device Pixel 4a profile capture. Final release is not performance
+  signed off because raster slices remain heavily over the 16 ms budget in the
+  latest trace and `gfxinfo` still reports 0 frames for this profile/Impeller
+  path. Final release should still include a second form factor or emulator
+  size pass, a dedicated raster optimization pass, repeated profile/release
+  performance evidence, and the production Firebase observability re-enable
+  pass once a valid production Firebase project is available.
+
+## 2026-06-28 Release APK Responsive Evidence Slice
+
+- Rebuilt and installed the current release APK after the compact Home action
+  and command-bar fixes. Artifact:
+  `apps/rayon_sports/build/app/outputs/flutter-apk/app-release.apk`, 71 MB,
+  SHA-256
+  `f9d5c81c0774810501910caa03ea7dc783469c95edbcc82c7edcd07b43ae9edc`.
+- Added responsive command-bar behavior in
+  `packages/core/core_theme/lib/src/widgets/afri_top_command_bar.dart`: the
+  search chip keeps the full semantic label `Search fans, fixtures, wallet`
+  but falls back to an icon-only visual control when the available slot is too
+  narrow for text. This removes the previous `S...` / `Fi...` truncation on
+  small-phone captures.
+- Tightened Home/Fan Zone visible labels for compact phone widths:
+  Home primary action labels now fit as `Fans`, `Support`, and `Live`; the
+  Fan Zone leaderboard shortcut fits as `Leaders`; and Home tab navigation
+  continues to use `go()` rather than stacking duplicate tab routes.
+- Final standard Pixel 4a screenshot evidence:
+  `apps/rayon_sports/store_metadata/play_store/screenshots_automated_release_responsive_search_manifest.json`.
+  The manifest reports `success: true`, `build_mode: release`,
+  `screenshot_count: 7`, `accessibility_shortcut_hidden: true`, and
+  `accessibility_shortcut_restored: true`, tied to APK SHA-256
+  `f9d5c81c0774810501910caa03ea7dc783469c95edbcc82c7edcd07b43ae9edc`.
+- Final small-phone responsive screenshot evidence:
+  `apps/rayon_sports/store_metadata/play_store/screenshots_automated_release_responsive_search_small_phone_720x1560_manifest.json`.
+  The manifest reports `success: true`, `screenshot_count: 7`, width
+  `720`, height `1560`, `build_mode: release`, and the same release APK hash.
+  The device display override was reset afterward and verified as physical
+  `1080x2340` at density `440`.
+- Visual inspection of the final small-phone screenshots confirmed the earlier
+  responsive defects are closed: the Home search control is icon-only rather
+  than truncated, Home action labels fit, shortcut tiles fit, Fan Zone labels
+  fit, and the Fan Zone bottom tab remains selected on the Fan Zone route.
+- Final release startup/performance evidence:
+  `apps/rayon_sports/store_metadata/play_store/android_performance_pixel4a_release_perfetto_responsive_search_startup_manifest.json`
+  with trace
+  `apps/rayon_sports/store_metadata/play_store/performance_traces/rayon-profile-flow-2026-06-28T21-46-42-833452-00-00.pftrace`.
+  The manifest reports `success: true`, app focus retained after settle,
+  cold startup `570 ms`, and zero occurrences in the collector log excerpt of
+  `Firebase-Installations`, `CONSUMER_SUSPENDED`, `FIS_AUTH_ERROR`,
+  `FirebaseMessaging`, `FLTFireBGExecutor`, `Crashlytics`, or
+  `FirebaseCrashlytics component is not present`.
+- Final Perfetto FrameTimeline decode for the same release trace: `173`
+  actual frame rows, `0` not-on-time finishes, `1` jank-classified frame,
+  average actual-frame duration `6.669 ms`, and max actual-frame duration
+  `20.912 ms`.
+- Collector caveat: horizontal scripted swipes on this Pixel 4a / Android 13
+  run were intercepted by the system edge-back gesture and moved the app to the
+  launcher, even after narrowing the gesture band and switching to leftward
+  swipes. The final accepted release performance evidence is therefore a
+  startup/focus Perfetto run plus decoded FrameTimeline metrics, not a full
+  scripted interaction jank signoff.
+- Validation passed with the workspace Flutter 3.44.3 SDK:
+  `dart format` on touched files; focused analyzer on Home/core_theme files;
+  Home golden update test passed 7/7; focused Home/shell/bottom-nav/Fan Zone
+  plus Firebase startup contract tests passed 22/22; the design-drift report
+  returned 0 findings; `git diff --check` passed; and
+  `design_system_source_of_truth_test.dart` passed 32/32.
+- Remaining blockers before production release signoff:
+  production Firebase observability and App Check are intentionally gated off
+  by default and still require a valid production Firebase project plus an
+  explicit re-enable build/evidence pass; `apksigner` was not available on
+  PATH for local signer-certificate verification; Flutter still warns about
+  future Kotlin Gradle Plugin migration; and the repo remains too dirty for a
+  clean release branch without isolating this mobile remediation slice.

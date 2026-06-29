@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../extensions.dart';
 import '../tokens/border_tokens.dart';
+import '../tokens/icon_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_button.dart';
@@ -46,7 +47,7 @@ class AfriStateView extends StatelessWidget {
       tone: AfriStateTone.loading,
       title: title,
       message: message,
-      icon: Icons.hourglass_top_rounded,
+      icon: AfriIcons.statusLoading,
       compact: compact,
     );
   }
@@ -54,7 +55,7 @@ class AfriStateView extends StatelessWidget {
   factory AfriStateView.empty({
     required String title,
     required String message,
-    IconData icon = Icons.inbox_rounded,
+    IconData icon = AfriIcons.statusEmpty,
     String? actionLabel,
     VoidCallback? onAction,
     bool compact = false,
@@ -85,7 +86,7 @@ class AfriStateView extends StatelessWidget {
       tone: AfriStateTone.offline,
       title: title,
       message: message,
-      icon: Icons.wifi_off_rounded,
+      icon: AfriIcons.offline,
       actionLabel: actionLabel,
       onAction: onAction,
       compact: compact,
@@ -105,7 +106,7 @@ class AfriStateView extends StatelessWidget {
       tone: AfriStateTone.error,
       title: title,
       message: message,
-      icon: Icons.error_outline_rounded,
+      icon: AfriIcons.statusError,
       actionLabel: actionLabel,
       onAction: onAction,
       compact: compact,
@@ -125,7 +126,7 @@ class AfriStateView extends StatelessWidget {
       tone: AfriStateTone.success,
       title: title,
       message: message,
-      icon: Icons.check_circle_outline_rounded,
+      icon: AfriIcons.statusSuccess,
       actionLabel: actionLabel,
       onAction: onAction,
       compact: compact,

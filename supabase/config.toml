@@ -247,9 +247,9 @@ template = "Your code is {{ .Code }}"
 # Controls the minimum amount of time that must pass before sending another sms otp.
 max_frequency = "5s"
 
-# Use pre-defined map of phone number to OTP for testing.
-# [auth.sms.test_otp]
-# 250788767816 = "123456"
+# Use pre-defined map of phone number to OTP for local app testing.
+[auth.sms.test_otp]
+250788767816 = "12345"
 
 # Configure logged in session timeouts.
 # [auth.sessions]
@@ -268,8 +268,7 @@ max_frequency = "5s"
 enabled = true
 uri = "pg-functions://postgres/public/custom_access_token_hook"
 
-# Send SMS hook — routes OTP delivery through WhatsApp Cloud API
-# instead of Twilio or any other SMS provider.
+# Send SMS hook — routes OTP delivery through WhatsApp Cloud API.
 # Production: enable via Supabase Dashboard > Auth > Hooks > Send SMS
 #   URI: https://mmpbzcdhfvplxplnfucy.supabase.co/functions/v1/send-sms
 # [auth.hook.send_sms]

@@ -4,8 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 /// Head-to-head tab content — shows historical encounters between two teams.
 ///
-/// Mirrors the fanafrika reference MatchDetail `H2H` tab with encounter list,
-/// win distribution bar, and goal stats.
+/// Borrowed-system match detail `H2H` tab with encounter list, win
+/// distribution bar, and goal stats.
 class H2hTabBody extends StatelessWidget {
   const H2hTabBody({
     super.key,
@@ -32,16 +32,16 @@ class H2hTabBody extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 72,
-                height: 72,
+                width: SpacingTokens.spacing16 + SpacingTokens.spacing2,
+                height: SpacingTokens.spacing16 + SpacingTokens.spacing2,
                 decoration: BoxDecoration(
                   color: ColorTokens.surfaceContainerHigh,
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(ShapeTokens.radiusXl),
                 ),
                 alignment: Alignment.center,
                 child: Icon(
                   AfriIcons.versus,
-                  size: 36,
+                  size: SpacingTokens.spacing9,
                   color: ColorTokens.onSurfaceVariant,
                 ),
               ),
@@ -99,9 +99,9 @@ class H2hTabBody extends StatelessWidget {
                   const SizedBox(height: SpacingTokens.spacing3),
                   // Visual bar
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
                     child: SizedBox(
-                      height: 12,
+                      height: SpacingTokens.spacing3,
                       child: Row(
                         children: [
                           if (homeWins > 0)
@@ -152,7 +152,7 @@ class H2hTabBody extends StatelessWidget {
                         ColorTokens.clubAccent,
                       ).copyWith(fontWeight: FontWeight.w800),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: SpacingTokens.spacing1 / 2),
                     Text(
                       '$homeTeamShort GOALS',
                       style: TypographyTokens.labelSmall(
@@ -175,7 +175,7 @@ class H2hTabBody extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: SpacingTokens.spacing1 / 2),
                     Text(
                       '$awayTeamShort GOALS',
                       style: TypographyTokens.labelSmall(
@@ -221,7 +221,7 @@ class H2hTabBody extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: ColorTokens.surfaceContainerHigh,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
                     ),
                     child: Text(
                       '${e.homeScore} - ${e.awayScore}',
@@ -268,7 +268,7 @@ class _DistMetric extends StatelessWidget {
             highlight ? ColorTokens.clubAccent : ColorTokens.onSurface,
           ).copyWith(fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: SpacingTokens.spacing1 / 2),
         Text(
           label,
           style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),

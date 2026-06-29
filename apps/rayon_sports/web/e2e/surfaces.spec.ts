@@ -213,8 +213,8 @@ test("admin auth with assignment-backed session reaches dashboard", async ({
       throw assignment.error;
     }
 
-    // Use magic link as a bridge to bypass OTP in CI
-    // (Phone OTP cannot be intercepted programmatically in CI without Twilio hooks)
+    // Use magic link as a bridge to bypass OTP in CI.
+    // The WhatsApp Cloud API OTP delivery hook is exercised separately.
     const redirectTo = `${baseURL}/auth/callback?next=/admin`;
     const link = await serviceClient.auth.admin.generateLink({
       type: "magiclink",

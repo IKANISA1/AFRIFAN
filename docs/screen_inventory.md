@@ -59,8 +59,8 @@ Source route contracts:
 | --- | --- | --- | --- | --- | --- |
 | Splash | `/splash` | `OnboardingModule` | Public | loading, redirect, error fallback | Verify no blocked first frame, branding fallback semantics, reduced motion. |
 | Onboarding | `/onboarding` | `OnboardingModule` | Public | carousel data, final CTA, error | MOMO must not be collected. Verify page indicators, CTA hit target, 200 percent text. |
-| Phone OTP | `/auth/phone` | `OnboardingModule` | Public | input, submitting, resend cooldown, error | Verify keyboard type, labels, validation errors, OTP field semantics, small-phone layout. |
-| Profile Setup Compatibility | `/profile_setup` | `SettingsModule.standaloneRoutes` | Authenticated fan | data, saved, error | Legacy compatibility route. Confirm it does not reintroduce onboarding MOMO collection. |
+| WhatsApp Number | `/auth/phone` | `OnboardingModule` | Public | input, submitting, error | Verify keyboard type, label, validation errors, small-phone layout, and route handoff to OTP. |
+| WhatsApp OTP | `/auth/otp` | `OnboardingModule` | Public | code input, verifying, resend cooldown, missing-phone error | Verify OTP field semantics, resend state, back/change-number path, 200 percent text, and small-phone layout. |
 
 ## Ticketing
 
@@ -147,7 +147,6 @@ All routes in this section are nested under `/fanzone` and owned by
 | Fan ID | `/fanzone/fan-id` | Authenticated fan | loading, data, missing profile, error | Verify identity privacy; never display `auth.uid()`. |
 | Social Hub | `/fanzone/social` | Authenticated fan | loading, data, empty, error | Verify moderation and privacy states. |
 | Fan Zone Privacy | `/fanzone/privacy` | Authenticated fan | data, saved, error | Verify toggles, confirmations, screen-reader labels. |
-| Fan Zone Onboarding Setup | `/fanzone/onboarding-setup` | Authenticated fan | data, saved, error | Confirm it does not reintroduce onboarding MOMO collection. |
 
 ## Challenge Standalone Routes
 

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../extensions.dart';
 import '../tokens/border_tokens.dart';
+import '../tokens/icon_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_button.dart';
 
@@ -15,7 +16,7 @@ import 'afri_button.dart';
 /// AfriEmptyView(
 ///   title: 'Matches pending',
 ///   message: 'Upcoming fixtures appear after publication.',
-///   icon: Icons.sports_soccer_rounded,
+///   icon: AfriIcons.fanzone,
 ///   actionLabel: 'Browse Clubs',
 ///   onAction: () => navigateToClubs(),
 /// )
@@ -24,7 +25,7 @@ class AfriEmptyView extends StatelessWidget {
   const AfriEmptyView({
     this.title,
     this.message,
-    this.icon = Icons.inbox_rounded,
+    this.icon = AfriIcons.statusEmpty,
     this.onAction,
     this.actionLabel,
     this.compact = false,

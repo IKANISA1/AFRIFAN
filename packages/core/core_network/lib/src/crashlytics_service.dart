@@ -5,6 +5,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 
+import 'firebase_observability_config.dart';
+
 /// Production crash reporting via Firebase Crashlytics.
 ///
 /// Mirrors the static singleton pattern used by [AppCheckService] and
@@ -23,6 +25,14 @@ class CrashlyticsService {
   static Future<bool> initialize() async {
     if (_initialized) return true;
     if (kIsWeb || Firebase.apps.isEmpty) return false;
+
+    if (!FirebaseObservabilityConfig.enabled) {
+      AfriLogger.info(
+        'Crashlytics',
+        'Skipped; Firebase observability is disabled.',
+      );
+      return false;
+    }
 
     try {
       // Disable collection in debug builds to avoid polluting dashboards.

@@ -13,11 +13,36 @@ function requireEnv(name: string): string {
   return value;
 }
 
+function optionalEnv(name: string): string | undefined {
+  const value = Deno.env.get(name)?.trim();
+  return value && value.length > 0 ? value : undefined;
+}
+
+function requireAnyEnv(names: string[]): string {
+  for (const name of names) {
+    const value = optionalEnv(name);
+    if (value) return value;
+  }
+
+  throw new Error(`Missing environment variable: ${names.join(" or ")}`);
+}
+
+function whatsappGraphApiVersion(): string {
+  const configured = optionalEnv("WHATSAPP_GRAPH_API_VERSION") ??
+    optionalEnv("WHATSAPP_CLOUD_API_VERSION") ??
+    "v25.0";
+  return configured.startsWith("v") ? configured : `v${configured}`;
+}
+
 async function postWhatsAppMessage(payload: Record<string, unknown>) {
   const phoneNumberId = requireEnv("WHATSAPP_PHONE_NUMBER_ID");
-  const accessToken = requireEnv("WHATSAPP_ACCESS_TOKEN");
+  const accessToken = requireAnyEnv([
+    "WHATSAPP_CLOUD_API_TOKEN",
+    "WHATSAPP_CLOUD_ACCESS_TOKEN",
+    "WHATSAPP_ACCESS_TOKEN",
+  ]);
   const response = await fetch(
-    `https://graph.facebook.com/v21.0/${phoneNumberId}/messages`,
+    `https://graph.facebook.com/${whatsappGraphApiVersion()}/${phoneNumberId}/messages`,
     {
       method: "POST",
       headers: {
@@ -71,15 +96,20 @@ export async function sendOtpTemplate(options: {
   code: string;
   language: string;
 }) {
+  const templateName = optionalEnv("WHATSAPP_AUTH_TEMPLATE_NAME") ??
+    "gikundiro";
+  const language = optionalEnv("WHATSAPP_AUTH_TEMPLATE_LANGUAGE") ??
+    options.language;
+
   await postWhatsAppMessage({
     messaging_product: "whatsapp",
     recipient_type: "individual",
     to: toWhatsAppRecipient(options.phone),
     type: "template",
     template: {
-      name: "gikundiro",
+      name: templateName,
       language: {
-        code: toOtpTemplateLanguage(options.language),
+        code: toOtpTemplateLanguage(language),
       },
       components: [
         {

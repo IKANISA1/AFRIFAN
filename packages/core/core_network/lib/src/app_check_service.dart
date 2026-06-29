@@ -3,6 +3,8 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
+import 'firebase_observability_config.dart';
+
 /// Initializes Firebase App Check for request attestation.
 ///
 /// Uses debug providers in debug builds and production attestors otherwise.
@@ -21,6 +23,13 @@ class AppCheckService {
       AfriLogger.warn(
         'AppCheck',
         'Firebase not initialized; skipping activation.',
+      );
+      return false;
+    }
+    if (!FirebaseObservabilityConfig.appCheckEnabled) {
+      AfriLogger.info(
+        'AppCheck',
+        'Skipped; Firebase App Check is disabled for this build.',
       );
       return false;
     }

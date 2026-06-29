@@ -87,5 +87,6 @@ flutter:
   assets:
     - assets/crest/
     - assets/images/
+    - assets/images/real/
 
 resolution: workspace

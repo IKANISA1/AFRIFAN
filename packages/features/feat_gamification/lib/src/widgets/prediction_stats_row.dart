@@ -82,7 +82,7 @@ class _StatBox extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
         border: highlight
             ? BorderTokens.all(
                 color: ColorTokens.clubAccent.withValues(alpha: 0.3),
@@ -93,7 +93,7 @@ class _StatBox extends StatelessWidget {
         children: [
           Icon(
             icon,
-            size: 16,
+            size: SpacingTokens.spacing4,
             color: highlight
                 ? ColorTokens.clubAccent
                 : ColorTokens.onSurfaceVariant,
@@ -105,7 +105,7 @@ class _StatBox extends StatelessWidget {
               highlight ? ColorTokens.clubAccent : ColorTokens.onSurface,
             ).copyWith(fontWeight: FontWeight.w900),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: SpacingTokens.spacing1 / 2),
           Text(
             label,
             style: TypographyTokens.metricLabel(

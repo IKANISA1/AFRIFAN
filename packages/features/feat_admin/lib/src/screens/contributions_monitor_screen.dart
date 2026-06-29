@@ -227,9 +227,7 @@ class _ContributionsMonitorScreenState
 
     await Clipboard.setData(ClipboardData(text: rows.join('\n')));
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Contribution report copied as CSV.')),
-    );
+    AfriToast.success(context, 'Contribution report copied as CSV.');
   }
 
   @override

@@ -44,11 +44,11 @@ class PredictionSlipBar extends ConsumerWidget {
           child: Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: SpacingTokens.spacing10,
+                height: SpacingTokens.spacing10,
                 decoration: BoxDecoration(
                   color: ColorTokens.clubAccent.withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
                 ),
                 alignment: Alignment.center,
                 child: Text(
@@ -127,7 +127,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
             children: [
               Icon(
                 AfriIcons.myPicks,
-                size: 32,
+                size: SpacingTokens.spacing8,
                 color: ColorTokens.onSurfaceVariant,
               ),
               const SizedBox(height: SpacingTokens.spacing3),
@@ -164,7 +164,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
                   ),
                 ),
               ),
-              Switch.adaptive(
+              AfriSwitch(
                 value: slip.accaMode,
                 onChanged: controller.toggleAcca,
               ),
@@ -206,8 +206,6 @@ class _PredictionSlipSheet extends ConsumerWidget {
               );
               if (!confirmed || !context.mounted) return;
 
-              final messenger = ScaffoldMessenger.of(context);
-
               // Capture slip info before submit clears it.
               final slipItems = List<FanzoneSlipSelection>.from(slip.items);
               final result = await controller.submit();
@@ -235,26 +233,20 @@ class _PredictionSlipSheet extends ConsumerWidget {
                   }
                 }
 
-                if (result.hasFailures && messenger.mounted) {
-                  messenger.showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        result.messages.isNotEmpty
-                            ? result.messages.first
-                            : 'Some selections could not be submitted.',
-                      ),
-                    ),
+                if (result.hasFailures && hostContext.mounted) {
+                  AfriToast.error(
+                    hostContext,
+                    result.messages.isNotEmpty
+                        ? result.messages.first
+                        : 'Some selections could not be submitted.',
                   );
                 }
-              } else {
-                messenger.showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      result.messages.isNotEmpty
-                          ? result.messages.first
-                          : 'Could not submit your predictions.',
-                    ),
-                  ),
+              } else if (hostContext.mounted) {
+                AfriToast.error(
+                  hostContext,
+                  result.messages.isNotEmpty
+                      ? result.messages.first
+                      : 'Could not submit your predictions.',
                 );
               }
             },
@@ -349,7 +341,7 @@ Future<bool> _showPreSubmitConfirmation(
                           ColorTokens.onSurfaceVariant,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: SpacingTokens.spacing1),
                       Text(
                         '+$totalPotential FET',
                         style: TypographyTokens.metricValue(
@@ -423,17 +415,17 @@ class _ShareCardModalSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 52,
-                  height: 52,
+                  width: SpacingTokens.spacing12 + SpacingTokens.spacing1,
+                  height: SpacingTokens.spacing12 + SpacingTokens.spacing1,
                   decoration: BoxDecoration(
                     color: ColorTokens.success.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
                   ),
                   alignment: Alignment.center,
                   child: const Icon(
                     AfriIcons.verified,
                     color: ColorTokens.success,
-                    size: 28,
+                    size: SpacingTokens.spacing7,
                   ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing4),
@@ -485,20 +477,26 @@ class _ShareCardModalSheet extends StatelessWidget {
                 Expanded(
                   child: AfriButton(
                     onTap: () {
-                      PredictionShareService.share(
-                        data: PredictionShareData(
-                          competitionName: first.competitionName ?? '',
-                          homeTeam: first.fixtureLabel.split(' vs ').first,
-                          homeTeamShort: first.fixtureLabel.split(' vs ').first,
-                          awayTeam: first.fixtureLabel.split(' vs ').last,
-                          awayTeamShort: first.fixtureLabel.split(' vs ').last,
-                          marketName: first.marketName,
-                          selectedOutcome: first.outcomeLabel,
-                          status: PredictionStatus.pending,
-                          fetPotential: result.totalPotential,
-                          fetEarned: 0,
+                      unawaited(
+                        PredictionShareService.share(
+                          data: PredictionShareData(
+                            competitionName: first.competitionName ?? '',
+                            homeTeam: first.fixtureLabel.split(' vs ').first,
+                            homeTeamShort: first.fixtureLabel
+                                .split(' vs ')
+                                .first,
+                            awayTeam: first.fixtureLabel.split(' vs ').last,
+                            awayTeamShort: first.fixtureLabel
+                                .split(' vs ')
+                                .last,
+                            marketName: first.marketName,
+                            selectedOutcome: first.outcomeLabel,
+                            status: PredictionStatus.pending,
+                            fetPotential: result.totalPotential,
+                            fetEarned: 0,
+                          ),
+                          context: context,
                         ),
-                        context: context,
                       );
                     },
                     label: 'SHARE',
@@ -509,20 +507,26 @@ class _ShareCardModalSheet extends StatelessWidget {
                 Expanded(
                   child: AfriButton(
                     onTap: () {
-                      PredictionShareService.copy(
-                        data: PredictionShareData(
-                          competitionName: first.competitionName ?? '',
-                          homeTeam: first.fixtureLabel.split(' vs ').first,
-                          homeTeamShort: first.fixtureLabel.split(' vs ').first,
-                          awayTeam: first.fixtureLabel.split(' vs ').last,
-                          awayTeamShort: first.fixtureLabel.split(' vs ').last,
-                          marketName: first.marketName,
-                          selectedOutcome: first.outcomeLabel,
-                          status: PredictionStatus.pending,
-                          fetPotential: result.totalPotential,
-                          fetEarned: 0,
+                      unawaited(
+                        PredictionShareService.copy(
+                          data: PredictionShareData(
+                            competitionName: first.competitionName ?? '',
+                            homeTeam: first.fixtureLabel.split(' vs ').first,
+                            homeTeamShort: first.fixtureLabel
+                                .split(' vs ')
+                                .first,
+                            awayTeam: first.fixtureLabel.split(' vs ').last,
+                            awayTeamShort: first.fixtureLabel
+                                .split(' vs ')
+                                .last,
+                            marketName: first.marketName,
+                            selectedOutcome: first.outcomeLabel,
+                            status: PredictionStatus.pending,
+                            fetPotential: result.totalPotential,
+                            fetEarned: 0,
+                          ),
+                          context: context,
                         ),
-                        context: context,
                       );
                     },
                     label: 'COPY',
@@ -635,7 +639,7 @@ class _SlipChip extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
         label.toUpperCase(),

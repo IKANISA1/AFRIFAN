@@ -49,6 +49,7 @@ class AfriIcons {
   static const IconData help = Icons.chat_outlined;
   static const IconData privacy = Icons.lock_outline;
   static const IconData lock = Icons.lock_rounded;
+  static const IconData maintenance = Icons.engineering_rounded;
   static const IconData profile = Icons.person_outline_rounded;
   static const IconData admin = Icons.admin_panel_settings_outlined;
   static const IconData visibility = Icons.visibility_rounded;
@@ -65,8 +66,10 @@ class AfriIcons {
   static const IconData statusPending = Icons.schedule_rounded;
   static const IconData statusEmpty = Icons.inbox_rounded;
   static const IconData statusBlocked = Icons.block_rounded;
+  static const IconData statusLoading = Icons.hourglass_top_rounded;
   static const IconData statusWait = Icons.hourglass_bottom_rounded;
   static const IconData warning = Icons.warning_rounded;
+  static const IconData offline = Icons.wifi_off_rounded;
 
   // ── Content ──
   static const IconData fixture = Icons.calendar_month_rounded;

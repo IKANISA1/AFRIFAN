@@ -83,9 +83,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     }
 
     if (_addressController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter a delivery address first.')),
-      );
+      AfriToast.info(context, 'Enter a delivery address first.');
       return;
     }
 
@@ -101,11 +99,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           _paymentRouteMessage =
               'Checkout payment setup is pending club activation.';
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('MOMO checkout setup is pending club activation.'),
-            backgroundColor: ColorTokens.error,
-          ),
+        AfriToast.error(
+          context,
+          'MOMO checkout setup is pending club activation.',
         );
         return;
       }
@@ -120,12 +116,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       if (!mounted) return;
 
       if (!launched) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not launch the MOMO dialer.'),
-            backgroundColor: ColorTokens.error,
-          ),
-        );
+        AfriToast.error(context, 'Could not launch the MOMO dialer.');
         return;
       }
 
@@ -148,23 +139,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Order $orderId created. Payment verification is still pending.',
-          ),
-          backgroundColor: ColorTokens.info,
-        ),
+      AfriToast.success(
+        context,
+        'Order $orderId created. Payment verification is still pending.',
       );
       context.go('/shop');
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Checkout failed: $error'),
-          backgroundColor: ColorTokens.error,
-        ),
-      );
+      AfriToast.error(context, 'Checkout failed: $error');
     } finally {
       if (mounted) {
         setState(() => _submitting = false);

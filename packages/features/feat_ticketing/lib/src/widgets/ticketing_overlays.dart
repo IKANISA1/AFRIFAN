@@ -56,7 +56,7 @@ class _TicketPurchaseConfirmSheet extends StatelessWidget {
             height: 4,
             decoration: BoxDecoration(
               color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.35),
-              borderRadius: BorderRadius.circular(999),
+              borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
             ),
           ),
         ),

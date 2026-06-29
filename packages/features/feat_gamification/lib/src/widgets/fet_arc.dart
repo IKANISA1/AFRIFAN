@@ -24,8 +24,8 @@ class FetArc extends StatelessWidget {
     final progress = (currentFet / maxFet).clamp(0.0, 1.0);
 
     return SizedBox(
-      width: 200,
-      height: 200,
+      width: SpacingTokens.spacing20 * 2 + SpacingTokens.spacing10,
+      height: SpacingTokens.spacing20 * 2 + SpacingTokens.spacing10,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -48,22 +48,22 @@ class FetArc extends StatelessWidget {
                 currentFet.toString(),
                 style: TypographyTokens.displayLarge(primary).copyWith(
                   fontWeight: FontWeight.w800,
-                  height: 1.0,
+                  height: TypographyTokens.lineHeightSolid,
                   letterSpacing: 0,
                 ),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: SpacingTokens.spacing1 / 2),
               Text(
                 'FET',
                 style: TypographyTokens.labelLarge(
                   ColorTokens.onSurfaceVariant,
                 ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 2.0),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: SpacingTokens.spacing2),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
+                  horizontal: SpacingTokens.spacing3,
+                  vertical: SpacingTokens.spacing1,
                 ),
                 decoration: BoxDecoration(
                   color: primary.withValues(alpha: 0.15),

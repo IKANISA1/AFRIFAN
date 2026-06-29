@@ -217,11 +217,13 @@ class _StreakHeatCell extends StatelessWidget {
     return Semantics(
       label: 'Streak day ${index + 1}: $winsLabel',
       child: Container(
-        width: 20,
-        height: 20,
+        width: SpacingTokens.spacing5,
+        height: SpacingTokens.spacing5,
         decoration: BoxDecoration(
           color: ColorTokens.clubPrimary.withValues(alpha: normalized),
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(
+            SpacingTokens.spacing2 - SpacingTokens.spacing1 / 2,
+          ),
         ),
       ),
     );

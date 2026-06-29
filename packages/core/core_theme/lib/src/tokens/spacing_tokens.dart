@@ -7,6 +7,7 @@ class SpacingTokens {
   SpacingTokens._();
 
   // ── Raw scale ──
+  static const double spacing0 = 0.0;
   static const double spacing1 = 4.0;
   static const double spacing2 =
       8.0; // 0.7rem — list item gap (replaces dividers)

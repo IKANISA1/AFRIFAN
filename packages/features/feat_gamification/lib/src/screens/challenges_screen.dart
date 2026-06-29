@@ -1,12 +1,14 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
-import 'package:core_utils/core_utils.dart';
 
 const _tutorialSeenKey = 'fanzone_tutorial_seen';
 
@@ -33,7 +35,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   @override
   void initState() {
     super.initState();
-    _loadChallenges();
+    unawaited(_loadChallenges());
     _maybeShowTutorial();
   }
 
@@ -56,14 +58,13 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
   }
 
   void _showFetTutorial() {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: ColorTokens.transparent,
-      builder: (context) => const _FetTutorialSheet(),
-    ).then((_) {
-      HiveCacheService.putJson(_tutorialSeenKey, true);
-    });
+    unawaited(
+      showAfriBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) => const _FetTutorialSheet(),
+      ).then((_) => HiveCacheService.putJson(_tutorialSeenKey, true)),
+    );
   }
 
   Future<void> _loadChallenges() async {
@@ -245,8 +246,8 @@ class _ChallengeCard extends StatelessWidget {
             value: data.progress,
             color: ColorTokens.clubAccent,
             backgroundColor: ColorTokens.surfaceContainerHighest,
-            minHeight: 8,
-            borderRadius: BorderRadius.circular(999),
+            minHeight: SpacingTokens.spacing2,
+            borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(data.progressLabel, style: TypographyTokens.bodySmall()),
@@ -300,45 +301,29 @@ class _FetTutorialSheetState extends State<_FetTutorialSheet> {
     final step = _steps[_currentStep];
     final isLast = _currentStep == _steps.length - 1;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: ColorTokens.surfaceContainer,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      padding: EdgeInsets.only(
-        left: SpacingTokens.spacing6,
-        right: SpacingTokens.spacing6,
-        top: SpacingTokens.spacing6,
-        bottom: MediaQuery.of(context).padding.bottom + SpacingTokens.spacing6,
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Drag handle
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(height: SpacingTokens.spacing6),
-
           // Step indicator
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(_steps.length, (index) {
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 250),
-                width: index == _currentStep ? 24 : 8,
-                height: 8,
-                margin: const EdgeInsets.symmetric(horizontal: 3),
+                width: index == _currentStep
+                    ? SpacingTokens.spacing6
+                    : SpacingTokens.spacing2,
+                height: SpacingTokens.spacing2,
+                margin: const EdgeInsets.symmetric(
+                  horizontal: SpacingTokens.spacing1,
+                ),
                 decoration: BoxDecoration(
                   color: index == _currentStep
                       ? ColorTokens.clubAccent
                       : ColorTokens.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                 ),
               );
             }),
@@ -346,7 +331,11 @@ class _FetTutorialSheetState extends State<_FetTutorialSheet> {
           const SizedBox(height: SpacingTokens.spacing6),
 
           // Icon
-          Icon(step.icon, size: 48, color: ColorTokens.clubAccent),
+          Icon(
+            step.icon,
+            size: SpacingTokens.spacing12,
+            color: ColorTokens.clubAccent,
+          ),
           const SizedBox(height: SpacingTokens.spacing4),
 
           // Title

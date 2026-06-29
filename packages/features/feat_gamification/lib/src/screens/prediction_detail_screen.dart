@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import '../models/prediction_models.dart';
 import '../providers/prediction_detail_provider.dart';
 import '../widgets/prediction_share_card.dart';
-import 'package:core_utils/core_utils.dart';
 
 class PredictionDetailScreen extends ConsumerStatefulWidget {
   const PredictionDetailScreen({super.key, required this.predictionId});
@@ -34,13 +33,9 @@ class _PredictionDetailScreenState
 
       if (!mounted) return;
       if (result.isError) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(result.message)));
+        AfriToast.error(context, result.message);
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Prediction cancelled.')));
+        AfriToast.success(context, 'Prediction cancelled.');
       }
     } finally {
       if (mounted) setState(() => _isCancelling = false);
@@ -56,9 +51,7 @@ class _PredictionDetailScreenState
         '${detail.selectedOutcome} · $score';
     await Clipboard.setData(ClipboardData(text: summary));
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Prediction summary copied to clipboard.')),
-    );
+    AfriToast.success(context, 'Prediction summary copied to clipboard.');
   }
 
   Color _statusColor(PredictionDetail detail) {
@@ -230,14 +223,16 @@ class _PredictionDetailScreenState
                                   ),
                                   Container(
                                     padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 4,
+                                      horizontal: SpacingTokens.spacing3,
+                                      vertical: SpacingTokens.spacing1,
                                     ),
                                     decoration: BoxDecoration(
                                       color: _statusColor(
                                         detail,
                                       ).withValues(alpha: 0.14),
-                                      borderRadius: BorderRadius.circular(999),
+                                      borderRadius: BorderRadius.circular(
+                                        ShapeTokens.radiusFull,
+                                      ),
                                     ),
                                     child: Text(
                                       _statusLabel(detail),
@@ -462,7 +457,7 @@ class _DetailMetric extends StatelessWidget {
               label,
               style: TypographyTokens.labelMedium(ColorTokens.onSurfaceVariant),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: SpacingTokens.spacing1),
             Text(
               value,
               style: TypographyTokens.titleLarge(

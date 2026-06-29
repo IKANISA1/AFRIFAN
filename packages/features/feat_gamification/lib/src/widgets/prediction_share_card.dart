@@ -93,12 +93,7 @@ class PredictionShareService {
     if (!context.mounted) {
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Share text copied to clipboard.'),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    AfriToast.success(context, 'Share text copied to clipboard.');
   }
 
   static String _buildShareText(PredictionShareData data) {
@@ -178,10 +173,10 @@ class PredictionShareCard extends StatelessWidget {
           from: ColorTokens.surfaceContainerLow,
           to: color.withValues(alpha: 0.06),
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
         border: BorderTokens.all(
           color: color.withValues(alpha: 0.2),
-          width: 1.5,
+          width: BorderTokens.strong,
         ),
       ),
       padding: const EdgeInsets.all(SpacingTokens.spacing5),
@@ -192,12 +187,12 @@ class PredictionShareCard extends StatelessWidget {
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
+                  horizontal: SpacingTokens.spacing3,
+                  vertical: SpacingTokens.spacing1,
                 ),
                 decoration: BoxDecoration(
                   color: ColorTokens.clubAccent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                 ),
                 child: Text(
                   data.competitionName.toUpperCase(),
@@ -209,12 +204,12 @@ class PredictionShareCard extends StatelessWidget {
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
+                  horizontal: SpacingTokens.spacing3,
+                  vertical: SpacingTokens.spacing1,
                 ),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                 ),
                 child: Text(
                   _statusLabel(),
@@ -330,7 +325,7 @@ class _ShareMetric extends StatelessWidget {
             accent ? ColorTokens.clubAccent : ColorTokens.onSurface,
           ).copyWith(fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: SpacingTokens.spacing1),
         Text(
           label,
           textAlign: TextAlign.center,

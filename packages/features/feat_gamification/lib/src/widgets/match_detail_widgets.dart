@@ -90,7 +90,9 @@ class MatchPredictTabBody extends StatelessWidget {
                       .toList(growable: false),
                 ),
         ),
-        const SizedBox(height: 120),
+        const SizedBox(
+          height: SpacingTokens.spacing20 + SpacingTokens.spacing10,
+        ),
       ],
     );
   }
@@ -134,7 +136,7 @@ class MatchStatsTabBody extends StatelessWidget {
               children: [
                 Icon(
                   AfriIcons.statusInfo,
-                  size: 16,
+                  size: SpacingTokens.spacing4,
                   color: ColorTokens.onSurfaceVariant,
                 ),
                 const SizedBox(width: SpacingTokens.spacing2),
@@ -167,7 +169,7 @@ class MatchStatsTabBody extends StatelessWidget {
               children: [
                 Icon(
                   AfriIcons.statusInfo,
-                  size: 16,
+                  size: SpacingTokens.spacing4,
                   color: ColorTokens.onSurfaceVariant,
                 ),
                 const SizedBox(width: SpacingTokens.spacing2),
@@ -222,7 +224,7 @@ class MatchStatsTabBody extends StatelessWidget {
             children: [
               Icon(
                 AfriIcons.statusInfo,
-                size: 16,
+                size: SpacingTokens.spacing4,
                 color: ColorTokens.onSurfaceVariant,
               ),
               const SizedBox(width: SpacingTokens.spacing2),
@@ -281,12 +283,14 @@ class MatchMarketCard extends ConsumerWidget {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 3,
+                      horizontal: SpacingTokens.spacing2,
+                      vertical: SpacingTokens.spacing1,
                     ),
                     decoration: BoxDecoration(
                       color: ColorTokens.surfaceContainerHigh,
-                      borderRadius: BorderRadius.circular(999),
+                      borderRadius: BorderRadius.circular(
+                        ShapeTokens.radiusFull,
+                      ),
                     ),
                     child: Text(
                       market.marketCategory,
@@ -362,7 +366,9 @@ class MatchMarketCard extends ConsumerWidget {
                       trailing: selectedOutcomeKey == outcome.key
                           ? Icon(
                               AfriIcons.check,
-                              size: 14,
+                              size:
+                                  SpacingTokens.spacing3 +
+                                  SpacingTokens.spacing1 / 2,
                               color: ColorTokens.clubAccent,
                             )
                           : null,
@@ -374,13 +380,9 @@ class MatchMarketCard extends ConsumerWidget {
                               market: market,
                               outcome: outcome,
                             );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              '${outcome.label} added to your slip.',
-                            ),
-                            duration: const Duration(seconds: 1),
-                          ),
+                        AfriToast.success(
+                          context,
+                          '${outcome.label} added to your slip.',
                         );
                       },
                     );
@@ -423,7 +425,7 @@ class MatchMetaLink extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: ColorTokens.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
           border: BorderTokens.all(color: ColorTokens.ghostBorder),
         ),
         child: Text(

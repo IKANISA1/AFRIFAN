@@ -35,26 +35,28 @@ class FetLeaderboardNotifier
 
   /// Refresh the leaderboard for the current period.
   Future<void> refresh() async {
-    state =
-        const AsyncLoading<FetLeaderboardSnapshot>().copyWithPrevious(state);
+    state = const AsyncLoading<FetLeaderboardSnapshot>().copyWithPrevious(
+      state,
+    );
     state = await AsyncValue.guard(() => _load(arg));
   }
 
   Future<FetLeaderboardSnapshot> _load(String period) async {
     final repo = ref.read(predictionRepositoryProvider);
-    final rows = await repo.loadLeaderboard(
-      limit: 25,
-      period: period,
-    );
+    final rows = await repo.loadLeaderboard(limit: 25, period: period);
     return FetLeaderboardSnapshot(rows: rows, period: period);
   }
 }
 
 /// Provider for FET leaderboard data, keyed by period string.
-final fetLeaderboardProvider = AsyncNotifierProvider.family<
-    FetLeaderboardNotifier, FetLeaderboardSnapshot, String>(() {
-  return FetLeaderboardNotifier();
-});
+final fetLeaderboardProvider =
+    AsyncNotifierProvider.family<
+      FetLeaderboardNotifier,
+      FetLeaderboardSnapshot,
+      String
+    >(() {
+      return FetLeaderboardNotifier();
+    });
 
 // ══════════════════════════════════════════════════════════════════════════
 // SUPPORTER LEADERBOARD
@@ -62,9 +64,7 @@ final fetLeaderboardProvider = AsyncNotifierProvider.family<
 
 /// Snapshot for the Supporters tab.
 class SupporterLeaderboardSnapshot {
-  const SupporterLeaderboardSnapshot({
-    this.rows = const <FetLeaderboardRow>[],
-  });
+  const SupporterLeaderboardSnapshot({this.rows = const <FetLeaderboardRow>[]});
 
   final List<FetLeaderboardRow> rows;
 }
@@ -78,8 +78,9 @@ class SupporterLeaderboardNotifier
   }
 
   Future<void> refresh() async {
-    state = const AsyncLoading<SupporterLeaderboardSnapshot>()
-        .copyWithPrevious(state);
+    state = const AsyncLoading<SupporterLeaderboardSnapshot>().copyWithPrevious(
+      state,
+    );
     state = await AsyncValue.guard(_load);
   }
 
@@ -91,7 +92,10 @@ class SupporterLeaderboardNotifier
 }
 
 /// Provider for supporter leaderboard data.
-final supporterLeaderboardProvider = AsyncNotifierProvider<
-    SupporterLeaderboardNotifier, SupporterLeaderboardSnapshot>(() {
-  return SupporterLeaderboardNotifier();
-});
+final supporterLeaderboardProvider =
+    AsyncNotifierProvider<
+      SupporterLeaderboardNotifier,
+      SupporterLeaderboardSnapshot
+    >(() {
+      return SupporterLeaderboardNotifier();
+    });

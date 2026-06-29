@@ -32,7 +32,7 @@ class CartItemCard extends StatelessWidget {
             height: 64,
             decoration: BoxDecoration(
               color: ColorTokens.surfaceContainer,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
             ),
             alignment: Alignment.center,
             child: const Icon(AfriIcons.shop),
@@ -68,7 +68,7 @@ class CartItemCard extends StatelessWidget {
                     ),
                     const SizedBox(width: SpacingTokens.spacing2),
                     SizedBox(
-                      width: 24,
+                      width: SpacingTokens.spacing6,
                       child: Text(
                         '${item.quantity}',
                         textAlign: TextAlign.center,

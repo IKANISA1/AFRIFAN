@@ -95,7 +95,7 @@ class TeamContributionRouteBanner extends StatelessWidget {
           padding: const EdgeInsets.all(SpacingTokens.spacing4),
           decoration: BoxDecoration(
             color: ColorTokens.clubAccent.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
             border: BorderTokens.all(
               color: ColorTokens.clubAccent.withValues(alpha: 0.2),
             ),
@@ -430,7 +430,7 @@ class TeamFixturesTab extends StatelessWidget {
                           fixture.fixtureLabel,
                           style: TypographyTokens.titleSmall(),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: SpacingTokens.spacing1 / 2),
                         Text(
                           '${fixture.competitionName} · ${kickoffLabel(fixture.kickoffAt)}',
                           style: TypographyTokens.bodySmall(),

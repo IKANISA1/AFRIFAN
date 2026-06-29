@@ -196,11 +196,13 @@ class _PredictionNotificationCard extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: 38,
-                      height: 38,
+                      width: SpacingTokens.spacing10,
+                      height: SpacingTokens.spacing10,
                       decoration: BoxDecoration(
                         color: accent.withValues(alpha: 0.14),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(
+                          ShapeTokens.radiusMd,
+                        ),
                       ),
                       alignment: Alignment.center,
                       child: Icon(
@@ -208,7 +210,7 @@ class _PredictionNotificationCard extends StatelessWidget {
                             ? AfriIcons.gift
                             : AfriIcons.notificationsActive,
                         color: accent,
-                        size: 20,
+                        size: SpacingTokens.spacing5,
                       ),
                     ),
                     const SizedBox(width: SpacingTokens.spacing3),
@@ -220,7 +222,7 @@ class _PredictionNotificationCard extends StatelessWidget {
                             notification.title,
                             style: TypographyTokens.titleSmall(),
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: SpacingTokens.spacing1 / 2),
                           Text(
                             dateLabel,
                             style: TypographyTokens.labelSmall(
@@ -238,7 +240,9 @@ class _PredictionNotificationCard extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: ColorTokens.success.withValues(alpha: 0.14),
-                          borderRadius: BorderRadius.circular(999),
+                          borderRadius: BorderRadius.circular(
+                            ShapeTokens.radiusFull,
+                          ),
                         ),
                         child: Text(
                           '+${notification.earned} FET',

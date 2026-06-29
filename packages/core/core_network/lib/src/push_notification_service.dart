@@ -33,6 +33,7 @@ class PushNotificationService {
   static String? _clubId;
   static String? _lastKnownUserId;
   static String? _lastKnownToken;
+  static bool _messagingRuntimeRegistered = false;
   static StreamSubscription<AuthState>? _authSubscription;
   static StreamSubscription<String>? _tokenRefreshSubscription;
 
@@ -43,59 +44,8 @@ class PushNotificationService {
     }
 
     await _authSubscription?.cancel();
-    await _tokenRefreshSubscription?.cancel();
 
-    FirebaseMessaging.onBackgroundMessage(
-      afriClubFirebaseMessagingBackgroundHandler,
-    );
-
-    try {
-      await FirebaseMessaging.instance.setAutoInitEnabled(true);
-    } catch (error, stackTrace) {
-      AfriLogger.error('Push', 'Auto-init enable skipped.', error, stackTrace);
-    }
-
-    if (defaultTargetPlatform == TargetPlatform.iOS ||
-        defaultTargetPlatform == TargetPlatform.macOS) {
-      try {
-        await FirebaseMessaging.instance
-            .setForegroundNotificationPresentationOptions(
-              alert: true,
-              badge: true,
-              sound: true,
-            );
-      } catch (error, stackTrace) {
-        AfriLogger.error(
-          'Push',
-          'Foreground presentation setup failed.',
-          error,
-          stackTrace,
-        );
-      }
-    }
-
-    FirebaseMessaging.onMessage.listen((message) {
-      AfriLogger.info(
-        'Push',
-        'Foreground message received: ${message.messageId ?? 'unknown'}',
-      );
-    });
-
-    _tokenRefreshSubscription = FirebaseMessaging.instance.onTokenRefresh
-        .listen(
-          (token) async {
-            _lastKnownToken = token;
-            await syncToken();
-          },
-          onError: (Object error, StackTrace stackTrace) {
-            AfriLogger.error(
-              'Push',
-              'Token refresh stream error.',
-              error,
-              stackTrace,
-            );
-          },
-        );
+    await _setAutoInitEnabled(false, reason: 'startup');
 
     _authSubscription = SupabaseClientFactory.authStateChanges.listen((auth) {
       final sessionUserId = auth.session?.user.id;
@@ -106,7 +56,9 @@ class PushNotificationService {
         case AuthChangeEvent.signedIn:
         case AuthChangeEvent.tokenRefreshed:
         case AuthChangeEvent.userUpdated:
-          unawaited(syncToken());
+          if (_lastKnownToken != null) {
+            unawaited(syncToken());
+          }
           break;
         case AuthChangeEvent.signedOut:
           final signedOutUserId = _lastKnownUserId;
@@ -128,7 +80,6 @@ class PushNotificationService {
     });
 
     _initialized = true;
-    await syncToken();
   }
 
   static Future<PushPermissionStatus> getPermissionStatus() async {
@@ -166,6 +117,8 @@ class PushNotificationService {
       final status = _mapAuthorizationStatus(settings.authorizationStatus);
       if (status == PushPermissionStatus.authorized ||
           status == PushPermissionStatus.provisional) {
+        await _ensureMessagingRuntimeRegistered();
+        await _setAutoInitEnabled(true, reason: 'permission granted');
         await syncToken();
       }
       return status;
@@ -194,6 +147,8 @@ class PushNotificationService {
     }
 
     try {
+      await _ensureMessagingRuntimeRegistered();
+      await _setAutoInitEnabled(true, reason: 'token sync');
       final token = await FirebaseMessaging.instance.getToken();
       if (token == null || token.trim().isEmpty) return;
       _lastKnownToken = token;
@@ -215,9 +170,10 @@ class PushNotificationService {
     if (resolvedUserId == null || resolvedUserId.isEmpty) return;
 
     try {
+      await _setAutoInitEnabled(false, reason: 'token unregister');
       final resolvedToken = token?.trim().isNotEmpty == true
           ? token!.trim()
-          : (_lastKnownToken ?? await FirebaseMessaging.instance.getToken());
+          : _lastKnownToken;
       if (resolvedToken != null && resolvedToken.trim().isNotEmpty) {
         await SupabaseClientFactory.client
             .from('user_fcm_tokens')
@@ -247,6 +203,81 @@ class PushNotificationService {
   }
 
   static bool get _isSupported => !kIsWeb && Firebase.apps.isNotEmpty;
+
+  static Future<void> _ensureMessagingRuntimeRegistered() async {
+    if (!_isSupported || _messagingRuntimeRegistered) return;
+
+    FirebaseMessaging.onBackgroundMessage(
+      afriClubFirebaseMessagingBackgroundHandler,
+    );
+
+    if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      try {
+        await FirebaseMessaging.instance
+            .setForegroundNotificationPresentationOptions(
+              alert: true,
+              badge: true,
+              sound: true,
+            );
+      } catch (error, stackTrace) {
+        AfriLogger.error(
+          'Push',
+          'Foreground presentation setup failed.',
+          error,
+          stackTrace,
+        );
+      }
+    }
+
+    FirebaseMessaging.onMessage.listen((message) {
+      AfriLogger.info(
+        'Push',
+        'Foreground message received: ${message.messageId ?? 'unknown'}',
+      );
+    });
+
+    await _tokenRefreshSubscription?.cancel();
+    _tokenRefreshSubscription = FirebaseMessaging.instance.onTokenRefresh
+        .listen(
+          (token) async {
+            _lastKnownToken = token;
+            await syncToken();
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            AfriLogger.error(
+              'Push',
+              'Token refresh stream error.',
+              error,
+              stackTrace,
+            );
+          },
+        );
+
+    _messagingRuntimeRegistered = true;
+  }
+
+  static Future<void> _setAutoInitEnabled(
+    bool enabled, {
+    required String reason,
+  }) async {
+    if (!_isSupported) return;
+
+    try {
+      await FirebaseMessaging.instance.setAutoInitEnabled(enabled);
+      AfriLogger.info(
+        'Push',
+        'FCM auto-init ${enabled ? 'enabled' : 'disabled'} ($reason).',
+      );
+    } catch (error, stackTrace) {
+      AfriLogger.error(
+        'Push',
+        'FCM auto-init ${enabled ? 'enable' : 'disable'} failed ($reason).',
+        error,
+        stackTrace,
+      );
+    }
+  }
 
   static Future<bool> _isPushEnabledForUser(String userId) async {
     try {

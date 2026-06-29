@@ -14,10 +14,10 @@ void showShopSearchSheet({
   var query = '';
 
   unawaited(
-    showModalBottomSheet<void>(
+    showAfriBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: ColorTokens.transparent,
+      useBorrowedSurface: false,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
@@ -36,7 +36,7 @@ void showShopSearchSheet({
               decoration: BoxDecoration(
                 color: ColorTokens.surface,
                 borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(28),
+                  top: Radius.circular(ShapeTokens.radiusXl),
                 ),
                 border: BorderTokens.ghost(),
               ),

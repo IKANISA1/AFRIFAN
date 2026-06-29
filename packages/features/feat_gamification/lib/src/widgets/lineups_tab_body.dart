@@ -4,7 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 /// Lineups tab content — shows starting XI and substitutes for both teams.
 ///
-/// Mirrors the fanafrika reference MatchDetail `Lineups` tab.
+/// Uses the borrowed match-detail system for compact team comparison.
 class LineupsTabBody extends StatelessWidget {
   const LineupsTabBody({
     super.key,
@@ -37,16 +37,16 @@ class LineupsTabBody extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 72,
-                height: 72,
+                width: SpacingTokens.spacing16 + SpacingTokens.spacing2,
+                height: SpacingTokens.spacing16 + SpacingTokens.spacing2,
                 decoration: BoxDecoration(
                   color: ColorTokens.surfaceContainerHigh,
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(ShapeTokens.radiusXl),
                 ),
                 alignment: Alignment.center,
                 child: Icon(
                   AfriIcons.groups,
-                  size: 36,
+                  size: SpacingTokens.spacing9,
                   color: ColorTokens.onSurfaceVariant,
                 ),
               ),
@@ -131,7 +131,7 @@ class _FormationChip extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -223,7 +223,7 @@ class _PlayerRow extends StatelessWidget {
           child: Row(
             children: [
               SizedBox(
-                width: 24,
+                width: SpacingTokens.spacing6,
                 child: Text(
                   player.number != null ? '${player.number}' : '',
                   style: TypographyTokens.labelMedium(

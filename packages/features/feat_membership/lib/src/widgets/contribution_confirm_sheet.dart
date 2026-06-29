@@ -23,10 +23,10 @@ class ContributionConfirmSheet extends StatefulWidget {
     required String tierLabel,
     required VoidCallback onConfirm,
   }) {
-    return showModalBottomSheet<bool>(
+    return showAfriBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: ColorTokens.transparent,
+      useBorrowedSurface: false,
       builder: (_) =>
           ContributionConfirmSheet(tierLabel: tierLabel, onConfirm: onConfirm),
     );
@@ -75,7 +75,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
             height: 4,
             decoration: BoxDecoration(
               color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(999),
+              borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing6),
@@ -155,7 +155,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
                   ),
                   decoration: BoxDecoration(
                     color: ColorTokens.clubAccent.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(999),
+                    borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                   ),
                   child: Text(
                     'PENDING VERIFICATION',

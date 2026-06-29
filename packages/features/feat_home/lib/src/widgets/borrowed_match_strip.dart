@@ -13,7 +13,10 @@ class BorrowedMatchStrip extends StatelessWidget {
   Widget build(BuildContext context) {
     return AfriPanelCard(
       onTap: onTap,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing5,
+        vertical: SpacingTokens.spacing4,
+      ),
       margin: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.screenPadding,
       ),
@@ -30,12 +33,14 @@ class BorrowedMatchStrip extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
+                        horizontal: SpacingTokens.spacing2,
+                        vertical: SpacingTokens.spacing1 / 2,
                       ),
                       decoration: BoxDecoration(
                         color: ColorTokens.error.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(
+                          SpacingTokens.spacing1,
+                        ),
                       ),
                       child: Text(
                         slide.status.toUpperCase(),
@@ -46,7 +51,7 @@ class BorrowedMatchStrip extends StatelessWidget {
                             ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: SpacingTokens.spacing2),
                     Text(
                       slide.dateInfo,
                       style:
@@ -59,7 +64,7 @@ class BorrowedMatchStrip extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: SpacingTokens.spacing3),
                 Row(
                   children: [
                     Expanded(
@@ -71,13 +76,13 @@ class BorrowedMatchStrip extends StatelessWidget {
                             ).copyWith(
                               fontWeight: FontWeight.w900,
                               fontStyle: FontStyle.italic,
-                              height: 0.9,
+                              height: TypographyTokens.lineHeightHero,
                             ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: SpacingTokens.spacing1),
                 Text(
                   slide.venue.toUpperCase(),
                   style: TypographyTokens.metricLabel(
@@ -88,15 +93,17 @@ class BorrowedMatchStrip extends StatelessWidget {
             ),
           ),
           Container(
-            height: 48,
-            width: 1,
+            height: SpacingTokens.spacing12,
+            width: BorderTokens.standard,
             color: ColorTokens.borrowedHairline,
-            margin: const EdgeInsets.symmetric(horizontal: 16),
+            margin: const EdgeInsets.symmetric(
+              horizontal: SpacingTokens.spacing4,
+            ),
           ),
           const Icon(
             AfriIcons.chevronRight,
             color: ColorTokens.borrowedInkFaint,
-            size: 24,
+            size: SpacingTokens.spacing6,
           ),
         ],
       ),

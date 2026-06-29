@@ -1,8 +1,6 @@
 part of 'prediction_repository.dart';
 
 extension PredictionRepoCompetitions on PredictionRepository {
-
-
   Future<List<CompetitionCatalogItem>> loadCompetitionCatalog() async {
     return _cachedListQuery(
       cacheKey: _cacheKey('competition_catalog'),
@@ -140,6 +138,4 @@ extension PredictionRepoCompetitions on PredictionRepository {
       decoder: FixtureSummary.fromJson,
     );
   }
-
-
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:feat_gamification/src/models/fet_models.dart';
 import 'package:feat_gamification/src/models/prediction_models.dart';
 import 'package:feat_gamification/src/providers/fanzone_hub_provider.dart';
@@ -20,6 +22,11 @@ class _TestFanzoneHubNotifier extends FanzoneHubNotifier {
   Future<void> refresh() async {
     state = AsyncData(_snapshot);
   }
+}
+
+class _PendingFanzoneHubNotifier extends FanzoneHubNotifier {
+  @override
+  Future<FanzoneHubSnapshot> build() => Completer<FanzoneHubSnapshot>().future;
 }
 
 FanzoneHubSnapshot _buildSnapshot() {
@@ -175,5 +182,58 @@ void main() {
     expect(find.text('Fanzone'), findsOneWidget);
     expect(find.text('Fixtures'), findsAtLeastNWidgets(1));
     expect(find.text('Wallet'), findsAtLeastNWidgets(1));
+  });
+
+  testWidgets('loading state still exposes fanzone route shortcuts', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          fanzoneHubProvider.overrideWith(() => _PendingFanzoneHubNotifier()),
+        ],
+        child: const MaterialApp(home: FanzoneHubScreen()),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text('Opening Fanzone'), findsOneWidget);
+    expect(find.text('Fixtures'), findsOneWidget);
+    expect(find.text('Wallet'), findsAtLeastNWidgets(1));
+  });
+
+  testWidgets('offline snapshot shows bounded degraded sections', (
+    tester,
+  ) async {
+    const snapshot = FanzoneHubSnapshot(
+      status: FanzoneHubStatus.error,
+      message: 'Fanzone is temporarily unavailable.',
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          fanzoneHubProvider.overrideWith(
+            () => _TestFanzoneHubNotifier(snapshot),
+          ),
+        ],
+        child: const MaterialApp(home: FanzoneHubScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Live updates paused'), findsOneWidget);
+    expect(find.text('Fixtures'), findsOneWidget);
+
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -500));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Markets unavailable'), findsOneWidget);
+
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -700));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Leaderboard unavailable'), findsOneWidget);
+    expect(find.text('Challenges unavailable'), findsOneWidget);
   });
 }

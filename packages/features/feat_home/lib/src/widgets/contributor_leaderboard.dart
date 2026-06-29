@@ -84,13 +84,13 @@ class _ContributorRow extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 32,
-            height: 32,
+            width: SpacingTokens.spacing8,
+            height: SpacingTokens.spacing8,
             decoration: BoxDecoration(
               color: isFirst
                   ? ColorTokens.primaryTint(0.18)
                   : ColorTokens.surfaceContainer,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
             ),
             alignment: Alignment.center,
             child: Text(

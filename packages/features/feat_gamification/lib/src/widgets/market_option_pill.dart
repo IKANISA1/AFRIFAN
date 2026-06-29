@@ -33,7 +33,9 @@ class MarketOptionPill extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOutCubic,
-        constraints: const BoxConstraints(minHeight: 44),
+        constraints: const BoxConstraints(
+          minHeight: SpacingTokens.spacing10 + SpacingTokens.spacing1,
+        ),
         padding: const EdgeInsets.symmetric(
           horizontal: SpacingTokens.spacing4,
           vertical: SpacingTokens.spacing3,
@@ -42,9 +44,12 @@ class MarketOptionPill extends StatelessWidget {
           color: isSelected
               ? ColorTokens.clubAccent.withValues(alpha: 0.18)
               : ColorTokens.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
           border: isSelected
-              ? BorderTokens.all(color: ColorTokens.clubAccent, width: 1.5)
+              ? BorderTokens.all(
+                  color: ColorTokens.clubAccent,
+                  width: BorderTokens.strong,
+                )
               : BorderTokens.ghost(),
         ),
         child: Row(
@@ -68,7 +73,7 @@ class MarketOptionPill extends StatelessWidget {
                       ),
                 ),
                 if (odds != null) ...[
-                  const SizedBox(height: 2),
+                  const SizedBox(height: SpacingTokens.spacing1 / 2),
                   Text(
                     '${odds!.toStringAsFixed(2)}x',
                     style: TypographyTokens.titleSmall(

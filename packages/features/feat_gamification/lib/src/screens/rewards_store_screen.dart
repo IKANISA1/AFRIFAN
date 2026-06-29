@@ -105,25 +105,16 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
       if (!mounted) {
         return;
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(snackbarMessage),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      AfriToast.success(context, snackbarMessage);
     } catch (error) {
       if (!mounted) {
         return;
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            error is Exception
-                ? error.toString().replaceFirst('Exception: ', '')
-                : 'Could not redeem this reward.',
-          ),
-          behavior: SnackBarBehavior.floating,
-        ),
+      AfriToast.error(
+        context,
+        error is Exception
+            ? error.toString().replaceFirst('Exception: ', '')
+            : 'Could not redeem this reward.',
       );
     } finally {
       if (mounted) {
@@ -239,7 +230,9 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                                             alpha: 0.14,
                                           )
                                         : ColorTokens.surfaceContainerHigh,
-                                    borderRadius: BorderRadius.circular(999),
+                                    borderRadius: BorderRadius.circular(
+                                      ShapeTokens.radiusFull,
+                                    ),
                                   ),
                                   child: Text(
                                     option.cost,

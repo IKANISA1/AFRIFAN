@@ -18,17 +18,15 @@ Future<void> showMomoAmountEntrySheet(
   String? groupId,
   String? recipientMomo,
 }) async {
-  final amount = await showModalBottomSheet<int>(
+  final amount = await showAfriBottomSheet<int>(
     context: context,
-    backgroundColor: ColorTokens.transparent,
     builder: (context) => _AmountEntrySheet(title: title),
   );
 
   if (amount == null || !context.mounted) return;
 
-  final confirmed = await showModalBottomSheet<bool>(
+  final confirmed = await showAfriBottomSheet<bool>(
     context: context,
-    backgroundColor: ColorTokens.transparent,
     builder: (context) {
       final country =
           AfriCountryCatalog.byIsoCode(context.afriCountryCode) ??
@@ -58,13 +56,9 @@ Future<void> showMomoAmountEntrySheet(
 
   if (!launched) {
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Could not open the MOMO dialer. Contribution was not submitted.',
-        ),
-        backgroundColor: ColorTokens.error,
-      ),
+    AfriToast.error(
+      context,
+      'Could not open the MOMO dialer. Contribution was not submitted.',
     );
     return;
   }

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../extensions.dart';
+import '../tokens/icon_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_material_buttons.dart';
 
@@ -117,7 +118,7 @@ class _BrandedErrorFallback extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                Icons.warning_amber_rounded,
+                AfriIcons.statusWarning,
                 size: 40,
                 color: colors.danger,
               ),
@@ -143,7 +144,7 @@ class _BrandedErrorFallback extends StatelessWidget {
               const SizedBox(height: SpacingTokens.spacing6),
               AfriTextIconButton(
                 onPressed: onRetry,
-                icon: const Icon(Icons.refresh_rounded, size: 18),
+                icon: const Icon(AfriIcons.refresh, size: 18),
                 label: Text(
                   'Retry',
                   style: theme.textTheme.labelLarge?.copyWith(

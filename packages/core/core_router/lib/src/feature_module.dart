@@ -111,9 +111,8 @@ abstract class FeatureModule {
   /// any module (including tab modules). These are registered at the
   /// root level of the router, independent of shell branches.
   ///
-  /// Use this when a tab module needs to provide a route that is
-  /// pushed absolutely (e.g. context.push('/profile_setup')) from
-  /// multiple unrelated features.
+  /// Use this when a tab module needs to provide a route that is pushed
+  /// absolutely from multiple unrelated features.
   List<RouteBase> get standaloneRoutes => const [];
 
   /// Paths that are accessible without authentication.

@@ -1,4 +1,5 @@
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import '../models/fanzone_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
-import 'package:core_utils/core_utils.dart';
 
 class ClubFanZoneScreen extends ConsumerStatefulWidget {
   const ClubFanZoneScreen({super.key});
@@ -162,7 +162,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                 children: [
                   if (_competitions.isNotEmpty)
                     SizedBox(
-                      height: 40,
+                      height: SpacingTokens.spacing10,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: _competitions.length,
@@ -185,7 +185,9 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                         alpha: 0.16,
                                       )
                                     : ColorTokens.surfaceContainerHigh,
-                                borderRadius: BorderRadius.circular(999),
+                                borderRadius: BorderRadius.circular(
+                                  ShapeTokens.radiusFull,
+                                ),
                               ),
                               child: Text(
                                 item.shortName.toUpperCase(),
@@ -210,7 +212,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                               'SUPPORTER PULSE',
                           style: TypographyTokens.headlineLarge().copyWith(
                             fontWeight: FontWeight.w900,
-                            height: 0.95,
+                            height: TypographyTokens.lineHeightCompact,
                           ),
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
@@ -242,7 +244,7 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                 child: Row(
                                   children: [
                                     SizedBox(
-                                      width: 28,
+                                      width: SpacingTokens.spacing7,
                                       child: Text(
                                         '#${entry.position}',
                                         style: TypographyTokens.titleSmall()
@@ -306,7 +308,9 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                         pulse.fixture.fixtureLabel,
                                         style: TypographyTokens.titleSmall(),
                                       ),
-                                      const SizedBox(height: 2),
+                                      const SizedBox(
+                                        height: SpacingTokens.spacing1 / 2,
+                                      ),
                                       Text(
                                         '${pulse.marketName.toUpperCase()} · ${pulse.leadingOutcome.toUpperCase()}',
                                         style: TypographyTokens.bodySmall(),
@@ -317,15 +321,21 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                                       AfriLinearProgressIndicator(
                                         value: (pulse.leadingPercentage / 100)
                                             .clamp(0.0, 1.0),
-                                        minHeight: 10,
+                                        minHeight:
+                                            SpacingTokens.spacing3 -
+                                            (SpacingTokens.spacing1 / 2),
                                         borderRadius: BorderRadius.circular(
-                                          999,
+                                          ShapeTokens.radiusFull,
                                         ),
                                         color: ColorTokens.clubAccent,
                                         backgroundColor:
                                             ColorTokens.surfaceContainerHighest,
                                       ),
-                                      const SizedBox(height: 6),
+                                      const SizedBox(
+                                        height:
+                                            SpacingTokens.spacing1 +
+                                            (SpacingTokens.spacing1 / 2),
+                                      ),
                                       Text(
                                         '${pulse.leadingPercentage.toStringAsFixed(1)}% of supporters currently lean this way.',
                                         style: TypographyTokens.bodySmall(),

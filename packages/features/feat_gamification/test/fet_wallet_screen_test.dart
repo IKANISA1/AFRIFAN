@@ -5,6 +5,7 @@ import 'package:feat_gamification/src/screens/fet_wallet_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
@@ -123,10 +124,16 @@ Future<void> _pumpApp(
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
 
+  final router = GoRouter(
+    routes: [
+      GoRoute(path: '/', builder: (context, state) => const FetWalletScreen()),
+    ],
+  );
+
   await tester.pumpWidget(
     ProviderScope(
       overrides: [fetRepositoryProvider.overrideWithValue(repository)],
-      child: const MaterialApp(home: FetWalletScreen()),
+      child: MaterialApp.router(routerConfig: router),
     ),
   );
   await tester.pumpAndSettle();
@@ -150,7 +157,12 @@ void main() {
     await _pumpApp(tester, repository: repository);
 
     expect(find.textContaining('1,250'), findsOneWidget);
-    expect(find.text('TRANSFER FET'), findsOneWidget);
+
+    await _scrollTo(
+      tester,
+      find.byKey(const ValueKey<String>('wallet-transfer-submit')),
+    );
+    expect(find.text('Send FET'), findsOneWidget);
 
     await _scrollTo(tester, find.text('Transfer received'));
 
@@ -162,6 +174,10 @@ void main() {
     final repository = _FakeFetRepository();
     await _pumpApp(tester, repository: repository);
 
+    await _scrollTo(
+      tester,
+      find.byKey(const ValueKey<String>('wallet-transfer-search')),
+    );
     await tester.enterText(
       find.byKey(const ValueKey<String>('wallet-transfer-search')),
       'Jea',
@@ -176,9 +192,15 @@ void main() {
       find.byKey(const ValueKey<String>('wallet-transfer-amount')),
       '150',
     );
+    await _scrollTo(
+      tester,
+      find.byKey(const ValueKey<String>('wallet-transfer-submit')),
+    );
     await tester.tap(
       find.byKey(const ValueKey<String>('wallet-transfer-submit')),
     );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('SEND FET'));
     await tester.pumpAndSettle();
 
     expect(repository.transferRecipientUserId, 'supporter-2');
@@ -201,6 +223,8 @@ void main() {
     await tester.tap(
       find.byKey(const ValueKey<String>('wallet-redeem-submit')),
     );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('REDEEM FET'));
     await tester.pumpAndSettle();
 
     expect(repository.redeemAmount, 200);

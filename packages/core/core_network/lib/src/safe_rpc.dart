@@ -120,7 +120,8 @@ class SafeRpc {
         return RpcResult<dynamic>.failure(userMessage);
       } catch (error, stackTrace) {
         lastError = error;
-        if (_isTransient(error) && attempt < effectiveMaxAttempts) {
+        if (isTransientConnectivityError(error) &&
+            attempt < effectiveMaxAttempts) {
           final delay = _delayForAttempt(
             attempt,
             baseDelay: effectiveBackoffBase,
@@ -131,24 +132,43 @@ class SafeRpc {
             'failed: $error. Retrying in ${delay.inSeconds}s…',
           );
           await Future<void>.delayed(delay);
-        } else {
-          AfriLogger.error(
+          continue;
+        } else if (isTransientConnectivityError(error)) {
+          AfriLogger.warn(
             tag,
-            'RPC "$functionName" failed on attempt $attempt.',
-            error,
-            stackTrace,
-          );
-          await CrashlyticsService.recordError(
-            error,
-            stackTrace,
-            reason: 'RPC $functionName attempt $attempt',
+            'RPC "$functionName" unavailable after $attempt attempts; '
+            'returning offline fallback.',
           );
           return RpcResult<dynamic>.failure(_normalizeError(error));
         }
+
+        AfriLogger.error(
+          tag,
+          'RPC "$functionName" failed on attempt $attempt.',
+          error,
+          stackTrace,
+        );
+        await CrashlyticsService.recordError(
+          error,
+          stackTrace,
+          reason: 'RPC $functionName attempt $attempt',
+        );
+        return RpcResult<dynamic>.failure(_normalizeError(error));
       }
     }
 
-    // All attempts exhausted.
+    // All attempts exhausted. Transient connectivity failures are expected on
+    // low-data/offline mobile paths; return a bounded failure without polluting
+    // crash dashboards.
+    if (lastError != null && isTransientConnectivityError(lastError)) {
+      AfriLogger.warn(
+        tag,
+        'RPC "$functionName" unavailable after $effectiveMaxAttempts attempts; '
+        'returning offline fallback.',
+      );
+      return RpcResult<dynamic>.failure(_normalizeError(lastError));
+    }
+
     AfriLogger.error(
       tag,
       'RPC "$functionName" failed after $effectiveMaxAttempts attempts.',
@@ -225,7 +245,7 @@ class SafeRpc {
       } catch (error, stackTrace) {
         lastError = error;
         lastStackTrace = stackTrace;
-        if (_isTransient(error) && attempt < maxAttempts) {
+        if (isTransientConnectivityError(error) && attempt < maxAttempts) {
           final delay = _delayForAttempt(
             attempt,
             baseDelay: effectiveBackoffBase,
@@ -240,6 +260,15 @@ class SafeRpc {
           }
           continue;
         }
+        if (isTransientConnectivityError(error)) {
+          AfriLogger.warn(
+            tag,
+            '$description unavailable after $attempt attempts; returning '
+            'offline fallback.',
+          );
+          return RpcResult<T>.failure(_normalizeError(error));
+        }
+
         AfriLogger.error(tag, '$description failed.', error, stackTrace);
         await CrashlyticsService.recordError(
           error,
@@ -250,11 +279,19 @@ class SafeRpc {
       }
     }
 
-    await CrashlyticsService.recordError(
-      lastError ?? StateError('$description failed unexpectedly.'),
-      lastStackTrace ?? StackTrace.current,
-      reason: '$tag $description exhausted retries',
-    );
+    if (lastError != null && isTransientConnectivityError(lastError)) {
+      AfriLogger.warn(
+        tag,
+        '$description unavailable after $maxAttempts attempts; returning '
+        'offline fallback.',
+      );
+    } else {
+      await CrashlyticsService.recordError(
+        lastError ?? StateError('$description failed unexpectedly.'),
+        lastStackTrace ?? StackTrace.current,
+        reason: '$tag $description exhausted retries',
+      );
+    }
     return RpcResult<T>.failure(
       _normalizeError(
         lastError ?? StateError('$description failed unexpectedly.'),
@@ -263,9 +300,12 @@ class SafeRpc {
   }
 
   /// Whether the error is likely transient and worth retrying.
-  static bool _isTransient(Object error) {
+  static bool isTransientConnectivityError(Object error) {
     final message = error.toString().toLowerCase();
     return message.contains('socket') ||
+        message.contains('failed host lookup') ||
+        message.contains('no address associated with hostname') ||
+        message.contains('getaddrinfo') ||
         message.contains('connection') ||
         message.contains('timeout') ||
         message.contains('network') ||

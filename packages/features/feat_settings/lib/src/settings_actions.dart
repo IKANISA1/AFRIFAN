@@ -1,3 +1,4 @@
+import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -70,9 +71,7 @@ Future<bool> launchExternalUri(
 }) async {
   final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
   if (!launched && context.mounted) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(failureMessage)));
+    AfriToast.error(context, failureMessage);
   }
   return launched;
 }
@@ -98,10 +97,9 @@ Future<bool> launchWhatsApp(
 }) async {
   if (!AppLinks.hasSupportWhatsApp) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('WhatsApp support is not configured for this build.'),
-        ),
+      AfriToast.error(
+        context,
+        'WhatsApp support is not configured for this build.',
       );
     }
     return false;
@@ -113,4 +111,3 @@ Future<bool> launchWhatsApp(
   );
   return launchExternalUri(context, uri, failureMessage: failureMessage);
 }
-

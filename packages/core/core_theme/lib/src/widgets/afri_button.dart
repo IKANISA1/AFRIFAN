@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -7,6 +9,7 @@ import '../tokens/color_tokens.dart';
 import '../tokens/motion_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
+import '../tokens/typography_tokens.dart';
 
 /// Button variant enumeration for the AFRICLUB design system.
 enum AfriButtonVariant { primary, secondary, outline, ghost, accent }
@@ -18,6 +21,7 @@ class AfriButton extends StatefulWidget {
     required this.onTap,
     this.variant = AfriButtonVariant.primary,
     this.icon,
+    this.semanticsLabel,
     this.isLoading = false,
     this.fullWidth = true,
     this.enabled = true,
@@ -28,6 +32,7 @@ class AfriButton extends StatefulWidget {
   final VoidCallback onTap;
   final AfriButtonVariant variant;
   final IconData? icon;
+  final String? semanticsLabel;
   final bool isLoading;
   final bool fullWidth;
   final bool enabled;
@@ -62,28 +67,26 @@ class _AfriButtonState extends State<AfriButton>
   bool get _isActive => widget.enabled && !widget.isLoading;
 
   void _onTapDown(TapDownDetails _) {
-    if (_isActive) _scaleController.forward();
+    if (_isActive) unawaited(_scaleController.forward());
   }
 
   void _onTapUp(TapUpDetails _) {
-    if (_isActive) _scaleController.reverse();
+    if (_isActive) unawaited(_scaleController.reverse());
   }
 
   void _onTapCancel() {
-    if (_isActive) _scaleController.reverse();
+    if (_isActive) unawaited(_scaleController.reverse());
   }
 
   void _onTap() {
     if (!_isActive) return;
-    HapticFeedback.lightImpact();
+    unawaited(HapticFeedback.lightImpact());
     widget.onTap();
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = context.afriSemanticColors;
-    final theme = Theme.of(context);
-
     late Color background;
     late Color foreground;
     Border? border;
@@ -157,11 +160,7 @@ class _AfriButtonState extends State<AfriButton>
             widget.label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: foreground,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.2,
-            ),
+            style: TypographyTokens.labelLarge(foreground),
           ),
         ),
       ],
@@ -170,7 +169,7 @@ class _AfriButtonState extends State<AfriButton>
     return Semantics(
       button: true,
       enabled: _isActive,
-      label: widget.label,
+      label: widget.semanticsLabel ?? widget.label,
       child: GestureDetector(
         onTapDown: _onTapDown,
         onTapUp: _onTapUp,

@@ -86,7 +86,11 @@ class TierCountCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 28, color: ColorTokens.clubAccent),
+          Icon(
+            icon,
+            size: SpacingTokens.spacing7,
+            color: ColorTokens.clubAccent,
+          ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             '$count',
@@ -126,8 +130,8 @@ class ContributeStep extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 44,
-          height: 44,
+          width: SpacingTokens.spacing10 + SpacingTokens.spacing1,
+          height: SpacingTokens.spacing10 + SpacingTokens.spacing1,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: ColorTokens.clubAccent.withValues(alpha: 0.12),
@@ -149,7 +153,7 @@ class ContributeStep extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title, style: TypographyTokens.titleSmall()),
-              const SizedBox(height: 2),
+              const SizedBox(height: SpacingTokens.spacing1 / 2),
               Text(description, style: TypographyTokens.bodySmall()),
             ],
           ),
@@ -191,7 +195,7 @@ class MemberRow extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 20,
+              width: SpacingTokens.spacing5,
               child: Text(
                 '$rank',
                 style: TypographyTokens.labelSmall(
@@ -246,8 +250,8 @@ class _MemberAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 32,
-      height: 32,
+      width: SpacingTokens.spacing8,
+      height: SpacingTokens.spacing8,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: ColorTokens.surfaceContainerHigh,
@@ -255,7 +259,7 @@ class _MemberAvatar extends StatelessWidget {
       alignment: Alignment.center,
       child: Icon(
         AfriIcons.profile,
-        size: 18,
+        size: SpacingTokens.spacing5 - SpacingTokens.spacing1 / 2,
         color: ColorTokens.onSurfaceVariant,
       ),
     );
@@ -277,7 +281,7 @@ class TeamInfoRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 120,
+            width: SpacingTokens.spacing20 + SpacingTokens.spacing10,
             child: Text(
               label.toUpperCase(),
               style: TypographyTokens.labelSmall(

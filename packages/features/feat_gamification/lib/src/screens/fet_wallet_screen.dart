@@ -259,9 +259,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
   }
 
   void _showMessage(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    AfriToast.info(context, message);
   }
 
   /// B-2: Reusable confirmation bottom sheet for wallet operations.
@@ -412,7 +410,10 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
         ),
         children: [
           GlassCard(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            padding: const EdgeInsets.symmetric(
+              horizontal: SpacingTokens.spacing6,
+              vertical: SpacingTokens.spacing8,
+            ),
             child: Column(
               children: [
                 Text(
@@ -421,17 +422,17 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                     ColorTokens.onSurfaceVariant,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: SpacingTokens.spacing3),
                 Text(
                   '${_formatFet(wallet?.balance ?? 0)} FET',
                   style: TypographyTokens.metricValue(ColorTokens.clubAccent),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: SpacingTokens.spacing3),
                 AfriStatusChip(
                   label: wallet?.tier ?? 'fan',
                   tone: AfriStatusTone.live,
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: SpacingTokens.spacing8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -457,7 +458,10 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             AfriSurfaceCard(
               child: Row(
                 children: [
-                  const Icon(AfriIcons.statusInfo, size: 20),
+                  const Icon(
+                    AfriIcons.statusInfo,
+                    size: SpacingTokens.spacing5,
+                  ),
                   const SizedBox(width: SpacingTokens.spacing3),
                   Expanded(
                     child: Text(
@@ -484,8 +488,10 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                   label: 'Search supporter',
                   suffixIcon: _isSearching
                       ? const Padding(
-                          padding: EdgeInsets.all(12),
-                          child: AfriLoadingIndicator(size: 16),
+                          padding: EdgeInsets.all(SpacingTokens.spacing3),
+                          child: AfriLoadingIndicator(
+                            size: SpacingTokens.spacing4,
+                          ),
                         )
                       : (_searchController.text.isEmpty
                             ? const Icon(AfriIcons.search)
@@ -529,7 +535,11 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                           ColorTokens.onSurfaceVariant,
                         ),
                       ),
-                      trailing: const Icon(AfriIcons.out, size: 18),
+                      trailing: const Icon(
+                        AfriIcons.out,
+                        size:
+                            SpacingTokens.spacing5 - SpacingTokens.spacing1 / 2,
+                      ),
                       onTap: () {
                         _searchController.text = supporter.displayName;
                         setState(() {
@@ -636,28 +646,8 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           label,
           style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: SpacingTokens.spacing1),
         Text(value, style: TypographyTokens.titleMedium()),
-      ],
-    );
-  }
-
-  Widget _buildBorrowedStat(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: TypographyTokens.metricLabel(
-            ColorTokens.borrowedInkFaint,
-          ).copyWith(fontWeight: FontWeight.w900, letterSpacing: 1),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: TypographyTokens.titleSmall(
-            ColorTokens.borrowedInk,
-          ).copyWith(fontWeight: FontWeight.w900, letterSpacing: 0),
-        ),
       ],
     );
   }

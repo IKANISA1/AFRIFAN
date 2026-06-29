@@ -376,11 +376,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
               ],
             ),
           ),
-          Switch(
-            value: value,
-            onChanged: _isSaving ? null : onChanged,
-            activeThumbColor: ColorTokens.clubAccent,
-          ),
+          AfriSwitch(value: value, onChanged: _isSaving ? null : onChanged),
         ],
       ),
     );
@@ -463,20 +459,14 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
           ),
           SizedBox(
             width: 80,
-            child: TextFormField(
+            child: AfriTextFormField(
               initialValue: current?.toString() ?? '',
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
               style: TypographyTokens.bodyMedium(),
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing2,
-                  vertical: SpacingTokens.spacing2,
-                ),
-                border: BorderTokens.input(
-                  borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
-                ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.spacing2,
+                vertical: SpacingTokens.spacing2,
               ),
               onFieldSubmitted: _isSaving
                   ? null
@@ -646,9 +636,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
 
   void _showError(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: ColorTokens.error),
-    );
+    AfriToast.error(context, message);
   }
 
   String _scheduleDescription(DateTime? start, DateTime? end) {

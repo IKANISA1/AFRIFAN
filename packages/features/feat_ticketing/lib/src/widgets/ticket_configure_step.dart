@@ -127,7 +127,7 @@ class TicketConfigureStep extends StatelessWidget {
             style: AfriOutlinedButton.styleFrom(
               minimumSize: const Size(double.infinity, 56),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
               ),
             ),
           ),

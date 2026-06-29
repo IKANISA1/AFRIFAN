@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../extensions.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/icon_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_press_feedback.dart';
@@ -33,8 +34,8 @@ class AfriSheetAction {
 ///   context: context,
 ///   title: 'Wallet',
 ///   actions: [
-///     AfriSheetAction(icon: Icons.history, label: 'History', onTap: ...),
-///     AfriSheetAction(icon: Icons.redeem, label: 'Rewards', onTap: ...),
+///     AfriSheetAction(icon: AfriIcons.history, label: 'History', onTap: ...),
+///     AfriSheetAction(icon: AfriIcons.rewards, label: 'Rewards', onTap: ...),
 ///   ],
 /// );
 /// ```
@@ -150,7 +151,7 @@ class _AfriActionSheetBody extends StatelessWidget {
                           ),
                         ),
                         Icon(
-                          Icons.chevron_right_rounded,
+                          AfriIcons.chevronRight,
                           size: 18,
                           color: state.isFocused
                               ? ColorTokens.primaryContainer

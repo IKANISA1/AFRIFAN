@@ -169,18 +169,14 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     }
 
     if (!_isInStock(product)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('This item is currently out of stock.')),
-      );
+      AfriToast.error(context, 'This item is currently out of stock.');
       return;
     }
 
     final sizes = _availableSizes(product);
     if (sizes.isNotEmpty &&
         (_selectedSize == null || !sizes.contains(_selectedSize))) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Select a size before adding to cart.')),
-      );
+      AfriToast.info(context, 'Select a size before adding to cart.');
       return;
     }
 
@@ -197,15 +193,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           quantity: quantity,
         );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${product['name'] ?? 'Product'} added to cart.'),
-        backgroundColor: ColorTokens.success,
-        action: SnackBarAction(
-          label: 'View Cart',
-          onPressed: () => context.push('/shop/cart'),
-        ),
-      ),
+    AfriToast.success(
+      context,
+      '${product['name'] ?? 'Product'} added to cart.',
+      actionLabel: 'View Cart',
+      onAction: () => context.push('/shop/cart'),
     );
   }
 
@@ -286,15 +278,17 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 pinned: true,
                 backgroundColor: ColorTokens.background,
                 leading: Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(SpacingTokens.spacing2),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                       child: Container(
                         decoration: BoxDecoration(
                           color: ColorTokens.glassFill,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(
+                            ShapeTokens.radiusMd,
+                          ),
                           border: BorderTokens.ghost(),
                         ),
                         child: AfriIconButton(
@@ -421,11 +415,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 constraints: const BoxConstraints(
-                                  minHeight: 48,
+                                  minHeight: SpacingTokens.spacing12,
                                 ),
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 12,
+                                  horizontal: SpacingTokens.spacing5,
+                                  vertical: SpacingTokens.spacing3,
                                 ),
                                 decoration: BoxDecoration(
                                   color: selected
@@ -470,7 +464,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                   tooltip: 'Decrease quantity',
                                 ),
                                 SizedBox(
-                                  width: 40,
+                                  width: SpacingTokens.spacing10,
                                   child: Center(
                                     child: Text(
                                       '$_quantity',
@@ -490,7 +484,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 140),
+                      const SizedBox(
+                        height:
+                            SpacingTokens.spacing20 + SpacingTokens.spacing16,
+                      ),
                     ],
                   ),
                 ),

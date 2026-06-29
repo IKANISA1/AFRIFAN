@@ -72,9 +72,9 @@ class TierProgress extends StatelessWidget {
                                 ),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: SpacingTokens.spacing1),
                       SizedBox(
-                        height: 20,
+                        height: SpacingTokens.spacing5,
                         width: double.infinity,
                         child: FittedBox(
                           fit: BoxFit.scaleDown,

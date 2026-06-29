@@ -96,23 +96,19 @@ class _ContributionsHubScreenState
           .enable(onShowRationale: () async => true);
       ref.invalidate(momoSmsSyncEnabledProvider);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            enabled
-                ? 'MoMo SMS sync enabled for this device.'
-                : 'SMS access was not granted. Sync remains off.',
-          ),
-        ),
-      );
+      final message = enabled
+          ? 'MoMo SMS sync enabled for this device.'
+          : 'SMS access was not granted. Sync remains off.';
+      if (enabled) {
+        AfriToast.success(context, message);
+      } else {
+        AfriToast.error(context, message);
+      }
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Could not enable SMS sync. Check your permissions and try again.',
-          ),
-        ),
+      AfriToast.error(
+        context,
+        'Could not enable SMS sync. Check your permissions and try again.',
       );
     } finally {
       if (mounted) {
@@ -127,9 +123,7 @@ class _ContributionsHubScreenState
       await ref.read(momoSmsAutoreadServiceProvider).disable();
       ref.invalidate(momoSmsSyncEnabledProvider);
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('MoMo SMS sync disabled.')));
+      AfriToast.info(context, 'MoMo SMS sync disabled.');
     } finally {
       if (mounted) {
         setState(() => _isUpdatingSmsSync = false);
@@ -144,21 +138,15 @@ class _ContributionsHubScreenState
           .read(momoSmsAutoreadServiceProvider)
           .syncInbox(trigger: MomoInboxSyncTrigger.manual);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'SMS sync complete: ${result.uploadedMessages} uploaded, ${result.duplicateMessages} duplicates.',
-          ),
-        ),
+      AfriToast.success(
+        context,
+        'SMS sync complete: ${result.uploadedMessages} uploaded, ${result.duplicateMessages} duplicates.',
       );
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'SMS sync failed. Check your connection and try again.',
-          ),
-        ),
+      AfriToast.error(
+        context,
+        'SMS sync failed. Check your connection and try again.',
       );
     } finally {
       if (mounted) {

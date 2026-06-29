@@ -210,12 +210,7 @@ class _PushNotificationsScreenState
   Future<void> _submitNotification() async {
     final validationError = _validateComposer();
     if (validationError != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(validationError),
-          backgroundColor: ColorTokens.error,
-        ),
-      );
+      AfriToast.error(context, validationError);
       return;
     }
 
@@ -229,18 +224,11 @@ class _PushNotificationsScreenState
       final delivery = Map<String, dynamic>.from(
         result['delivery'] as Map? ?? const <String, dynamic>{},
       );
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(_formatDeliveryMessage(delivery))));
+      AfriToast.success(context, _formatDeliveryMessage(delivery));
       await _loadContext();
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString()),
-          backgroundColor: ColorTokens.error,
-        ),
-      );
+      AfriToast.error(context, error.toString());
     } finally {
       if (mounted) {
         setState(() => _submitting = false);
@@ -251,12 +239,7 @@ class _PushNotificationsScreenState
   Future<void> _copyPayload() async {
     final validationError = _validateComposer();
     if (validationError != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(validationError),
-          backgroundColor: ColorTokens.error,
-        ),
-      );
+      AfriToast.error(context, validationError);
       return;
     }
 
@@ -267,9 +250,7 @@ class _PushNotificationsScreenState
       ).convert(_buildPayload());
       await Clipboard.setData(ClipboardData(text: payload));
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Payload copied to clipboard.')),
-      );
+      AfriToast.success(context, 'Payload copied to clipboard.');
     } finally {
       if (mounted) {
         setState(() => _submitting = false);

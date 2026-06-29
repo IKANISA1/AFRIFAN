@@ -75,15 +75,15 @@ class _CommunityPickRow extends StatelessWidget {
     return Row(
       children: [
         SizedBox(
-          width: 72,
+          width: SpacingTokens.spacing16 + SpacingTokens.spacing2,
           child: Row(
             children: [
               if (isUserPick)
                 Padding(
-                  padding: const EdgeInsets.only(right: 4),
+                  padding: const EdgeInsets.only(right: SpacingTokens.spacing1),
                   child: Icon(
                     AfriIcons.profile,
-                    size: 12,
+                    size: SpacingTokens.spacing3,
                     color: ColorTokens.clubAccent,
                   ),
                 ),
@@ -112,23 +112,25 @@ class _CommunityPickRow extends StatelessWidget {
           child: Stack(
             children: [
               Container(
-                height: 20,
+                height: SpacingTokens.spacing5,
                 decoration: BoxDecoration(
                   color: ColorTokens.surfaceContainerHigh.withValues(
                     alpha: 0.3,
                   ),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                 ),
               ),
               FractionallySizedBox(
                     widthFactor: fraction,
                     child: Container(
-                      height: 20,
+                      height: SpacingTokens.spacing5,
                       decoration: BoxDecoration(
                         color: barColor.withValues(
                           alpha: isUserPick ? 0.25 : 0.12,
                         ),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(
+                          ShapeTokens.radiusFull,
+                        ),
                         border: isUserPick
                             ? BorderTokens.all(
                                 color: ColorTokens.clubAccent.withValues(
@@ -152,7 +154,7 @@ class _CommunityPickRow extends StatelessWidget {
         ),
         const SizedBox(width: SpacingTokens.spacing2),
         SizedBox(
-          width: 40,
+          width: SpacingTokens.spacing10,
           child: Text(
             '${pick.pickPercentage.toStringAsFixed(0)}%',
             textAlign: TextAlign.right,

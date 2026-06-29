@@ -1,8 +1,6 @@
 part of 'prediction_repository.dart';
 
 extension PredictionRepoProfile on PredictionRepository {
-
-
   /// Updates the current user's profile (display_name, club_id, etc.)
   /// for onboarding and privacy settings.
   Future<bool> updateProfile(Map<String, dynamic> updates) async {
@@ -26,6 +24,4 @@ extension PredictionRepoProfile on PredictionRepository {
 
   /// Whether the current user is authenticated.
   bool get isAuthenticated => _client.auth.currentUser != null;
-
-
 }

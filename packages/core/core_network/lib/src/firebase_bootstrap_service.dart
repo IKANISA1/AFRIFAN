@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/foundation.dart';
 
+import 'firebase_observability_config.dart';
+
 /// Best-effort Firebase bootstrap for features that depend on Firebase-backed
 /// services such as App Check.
 class FirebaseBootstrapService {
@@ -32,7 +34,7 @@ class FirebaseBootstrapService {
       } else {
         await Firebase.initializeApp();
       }
-      if (!kIsWeb) {
+      if (!kIsWeb && FirebaseObservabilityConfig.enabled) {
         await FirebasePerformance.instance.setPerformanceCollectionEnabled(
           !kDebugMode,
         );

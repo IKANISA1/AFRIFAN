@@ -8,6 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+const supporterPhoneAuthTestNumber = '+250788767816';
+const supporterPhoneAuthTestOtp = '12345';
+
 class SupporterPhoneAuthScreen extends ConsumerStatefulWidget {
   const SupporterPhoneAuthScreen({super.key});
 
@@ -19,34 +22,22 @@ class SupporterPhoneAuthScreen extends ConsumerStatefulWidget {
 class _SupporterPhoneAuthScreenState
     extends ConsumerState<SupporterPhoneAuthScreen> {
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _otpController = TextEditingController();
 
   bool _isLoading = false;
   static const OtpChannel _deliveryChannel = OtpChannel.whatsapp;
-  String? _pendingPhone;
-  int _resendCooldown = 0;
-  Timer? _cooldownTimer;
 
   String get _phoneValue => _phoneController.text.trim();
-  String get _otpValue => _otpController.text.trim();
-  bool get _canSubmitPhone => _phoneValue.isNotEmpty && _resendCooldown == 0;
-  bool get _canSubmitOtp =>
-      (_pendingPhone?.isNotEmpty ?? false) && _otpValue.length >= 6;
+  bool get _canSubmitPhone => _phoneValue.isNotEmpty;
 
   @override
   void initState() {
     super.initState();
     _phoneController.addListener(_onChanged);
-    _otpController.addListener(_onChanged);
   }
 
   @override
   void dispose() {
-    _cooldownTimer?.cancel();
     _phoneController
-      ..removeListener(_onChanged)
-      ..dispose();
-    _otpController
       ..removeListener(_onChanged)
       ..dispose();
     super.dispose();
@@ -73,60 +64,22 @@ class _SupporterPhoneAuthScreenState
         );
 
     if (!mounted) return;
-    setState(() {
-      _isLoading = false;
-      if (error == null) {
-        _pendingPhone = normalizedPhone;
-        _otpController.clear();
-        _startCooldown();
-      }
-    });
-
-    final message =
-        error ?? 'Verification code sent to WhatsApp for $normalizedPhone.';
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  void _startCooldown() {
-    _resendCooldown = 60;
-    _cooldownTimer?.cancel();
-    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!mounted) {
-        timer.cancel();
-        return;
-      }
-      setState(() {
-        _resendCooldown--;
-        if (_resendCooldown <= 0) {
-          _resendCooldown = 0;
-          timer.cancel();
-        }
-      });
-    });
-  }
-
-  Future<void> _verifyCode() async {
-    if (_isLoading || !_canSubmitOtp) return;
-
-    final pendingPhone = _pendingPhone;
-    if (pendingPhone == null) return;
-
-    setState(() => _isLoading = true);
-    final error = await ref
-        .read(authStateProvider.notifier)
-        .verifyPhoneSignInOtp(phone: pendingPhone, token: _otpValue);
-
-    if (!mounted) return;
     setState(() => _isLoading = false);
 
-    if (error == null) {
-      context.go(_postAuthDestination());
+    if (error != null) {
+      AfriToast.error(context, error);
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+    context.go(
+      Uri(
+        path: '/auth/otp',
+        queryParameters: <String, String>{
+          'phone': normalizedPhone,
+          if (_deferredDestination() case final String from) 'from': from,
+        },
+      ).toString(),
+    );
   }
 
   String? _normalizePhone(String value) {
@@ -143,24 +96,21 @@ class _SupporterPhoneAuthScreenState
       );
       return country.buildE164Phone(value);
     } on FormatException catch (error) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(error.message)));
+      AfriToast.error(context, error.message);
       return null;
     } on StateError {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Country metadata is unavailable for this build.'),
-        ),
+      AfriToast.error(
+        context,
+        'Country metadata is unavailable for this build.',
       );
       return null;
     }
   }
 
-  String _postAuthDestination() {
+  String? _deferredDestination() {
     final raw = GoRouterState.of(context).uri.queryParameters['from']?.trim();
     if (raw == null || raw.isEmpty) {
-      return '/home';
+      return null;
     }
 
     final uri = Uri.tryParse(raw);
@@ -170,11 +120,16 @@ class _SupporterPhoneAuthScreenState
         !path.startsWith('/') ||
         path == '/splash' ||
         path == '/onboarding' ||
-        path == '/auth/phone') {
-      return '/home';
+        path == '/auth/phone' ||
+        path == '/auth/otp') {
+      return null;
     }
 
     return uri.toString();
+  }
+
+  String _postAuthDestination() {
+    return _deferredDestination() ?? '/home';
   }
 
   @override
@@ -206,114 +161,42 @@ class _SupporterPhoneAuthScreenState
               SpacingTokens.spacing8,
             ),
             children: [
-              Text('SIGN IN WITH OTP', style: TypographyTokens.headlineLarge()),
-              const SizedBox(height: SpacingTokens.spacing3),
-              Text(
-                'We’ll send a 6-digit code to your WhatsApp.',
-                style: TypographyTokens.bodyLarge().copyWith(
-                  color: ColorTokens.onSurfaceVariant,
-                ),
+              const _AuthStepHeader(
+                eyebrow: 'WhatsApp sign in',
+                title: 'Enter your mobile number',
+                body: 'We will send a secure code to your WhatsApp.',
+                icon: AfriIcons.phone,
               ),
               const SizedBox(height: SpacingTokens.spacing6),
-              GlassCard(
-                animate: false,
+              AfriSurfaceCard(
+                backgroundColor: ColorTokens.surfaceContainerLow.withValues(
+                  alpha: 0.88,
+                ),
+                padding: const EdgeInsets.all(SpacingTokens.spacing5),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'DELIVERY CHANNEL',
-                      style: TypographyTokens.labelMedium(),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing3),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(SpacingTokens.spacing4),
-                      decoration: BoxDecoration(
-                        color: ColorTokens.surfaceContainerLow,
-                        borderRadius: BorderRadius.circular(18),
-                        border: BorderTokens.all(
-                          color: ColorTokens.ghostBorder,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(AfriIcons.chat),
-                          const SizedBox(width: SpacingTokens.spacing3),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Code via WhatsApp',
-                                  style: TypographyTokens.labelLarge(),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing5),
                     AfriInputField(
+                      key: const ValueKey<String>('supporter-phone-input'),
                       controller: _phoneController,
-                      label: 'Phone number',
-                      hint: '+2507...',
+                      label: 'WhatsApp number',
+                      hint: supporterPhoneAuthTestNumber,
                       keyboardType: TextInputType.phone,
                       enabled: !_isLoading,
-                      prefixIcon: AfriIcons.help,
+                      prefixIcon: AfriIcons.phone,
                       maxLength: 20,
+                      autofocus: true,
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (_) => _sendCode(),
                     ),
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriButton(
                       key: const ValueKey<String>('supporter-send-otp-button'),
-                      label: _resendCooldown > 0
-                          ? 'Resend in ${_resendCooldown}s'
-                          : (_pendingPhone == null
-                                ? 'Send code'
-                                : 'Resend code'),
+                      label: 'Send WhatsApp code',
+                      icon: AfriIcons.forward,
                       onTap: _sendCode,
-                      isLoading: _isLoading && _pendingPhone == null,
-                      enabled: !_isLoading && _canSubmitPhone,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: SpacingTokens.spacing6),
-              GlassCard(
-                animate: false,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('ENTER OTP', style: TypographyTokens.labelMedium()),
-                    const SizedBox(height: SpacingTokens.spacing2),
-                    Text(
-                      _pendingPhone == null
-                          ? 'Request a code first.'
-                          : 'Code sent to $_pendingPhone.',
-                      style: TypographyTokens.bodyMedium().copyWith(
-                        color: ColorTokens.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing4),
-                    AfriInputField(
-                      controller: _otpController,
-                      label: '6-digit OTP',
-                      hint: '123456',
-                      keyboardType: TextInputType.number,
-                      enabled:
-                          (_pendingPhone?.isNotEmpty ?? false) && !_isLoading,
-                      prefixIcon: AfriIcons.privacy,
-                      maxLength: 6,
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing4),
-                    AfriButton(
-                      key: const ValueKey<String>(
-                        'supporter-verify-otp-button',
-                      ),
-                      label: 'Verify & continue',
-                      onTap: _verifyCode,
                       isLoading: _isLoading,
-                      enabled: !_isLoading && _canSubmitOtp,
+                      enabled: !_isLoading && _canSubmitPhone,
                     ),
                   ],
                 ),
@@ -336,10 +219,9 @@ class _SupporterPhoneAuthScreenState
                           return;
                         }
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Could not start anonymous session.'),
-                          ),
+                        AfriToast.error(
+                          context,
+                          'Could not start anonymous session.',
                         );
                       },
                 child: const Text('Continue without sign-in'),
@@ -348,6 +230,314 @@ class _SupporterPhoneAuthScreenState
           ),
         ),
       ),
+    );
+  }
+}
+
+class SupporterOtpVerificationScreen extends ConsumerStatefulWidget {
+  const SupporterOtpVerificationScreen({super.key});
+
+  @override
+  ConsumerState<SupporterOtpVerificationScreen> createState() =>
+      _SupporterOtpVerificationScreenState();
+}
+
+class _SupporterOtpVerificationScreenState
+    extends ConsumerState<SupporterOtpVerificationScreen> {
+  final TextEditingController _otpController = TextEditingController();
+
+  bool _isVerifying = false;
+  bool _isResending = false;
+  int _resendCooldown = 0;
+  Timer? _cooldownTimer;
+
+  String get _otpValue => _otpController.text.trim();
+  bool get _canSubmitOtp => _phone.isNotEmpty && _otpValue.length >= 5;
+
+  String get _phone =>
+      GoRouterState.of(context).uri.queryParameters['phone']?.trim() ?? '';
+
+  @override
+  void initState() {
+    super.initState();
+    _otpController.addListener(_onChanged);
+    _startCooldown();
+  }
+
+  @override
+  void dispose() {
+    _cooldownTimer?.cancel();
+    _otpController
+      ..removeListener(_onChanged)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void _startCooldown() {
+    _resendCooldown = 60;
+    _cooldownTimer?.cancel();
+    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      setState(() {
+        _resendCooldown--;
+        if (_resendCooldown <= 0) {
+          _resendCooldown = 0;
+          timer.cancel();
+        }
+      });
+    });
+  }
+
+  Future<void> _resendCode() async {
+    if (_isResending || _isVerifying || _resendCooldown > 0 || _phone.isEmpty) {
+      return;
+    }
+
+    setState(() => _isResending = true);
+    final error = await ref
+        .read(authStateProvider.notifier)
+        .requestPhoneSignInOtp(phone: _phone, channel: OtpChannel.whatsapp);
+
+    if (!mounted) return;
+    setState(() => _isResending = false);
+
+    if (error == null) {
+      _startCooldown();
+      AfriToast.success(context, 'New WhatsApp code sent to $_phone.');
+      return;
+    }
+
+    AfriToast.error(context, error);
+  }
+
+  Future<void> _verifyCode() async {
+    if (_isVerifying || !_canSubmitOtp) return;
+
+    setState(() => _isVerifying = true);
+    final error = await ref
+        .read(authStateProvider.notifier)
+        .verifyPhoneSignInOtp(phone: _phone, token: _otpValue);
+
+    if (!mounted) return;
+    setState(() => _isVerifying = false);
+
+    if (error == null) {
+      context.go(_postAuthDestination());
+      return;
+    }
+
+    AfriToast.error(context, error);
+  }
+
+  String _postAuthDestination() {
+    final raw = GoRouterState.of(context).uri.queryParameters['from']?.trim();
+    if (raw == null || raw.isEmpty) {
+      return '/home';
+    }
+
+    final uri = Uri.tryParse(raw);
+    final path = uri?.path;
+    if (path == null ||
+        path.isEmpty ||
+        !path.startsWith('/') ||
+        path == '/splash' ||
+        path == '/onboarding' ||
+        path == '/auth/phone' ||
+        path == '/auth/otp') {
+      return '/home';
+    }
+
+    return uri.toString();
+  }
+
+  String _phoneEntryRoute() {
+    return Uri(
+      path: '/auth/phone',
+      queryParameters: <String, String>{
+        if (GoRouterState.of(context).uri.queryParameters['from']
+            case final String from)
+          'from': from,
+      },
+    ).toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_phone.isEmpty) {
+      return Scaffold(
+        backgroundColor: ColorTokens.transparent,
+        body: GradientBackground(
+          child: SafeArea(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(SpacingTokens.screenPadding),
+                child: AfriStateView.error(
+                  title: 'Phone number missing',
+                  message: 'Start again to request a WhatsApp code.',
+                  actionLabel: 'Enter number',
+                  onAction: () => context.go(_phoneEntryRoute()),
+                  compact: true,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: ColorTokens.transparent,
+      appBar: AfriAppBar(
+        backgroundColor: ColorTokens.transparent,
+        elevation: 0,
+        leading: AfriIconButton(
+          icon: AfriIcons.back,
+          tooltip: 'Change number',
+          onTap: () => context.go(_phoneEntryRoute()),
+        ),
+      ),
+      body: GradientBackground(
+        child: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(
+              SpacingTokens.screenPadding,
+              SpacingTokens.spacing2,
+              SpacingTokens.screenPadding,
+              SpacingTokens.spacing8,
+            ),
+            children: [
+              _AuthStepHeader(
+                eyebrow: 'Check WhatsApp',
+                title: 'Enter your code',
+                body: 'Code sent to $_phone.',
+                icon: AfriIcons.privacy,
+              ),
+              const SizedBox(height: SpacingTokens.spacing6),
+              AfriSurfaceCard(
+                backgroundColor: ColorTokens.surfaceContainerLow.withValues(
+                  alpha: 0.88,
+                ),
+                padding: const EdgeInsets.all(SpacingTokens.spacing5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AfriInputField(
+                      key: const ValueKey<String>('supporter-phone-otp-input'),
+                      controller: _otpController,
+                      label: 'WhatsApp code',
+                      hint: supporterPhoneAuthTestOtp,
+                      keyboardType: TextInputType.number,
+                      enabled: !_isVerifying && !_isResending,
+                      prefixIcon: AfriIcons.privacy,
+                      maxLength: 6,
+                      autofocus: true,
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (_) => _verifyCode(),
+                    ),
+                    const SizedBox(height: SpacingTokens.spacing4),
+                    AfriButton(
+                      key: const ValueKey<String>(
+                        'supporter-verify-otp-button',
+                      ),
+                      label: 'Verify and continue',
+                      icon: AfriIcons.verified,
+                      onTap: _verifyCode,
+                      isLoading: _isVerifying,
+                      enabled: !_isVerifying && !_isResending && _canSubmitOtp,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              Row(
+                children: [
+                  Expanded(
+                    child: AfriTextIconButton(
+                      onPressed:
+                          (_resendCooldown > 0 || _isResending || _isVerifying)
+                          ? null
+                          : _resendCode,
+                      icon: Icon(
+                        _resendCooldown > 0 ? AfriIcons.timer : AfriIcons.chat,
+                      ),
+                      label: Text(
+                        _resendCooldown > 0
+                            ? 'Resend in ${_resendCooldown}s'
+                            : 'Resend code',
+                      ),
+                    ),
+                  ),
+                  AfriTextButton(
+                    onPressed: (_isResending || _isVerifying)
+                        ? null
+                        : () => context.go(_phoneEntryRoute()),
+                    child: const Text('Change number'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AuthStepHeader extends StatelessWidget {
+  const _AuthStepHeader({
+    required this.eyebrow,
+    required this.title,
+    required this.body,
+    required this.icon,
+  });
+
+  final String eyebrow;
+  final String title;
+  final String body;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 56,
+          height: 56,
+          decoration: BoxDecoration(
+            color: ColorTokens.primaryContainer,
+            borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
+            boxShadow: AfriShadows.primaryGlow(ColorTokens.primaryContainer),
+          ),
+          child: Icon(icon, color: ColorTokens.onSurface),
+        ),
+        const SizedBox(height: SpacingTokens.spacing5),
+        Text(
+          eyebrow.toUpperCase(),
+          style: TypographyTokens.labelMedium().copyWith(
+            color: ColorTokens.primaryContainer,
+            letterSpacing: 1.2,
+          ),
+        ),
+        const SizedBox(height: SpacingTokens.spacing2),
+        Text(title, style: TypographyTokens.headlineLarge()),
+        const SizedBox(height: SpacingTokens.spacing3),
+        Text(
+          body,
+          style: TypographyTokens.bodyLarge().copyWith(
+            color: ColorTokens.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }

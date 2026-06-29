@@ -42,15 +42,15 @@ class BadgeGrid extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 56,
-                  height: 56,
+                  width: SpacingTokens.spacing12 + SpacingTokens.spacing2,
+                  height: SpacingTokens.spacing12 + SpacingTokens.spacing2,
                   decoration: BoxDecoration(
                     color: isEarned
                         ? ColorTokens.clubAccent.withValues(alpha: 0.15)
                         : ColorTokens.surfaceContainerHigh.withValues(
                             alpha: 0.5,
                           ),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
                     border: BorderTokens.all(
                       color: isEarned
                           ? ColorTokens.clubAccent.withValues(alpha: 0.3)
@@ -60,14 +60,16 @@ class BadgeGrid extends StatelessWidget {
                   child: Center(
                     child: Icon(
                       icon,
-                      size: isEarned ? 26 : 22,
+                      size: isEarned
+                          ? SpacingTokens.spacing6 + SpacingTokens.spacing1 / 2
+                          : SpacingTokens.spacing5 + SpacingTokens.spacing1 / 2,
                       color: isEarned
                           ? ColorTokens.clubAccent
                           : ColorTokens.onSurface.withValues(alpha: 0.2),
                     ),
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: SpacingTokens.spacing1),
                 Text(
                   name.toUpperCase(),
                   style: TypographyTokens.labelLarge(

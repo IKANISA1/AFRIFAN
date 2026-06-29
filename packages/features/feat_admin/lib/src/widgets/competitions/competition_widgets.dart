@@ -64,9 +64,7 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
     final shortName = _shortNameCtl.text.trim();
     final slug = _slugCtl.text.trim();
     if (name.isEmpty || shortName.isEmpty || slug.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Name, short name, and slug required.')),
-      );
+      AfriToast.error(context, 'Name, short name, and slug required.');
       return;
     }
 
@@ -305,20 +303,10 @@ class _SeasonManagerSheetState extends State<_SeasonManagerSheet> {
       await _loadSeasons();
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Season created'),
-          backgroundColor: ColorTokens.success,
-        ),
-      );
+      AfriToast.success(context, 'Season created');
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed: $e'),
-          backgroundColor: ColorTokens.error,
-        ),
-      );
+      AfriToast.error(context, 'Failed: $e');
     }
   }
 
@@ -337,12 +325,7 @@ class _SeasonManagerSheetState extends State<_SeasonManagerSheet> {
       await _loadSeasons();
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed: $e'),
-          backgroundColor: ColorTokens.error,
-        ),
-      );
+      AfriToast.error(context, 'Failed: $e');
     }
   }
 

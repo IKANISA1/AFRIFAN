@@ -177,11 +177,9 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(result.message.isNotEmpty ? result.message : 'Done.'),
-        behavior: SnackBarBehavior.floating,
-      ),
+    AfriToast.info(
+      context,
+      result.message.isNotEmpty ? result.message : 'Done.',
     );
     unawaited(_refreshVisibleData());
   }
@@ -242,7 +240,9 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
                   ),
                   if (_isSearching) ...[
                     const SizedBox(height: SpacingTokens.spacing3),
-                    const AfriLinearProgressIndicator(minHeight: 3),
+                    const AfriLinearProgressIndicator(
+                      minHeight: SpacingTokens.spacing1,
+                    ),
                   ],
                   const SizedBox(height: SpacingTokens.spacing4),
                   FriendSupportersSection(
@@ -355,7 +355,7 @@ class _SupporterRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(name, style: TypographyTokens.titleSmall()),
-                const SizedBox(height: 2),
+                const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(details, style: TypographyTokens.bodySmall()),
               ],
             ),

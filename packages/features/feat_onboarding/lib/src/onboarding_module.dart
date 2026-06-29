@@ -7,9 +7,9 @@ import 'screens/supporter_phone_auth_screen.dart';
 
 /// Onboarding feature module. Provides non-tab routes for initial user flow.
 ///
-/// /profile_setup is NOT part of onboarding. Saved payment routes belong only
-/// to Face ID enrollment, and the compatibility route is registered via
-/// SettingsModule.standaloneRoutes.
+/// Profile setup and saved payment compatibility routes are not part of
+/// onboarding. The first-run auth surface is WhatsApp number input followed by
+/// OTP verification.
 class OnboardingModule extends FeatureModule {
   @override
   String get featureKey => 'onboarding';
@@ -28,6 +28,10 @@ class OnboardingModule extends FeatureModule {
       path: '/auth/phone',
       builder: (context, state) => const SupporterPhoneAuthScreen(),
     ),
+    GoRoute(
+      path: '/auth/otp',
+      builder: (context, state) => const SupporterOtpVerificationScreen(),
+    ),
   ];
 
   @override
@@ -35,5 +39,6 @@ class OnboardingModule extends FeatureModule {
     '/splash',
     '/onboarding',
     '/auth/phone',
+    '/auth/otp',
   };
 }

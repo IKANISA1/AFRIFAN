@@ -93,14 +93,21 @@ class AfriActionRow extends StatelessWidget {
               ],
             ),
             const SizedBox(height: SpacingTokens.spacing4),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TypographyTokens.titleSmall().copyWith(
-                fontWeight: FontWeight.w900,
-                fontSize: 11,
-                letterSpacing: 0.5,
+            SizedBox(
+              height: MediaQuery.textScalerOf(context).scale(28),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: TypographyTokens.labelMedium().copyWith(
+                    fontWeight: FontWeight.w900,
+                    height: 1.05,
+                    letterSpacing: 0,
+                  ),
+                ),
               ),
             ),
           ],

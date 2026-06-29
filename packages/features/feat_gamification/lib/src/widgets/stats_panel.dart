@@ -138,11 +138,13 @@ class _StatComparisonRow extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 6),
+        const SizedBox(
+          height: SpacingTokens.spacing2 - SpacingTokens.spacing1 / 2,
+        ),
         SizedBox(
-          height: 6,
+          height: SpacingTokens.spacing2 - SpacingTokens.spacing1 / 2,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(999),
+            borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
             child: Row(
               children: [
                 Flexible(
@@ -157,7 +159,7 @@ class _StatComparisonRow extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                       ),
                 ),
-                const SizedBox(width: 2),
+                const SizedBox(width: SpacingTokens.spacing1 / 2),
                 Flexible(
                   flex: (rightPct * 1000).round().clamp(1, 999),
                   child:

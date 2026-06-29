@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Languages, Palette, Phone, ShieldCheck, MessageSquare, Terminal, Building2, Cpu } from "lucide-react";
+import { Languages, ShieldCheck, MessageSquare, Terminal, Building2, Cpu } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
@@ -157,7 +157,7 @@ export default function AdminSettingsPage() {
               <div className="flex items-center justify-between p-4 rounded-2xl bg-[var(--admin-zinc-950)] border border-[var(--admin-border)]">
                  <div>
                     <p className="font-bold text-white">SMS Broadcast Gateway</p>
-                    <p className="text-[10px] text-[var(--admin-zinc-500)] uppercase font-bold tracking-tighter mt-0.5">Twilio / Local Telco</p>
+                    <p className="text-[10px] text-[var(--admin-zinc-500)] uppercase font-bold tracking-tighter mt-0.5">WhatsApp Cloud / Local Telco</p>
                  </div>
                  <AdminStatusBadge label="Operational" tone="success" />
               </div>

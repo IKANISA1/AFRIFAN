@@ -61,6 +61,7 @@ export 'src/widgets/afri_stat_row.dart';
 export 'src/widgets/afri_state_view.dart';
 export 'src/widgets/afri_status_chip.dart';
 export 'src/widgets/afri_surface_card.dart';
+export 'src/widgets/afri_switch.dart';
 export 'src/widgets/afri_tab_bar.dart';
 export 'src/widgets/afri_toast.dart';
 export 'src/widgets/afri_top_command_bar.dart';

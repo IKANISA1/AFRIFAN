@@ -134,7 +134,7 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
         widget.child,
         if (_isVisible)
           Positioned(
-            top: MediaQuery.of(context).padding.top + 8,
+            top: MediaQuery.of(context).padding.top + SpacingTokens.spacing2,
             left: SpacingTokens.spacing4,
             right: SpacingTokens.spacing4,
             child: SlideTransition(
@@ -155,7 +155,9 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
                       child: Container(
                         decoration: BoxDecoration(
                           color: ColorTokens.surfaceContainerHigh,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(
+                            ShapeTokens.radiusLg,
+                          ),
                           border: BorderTokens.all(
                             color: _colorForType(_type).withValues(alpha: 0.3),
                           ),
@@ -173,17 +175,19 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
                         child: Row(
                           children: [
                             Container(
-                              width: 40,
-                              height: 40,
+                              width: SpacingTokens.spacing10,
+                              height: SpacingTokens.spacing10,
                               decoration: BoxDecoration(
                                 color: _colorForType(
                                   _type,
                                 ).withValues(alpha: 0.14),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(
+                                  ShapeTokens.radiusMd,
+                                ),
                               ),
                               child: Icon(
                                 _iconForType(_type),
-                                size: 20,
+                                size: SpacingTokens.spacing5,
                                 color: _colorForType(_type),
                               ),
                             ),
@@ -199,7 +203,9 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
                                     overflow: TextOverflow.ellipsis,
                                     style: TypographyTokens.titleSmall(),
                                   ),
-                                  const SizedBox(height: 2),
+                                  const SizedBox(
+                                    height: SpacingTokens.spacing1 / 2,
+                                  ),
                                   Text(
                                     _message,
                                     maxLines: 2,

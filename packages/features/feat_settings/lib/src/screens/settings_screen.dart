@@ -203,9 +203,7 @@ class SettingsScreen extends ConsumerWidget {
   ) async {
     final phone = supportWhatsApp?.trim() ?? '';
     if (phone.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Support contact is not configured.')),
-      );
+      AfriToast.error(context, 'Support contact is not configured.');
       return;
     }
 
@@ -223,9 +221,7 @@ class SettingsScreen extends ConsumerWidget {
     final session = ref.read(supabaseClientProvider).auth.currentUser;
     if (session == null) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Session expired. Please sign in again.')),
-      );
+      AfriToast.error(context, 'Session expired. Please sign in again.');
       return;
     }
 
@@ -235,9 +231,8 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Future<bool> _showAdminConfirmation(BuildContext context) async {
-    final result = await showModalBottomSheet<bool>(
+    final result = await showAfriBottomSheet<bool>(
       context: context,
-      backgroundColor: ColorTokens.transparent,
       builder: (context) => AfriPanelCard(
         padding: const EdgeInsets.all(32),
         child: Column(

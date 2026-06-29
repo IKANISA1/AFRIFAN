@@ -344,7 +344,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                   ),
                   if (fixture.venueName != null &&
                       fixture.venueName!.isNotEmpty) ...[
-                    const SizedBox(height: 2),
+                    const SizedBox(height: SpacingTokens.spacing1 / 2),
                     Text(
                       fixture.venueName!,
                       style: TypographyTokens.bodySmall(

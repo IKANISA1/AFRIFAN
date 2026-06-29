@@ -1,17 +1,19 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../prediction_providers.dart';
-import 'package:core_utils/core_utils.dart';
 
 /// Privacy settings screen — core guarantees + visibility toggles.
 ///
-/// Mirrors the fanafrika `PrivacySettings.tsx` — phone-hidden guarantee,
-/// anonymous contributions guarantee, and visibility controls.
+/// Implements the borrowed privacy pattern: phone-hidden guarantee,
+/// anonymous contributions guarantee, and tokenized visibility controls.
 ///
 /// Persists toggle values to the Supabase `profiles` table (columns
 /// `privacy_show_real_name` and `privacy_findable_by_phone`) and
@@ -30,7 +32,6 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
 
   late bool _showRealName;
   late bool _findableByPhone;
-  bool _isLoadingFromServer = true;
 
   @override
   void initState() {
@@ -39,7 +40,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     _showRealName = HiveCacheService.getJson<bool>(_showRealNameKey) ?? false;
     _findableByPhone =
         HiveCacheService.getJson<bool>(_findableByPhoneKey) ?? false;
-    _loadFromServer();
+    unawaited(_loadFromServer());
   }
 
   /// Loads current toggle values from the profiles table.
@@ -48,7 +49,6 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
       final repo = ref.read(predictionRepositoryProvider);
       final userId = repo.currentUserId;
       if (userId == null || userId.isEmpty) {
-        if (mounted) setState(() => _isLoadingFromServer = false);
         return;
       }
 
@@ -68,22 +68,24 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
         setState(() {
           _showRealName = serverShowReal;
           _findableByPhone = serverFindable;
-          _isLoadingFromServer = false;
         });
 
-        // Update local cache to match server.
-        HiveCacheService.putJson(
-          _showRealNameKey,
-          serverShowReal,
-          ttl: const Duration(days: 365),
+        unawaited(
+          HiveCacheService.putJson(
+            _showRealNameKey,
+            serverShowReal,
+            ttl: const Duration(days: 365),
+          ),
         );
-        HiveCacheService.putJson(
-          _findableByPhoneKey,
-          serverFindable,
-          ttl: const Duration(days: 365),
+        unawaited(
+          HiveCacheService.putJson(
+            _findableByPhoneKey,
+            serverFindable,
+            ttl: const Duration(days: 365),
+          ),
         );
       } else {
-        setState(() => _isLoadingFromServer = false);
+        return;
       }
     } catch (error, stackTrace) {
       AfriLogger.warn(
@@ -93,34 +95,39 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
         stackTrace,
       );
       // Keep cached values if server is unavailable.
-      if (mounted) setState(() => _isLoadingFromServer = false);
     }
   }
 
   void _setShowRealName(bool value) {
     setState(() => _showRealName = value);
-    HiveCacheService.putJson(
-      _showRealNameKey,
-      value,
-      ttl: const Duration(days: 365),
+    unawaited(
+      HiveCacheService.putJson(
+        _showRealNameKey,
+        value,
+        ttl: const Duration(days: 365),
+      ),
     );
-    // Fire-and-forget sync to server.
-    ref.read(predictionRepositoryProvider).updateProfile(<String, dynamic>{
-      'privacy_show_real_name': value,
-    });
+    unawaited(
+      ref.read(predictionRepositoryProvider).updateProfile(<String, dynamic>{
+        'privacy_show_real_name': value,
+      }),
+    );
   }
 
   void _setFindableByPhone(bool value) {
     setState(() => _findableByPhone = value);
-    HiveCacheService.putJson(
-      _findableByPhoneKey,
-      value,
-      ttl: const Duration(days: 365),
+    unawaited(
+      HiveCacheService.putJson(
+        _findableByPhoneKey,
+        value,
+        ttl: const Duration(days: 365),
+      ),
     );
-    // Fire-and-forget sync to server.
-    ref.read(predictionRepositoryProvider).updateProfile(<String, dynamic>{
-      'privacy_findable_by_phone': value,
-    });
+    unawaited(
+      ref.read(predictionRepositoryProvider).updateProfile(<String, dynamic>{
+        'privacy_findable_by_phone': value,
+      }),
+    );
   }
 
   @override
@@ -197,7 +204,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                     AfriSurfaceCard(
                           child: Column(
                             children: [
-                              _GuaranteeRow(
+                              const _GuaranteeRow(
                                 icon: AfriIcons.phone,
                                 iconColor: ExternalBrandColors.whatsAppGreen,
                                 title: 'Phone Number Hidden',
@@ -281,8 +288,8 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                       child: Row(
                         children: [
                           Container(
-                            width: 48,
-                            height: 48,
+                            width: SpacingTokens.spacing12,
+                            height: SpacingTokens.spacing12,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: ColorTokens.success.withValues(
@@ -293,7 +300,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                             child: const Icon(
                               AfriIcons.lock,
                               color: ColorTokens.success,
-                              size: 24,
+                              size: SpacingTokens.spacing6,
                             ),
                           ),
                           const SizedBox(width: SpacingTokens.spacing3),
@@ -305,7 +312,9 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                                   'Privacy First',
                                   style: TypographyTokens.titleSmall(),
                                 ),
-                                const SizedBox(height: 2),
+                                const SizedBox(
+                                  height: SpacingTokens.spacing1 / 2,
+                                ),
                                 Text(
                                   'FANZONE does not sell, share, or expose '
                                   'your personal data. All identifiers '
@@ -319,7 +328,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                       ),
                     ).animate(delay: 200.ms).fadeIn(duration: 300.ms),
 
-                    const SizedBox(height: 80),
+                    const SizedBox(height: SpacingTokens.spacing20),
                   ]),
                 ),
               ),
@@ -352,14 +361,14 @@ class _GuaranteeRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: SpacingTokens.spacing10,
+            height: SpacingTokens.spacing10,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: iconColor.withValues(alpha: 0.12),
             ),
             alignment: Alignment.center,
-            child: Icon(icon, size: 20, color: iconColor),
+            child: Icon(icon, size: SpacingTokens.spacing5, color: iconColor),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
           Expanded(
@@ -367,7 +376,7 @@ class _GuaranteeRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: TypographyTokens.titleSmall()),
-                const SizedBox(height: 2),
+                const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(description, style: TypographyTokens.bodySmall()),
               ],
             ),
@@ -401,14 +410,18 @@ class _VisibilityToggle extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: SpacingTokens.spacing10,
+            height: SpacingTokens.spacing10,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.1),
             ),
             alignment: Alignment.center,
-            child: Icon(icon, size: 20, color: ColorTokens.onSurfaceVariant),
+            child: Icon(
+              icon,
+              size: SpacingTokens.spacing5,
+              color: ColorTokens.onSurfaceVariant,
+            ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
           Expanded(
@@ -416,17 +429,13 @@ class _VisibilityToggle extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: TypographyTokens.titleSmall()),
-                const SizedBox(height: 2),
+                const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(description, style: TypographyTokens.bodySmall()),
               ],
             ),
           ),
           const SizedBox(width: SpacingTokens.spacing2),
-          Switch.adaptive(
-            value: value,
-            onChanged: onChanged,
-            activeTrackColor: ColorTokens.clubAccent,
-          ),
+          AfriSwitch(value: value, onChanged: onChanged),
         ],
       ),
     );

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 /// FET Split Model — visualizes how FET earnings are divided between
 /// the user's personal wallet and their club's pool based on membership tier.
 ///
-/// Mirrors the fanafrika reference `WalletHub.tsx` split model visualization.
+/// Uses the borrowed wallet model visualization for tier-aware FET splits.
 class FetSplitModel extends StatelessWidget {
   const FetSplitModel({super.key, this.currentTier = 'supporter'});
 
@@ -36,7 +36,7 @@ class FetSplitModel extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: ColorTokens.clubAccent.withValues(alpha: 0.16),
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                 ),
                 child: Text(
                   currentTier.toUpperCase(),
@@ -54,9 +54,9 @@ class FetSplitModel extends StatelessWidget {
 
           // ── Visual Progress Bar ──
           ClipRRect(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
             child: SizedBox(
-              height: 28,
+              height: SpacingTokens.spacing7,
               child: Row(
                 children: [
                   Expanded(
@@ -108,7 +108,7 @@ class FetSplitModel extends StatelessWidget {
                   color: isCurrent
                       ? ColorTokens.clubAccent.withValues(alpha: 0.10)
                       : ColorTokens.transparent,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
                   border: isCurrent
                       ? BorderTokens.all(
                           color: ColorTokens.clubAccent.withValues(alpha: 0.3),
@@ -119,7 +119,7 @@ class FetSplitModel extends StatelessWidget {
                   children: [
                     Icon(
                       tier.icon,
-                      size: 20,
+                      size: SpacingTokens.spacing5,
                       color: isCurrent
                           ? ColorTokens.clubAccent
                           : ColorTokens.onSurfaceVariant,
@@ -164,7 +164,7 @@ class FetSplitModel extends StatelessWidget {
             padding: const EdgeInsets.all(SpacingTokens.spacing3),
             decoration: BoxDecoration(
               color: ColorTokens.surfaceContainerHigh,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

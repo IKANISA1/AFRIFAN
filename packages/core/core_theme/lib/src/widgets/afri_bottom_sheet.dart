@@ -52,7 +52,7 @@ class AfriBottomSheet extends StatelessWidget {
                     ),
                   ),
                 ),
-                child,
+                Flexible(fit: FlexFit.loose, child: child),
               ],
             ),
           ),
@@ -69,10 +69,13 @@ Future<T?> showAfriBottomSheet<T>({
   bool isDismissible = true,
   bool enableDrag = true,
   bool useSafeArea = false,
+  bool useBorrowedSurface = true,
 }) {
   return showModalBottomSheet<T>(
     context: context,
-    builder: (ctx) => AfriBottomSheet(child: builder(ctx)),
+    builder: (ctx) => useBorrowedSurface
+        ? AfriBottomSheet(child: builder(ctx))
+        : builder(ctx),
     backgroundColor: Colors.transparent,
     elevation: 0,
     isScrollControlled: isScrollControlled,

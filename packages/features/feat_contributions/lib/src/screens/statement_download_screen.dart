@@ -183,9 +183,7 @@ class _StatementDownloadScreenState
 
   Future<void> _downloadStatement() async {
     if (_format == 'PDF') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('PDF export not available yet. Use CSV.')),
-      );
+      AfriToast.info(context, 'PDF export not available yet. Use CSV.');
       return;
     }
 
@@ -210,14 +208,11 @@ class _StatementDownloadScreenState
     if (!mounted) return;
 
     setState(() => _isExporting = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          rows.isEmpty
-              ? 'Filtered CSV copied without rows.'
-              : 'CSV copied to clipboard.',
-        ),
-      ),
+    AfriToast.success(
+      context,
+      rows.isEmpty
+          ? 'Filtered CSV copied without rows.'
+          : 'CSV copied to clipboard.',
     );
   }
 

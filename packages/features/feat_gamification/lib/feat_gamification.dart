@@ -1,8 +1,8 @@
 /// AFRICLUB feat_gamification — consolidated FANZONE feature surface.
 library;
 
-export 'src/fanzone_module.dart';
 export 'src/challenge_module.dart';
+export 'src/fanzone_module.dart';
 export 'src/notification_providers.dart';
 export 'src/screens/club_fan_zone_screen.dart';
 export 'src/screens/fan_id_screen.dart';
@@ -17,7 +17,6 @@ export 'src/screens/league_hub_screen.dart';
 export 'src/screens/league_standings_screen.dart';
 export 'src/screens/match_detail_screen.dart';
 export 'src/screens/my_predictions_screen.dart';
-export 'src/screens/onboarding_profile_setup_screen.dart';
 export 'src/screens/prediction_detail_screen.dart';
 export 'src/screens/prediction_notifications_screen.dart';
 export 'src/screens/prediction_settlement_screen.dart';
@@ -35,4 +34,3 @@ export 'src/widgets/jackpot_countdown_timer.dart';
 export 'src/widgets/notification_toast_overlay.dart';
 export 'src/widgets/prediction_stats_row.dart';
 export 'src/widgets/top_scorers_section.dart';
-

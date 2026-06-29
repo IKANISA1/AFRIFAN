@@ -93,11 +93,9 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
         .read(shopCartProvider.notifier)
         .addRawProduct(product, partnerId: user.clubId);
     unawaited(HapticFeedback.lightImpact());
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${product['name'] ?? 'Product'} added to cart.'),
-        backgroundColor: ColorTokens.success,
-      ),
+    AfriToast.success(
+      context,
+      '${product['name'] ?? 'Product'} added to cart.',
     );
   }
 
@@ -128,17 +126,17 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
               ),
               if (cartItemCount > 0)
                 Positioned(
-                  right: 8,
-                  top: 8,
+                  right: SpacingTokens.spacing2,
+                  top: SpacingTokens.spacing2,
                   child: Container(
-                    padding: const EdgeInsets.all(4),
+                    padding: const EdgeInsets.all(SpacingTokens.spacing1),
                     decoration: BoxDecoration(
                       color: ColorTokens.clubAccent,
                       shape: BoxShape.circle,
                     ),
                     constraints: const BoxConstraints(
-                      minWidth: 20,
-                      minHeight: 20,
+                      minWidth: SpacingTokens.spacing5,
+                      minHeight: SpacingTokens.spacing5,
                     ),
                     child: Text(
                       '$cartItemCount',
@@ -190,7 +188,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                 SliverToBoxAdapter(
                   child: SizedBox(
                     height: cartItemCount > 0
-                        ? SpacingTokens.spacing20 + 80
+                        ? SpacingTokens.spacing20 + SpacingTokens.spacing20
                         : SpacingTokens.spacing20,
                   ),
                 ),
@@ -271,7 +269,7 @@ class ShopCatalogSlivers extends StatelessWidget {
         ),
         SliverToBoxAdapter(
           child: SizedBox(
-            height: 40,
+            height: SpacingTokens.spacing10,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(

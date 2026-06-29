@@ -1,8 +1,6 @@
 part of 'prediction_repository.dart';
 
 extension PredictionRepoBadges on PredictionRepository {
-
-
   Future<List<PredictionBadge>> loadUserBadges() async {
     final cacheKey = _cacheKey('user_badges', <Object?>[
       _client.auth.currentUser?.id ?? 'anonymous',
@@ -26,6 +24,4 @@ extension PredictionRepoBadges on PredictionRepository {
 
     return rows.map(PredictionBadge.fromJson).toList(growable: false);
   }
-
-
 }

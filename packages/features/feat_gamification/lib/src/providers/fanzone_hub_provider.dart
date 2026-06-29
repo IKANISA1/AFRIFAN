@@ -1,11 +1,10 @@
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
-import '../repositories/prediction_repository.dart';
-import 'package:core_utils/core_utils.dart';
 
 /// Snapshot of all data needed by the FanzoneHubScreen.
 ///
@@ -73,124 +72,59 @@ class FanzoneHubNotifier extends AsyncNotifier<FanzoneHubSnapshot> {
     final tomorrow = today.add(const Duration(days: 1));
     final weekEnd = today.add(const Duration(days: 7));
 
-    // Fire all 8 requests concurrently and track individual failures.
-    PredictionDashboard? dashboard;
-    FetWalletSummary? wallet;
-    var liveFixtures = const <FixtureSummary>[];
-    var todayFixtures = const <FixtureSummary>[];
-    var upcomingFixtures = const <FixtureSummary>[];
-    var leaderboard = const <PredictionLeaderboardEntry>[];
-    var markets = const <PredictionMarket>[];
-    var challenges = const <FetCatalogItem>[];
-
     var failures = 0;
     const totalCalls = 8;
 
-    try {
-      dashboard = await predictionRepo.loadUserStats();
-    } catch (error, stackTrace) {
-      AfriLogger.warn(
-        'FanzoneHubProvider',
-        'Operation failed (non-critical).',
-        error,
-        stackTrace,
-      );
-      failures++;
+    Future<T?> guarded<T>(Future<T?> Function() load) async {
+      try {
+        return await load();
+      } catch (error, stackTrace) {
+        AfriLogger.warn(
+          'FanzoneHubProvider',
+          'Operation failed (non-critical).',
+          error,
+          stackTrace,
+        );
+        failures++;
+        return null;
+      }
     }
 
-    try {
-      wallet = await fetRepo.loadWallet();
-    } catch (error, stackTrace) {
-      AfriLogger.warn(
-        'FanzoneHubProvider',
-        'Operation failed (non-critical).',
-        error,
-        stackTrace,
-      );
-      failures++;
-    }
-
-    try {
-      liveFixtures = await predictionRepo.loadFixtures(
-        status: 'live',
-        limit: 5,
-      );
-    } catch (error, stackTrace) {
-      AfriLogger.warn(
-        'FanzoneHubProvider',
-        'Operation failed (non-critical).',
-        error,
-        stackTrace,
-      );
-      failures++;
-    }
-
-    try {
-      todayFixtures = await predictionRepo.loadFixturesByDate(
-        dateFrom: today,
-        dateTo: today,
-      );
-    } catch (error, stackTrace) {
-      AfriLogger.warn(
-        'FanzoneHubProvider',
-        'Operation failed (non-critical).',
-        error,
-        stackTrace,
-      );
-      failures++;
-    }
-
-    try {
-      upcomingFixtures = await predictionRepo.loadFixturesByDate(
+    final dashboardFuture = guarded<PredictionDashboard>(
+      predictionRepo.loadUserStats,
+    );
+    final walletFuture = guarded<FetWalletSummary>(() => fetRepo.loadWallet());
+    final liveFixturesFuture = guarded<List<FixtureSummary>>(
+      () => predictionRepo.loadFixtures(status: 'live', limit: 5),
+    );
+    final todayFixturesFuture = guarded<List<FixtureSummary>>(
+      () => predictionRepo.loadFixturesByDate(dateFrom: today, dateTo: today),
+    );
+    final upcomingFixturesFuture = guarded<List<FixtureSummary>>(
+      () => predictionRepo.loadFixturesByDate(
         dateFrom: tomorrow,
         dateTo: weekEnd,
         limit: 8,
-      );
-    } catch (error, stackTrace) {
-      AfriLogger.warn(
-        'FanzoneHubProvider',
-        'Operation failed (non-critical).',
-        error,
-        stackTrace,
-      );
-      failures++;
-    }
+      ),
+    );
+    final leaderboardFuture = guarded<List<PredictionLeaderboardEntry>>(
+      () => predictionRepo.loadLeaderboard(limit: 5),
+    );
+    final marketsFuture = guarded<List<PredictionMarket>>(
+      predictionRepo.loadMarketCatalog,
+    );
+    final challengesFuture = guarded<List<FetCatalogItem>>(fetRepo.loadCatalog);
 
-    try {
-      leaderboard = await predictionRepo.loadLeaderboard(limit: 5);
-    } catch (error, stackTrace) {
-      AfriLogger.warn(
-        'FanzoneHubProvider',
-        'Operation failed (non-critical).',
-        error,
-        stackTrace,
-      );
-      failures++;
-    }
-
-    try {
-      markets = await predictionRepo.loadMarketCatalog();
-    } catch (error, stackTrace) {
-      AfriLogger.warn(
-        'FanzoneHubProvider',
-        'Operation failed (non-critical).',
-        error,
-        stackTrace,
-      );
-      failures++;
-    }
-
-    try {
-      challenges = await fetRepo.loadCatalog();
-    } catch (error, stackTrace) {
-      AfriLogger.warn(
-        'FanzoneHubProvider',
-        'Operation failed (non-critical).',
-        error,
-        stackTrace,
-      );
-      failures++;
-    }
+    final dashboard = await dashboardFuture;
+    final wallet = await walletFuture;
+    final liveFixtures = await liveFixturesFuture ?? const <FixtureSummary>[];
+    final todayFixtures = await todayFixturesFuture ?? const <FixtureSummary>[];
+    final upcomingFixtures =
+        await upcomingFixturesFuture ?? const <FixtureSummary>[];
+    final leaderboard =
+        await leaderboardFuture ?? const <PredictionLeaderboardEntry>[];
+    final markets = await marketsFuture ?? const <PredictionMarket>[];
+    final challenges = await challengesFuture ?? const <FetCatalogItem>[];
 
     final FanzoneHubStatus status;
     final String? message;

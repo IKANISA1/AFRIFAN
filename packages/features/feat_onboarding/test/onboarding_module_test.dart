@@ -34,16 +34,17 @@ void main() {
       expect(paths, contains('/onboarding'));
     });
 
-    test('provides /auth/phone route', () {
+    test('provides split WhatsApp auth routes', () {
       final paths = module.routes
           .whereType<GoRoute>()
           .map((r) => r.path)
           .toSet();
       expect(paths, contains('/auth/phone'));
+      expect(paths, contains('/auth/otp'));
     });
 
-    test('has exactly 3 routes', () {
-      expect(module.routes.whereType<GoRoute>().length, 3);
+    test('has exactly 4 routes', () {
+      expect(module.routes.whereType<GoRoute>().length, 4);
     });
 
     test('isEnabled defaults to true', () {

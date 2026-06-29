@@ -291,8 +291,8 @@ class _FriendRow extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: SpacingTokens.spacing10,
+            height: SpacingTokens.spacing10,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: ColorTokens.surfaceContainerLow,
@@ -309,7 +309,7 @@ class _FriendRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(name, style: TypographyTokens.titleSmall()),
-                const SizedBox(height: 2),
+                const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(details, style: TypographyTokens.bodySmall()),
               ],
             ),
@@ -515,12 +515,12 @@ class _FanLeaderboardRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing3),
       decoration: BoxDecoration(
         color: isMe ? ColorTokens.clubAccent.withValues(alpha: 0.06) : null,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
       ),
       child: Row(
         children: [
           SizedBox(
-            width: 32,
+            width: SpacingTokens.spacing8,
             child: Text(
               '#$rank',
               style: TypographyTokens.titleSmall(

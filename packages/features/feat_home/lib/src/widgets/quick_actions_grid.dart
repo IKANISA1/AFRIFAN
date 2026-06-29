@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:core_feature_config/core_feature_config.dart';
+import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +49,7 @@ class QuickActionsGrid extends ConsumerWidget {
                       child: AfriActionRow(
                         icon: _resolveActionIcon(action),
                         label: action.title,
-                        onTap: () => context.push(action.route),
+                        onTap: () => _openAction(context, action.route),
                       ),
                     ),
                   )
@@ -92,5 +95,20 @@ class QuickActionsGrid extends ConsumerWidget {
     if (normalized.contains('/fanzone/offers')) return AfriIcons.offers;
     if (normalized.contains('/contribute')) return AfriIcons.groups;
     return AfriIcons.chevronRight;
+  }
+
+  void _openAction(BuildContext context, String route) {
+    if (_isPrimaryTabRoute(route)) {
+      context.go(route);
+      return;
+    }
+    unawaited(context.push(route));
+  }
+
+  bool _isPrimaryTabRoute(String route) {
+    final normalized = route.trim().toLowerCase();
+    return primaryBottomTabFeatureOrder.any((featureKey) {
+      return normalized == '/$featureKey';
+    });
   }
 }

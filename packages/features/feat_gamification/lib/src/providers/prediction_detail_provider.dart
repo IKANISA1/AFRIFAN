@@ -31,7 +31,11 @@ class PredictionDetailNotifier
   }
 }
 
-final predictionDetailProvider = AsyncNotifierProvider.family<
-    PredictionDetailNotifier, PredictionDetail?, String>(() {
-  return PredictionDetailNotifier();
-});
+final predictionDetailProvider =
+    AsyncNotifierProvider.family<
+      PredictionDetailNotifier,
+      PredictionDetail?,
+      String
+    >(() {
+      return PredictionDetailNotifier();
+    });

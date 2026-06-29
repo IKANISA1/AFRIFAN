@@ -124,8 +124,8 @@ class WalletTransactionRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 44,
-            width: 44,
+            height: SpacingTokens.spacing10 + SpacingTokens.spacing1,
+            width: SpacingTokens.spacing10 + SpacingTokens.spacing1,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: color.withValues(alpha: 0.18),

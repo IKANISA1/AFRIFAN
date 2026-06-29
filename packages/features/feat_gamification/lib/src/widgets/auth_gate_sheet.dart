@@ -19,10 +19,10 @@ class AuthGateSheet extends StatelessWidget {
 
   /// Show the auth gate bottom sheet from any context.
   static Future<bool?> show(BuildContext context, {VoidCallback? onVerify}) {
-    return showModalBottomSheet<bool>(
+    return showAfriBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: ColorTokens.transparent,
+      useBorrowedSurface: false,
       builder: (sheetContext) => AuthGateSheet(
         onVerify: onVerify,
         onDismiss: () => sheetContext.pop(false),
@@ -50,19 +50,19 @@ class AuthGateSheet extends StatelessWidget {
         children: [
           // Handle
           Container(
-            width: 40,
-            height: 4,
+            width: SpacingTokens.spacing10,
+            height: SpacingTokens.spacing1,
             decoration: BoxDecoration(
               color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(999),
+              borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
             ),
           ),
           const SizedBox(height: SpacingTokens.spacing6),
 
           // Lock icon
           Container(
-                width: 72,
-                height: 72,
+                width: SpacingTokens.spacing16 + SpacingTokens.spacing2,
+                height: SpacingTokens.spacing16 + SpacingTokens.spacing2,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: ColorTokens.warning.withValues(alpha: 0.12),
@@ -73,7 +73,7 @@ class AuthGateSheet extends StatelessWidget {
                 alignment: Alignment.center,
                 child: const Icon(
                   AfriIcons.privacy,
-                  size: 36,
+                  size: SpacingTokens.spacing9,
                   color: ColorTokens.warning,
                 ),
               )
@@ -183,14 +183,18 @@ class _BenefitRow extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 40,
-          height: 40,
+          width: SpacingTokens.spacing10,
+          height: SpacingTokens.spacing10,
           decoration: BoxDecoration(
             color: ColorTokens.clubAccent.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
           ),
           alignment: Alignment.center,
-          child: Icon(icon, size: 20, color: ColorTokens.clubAccent),
+          child: Icon(
+            icon,
+            size: SpacingTokens.spacing5,
+            color: ColorTokens.clubAccent,
+          ),
         ),
         const SizedBox(width: SpacingTokens.spacing3),
         Expanded(

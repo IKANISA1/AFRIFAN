@@ -106,14 +106,20 @@ class DigitalMembershipCardFull extends StatelessWidget {
                             semanticsHint: 'Share your digital membership card',
                             excludeChildSemantics: true,
                             child: Container(
-                              constraints: const BoxConstraints(minHeight: 44),
+                              constraints: const BoxConstraints(
+                                minHeight:
+                                    SpacingTokens.spacing10 +
+                                    SpacingTokens.spacing1,
+                              ),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: SpacingTokens.spacing3,
                                 vertical: SpacingTokens.spacing2,
                               ),
                               decoration: BoxDecoration(
                                 color: accent.withValues(alpha: 0.16),
-                                borderRadius: BorderRadius.circular(999),
+                                borderRadius: BorderRadius.circular(
+                                  ShapeTokens.radiusFull,
+                                ),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -123,7 +129,7 @@ class DigitalMembershipCardFull extends StatelessWidget {
                                     size: 12,
                                     color: accent,
                                   ),
-                                  const SizedBox(width: 4),
+                                  const SizedBox(width: SpacingTokens.spacing1),
                                   Text(
                                     'SHARE',
                                     style: TypographyTokens.labelSmall(

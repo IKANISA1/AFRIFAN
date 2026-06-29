@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
+import '../tokens/icon_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
@@ -43,7 +44,7 @@ class AfriListRow extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 color: ColorTokens.surfaceContainer,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
               ),
               alignment: Alignment.center,
               child: Icon(icon, size: 18, color: ColorTokens.onSurface),
@@ -69,7 +70,7 @@ class AfriListRow extends StatelessWidget {
             const SizedBox(width: SpacingTokens.spacing3),
             trailing ??
                 Icon(
-                  Icons.chevron_right_rounded,
+                  AfriIcons.chevronRight,
                   color: state.isFocused
                       ? ColorTokens.primaryContainer
                       : ColorTokens.onSurfaceVariant,
@@ -108,41 +109,44 @@ class AfriListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: leading,
-      title: title == null
-          ? null
-          : DefaultTextStyle.merge(
-              style: TypographyTokens.titleSmall(),
-              child: title!,
-            ),
-      subtitle: subtitle == null
-          ? null
-          : DefaultTextStyle.merge(
-              style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
-              child: subtitle!,
-            ),
-      trailing: trailing,
-      onTap: onTap,
-      contentPadding:
-          contentPadding ??
-          const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing4),
-      dense: dense,
-      enabled: enabled,
-      selected: selected,
-      textColor: ColorTokens.onSurface,
-      iconColor: ColorTokens.onSurfaceVariant,
-      selectedColor: ColorTokens.primaryContainer,
-      titleTextStyle: TypographyTokens.titleSmall(),
-      subtitleTextStyle: TypographyTokens.bodySmall(
-        ColorTokens.onSurfaceVariant,
+    return Material(
+      type: MaterialType.transparency,
+      child: ListTile(
+        leading: leading,
+        title: title == null
+            ? null
+            : DefaultTextStyle.merge(
+                style: TypographyTokens.titleSmall(),
+                child: title!,
+              ),
+        subtitle: subtitle == null
+            ? null
+            : DefaultTextStyle.merge(
+                style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+                child: subtitle!,
+              ),
+        trailing: trailing,
+        onTap: onTap,
+        contentPadding:
+            contentPadding ??
+            const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing4),
+        dense: dense,
+        enabled: enabled,
+        selected: selected,
+        textColor: ColorTokens.onSurface,
+        iconColor: ColorTokens.onSurfaceVariant,
+        selectedColor: ColorTokens.primaryContainer,
+        titleTextStyle: TypographyTokens.titleSmall(),
+        subtitleTextStyle: TypographyTokens.bodySmall(
+          ColorTokens.onSurfaceVariant,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+        ),
+        tileColor: ColorTokens.transparent,
+        selectedTileColor: ColorTokens.primaryTint(0.12),
+        visualDensity: VisualDensity.compact,
       ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
-      ),
-      tileColor: ColorTokens.transparent,
-      selectedTileColor: ColorTokens.primaryTint(0.12),
-      visualDensity: VisualDensity.compact,
     );
   }
 }
@@ -172,21 +176,24 @@ class AfriSwitchListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SwitchListTile(
-      value: value,
-      onChanged: onChanged,
-      title: title,
-      subtitle: subtitle,
-      secondary: secondary,
-      activeThumbColor: activeThumbColor ?? ColorTokens.primaryContainer,
-      contentPadding:
-          contentPadding ??
-          const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing2),
-      dense: dense,
-      tileColor: ColorTokens.transparent,
-      selectedTileColor: ColorTokens.primaryTint(0.12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+    return Material(
+      type: MaterialType.transparency,
+      child: SwitchListTile(
+        value: value,
+        onChanged: onChanged,
+        title: title,
+        subtitle: subtitle,
+        secondary: secondary,
+        activeThumbColor: activeThumbColor ?? ColorTokens.primaryContainer,
+        contentPadding:
+            contentPadding ??
+            const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing2),
+        dense: dense,
+        tileColor: ColorTokens.transparent,
+        selectedTileColor: ColorTokens.primaryTint(0.12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+        ),
       ),
     );
   }

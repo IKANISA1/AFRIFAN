@@ -15,13 +15,10 @@ Future<void> showMarketSelectorSheet({
   required FixtureSummary fixture,
   required List<FixtureMarket> markets,
 }) {
-  return showModalBottomSheet<void>(
+  return showAfriBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: ColorTokens.surfaceContainerLow,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-    ),
+    useBorrowedSurface: false,
     builder: (context) => DraggableScrollableSheet(
       initialChildSize: 0.72,
       minChildSize: 0.4,
@@ -153,13 +150,13 @@ class _MarketSelectorContentState
 
     return Column(
       children: [
-        const SizedBox(height: 12),
+        const SizedBox(height: SpacingTokens.spacing3),
         Container(
-          width: 36,
-          height: 4,
+          width: SpacingTokens.spacing9,
+          height: SpacingTokens.spacing1,
           decoration: BoxDecoration(
             color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing4),
@@ -201,7 +198,7 @@ class _MarketSelectorContentState
         const SizedBox(height: SpacingTokens.spacing4),
         // ── Dynamic category chip rail ──
         SizedBox(
-          height: 38,
+          height: SpacingTokens.spacing9 + SpacingTokens.spacing1 / 2,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(
               horizontal: SpacingTokens.spacing6,
@@ -228,7 +225,7 @@ class _MarketSelectorContentState
                     color: isSelected
                         ? ColorTokens.clubAccent.withValues(alpha: 0.18)
                         : ColorTokens.surfaceContainerHigh,
-                    borderRadius: BorderRadius.circular(999),
+                    borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                     border: isSelected
                         ? BorderTokens.all(color: ColorTokens.clubAccent)
                         : BorderTokens.ghost(),
@@ -245,11 +242,11 @@ class _MarketSelectorContentState
                         ),
                       ),
                       if (count > 0) ...[
-                        const SizedBox(width: 4),
+                        const SizedBox(width: SpacingTokens.spacing1),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 5,
-                            vertical: 1,
+                            horizontal: SpacingTokens.spacing2,
+                            vertical: SpacingTokens.spacing1 / 2,
                           ),
                           decoration: BoxDecoration(
                             color: isSelected
@@ -257,7 +254,9 @@ class _MarketSelectorContentState
                                 : ColorTokens.onSurfaceVariant.withValues(
                                     alpha: 0.12,
                                   ),
-                            borderRadius: BorderRadius.circular(999),
+                            borderRadius: BorderRadius.circular(
+                              ShapeTokens.radiusFull,
+                            ),
                           ),
                           child: Text(
                             '$count',
@@ -289,11 +288,11 @@ class _MarketSelectorContentState
             child: Row(
               children: [
                 Container(
-                  width: 3,
-                  height: 14,
+                  width: SpacingTokens.spacing1,
+                  height: SpacingTokens.spacing4 - SpacingTokens.spacing1 / 2,
                   decoration: BoxDecoration(
                     color: ColorTokens.clubAccent,
-                    borderRadius: BorderRadius.circular(2),
+                    borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                   ),
                 ),
                 const SizedBox(width: SpacingTokens.spacing2),
@@ -422,7 +421,9 @@ class _SheetMarketCard extends ConsumerWidget {
                     ),
                     decoration: BoxDecoration(
                       color: ColorTokens.clubAccent.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(999),
+                      borderRadius: BorderRadius.circular(
+                        ShapeTokens.radiusFull,
+                      ),
                     ),
                     child: Text(
                       '+${market.fetValue} FET',
@@ -432,7 +433,7 @@ class _SheetMarketCard extends ConsumerWidget {
                     ),
                   ),
                   if (market.betType.isNotEmpty) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: SpacingTokens.spacing1),
                     Text(
                       market.betType,
                       style:
@@ -470,7 +471,9 @@ class _SheetMarketCard extends ConsumerWidget {
                       trailing: isSelected
                           ? Icon(
                               AfriIcons.check,
-                              size: 14,
+                              size:
+                                  SpacingTokens.spacing3 +
+                                  SpacingTokens.spacing1 / 2,
                               color: ColorTokens.clubAccent,
                             )
                           : null,
@@ -483,13 +486,9 @@ class _SheetMarketCard extends ConsumerWidget {
                               market: market,
                               outcome: outcome,
                             );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              '${outcome.label} added to your slip.',
-                            ),
-                            duration: const Duration(seconds: 1),
-                          ),
+                        AfriToast.success(
+                          context,
+                          '${outcome.label} added to your slip.',
                         );
                       },
                     );

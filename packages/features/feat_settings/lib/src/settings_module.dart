@@ -5,13 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'screens/edit_profile_screen.dart';
 import 'screens/notification_preferences_screen.dart';
 import 'screens/privacy_settings_screen.dart';
-import 'screens/profile_setup_screen.dart';
 import 'screens/settings_screen.dart';
 
 /// Settings feature module — the fixed third bottom-nav tab.
-///
-/// Also contributes the standalone /profile_setup compatibility route so old
-/// links can redirect users into the updated contribution guidance flow.
 class SettingsModule extends FeatureModule {
   @override
   String get featureKey => 'settings';
@@ -41,12 +37,6 @@ class SettingsModule extends FeatureModule {
     ),
   ];
 
-  /// Legacy compatibility route for older app links.
   @override
-  List<RouteBase> get standaloneRoutes => [
-    GoRoute(
-      path: '/profile_setup',
-      builder: (context, state) => const ProfileSetupScreen(),
-    ),
-  ];
+  List<RouteBase> get standaloneRoutes => const <RouteBase>[];
 }

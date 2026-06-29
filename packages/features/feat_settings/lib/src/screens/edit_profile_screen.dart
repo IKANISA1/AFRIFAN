@@ -60,9 +60,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   void _showMessage(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    AfriToast.info(context, message);
   }
 
   @override

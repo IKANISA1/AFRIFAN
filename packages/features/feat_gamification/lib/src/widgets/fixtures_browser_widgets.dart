@@ -74,7 +74,7 @@ class _FixturesCalendarStripState extends State<FixturesCalendarStrip> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 72,
+      height: SpacingTokens.spacing16 + SpacingTokens.spacing2,
       child: ListView.builder(
         controller: widget.controller,
         scrollDirection: Axis.horizontal,
@@ -149,18 +149,23 @@ class FixturesCalendarCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      margin: const EdgeInsets.symmetric(horizontal: 2),
+      margin: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing1 / 2,
+      ),
       decoration: BoxDecoration(
         color: isSelected
             ? ColorTokens.clubAccent.withValues(alpha: 0.18)
             : ColorTokens.transparent,
         borderRadius: ShapeTokens.aliasPillRadius,
         border: isSelected
-            ? BorderTokens.all(color: ColorTokens.clubAccent, width: 1.5)
+            ? BorderTokens.all(
+                color: ColorTokens.clubAccent,
+                width: BorderTokens.strong,
+              )
             : isToday
             ? BorderTokens.all(
                 color: ColorTokens.clubAccent.withValues(alpha: 0.4),
-                width: 1,
+                width: BorderTokens.standard,
               )
             : null,
       ),
@@ -206,7 +211,7 @@ class FixturesCalendarCell extends StatelessWidget {
                       : ColorTokens.onSurfaceVariant,
                 ),
                 if (fixtureCount > 3) ...[
-                  const SizedBox(width: 2),
+                  const SizedBox(width: SpacingTokens.spacing1 / 2),
                   _FixtureDot(
                     color:
                         (isSelected
@@ -218,7 +223,9 @@ class FixturesCalendarCell extends StatelessWidget {
               ],
             )
           else
-            const SizedBox(height: 5),
+            const SizedBox(
+              height: SpacingTokens.spacing1 + SpacingTokens.spacing1 / 4,
+            ),
         ],
       ),
     );
@@ -355,9 +362,11 @@ class _FixtureActionPill extends StatelessWidget {
         opacity: emphasized ? 0.42 : 1,
       ),
       shape: RoundedRectangleBorder(borderRadius: ShapeTokens.aliasPillRadius),
-      labelStyle: TypographyTokens.labelSmall(
-        color,
-      ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.2, height: 1.0),
+      labelStyle: TypographyTokens.labelSmall(color).copyWith(
+        fontWeight: FontWeight.w700,
+        letterSpacing: 1.2,
+        height: TypographyTokens.lineHeightSolid,
+      ),
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing1,
         vertical: SpacingTokens.spacing1,
@@ -377,8 +386,8 @@ class _LiveDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 6,
-      height: 6,
+      width: SpacingTokens.spacing2 - SpacingTokens.spacing1 / 2,
+      height: SpacingTokens.spacing2 - SpacingTokens.spacing1 / 2,
       margin: margin,
       decoration: const BoxDecoration(
         shape: BoxShape.circle,
@@ -396,8 +405,8 @@ class _FixtureDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 5,
-      height: 5,
+      width: SpacingTokens.spacing1 + SpacingTokens.spacing1 / 4,
+      height: SpacingTokens.spacing1 + SpacingTokens.spacing1 / 4,
       decoration: BoxDecoration(shape: BoxShape.circle, color: color),
     );
   }
@@ -413,7 +422,7 @@ class _ScoreColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     final scoreStyle = TypographyTokens.headlineMedium().copyWith(
       fontWeight: FontWeight.w900,
-      height: 1.0,
+      height: TypographyTokens.lineHeightSolid,
     );
 
     return Column(

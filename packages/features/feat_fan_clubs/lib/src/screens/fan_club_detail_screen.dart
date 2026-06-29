@@ -172,15 +172,11 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     } catch (error, stackTrace) {
       _reportNonCriticalError(error, stackTrace);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            _joined
-                ? 'Could not leave this fan club right now.'
-                : 'Could not join this fan club right now.',
-          ),
-          backgroundColor: ColorTokens.error,
-        ),
+      AfriToast.error(
+        context,
+        _joined
+            ? 'Could not leave this fan club right now.'
+            : 'Could not join this fan club right now.',
       );
     } finally {
       if (mounted) {
@@ -205,9 +201,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
       ),
     );
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Fan club link copied.')));
+    AfriToast.success(context, 'Fan club link copied.');
   }
 
   @override

@@ -1,0 +1,26 @@
+{
+  "app_id": "rw.gikundiro.app",
+  "device": {
+    "android_version": "13",
+    "density": "Physical density: 440",
+    "model": "Pixel 4a",
+    "screen_size": "Physical size: 1080x2340",
+    "serial": "13111JEC215558"
+  },
+  "fastlane_dir": "android/fastlane/metadata/android/en-US/images/phoneScreenshots",
+  "generated_at": "2026-06-28T17:53:44.621509+00:00",
+  "min_count": 1,
+  "mode": "capture_current",
+  "screenshot_count": 1,
+  "screenshots": [
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_2026-06-28/07_settings_manual.png",
+      "size_bytes": 186409,
+      "valid": true,
+      "width": 1080
+    }
+  ],
+  "success": true
+}

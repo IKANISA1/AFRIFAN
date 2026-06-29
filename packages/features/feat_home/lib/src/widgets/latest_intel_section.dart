@@ -75,7 +75,10 @@ class _LatestIntelSectionState extends ConsumerState<LatestIntelSection> {
       children: [
         const AfriSectionHeader(title: 'News', subtitle: 'Latest club updates'),
         const SizedBox(height: SpacingTokens.spacing4),
-        SizedBox(height: 260, child: _buildBody(context)),
+        SizedBox(
+          height: SpacingTokens.spacing20 * 3 + SpacingTokens.spacing5,
+          child: _buildBody(context),
+        ),
       ],
     );
   }
@@ -147,7 +150,10 @@ class _IntelCard extends StatelessWidget {
     final imageUrl = article['image_url']?.toString();
 
     return SizedBox(
-      width: 216,
+      width:
+          SpacingTokens.spacing20 * 2 +
+          SpacingTokens.spacing12 +
+          SpacingTokens.spacing2,
       child: AfriPressFeedback(
         onTap: articleId == null
             ? null
@@ -183,11 +189,14 @@ class _IntelCard extends StatelessWidget {
                 // Image area -- real photo or rich gradient fallback
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
+                    topLeft: Radius.circular(ShapeTokens.radiusXl),
+                    topRight: Radius.circular(ShapeTokens.radiusXl),
                   ),
                   child: SizedBox(
-                    height: 118,
+                    height:
+                        SpacingTokens.spacing20 +
+                        SpacingTokens.spacing10 -
+                        SpacingTokens.spacing1 / 2,
                     width: double.infinity,
                     child: imageUrl != null && imageUrl.isNotEmpty
                         ? CachedNetworkImage(
@@ -269,7 +278,10 @@ class _IntelCardSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 216,
+      width:
+          SpacingTokens.spacing20 * 2 +
+          SpacingTokens.spacing12 +
+          SpacingTokens.spacing2,
       child: ClipRRect(
         borderRadius: ShapeTokens.cardRadius,
         child: Container(
@@ -283,12 +295,15 @@ class _IntelCardSkeleton extends StatelessWidget {
             children: [
               // Image skeleton
               Container(
-                height: 118,
+                height:
+                    SpacingTokens.spacing20 +
+                    SpacingTokens.spacing10 -
+                    SpacingTokens.spacing1 / 2,
                 decoration: BoxDecoration(
                   color: ColorTokens.surfaceContainerLow,
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
+                    topLeft: Radius.circular(ShapeTokens.radiusXl),
+                    topRight: Radius.circular(ShapeTokens.radiusXl),
                   ),
                 ),
               ),
@@ -299,20 +314,28 @@ class _IntelCardSkeleton extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      height: 16,
-                      width: 180,
+                      height: SpacingTokens.spacing4,
+                      width:
+                          SpacingTokens.spacing20 * 2 + SpacingTokens.spacing5,
                       decoration: BoxDecoration(
                         color: ColorTokens.surfaceContainerLow,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(
+                          ShapeTokens.radiusSm,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: SpacingTokens.spacing2),
                     Container(
-                      height: 12,
-                      width: 140,
+                      height: SpacingTokens.spacing3,
+                      width:
+                          SpacingTokens.spacing20 +
+                          SpacingTokens.spacing12 +
+                          SpacingTokens.spacing3,
                       decoration: BoxDecoration(
                         color: ColorTokens.surfaceContainerLow,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(
+                          ShapeTokens.radiusSm,
+                        ),
                       ),
                     ),
                   ],

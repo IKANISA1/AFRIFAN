@@ -403,6 +403,8 @@ class AuthNotifier extends Notifier<AuthState> {
     return message.contains('failed host lookup') ||
         message.contains('socketexception') ||
         message.contains('authretryablefetchexception') ||
+        message.contains('unable to connect') ||
+        message.contains('check your internet connection') ||
         message.contains('connection timed out') ||
         message.contains('network is unreachable') ||
         message.contains('connection refused');

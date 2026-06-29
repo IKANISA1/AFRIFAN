@@ -12,13 +12,17 @@
  * The hook must respond with 200 OK to confirm delivery.
  *
  * Environment variables required:
- *   WHATSAPP_PHONE_NUMBER_ID  – Meta phone number ID
- *   WHATSAPP_ACCESS_TOKEN     – Meta access token
+ *   WHATSAPP_PHONE_NUMBER_ID       – Meta phone number ID
+ *   WHATSAPP_CLOUD_API_TOKEN       – Meta Cloud API token
+ *     or WHATSAPP_CLOUD_ACCESS_TOKEN / WHATSAPP_ACCESS_TOKEN
+ *   WHATSAPP_AUTH_TEMPLATE_NAME    – optional, defaults to "gikundiro"
+ *   WHATSAPP_AUTH_TEMPLATE_LANGUAGE – optional, defaults to "en_US"
+ *   WHATSAPP_GRAPH_API_VERSION     – optional, defaults to "v25.0"
  */
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { sendOtpTemplate } from "../_shared/whatsapp.ts";
-import { jsonOk, jsonError } from "../_shared/response.ts";
+import { jsonError, jsonOk } from "../_shared/response.ts";
 
 // ── Types ───────────────────────────────────────────────────────
 interface SendSmsHookPayload {

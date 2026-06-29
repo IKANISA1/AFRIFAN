@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../extensions.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/icon_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'afri_bottom_sheet.dart';
@@ -163,7 +164,7 @@ Future<AfriFilterSortResult?> showAfriFilterSortSheet({
                         ),
                       ),
                       const SizedBox(width: SpacingTokens.spacing3),
-                      const Icon(Icons.date_range_rounded),
+                      const Icon(AfriIcons.calendar),
                     ],
                   ),
                 ),

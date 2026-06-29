@@ -44,13 +44,18 @@ class LeaderboardPeriodChip extends StatelessWidget {
       scaleEnd: 0.98,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        constraints: const BoxConstraints(minHeight: 44),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        constraints: const BoxConstraints(
+          minHeight: SpacingTokens.spacing10 + SpacingTokens.spacing1,
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: SpacingTokens.spacing3,
+          vertical: SpacingTokens.spacing3 / 2,
+        ),
         decoration: BoxDecoration(
           color: selected
               ? ColorTokens.clubAccent.withValues(alpha: 0.15)
               : ColorTokens.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
           border: selected
               ? BorderTokens.all(
                   color: ColorTokens.clubAccent.withValues(alpha: 0.4),
@@ -140,7 +145,7 @@ class FetUserRow extends StatelessWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing3),
       decoration: BoxDecoration(
         color: ColorTokens.clubAccent.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
         border: BorderTokens.all(
           color: ColorTokens.clubAccent.withValues(alpha: 0.3),
         ),
@@ -148,7 +153,7 @@ class FetUserRow extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 44,
+            width: SpacingTokens.spacing10 + SpacingTokens.spacing1,
             child: Text(
               '#${entry.rank.toString().padLeft(2, '0')}',
               style: TypographyTokens.headlineSmall(
@@ -171,7 +176,7 @@ class FetUserRow extends StatelessWidget {
                     const _LeaderboardBadge(label: 'YOU', selected: true),
                   ],
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(
                   '${entry.winRate.toStringAsFixed(1)}% accuracy · ${entry.wins} wins',
                   style: TypographyTokens.bodySmall(),
@@ -206,7 +211,7 @@ class FetListRow extends StatelessWidget {
         color: isMe
             ? ColorTokens.clubAccent.withValues(alpha: 0.10)
             : ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
         border: isMe
             ? BorderTokens.all(
                 color: ColorTokens.clubAccent.withValues(alpha: 0.3),
@@ -216,7 +221,7 @@ class FetListRow extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 44,
+            width: SpacingTokens.spacing10 + SpacingTokens.spacing1,
             child: Text(
               '#${entry.rank.toString().padLeft(2, '0')}',
               style: TypographyTokens.headlineSmall(
@@ -246,7 +251,7 @@ class FetListRow extends StatelessWidget {
                     ],
                   ],
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(
                   '${entry.winRate.toStringAsFixed(1)}% accuracy · ${entry.wins} wins',
                   style: TypographyTokens.bodySmall(),
@@ -351,7 +356,7 @@ class SupporterUserRow extends StatelessWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing3),
       decoration: BoxDecoration(
         color: ColorTokens.clubAccent.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
         border: BorderTokens.all(
           color: ColorTokens.clubAccent.withValues(alpha: 0.3),
         ),
@@ -359,7 +364,7 @@ class SupporterUserRow extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 44,
+            width: SpacingTokens.spacing10 + SpacingTokens.spacing1,
             child: Text(
               '#${entry.rank.toString().padLeft(2, '0')}',
               style: TypographyTokens.headlineSmall(
@@ -382,7 +387,7 @@ class SupporterUserRow extends StatelessWidget {
                     const _LeaderboardBadge(label: 'YOU', selected: true),
                   ],
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(
                   '${entry.tier.toUpperCase()} tier · ${entry.supporterAlias}',
                   style: TypographyTokens.bodySmall(),
@@ -417,7 +422,7 @@ class SupporterListRow extends StatelessWidget {
         color: isMe
             ? ColorTokens.clubAccent.withValues(alpha: 0.10)
             : ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
         border: isMe
             ? BorderTokens.all(
                 color: ColorTokens.clubAccent.withValues(alpha: 0.3),
@@ -427,7 +432,7 @@ class SupporterListRow extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 44,
+            width: SpacingTokens.spacing10 + SpacingTokens.spacing1,
             child: Text(
               '#${entry.rank.toString().padLeft(2, '0')}',
               style: TypographyTokens.headlineSmall(
@@ -457,7 +462,7 @@ class SupporterListRow extends StatelessWidget {
                     ],
                   ],
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: SpacingTokens.spacing1 / 2),
                 Text(
                   '${entry.tier.toUpperCase()} tier · ${entry.supporterAlias}',
                   style: TypographyTokens.bodySmall(),
@@ -485,7 +490,7 @@ class _RankBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (rank == null || rank! > 3) {
-      return const SizedBox(height: 28);
+      return const SizedBox(height: SpacingTokens.spacing7);
     }
 
     return Semantics(
@@ -493,7 +498,7 @@ class _RankBadge extends StatelessWidget {
       image: true,
       child: Icon(
         AfriIcons.rank,
-        size: 28,
+        size: SpacingTokens.spacing7,
         color: rank == 1
             ? ColorTokens.clubAccent
             : ColorTokens.onSurfaceVariant,
@@ -511,12 +516,15 @@ class _LeaderboardBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: SpacingTokens.spacing3 / 2,
+        vertical: SpacingTokens.spacing1 / 2,
+      ),
       decoration: BoxDecoration(
         color: selected
             ? ColorTokens.clubAccent
             : ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
       ),
       child: Text(
         label,

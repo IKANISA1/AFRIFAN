@@ -10,6 +10,9 @@ import '../widgets/match_card.dart';
 
 enum HomeFeedStatus { success, degraded, empty, error }
 
+const String homeFeedLocalFallbackMessage =
+    'Live club data is temporarily unavailable. Home shortcuts remain available.';
+
 class HomeQuickAction {
   const HomeQuickAction({
     required this.actionKey,
@@ -129,6 +132,16 @@ class HomeFeedSnapshot {
   bool get hasAnyContent => hasHeroSlides || hasStats || hasLeaderboard;
 }
 
+@visibleForTesting
+HomeFeedSnapshot localHomeFeedFallbackSnapshot() {
+  return const HomeFeedSnapshot(
+    status: HomeFeedStatus.degraded,
+    message: homeFeedLocalFallbackMessage,
+    quickActions: HomeQuickAction.fallbackItems,
+    showFixturePlaceholder: true,
+  );
+}
+
 enum LatestIntelStatus { ready, empty, error }
 
 @visibleForTesting
@@ -149,6 +162,14 @@ class LatestIntelSnapshot {
   final List<Map<String, dynamic>> articles;
   final LatestIntelStatus status;
   final String? message;
+}
+
+@visibleForTesting
+LatestIntelSnapshot localLatestIntelFallbackSnapshot() {
+  return const LatestIntelSnapshot(
+    status: LatestIntelStatus.empty,
+    message: 'Club updates will appear when published.',
+  );
 }
 
 abstract class HomeFeedRepository {
@@ -188,10 +209,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         error,
         stackTrace,
       );
-      return const HomeFeedSnapshot(
-        status: HomeFeedStatus.error,
-        message: 'Could not resolve the active club. Pull to refresh.',
-      );
+      return localHomeFeedFallbackSnapshot();
     }
 
     List<Map<String, dynamic>> memberships = const <Map<String, dynamic>>[];
@@ -616,7 +634,10 @@ class SupabaseLatestIntelRepository implements LatestIntelRepository {
   @override
   Future<LatestIntelSnapshot> loadPublishedArticles() async {
     try {
-      final scope = await ClubScopeResolver(client: client).requireResolved();
+      final scope = await ClubScopeResolver(client: client).resolve(null);
+      if (!scope.isResolved) {
+        return localLatestIntelFallbackSnapshot();
+      }
       var query = client
           .from('news_articles')
           .select()

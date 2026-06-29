@@ -213,7 +213,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
                 children: [
                   Icon(
                     AfriIcons.calendar,
-                    size: 16,
+                    size: SpacingTokens.spacing4,
                     color: ColorTokens.clubAccent,
                   ),
                   const SizedBox(width: SpacingTokens.spacing2),
@@ -235,7 +235,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: SpacingTokens.spacing4),
                 child: SizedBox(
-                  height: 38,
+                  height: SpacingTokens.spacing10 - SpacingTokens.spacing1 / 2,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(

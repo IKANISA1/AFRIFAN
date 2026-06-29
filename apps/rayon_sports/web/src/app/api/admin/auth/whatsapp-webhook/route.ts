@@ -3,8 +3,8 @@ import { getAdminSupabase } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 
-// This webhook should be configured in Supabase under Authentication -> Providers -> SMS -> Custom SMS Provider
-// It receives the payload: { user: { phone: "+250788767816" }, sms: { otp: "123456" } }
+// Configure this webhook in Supabase Auth as the phone OTP delivery hook.
+// Sample payload: { user: { phone: "+250788767816" }, sms: { otp: "12345" } }
 export async function POST(request: NextRequest) {
   try {
     const payload = await request.json();

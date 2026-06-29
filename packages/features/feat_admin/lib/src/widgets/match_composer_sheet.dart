@@ -14,10 +14,9 @@ Future<bool?> showMatchComposerSheet(
   Map<String, dynamic>? existing,
   String? partnerId,
 }) {
-  return showModalBottomSheet<bool>(
+  return showAfriBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: ColorTokens.transparent,
     builder: (context) =>
         _MatchComposerSheet(ref: ref, existing: existing, partnerId: partnerId),
   );

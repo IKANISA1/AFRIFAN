@@ -43,17 +43,13 @@ class AppNotification {
 }
 
 class NotificationState {
-  const NotificationState({
-    this.notifications = const <AppNotification>[],
-  });
+  const NotificationState({this.notifications = const <AppNotification>[]});
 
   final List<AppNotification> notifications;
 
   int get unreadCount => notifications.where((n) => !n.read).length;
 
-  NotificationState copyWith({
-    List<AppNotification>? notifications,
-  }) {
+  NotificationState copyWith({List<AppNotification>? notifications}) {
     return NotificationState(
       notifications: notifications ?? this.notifications,
     );
@@ -93,9 +89,11 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
   /// Mark a single notification as read.
   void markAsRead(String id) {
     state = state.copyWith(
-      notifications: state.notifications.map((n) {
-        return n.id == id ? n.copyWith(read: true) : n;
-      }).toList(growable: false),
+      notifications: state.notifications
+          .map((n) {
+            return n.id == id ? n.copyWith(read: true) : n;
+          })
+          .toList(growable: false),
     );
   }
 
@@ -116,8 +114,8 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
 
 final notificationProvider =
     StateNotifierProvider<NotificationNotifier, NotificationState>(
-  (_) => NotificationNotifier(),
-);
+      (_) => NotificationNotifier(),
+    );
 
 /// Convenience: unread count provider for badge displays.
 final unreadNotificationCountProvider = Provider<int>(

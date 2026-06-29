@@ -75,12 +75,8 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
     }
 
     final wallet = ref.read(fetWalletProvider).valueOrNull?.wallet;
-    final confirmed = await showModalBottomSheet<bool>(
+    final confirmed = await showAfriBottomSheet<bool>(
       context: context,
-      backgroundColor: ColorTokens.surfaceContainerLow,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
       builder: (context) {
         return SafeArea(
           top: false,
@@ -139,12 +135,9 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
     setState(() => _submitting = false);
 
     if (!result.isSuccess || result.challenge == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Could not create the challenge. Check your FET balance.',
-          ),
-        ),
+      AfriToast.error(
+        context,
+        'Could not create the challenge. Check your FET balance.',
       );
       return;
     }
@@ -358,11 +351,11 @@ class _MetaChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing3,
-        vertical: 6,
+        vertical: SpacingTokens.spacing2 - SpacingTokens.spacing1 / 2,
       ),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
         border: BorderTokens.all(color: ColorTokens.ghostBorder),
       ),
       child: Text(label, style: TypographyTokens.labelSmall()),
@@ -384,10 +377,10 @@ class _FixtureDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing4),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
         border: BorderTokens.all(color: ColorTokens.ghostBorder),
       ),
       child: DropdownButtonHideUnderline(

@@ -263,7 +263,12 @@ class FetRepository {
       }
       return rows.map(FetRewardOption.fromJson).toList(growable: false);
     } catch (error, stackTrace) {
-      AfriLogger.warn('FetRepository', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FetRepository',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       return RewardStoreContent.loadFallbackOptions();
     }
   }
@@ -674,7 +679,12 @@ class FetRepository {
             .limit(250),
       );
     } catch (error, stackTrace) {
-      AfriLogger.warn('FetRepository', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FetRepository',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       return List<Map<String, dynamic>>.from(
         await _client
             .from('fet_events')
@@ -777,7 +787,12 @@ class FetRepository {
     try {
       return await future;
     } catch (error, stackTrace) {
-      AfriLogger.warn('FetRepository', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FetRepository',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       return null;
     }
   }
@@ -788,7 +803,12 @@ class FetRepository {
     try {
       return List<Map<String, dynamic>>.from(await future);
     } catch (error, stackTrace) {
-      AfriLogger.warn('FetRepository', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'FetRepository',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       return const <Map<String, dynamic>>[];
     }
   }

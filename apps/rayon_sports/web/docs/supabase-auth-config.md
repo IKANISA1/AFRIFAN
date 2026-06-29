@@ -19,19 +19,22 @@ https://fans.gikundiro.com/**
 
 ### WhatsApp OTP Provider
 
-Supabase uses Twilio as the underlying provider for WhatsApp OTP.
+Supabase Auth calls the `send-sms` Edge Function, which delivers OTP messages
+through the WhatsApp Cloud API using the approved `gikundiro` authentication
+template. The Flutter app must keep using `OtpChannel.whatsapp`; it must not
+call the Meta Graph API or carry WhatsApp Cloud API secrets.
 
-#### Required Supabase Auth Settings (Dashboard → Authentication → Phone)
-- **Enable phone provider**: ✅ ON
-- **SMS Provider**: Twilio
-- **Twilio Account SID**: (from Twilio dashboard)
-- **Twilio Auth Token**: (from Twilio dashboard)
-- **Twilio Message Service SID or Sender Phone**: (WhatsApp-enabled number)
+#### Required Supabase Auth Settings (Dashboard -> Authentication -> Hooks)
+- **Phone provider**: ON
+- **Send SMS hook**: `https://<project-ref>.supabase.co/functions/v1/send-sms`
+- **Local test OTP**: `250788767816 = "12345"` in `supabase/config.toml`
 
-#### Required Twilio Configuration
-- WhatsApp Business profile connected to Twilio number
-- WhatsApp message template approved for OTP delivery
-- Twilio Messaging Service configured with WhatsApp channel
+#### Required Edge Function Secrets
+- `WHATSAPP_PHONE_NUMBER_ID`
+- `WHATSAPP_CLOUD_API_TOKEN` or `WHATSAPP_CLOUD_ACCESS_TOKEN`
+- `WHATSAPP_AUTH_TEMPLATE_NAME=gikundiro`
+- `WHATSAPP_AUTH_TEMPLATE_LANGUAGE=en_US`
+- `WHATSAPP_GRAPH_API_VERSION` optional, defaults to `v25.0`
 
 #### Client-Side Usage
 ```ts
@@ -47,7 +50,7 @@ await supabase.auth.signInWithOtp({
 // Verify OTP (uses "sms" type for both SMS and WhatsApp)
 await supabase.auth.verifyOtp({
   phone: "+250788xxxxxx",
-  token: "123456",
+  token: "12345",
   type: "sms",
 });
 ```

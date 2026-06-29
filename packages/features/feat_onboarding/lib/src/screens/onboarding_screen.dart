@@ -20,20 +20,41 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   List<Map<String, String>> _slidesFor(String appName) {
     final label = appName.trim().isEmpty ? 'your club' : appName.trim();
+    final normalizedLabel = label.toLowerCase();
+    final isRayon =
+        normalizedLabel.contains('rayon') ||
+        normalizedLabel.contains('gikundiro');
+    final mediaAssets = isRayon
+        ? const <String>[
+            'assets/images/real/rayon-supporters.jpeg',
+            'assets/images/real/rayon-match-action.jpeg',
+            'assets/images/real/rayon-players-day.jpeg',
+          ]
+        : const <String>[
+            'assets/images/stadium_hero.jpg',
+            'assets/images/stadium_hero_2.jpg',
+            'assets/images/stadium_hero.jpg',
+          ];
     return <Map<String, String>>[
       {
         'title': 'Your club. Your app.',
         'body':
             'The official $label fan platform. Matches, contributions, and more.',
+        'asset': mediaAssets[0],
+        'source': isRayon ? 'Official supporter media' : 'Club media',
       },
       {
         'title': 'Fan membership. Tickets. Contributions.',
         'body':
             'Earn FET, buy match tickets, and contribute to club projects — all in one place.',
+        'asset': mediaAssets[1],
+        'source': isRayon ? 'Rayon matchday media' : 'Matchday media',
       },
       {
         'title': 'Ready to play?',
         'body': 'Tickets, merch, and fan communities — all anonymous.',
+        'asset': mediaAssets[2],
+        'source': isRayon ? 'Rayon player media' : 'Supporter media',
       },
     ];
   }
@@ -69,9 +90,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _ => 'Could not start your anonymous session.',
     };
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    AfriToast.error(context, message);
   }
 
   String _postAuthDestination() {
@@ -225,7 +244,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                               ).toString(),
                             ),
                       icon: const Icon(AfriIcons.chat),
-                      label: const Text('Use phone / WhatsApp OTP'),
+                      label: const Text('Continue with WhatsApp'),
                     ),
                   ),
                 ),
@@ -284,57 +303,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           .withValues(alpha: 0.82),
                       height: isCompact ? 220 : 280,
                       width: double.infinity,
-                      padding: EdgeInsets.all(
-                        isCompact
-                            ? SpacingTokens.spacing6
-                            : SpacingTokens.spacing8,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: SpacingTokens.spacing4,
-                              vertical: SpacingTokens.spacing2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: ColorTokens.secondaryContainer,
-                              borderRadius: ShapeTokens.chipRadius,
-                            ),
-                            child: Text(
-                              'Official Supporter OS',
-                              style: TypographyTokens.labelSmall().copyWith(
-                                color: ColorTokens.onSurface,
-                                letterSpacing: 1.1,
-                              ),
-                            ),
-                          ),
-                          const Spacer(),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Container(
-                              width: isCompact ? 104 : 124,
-                              height: isCompact ? 104 : 124,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: ColorTokens.heroGradient(
-                                  from: accent,
-                                  to: ColorTokens.primaryContainer,
-                                ),
-                                boxShadow: [
-                                  ...AfriShadows.primaryGlow(
-                                    ColorTokens.primaryContainer,
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                icon,
-                                size: isCompact ? 44 : 52,
-                                color: ColorTokens.onSurface,
-                              ),
-                            ),
-                          ),
-                        ],
+                      padding: EdgeInsets.zero,
+                      child: _OnboardingMedia(
+                        asset: slideContent['asset']!,
+                        source: slideContent['source']!,
+                        icon: icon,
+                        accent: accent,
                       ),
                     ),
                   ),
@@ -385,6 +359,83 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+class _OnboardingMedia extends StatelessWidget {
+  const _OnboardingMedia({
+    required this.asset,
+    required this.source,
+    required this.icon,
+    required this.accent,
+  });
+
+  final String asset;
+  final String source;
+  final IconData icon;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            asset,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: ColorTokens.heroGradient(
+                  from: accent,
+                  to: ColorTokens.primaryContainer,
+                ),
+              ),
+              child: Icon(icon, size: 56, color: ColorTokens.onSurface),
+            ),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: ColorTokens.imageScrimGradient(
+                color: ColorTokens.background,
+                alphas: const [0.0, 0.08, 0.55, 0.78],
+                stops: const [0.0, 0.32, 0.72, 1.0],
+              ),
+            ),
+          ),
+          Positioned(
+            left: SpacingTokens.spacing5,
+            right: SpacingTokens.spacing5,
+            bottom: SpacingTokens.spacing5,
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: ColorTokens.primaryContainer,
+                    borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+                  ),
+                  child: Icon(icon, color: ColorTokens.onSurface, size: 22),
+                ),
+                const SizedBox(width: SpacingTokens.spacing3),
+                Expanded(
+                  child: Text(
+                    source.toUpperCase(),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TypographyTokens.labelSmall(
+                      ColorTokens.onDark,
+                    ).copyWith(letterSpacing: 1.1),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

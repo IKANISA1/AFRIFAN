@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
+import '../tokens/icon_tokens.dart';
 import '../tokens/motion_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
@@ -405,11 +406,7 @@ class _CapturedDot extends StatelessWidget {
             : null,
       ),
       child: isFilled
-          ? const Icon(
-                  Icons.check_rounded,
-                  size: 14,
-                  color: ColorTokens.success,
-                )
+          ? const Icon(AfriIcons.check, size: 14, color: ColorTokens.success)
                 .animate()
                 .scale(
                   begin: const Offset(0, 0),
@@ -457,7 +454,7 @@ class _PrivacyBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            Icons.lock_rounded,
+            AfriIcons.lock,
             size: 12,
             color: ColorTokens.onSurface.withValues(alpha: 0.45),
           ),

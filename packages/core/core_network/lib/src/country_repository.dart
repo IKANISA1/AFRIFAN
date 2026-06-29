@@ -1,6 +1,8 @@
 import 'package:core_utils/core_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'safe_rpc.dart';
+
 /// Fetches countries from [countries] Supabase table and injects
 /// them into [AfriCountryCatalog] as the live source of truth.
 ///
@@ -83,12 +85,19 @@ class CountryRepository {
       );
       return countries;
     } catch (error, stackTrace) {
-      AfriLogger.error(
-        'CountryRepository',
-        'Failed to fetch countries; using hardcoded fallback.',
-        error,
-        stackTrace,
-      );
+      if (SafeRpc.isTransientConnectivityError(error)) {
+        AfriLogger.warn(
+          'CountryRepository',
+          'Country catalog unavailable; using hardcoded offline fallback.',
+        );
+      } else {
+        AfriLogger.error(
+          'CountryRepository',
+          'Failed to fetch countries; using hardcoded fallback.',
+          error,
+          stackTrace,
+        );
+      }
       return AfriCountryCatalog.all;
     }
   }

@@ -65,8 +65,8 @@ Future<void> showBadgeEarnedModal(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 88,
-              height: 88,
+              width: SpacingTokens.spacing20 + SpacingTokens.spacing2,
+              height: SpacingTokens.spacing20 + SpacingTokens.spacing2,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: ColorTokens.clubAccent.withValues(alpha: 0.16),
@@ -74,7 +74,7 @@ Future<void> showBadgeEarnedModal(
               child: Icon(
                 AfriIcons.premium,
                 color: ColorTokens.clubAccent,
-                size: 44,
+                size: SpacingTokens.spacing10 + SpacingTokens.spacing1,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing4),

@@ -157,15 +157,11 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
       });
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            isJoined
-                ? 'Could not leave this fan club right now.'
-                : 'Could not join this fan club right now.',
-          ),
-          backgroundColor: ColorTokens.error,
-        ),
+      AfriToast.error(
+        context,
+        isJoined
+            ? 'Could not leave this fan club right now.'
+            : 'Could not join this fan club right now.',
       );
     } finally {
       if (mounted) {

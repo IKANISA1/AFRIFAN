@@ -35,13 +35,11 @@ class _AnimatedFetCounterState extends State<AnimatedFetCounter>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
-    _animation = IntTween(begin: 0, end: widget.value).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
-    );
+    _controller = AnimationController(vsync: this, duration: widget.duration);
+    _animation = IntTween(
+      begin: 0,
+      end: widget.value,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward();
   }
 
@@ -49,8 +47,7 @@ class _AnimatedFetCounterState extends State<AnimatedFetCounter>
   void didUpdateWidget(AnimatedFetCounter oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value != widget.value) {
-      _animation = IntTween(begin: _animation.value, end: widget.value)
-          .animate(
+      _animation = IntTween(begin: _animation.value, end: widget.value).animate(
         CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
       );
       _controller

@@ -111,9 +111,49 @@ void main() {
       expect(result.requireData, equals(42));
       expect(attempts, equals(3));
     });
+
+    test(
+      'returns offline failure without throwing when transient retries exhaust',
+      () async {
+        var attempts = 0;
+        final result = await SafeRpc.query<int>(
+          () async {
+            attempts += 1;
+            throw const SocketException('Failed host lookup');
+          },
+          tag: 'Test',
+          description: 'offline query',
+          maxAttempts: 2,
+          backoffBase: Duration.zero,
+        );
+
+        expect(result.isSuccess, isFalse);
+        expect(result.error, contains('internet connection'));
+        expect(attempts, equals(2));
+      },
+    );
   });
 
   group('SafeRpc error normalization', () {
+    test('classifies DNS and socket failures as transient connectivity', () {
+      expect(
+        SafeRpc.isTransientConnectivityError(
+          const SocketException('Failed host lookup'),
+        ),
+        isTrue,
+      );
+      expect(
+        SafeRpc.isTransientConnectivityError(
+          'getaddrinfo(): No address associated with hostname',
+        ),
+        isTrue,
+      );
+      expect(
+        SafeRpc.isTransientConnectivityError(Exception('validation failed')),
+        isFalse,
+      );
+    });
+
     test('normalizes SocketException to user-friendly message', () async {
       final result = await SafeRpc.query<int>(
         () async => throw const SocketException('Connection refused'),
@@ -152,7 +192,8 @@ void main() {
         () async => throw const FunctionException(
           status: 403,
           details: <String, Object?>{
-            'error': "The feature 'fan_clubs' is not available (global_disabled).",
+            'error':
+                "The feature 'fan_clubs' is not available (global_disabled).",
           },
         ),
         tag: 'Test',

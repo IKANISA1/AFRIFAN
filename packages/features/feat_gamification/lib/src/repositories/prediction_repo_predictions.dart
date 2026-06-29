@@ -1,8 +1,6 @@
 part of 'prediction_repository.dart';
 
 extension PredictionRepoPredictions on PredictionRepository {
-
-
   Future<PredictionPlaceResult> placePrediction({
     required String fixtureMarketId,
     required String selectedOutcome,
@@ -259,6 +257,4 @@ extension PredictionRepoPredictions on PredictionRepository {
 
     return _readCachedList(cacheKey, UserPrediction.fromJson);
   }
-
-
 }

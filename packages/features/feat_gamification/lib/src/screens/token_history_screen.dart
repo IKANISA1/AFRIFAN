@@ -235,17 +235,17 @@ class _TokenHistoryTransactionCard extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: SpacingTokens.spacing10,
+                height: SpacingTokens.spacing10,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
                 ),
                 alignment: Alignment.center,
                 child: Icon(
                   isCredit ? AfriIcons.incoming : AfriIcons.out,
                   color: color,
-                  size: 18,
+                  size: SpacingTokens.spacing5,
                 ),
               ),
               const SizedBox(width: SpacingTokens.spacing3),
@@ -257,9 +257,9 @@ class _TokenHistoryTransactionCard extends StatelessWidget {
                       transaction.headline,
                       style: TypographyTokens.titleSmall(),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: SpacingTokens.spacing1 / 2),
                     Text(detail, style: TypographyTokens.bodySmall()),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: SpacingTokens.spacing1 / 2),
                     Text(
                       dateLabel,
                       style: TypographyTokens.labelSmall(
@@ -355,7 +355,7 @@ class _HistoryFilterChip extends StatelessWidget {
           color: selected
               ? ColorTokens.clubAccent.withValues(alpha: 0.16)
               : ColorTokens.surfaceContainerHigh,
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
         ),
         child: Text(
           label,

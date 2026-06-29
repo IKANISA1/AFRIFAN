@@ -1,0 +1,76 @@
+{
+  "accessibility_shortcut_hidden": true,
+  "accessibility_shortcut_restored": true,
+  "app_id": "rw.gikundiro.app",
+  "device": {
+    "android_version": "13",
+    "density": "Physical density: 440",
+    "model": "Pixel 4a",
+    "screen_size": "Physical size: 1080x2340",
+    "serial": "13111JEC215558"
+  },
+  "fastlane_dir": "android/fastlane/metadata/android/en-US/images/phoneScreenshots",
+  "generated_at": "2026-06-28T18:26:38.541250+00:00",
+  "min_count": 7,
+  "mode": "automated",
+  "screenshot_count": 7,
+  "screenshots": [
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_active_scope_fallback_2026-06-28/01_home_dashboard.png",
+      "size_bytes": 548546,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_active_scope_fallback_2026-06-28/02_fanzone.png",
+      "size_bytes": 566171,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_active_scope_fallback_2026-06-28/03_membership.png",
+      "size_bytes": 458880,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_active_scope_fallback_2026-06-28/04_ticketing.png",
+      "size_bytes": 93479,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_active_scope_fallback_2026-06-28/05_shop.png",
+      "size_bytes": 69276,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_active_scope_fallback_2026-06-28/06_contributions.png",
+      "size_bytes": 134434,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_after_active_scope_fallback_2026-06-28/07_settings.png",
+      "size_bytes": 259894,
+      "valid": true,
+      "width": 1080
+    }
+  ],
+  "success": true
+}

@@ -13,7 +13,7 @@ import '../tokens/typography_tokens.dart';
 /// ```dart
 /// AfriSection(
 ///   title: 'Shortcuts',
-///   trailing: AfriIconButton(icon: Icons.arrow_forward, onTap: onSeeAll),
+///   trailing: AfriIconButton(icon: AfriIcons.forward, onTap: onSeeAll),
 ///   child: QuickActionsGrid(),
 /// )
 /// ```

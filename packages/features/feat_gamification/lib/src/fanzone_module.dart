@@ -18,7 +18,6 @@ import 'screens/league_standings_screen.dart';
 import 'screens/match_detail_screen.dart';
 import 'screens/my_predictions_screen.dart';
 import 'screens/offers_screen.dart';
-import 'screens/onboarding_profile_setup_screen.dart';
 import 'screens/prediction_detail_screen.dart';
 import 'screens/prediction_notifications_screen.dart';
 import 'screens/prediction_settlement_screen.dart';
@@ -214,11 +213,6 @@ class FanzoneModule extends FeatureModule {
       path: 'privacy',
       name: 'fanzone-privacy',
       builder: (context, state) => const PrivacySettingsScreen(),
-    ),
-    GoRoute(
-      path: 'onboarding-setup',
-      name: 'fanzone-onboarding-setup',
-      builder: (context, state) => const OnboardingProfileSetupScreen(),
     ),
   ];
 }

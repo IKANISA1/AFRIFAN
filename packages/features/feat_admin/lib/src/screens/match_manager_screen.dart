@@ -89,14 +89,11 @@ class _MatchManagerScreenState extends ConsumerState<MatchManagerScreen> {
     if (saved == true) {
       await _loadMatches();
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            existing == null
-                ? 'Match created successfully.'
-                : 'Match updated successfully.',
-          ),
-        ),
+      AfriToast.success(
+        context,
+        existing == null
+            ? 'Match created successfully.'
+            : 'Match updated successfully.',
       );
     }
   }

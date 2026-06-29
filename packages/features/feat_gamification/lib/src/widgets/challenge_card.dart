@@ -47,7 +47,7 @@ class ChallengeCard extends StatelessWidget {
                       challenge.creatorDisplayName,
                       style: TypographyTokens.titleSmall(),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: SpacingTokens.spacing1 / 2),
                     Text(
                       fixture.competitionName,
                       style: TypographyTokens.labelSmall(
@@ -81,7 +81,7 @@ class ChallengeCard extends StatelessWidget {
                           : ColorTokens.clubAccent,
                     ).copyWith(fontWeight: FontWeight.w900),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: SpacingTokens.spacing1),
                   if (hasCountdown)
                     Text(
                       _formatCountdown(countdown),
@@ -184,11 +184,11 @@ class ChallengeStatusChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing3,
-        vertical: 6,
+        vertical: SpacingTokens.spacing3 / 2,
       ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
         status.name.replaceAll('_', '').toUpperCase(),
@@ -210,11 +210,11 @@ class StakeBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing3,
-        vertical: 6,
+        vertical: SpacingTokens.spacing3 / 2,
       ),
       decoration: BoxDecoration(
         color: ColorTokens.clubAccent.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
         '$stakeFet FET',
@@ -245,11 +245,11 @@ class ScorePredictionPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing3,
-        vertical: 6,
+        vertical: SpacingTokens.spacing3 / 2,
       ),
       decoration: BoxDecoration(
         color: accent.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
         '$label  $homeScore-$awayScore',
@@ -272,18 +272,22 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing3,
-        vertical: 6,
+        vertical: SpacingTokens.spacing3 / 2,
       ),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
         border: BorderTokens.all(color: ColorTokens.ghostBorder),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: ColorTokens.onSurfaceVariant),
-          const SizedBox(width: 6),
+          Icon(
+            icon,
+            size: SpacingTokens.spacing3,
+            color: ColorTokens.onSurfaceVariant,
+          ),
+          const SizedBox(width: SpacingTokens.spacing3 / 2),
           Text(label, style: TypographyTokens.labelSmall()),
         ],
       ),
@@ -301,8 +305,8 @@ class _AvatarBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final trimmed = label.trim();
     return Container(
-      width: 36,
-      height: 36,
+      width: SpacingTokens.spacing9,
+      height: SpacingTokens.spacing9,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: ColorTokens.primaryTint(0.16),

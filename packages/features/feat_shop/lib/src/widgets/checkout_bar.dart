@@ -28,7 +28,12 @@ class CheckoutBar extends StatelessWidget {
       duration: const Duration(milliseconds: 260),
       curve: Curves.easeOutCubic,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(16, 0, 16, bottomPadding + 12),
+        padding: EdgeInsets.fromLTRB(
+          SpacingTokens.spacing4,
+          0,
+          SpacingTokens.spacing4,
+          bottomPadding + SpacingTokens.spacing3,
+        ),
         child: AfriSurfaceCard(
           padding: const EdgeInsets.symmetric(
             horizontal: SpacingTokens.spacing4,

@@ -72,7 +72,7 @@ class KillSwitchGate extends StatelessWidget {
                   borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
                 ),
                 child: Icon(
-                  Icons.engineering_rounded,
+                  AfriIcons.maintenance,
                   size: 40,
                   color: colors.tertiaryText,
                 ),

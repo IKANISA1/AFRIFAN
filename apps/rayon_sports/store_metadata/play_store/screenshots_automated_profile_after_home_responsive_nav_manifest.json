@@ -1,0 +1,83 @@
+{
+  "accessibility_shortcut_hidden": true,
+  "accessibility_shortcut_restored": true,
+  "app_id": "rw.gikundiro.app",
+  "artifact": {
+    "exists": true,
+    "path": "build/app/outputs/flutter-apk/app-profile.apk",
+    "sha256": "5e34b1d1ae666269e56466b98bd56398d148ef97b8c4986df1d3ce9fb44d0a87",
+    "size_bytes": 118406264
+  },
+  "build_mode": "profile",
+  "device": {
+    "android_version": "13",
+    "density": "Physical density: 440",
+    "model": "Pixel 4a",
+    "screen_size": "Physical size: 1080x2340",
+    "serial": "13111JEC215558"
+  },
+  "fastlane_dir": "android/fastlane/metadata/android/en-US/images/phoneScreenshots",
+  "generated_at": "2026-06-28T20:00:13.178126+00:00",
+  "min_count": 7,
+  "mode": "automated",
+  "screenshot_count": 7,
+  "screenshots": [
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_profile_after_home_responsive_nav_2026-06-28/01_home_dashboard.png",
+      "size_bytes": 230507,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_profile_after_home_responsive_nav_2026-06-28/02_fanzone.png",
+      "size_bytes": 198003,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_profile_after_home_responsive_nav_2026-06-28/03_membership.png",
+      "size_bytes": 309932,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_profile_after_home_responsive_nav_2026-06-28/04_ticketing.png",
+      "size_bytes": 94901,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_profile_after_home_responsive_nav_2026-06-28/05_shop.png",
+      "size_bytes": 70739,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_profile_after_home_responsive_nav_2026-06-28/06_contributions.png",
+      "size_bytes": 96990,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_profile_after_home_responsive_nav_2026-06-28/07_settings.png",
+      "size_bytes": 179712,
+      "valid": true,
+      "width": 1080
+    }
+  ],
+  "success": true
+}

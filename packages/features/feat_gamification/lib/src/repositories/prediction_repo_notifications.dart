@@ -1,8 +1,6 @@
 part of 'prediction_repository.dart';
 
 extension PredictionRepoNotifications on PredictionRepository {
-
-
   Future<List<PredictionNotification>> loadNotifications({
     int limit = 50,
   }) async {
@@ -27,6 +25,4 @@ extension PredictionRepoNotifications on PredictionRepository {
       decoder: PredictionNotification.fromJson,
     );
   }
-
-
 }

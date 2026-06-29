@@ -219,7 +219,7 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
                   height: 88,
                   decoration: BoxDecoration(
                     color: ColorTokens.surfaceContainerHigh,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
                   ),
                   alignment: Alignment.center,
                   child: Icon(

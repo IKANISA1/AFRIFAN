@@ -150,18 +150,23 @@ class FanzoneSlipState {
 
   int get totalPotential {
     if (items.isEmpty) return 0;
-    
+
     // In Betting logic, base potential is multiplied by each selection's odds.
     // sum(base_fet_per_item * item_odds) for single bets.
     // (sum(base_fet) * product(odds)) for accumulators/accas.
-    
+
     if (!accaMode || items.length < 2) {
-       return items.fold<double>(0.0, (sum, item) => sum + (item.fetPotential * item.odds)).floor();
+      return items
+          .fold<double>(
+            0.0,
+            (sum, item) => sum + (item.fetPotential * item.odds),
+          )
+          .floor();
     }
-    
+
     final baseSum = items.fold<int>(0, (sum, item) => sum + item.fetPotential);
     final totalOdds = items.fold<double>(1.0, (prod, item) => prod * item.odds);
-    
+
     // Add extra acca boost based on length
     final accaMultiplier = switch (items.length) {
       2 => 1.1,
@@ -169,7 +174,7 @@ class FanzoneSlipState {
       4 => 1.5,
       _ => 2.0,
     };
-    
+
     return (baseSum * totalOdds * accaMultiplier).floor();
   }
 

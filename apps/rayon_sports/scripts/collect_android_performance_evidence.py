@@ -194,15 +194,12 @@ def run_swipe_exercise(
 
     width, height = dimensions
     y = int(height * 0.54)
-    left = int(width * 0.18)
-    right = int(width * 0.82)
+    left = int(width * 0.28)
+    right = int(width * 0.72)
     events: list[dict[str, object]] = []
 
     for index in range(swipes):
-        if index % 2 == 0:
-            start_x, end_x, direction = right, left, "left"
-        else:
-            start_x, end_x, direction = left, right, "right"
+        start_x, end_x, direction = right, left, "left"
 
         adb_shell(
             device,

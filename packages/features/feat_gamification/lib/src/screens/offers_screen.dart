@@ -66,10 +66,8 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
       return;
     }
     unawaited(
-      showModalBottomSheet<void>(
+      showAfriBottomSheet<void>(
         context: context,
-        showDragHandle: true,
-        backgroundColor: ColorTokens.surfaceContainerHigh,
         builder: (sheetContext) {
           return SafeArea(
             child: Padding(
@@ -185,7 +183,7 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
                             title: 'Ways to earn',
                             subtitle:
                                 'Join campaigns and activations to earn FET.',
-                            padding: EdgeInsets.all(0),
+                            padding: EdgeInsets.zero,
                           ),
                           const SizedBox(height: SpacingTokens.spacing4),
                           Row(
@@ -241,9 +239,9 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
-          0,
+          SpacingTokens.spacing0,
           SpacingTokens.spacing4,
-          0,
+          SpacingTokens.spacing0,
           SpacingTokens.spacing3,
         ),
         child: AfriSectionHeader(

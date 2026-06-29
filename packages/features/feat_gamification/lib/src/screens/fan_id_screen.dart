@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -11,7 +12,6 @@ import 'package:go_router/go_router.dart';
 
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
-import 'package:core_utils/core_utils.dart';
 
 /// Shows the user's FANZONE Fan ID with profile-backed privacy state.
 ///
@@ -229,8 +229,12 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                         child: Column(
                           children: [
                             Container(
-                                  width: 88,
-                                  height: 88,
+                                  width:
+                                      SpacingTokens.spacing20 +
+                                      SpacingTokens.spacing2,
+                                  height:
+                                      SpacingTokens.spacing20 +
+                                      SpacingTokens.spacing2,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     gradient: ColorTokens.borrowedGradient(
@@ -245,7 +249,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                                   child: Center(
                                     child: Icon(
                                       AfriIcons.fanzone,
-                                      size: 40,
+                                      size: SpacingTokens.spacing10,
                                       color: ColorTokens.background,
                                     ),
                                   ),
@@ -287,7 +291,9 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                                 color: ColorTokens.clubAccent.withValues(
                                   alpha: 0.14,
                                 ),
-                                borderRadius: BorderRadius.circular(999),
+                                borderRadius: BorderRadius.circular(
+                                  ShapeTokens.radiusFull,
+                                ),
                               ),
                               child: Text(
                                 _tier.toUpperCase(),
@@ -314,13 +320,9 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                                   ),
                                 );
                                 unawaited(HapticFeedback.mediumImpact());
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Fan ID copied to clipboard.',
-                                    ),
-                                    duration: Duration(seconds: 2),
-                                  ),
+                                AfriToast.success(
+                                  context,
+                                  'Fan ID copied to clipboard.',
                                 );
                               },
                               builder: (context, state) => Container(
@@ -330,14 +332,16 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                                 ),
                                 decoration: BoxDecoration(
                                   color: ColorTokens.surfaceContainerHigh,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(
+                                    ShapeTokens.radiusMd,
+                                  ),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
                                       AfriIcons.copy,
-                                      size: 16,
+                                      size: SpacingTokens.spacing4,
                                       color: ColorTokens.clubAccent,
                                     ),
                                     const SizedBox(
@@ -465,13 +469,17 @@ class _PrivacyBadge extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: SpacingTokens.spacing10,
+            height: SpacingTokens.spacing10,
             decoration: BoxDecoration(
               color: ColorTokens.clubAccent.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
             ),
-            child: Icon(icon, size: 20, color: ColorTokens.clubAccent),
+            child: Icon(
+              icon,
+              size: SpacingTokens.spacing5,
+              color: ColorTokens.clubAccent,
+            ),
           ),
           const SizedBox(width: SpacingTokens.spacing3),
           Expanded(
@@ -507,11 +515,11 @@ class _IdentityRuleRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 28,
-          height: 28,
+          width: SpacingTokens.spacing7,
+          height: SpacingTokens.spacing7,
           decoration: BoxDecoration(
             color: ColorTokens.clubAccent.withValues(alpha: 0.16),
-            borderRadius: BorderRadius.circular(999),
+            borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
           ),
           alignment: Alignment.center,
           child: Text(
@@ -524,7 +532,7 @@ class _IdentityRuleRow extends StatelessWidget {
         const SizedBox(width: SpacingTokens.spacing3),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(top: 4),
+            padding: const EdgeInsets.only(top: SpacingTokens.spacing1),
             child: Text(rule, style: TypographyTokens.bodyMedium()),
           ),
         ),

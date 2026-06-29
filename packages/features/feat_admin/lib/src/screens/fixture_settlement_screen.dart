@@ -67,13 +67,9 @@ class _FixtureSettlementScreenState
   }
 
   Future<void> _settleFixture(Map<String, dynamic> fixture) async {
-    final result = await showModalBottomSheet<Map<String, dynamic>>(
+    final result = await showAfriBottomSheet<Map<String, dynamic>>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: ColorTokens.surfaceContainerLow,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (ctx) => _SettlementSheet(fixture: fixture),
     );
 
@@ -112,13 +108,9 @@ class _FixtureSettlementScreenState
 
       if (!rpcResult.isSuccess || rpcResult.data is! Map) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Settlement failed: ${rpcResult.error ?? 'Unexpected response'}',
-            ),
-            backgroundColor: ColorTokens.error,
-          ),
+        AfriToast.error(
+          context,
+          'Settlement failed: ${rpcResult.error ?? 'Unexpected response'}',
         );
         return;
       }
@@ -134,24 +126,15 @@ class _FixtureSettlementScreenState
       await _loadFixtures();
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Settled! $marketsProcessed markets • '
-            '$totalWon won • $totalLost lost',
-          ),
-          backgroundColor: ColorTokens.success,
-        ),
+      AfriToast.success(
+        context,
+        'Settled! $marketsProcessed markets • '
+        '$totalWon won • $totalLost lost',
       );
     } catch (e) {
       if (!mounted) return;
       context.pop(); // close loading
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Settlement failed: $e'),
-          backgroundColor: ColorTokens.error,
-        ),
-      );
+      AfriToast.error(context, 'Settlement failed: $e');
     }
   }
 

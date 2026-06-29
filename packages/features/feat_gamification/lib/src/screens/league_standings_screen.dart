@@ -1,11 +1,11 @@
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../models/fanzone_models.dart';
 import '../prediction_providers.dart';
-import 'package:core_utils/core_utils.dart';
 
 class LeagueStandingsScreen extends ConsumerStatefulWidget {
   const LeagueStandingsScreen({super.key, required this.competitionSlug});
@@ -119,7 +119,10 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                   AfriSurfaceCard(
                     child: Row(
                       children: [
-                        const SizedBox(width: 32, child: Text('POS')),
+                        const SizedBox(
+                          width: SpacingTokens.spacing8,
+                          child: Text('POS'),
+                        ),
                         Expanded(
                           child: Text(
                             'TEAM',
@@ -129,7 +132,9 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                           ),
                         ),
                         const SizedBox(
-                          width: 42,
+                          width:
+                              SpacingTokens.spacing10 +
+                              (SpacingTokens.spacing1 / 2),
                           child: Text('PTS', textAlign: TextAlign.right),
                         ),
                       ],
@@ -151,7 +156,7 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                               Row(
                                 children: [
                                   SizedBox(
-                                    width: 32,
+                                    width: SpacingTokens.spacing8,
                                     child: Text(
                                       '${entry.position}',
                                       style: TypographyTokens.titleLarge(
@@ -170,7 +175,9 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                                           entry.teamName,
                                           style: TypographyTokens.titleSmall(),
                                         ),
-                                        const SizedBox(height: 2),
+                                        const SizedBox(
+                                          height: SpacingTokens.spacing1 / 2,
+                                        ),
                                         Text(
                                           '${entry.played}P · ${entry.goalsFor}:${entry.goalsAgainst} · GD ${entry.goalDifference}',
                                           style: TypographyTokens.bodySmall(),
@@ -197,14 +204,16 @@ class _LeagueStandingsScreenState extends ConsumerState<LeagueStandingsScreen> {
                                             right: SpacingTokens.spacing1,
                                           ),
                                           child: Container(
-                                            width: 24,
-                                            height: 24,
+                                            width: SpacingTokens.spacing6,
+                                            height: SpacingTokens.spacing6,
                                             decoration: BoxDecoration(
                                               color: _formColor(
                                                 token,
                                               ).withValues(alpha: 0.18),
                                               borderRadius:
-                                                  BorderRadius.circular(999),
+                                                  BorderRadius.circular(
+                                                    ShapeTokens.radiusFull,
+                                                  ),
                                             ),
                                             alignment: Alignment.center,
                                             child: Text(

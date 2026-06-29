@@ -41,7 +41,7 @@ class TopScorersSection extends StatelessWidget {
                     child: Row(
                       children: [
                         SizedBox(
-                          width: 20,
+                          width: SpacingTokens.spacing5,
                           child: Text(
                             '${scorer.rank}',
                             style: TypographyTokens.titleSmall(
@@ -82,7 +82,7 @@ class TopScorersSection extends StatelessWidget {
                                 ColorTokens.clubAccent,
                               ).copyWith(fontWeight: FontWeight.w900),
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: SpacingTokens.spacing1),
                             Text(
                               'Goals',
                               style:

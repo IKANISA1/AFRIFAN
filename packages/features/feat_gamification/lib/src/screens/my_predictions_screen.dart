@@ -162,9 +162,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
         return;
       }
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(result.message)));
+      AfriToast.error(context, result.message);
     } catch (error, stackTrace) {
       AfriLogger.warn(
         'MyPredictionsScreen',
@@ -173,9 +171,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
         stackTrace,
       );
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not cancel this prediction.')),
-      );
+      AfriToast.error(context, 'Could not cancel this prediction.');
     }
   }
 }
@@ -280,10 +276,13 @@ class _PredictionCard extends StatelessWidget {
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.spacing2,
+                vertical: SpacingTokens.spacing1,
+              ),
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.14),
-                borderRadius: BorderRadius.circular(999),
+                borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
               ),
               child: Text(
                 _statusLabel(),
@@ -367,7 +366,7 @@ class _PredictionChip extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
         label.toUpperCase(),

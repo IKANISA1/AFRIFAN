@@ -77,6 +77,10 @@ GoRouter _buildRouter(String initialLocation) {
         builder: (context, state) => const SupporterPhoneAuthScreen(),
       ),
       GoRoute(
+        path: '/auth/otp',
+        builder: (context, state) => const SupporterOtpVerificationScreen(),
+      ),
+      GoRoute(
         path: '/home',
         builder: (context, state) => const Scaffold(body: Text('Home Route')),
       ),
@@ -93,9 +97,16 @@ Future<void> _pumpApp(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [authRepositoryProvider.overrideWithValue(repository)],
-      child: MaterialApp.router(routerConfig: _buildRouter(initialLocation)),
+      child: MaterialApp.router(
+        theme: _testTheme(),
+        routerConfig: _buildRouter(initialLocation),
+      ),
     ),
   );
+}
+
+ThemeData _testTheme() {
+  return ThemeData(splashFactory: NoSplash.splashFactory);
 }
 
 void main() {
@@ -144,8 +155,7 @@ void main() {
     testWidgets(
       '§2.2: splash routes restored users WITHOUT MOMO straight to home (no gate)',
       (tester) async {
-        // Previously this test expected /profile_setup. §2.2 mandates
-        // that users ALWAYS land on /home after restore — no MOMO gate.
+        // Restored users ALWAYS land on /home after restore.
         final repository = FakeAuthRepository(
           restoreResult: const UserProfile(
             id: 'user-2',
@@ -162,7 +172,7 @@ void main() {
 
         await _pumpPastSplash(tester);
 
-        // §2.2: Always go to /home — never gate on MOMO during launch
+        // Always go to /home during launch.
         expect(find.text('Home Route'), findsOneWidget);
       },
     );
@@ -170,8 +180,7 @@ void main() {
     testWidgets(
       '§2.2: onboarding GET STARTED signs in anonymously then goes straight to home',
       (tester) async {
-        // Previously this test expected /profile_setup after GET STARTED.
-        // §2.2 mandates: anonymous sign-in → /home immediately.
+        // Anonymous sign-in routes to /home immediately.
         const anonymousProfile = UserProfile(
           id: 'user-3',
           clubId: '24',
@@ -208,7 +217,7 @@ void main() {
       );
 
       await _advanceOnboardingToFinalSlide(tester);
-      await tester.tap(find.text('Use phone / WhatsApp OTP'));
+      await tester.tap(find.text('Continue with WhatsApp'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 350));
 
@@ -276,7 +285,9 @@ void main() {
     _setMobileSurface(tester);
 
     await tester.pumpWidget(
-      const ProviderScope(child: MaterialApp(home: OnboardingScreen())),
+      ProviderScope(
+        child: MaterialApp(theme: _testTheme(), home: const OnboardingScreen()),
+      ),
     );
 
     await tester.pump();
@@ -296,7 +307,9 @@ void main() {
     _setCompactSurface(tester);
 
     await tester.pumpWidget(
-      const ProviderScope(child: MaterialApp(home: OnboardingScreen())),
+      ProviderScope(
+        child: MaterialApp(theme: _testTheme(), home: const OnboardingScreen()),
+      ),
     );
     await tester.pump();
 

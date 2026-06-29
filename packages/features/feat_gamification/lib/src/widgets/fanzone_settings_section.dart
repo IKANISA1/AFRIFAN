@@ -97,7 +97,7 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
                 children: [
                   Icon(
                     AfriIcons.language,
-                    size: 20,
+                    size: SpacingTokens.spacing5,
                     color: ColorTokens.onSurfaceVariant,
                   ),
                   const SizedBox(width: SpacingTokens.spacing3),
@@ -127,11 +127,11 @@ class _FanzoneSettingsSectionState extends State<FanzoneSettingsSection> {
                     },
                     underline: const SizedBox.shrink(),
                     dropdownColor: ColorTokens.surfaceContainerHigh,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
                     icon: Icon(
                       AfriIcons.chevronDown,
                       color: ColorTokens.onSurfaceVariant,
-                      size: 20,
+                      size: SpacingTokens.spacing5,
                     ),
                   ),
                 ],
@@ -200,7 +200,11 @@ class _ToggleRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: SpacingTokens.spacing1),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: ColorTokens.onSurfaceVariant),
+          Icon(
+            icon,
+            size: SpacingTokens.spacing5,
+            color: ColorTokens.onSurfaceVariant,
+          ),
           const SizedBox(width: SpacingTokens.spacing3),
           Expanded(child: Text(title, style: TypographyTokens.titleSmall())),
           Switch.adaptive(

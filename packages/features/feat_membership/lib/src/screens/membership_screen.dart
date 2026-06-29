@@ -51,7 +51,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
   Future<void> _activatePackage(Map<String, dynamic> pkg) async {
     final user = ref.read(currentUserProvider);
     if (user == null) {
-      _showMessage('Sign in first to activate membership.');
+      _showInfo('Sign in first to activate membership.');
       context.go('/onboarding');
       return;
     }
@@ -71,7 +71,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       final scope = await resolver.requireResolved();
       final hasPendingRequest = _hasPendingApplicationForTier(tierValue);
       if (hasPendingRequest) {
-        _showMessage(
+        _showInfo(
           '$tierLabel membership is already pending payment verification.',
         );
         return;
@@ -86,13 +86,13 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
         );
         await _refreshMembership();
         if (!mounted) return;
-        _showMessage('$tierLabel membership started.');
+        _showSuccess('$tierLabel membership started.');
         return;
       }
 
       final route = await _findActivePaymentRoute(client, resolver, scope);
       if (route == null) {
-        _showMessage('Membership payment setup is pending club activation.');
+        _showError('Membership payment setup is pending club activation.');
         return;
       }
 
@@ -107,7 +107,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
 
       if (!mounted) return;
       if (!launched) {
-        _showMessage('Could not launch the MOMO dialer.');
+        _showError('Could not launch the MOMO dialer.');
         return;
       }
 
@@ -125,12 +125,12 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       if (!mounted) {
         return;
       }
-      _showMessage(
+      _showSuccess(
         '$tierLabel request submitted. Payment verification happens in the background.',
       );
     } catch (error) {
       if (!mounted) return;
-      _showMessage('Membership activation failed: $error');
+      _showError('Membership activation failed: $error');
     } finally {
       if (mounted) {
         setState(() {
@@ -308,11 +308,19 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
     };
   }
 
-  void _showMessage(String message) {
+  void _showInfo(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    AfriToast.info(context, message);
+  }
+
+  void _showSuccess(String message) {
+    if (!mounted) return;
+    AfriToast.success(context, message);
+  }
+
+  void _showError(String message) {
+    if (!mounted) return;
+    AfriToast.error(context, message);
   }
 
   @override
@@ -427,10 +435,9 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                           if (!context.mounted) {
                             return;
                           }
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Membership details copied.'),
-                            ),
+                          AfriToast.success(
+                            context,
+                            'Membership details copied.',
                           );
                         },
                       ),
@@ -548,13 +555,13 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                           mode: LaunchMode.externalApplication,
                         ).then((launched) {
                           if (!launched && mounted) {
-                            _showMessage(
+                            _showError(
                               'Could not open WhatsApp. Please contact support.',
                             );
                           }
                         });
                       } else {
-                        _showMessage('Support contact is not configured yet.');
+                        _showInfo('Support contact is not configured yet.');
                       }
                     },
                   ),

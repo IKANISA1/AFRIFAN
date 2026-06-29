@@ -10,6 +10,9 @@ class TypographyTokens {
   /// borrowed package font now.
   static bool debugUseFallbackFonts = false;
   static const String borrowedFontFamily = 'RevolutBorrowed';
+  static const double lineHeightHero = 0.90;
+  static const double lineHeightCompact = 0.95;
+  static const double lineHeightSolid = 1.0;
 
   static const Map<String, double> semanticSizes = {
     'displayLarge': 48.0,
@@ -218,7 +221,7 @@ class TypographyTokens {
     fontSize: semanticSizes['displaySmall'],
     fontWeight: FontWeight.w700,
     color: color ?? ColorTokens.onSurface,
-    height: 1.0,
+    height: lineHeightSolid,
     letterSpacing: 0,
   );
 
@@ -338,7 +341,7 @@ class TypographyTokens {
     fontSize: 28,
     fontWeight: FontWeight.w800,
     color: color ?? ColorTokens.onSurface,
-    height: 1.0,
+    height: lineHeightSolid,
     letterSpacing: 0,
   );
 

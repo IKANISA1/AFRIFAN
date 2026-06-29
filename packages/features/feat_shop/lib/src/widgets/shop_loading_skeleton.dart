@@ -38,7 +38,9 @@ class ShopLoadingSkeleton extends StatelessWidget {
                       width: 200,
                       decoration: BoxDecoration(
                         color: ColorTokens.surfaceContainerLow,
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(
+                          ShapeTokens.radiusSm,
+                        ),
                       ),
                     )
                     .animate(onPlay: (c) => c.repeat())
@@ -53,7 +55,9 @@ class ShopLoadingSkeleton extends StatelessWidget {
                       width: 100,
                       decoration: BoxDecoration(
                         color: ColorTokens.surfaceContainerLow,
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(
+                          ShapeTokens.radiusSm,
+                        ),
                       ),
                     )
                     .animate(onPlay: (c) => c.repeat())

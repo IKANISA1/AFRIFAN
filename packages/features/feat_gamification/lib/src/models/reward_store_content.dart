@@ -95,7 +95,12 @@ abstract final class RewardStoreContent {
     try {
       return await rootBundle.loadString(assetPath);
     } catch (error, stackTrace) {
-      AfriLogger.warn('RewardStoreContent', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn(
+        'RewardStoreContent',
+        'Operation failed (non-critical).',
+        error,
+        stackTrace,
+      );
       return rootBundle.loadString(_localAssetPath);
     }
   }

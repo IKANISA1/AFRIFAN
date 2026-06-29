@@ -94,7 +94,6 @@ void main() {
           'fan-id',
           'social',
           'privacy',
-          'onboarding-setup',
         }),
       );
     });

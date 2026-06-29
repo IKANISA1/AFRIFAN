@@ -127,6 +127,25 @@ void main() {
         expect(authenticated.workspace, AdminWorkspaceAccess.none);
       },
     );
+
+    test(
+      'uses local guest session for normalized connection failures',
+      () async {
+        final container = _createContainer(
+          anonymousError: StateError(
+            'Unable to connect. Please check your internet connection.',
+          ),
+        );
+        addTearDown(container.dispose);
+
+        final notifier = container.read(authStateProvider.notifier);
+        await notifier.signInAnonymously();
+
+        final state = container.read(authStateProvider);
+        expect(state, isA<AuthAuthenticated>());
+        expect((state as AuthAuthenticated).user.clubId, '1');
+      },
+    );
   });
 
   group('AuthNotifier — deleteAccount()', () {

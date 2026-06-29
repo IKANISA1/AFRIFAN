@@ -52,6 +52,31 @@ void main() {
       );
     });
 
+    test('Icon choices route through AfriIcons tokens', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages'),
+          Directory('${repoRoot.path}/apps'),
+        ],
+        pattern: RegExp(r'\b(Icons|CupertinoIcons)\.'),
+        allow: (path) =>
+            path.endsWith(
+              '/packages/core/core_theme/lib/src/tokens/icon_tokens.dart',
+            ) ||
+            path.contains('/test/') ||
+            path.contains('/integration_test/'),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found direct platform icon constants. Add a semantic AfriIcons token instead.',
+          violations,
+        ),
+      );
+    });
+
     test('Typography uses borrowed font tokens without raw family strings', () {
       final violations = _scanDartFiles(
         roots: [
@@ -368,6 +393,172 @@ void main() {
       );
     });
 
+    test('Feature packages use shared bottom sheet routes', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages/features'),
+          Directory('${repoRoot.path}/apps'),
+        ],
+        pattern: RegExp(r'\bshowModalBottomSheet\s*(?:<[^>]+>)?\s*\('),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found direct Material bottom-sheet routes. Use showAfriBottomSheet from core_theme.',
+          violations,
+        ),
+      );
+    });
+
+    test('Migrated packages use shared toast primitives', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages/features/feat_admin'),
+          Directory('${repoRoot.path}/packages/features/feat_contributions'),
+          Directory('${repoRoot.path}/packages/features/feat_fan_clubs'),
+          Directory('${repoRoot.path}/packages/features/feat_gamification'),
+          Directory('${repoRoot.path}/packages/features/feat_live'),
+          Directory('${repoRoot.path}/packages/features/feat_membership'),
+          Directory('${repoRoot.path}/packages/features/feat_onboarding'),
+          Directory('${repoRoot.path}/packages/features/feat_settings'),
+          Directory('${repoRoot.path}/packages/features/feat_shop'),
+          Directory('${repoRoot.path}/packages/features/feat_ticketing'),
+        ],
+        pattern: RegExp(
+          r'\b(ScaffoldMessenger\.of|showSnackBar|SnackBar|SnackBarAction)\b',
+        ),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found direct snackbar usage in migrated packages. Use AfriToast from core_theme.',
+          violations,
+        ),
+      );
+    });
+
+    test('Migrated shop routes shape and spacing through tokens', () {
+      final violations = _scanDartFiles(
+        roots: [Directory('${repoRoot.path}/packages/features/feat_shop/lib')],
+        pattern: RegExp(
+          r'BorderRadius\.(?:circular|only|vertical|horizontal)\(\s*(?:const\s+)?(?:[0-9]|Radius\.circular\(\s*[0-9])|'
+          r'Radius\.circular\(\s*[0-9]|'
+          r'EdgeInsets\.(?:all|symmetric|only|fromLTRB)\(\s*[0-9]|'
+          r'SizedBox\(\s*(?:width|height):\s*[0-9]|'
+          r'min(?:Width|Height):\s*[0-9]',
+        ),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found raw shop shape or spacing values. Use ShapeTokens and SpacingTokens.',
+          violations,
+        ),
+      );
+    });
+
+    test('Migrated ticketing routes shape and spacing through tokens', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages/features/feat_ticketing/lib'),
+        ],
+        pattern: RegExp(
+          r'BorderRadius\.(?:circular|only|vertical|horizontal)\(\s*(?:const\s+)?(?:[0-9]|Radius\.circular\(\s*[0-9])|'
+          r'Radius\.circular\(\s*[0-9]|'
+          r'EdgeInsets\.(?:all|symmetric|only|fromLTRB)\(\s*[0-9]|'
+          r'SizedBox\(\s*(?:width|height):\s*[0-9]|'
+          r'min(?:Width|Height):\s*[0-9]',
+        ),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found raw ticketing shape or spacing values. Use ShapeTokens and SpacingTokens.',
+          violations,
+        ),
+      );
+    });
+
+    test('Migrated membership routes shape and spacing through tokens', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages/features/feat_membership/lib'),
+        ],
+        pattern: RegExp(
+          r'BorderRadius\.(?:circular|only|vertical|horizontal)\(\s*(?:const\s+)?(?:[0-9]|Radius\.circular\(\s*[0-9])|'
+          r'Radius\.circular\(\s*[0-9]|'
+          r'EdgeInsets\.(?:all|symmetric|only|fromLTRB)\(\s*[0-9]|'
+          r'SizedBox\(\s*(?:width|height):\s*[0-9]|'
+          r'min(?:Width|Height):\s*[0-9]',
+        ),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found raw membership shape or spacing values. Use ShapeTokens and SpacingTokens.',
+          violations,
+        ),
+      );
+    });
+
+    test('Migrated gamification surfaces shape and spacing through tokens', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages/features/feat_gamification/lib'),
+        ],
+        pattern: RegExp(
+          r'BorderRadius\.(?:circular|only|vertical|horizontal)\(\s*(?:const\s+)?(?:[0-9]|Radius\.circular\(\s*[0-9])|'
+          r'Radius\.circular\(\s*[0-9]|'
+          r'EdgeInsets\.(?:all|symmetric|only|fromLTRB)\(\s*[0-9]|'
+          r'SizedBox\(\s*(?:width|height):\s*[0-9]|'
+          r'(?:Animated)?Container\(\s*(?:width|height):\s*[0-9]|'
+          r'min(?:Width|Height):\s*[0-9]',
+        ),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found raw shape or spacing values in migrated gamification surfaces. Use ShapeTokens and SpacingTokens.',
+          violations,
+        ),
+      );
+    });
+
+    test('Gamification fixed dimensions route through tokens', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages/features/feat_gamification/lib'),
+        ],
+        pattern: RegExp(
+          r'(?:horizontal|vertical|width|height|size|minHeight|minWidth):\s*[0-9]|'
+          r'Radius\.circular\([0-9]|'
+          r'BorderRadius\.circular\([0-9]|'
+          r'EdgeInsets\.all\([0-9]',
+        ),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found raw gamification dimensions or typography heights. Use shared tokens instead.',
+          violations,
+        ),
+      );
+    });
+
     test('Feature packages use shared button primitives', () {
       final violations = _scanDartFiles(
         roots: [
@@ -424,6 +615,44 @@ void main() {
         isEmpty,
         reason: _formatViolations(
           'Found direct Material list/toggle rows. Use AfriListRow, AfriListTile, or AfriSwitchListTile.',
+          violations,
+        ),
+      );
+    });
+
+    test('Feature packages use shared input field primitives', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages/features'),
+          Directory('${repoRoot.path}/apps'),
+        ],
+        pattern: RegExp(r'\b(TextField|TextFormField)\s*\('),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found direct Material text inputs. Use AfriInputField or AfriTextFormField from core_theme.',
+          violations,
+        ),
+      );
+    });
+
+    test('Feature packages use shared compact toggle primitives', () {
+      final violations = _scanDartFiles(
+        roots: [
+          Directory('${repoRoot.path}/packages/features'),
+          Directory('${repoRoot.path}/apps'),
+        ],
+        pattern: RegExp(r'\b(Switch|Checkbox|Radio|Slider)\s*\('),
+      );
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found direct Material compact controls. Use AfriSwitch or a shared core_theme control primitive.',
           violations,
         ),
       );

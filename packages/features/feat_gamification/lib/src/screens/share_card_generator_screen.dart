@@ -206,7 +206,9 @@ class ShareCardGeneratorContent extends StatelessWidget {
                                     '${prediction.homeTeamShort} vs ${prediction.awayTeamShort}',
                                     style: TypographyTokens.titleSmall(),
                                   ),
-                                  const SizedBox(height: 2),
+                                  const SizedBox(
+                                    height: SpacingTokens.spacing1 / 2,
+                                  ),
                                   Text(
                                     '${prediction.marketName} · ${prediction.selectedOutcome.toUpperCase()}',
                                     style: TypographyTokens.bodySmall(),
@@ -226,7 +228,9 @@ class ShareCardGeneratorContent extends StatelessWidget {
                                         alpha: 0.16,
                                       )
                                     : ColorTokens.surfaceContainerHigh,
-                                borderRadius: BorderRadius.circular(999),
+                                borderRadius: BorderRadius.circular(
+                                  ShapeTokens.radiusFull,
+                                ),
                               ),
                               child: Text(
                                 selectedCard ? 'Selected' : 'Open',

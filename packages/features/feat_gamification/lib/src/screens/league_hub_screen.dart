@@ -150,7 +150,7 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                 children: [
                   if (_competitions.isNotEmpty)
                     SizedBox(
-                      height: 40,
+                      height: SpacingTokens.spacing10,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: _competitions.length,
@@ -172,7 +172,9 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                                         alpha: 0.16,
                                       )
                                     : ColorTokens.surfaceContainerHigh,
-                                borderRadius: BorderRadius.circular(999),
+                                borderRadius: BorderRadius.circular(
+                                  ShapeTokens.radiusFull,
+                                ),
                               ),
                               child: Text(
                                 item.shortName.toUpperCase(),
@@ -196,7 +198,7 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                           competition?.name.toUpperCase() ?? 'COMPETITION',
                           style: TypographyTokens.headlineLarge().copyWith(
                             fontWeight: FontWeight.w900,
-                            height: 0.95,
+                            height: TypographyTokens.lineHeightCompact,
                           ),
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
@@ -298,7 +300,10 @@ class _LeagueHubScreenState extends ConsumerState<LeagueHubScreen> {
                                               style:
                                                   TypographyTokens.titleSmall(),
                                             ),
-                                            const SizedBox(height: 2),
+                                            const SizedBox(
+                                              height:
+                                                  SpacingTokens.spacing1 / 2,
+                                            ),
                                             Text(
                                               _kickoffLabel(fixture.kickoffAt),
                                               style:
@@ -354,7 +359,7 @@ class _LeagueMetric extends StatelessWidget {
             label.toUpperCase(),
             style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: SpacingTokens.spacing1),
           Text(
             value,
             style: TypographyTokens.titleLarge().copyWith(
@@ -418,7 +423,7 @@ class _LeagueStandingRow extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 28,
+              width: SpacingTokens.spacing7,
               child: Text(
                 '${entry.position}',
                 style: TypographyTokens.titleMedium(
@@ -434,7 +439,7 @@ class _LeagueStandingRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(entry.teamName, style: TypographyTokens.titleSmall()),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: SpacingTokens.spacing1 / 2),
                   Text(
                     '${entry.played}P · ${entry.won}W ${entry.drawn}D ${entry.lost}L',
                     style: TypographyTokens.bodySmall(),

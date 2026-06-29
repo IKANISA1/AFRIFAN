@@ -44,12 +44,12 @@ void main() {
       expect(subPaths, contains('privacy'));
     });
 
-    test('provides /profile_setup standalone route', () {
+    test('does not keep legacy standalone profile setup routes', () {
       final standalonePaths = module.standaloneRoutes
           .whereType<GoRoute>()
           .map((r) => r.path)
           .toSet();
-      expect(standalonePaths, contains('/profile_setup'));
+      expect(standalonePaths, isEmpty);
     });
 
     test('isEnabled defaults to true', () {

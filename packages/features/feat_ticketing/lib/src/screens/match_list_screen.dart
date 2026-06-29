@@ -283,7 +283,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                     size: 14,
                     color: ColorTokens.onSurfaceVariant,
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: SpacingTokens.spacing1),
                   Text(
                     AfriDateFormatter.formatDate(match.matchDate),
                     style: TypographyTokens.bodySmall(),
@@ -294,7 +294,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                     size: 14,
                     color: ColorTokens.onSurfaceVariant,
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: SpacingTokens.spacing1),
                   Expanded(
                     child: Text(
                       match.venue,

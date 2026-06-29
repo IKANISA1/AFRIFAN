@@ -1172,9 +1172,11 @@ class _CmsContentManagerScreenState
 
   void _showSnack(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    if (message.startsWith('Failed')) {
+      AfriToast.error(context, message);
+    } else {
+      AfriToast.info(context, message);
+    }
   }
 
   String _countryLabel(dynamic value) {

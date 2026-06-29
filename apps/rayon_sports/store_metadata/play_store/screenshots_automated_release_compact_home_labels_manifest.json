@@ -1,0 +1,83 @@
+{
+  "accessibility_shortcut_hidden": true,
+  "accessibility_shortcut_restored": true,
+  "app_id": "rw.gikundiro.app",
+  "artifact": {
+    "exists": true,
+    "path": "build/app/outputs/flutter-apk/app-release.apk",
+    "sha256": "cb8ba1bb83a2c1a9f197887125fcfd232998a97018def719b6b15b1622cf9165",
+    "size_bytes": 74447065
+  },
+  "build_mode": "release",
+  "device": {
+    "android_version": "13",
+    "density": "Physical density: 440",
+    "model": "Pixel 4a",
+    "screen_size": "Physical size: 1080x2340",
+    "serial": "13111JEC215558"
+  },
+  "fastlane_dir": "android/fastlane/metadata/android/en-US/images/phoneScreenshots",
+  "generated_at": "2026-06-28T21:27:08.830139+00:00",
+  "min_count": 7,
+  "mode": "automated",
+  "screenshot_count": 7,
+  "screenshots": [
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_release_compact_home_labels_2026-06-28/01_home_dashboard.png",
+      "size_bytes": 226757,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_release_compact_home_labels_2026-06-28/02_fanzone.png",
+      "size_bytes": 196506,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_release_compact_home_labels_2026-06-28/03_membership.png",
+      "size_bytes": 310342,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_release_compact_home_labels_2026-06-28/04_ticketing.png",
+      "size_bytes": 94897,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_release_compact_home_labels_2026-06-28/05_shop.png",
+      "size_bytes": 70764,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_release_compact_home_labels_2026-06-28/06_contributions.png",
+      "size_bytes": 97094,
+      "valid": true,
+      "width": 1080
+    },
+    {
+      "height": 2340,
+      "issues": [],
+      "path": "store_metadata/play_store/screenshots/automated_release_compact_home_labels_2026-06-28/07_settings.png",
+      "size_bytes": 179725,
+      "valid": true,
+      "width": 1080
+    }
+  ],
+  "success": true
+}

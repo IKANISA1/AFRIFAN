@@ -75,9 +75,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
   Future<void> _handlePurchase(ClubMatch match) async {
     final user = ref.read(currentUserProvider);
     if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sign in first to buy tickets.')),
-      );
+      AfriToast.info(context, 'Sign in first to buy tickets.');
       context.go('/onboarding');
       return;
     }
@@ -98,13 +96,9 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
           _paymentRouteMessage =
               'Ticket payment setup is pending club activation.';
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'MOMO ticketing setup is pending club activation.',
-            ),
-            backgroundColor: ColorTokens.error,
-          ),
+        AfriToast.error(
+          context,
+          'MOMO ticketing setup is pending club activation.',
         );
         return;
       }
@@ -119,12 +113,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (!mounted) return;
 
       if (!launched) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not launch the MOMO dialer.'),
-            backgroundColor: ColorTokens.error,
-          ),
-        );
+        AfriToast.error(context, 'Could not launch the MOMO dialer.');
         return;
       }
 
@@ -143,26 +132,18 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       if (!mounted) return;
 
       if (tickets.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Ticket reservation failed. Please try again from the match screen.',
-            ),
-            backgroundColor: ColorTokens.error,
-          ),
+        AfriToast.error(
+          context,
+          'Ticket reservation failed. Please try again from the match screen.',
         );
         return;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            _quantity == 1
-                ? 'Ticket request submitted — pending payment verification.'
-                : '${tickets.length} ticket requests submitted — pending verification.',
-          ),
-          backgroundColor: ColorTokens.info,
-        ),
+      AfriToast.success(
+        context,
+        _quantity == 1
+            ? 'Ticket request submitted — pending payment verification.'
+            : '${tickets.length} ticket requests submitted — pending verification.',
       );
 
       if (tickets.length == 1 &&
@@ -174,12 +155,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
       }
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Ticket request failed: $error'),
-          backgroundColor: ColorTokens.error,
-        ),
-      );
+      AfriToast.error(context, 'Ticket request failed: $error');
     } finally {
       if (mounted) {
         setState(() => _submitting = false);

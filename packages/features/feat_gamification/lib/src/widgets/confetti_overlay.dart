@@ -53,7 +53,10 @@ class _ConfettiBurstState extends State<_ConfettiBurst> {
       return _Particle(
         dx: cos(angle) * speed,
         dy: sin(angle) * speed - 60, // bias upward
-        size: 6 + _random.nextDouble() * 8,
+        size:
+            SpacingTokens.spacing2 -
+            SpacingTokens.spacing1 / 2 +
+            _random.nextDouble() * SpacingTokens.spacing2,
         color: _colors[_random.nextInt(_colors.length)],
         isGroup: _random.nextBool(),
       );
@@ -72,36 +75,46 @@ class _ConfettiBurstState extends State<_ConfettiBurst> {
     return IgnorePointer(
       child: SizedBox.expand(
         child: Stack(
-          children: _particles.asMap().entries.map((entry) {
-            final i = entry.key;
-            final p = entry.value;
-            final delay = (i * 15).ms;
+          children: _particles
+              .asMap()
+              .entries
+              .map((entry) {
+                final i = entry.key;
+                final p = entry.value;
+                final delay = (i * 15).ms;
 
-            return Positioned(
-              left: center.dx - p.size / 2,
-              top: center.dy - p.size / 2,
-              child: Container(
-                width: p.size,
-                height: p.size,
-                decoration: BoxDecoration(
-                  color: p.color,
-                  shape: p.isGroup ? BoxShape.circle : BoxShape.rectangle,
-                  borderRadius:
-                      p.isGroup ? null : BorderRadius.circular(2),
-                ),
-              )
-                  .animate(delay: delay)
-                  .move(
-                    begin: Offset.zero,
-                    end: Offset(p.dx, p.dy),
-                    duration: 900.ms,
-                    curve: Curves.easeOutCubic,
-                  )
-                  .scaleXY(begin: 0, end: 1, duration: 200.ms)
-                  .then(delay: 500.ms)
-                  .fadeOut(duration: 400.ms),
-            );
-          }).toList(growable: false),
+                return Positioned(
+                  left: center.dx - p.size / 2,
+                  top: center.dy - p.size / 2,
+                  child:
+                      Container(
+                            width: p.size,
+                            height: p.size,
+                            decoration: BoxDecoration(
+                              color: p.color,
+                              shape: p.isGroup
+                                  ? BoxShape.circle
+                                  : BoxShape.rectangle,
+                              borderRadius: p.isGroup
+                                  ? null
+                                  : BorderRadius.circular(
+                                      SpacingTokens.spacing1 / 2,
+                                    ),
+                            ),
+                          )
+                          .animate(delay: delay)
+                          .move(
+                            begin: Offset.zero,
+                            end: Offset(p.dx, p.dy),
+                            duration: 900.ms,
+                            curve: Curves.easeOutCubic,
+                          )
+                          .scaleXY(begin: 0, end: 1, duration: 200.ms)
+                          .then(delay: 500.ms)
+                          .fadeOut(duration: 400.ms),
+                );
+              })
+              .toList(growable: false),
         ),
       ),
     );

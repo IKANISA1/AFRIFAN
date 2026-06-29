@@ -147,9 +147,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
       setState(() {
         _isLoadingMore = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not load more fans right now.')),
-      );
+      AfriToast.error(context, 'Could not load more fans right now.');
     }
   }
 

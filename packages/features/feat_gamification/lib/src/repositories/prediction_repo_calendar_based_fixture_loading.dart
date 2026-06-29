@@ -1,8 +1,6 @@
 part of 'prediction_repository.dart';
 
 extension PredictionRepoCalendarbasedFixtureLoading on PredictionRepository {
-
-
   /// Loads fixtures for a specific date range via the `fixtures_calendar` RPC.
   Future<List<FixtureSummary>> loadFixturesByDate({
     required DateTime dateFrom,
@@ -86,5 +84,4 @@ extension PredictionRepoCalendarbasedFixtureLoading on PredictionRepository {
 
     return _readCachedList(cacheKey, FixtureDateSummary.fromJson);
   }
-
 }
