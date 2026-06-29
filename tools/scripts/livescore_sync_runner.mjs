@@ -8,7 +8,6 @@
  *
  * Optional env:
  *   LIVESCORE_WEB_URLS=https://www.livescore.com/en/
- *   LIVESCORE_SOURCE_MODE=web
  *   LIVESCORE_CLUB_ID
  *   LIVESCORE_FIXTURE_ARRAY_PATH=data.fixtures
  *   LIVESCORE_ENABLE_OPENAI_WEB_SEARCH=false
@@ -21,7 +20,6 @@
  *   LIVESCORE_MIRROR_ASSETS=true
  *   LIVESCORE_ASSET_BUCKET=football-assets
  *   LIVESCORE_DRY_RUN=true
- *   LIVESCORE_REQUIRE_JSON=true
  */
 
 const PROVIDER = "livescore";
@@ -33,8 +31,6 @@ const env = {
   webUrls: parseUrlList(
     process.env.LIVESCORE_WEB_URLS?.trim() || "https://www.livescore.com/en/",
   ),
-  feedUrls: parseUrlList(process.env.LIVESCORE_FEED_URLS || process.env.LIVESCORE_FEED_URL || ""),
-  sourceMode: process.env.LIVESCORE_SOURCE_MODE?.trim() || "web",
   clubId: process.env.LIVESCORE_CLUB_ID?.trim() || "",
   fixtureArrayPath: process.env.LIVESCORE_FIXTURE_ARRAY_PATH?.trim() || "",
   openaiApiKey: process.env.OPENAI_API_KEY?.trim() || "",
@@ -51,7 +47,6 @@ const env = {
   runOnce: parseBoolean(process.env.LIVESCORE_RUN_ONCE, false),
   mirrorAssets: parseBoolean(process.env.LIVESCORE_MIRROR_ASSETS, false),
   dryRun: parseBoolean(process.env.LIVESCORE_DRY_RUN, false),
-  requireJson: parseBoolean(process.env.LIVESCORE_REQUIRE_JSON, false),
   assetBucket: process.env.LIVESCORE_ASSET_BUCKET?.trim() || "football-assets",
 };
 
@@ -71,6 +66,7 @@ async function main() {
   do {
     const startedAt = new Date();
     const summary = await syncAllFeeds();
+    await writeSyncLog(startedAt, summary);
     console.log(
       JSON.stringify(
         {
@@ -120,9 +116,43 @@ async function syncAllFeeds() {
   return summary;
 }
 
+async function writeSyncLog(startedAt, summary) {
+  if (env.dryRun) return;
+
+  try {
+    const completedAt = new Date();
+    const status = summary.errors.length > 0 ? "completed_with_errors" : "completed";
+    const response = await fetch(`${env.supabaseUrl}/rest/v1/football_sync_log`, {
+      method: "POST",
+      headers: {
+        ...jsonHeaders(),
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({
+        sync_type: "livescore_web",
+        status,
+        records_fetched: summary.raw_rows_seen,
+        records_upserted: summary.fixtures_upserted,
+        api_requests_used: summary.web_pages_processed + summary.openai_search_used,
+        error_message: summary.errors.length > 0 ? summary.errors.slice(0, 5).join(" | ") : null,
+        metadata: {
+          ...summary,
+          source_provider: PROVIDER,
+        },
+        started_at: startedAt.toISOString(),
+        completed_at: completedAt.toISOString(),
+      }),
+    });
+    if (!response.ok) {
+      console.warn(`[livescore-sync] sync log write failed: ${response.status} ${await response.text()}`);
+    }
+  } catch (error) {
+    console.warn(`[livescore-sync] sync log write failed: ${messageOf(error)}`);
+  }
+}
+
 function emptySummary() {
   return {
-    feed_urls_processed: 0,
     web_pages_processed: 0,
     json_documents_seen: 0,
     openai_search_used: 0,
@@ -150,13 +180,7 @@ function mergeSummary(target, source) {
 async function collectFixtureRows(summary, allowedCompetitions) {
   const rows = [];
 
-  if (env.sourceMode !== "json") {
-    rows.push(...(await collectRowsFromWebPages(summary, allowedCompetitions)));
-  }
-
-  if (env.sourceMode === "json" || (rows.length === 0 && env.feedUrls.length > 0)) {
-    rows.push(...(await collectRowsFromJsonDocuments(summary)));
-  }
+  rows.push(...(await collectRowsFromWebPages(summary, allowedCompetitions)));
 
   if (env.openaiSearchEnabled || (rows.length === 0 && env.openaiApiKey)) {
     rows.push(...(await collectRowsFromOpenAIWebSearch(summary)));
@@ -181,23 +205,6 @@ async function collectRowsFromWebPages(summary, allowedCompetitions) {
       }
     } catch (error) {
       summary.errors.push(`${webUrl}: ${messageOf(error)}`);
-    }
-  }
-
-  return rows;
-}
-
-async function collectRowsFromJsonDocuments(summary) {
-  const rows = [];
-
-  for (const feedUrl of env.feedUrls) {
-    try {
-      const payload = await fetchLiveScoreJson(feedUrl);
-      summary.feed_urls_processed += 1;
-      summary.json_documents_seen += 1;
-      rows.push(...extractFixtureRows(payload));
-    } catch (error) {
-      summary.errors.push(`${feedUrl}: ${messageOf(error)}`);
     }
   }
 
@@ -270,34 +277,16 @@ async function fetchLiveScoreHtml(webUrl) {
     },
   });
   if (!response.ok) {
-    throw new Error(`web HTTP ${response.status}: ${await response.text()}`);
+    throw new Error(`web HTTP ${response.status}: ${truncateForLog(await response.text())}`);
   }
   return await response.text();
 }
 
-async function fetchLiveScoreJson(feedUrl) {
-  const headers = {
-    Accept: "application/json",
-    "User-Agent": "AFRICLUB-LiveScore-WebSync/1.0",
-  };
-
-  const response = await fetch(feedUrl, { headers });
-  if (!response.ok) {
-    throw new Error(`feed HTTP ${response.status}: ${await response.text()}`);
-  }
-
-  const text = await response.text();
-  try {
-    return JSON.parse(text);
-  } catch {
-    if (env.requireJson) {
-      throw new Error(
-        "LiveScore response did not return JSON. Use LIVESCORE_SOURCE_MODE=web for page extraction.",
-      );
-    }
-    return { html: text };
-  }
+function truncateForLog(value, maxLength = 500) {
+  const text = String(value ?? "").replace(/\s+/g, " ").trim();
+  return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 }
+
 
 function extractJsonDocumentsFromHtml(html) {
   const documents = [];
@@ -905,7 +894,7 @@ async function maybeMirrorAsset(sourceUrl, basePath) {
   if (env.dryRun) return publicStorageUrl(storagePath);
 
   const response = await fetch(sourceUrl, {
-    headers: { "User-Agent": "AFRICLUB-LiveScore-LicensedSync/1.0" },
+    headers: { "User-Agent": "AFRICLUB-LiveScore-WebSync/1.0" },
   });
   if (!response.ok) {
     throw new Error(`asset HTTP ${response.status}: ${sourceUrl}`);
@@ -1022,8 +1011,7 @@ function parseUrlList(value) {
 }
 
 function sourceUrlCount() {
-  const webCount = env.sourceMode === "json" ? 0 : env.webUrls.length;
-  return webCount + env.feedUrls.length;
+  return env.webUrls.length;
 }
 
 function requiredEnv(name) {

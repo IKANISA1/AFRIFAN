@@ -138,7 +138,7 @@ class _FriendChallengeScreenState extends ConsumerState<FriendChallengeScreen> {
           fixtureMarketId: fixture.market.fixtureMarketId,
           selectedOutcome: outcome,
           message:
-              'FANZONE head-to-head on ${fixture.fixture.homeTeamShort} vs ${fixture.fixture.awayTeamShort}',
+              'AFRICLUB head-to-head on ${fixture.fixture.homeTeamShort} vs ${fixture.fixture.awayTeamShort}',
         );
 
     if (!mounted) {

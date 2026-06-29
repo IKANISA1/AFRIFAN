@@ -902,7 +902,7 @@ class FixtureSummary {
   final int? homeScore;
   final int? awayScore;
 
-  /// API-Football CDN logo URLs (hotlinked)
+  /// Team and competition logo URLs from the active football data source.
   final String? homeTeamLogoUrl;
   final String? awayTeamLogoUrl;
   final String? competitionLogoUrl;

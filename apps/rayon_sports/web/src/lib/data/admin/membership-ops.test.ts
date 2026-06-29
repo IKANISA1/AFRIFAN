@@ -1,6 +1,8 @@
 // @vitest-environment node
 
 import { describe, expect, it } from "vitest";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { AdminAccess } from "@/lib/types";
 import {
   getAdminMembershipApplications,
   reviewMembershipApplication,
@@ -95,12 +97,12 @@ describe("getAdminMembershipApplications", () => {
 
         throw new Error(`Unexpected table lookup: ${table}`);
       },
-    } as any;
+    } as unknown as SupabaseClient;
 
     await expect(
       getAdminMembershipApplications(client, {
         clubId: "24",
-      } as any),
+      } as unknown as AdminAccess),
     ).resolves.toEqual([
       {
         id: "application-1",
@@ -207,12 +209,12 @@ describe("getAdminMembershipApplications", () => {
 
         throw new Error(`Unexpected table lookup: ${table}`);
       },
-    } as any;
+    } as unknown as SupabaseClient;
 
     await expect(
       getAdminMembershipApplications(client, {
         clubId: "24",
-      } as any),
+      } as unknown as AdminAccess),
     ).resolves.toEqual([
       {
         id: "application-2",
@@ -385,7 +387,7 @@ describe("reviewMembershipApplication", () => {
           error: null,
         });
       },
-    } as any;
+    } as unknown as SupabaseClient;
 
     await expect(
       reviewMembershipApplication(
@@ -393,7 +395,7 @@ describe("reviewMembershipApplication", () => {
         {
           clubId: "24",
           userId: "admin-1",
-        } as any,
+        } as unknown as AdminAccess,
         "application-1",
         "approved",
         "Looks good",

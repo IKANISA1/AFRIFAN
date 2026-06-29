@@ -193,8 +193,11 @@ class PartnerPoolMutationResult {
   final PartnerPredictionPool? pool;
 
   factory PartnerPoolMutationResult.fromJson(Map<String, dynamic> json) {
+    final explicitStatus =
+        json['mutation_status']?.toString() ??
+        json['result_status']?.toString();
     return PartnerPoolMutationResult(
-      status: json['status']?.toString() ?? 'success',
+      status: explicitStatus ?? (json.containsKey('id') ? 'success' : 'error'),
       pool: PartnerPredictionPool.fromJson(json),
     );
   }

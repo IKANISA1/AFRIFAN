@@ -7,7 +7,7 @@ interface ScorePredictionProps {
   homeTeam: string;
   awayTeam: string;
   matchId: string;
-  /** Optional team logo URLs (API-Football CDN) */
+  /** Optional team logo URLs from the active football data source */
   homeTeamLogoUrl?: string | null;
   awayTeamLogoUrl?: string | null;
   /** Competition name */

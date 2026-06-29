@@ -46,7 +46,7 @@ function mapMatchRow(
     homeTeam: safeString(row.home_team, activeClubShortName),
     awayTeam: safeString(row.away_team, "Opponent"),
     competition: safeString(row.competition, "League"),
-    venue: safeString(row.venue, "Club Stadium"),
+    venue: safeString(row.venue, "Venue TBC"),
     matchDate: safeString(row.match_date, new Date().toISOString()),
     kickoffTime: safeString(row.kickoff_time) || null,
     isOnSale: Boolean(row.is_on_sale),

@@ -68,14 +68,11 @@ import {
   saveAdminSeason,
   getAdminFixtures,
   saveAdminFixture,
-  getAdminSyncConfigs,
   getAdminSyncLogs,
   getAdminSyncOverview,
   getAdminLiveScoreCompetitionSources,
   saveAdminLiveScoreCompetitionSource,
   deleteAdminLiveScoreCompetitionSource,
-  triggerSyncCommand,
-  triggerMultiplierGeneration,
   getAdminPartnerOptions,
   getAdminPartnerPredictionPools,
   saveAdminPartnerPredictionPool,
@@ -331,10 +328,6 @@ export async function GET(
         return NextResponse.json({
           data: await getAdminPartnerPredictionPools(serverClient, access),
         });
-      case "football-sync-configs":
-        return NextResponse.json({
-          data: await getAdminSyncConfigs(adminClient, access),
-        });
       case "football-sync-logs":
         return NextResponse.json({
           data: await getAdminSyncLogs(
@@ -561,18 +554,6 @@ export async function POST(
       case "livescore-sources":
         return NextResponse.json({
           data: await saveAdminLiveScoreCompetitionSource(adminClient, access, body as never),
-        });
-      case "football-sync-trigger":
-        return NextResponse.json({
-          data: await triggerSyncCommand(adminClient, access, String(body.command ?? "")),
-        });
-      case "football-multipliers":
-        return NextResponse.json({
-          data: await triggerMultiplierGeneration(
-            adminClient,
-            access,
-            typeof body.fixture_id === "string" ? body.fixture_id : undefined,
-          ),
         });
       default:
         return NextResponse.json(

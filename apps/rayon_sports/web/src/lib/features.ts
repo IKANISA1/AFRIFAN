@@ -17,10 +17,14 @@ export interface PlatformFeatureConfig {
   rules: {
     auth_required: boolean;
     role_restrictions: string[];
-    dependency_rules: any;
-    rollout_rules: any;
+    dependency_rules: Record<string, unknown> | null;
+    rollout_rules: Record<string, unknown> | null;
     is_within_schedule: boolean;
   } | null;
+}
+
+interface PlatformFeatureSnapshot {
+  features?: PlatformFeatureConfig[];
 }
 
 let cachedFeatures: PlatformFeatureConfig[] | null = null;
@@ -47,8 +51,8 @@ export async function getActiveFeatures(channel: "web" | "mobile" = "web", clubI
     return cachedFeatures || [];
   }
 
-  const snapshot = data as any;
-  cachedFeatures = snapshot.features as PlatformFeatureConfig[];
+  const snapshot = data as PlatformFeatureSnapshot;
+  cachedFeatures = Array.isArray(snapshot.features) ? snapshot.features : [];
   lastFetch = Date.now();
   return cachedFeatures;
 }

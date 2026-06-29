@@ -1,6 +1,8 @@
 // @vitest-environment node
 
 import { describe, expect, it } from "vitest";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { AdminAccess } from "@/lib/types";
 import { saveAdminClubProfile } from "./settings";
 
 describe("saveAdminClubProfile", () => {
@@ -49,12 +51,12 @@ describe("saveAdminClubProfile", () => {
           },
         };
       },
-    } as any;
+    } as unknown as SupabaseClient;
 
     await expect(
       saveAdminClubProfile(
         client,
-        { clubId: "24" } as any,
+        { clubId: "24" } as unknown as AdminAccess,
         {
           id: 24,
           clubName: "Rayon Sports FC",
@@ -92,8 +94,8 @@ describe("saveAdminClubProfile", () => {
   it("rejects malformed team color values", async () => {
     await expect(
       saveAdminClubProfile(
-        {} as any,
-        { clubId: "24" } as any,
+        {} as unknown as SupabaseClient,
+        { clubId: "24" } as unknown as AdminAccess,
         {
           id: 24,
           clubName: "Rayon Sports FC",

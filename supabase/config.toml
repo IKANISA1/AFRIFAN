@@ -384,6 +384,9 @@ verify_jwt = false
 [functions.record-operational-health]
 verify_jwt = false
 
+[functions.livescore-openai-sync]
+verify_jwt = false
+
 # Supabase Auth hook — delivers OTP codes via WhatsApp Cloud API
 [functions.send-sms]
 verify_jwt = false

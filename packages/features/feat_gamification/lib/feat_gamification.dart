@@ -1,4 +1,4 @@
-/// AFRICLUB feat_gamification — consolidated FANZONE feature surface.
+/// AFRICLUB feat_gamification - partner-centered fan engagement surface.
 library;
 
 export 'src/challenge_module.dart';

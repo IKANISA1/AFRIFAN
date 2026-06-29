@@ -80,7 +80,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
       if (option.id.isNotEmpty) {
         final result = await fetRepository.redeemReward(
           rewardItemId: option.id,
-          note: 'FANZONE reward: ${option.reward}',
+          note: 'AFRICLUB reward: ${option.reward}',
           idempotencyKey: 'reward-${option.id}',
         );
         snackbarMessage = result.message.isNotEmpty
@@ -91,7 +91,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
       } else {
         final result = await fetRepository.redeemFet(
           amount: cost,
-          note: 'FANZONE reward: ${option.reward}',
+          note: 'AFRICLUB reward: ${option.reward}',
           idempotencyKey: 'reward-fallback-${option.slug}-${option.costFet}',
         );
         snackbarMessage = result.alreadyProcessed
@@ -192,7 +192,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
-                          'Redeem FANZONE rewards without leaving the consolidated wallet flow.',
+                          'Redeem AFRICLUB rewards without leaving the consolidated wallet flow.',
                           style: TypographyTokens.bodyMedium(),
                         ),
                       ],

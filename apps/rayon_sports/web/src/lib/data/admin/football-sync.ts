@@ -1,33 +1,18 @@
 /**
- * Admin Football Sync — data layer for the API-Football sync dashboard.
+ * Admin Football Sync - LiveScore web source management and sync health.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 
-/* ---------- Types ---------- */
-
-export interface AdminSyncConfig {
-  id: string;
-  leagueId: number;
-  leagueName: string;
-  leagueCountry: string;
-  season: number;
-  competitionId: string | null;
-  seasonId: string | null;
-  isActive: boolean;
-  lastSyncAt: string | null;
-  syncIntervalMinutes: number;
-  createdAt: string;
-}
-
 export interface AdminSyncLog {
   id: string;
   syncType: string;
   status: string;
-  recordsProcessed: number;
-  apiCallsUsed: number;
+  recordsFetched: number;
+  recordsUpserted: number;
+  webRequestsUsed: number;
   errorMessage: string | null;
   startedAt: string;
   completedAt: string | null;
@@ -36,15 +21,16 @@ export interface AdminSyncLog {
 }
 
 export interface AdminSyncOverview {
-  totalLeagues: number;
-  activeLeagues: number;
+  totalSources: number;
+  activeSources: number;
   totalFixtures: number;
   scheduledFixtures: number;
+  liveFixtures: number;
   finishedFixtures: number;
   totalTeams: number;
   lastSyncAt: string | null;
-  apiCallsToday: number;
-  apiCallsLimit: number;
+  webRequestsToday: number;
+  errorsToday: number;
 }
 
 export interface AdminLiveScoreCompetitionSource {
@@ -74,46 +60,6 @@ export interface AdminLiveScoreCompetitionSourceInput {
   isActive: boolean;
 }
 
-/* ---------- Mappers ---------- */
-
-function mapSyncConfig(row: Record<string, unknown>): AdminSyncConfig {
-  return {
-    id: toIdString(row.id, crypto.randomUUID()),
-    leagueId: safeNumber(row.league_id, 0),
-    leagueName: safeString(row.league_name, "League"),
-    leagueCountry: safeString(row.league_country),
-    season: safeNumber(row.season, 2025),
-    competitionId: row.competition_id ? String(row.competition_id) : null,
-    seasonId: row.season_id ? String(row.season_id) : null,
-    isActive: row.is_active !== false,
-    lastSyncAt: row.last_sync_at ? String(row.last_sync_at) : null,
-    syncIntervalMinutes: safeNumber(row.sync_interval_minutes, 360),
-    createdAt: safeString(row.created_at, new Date().toISOString()),
-  };
-}
-
-function mapSyncLog(row: Record<string, unknown>): AdminSyncLog {
-  const startedAt = safeString(row.started_at, new Date().toISOString());
-  const completedAt = row.completed_at ? String(row.completed_at) : null;
-  let durationMs: number | null = null;
-  if (startedAt && completedAt) {
-    durationMs = new Date(completedAt).getTime() - new Date(startedAt).getTime();
-  }
-
-  return {
-    id: toIdString(row.id, crypto.randomUUID()),
-    syncType: safeString(row.sync_type, "unknown"),
-    status: safeString(row.status, "pending"),
-    recordsProcessed: safeNumber(row.records_processed, 0),
-    apiCallsUsed: safeNumber(row.api_calls_used, 0),
-    errorMessage: row.error_message ? String(row.error_message) : null,
-    startedAt,
-    completedAt,
-    durationMs,
-    metadata: (row.metadata as Record<string, unknown>) ?? {},
-  };
-}
-
 function stringArray(value: unknown): string[] {
   if (Array.isArray(value)) {
     return value.map((entry) => safeString(entry)).filter(Boolean);
@@ -125,6 +71,28 @@ function stringArray(value: unknown): string[] {
       .filter(Boolean);
   }
   return [];
+}
+
+function mapSyncLog(row: Record<string, unknown>): AdminSyncLog {
+  const startedAt = safeString(row.started_at, new Date().toISOString());
+  const completedAt = row.completed_at ? String(row.completed_at) : null;
+  const durationMs = completedAt
+    ? new Date(completedAt).getTime() - new Date(startedAt).getTime()
+    : null;
+
+  return {
+    id: toIdString(row.id, crypto.randomUUID()),
+    syncType: safeString(row.sync_type, "livescore_web"),
+    status: safeString(row.status, "pending"),
+    recordsFetched: safeNumber(row.records_fetched, 0),
+    recordsUpserted: safeNumber(row.records_upserted, 0),
+    webRequestsUsed: safeNumber(row.api_requests_used, 0),
+    errorMessage: row.error_message ? String(row.error_message) : null,
+    startedAt,
+    completedAt,
+    durationMs,
+    metadata: (row.metadata as Record<string, unknown>) ?? {},
+  };
 }
 
 function mapLiveScoreSource(row: Record<string, unknown>): AdminLiveScoreCompetitionSource {
@@ -140,105 +108,6 @@ function mapLiveScoreSource(row: Record<string, unknown>): AdminLiveScoreCompeti
     priority: safeNumber(row.priority, 100),
     isActive: row.is_active !== false,
     updatedAt: safeString(row.updated_at, new Date().toISOString()),
-  };
-}
-
-/* ---------- Queries ---------- */
-
-export async function getAdminSyncConfigs(
-  client: SupabaseClient,
-  _access: AdminAccess,
-): Promise<AdminSyncConfig[]> {
-  void _access;
-  if (typeof window !== "undefined") {
-    return requestAdminApi<AdminSyncConfig[]>("football-sync-configs");
-  }
-
-  const { data, error } = await client
-    .from("football_sync_config")
-    .select("*")
-    .order("league_name", { ascending: true });
-
-  if (error) throw new Error(error.message);
-  return Array.isArray(data)
-    ? data.map((r) => mapSyncConfig(r as Record<string, unknown>))
-    : [];
-}
-
-export async function getAdminSyncLogs(
-  client: SupabaseClient,
-  _access: AdminAccess,
-  limit: number = 50,
-): Promise<AdminSyncLog[]> {
-  void _access;
-  if (typeof window !== "undefined") {
-    return requestAdminApi<AdminSyncLog[]>(`football-sync-logs?limit=${limit}`);
-  }
-
-  const { data, error } = await client
-    .from("football_sync_log")
-    .select("*")
-    .order("started_at", { ascending: false })
-    .limit(limit);
-
-  if (error) throw new Error(error.message);
-  return Array.isArray(data)
-    ? data.map((r) => mapSyncLog(r as Record<string, unknown>))
-    : [];
-}
-
-export async function getAdminSyncOverview(
-  client: SupabaseClient,
-  _access: AdminAccess,
-): Promise<AdminSyncOverview> {
-  void _access;
-  if (typeof window !== "undefined") {
-    return requestAdminApi<AdminSyncOverview>("football-sync-overview");
-  }
-
-  // Parallel counts
-  const [configRes, fixturesRes, teamsRes, logsRes] = await Promise.all([
-    client.from("football_sync_config").select("is_active", { count: "exact" }),
-    client.from("football_fixtures_catalog").select("status", { count: "exact" }),
-    client.from("football_teams_catalog").select("id", { count: "exact", head: true }),
-    client
-      .from("football_sync_log")
-      .select("api_calls_used, started_at")
-      .gte("started_at", new Date(new Date().setHours(0, 0, 0, 0)).toISOString())
-      .order("started_at", { ascending: false }),
-  ]);
-
-  const configs = configRes.data ?? [];
-  const fixtures = fixturesRes.data ?? [];
-  const totalTeams = teamsRes.count ?? 0;
-  const todayLogs = logsRes.data ?? [];
-
-  const activeLeagues = configs.filter((c) => (c as Record<string, unknown>).is_active !== false).length;
-
-  const fixtureStatuses = fixtures.reduce<Record<string, number>>((acc, f) => {
-    const status = String((f as Record<string, unknown>).status ?? "unknown");
-    acc[status] = (acc[status] ?? 0) + 1;
-    return acc;
-  }, {});
-
-  const apiCallsToday = todayLogs.reduce((sum, log) => {
-    return sum + safeNumber((log as Record<string, unknown>).api_calls_used, 0);
-  }, 0);
-
-  const lastSync = todayLogs.length > 0
-    ? String((todayLogs[0] as Record<string, unknown>).started_at ?? "")
-    : null;
-
-  return {
-    totalLeagues: configs.length,
-    activeLeagues,
-    totalFixtures: fixtures.length,
-    scheduledFixtures: fixtureStatuses["scheduled"] ?? 0,
-    finishedFixtures: fixtureStatuses["finished"] ?? 0,
-    totalTeams,
-    lastSyncAt: lastSync,
-    apiCallsToday,
-    apiCallsLimit: 100, // Free tier
   };
 }
 
@@ -263,26 +132,88 @@ export async function getAdminLiveScoreCompetitionSources(
     : [];
 }
 
-/* ---------- Actions ---------- */
-
-export async function triggerSyncCommand(
+export async function getAdminSyncLogs(
   client: SupabaseClient,
   _access: AdminAccess,
-  command: string,
-): Promise<{ message: string; data?: unknown }> {
+  limit: number = 50,
+): Promise<AdminSyncLog[]> {
+  void _access;
   if (typeof window !== "undefined") {
-    return requestAdminApi<{ message: string; data?: unknown }>("football-sync-trigger", {
-      method: "POST",
-      body: { command },
-    });
+    return requestAdminApi<AdminSyncLog[]>(`football-sync-logs?limit=${limit}`);
   }
 
-  const { data, error } = await client.functions.invoke("football-sync", {
-    body: { command },
-  });
+  const { data, error } = await client
+    .from("football_sync_log")
+    .select("*")
+    .eq("sync_type", "livescore_web")
+    .order("started_at", { ascending: false })
+    .limit(limit);
 
   if (error) throw new Error(error.message);
-  return { message: `Sync command '${command}' triggered`, data };
+  return Array.isArray(data)
+    ? data.map((row) => mapSyncLog(row as Record<string, unknown>))
+    : [];
+}
+
+export async function getAdminSyncOverview(
+  client: SupabaseClient,
+  _access: AdminAccess,
+): Promise<AdminSyncOverview> {
+  void _access;
+  if (typeof window !== "undefined") {
+    return requestAdminApi<AdminSyncOverview>("football-sync-overview");
+  }
+
+  const today = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
+  const [sourcesRes, fixturesRes, teamsRes, logsRes] = await Promise.all([
+    client.from("livescore_competition_sources").select("is_active", { count: "exact" }),
+    client
+      .schema("football")
+      .from("fixtures")
+      .select("status", { count: "exact" })
+      .eq("external_provider", "livescore"),
+    client
+      .schema("football")
+      .from("teams")
+      .select("id", { count: "exact", head: true })
+      .eq("external_provider", "livescore"),
+    client
+      .from("football_sync_log")
+      .select("api_requests_used, error_message, started_at")
+      .eq("sync_type", "livescore_web")
+      .gte("started_at", today)
+      .order("started_at", { ascending: false }),
+  ]);
+
+  if (sourcesRes.error) throw new Error(sourcesRes.error.message);
+  if (fixturesRes.error) throw new Error(fixturesRes.error.message);
+  if (teamsRes.error) throw new Error(teamsRes.error.message);
+  if (logsRes.error) throw new Error(logsRes.error.message);
+
+  const sources = sourcesRes.data ?? [];
+  const fixtures = fixturesRes.data ?? [];
+  const logs = logsRes.data ?? [];
+  const fixtureStatuses = fixtures.reduce<Record<string, number>>((acc, fixture) => {
+    const status = safeString((fixture as Record<string, unknown>).status, "unknown");
+    acc[status] = (acc[status] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  return {
+    totalSources: sources.length,
+    activeSources: sources.filter((source) => (source as Record<string, unknown>).is_active !== false).length,
+    totalFixtures: fixtures.length,
+    scheduledFixtures: fixtureStatuses.scheduled ?? 0,
+    liveFixtures: fixtureStatuses.live ?? 0,
+    finishedFixtures: fixtureStatuses.finished ?? 0,
+    totalTeams: teamsRes.count ?? 0,
+    lastSyncAt: logs.length > 0 ? safeString((logs[0] as Record<string, unknown>).started_at) : null,
+    webRequestsToday: logs.reduce(
+      (sum, log) => sum + safeNumber((log as Record<string, unknown>).api_requests_used, 0),
+      0,
+    ),
+    errorsToday: logs.filter((log) => safeString((log as Record<string, unknown>).error_message)).length,
+  };
 }
 
 export async function saveAdminLiveScoreCompetitionSource(
@@ -294,15 +225,21 @@ export async function saveAdminLiveScoreCompetitionSource(
     return requestAdminApi<string>("livescore-sources", { method: "POST", body: input });
   }
 
-  const clubId = access.isSuperAdmin ? (input.clubId ?? null) : Number(access.clubId);
+  const requestedClubId = access.isSuperAdmin ? (input.clubId ?? null) : Number(access.clubId);
+  const clubId = Number.isFinite(requestedClubId as number) ? requestedClubId : null;
   const payload = {
-    club_id: Number.isFinite(clubId as number) ? clubId : null,
+    club_id: clubId,
     source_provider: "livescore",
-    source_key: safeString(input.sourceKey, input.displayName.toLowerCase().replace(/[^a-z0-9]+/g, "-")),
+    source_key: safeString(
+      input.sourceKey,
+      input.displayName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+    ),
     display_name: input.displayName.trim(),
     match_aliases: input.matchAliases.map((entry) => entry.trim()).filter(Boolean),
     country_aliases: (input.countryAliases ?? []).map((entry) => entry.trim()).filter(Boolean),
-    external_competition_ids: (input.externalCompetitionIds ?? []).map((entry) => entry.trim()).filter(Boolean),
+    external_competition_ids: (input.externalCompetitionIds ?? [])
+      .map((entry) => entry.trim())
+      .filter(Boolean),
     source_urls: input.sourceUrls.map((entry) => entry.trim()).filter(Boolean),
     priority: safeNumber(input.priority, 100),
     is_active: input.isActive,
@@ -335,6 +272,7 @@ export async function deleteAdminLiveScoreCompetitionSource(
   _access: AdminAccess,
   id: string,
 ): Promise<void> {
+  void _access;
   if (typeof window !== "undefined") {
     await requestAdminApi<{ success: boolean }>(`livescore-sources?id=${encodeURIComponent(id)}`, {
       method: "DELETE",
@@ -344,27 +282,4 @@ export async function deleteAdminLiveScoreCompetitionSource(
 
   const { error } = await client.from("livescore_competition_sources").delete().eq("id", id);
   if (error) throw new Error(error.message);
-}
-
-export async function triggerMultiplierGeneration(
-  client: SupabaseClient,
-  _access: AdminAccess,
-  fixtureId?: string,
-): Promise<{ message: string; data?: unknown }> {
-  if (typeof window !== "undefined") {
-    return requestAdminApi<{ message: string; data?: unknown }>("football-multipliers", {
-      method: "POST",
-      body: { command: fixtureId ? "generate" : "generate-all", fixture_id: fixtureId },
-    });
-  }
-
-  const { data, error } = await client.functions.invoke("generate-multipliers", {
-    body: {
-      command: fixtureId ? "generate" : "generate-all",
-      fixture_id: fixtureId,
-    },
-  });
-
-  if (error) throw new Error(error.message);
-  return { message: "Multiplier generation triggered", data };
 }

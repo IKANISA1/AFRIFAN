@@ -102,7 +102,7 @@ export async function GroupsAndMatchdayBlock() {
               Become a<br/>Beloved Member.
             </h2>
             <p className="text-sm font-bold leading-relaxed mb-8 opacity-80">
-              Unlock priority ticketing, exclusive content, and a direct voice in the club's future. Join the elite rank of Gikundiro supporters today.
+              Unlock priority ticketing, exclusive content, and a direct voice in the club&apos;s future. Join the elite rank of Gikundiro supporters today.
             </p>
             <div className="flex flex-wrap gap-2 mb-10">
               {membershipPackages.map(tier => (

@@ -94,7 +94,7 @@ values
     '2026 World Cup',
     array['2026 World Cup', 'FIFA World Cup 2026', 'World Cup 2026']::text[],
     array[]::text[],
-    array['https://www.livescore.com/en/football/world-cup/']::text[],
+    array['https://www.livescore.com/en/football/international/world-cup-2026/']::text[],
     10,
     jsonb_build_object('seeded_from', '20260629123000_livescore_competition_sources')
   ),
@@ -103,7 +103,7 @@ values
     'UEFA Champions League',
     array['UEFA Champions League', 'URFA Champions League', 'Champions League']::text[],
     array[]::text[],
-    array['https://www.livescore.com/en/football/champions-league/']::text[],
+    array['https://www.livescore.com/en/football/europe/champions-league/']::text[],
     20,
     jsonb_build_object('seeded_from', '20260629123000_livescore_competition_sources')
   ),
@@ -112,7 +112,7 @@ values
     'UEFA Europa League',
     array['UEFA Europa League', 'Europa League']::text[],
     array[]::text[],
-    array['https://www.livescore.com/en/football/europa-league/']::text[],
+    array['https://www.livescore.com/en/football/europe/europa-league/']::text[],
     30,
     jsonb_build_object('seeded_from', '20260629123000_livescore_competition_sources')
   ),
@@ -148,7 +148,7 @@ values
     'Serbia A',
     array['Serbia A', 'Serbian SuperLiga', 'SuperLiga Srbije', 'Mozzart Bet SuperLiga']::text[],
     array['Serbia', 'RS']::text[],
-    array['https://www.livescore.com/en/football/serbia/']::text[],
+    array['https://www.livescore.com/en/football/serbia/super-liga/']::text[],
     70,
     jsonb_build_object('seeded_from', '20260629123000_livescore_competition_sources')
   ),
@@ -166,7 +166,7 @@ values
     'Rwanda Premier League',
     array['Rwanda Premier League', 'Rwanda National League', 'Primus National League']::text[],
     array['Rwanda', 'RW']::text[],
-    array['https://www.livescore.com/en/football/rwanda/']::text[],
+    array['https://www.livescore.com/en/football/']::text[],
     90,
     jsonb_build_object('seeded_from', '20260629123000_livescore_competition_sources')
   ),
@@ -181,7 +181,7 @@ values
       'Vodacom Ligue 1'
     ]::text[],
     array['DR Congo', 'DRC', 'Democratic Republic of the Congo', 'CD']::text[],
-    array['https://www.livescore.com/en/football/dr-congo/']::text[],
+    array['https://www.livescore.com/en/football/']::text[],
     100,
     jsonb_build_object('seeded_from', '20260629123000_livescore_competition_sources')
   ),
@@ -190,7 +190,7 @@ values
     'Zambia Premier League',
     array['Zambia Premier League', 'Zambian Premier League', 'Zambia Super League', 'MTN Super League']::text[],
     array['Zambia', 'ZM']::text[],
-    array['https://www.livescore.com/en/football/zambia/']::text[],
+    array['https://www.livescore.com/en/football/zambia/super-league/']::text[],
     110,
     jsonb_build_object('seeded_from', '20260629123000_livescore_competition_sources')
   )

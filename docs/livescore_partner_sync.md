@@ -9,6 +9,12 @@ The sync runner is:
 tools/scripts/livescore_sync_runner.mjs
 ```
 
+The deployed Supabase Edge Function for OpenAI-assisted LiveScore extraction is:
+
+```text
+supabase/functions/livescore-openai-sync
+```
+
 ## Data Flow
 
 1. Load active source rows from `public.livescore_competition_sources`.
@@ -22,6 +28,8 @@ tools/scripts/livescore_sync_runner.mjs
    pools through `partner_prediction_pool_settle`.
 
 The runner fails closed when no active LiveScore source rows are configured.
+The Edge Function uses the same source table and also rejects any OpenAI-returned
+row whose supporting `source_url` is not under `livescore.com`.
 
 ## Required Environment
 
@@ -43,7 +51,6 @@ URLs and competition filters in `public.livescore_competition_sources` from
 ## Optional Environment
 
 ```bash
-LIVESCORE_SOURCE_MODE=web
 LIVESCORE_CLUB_ID=...
 LIVESCORE_FIXTURE_ARRAY_PATH=data.fixtures
 LIVESCORE_ENABLE_OPENAI_WEB_SEARCH=false
@@ -64,6 +71,44 @@ Leave it unset when the LiveScore source list is platform-global.
 `LIVESCORE_ENABLE_OPENAI_WEB_SEARCH=true` enables an optional fallback that asks
 OpenAI web search to inspect LiveScore web pages and return fixture JSON. The
 primary production path remains direct LiveScore page collection.
+
+## Supabase OpenAI Edge Function
+
+The `livescore-openai-sync` Edge Function uses OpenAI Responses API web search
+to inspect LiveScore pages and returns strict fixture JSON. It supports:
+
+- `mode: "preview"`: dry-run only, no writes and no pool settlement.
+- `mode: "sync"`: upsert competitions, seasons, teams, fixtures, write
+  `public.football_sync_log`, and settle finished linked partner pools.
+- `club_id` / `clubId`: include global source rows plus one club-specific set.
+- `source_keys` / `sourceKeys`: restrict a run to selected source keys.
+- `limit`: maximum fixtures per run, capped at 100.
+- `settle_pools` / `settlePools`: disable settlement when set to `false`.
+
+Required deployed secrets:
+
+```bash
+OPENAI_API_KEY=...
+OPENAI_LIVESCORE_MODEL=gpt-4.1-mini
+OPENAI_LIVESCORE_WEB_SEARCH_TOOL=web_search_preview
+LIVESCORE_SYNC_SECRET=...
+```
+
+The function accepts either `x-cron-secret: $LIVESCORE_SYNC_SECRET` for scheduled
+machine calls or an authenticated admin user token. Gateway JWT verification is
+disabled in Supabase config because the function performs internal auth.
+
+Preview invocation:
+
+```bash
+curl -sS -X POST "$SUPABASE_URL/functions/v1/livescore-openai-sync" \
+  -H "x-cron-secret: $LIVESCORE_SYNC_SECRET" \
+  -H "content-type: application/json" \
+  --data '{"mode":"preview","limit":5}'
+```
+
+Production cron should call the same endpoint every 60 seconds with
+`{"mode":"sync","limit":100}` after a valid OpenAI key is configured.
 
 ## Managed Competition Sources
 
@@ -152,14 +197,4 @@ If the embedded LiveScore page data uses a different envelope, set
 
 ```bash
 LIVESCORE_FIXTURE_ARRAY_PATH=props.pageProps.fixtures
-```
-
-## Explicit JSON Compatibility Mode
-
-The runner still supports JSON documents for local testing or compatibility
-jobs, but this is not the default path:
-
-```bash
-LIVESCORE_SOURCE_MODE=json
-LIVESCORE_FEED_URLS=http://127.0.0.1:3000/fixtures.json
 ```

@@ -27,6 +27,12 @@ function mapDashboardActivity(row: Record<string, unknown>): AdminActivityRecord
   };
 }
 
+interface DashboardAnalyticsRow {
+  total_fans?: number | null;
+  total_tickets_sold?: number | null;
+  ticket_revenue?: number | null;
+}
+
 export async function getAdminDashboardSnapshot(
   client: SupabaseClient,
   access: AdminAccess,
@@ -86,7 +92,7 @@ export async function getAdminDashboardSnapshot(
         .limit(3),
     ]);
 
-  const analytics = analyticsResponse.data as any;
+  const analytics = analyticsResponse.data as DashboardAnalyticsRow | null;
   const metrics: AdminDashboardMetrics = {
     activeUsers: analytics?.total_fans ?? 0,
     pendingVerifications: pendingTicketsCount, // fallback for now

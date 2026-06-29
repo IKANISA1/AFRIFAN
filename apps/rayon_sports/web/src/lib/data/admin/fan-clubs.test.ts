@@ -1,6 +1,8 @@
 // @vitest-environment node
 
 import { describe, expect, it } from "vitest";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { AdminAccess } from "@/lib/types";
 import { saveAdminFanClub } from "./fan-clubs";
 
 describe("saveAdminFanClub", () => {
@@ -97,12 +99,12 @@ describe("saveAdminFanClub", () => {
 
         throw new Error(`Unexpected table lookup: ${table}`);
       },
-    } as any;
+    } as unknown as SupabaseClient;
 
     await expect(
       saveAdminFanClub(
         client,
-        { clubId: "24" } as any,
+        { clubId: "24" } as unknown as AdminAccess,
         {
           name: "Kigali North",
           region: "Kigali",

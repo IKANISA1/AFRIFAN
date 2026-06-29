@@ -6,7 +6,7 @@ export const emptyMatchForm = {
   homeTeam: fallbackClubProfile.shortName,
   awayTeam: "",
   competition: fallbackClubProfile.league,
-  venue: "Club Stadium",
+  venue: "",
   matchDate: new Date().toISOString().slice(0, 10),
   kickoffTime: "18:00",
   isOnSale: false,

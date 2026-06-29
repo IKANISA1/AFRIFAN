@@ -494,7 +494,7 @@ void main() {
         'formation': '4-3-3',
         'coach_name': 'Coach Carlos',
         'is_confirmed': true,
-        'source': 'api-football',
+        'source': 'livescore',
         'starters': [
           {'name': 'Fiston', 'number': 1, 'position': 'GK'},
           {'name': 'Jean', 'number': 7, 'position': 'FW'},

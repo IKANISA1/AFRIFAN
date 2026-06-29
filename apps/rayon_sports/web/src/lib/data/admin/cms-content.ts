@@ -9,6 +9,12 @@ import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import { requireAdminClubId } from "./helpers";
 
+type ContentDistribution = HomeBanner["distribution"];
+
+function mapDistribution(value: unknown): ContentDistribution {
+  return value === "web" || value === "app" || value === "both" ? value : "both";
+}
+
 // ─── Home Banners ────────────────────────────────────────
 
 function mapBanner(row: Record<string, unknown>): HomeBanner {
@@ -22,7 +28,7 @@ function mapBanner(row: Record<string, unknown>): HomeBanner {
     imageUrl: safeString(row.image_url) || null,
     sortOrder: Number(row.sort_order ?? 0),
     isActive: row.is_active !== false,
-    distribution: (row.distribution as any) || "both",
+    distribution: mapDistribution(row.distribution),
   };
 }
 
@@ -108,7 +114,7 @@ function mapContent(row: Record<string, unknown>): CmsContent {
     ctaLabel: safeString(row.cta_label, ""),
     sortOrder: Number(row.sort_order ?? 0),
     isActive: row.is_active !== false,
-    distribution: (row.distribution as any) || "both",
+    distribution: mapDistribution(row.distribution),
   };
 }
 

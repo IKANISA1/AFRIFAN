@@ -142,7 +142,7 @@ export default function AdminContentBlocksPage() {
           </label>
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Distribution</span>
-            <select name="distribution" value={form.distribution} onChange={(e) => setForm({ ...form, distribution: e.target.value as any })} className="admin-input">
+            <select name="distribution" value={form.distribution} onChange={(e) => setForm({ ...form, distribution: e.target.value as CmsContent["distribution"] })} className="admin-input">
               <option value="both">Both (Web & App)</option>
               <option value="web">Website only</option>
               <option value="app">Mobile App only</option>

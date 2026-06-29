@@ -208,7 +208,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadDesignFonts);
 
-  testWidgets('renders live FANZONE sections from repository data', (
+  testWidgets('renders live fan engagement sections from repository data', (
     tester,
   ) async {
     final snapshot = _buildSnapshot();

@@ -12,8 +12,17 @@ export interface AdminAuditRecord {
   userId: string;
   userName?: string;
   action: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   createdAt: string;
+}
+
+interface AdminAuditRow extends Record<string, unknown> {
+  id?: unknown;
+  user_id?: unknown;
+  action?: unknown;
+  metadata?: unknown;
+  created_at?: unknown;
+  profiles?: { full_name?: unknown } | null;
 }
 
 export async function getAdminAuditLogs(
@@ -49,12 +58,16 @@ export async function getAdminAuditLogs(
 
   if (error) throw new Error(error.message);
 
-  return (data ?? []).map((row: any) => ({
+  return ((data ?? []) as AdminAuditRow[]).map((row) => ({
     id: toIdString(row.id, ""),
-    userId: row.user_id,
+    userId: safeString(row.user_id, ""),
     userName: safeString(row.profiles?.full_name, "System / Unknown"),
     action: safeString(row.action, "Operation"),
-    metadata: row.metadata || {},
+    metadata: isRecord(row.metadata) ? row.metadata : {},
     createdAt: safeString(row.created_at, new Date().toISOString()),
   }));
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }

@@ -8,6 +8,9 @@ const {
   saveAdminClubProfileMock,
   saveAdminPartnerPredictionPoolMock,
   settleAdminPartnerPredictionPoolMock,
+  getAdminLiveScoreCompetitionSourcesMock,
+  saveAdminLiveScoreCompetitionSourceMock,
+  deleteAdminLiveScoreCompetitionSourceMock,
   deleteAdminContributionGroupMock,
   rejectInsecureMutationMock,
   rejectRateLimitedRequestMock,
@@ -23,6 +26,9 @@ const {
     saveAdminClubProfileMock: vi.fn(),
     saveAdminPartnerPredictionPoolMock: vi.fn(),
     settleAdminPartnerPredictionPoolMock: vi.fn(),
+    getAdminLiveScoreCompetitionSourcesMock: vi.fn(),
+    saveAdminLiveScoreCompetitionSourceMock: vi.fn(),
+    deleteAdminLiveScoreCompetitionSourceMock: vi.fn(),
     deleteAdminContributionGroupMock: vi.fn(),
     rejectInsecureMutationMock: vi.fn(),
     rejectRateLimitedRequestMock: vi.fn(),
@@ -73,6 +79,7 @@ vi.mock("@/lib/data/admin", () => {
     getAdminFanEngagementTokens: noop,
     getAdminFetWalletSnapshot: noop,
     getAdminFixtures: noop,
+    getAdminLiveScoreCompetitionSources: getAdminLiveScoreCompetitionSourcesMock,
     getAdminMatches: noop,
     getAdminMembershipApplications: noop,
     getAdminMembershipPackages: noop,
@@ -102,6 +109,7 @@ vi.mock("@/lib/data/admin", () => {
     saveAdminFanClub: noop,
     saveAdminFanEngagementToken: noop,
     saveAdminFixture: noop,
+    saveAdminLiveScoreCompetitionSource: saveAdminLiveScoreCompetitionSourceMock,
     saveAdminMatch: noop,
     saveAdminMembershipPackage: noop,
     saveAdminOffer: noop,
@@ -113,6 +121,7 @@ vi.mock("@/lib/data/admin", () => {
     saveAdminStandingRow: noop,
     sendAdminNotification: noop,
     settleAdminPartnerPredictionPool: settleAdminPartnerPredictionPoolMock,
+    deleteAdminLiveScoreCompetitionSource: deleteAdminLiveScoreCompetitionSourceMock,
   };
 });
 
@@ -138,7 +147,7 @@ vi.mock("@/lib/supabase/server", () => ({
   getServerSupabase: vi.fn(async () => serverClient),
 }));
 
-import { DELETE, POST } from "./route";
+import { DELETE, GET, POST } from "./route";
 
 describe("admin resource route", () => {
   beforeEach(() => {
@@ -148,6 +157,9 @@ describe("admin resource route", () => {
     saveAdminClubProfileMock.mockReset();
     saveAdminPartnerPredictionPoolMock.mockReset();
     settleAdminPartnerPredictionPoolMock.mockReset();
+    getAdminLiveScoreCompetitionSourcesMock.mockReset();
+    saveAdminLiveScoreCompetitionSourceMock.mockReset();
+    deleteAdminLiveScoreCompetitionSourceMock.mockReset();
     deleteAdminContributionGroupMock.mockReset();
     rejectInsecureMutationMock.mockReset();
     rejectRateLimitedRequestMock.mockReset();
@@ -175,7 +187,27 @@ describe("admin resource route", () => {
     saveAdminClubProfileMock.mockResolvedValue({ success: true });
     saveAdminPartnerPredictionPoolMock.mockResolvedValue({ id: "pool-1" });
     settleAdminPartnerPredictionPoolMock.mockResolvedValue({ id: "pool-1", status: "settled" });
+    getAdminLiveScoreCompetitionSourcesMock.mockResolvedValue([{ id: "source-1" }]);
+    saveAdminLiveScoreCompetitionSourceMock.mockResolvedValue("source-1");
+    deleteAdminLiveScoreCompetitionSourceMock.mockResolvedValue(undefined);
     deleteAdminContributionGroupMock.mockResolvedValue(undefined);
+  });
+
+  it("uses the admin client for LiveScore source reads", async () => {
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/livescore-sources",
+      { method: "GET" },
+    );
+
+    const response = (await GET(request, {
+      params: Promise.resolve({ resource: "livescore-sources" }),
+    })) as Response;
+
+    expect(getAdminLiveScoreCompetitionSourcesMock).toHaveBeenCalledWith(
+      adminClient,
+      expect.objectContaining({ clubId: "24" }),
+    );
+    expect(response.status).toBe(200);
   });
 
   it("uses the admin client for contribution group creation", async () => {
@@ -270,6 +302,37 @@ describe("admin resource route", () => {
     expect(response.status).toBe(200);
   });
 
+  it("uses the admin client for LiveScore source saves", async () => {
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/livescore-sources",
+      {
+        method: "POST",
+        headers: {
+          origin: "https://admin.gikundiro.com",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          sourceKey: "rwanda-premier-league",
+          displayName: "Rwanda Premier League",
+          matchAliases: ["Rwanda Premier League"],
+          sourceUrls: ["https://www.livescore.com/en/football/rwanda/"],
+          isActive: true,
+        }),
+      },
+    );
+
+    const response = (await POST(request, {
+      params: Promise.resolve({ resource: "livescore-sources" }),
+    })) as Response;
+
+    expect(saveAdminLiveScoreCompetitionSourceMock).toHaveBeenCalledWith(
+      adminClient,
+      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ sourceKey: "rwanda-premier-league" }),
+    );
+    expect(response.status).toBe(200);
+  });
+
   it("uses the admin client for contribution group deletion", async () => {
     const request = new NextRequest(
       "https://admin.gikundiro.com/api/admin/contributions?id=group-1",
@@ -289,6 +352,29 @@ describe("admin resource route", () => {
       adminClient,
       expect.objectContaining({ clubId: "24" }),
       "group-1",
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("uses the admin client for LiveScore source deletion", async () => {
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/livescore-sources?id=source-1",
+      {
+        method: "DELETE",
+        headers: {
+          origin: "https://admin.gikundiro.com",
+        },
+      },
+    );
+
+    const response = (await DELETE(request, {
+      params: Promise.resolve({ resource: "livescore-sources" }),
+    })) as Response;
+
+    expect(deleteAdminLiveScoreCompetitionSourceMock).toHaveBeenCalledWith(
+      adminClient,
+      expect.objectContaining({ clubId: "24" }),
+      "source-1",
     );
     expect(response.status).toBe(200);
   });
