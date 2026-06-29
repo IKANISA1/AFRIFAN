@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -5,6 +7,7 @@ import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../shop_cart_provider.dart';
 import '../widgets/cart_item_card.dart';
 
@@ -47,7 +50,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
     _paymentRouteLookupKey = lookupKey;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _refreshPaymentRouteState(user);
+      unawaited(_refreshPaymentRouteState(user));
     });
   }
 
@@ -106,6 +109,26 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         return;
       }
 
+      final confirmed = await _showCheckoutConfirmSheet(
+        items: items,
+        total: total,
+      );
+
+      if (!confirmed || !mounted) return;
+
+      final paymentReference = 'order-${DateTime.now().millisecondsSinceEpoch}';
+      final orderId = await repo.placeOrder(
+        userId: user.id,
+        partnerId: user.clubId,
+        items: items,
+        deliveryAddress: _addressController.text.trim(),
+        paymentReference: paymentReference,
+      );
+
+      ref.read(shopCartProvider.notifier).clear();
+
+      if (!mounted) return;
+
       final launched = await MomoDialerService.launchMomoUssd(
         recipient: route.recipientCode,
         amount: total,
@@ -116,28 +139,13 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       if (!mounted) return;
 
       if (!launched) {
-        AfriToast.error(context, 'Could not launch the MOMO dialer.');
+        AfriToast.error(
+          context,
+          'Order $orderId was saved, but the MOMO dialer could not open.',
+        );
+        context.go('/shop');
         return;
       }
-
-      final confirmed = await _showCheckoutConfirmSheet(
-        items: items,
-        total: total,
-      );
-
-      if (!confirmed || !mounted) return;
-
-      final orderId = await repo.placeOrder(
-        userId: user.id,
-        partnerId: user.clubId,
-        items: items,
-        deliveryAddress: _addressController.text.trim(),
-        paymentReference: 'order-${DateTime.now().millisecondsSinceEpoch}',
-      );
-
-      ref.read(shopCartProvider.notifier).clear();
-
-      if (!mounted) return;
 
       AfriToast.success(
         context,

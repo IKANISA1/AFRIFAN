@@ -99,12 +99,12 @@ void main() {
       await tester.pump();
 
       expect(find.textContaining('temporarily unavailable'), findsOneWidget);
-      expect(find.text('Fans'), findsOneWidget);
-      expect(find.text('Support'), findsOneWidget);
-      expect(find.text('Groups'), findsOneWidget);
       expect(find.text('Tickets'), findsOneWidget);
+      expect(find.text('Join Gikundiro'), findsOneWidget);
+      expect(find.text('Fanclubs'), findsOneWidget);
       expect(find.text('Shop'), findsOneWidget);
-      expect(find.text('Members'), findsOneWidget);
+      expect(find.text('Matchday'), findsOneWidget);
+      expect(find.text('Contribute'), findsOneWidget);
     });
 
     testWidgets(
@@ -129,12 +129,12 @@ void main() {
         expect(find.byType(AfriErrorView), findsNothing);
         expect(find.textContaining('Could not resolve'), findsNothing);
         expect(find.text(homeFeedLocalFallbackMessage), findsOneWidget);
-        expect(find.text('Fans'), findsOneWidget);
-        expect(find.text('Support'), findsOneWidget);
-        expect(find.text('Groups'), findsOneWidget);
         expect(find.text('Tickets'), findsOneWidget);
+        expect(find.text('Join Gikundiro'), findsOneWidget);
+        expect(find.text('Fanclubs'), findsOneWidget);
         expect(find.text('Shop'), findsOneWidget);
-        expect(find.text('Members'), findsOneWidget);
+        expect(find.text('Matchday'), findsOneWidget);
+        expect(find.text('Contribute'), findsOneWidget);
       },
     );
 

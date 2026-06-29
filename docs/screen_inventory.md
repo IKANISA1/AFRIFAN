@@ -30,9 +30,9 @@ Source route contracts:
 - `RULES.md` locks `home_screen.dart`, Home-exclusive widgets, and
   `packages/core/core_theme`. Remediation touching those areas needs owner
   approval or a documented owner decision.
-- Admin routes are present in the mobile module registry, while
-  `docs/blueprint.md` says Admin is a centralized PWA surface. Treat mobile
-  Admin as an architecture decision pending Phase 3 reconciliation.
+- Admin is centralized in the PWA by default. `AdminModule` remains available
+  only for explicit internal mobile builds with `mobile_admin` or `admin`
+  enabled in the club feature map.
 - This file records current source state. It is not a release signoff.
 
 ## State Definitions
@@ -159,13 +159,13 @@ surface.
 
 ## Mobile Admin Routes
 
-These routes are present in `AdminModule`, but their product ownership conflicts
-with the blueprint's centralized Admin PWA direction. Do not expand these routes
-until Phase 3 resolves the mobile admin decision.
+These routes remain implemented inside `AdminModule` for explicit internal
+mobile builds only. Rayon/Gikundiro supporter builds do not register them by
+default; admins should use the centralized PWA.
 
 | Screen | Route | Module | Auth | States To Verify | Accessibility And Responsive Notes |
 | --- | --- | --- | --- | --- | --- |
-| Admin Dashboard | `/admin` | `AdminModule` | Admin/internal | loading, authorized, denied, error | Verify route guard and mobile exclusion decision. |
+| Admin Dashboard | `/admin` | `AdminModule` | Admin/internal opt-in | loading, authorized, denied, error | PWA-owned by default; verify route guard only in explicit internal mobile builds. |
 | CMS Manager | `/admin/cms` | `AdminModule` | Admin/internal | loading, list, edit, error | PWA-owned candidate. |
 | Match Manager | `/admin/matches` | `AdminModule` | Admin/internal | loading, list, edit, error | PWA-owned candidate. |
 | Contributions Monitor | `/admin/contributions` | `AdminModule` | Admin/internal | loading, data, empty, error | PWA-owned candidate. |

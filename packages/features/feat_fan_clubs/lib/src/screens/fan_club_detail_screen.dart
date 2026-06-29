@@ -123,7 +123,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
     unawaited(HapticFeedback.mediumImpact());
     AfriToast.info(
       context,
-      'Fanclub requests use the protected review path before joining is confirmed.',
+      'Request sent for admin review. You are not joined until the club approves it.',
     );
   }
 
@@ -340,7 +340,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                               ? 'This fan club is waiting for admin approval.'
                               : _joined
                               ? 'You are a member.'
-                              : 'Join for updates & matchday coordination.',
+                              : 'Request admin review before joining is confirmed.',
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         _SnapshotRow(title: 'Region: $region.'),
@@ -369,7 +369,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
                               ? 'UPDATING...'
                               : _joined
                               ? 'REQUESTED'
-                              : 'REQUEST ACCESS',
+                              : 'REQUEST REVIEW',
                           variant: AfriButtonVariant.primary,
                           enabled: isActive && !_isJoinMutationPending,
                           isLoading: isActive && _isJoinMutationPending,

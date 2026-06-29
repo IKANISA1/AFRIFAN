@@ -4,9 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ShopCatalogSlivers', () {
-    testWidgets('hides catalog section when products are empty', (
-      tester,
-    ) async {
+    testWidgets('shows an empty state when products are empty', (tester) async {
+      var retried = false;
       await tester.pumpWidget(
         _CatalogHarness(
           child: ShopCatalogSlivers(
@@ -17,7 +16,7 @@ void main() {
             categories: const ['All'],
             selectedCategory: 'All',
             onCategorySelected: (_) {},
-            onRetry: () {},
+            onRetry: () => retried = true,
             onProductTap: (_) {},
             onAddToCart: (_) {},
           ),
@@ -25,8 +24,46 @@ void main() {
       );
 
       expect(find.text('Club store'), findsNothing);
-      expect(find.text('No products found'), findsNothing);
-      expect(find.textContaining('No items match'), findsNothing);
+      expect(find.text('No products available'), findsOneWidget);
+      expect(find.textContaining('Official merchandise'), findsOneWidget);
+      await tester.tap(find.text('Retry'));
+      expect(retried, isTrue);
+    });
+
+    testWidgets('shows a filter empty state with a clear action', (
+      tester,
+    ) async {
+      String? selectedCategory;
+      final products = [
+        {
+          'id': 'jersey-home',
+          'name': 'Home Jersey',
+          'category': 'Jerseys',
+          'price': 25000,
+        },
+      ];
+
+      await tester.pumpWidget(
+        _CatalogHarness(
+          child: ShopCatalogSlivers(
+            isLoading: false,
+            error: null,
+            products: products,
+            filteredProducts: const [],
+            categories: const ['All', 'Jerseys', 'Scarves'],
+            selectedCategory: 'Scarves',
+            onCategorySelected: (category) => selectedCategory = category,
+            onRetry: () {},
+            onProductTap: (_) {},
+            onAddToCart: (_) {},
+          ),
+        ),
+      );
+
+      expect(find.text('No products in Scarves'), findsOneWidget);
+      expect(find.text('Show all'), findsOneWidget);
+      await tester.tap(find.text('Show all'));
+      expect(selectedCategory, 'All');
     });
 
     testWidgets('renders catalog section when products are present', (

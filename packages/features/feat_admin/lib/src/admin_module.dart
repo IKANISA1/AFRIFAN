@@ -18,6 +18,16 @@ class AdminModule extends FeatureModule {
   @override
   String get featureKey => 'admin';
 
+  /// Mobile admin is PWA-owned by default for Rayon/Gikundiro.
+  ///
+  /// Keep the module available for explicit internal builds, but do not let the
+  /// base FeatureModule fallback register it just because the key is absent.
+  @override
+  bool isEnabled(Map<String, bool> featureFlags) {
+    return featureFlags['mobile_admin'] == true ||
+        featureFlags['admin'] == true;
+  }
+
   @override
   TabRoute? get tabRoute => null;
 

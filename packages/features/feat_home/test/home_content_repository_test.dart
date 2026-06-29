@@ -27,11 +27,12 @@ void main() {
       expect(
         snapshot.quickActions.map((action) => action.title),
         containsAll(<String>[
-          'Groups',
-          'Predict',
           'Tickets',
+          'Join Gikundiro',
+          'Fanclubs',
           'Shop',
-          'Members',
+          'Matchday',
+          'Contribute',
         ]),
       );
     });

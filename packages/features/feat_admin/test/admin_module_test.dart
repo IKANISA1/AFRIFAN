@@ -50,12 +50,17 @@ void main() {
       expect(subPaths, contains('features'));
     });
 
-    test('isEnabled defaults to true when key is absent', () {
-      expect(module.isEnabled({}), isTrue);
+    test('isEnabled defaults to false when mobile admin is absent', () {
+      expect(module.isEnabled({}), isFalse);
     });
 
     test('isEnabled returns false when explicitly disabled', () {
       expect(module.isEnabled({'admin': false}), isFalse);
+    });
+
+    test('isEnabled returns true for explicit mobile admin builds', () {
+      expect(module.isEnabled({'mobile_admin': true}), isTrue);
+      expect(module.isEnabled({'admin': true}), isTrue);
     });
 
     test('standaloneRoutes is empty by default', () {

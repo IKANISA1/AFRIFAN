@@ -99,19 +99,6 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
 
       final paymentReference =
           'membership-$tierValue-${DateTime.now().millisecondsSinceEpoch}';
-      final launched = await MomoDialerService.launchMomoUssd(
-        recipient: route.recipientCode,
-        amount: amount,
-        country: route.country,
-        recipientType: PaymentRecipientType.code,
-      );
-
-      if (!mounted) return;
-      if (!launched) {
-        _showError('Could not launch the MOMO dialer.');
-        return;
-      }
-
       await _createMembershipApplication(
         client: client,
         user: user,
@@ -123,7 +110,20 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
         pkg: pkg,
       );
       await _refreshMembership();
-      if (!mounted) {
+      if (!mounted) return;
+
+      final launched = await MomoDialerService.launchMomoUssd(
+        recipient: route.recipientCode,
+        amount: amount,
+        country: route.country,
+        recipientType: PaymentRecipientType.code,
+      );
+
+      if (!mounted) return;
+      if (!launched) {
+        _showError(
+          '$tierLabel request was saved, but the MOMO dialer could not open.',
+        );
         return;
       }
       _showSuccess(
@@ -543,16 +543,18 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                         final uri = Uri.parse(
                           'https://wa.me/$sanitizedPhoneNumber?text=${Uri.encodeComponent('Hi, I need help with my membership payment verification.')}',
                         );
-                        launchUrl(
-                          uri,
-                          mode: LaunchMode.externalApplication,
-                        ).then((launched) {
-                          if (!launched && mounted) {
-                            _showError(
-                              'Could not open WhatsApp. Please contact support.',
-                            );
-                          }
-                        });
+                        unawaited(
+                          launchUrl(
+                            uri,
+                            mode: LaunchMode.externalApplication,
+                          ).then((launched) {
+                            if (!launched && mounted) {
+                              _showError(
+                                'Could not open WhatsApp. Please contact support.',
+                              );
+                            }
+                          }),
+                        );
                       } else {
                         _showInfo('Support contact is not configured yet.');
                       }
@@ -832,7 +834,11 @@ class _PaymentStatusCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(AfriIcons.statusInfo, size: 20, color: ColorTokens.warning),
+              const Icon(
+                AfriIcons.statusInfo,
+                size: 20,
+                color: ColorTokens.warning,
+              ),
               const SizedBox(width: SpacingTokens.spacing3),
               Expanded(
                 child: Text(
@@ -873,7 +879,7 @@ class _PaymentStatusCard extends StatelessWidget {
                     ),
                     alignment: Alignment.center,
                     child: step.isComplete
-                        ? Icon(
+                        ? const Icon(
                             AfriIcons.verified,
                             size: 12,
                             color: ColorTokens.success,
@@ -882,7 +888,7 @@ class _PaymentStatusCard extends StatelessWidget {
                         ? Container(
                             width: 8,
                             height: 8,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                               color: ColorTokens.warning,
                             ),

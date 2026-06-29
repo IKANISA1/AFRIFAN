@@ -19,7 +19,8 @@ Rayon Sports app. It is source-backed from `packages/app_registry`,
 - `ContributionsModule`
 - `TicketingModule`
 - `FanClubsModule`
-- `AdminModule`
+- `AdminModule` (explicit internal mobile opt-in only; centralized Admin PWA is
+  the default operations surface)
 - `ShopModule`
 
 ## Route Inventory
@@ -27,7 +28,7 @@ Rayon Sports app. It is source-backed from `packages/app_registry`,
 | Module | Active routes |
 | --- | --- |
 | Home | `/home` tab |
-| Fan Zone | `/fanzone` tab, `fixtures`, `live`, `my`, `my/:predictionId`, `my/:predictionId/settlement`, `match/:fixtureId`, `wallet`, `offers`, `rewards`, `history`, `leaderboard`, `notifications`, `challenges`, `badges`, `streak`, `jackpot`, `share`, `friends`, `challenge`, `league`, `league/:competitionSlug`, `standings/:competitionSlug`, `team/:teamSlug`, `club-zone`, `fan-id`, `social`, `privacy` |
+| Fan Zone | `/fanzone` tab, `fixtures`, `live`, `my`, `my/:predictionId`, `my/:predictionId/settlement`, `match/:fixtureId`, `wallet`, `offers`, `rewards`, `history`, `leaderboard`, `notifications`, `badges`, `streak`, `share`, `league`, `league/:competitionSlug`, `standings/:competitionSlug`, `team/:teamSlug`, `club-zone`, `fan-id`, `social`, `privacy` |
 | Settings | `/settings` tab, `edit-profile`, `notifications`, `privacy` |
 | Onboarding | `/splash`, `/onboarding`, `/auth/phone`, `/auth/otp` |
 | Live | `/live`, `/live/news/:articleId`, `/live-match` redirect |
@@ -36,7 +37,7 @@ Rayon Sports app. It is source-backed from `packages/app_registry`,
 | Contributions | `/contribute`, `/contribute/projects`, `/contribute/groups`, `/contribute/group/:groupId`, `/contribute/group/:groupId/statement` |
 | Ticketing | `/tickets`, `/tickets/detail/:id`, `/tickets/map/:id`, `/my-tickets`, `/e-ticket/:id` |
 | Fan Clubs | `/fan-clubs`, `/fan-clubs/:clubId` |
-| Admin | `/admin`, `/admin/cms`, `/admin/matches`, `/admin/contributions`, `/admin/notifications`, `/admin/sms-monitor`, `/admin/settle`, `/admin/challenges`, `/admin/competitions`, `/admin/features`, `/admin/features/:featureKey` |
+| Admin | Explicit internal mobile opt-in only: `/admin`, `/admin/cms`, `/admin/matches`, `/admin/contributions`, `/admin/notifications`, `/admin/sms-monitor`, `/admin/settle`, `/admin/challenges`, `/admin/competitions`, `/admin/features`, `/admin/features/:featureKey` |
 | Shop | `/shop`, `/shop/cart`, `/shop/product/:productId` |
 
 ## Screen File Inventory

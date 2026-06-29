@@ -75,7 +75,7 @@ require owner decision before release claims:
 | --- | --- | --- | --- |
 | `docs/design.md` | Modified | Owner decision required | Canonical design source changed before this Phase 0 pass. |
 | `RULES.md` bottom-nav wording | Source conflict | Owner decision required | `RULES.md` says `Home · Contribute · Settings`; router and module tests use `Home · Fan Zone · Settings`. |
-| Mobile admin routes | Source conflict | Phase 3 owner decision | `AdminModule` registers mobile routes; `docs/blueprint.md` states Admin is centralized PWA. |
+| Mobile admin routes | Resolved | PWA-owned by default | `AdminModule` remains implemented for explicit internal mobile builds only; default Rayon/Gikundiro supporter builds use the centralized Admin PWA. |
 
 ## Decision Needed
 

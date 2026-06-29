@@ -158,7 +158,7 @@ class FanClubListItem extends StatelessWidget {
             children: [
               Expanded(
                 child: AfriButton(
-                  label: isJoined ? 'Requested' : 'Request',
+                  label: isJoined ? 'Review requested' : 'Request review',
                   onTap: onJoinToggled,
                   isLoading: isPending,
                   variant: isJoined

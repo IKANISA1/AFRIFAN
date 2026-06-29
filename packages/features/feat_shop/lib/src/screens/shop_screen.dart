@@ -250,7 +250,20 @@ class ShopCatalogSlivers extends StatelessWidget {
     }
 
     if (products.isEmpty || filteredProducts.isEmpty) {
-      return const SliverToBoxAdapter(child: SizedBox.shrink());
+      return SliverToBoxAdapter(
+        child: _ShopEmptyState(
+          title: products.isEmpty
+              ? 'No products available'
+              : 'No products in $selectedCategory',
+          message: products.isEmpty
+              ? 'Official merchandise will appear here when the club publishes store inventory.'
+              : 'Try another category or clear the filter to see the full store.',
+          actionLabel: products.isEmpty ? 'Retry' : 'Show all',
+          onAction: products.isEmpty
+              ? onRetry
+              : () => onCategorySelected('All'),
+        ),
+      );
     }
 
     return SliverMainAxisGroup(
@@ -358,6 +371,33 @@ class _ShopErrorState extends StatelessWidget {
         message: 'Could not load merchandise right now.',
         actionLabel: 'Retry',
         onAction: onRetry,
+      ),
+    );
+  }
+}
+
+class _ShopEmptyState extends StatelessWidget {
+  const _ShopEmptyState({
+    required this.title,
+    required this.message,
+    required this.actionLabel,
+    required this.onAction,
+  });
+
+  final String title;
+  final String message;
+  final String actionLabel;
+  final VoidCallback onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(SpacingTokens.spacing8),
+      child: AfriStateView.empty(
+        title: title,
+        message: message,
+        actionLabel: actionLabel,
+        onAction: onAction,
       ),
     );
   }

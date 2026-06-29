@@ -115,7 +115,7 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
     unawaited(HapticFeedback.lightImpact());
     AfriToast.info(
       context,
-      'Fanclub requests use the protected review path before joining is confirmed.',
+      'Request sent for admin review. You are not joined until the club approves it.',
     );
   }
 

@@ -15,7 +15,20 @@ class InteractiveSeatMapScreen extends StatefulWidget {
 }
 
 class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
+  static const List<String> _standZones = <String>[
+    'VIP Gold',
+    'East Stand',
+    'Tribune Red',
+    'Standing',
+  ];
+
   String? _selectedSeat;
+
+  void _selectStand(String zone) {
+    setState(() {
+      _selectedSeat = '$zone, Seat 1';
+    });
+  }
 
   void _onSeatTap(Offset localPosition, Size size) {
     // Simplified hit testing based on grid
@@ -86,6 +99,7 @@ class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
               ),
             ),
           ),
+          _buildAccessibleStandPicker(),
           // Legend
           Container(
             padding: const EdgeInsets.all(SpacingTokens.spacing4),
@@ -115,17 +129,27 @@ class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('SELECTED SEAT',
-                            style: TypographyTokens.labelSmall()
-                                .copyWith(color: ColorTokens.onSurfaceVariant)),
-                        Text(_selectedSeat!,
-                            style: TypographyTokens.titleMedium()),
-                      ],
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'SELECTED SEAT',
+                            style: TypographyTokens.labelSmall().copyWith(
+                              color: ColorTokens.onSurfaceVariant,
+                            ),
+                          ),
+                          Text(
+                            _selectedSeat!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TypographyTokens.titleMedium(),
+                          ),
+                        ],
+                      ),
                     ),
+                    const SizedBox(width: SpacingTokens.spacing4),
                     AfriButton(
                       label: 'Confirm',
                       fullWidth: false,
@@ -136,6 +160,38 @@ class _InteractiveSeatMapScreenState extends State<InteractiveSeatMapScreen> {
               ),
             )
           : null,
+    );
+  }
+
+  Widget _buildAccessibleStandPicker() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(
+        SpacingTokens.spacing4,
+        0,
+        SpacingTokens.spacing4,
+        SpacingTokens.spacing4,
+      ),
+      color: ColorTokens.background,
+      child: Wrap(
+        spacing: SpacingTokens.spacing2,
+        runSpacing: SpacingTokens.spacing2,
+        alignment: WrapAlignment.center,
+        children: [
+          for (final zone in _standZones)
+            AfriButton(
+              label: zone,
+              fullWidth: false,
+              variant: _selectedSeat?.startsWith(zone) == true
+                  ? AfriButtonVariant.primary
+                  : AfriButtonVariant.outline,
+              semanticsLabel: _selectedSeat?.startsWith(zone) == true
+                  ? 'Selected $zone stand'
+                  : 'Select $zone stand',
+              onTap: () => _selectStand(zone),
+            ),
+        ],
+      ),
     );
   }
 

@@ -113,8 +113,18 @@ void main() {
       );
     });
 
-    test('/admin keeps the operations routes', () {
-      final admin = modules.firstWhere((m) => m.featureKey == 'admin');
+    test('mobile admin is excluded from default supporter route graph', () {
+      expect(
+        modules.map((module) => module.featureKey),
+        isNot(contains('admin')),
+      );
+    });
+
+    test('/admin keeps the operations routes for explicit internal builds', () {
+      final internalModules = AppModuleRegistry.build(
+        const _AllFeaturesConfig(mobileAdmin: true),
+      );
+      final admin = internalModules.firstWhere((m) => m.featureKey == 'admin');
       final root = admin.routes.whereType<GoRoute>().firstWhere(
         (r) => r.path == '/admin',
       );
@@ -250,7 +260,9 @@ void main() {
 }
 
 class _AllFeaturesConfig implements ClubConfig {
-  const _AllFeaturesConfig();
+  const _AllFeaturesConfig({this.mobileAdmin = false});
+
+  final bool mobileAdmin;
 
   @override
   String get clubId => '24';
@@ -299,12 +311,13 @@ class _AllFeaturesConfig implements ClubConfig {
   @override
   bool get hasSmsLedger => true;
   @override
-  Map<String, bool> get features => const <String, bool>{
+  Map<String, bool> get features => <String, bool>{
     'fan_clubs': true,
     'shop': true,
     'ticketing': true,
     'chat': true,
     'sms_ledger': true,
+    'mobile_admin': mobileAdmin,
   };
   @override
   MomoConfig get momo => const MomoConfig(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -44,7 +46,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
 
     _paymentRouteLookupKey = lookupKey;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _refreshPaymentRouteState(user);
+      unawaited(_refreshPaymentRouteState(user));
     });
   }
 
@@ -103,20 +105,6 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
         return;
       }
 
-      final launched = await MomoDialerService.launchMomoUssd(
-        recipient: route.recipientCode,
-        amount: total,
-        country: route.country,
-        recipientType: PaymentRecipientType.code,
-      );
-
-      if (!mounted) return;
-
-      if (!launched) {
-        AfriToast.error(context, 'Could not launch the MOMO dialer.');
-        return;
-      }
-
       final reference = 'ticket-${DateTime.now().millisecondsSinceEpoch}';
       final tickets = await repo.purchaseTickets(
         matchId: match.id,
@@ -136,6 +124,24 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
           context,
           'Ticket reservation failed. Please try again from the match screen.',
         );
+        return;
+      }
+
+      final launched = await MomoDialerService.launchMomoUssd(
+        recipient: route.recipientCode,
+        amount: total,
+        country: route.country,
+        recipientType: PaymentRecipientType.code,
+      );
+
+      if (!mounted) return;
+
+      if (!launched) {
+        AfriToast.error(
+          context,
+          'Ticket request was saved, but the MOMO dialer could not open.',
+        );
+        context.go('/my-tickets');
         return;
       }
 

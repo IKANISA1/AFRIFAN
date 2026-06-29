@@ -129,10 +129,16 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
               _buildMatchList(
                 context,
                 matches: upcoming,
+                emptyTitle: 'No upcoming ticketed fixtures',
+                emptyBody:
+                    'Upcoming ticket inventory will appear here once the club publishes sales for the next fixture.',
               ),
               _buildMatchList(
                 context,
                 matches: past,
+                emptyTitle: 'No past ticketed fixtures',
+                emptyBody:
+                    'Past ticketed fixtures will appear here after matchday sales are completed.',
               ),
             ],
           );
@@ -195,9 +201,16 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
   Widget _buildMatchList(
     BuildContext context, {
     required List<ClubMatch> matches,
+    required String emptyTitle,
+    required String emptyBody,
   }) {
     if (matches.isEmpty) {
-      return const SizedBox.shrink();
+      return _TicketState(
+        title: emptyTitle,
+        body: emptyBody,
+        actionLabel: 'Refresh',
+        onPressed: () => ref.invalidate(ticketMatchesProvider),
+      );
     }
 
     return ListView.separated(

@@ -26,7 +26,6 @@ void main() {
           'onboarding',
           'membership',
           'contributions',
-          'admin',
         ]),
       );
     });
@@ -46,7 +45,6 @@ void main() {
           'contributions',
           'ticketing',
           'fan_clubs',
-          'admin',
           'shop',
         ]),
       );
@@ -98,7 +96,6 @@ void main() {
         'contributions',
         'ticketing',
         'fan_clubs',
-        'admin',
         'shop',
       ]) {
         final module = modules.firstWhere((m) => m.featureKey == featureKey);
@@ -150,34 +147,47 @@ void main() {
   });
 
   group('Admin routes', () {
-    test('/admin retains core operations routes', () {
-      final modules = AppModuleRegistry.build(
-        const _FakeClubConfig(
-          hasFanClubs: false,
-          hasShop: false,
-          hasTicketing: false,
-        ),
-      );
-      final admin = modules.firstWhere((m) => m.featureKey == 'admin');
-      final adminRoute = admin.routes.whereType<GoRoute>().firstWhere(
-        (r) => r.path == '/admin',
-      );
-      final subPaths = adminRoute.routes
-          .whereType<GoRoute>()
-          .map((r) => r.path)
-          .toSet();
+    test('mobile admin is not registered unless explicitly opted in', () {
+      final modules = AppModuleRegistry.build(const _FakeClubConfig());
 
       expect(
-        subPaths,
-        containsAll(<String>{
-          'cms',
-          'matches',
-          'contributions',
-          'notifications',
-          'sms-monitor',
-        }),
+        modules.map((module) => module.featureKey),
+        isNot(contains('admin')),
       );
     });
+
+    test(
+      '/admin retains core operations routes for explicit internal builds',
+      () {
+        final modules = AppModuleRegistry.build(
+          const _FakeClubConfig(
+            hasFanClubs: false,
+            hasShop: false,
+            hasTicketing: false,
+            hasMobileAdmin: true,
+          ),
+        );
+        final admin = modules.firstWhere((m) => m.featureKey == 'admin');
+        final adminRoute = admin.routes.whereType<GoRoute>().firstWhere(
+          (r) => r.path == '/admin',
+        );
+        final subPaths = adminRoute.routes
+            .whereType<GoRoute>()
+            .map((r) => r.path)
+            .toSet();
+
+        expect(
+          subPaths,
+          containsAll(<String>{
+            'cms',
+            'matches',
+            'contributions',
+            'notifications',
+            'sms-monitor',
+          }),
+        );
+      },
+    );
   });
 
   group('Contributions routes', () {
@@ -265,6 +275,7 @@ class _FakeClubConfig implements ClubConfig {
     this.hasFanClubs = true,
     this.hasShop = true,
     this.hasTicketing = true,
+    this.hasMobileAdmin = false,
   });
 
   @override
@@ -273,6 +284,7 @@ class _FakeClubConfig implements ClubConfig {
   final bool hasShop;
   @override
   final bool hasTicketing;
+  final bool hasMobileAdmin;
   @override
   String get appName => 'AFRICLUB Test';
   @override
@@ -312,6 +324,7 @@ class _FakeClubConfig implements ClubConfig {
     'ticketing': hasTicketing,
     'chat': hasChat,
     'sms_ledger': hasSmsLedger,
+    'mobile_admin': hasMobileAdmin,
   };
   @override
   String get language => 'en';

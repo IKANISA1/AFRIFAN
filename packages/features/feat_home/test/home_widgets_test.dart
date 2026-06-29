@@ -106,6 +106,9 @@ void main() {
             builder: (_, __) => const SizedBox(),
           ),
           GoRoute(path: '/tickets', builder: (_, __) => const SizedBox()),
+          GoRoute(path: '/membership', builder: (_, __) => const SizedBox()),
+          GoRoute(path: '/fan-clubs', builder: (_, __) => const SizedBox()),
+          GoRoute(path: '/shop', builder: (_, __) => const SizedBox()),
           GoRoute(path: '/contribute', builder: (_, __) => const SizedBox()),
         ],
       );
@@ -130,12 +133,12 @@ void main() {
       await tester.pumpWidget(buildTestApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('Groups'), findsOneWidget);
-      expect(find.text('Predict'), findsOneWidget);
       expect(find.text('Tickets'), findsOneWidget);
+      expect(find.text('Join Gikundiro'), findsOneWidget);
+      expect(find.text('Fanclubs'), findsOneWidget);
       expect(find.text('Shop'), findsOneWidget);
-      expect(find.text('Members'), findsOneWidget);
-      expect(find.text('Offers'), findsOneWidget);
+      expect(find.text('Matchday'), findsOneWidget);
+      expect(find.text('Contribute'), findsOneWidget);
     });
   });
 }

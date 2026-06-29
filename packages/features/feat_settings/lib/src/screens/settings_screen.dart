@@ -227,7 +227,16 @@ class SettingsScreen extends ConsumerWidget {
 
     final confirmed = await _showAdminConfirmation(context);
     if (!confirmed || !context.mounted) return;
-    unawaited(context.push('/admin'));
+    final adminUri = AppLinks.adminUri;
+    if (adminUri == null) {
+      AfriToast.error(context, 'Admin workspace URL is not configured.');
+      return;
+    }
+    await launchExternalUri(
+      context,
+      adminUri,
+      failureMessage: 'Could not open the admin workspace.',
+    );
   }
 
   Future<bool> _showAdminConfirmation(BuildContext context) async {
@@ -254,7 +263,7 @@ class SettingsScreen extends ConsumerWidget {
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             Text(
-              'You are entering the admin workspace with elevated permissions. Actions taken here affect all supporters.',
+              'You are opening the centralized admin workspace with elevated permissions. Actions taken there affect all supporters.',
               textAlign: TextAlign.center,
               style: TypographyTokens.bodyMedium(
                 ColorTokens.onDarkDim,

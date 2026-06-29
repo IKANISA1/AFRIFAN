@@ -101,7 +101,13 @@ Fastlane upload prerequisite:
 - Play/App Store screenshots and descriptions match actual functionality
 - data safety / privacy answers match the implemented app behavior
 
-## 7. Rollout decision
+## 7. Localization limitation
+
+- Rayon Sports defaults to `rw` for club language and can localize app-owned copy.
+- Flutter framework strings do not ship Kinyarwanda Material/Cupertino translations, so system labels, date pickers, and some dialog controls intentionally fall back to English for launch.
+- Treat English framework copy as an approved launch limitation, not a regression, unless a custom Kinyarwanda framework-localization delegate is added.
+
+## 8. Rollout decision
 
 Release only when all of the following are true:
 

@@ -18,6 +18,11 @@ abstract final class AppLinks {
     defaultValue: '',
   );
 
+  static const adminUrl = String.fromEnvironment(
+    'APP_ADMIN_URL',
+    defaultValue: 'https://admin.gikundiro.com',
+  );
+
   static const privacyPolicyUrl = String.fromEnvironment(
     'APP_PRIVACY_URL',
     defaultValue: '',
@@ -31,12 +36,14 @@ abstract final class AppLinks {
   static bool get hasSupportWhatsApp => supportWhatsApp.trim().isNotEmpty;
   static bool get hasSupportEmail => supportEmail.trim().isNotEmpty;
   static bool get hasWebsite => websiteUri != null;
+  static bool get hasAdmin => adminUri != null;
   static bool get hasPrivacyPolicy => privacyPolicyUri != null;
   static bool get hasTerms => termsUri != null;
   static bool get hasAnySupportChannel =>
       hasSupportWhatsApp || hasSupportEmail || hasWebsite;
 
   static Uri? get websiteUri => _parseExternalUri(websiteUrl);
+  static Uri? get adminUri => _parseExternalUri(adminUrl);
   static Uri? get privacyPolicyUri => _parseExternalUri(privacyPolicyUrl);
   static Uri? get termsUri => _parseExternalUri(termsUrl);
 
