@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +26,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   @override
   void initState() {
     super.initState();
-    _loadDashboard();
+    unawaited(_loadDashboard());
   }
 
   Future<void> _loadDashboard() async {
@@ -348,7 +350,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                     _isLoading = true;
                     _error = null;
                   });
-                  _loadDashboard();
+                  unawaited(_loadDashboard());
                 },
               ),
             ],

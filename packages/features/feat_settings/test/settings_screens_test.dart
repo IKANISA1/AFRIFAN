@@ -68,6 +68,22 @@ void main() {
       matchesGoldenFile('goldens/settings_screen.png'),
     );
   });
+
+  testWidgets('matches the streamlined settings layout at 200 percent text', (
+    tester,
+  ) async {
+    _setMobileSurface(tester);
+    tester.platformDispatcher.textScaleFactorTestValue = 2.0;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+    await tester.pumpWidget(_buildSettingsApp());
+    await tester.pumpAndSettle();
+
+    await expectLater(
+      find.byType(SettingsScreen),
+      matchesGoldenFile('goldens/settings_screen_large_text.png'),
+    );
+  });
 }
 
 Widget _buildSettingsApp({_FakeClubConfig? config}) {

@@ -74,21 +74,12 @@ class TicketCheckoutStep extends StatelessWidget {
           ),
           if (paymentRouteMessage != null) ...[
             const SizedBox(height: SpacingTokens.spacing4),
-            AfriSurfaceCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'PAYMENT ROUTE',
-                    style: TypographyTokens.labelLarge(),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing2),
-                  Text(
-                    paymentRouteMessage!,
-                    style: TypographyTokens.bodyMedium(),
-                  ),
-                ],
-              ),
+            AfriStateBanner(
+              icon: AfriIcons.statusWarning,
+              title: 'Payment route',
+              subtitle: paymentRouteMessage!,
+              tone: AfriStateBannerTone.warning,
+              compact: true,
             ),
           ] else if (paymentRoute != null) ...[
             const SizedBox(height: SpacingTokens.spacing4),

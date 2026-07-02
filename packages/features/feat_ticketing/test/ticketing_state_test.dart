@@ -1,10 +1,12 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_club/feat_club.dart';
 import 'package:feat_ticketing/src/screens/e_ticket_qr_screen.dart';
 import 'package:feat_ticketing/src/screens/interactive_seat_map_screen.dart';
 import 'package:feat_ticketing/src/screens/match_list_screen.dart';
 import 'package:feat_ticketing/src/ticketing_providers.dart';
+import 'package:feat_ticketing/src/widgets/ticket_checkout_step.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,8 +36,52 @@ void main() {
 
     await tester.pumpAndSettle();
 
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is AfriAsyncStateView<List<ClubMatch>>,
+      ),
+      findsOneWidget,
+    );
     expect(find.text('No upcoming ticketed fixtures'), findsOneWidget);
     expect(find.textContaining('Upcoming ticket inventory'), findsOneWidget);
+  });
+
+  testWidgets('checkout uses route warning banner', (
+    tester,
+  ) async {
+    var purchaseRequests = 0;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: TicketCheckoutStep(
+            match: _match,
+            currency: CurrencyFormatter(
+              currencyCode: 'RWF',
+              currencySymbol: 'RWF',
+            ),
+            selectedSeatType: SeatType.general,
+            selectedSeatCode: null,
+            quantity: 1,
+            paymentRoute: null,
+            paymentRouteMessage:
+                'Ticket payment setup is pending club activation.',
+            submitting: false,
+            onPurchaseRequest: () => purchaseRequests += 1,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(AfriStateBanner), findsOneWidget);
+    expect(find.text('Payment route'), findsOneWidget);
+    expect(
+      find.text('Ticket payment setup is pending club activation.'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Payment route not ready'), warnIfMissed: false);
+    expect(purchaseRequests, 0);
   });
 
   testWidgets('seat map exposes stand buttons beyond canvas hit testing', (

@@ -144,6 +144,67 @@ void main() {
         ]),
       );
     });
+
+    test(
+      'default supporter app keeps the approved 12 full-screen surfaces',
+      () {
+        final decisions = modules
+            .expand((module) => module.routePresentationDecisions)
+            .toList(growable: false);
+        final fullScreens = decisions
+            .where(
+              (decision) =>
+                  decision.presentation == RoutePresentation.fullScreen,
+            )
+            .map((decision) => decision.path)
+            .toSet();
+
+        expect(
+          fullScreens,
+          equals(<String>{
+            '/onboarding',
+            '/auth/phone',
+            '/auth/otp',
+            '/home',
+            '/fanzone',
+            '/fanzone/match/:fixtureId',
+            '/fanzone/wallet',
+            '/settings',
+            '/tickets',
+            '/e-ticket/:id',
+            '/membership',
+            '/shop',
+          }),
+        );
+      },
+    );
+
+    test(
+      'all registered default supporter routes have presentation decisions',
+      () {
+        final registeredPaths = <String>{};
+        for (final module in modules) {
+          final tabRoute = module.tabRoute;
+          final routeParent = tabRoute?.path ?? '';
+          if (tabRoute != null) {
+            registeredPaths.add(tabRoute.path);
+          }
+          for (final route in module.routes) {
+            _collectGoRoutePaths(route, routeParent, registeredPaths);
+          }
+          for (final route in module.standaloneRoutes) {
+            _collectGoRoutePaths(route, '', registeredPaths);
+          }
+        }
+
+        final decidedPaths = modules
+            .expand((module) => module.routePresentationDecisions)
+            .map((decision) => decision.path)
+            .toSet();
+
+        expect(decidedPaths, containsAll(registeredPaths));
+      },
+    );
   });
 
   group('Admin routes', () {
@@ -268,6 +329,25 @@ void main() {
       expect(subPaths, isNot(contains('create')));
     });
   });
+}
+
+void _collectGoRoutePaths(
+  RouteBase route,
+  String parentPath,
+  Set<String> paths,
+) {
+  if (route is! GoRoute) {
+    return;
+  }
+
+  final path = route.path.startsWith('/')
+      ? route.path
+      : '${parentPath.endsWith('/') ? parentPath.substring(0, parentPath.length - 1) : parentPath}/${route.path}';
+  paths.add(path);
+
+  for (final child in route.routes) {
+    _collectGoRoutePaths(child, path, paths);
+  }
 }
 
 class _FakeClubConfig implements ClubConfig {

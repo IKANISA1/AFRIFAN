@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   // ── Shared test fixtures ──
 
-  PlatformConfigSnapshot _buildSnapshot({
+  PlatformConfigSnapshot buildSnapshot({
     List<PlatformFeature> features = const [],
     List<ContentBlock> blocks = const [],
   }) {
@@ -15,7 +15,7 @@ void main() {
     );
   }
 
-  const _ticketing = PlatformFeature(
+  const ticketing = PlatformFeature(
     featureKey: 'ticketing',
     displayName: 'Ticketing',
     isEnabled: true,
@@ -30,7 +30,7 @@ void main() {
     ),
   );
 
-  const _shop = PlatformFeature(
+  const shop = PlatformFeature(
     featureKey: 'shop',
     displayName: 'Club Shop',
     isEnabled: true,
@@ -44,28 +44,28 @@ void main() {
     ),
   );
 
-  const _disabledGlobally = PlatformFeature(
+  const disabledGlobally = PlatformFeature(
     featureKey: 'membership',
     displayName: 'Membership',
     isEnabled: false,
     visibilityState: 'visible',
   );
 
-  const _hiddenFeature = PlatformFeature(
+  const hiddenFeature = PlatformFeature(
     featureKey: 'contributions',
     displayName: 'Contributions',
     isEnabled: true,
     visibilityState: 'hidden',
   );
 
-  const _maintenanceFeature = PlatformFeature(
+  const maintenanceFeature = PlatformFeature(
     featureKey: 'fan_clubs',
     displayName: 'Fan Clubs',
     isEnabled: true,
     visibilityState: 'maintenance',
   );
 
-  const _channelDisabled = PlatformFeature(
+  const channelDisabled = PlatformFeature(
     featureKey: 'live',
     displayName: 'Live',
     isEnabled: true,
@@ -78,7 +78,7 @@ void main() {
     ),
   );
 
-  const _authRequired = PlatformFeature(
+  const authRequired = PlatformFeature(
     featureKey: 'admin',
     displayName: 'Admin',
     isEnabled: true,
@@ -86,7 +86,7 @@ void main() {
     rules: FeatureRuleConfig(authRequired: true),
   );
 
-  const _settingsAuthRequired = PlatformFeature(
+  const settingsAuthRequired = PlatformFeature(
     featureKey: 'settings',
     displayName: 'Settings',
     isEnabled: true,
@@ -100,7 +100,7 @@ void main() {
     rules: FeatureRuleConfig(authRequired: true),
   );
 
-  const _outsideSchedule = PlatformFeature(
+  const outsideSchedule = PlatformFeature(
     featureKey: 'challenge',
     displayName: 'Challenge',
     isEnabled: true,
@@ -108,7 +108,7 @@ void main() {
     rules: FeatureRuleConfig(isWithinSchedule: false),
   );
 
-  const _withDeps = PlatformFeature(
+  const withDeps = PlatformFeature(
     featureKey: 'streak',
     displayName: 'Streak',
     isEnabled: true,
@@ -120,7 +120,7 @@ void main() {
     ),
   );
 
-  const _withBrokenDeps = PlatformFeature(
+  const withBrokenDeps = PlatformFeature(
     featureKey: 'jackpot',
     displayName: 'Jackpot',
     isEnabled: true,
@@ -132,21 +132,21 @@ void main() {
     ),
   );
 
-  const _challengeFeature = PlatformFeature(
+  const challengeFeature = PlatformFeature(
     featureKey: 'challenge',
     displayName: 'Challenge',
     isEnabled: true,
     visibilityState: 'visible',
   );
 
-  const _disabledChallengeFeature = PlatformFeature(
+  const disabledChallengeFeature = PlatformFeature(
     featureKey: 'challenge',
     displayName: 'Challenge',
     isEnabled: false,
     visibilityState: 'visible',
   );
 
-  const _navFeatureB = PlatformFeature(
+  const navFeatureB = PlatformFeature(
     featureKey: 'home',
     displayName: 'Home',
     isEnabled: true,
@@ -166,7 +166,7 @@ void main() {
     late FeatureConfigService service;
 
     setUp(() {
-      service = FeatureConfigService(_buildSnapshot());
+      service = FeatureConfigService(buildSnapshot());
     });
 
     test('hasConfig returns false for empty snapshot', () {
@@ -206,19 +206,19 @@ void main() {
 
     setUp(() {
       service = FeatureConfigService(
-        _buildSnapshot(
+        buildSnapshot(
           features: [
-            _ticketing,
-            _shop,
-            _disabledGlobally,
-            _hiddenFeature,
-            _maintenanceFeature,
-            _channelDisabled,
-            _authRequired,
-            _outsideSchedule,
-            _withDeps,
-            _withBrokenDeps,
-            _navFeatureB,
+            ticketing,
+            shop,
+            disabledGlobally,
+            hiddenFeature,
+            maintenanceFeature,
+            channelDisabled,
+            authRequired,
+            outsideSchedule,
+            withDeps,
+            withBrokenDeps,
+            navFeatureB,
           ],
         ),
       );
@@ -262,9 +262,7 @@ void main() {
 
     setUp(() {
       service = FeatureConfigService(
-        _buildSnapshot(
-          features: [_ticketing, _hiddenFeature, _maintenanceFeature],
-        ),
+        buildSnapshot(features: [ticketing, hiddenFeature, maintenanceFeature]),
       );
     });
 
@@ -302,13 +300,13 @@ void main() {
 
     setUp(() {
       service = FeatureConfigService(
-        _buildSnapshot(
+        buildSnapshot(
           features: [
-            _navFeatureB,
-            _ticketing,
-            _shop,
-            _channelDisabled,
-            _disabledGlobally,
+            navFeatureB,
+            ticketing,
+            shop,
+            channelDisabled,
+            disabledGlobally,
           ],
         ),
       );
@@ -341,8 +339,8 @@ void main() {
 
     setUp(() {
       service = FeatureConfigService(
-        _buildSnapshot(
-          features: [_navFeatureB, _ticketing, _shop, _channelDisabled],
+        buildSnapshot(
+          features: [navFeatureB, ticketing, shop, channelDisabled],
         ),
       );
     });
@@ -375,7 +373,7 @@ void main() {
 
     setUp(() {
       service = FeatureConfigService(
-        _buildSnapshot(features: [_ticketing, _authRequired, _outsideSchedule]),
+        buildSnapshot(features: [ticketing, authRequired, outsideSchedule]),
       );
     });
 
@@ -408,7 +406,7 @@ void main() {
     late PlatformConfigSnapshot snapshot;
 
     setUp(() {
-      snapshot = _buildSnapshot(features: [_settingsAuthRequired]);
+      snapshot = buildSnapshot(features: [settingsAuthRequired]);
     });
 
     test('signed-out service hides auth-required nav routes', () {
@@ -431,13 +429,13 @@ void main() {
 
     setUp(() {
       service = FeatureConfigService(
-        _buildSnapshot(
+        buildSnapshot(
           features: [
-            _ticketing,
-            _shop,
-            _disabledGlobally,
-            _withDeps,
-            _withBrokenDeps,
+            ticketing,
+            shop,
+            disabledGlobally,
+            withDeps,
+            withBrokenDeps,
           ],
         ),
       );
@@ -467,7 +465,7 @@ void main() {
 
     setUp(() {
       service = FeatureConfigService(
-        _buildSnapshot(features: [_ticketing, _shop, _disabledGlobally]),
+        buildSnapshot(features: [ticketing, shop, disabledGlobally]),
       );
     });
 
@@ -524,10 +522,10 @@ void main() {
 
     test('isRouteAvailable allows challenge routes only when enabled', () {
       final enabledService = FeatureConfigService(
-        _buildSnapshot(features: [_challengeFeature]),
+        buildSnapshot(features: [challengeFeature]),
       );
       final disabledService = FeatureConfigService(
-        _buildSnapshot(features: [_disabledChallengeFeature]),
+        buildSnapshot(features: [disabledChallengeFeature]),
       );
 
       expect(enabledService.isRouteAvailable('/fanzone/jackpot'), isTrue);
@@ -542,14 +540,14 @@ void main() {
 
     setUp(() {
       service = FeatureConfigService(
-        _buildSnapshot(
+        buildSnapshot(
           features: [
-            _hiddenFeature,
-            _maintenanceFeature,
-            _authRequired,
-            _withDeps,
-            _ticketing,
-            _shop,
+            hiddenFeature,
+            maintenanceFeature,
+            authRequired,
+            withDeps,
+            ticketing,
+            shop,
           ],
         ),
       );
@@ -611,7 +609,7 @@ void main() {
       );
 
       final cyclicService = FeatureConfigService(
-        _buildSnapshot(features: [cyclicA, cyclicB]),
+        buildSnapshot(features: [cyclicA, cyclicB]),
       );
 
       expect(cyclicService.areDependenciesSatisfied('cyclic_a'), isTrue);
@@ -624,8 +622,8 @@ void main() {
 
     setUp(() {
       service = FeatureConfigService(
-        _buildSnapshot(
-          features: [_ticketing, _disabledGlobally],
+        buildSnapshot(
+          features: [ticketing, disabledGlobally],
           blocks: [
             const ContentBlock(
               blockKey: 'hero',

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -29,7 +31,7 @@ class MomoDialerService {
       final uri = Uri.parse(telUriStr);
 
       if (await canLaunchUrl(uri)) {
-        HapticFeedback.lightImpact();
+        unawaited(HapticFeedback.lightImpact());
         return await launchUrl(uri);
       }
       return false;

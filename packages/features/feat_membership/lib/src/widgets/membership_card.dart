@@ -25,9 +25,10 @@ class MembershipCard extends ConsumerWidget {
     final alias = AliasGenerator.format(profile?.publicUserId ?? '000000');
     final resolvedTier = (tierLabel ?? 'Fan').toUpperCase();
     final resolvedFet = fet ?? 0;
+    final isLargeText = MediaQuery.textScalerOf(context).scale(1) > 1.45;
 
     return Container(
-      height: 200,
+      height: isLargeText ? 420 : 200,
       decoration: BoxDecoration(
         borderRadius: ShapeTokens.cardRadius,
         gradient: ColorTokens.borrowedSurfaceGradient(
@@ -55,13 +56,21 @@ class MembershipCard extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                Wrap(
+                  spacing: SpacingTokens.spacing3,
+                  runSpacing: SpacingTokens.spacing2,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Text(
-                      RuntimeBranding.displayHomeTeamName.toUpperCase(),
-                      style: TypographyTokens.labelLarge(
-                        ColorTokens.onSurface.withValues(alpha: 0.7),
-                      ).copyWith(fontWeight: FontWeight.w700),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 210),
+                      child: Text(
+                        RuntimeBranding.displayHomeTeamName.toUpperCase(),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TypographyTokens.labelLarge(
+                          ColorTokens.onSurface.withValues(alpha: 0.7),
+                        ).copyWith(fontWeight: FontWeight.w700),
+                      ),
                     ),
                     if (paymentStatus == PaymentStatus.pendingVerification)
                       Container(
@@ -80,15 +89,13 @@ class MembershipCard extends ConsumerWidget {
                           ).copyWith(fontWeight: FontWeight.w800),
                         ),
                       )
-                    else ...[
-                      const Spacer(),
+                    else
                       Text(
                         'FAN CARD',
                         style: TypographyTokens.labelLarge(
                           ColorTokens.onSurface.withValues(alpha: 0.5),
                         ).copyWith(fontWeight: FontWeight.w600),
                       ),
-                    ],
                   ],
                 ),
 
@@ -104,7 +111,10 @@ class MembershipCard extends ConsumerWidget {
 
                 const SizedBox(height: SpacingTokens.spacing2),
 
-                Row(
+                Wrap(
+                  spacing: SpacingTokens.spacing3,
+                  runSpacing: SpacingTokens.spacing2,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -122,7 +132,6 @@ class MembershipCard extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    const Spacer(),
                     Text(
                       resolvedFet <= 0
                           ? 'REVIEW PENDING'

@@ -13,12 +13,17 @@ class LiveModule extends FeatureModule {
     GoRoute(
       path: '/live',
       name: 'live',
-      builder: (context, state) => const LiveMatchScreen(),
+      pageBuilder: (context, state) =>
+          afriSheetPage(state, const LiveMatchScreen(), fullHeight: true),
       routes: [
         GoRoute(
           path: 'news/:articleId',
-          builder: (context, state) => NewsArticleScreen(
-            articleId: state.pathParameters['articleId'] ?? 'transfer-window',
+          pageBuilder: (context, state) => afriSheetPage(
+            state,
+            NewsArticleScreen(
+              articleId: state.pathParameters['articleId'] ?? 'transfer-window',
+            ),
+            fullHeight: true,
           ),
         ),
       ],
@@ -28,5 +33,30 @@ class LiveModule extends FeatureModule {
   @override
   List<RouteBase> get standaloneRoutes => <RouteBase>[
     GoRoute(path: '/live-match', redirect: (_, __) => '/live'),
+  ];
+
+  @override
+  List<RoutePresentationDecision> get routePresentationDecisions => const [
+    RoutePresentationDecision(
+      path: '/live',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'merge',
+      targetPath: '/home',
+      rationale: 'Live match state should open from Home or Match Center.',
+    ),
+    RoutePresentationDecision(
+      path: '/live/news/:articleId',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'convert to reader sheet',
+      targetPath: '/live',
+      rationale: 'Articles are content overlays, not app destinations.',
+    ),
+    RoutePresentationDecision(
+      path: '/live-match',
+      presentation: RoutePresentation.redirect,
+      recommendation: 'deep-link compatibility only',
+      targetPath: '/live',
+      rationale: 'Alias route should never appear as a product surface.',
+    ),
   ];
 }

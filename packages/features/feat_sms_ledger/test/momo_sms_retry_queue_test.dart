@@ -35,7 +35,8 @@ void main() {
 
   MomoSmsCapture capture({
     String key = 'key-1',
-    String body = 'You have received 5000 RWF. TxID: ABC123. New balance: 10000 RWF.',
+    String body =
+        'You have received 5000 RWF. TxID: ABC123. New balance: 10000 RWF.',
   }) {
     return MomoSmsCapture(
       sender: 'MTN MoMo',
@@ -146,12 +147,15 @@ void main() {
       expect(MomoSmsIngestionRepository.isApprovedSender('MTN MoMo'), isTrue);
       expect(MomoSmsIngestionRepository.isApprovedSender('M-Money'), isTrue);
       expect(MomoSmsIngestionRepository.isApprovedSender('MOMO'), isTrue);
-      expect(MomoSmsIngestionRepository.isApprovedSender('MobileMoney'), isTrue);
+      expect(
+          MomoSmsIngestionRepository.isApprovedSender('MobileMoney'), isTrue);
     });
 
     test('rejects unknown senders', () {
-      expect(MomoSmsIngestionRepository.isApprovedSender('Airtel Money'), isFalse);
-      expect(MomoSmsIngestionRepository.isApprovedSender('+250781234567'), isFalse);
+      expect(
+          MomoSmsIngestionRepository.isApprovedSender('Airtel Money'), isFalse);
+      expect(MomoSmsIngestionRepository.isApprovedSender('+250781234567'),
+          isFalse);
       expect(MomoSmsIngestionRepository.isApprovedSender(''), isFalse);
       expect(MomoSmsIngestionRepository.isApprovedSender(null), isFalse);
     });

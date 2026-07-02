@@ -19,29 +19,38 @@ class TicketingModule extends FeatureModule {
           routes: [
             GoRoute(
               path: 'detail/:id',
-              builder: (context, state) {
+              pageBuilder: (context, state) {
                 final matchId = state.pathParameters['id'] ?? '';
-                return MatchDetailScreen(matchId: matchId);
+                return afriSheetPage(
+                  state,
+                  MatchDetailScreen(matchId: matchId),
+                  fullHeight: true,
+                );
               },
             ),
             GoRoute(
               path: 'map/:id',
-              builder: (context, state) {
+              pageBuilder: (context, state) {
                 final matchId = state.pathParameters['id'] ?? '';
-                return InteractiveSeatMapScreen(matchId: matchId);
+                return afriSheetPage(
+                  state,
+                  InteractiveSeatMapScreen(matchId: matchId),
+                  fullHeight: true,
+                );
               },
             ),
           ],
         ),
         GoRoute(
           path: '/my-tickets',
-          builder: (context, state) => const MyTicketsScreen(),
+          pageBuilder: (context, state) =>
+              afriSheetPage(state, const MyTicketsScreen(), fullHeight: true),
         ),
         GoRoute(
           path: '/e-ticket/:id',
-          builder: (context, state) {
+          pageBuilder: (context, state) {
             final ticketId = state.pathParameters['id'] ?? '';
-            return ETicketQrScreen(ticketId: ticketId);
+            return afriRoutePage(state, ETicketQrScreen(ticketId: ticketId));
           },
         ),
       ];
@@ -49,4 +58,41 @@ class TicketingModule extends FeatureModule {
   // Ticketing relies on home quick actions, NOT bottom tabs.
   @override
   TabRoute? get tabRoute => null;
+
+  @override
+  List<RoutePresentationDecision> get routePresentationDecisions => const [
+        RoutePresentationDecision(
+          path: '/tickets',
+          presentation: RoutePresentation.fullScreen,
+          recommendation: 'keep',
+          rationale: 'Ticket discovery and buying are primary revenue tasks.',
+        ),
+        RoutePresentationDecision(
+          path: '/tickets/detail/:id',
+          presentation: RoutePresentation.fullHeightSheet,
+          recommendation: 'convert to sheet',
+          targetPath: '/tickets',
+          rationale: 'Ticket details are part of selection.',
+        ),
+        RoutePresentationDecision(
+          path: '/tickets/map/:id',
+          presentation: RoutePresentation.fullHeightSheet,
+          recommendation: 'convert to modal',
+          targetPath: '/tickets/detail/:id',
+          rationale: 'Seat maps need space but belong to checkout context.',
+        ),
+        RoutePresentationDecision(
+          path: '/my-tickets',
+          presentation: RoutePresentation.fullHeightSheet,
+          recommendation: 'merge',
+          targetPath: '/tickets',
+          rationale: 'Owned and purchasable tickets should live together.',
+        ),
+        RoutePresentationDecision(
+          path: '/e-ticket/:id',
+          presentation: RoutePresentation.fullScreen,
+          recommendation: 'keep',
+          rationale: 'QR scanning needs a dedicated distraction-free surface.',
+        ),
+      ];
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -104,7 +106,7 @@ class _AfriActionSheetBody extends StatelessWidget {
               ...actions.map(
                 (action) => AfriPressFeedback(
                   onTap: () {
-                    HapticFeedback.lightImpact();
+                    unawaited(HapticFeedback.lightImpact());
                     context.pop();
                     action.onTap();
                   },

@@ -128,6 +128,31 @@ void main() {
       );
       expect(find.text('Tickets'), findsNothing);
     });
+
+    testWidgets('preserves 200 percent platform text scaling', (tester) async {
+      tester.platformDispatcher.textScaleFactorTestValue = 2.0;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+      await tester.pumpWidget(
+        AfriClubApp(
+          config: config,
+          modules: <FeatureModule>[_HomeModule(), _OnboardingModule()],
+          authRepository: FakeAuthRepository(
+            restoreResult: const UserProfile(
+              id: 'user-1',
+              clubId: '1',
+              publicUserId: '483912',
+            ),
+          ),
+          initialLocation: '/home',
+        ),
+      );
+
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      expect(find.text('text-scale:2.0'), findsOneWidget);
+    });
   });
 }
 
@@ -357,8 +382,18 @@ class _HomeModule extends FeatureModule {
     label: 'Home',
     icon: AfriIcons.home,
     activeIcon: AfriIcons.home,
-    builder: (context, state) => const Scaffold(body: Text('Home')),
+    builder: (context, state) => const _FakeHomeScreen(),
   );
+}
+
+class _FakeHomeScreen extends StatelessWidget {
+  const _FakeHomeScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    final scale = MediaQuery.textScalerOf(context).scale(1).toStringAsFixed(1);
+    return Scaffold(body: Text('text-scale:$scale'));
+  }
 }
 
 class _OnboardingModule extends FeatureModule {

@@ -16,4 +16,8 @@ dependencies:
   core_theme:
     path: ../core_theme
 
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
 resolution: workspace

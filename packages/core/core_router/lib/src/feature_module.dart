@@ -103,6 +103,13 @@ abstract class FeatureModule {
   /// For non-tab modules, these become top-level standalone routes.
   List<RouteBase> get routes => const [];
 
+  /// Product-level presentation decisions for this module's routes.
+  ///
+  /// This metadata keeps the route tree honest: a route can remain registered
+  /// for deep links while the app presents it as a sheet, consolidated hub
+  /// section, redirect, or internal-only surface instead of another full page.
+  List<RoutePresentationDecision> get routePresentationDecisions => const [];
+
   /// Optional: tab route for bottom navigation.
   /// If non-null, this route appears as a bottom nav tab.
   TabRoute? get tabRoute => null;
@@ -120,6 +127,44 @@ abstract class FeatureModule {
   /// Override in modules that provide pre-auth routes (splash, onboarding,
   /// phone auth). These paths bypass the auth redirect guard.
   Set<String> get publicPaths => const <String>{};
+}
+
+/// The intended product surface for a route.
+enum RoutePresentation {
+  fullScreen,
+  modalSheet,
+  fullHeightSheet,
+  consolidatedHub,
+  deepLinkOnly,
+  redirect,
+  internalOnly,
+}
+
+/// Product decision attached to a registered route.
+class RoutePresentationDecision {
+  const RoutePresentationDecision({
+    required this.path,
+    required this.presentation,
+    required this.recommendation,
+    required this.rationale,
+    this.targetPath,
+  });
+
+  /// Absolute route path or route pattern.
+  final String path;
+
+  /// How the route should appear in the mobile product.
+  final RoutePresentation presentation;
+
+  /// Short action label such as keep, merge, convert to sheet, or hide.
+  final String recommendation;
+
+  /// Destination hub when the route is consolidated, redirected, or sheeted
+  /// from another surface.
+  final String? targetPath;
+
+  /// Why this presentation is the right product decision.
+  final String rationale;
 }
 
 /// Describes a bottom navigation tab provided by a feature.

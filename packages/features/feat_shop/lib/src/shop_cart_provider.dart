@@ -44,7 +44,7 @@ class ShopCartNotifier extends StateNotifier<List<CartItem>> {
         ...state,
         CartItem(
           product: product,
-          quantity: quantity.clamp(1, maxQuantity).toInt(),
+          quantity: quantity.clamp(1, maxQuantity),
           selectedVariant: selectedVariant,
         ),
       ];
@@ -54,7 +54,7 @@ class ShopCartNotifier extends StateNotifier<List<CartItem>> {
     final updated = [...state];
     final existing = updated[index];
     updated[index] = existing.copyWith(
-      quantity: (existing.quantity + quantity).clamp(1, maxQuantity).toInt(),
+      quantity: (existing.quantity + quantity).clamp(1, maxQuantity),
     );
     state = updated;
   }
@@ -99,9 +99,7 @@ class ShopCartNotifier extends StateNotifier<List<CartItem>> {
               entry.product.id == item.product.id &&
               entry.selectedVariant == item.selectedVariant;
           return isSameItem
-              ? entry.copyWith(
-                  quantity: quantity.clamp(1, maxQuantity).toInt(),
-                )
+              ? entry.copyWith(quantity: quantity.clamp(1, maxQuantity))
               : entry;
         })
         .toList(growable: false);
@@ -111,7 +109,7 @@ class ShopCartNotifier extends StateNotifier<List<CartItem>> {
     if (product.stock <= 0) {
       return 0;
     }
-    return product.stock.clamp(1, 99).toInt();
+    return product.stock.clamp(1, 99);
   }
 
   ClubProduct _toClubProduct(

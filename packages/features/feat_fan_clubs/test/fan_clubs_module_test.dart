@@ -1,3 +1,4 @@
+import 'package:core_router/core_router.dart';
 import 'package:feat_fan_clubs/feat_fan_clubs.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -30,9 +31,9 @@ void main() {
       late GoRoute rootRoute;
 
       setUp(() {
-        rootRoute = module.routes
-            .whereType<GoRoute>()
-            .firstWhere((r) => r.path == '/fan-clubs');
+        rootRoute = module.routes.whereType<GoRoute>().firstWhere(
+          (r) => r.path == '/fan-clubs',
+        );
       });
 
       test('has :clubId sub-route', () {
@@ -55,5 +56,21 @@ void main() {
     test('isEnabled returns true when explicitly enabled', () {
       expect(module.isEnabled({'fan_clubs': true}), isTrue);
     });
+
+    test(
+      'declares route presentation decisions for the minimal app policy',
+      () {
+        final decisions = {
+          for (final decision in module.routePresentationDecisions)
+            decision.path: decision.presentation,
+        };
+
+        expect(decisions['/fan-clubs'], RoutePresentation.consolidatedHub);
+        expect(
+          decisions['/fan-clubs/:clubId'],
+          RoutePresentation.fullHeightSheet,
+        );
+      },
+    );
   });
 }

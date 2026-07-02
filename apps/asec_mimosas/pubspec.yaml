@@ -13,6 +13,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  app_registry:
+    path: ../../packages/app_registry
+
   # Core packages
   core_app:
     path: ../../packages/core/core_app
@@ -67,8 +70,6 @@ dependencies:
   hive_flutter: ^1.1.0
 
 dev_dependencies:
-  app_registry:
-    path: ../../packages/app_registry
   flutter_test:
     sdk: flutter
   test_support:

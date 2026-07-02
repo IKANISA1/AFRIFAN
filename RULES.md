@@ -59,7 +59,7 @@ These rules have **zero tolerance**. Violating them requires an immediate full r
 * **Never modify** any widget imported exclusively by the home screen  
 * **Never reorder, remove, or add** any of the 6 home screen zones  
 * **Never change** the Quick Actions rail — its order, icons, labels, or destinations are fixed  
-* **Never change** the bottom navigation bar — 3 tabs only: Home · Contribute · Settings  
+* **Never change** the bottom navigation bar — 3 tabs only: Home · Fan Zone · Settings
 * Bug fixes that do not alter visual output (e.g. fixing a null pointer crash) require owner notification but not prior approval
 
 **Why:** The palette is rooted in the deep shadows of a midnight stadium, punctuated by high-velocity **dynamic club-specific** accents injected at startup via `ColorTokens.init(ClubConfig.colors)`. Any change that fans notice breaks brand trust.

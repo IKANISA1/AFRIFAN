@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +32,7 @@ class _CompetitionManagerScreenState
   @override
   void initState() {
     super.initState();
-    _loadCompetitions();
+    unawaited(_loadCompetitions());
   }
 
   Future<void> _loadCompetitions() async {
@@ -111,10 +113,12 @@ class _CompetitionManagerScreenState
     if (!mounted) return;
 
     // Show loading
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => const AfriLoadingIndicator(),
+    unawaited(
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => const AfriLoadingIndicator(),
+      ),
     );
 
     try {
@@ -259,7 +263,7 @@ class _CompetitionManagerScreenState
               children: [
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       AfriIcons.statusSuccess,
                       size: 18,
                       color: ColorTokens.success,
@@ -300,7 +304,7 @@ class _CompetitionManagerScreenState
               label: Text(e.value),
               onSelected: (_) {
                 setState(() => _regionFilter = e.key);
-                _loadCompetitions();
+                unawaited(_loadCompetitions());
               },
             ),
           )
@@ -325,7 +329,7 @@ class _CompetitionManagerScreenState
               label: Text(e.value),
               onSelected: (_) {
                 setState(() => _kindFilter = e.key);
-                _loadCompetitions();
+                unawaited(_loadCompetitions());
               },
             ),
           )

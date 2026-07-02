@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +24,7 @@ class _SmsSyncMonitorScreenState extends ConsumerState<SmsSyncMonitorScreen> {
   @override
   void initState() {
     super.initState();
-    _loadSmsData();
+    unawaited(_loadSmsData());
   }
 
   Future<void> _loadSmsData() async {

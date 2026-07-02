@@ -1,3 +1,4 @@
+import 'package:core_router/core_router.dart';
 import 'package:feat_membership/feat_membership.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -46,6 +47,46 @@ void main() {
 
       expect(route.name, 'membership-fans');
     });
+
+    test('pushed membership routes use shared route pages', () {
+      for (final route in module.routes.whereType<GoRoute>().where(
+        (r) =>
+            r.path == '/membership/fans' ||
+            r.path == '/membership/tier/:tierId',
+      )) {
+        expect(route.pageBuilder, isNotNull, reason: route.path);
+        expect(route.builder, isNull, reason: route.path);
+      }
+    });
+
+    test('membership root keeps standard builder', () {
+      final route = module.routes.whereType<GoRoute>().firstWhere(
+        (r) => r.path == '/membership',
+      );
+
+      expect(route.builder, isNotNull);
+      expect(route.pageBuilder, isNull);
+    });
+
+    test(
+      'declares route presentation decisions for the minimal app policy',
+      () {
+        final decisions = {
+          for (final decision in module.routePresentationDecisions)
+            decision.path: decision.presentation,
+        };
+
+        expect(decisions['/membership'], RoutePresentation.fullScreen);
+        expect(
+          decisions['/membership/fans'],
+          RoutePresentation.fullHeightSheet,
+        );
+        expect(
+          decisions['/membership/tier/:tierId'],
+          RoutePresentation.fullHeightSheet,
+        );
+      },
+    );
 
     test('tier detail route supports :tierId parameter', () {
       final tierRoute = module.routes.whereType<GoRoute>().firstWhere(

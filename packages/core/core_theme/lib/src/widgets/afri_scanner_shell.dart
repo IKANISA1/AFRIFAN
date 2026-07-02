@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -69,7 +70,8 @@ class _AfriScannerShellState extends State<AfriScannerShell>
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1600),
-    )..repeat(reverse: true);
+    );
+    unawaited(_pulseController.repeat(reverse: true));
 
     _flashController = AnimationController(
       vsync: this,
@@ -84,16 +86,20 @@ class _AfriScannerShellState extends State<AfriScannerShell>
     if (widget.sampleCount > _previousSampleCount &&
         widget.sampleCount <= widget.totalSamples) {
       _previousSampleCount = widget.sampleCount;
-      _flashController.forward(from: 0).then((_) {
-        if (mounted) _flashController.reverse();
-      });
+      unawaited(
+        _flashController.forward(from: 0).then((_) {
+          if (mounted) {
+            unawaited(_flashController.reverse());
+          }
+        }),
+      );
     }
 
     final shouldPulse =
         widget.tone == AfriScannerTone.searching ||
         widget.tone == AfriScannerTone.ready;
     if (shouldPulse && !_pulseController.isAnimating) {
-      _pulseController.repeat(reverse: true);
+      unawaited(_pulseController.repeat(reverse: true));
     } else if (!shouldPulse && _pulseController.isAnimating) {
       _pulseController.stop();
       _pulseController.value = 0;
@@ -504,9 +510,10 @@ class _ScannerReticlePainter extends CustomPainter {
     // Define Reticle Shape
     if (reticle == AfriScannerReticle.circular) {
       final ovalWidth = size.width - (horizontalInset * 2);
-      final ovalHeight = (ovalWidth * 1.52)
-          .clamp(size.height * 0.54, size.height * 0.68)
-          .toDouble();
+      final ovalHeight = (ovalWidth * 1.52).clamp(
+        size.height * 0.54,
+        size.height * 0.68,
+      );
       final ovalRect = Rect.fromCenter(
         center: Offset(size.width / 2, size.height * 0.40),
         width: ovalWidth,
@@ -516,7 +523,8 @@ class _ScannerReticlePainter extends CustomPainter {
     } else {
       // Rectangular QR/Ticket shape
       final rectWidth = size.width - (horizontalInset * 2);
-      final rectHeight = rectWidth; // Square base for QR
+      // Square base for QR.
+      final rectHeight = rectWidth;
       final rectRect = Rect.fromCenter(
         center: Offset(size.width / 2, size.height * 0.40),
         width: rectWidth,

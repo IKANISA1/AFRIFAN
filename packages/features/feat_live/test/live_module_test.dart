@@ -1,3 +1,4 @@
+import 'package:core_router/core_router.dart';
 import 'package:feat_live/feat_live.dart';
 import 'package:feat_live/src/widgets/live_match_widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -33,9 +34,9 @@ void main() {
     });
 
     test('registers nested news route and standalone live-match alias', () {
-      final liveRoute = module.routes
-          .whereType<GoRoute>()
-          .firstWhere((r) => r.path == '/live');
+      final liveRoute = module.routes.whereType<GoRoute>().firstWhere(
+        (r) => r.path == '/live',
+      );
       final subPaths = liveRoute.routes
           .whereType<GoRoute>()
           .map((route) => route.path)
@@ -61,6 +62,23 @@ void main() {
     test('isEnabled returns false when explicitly disabled', () {
       expect(module.isEnabled({'live': false}), isFalse);
     });
+
+    test(
+      'declares route presentation decisions for the minimal app policy',
+      () {
+        final decisions = {
+          for (final decision in module.routePresentationDecisions)
+            decision.path: decision.presentation,
+        };
+
+        expect(decisions['/live'], RoutePresentation.fullHeightSheet);
+        expect(
+          decisions['/live/news/:articleId'],
+          RoutePresentation.fullHeightSheet,
+        );
+        expect(decisions['/live-match'], RoutePresentation.redirect);
+      },
+    );
   });
 
   // ═══════════════════════════════════════════════════════════

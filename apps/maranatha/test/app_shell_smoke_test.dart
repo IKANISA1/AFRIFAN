@@ -1,12 +1,12 @@
-import 'package:club_maranatha/club_maranatha.dart';
 import 'package:app_registry/app_registry.dart';
+import 'package:club_maranatha/club_maranatha.dart';
 import 'package:core_router/core_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('builds a valid production route graph', () {
-    final config = const MaranathaConfig();
+    const config = MaranathaConfig();
     final modules = AppModuleRegistry.build(config);
     final router = AppRouter(
       modules: modules,

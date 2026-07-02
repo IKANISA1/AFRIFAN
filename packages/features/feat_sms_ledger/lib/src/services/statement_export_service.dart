@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:core_utils/core_utils.dart';
 
 /// Statement export service for generating contribution and ledger reports.
 ///
@@ -152,10 +152,10 @@ class StatementExportService {
   Future<List<Map<String, dynamic>>> _loadGroupRows() async {
     try {
       final liveData = await _client
-        .from('contribution_groups')
-        .select('id, name, group_type, target_amount, '
-            'current_total, member_count, is_closed, created_at')
-        .order('created_at', ascending: false);
+          .from('contribution_groups')
+          .select('id, name, group_type, target_amount, '
+              'current_total, member_count, is_closed, created_at')
+          .order('created_at', ascending: false);
       final liveRows = List<Map<String, dynamic>>.from(liveData as List);
       if (liveRows.isNotEmpty) {
         return liveRows
@@ -169,7 +169,8 @@ class StatementExportService {
             .toList(growable: false);
       }
     } catch (error, stackTrace) {
-      AfriLogger.warn('StatementExportService', 'Operation failed (non-critical).', error, stackTrace);
+      AfriLogger.warn('StatementExportService',
+          'Operation failed (non-critical).', error, stackTrace);
       // Fall through to legacy schema.
     }
 

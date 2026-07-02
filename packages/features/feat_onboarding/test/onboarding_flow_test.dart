@@ -301,6 +301,46 @@ void main() {
     );
   });
 
+  testWidgets('matches the onboarding first slide layout on mobile', (
+    tester,
+  ) async {
+    _setMobileSurface(tester);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(theme: _testTheme(), home: const OnboardingScreen()),
+      ),
+    );
+
+    await tester.pump();
+
+    await expectLater(
+      find.byType(OnboardingScreen),
+      matchesGoldenFile('goldens/onboarding_screen_first_slide.png'),
+    );
+  });
+
+  testWidgets('matches the onboarding final slide at 200 percent text', (
+    tester,
+  ) async {
+    _setMobileSurface(tester);
+    tester.platformDispatcher.textScaleFactorTestValue = 2.0;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(theme: _testTheme(), home: const OnboardingScreen()),
+      ),
+    );
+
+    await _advanceOnboardingToFinalSlide(tester);
+
+    await expectLater(
+      find.byType(OnboardingScreen),
+      matchesGoldenFile('goldens/onboarding_screen_large_text.png'),
+    );
+  });
+
   testWidgets('onboarding stays usable on compact-height viewports', (
     tester,
   ) async {

@@ -34,9 +34,10 @@ class FanzoneHubScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: asyncHub.when(
-        loading: () => _buildPendingContent(context, ref),
-        error: (error, _) => Center(
+      body: AfriAsyncStateView<FanzoneHubSnapshot>(
+        value: asyncHub,
+        loading: (_) => _buildPendingContent(context, ref),
+        error: (_, error, stackTrace) => Center(
           child: Padding(
             padding: const EdgeInsets.all(SpacingTokens.screenPadding),
             child: AfriStateView.offline(
@@ -47,7 +48,7 @@ class FanzoneHubScreen extends ConsumerWidget {
             ),
           ),
         ),
-        data: (snapshot) =>
+        data: (context, snapshot) =>
             _buildContent(context, ref, snapshot, asyncHub.isRefreshing),
       ),
     );
@@ -131,9 +132,11 @@ class FanzoneHubScreen extends ConsumerWidget {
                     SpacingTokens.screenPadding,
                     0,
                   ),
-                  child: AfriStateView.offline(
+                  child: AfriStateBanner(
+                    icon: AfriIcons.statusWarning,
                     title: 'Live updates paused',
-                    message: snapshot.message!,
+                    subtitle: snapshot.message!,
+                    tone: AfriStateBannerTone.warning,
                     compact: true,
                   ),
                 ),

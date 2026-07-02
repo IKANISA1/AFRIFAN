@@ -381,15 +381,15 @@ class FanRegistryLoadingMoreSliver extends StatelessWidget {
       return const SliverToBoxAdapter(child: SizedBox.shrink());
     }
 
-    return SliverToBoxAdapter(
+    return const SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(
+        padding: EdgeInsets.fromLTRB(
           SpacingTokens.spacing6,
           SpacingTokens.spacing2,
           SpacingTokens.spacing6,
           SpacingTokens.spacing12,
         ),
-        child: const AfriLoadingIndicator(strokeWidth: 2.6),
+        child: AfriLoadingIndicator(strokeWidth: 2.6),
       ),
     );
   }

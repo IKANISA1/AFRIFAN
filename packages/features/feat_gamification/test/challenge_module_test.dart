@@ -35,5 +35,23 @@ void main() {
       expect(paths, contains('/challenge/:id'));
       expect(paths, hasLength(4));
     });
+
+    test('detail route uses shared pushed-route page', () {
+      final detailRoute = module.routes.whereType<GoRoute>().firstWhere(
+        (route) => route.path == '/challenge/:id',
+      );
+
+      expect(detailRoute.pageBuilder, isNotNull);
+      expect(detailRoute.builder, isNull);
+    });
+
+    test('root challenge routes keep standard builders', () {
+      for (final route in module.routes.whereType<GoRoute>().where(
+        (route) => route.path != '/challenge/:id',
+      )) {
+        expect(route.builder, isNotNull, reason: route.path);
+        expect(route.pageBuilder, isNull, reason: route.path);
+      }
+    });
   });
 }

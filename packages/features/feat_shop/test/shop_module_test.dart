@@ -1,3 +1,4 @@
+import 'package:core_router/core_router.dart';
 import 'package:feat_shop/feat_shop.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -30,9 +31,9 @@ void main() {
       late GoRoute rootRoute;
 
       setUp(() {
-        rootRoute = module.routes
-            .whereType<GoRoute>()
-            .firstWhere((r) => r.path == '/shop');
+        rootRoute = module.routes.whereType<GoRoute>().firstWhere(
+          (r) => r.path == '/shop',
+        );
       });
 
       test('has cart sub-route', () {
@@ -50,7 +51,44 @@ void main() {
             .toSet();
         expect(subPaths, contains('product/:productId'));
       });
+
+      test('product detail uses shared pushed-route page', () {
+        final route = rootRoute.routes.whereType<GoRoute>().firstWhere(
+          (r) => r.path == 'product/:productId',
+        );
+
+        expect(route.pageBuilder, isNotNull);
+        expect(route.builder, isNull);
+      });
+
+      test('shop root keeps a standard builder and cart is a sheet page', () {
+        final cartRoute = rootRoute.routes.whereType<GoRoute>().firstWhere(
+          (r) => r.path == 'cart',
+        );
+
+        expect(rootRoute.builder, isNotNull);
+        expect(rootRoute.pageBuilder, isNull);
+        expect(cartRoute.pageBuilder, isNotNull);
+        expect(cartRoute.builder, isNull);
+      });
     });
+
+    test(
+      'declares route presentation decisions for the minimal app policy',
+      () {
+        final decisions = {
+          for (final decision in module.routePresentationDecisions)
+            decision.path: decision.presentation,
+        };
+
+        expect(decisions['/shop'], RoutePresentation.fullScreen);
+        expect(
+          decisions['/shop/product/:productId'],
+          RoutePresentation.fullHeightSheet,
+        );
+        expect(decisions['/shop/cart'], RoutePresentation.fullHeightSheet);
+      },
+    );
 
     test('isEnabled defaults to true when key is absent', () {
       expect(module.isEnabled({}), isTrue);

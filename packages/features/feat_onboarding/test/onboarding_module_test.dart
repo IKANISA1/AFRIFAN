@@ -1,3 +1,4 @@
+import 'package:core_router/core_router.dart';
 import 'package:feat_onboarding/feat_onboarding.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -58,5 +59,20 @@ void main() {
     test('standaloneRoutes is empty', () {
       expect(module.standaloneRoutes, isEmpty);
     });
+
+    test(
+      'declares route presentation decisions for the minimal app policy',
+      () {
+        final decisions = {
+          for (final decision in module.routePresentationDecisions)
+            decision.path: decision.presentation,
+        };
+
+        expect(decisions['/splash'], RoutePresentation.deepLinkOnly);
+        expect(decisions['/onboarding'], RoutePresentation.fullScreen);
+        expect(decisions['/auth/phone'], RoutePresentation.fullScreen);
+        expect(decisions['/auth/otp'], RoutePresentation.fullScreen);
+      },
+    );
   });
 }

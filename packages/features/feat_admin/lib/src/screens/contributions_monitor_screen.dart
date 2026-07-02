@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:core_utils/core_utils.dart';
 
 class ContributionsMonitorScreen extends ConsumerStatefulWidget {
   const ContributionsMonitorScreen({super.key});
@@ -30,7 +32,7 @@ class _ContributionsMonitorScreenState
   @override
   void initState() {
     super.initState();
-    _loadMonitor();
+    unawaited(_loadMonitor());
   }
 
   Future<void> _loadMonitor() async {

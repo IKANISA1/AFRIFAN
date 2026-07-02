@@ -447,7 +447,7 @@ class _ContributionSuccessDialogState
           ],
           if (_status == 'verified') ...[
             const SizedBox(height: SpacingTokens.spacing3),
-            AfriInfoChip(label: 'VERIFIED', color: ColorTokens.success),
+            const AfriInfoChip(label: 'VERIFIED', color: ColorTokens.success),
           ],
           const SizedBox(height: SpacingTokens.spacing4),
           AfriButton(

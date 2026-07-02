@@ -1,4 +1,4 @@
-import 'package:core_utils/core_utils.dart';
+import '../core_utils.dart';
 
 /// Partner payment route status.
 enum PartnerPaymentRouteStatus {

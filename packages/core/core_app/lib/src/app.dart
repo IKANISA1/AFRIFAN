@@ -387,7 +387,6 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
       darkTheme: appTheme,
       routerConfig: _appRouter.router,
       builder: (context, child) {
-        final mediaQuery = MediaQuery.of(context);
         final appChild = child ?? const SizedBox.shrink();
         final protectedChild = kReleaseMode || kProfileMode
             ? AfriErrorBoundary(
@@ -403,18 +402,9 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
                 child: appChild,
               )
             : appChild;
-        return MediaQuery(
-          data: mediaQuery.copyWith(
-            // Prevent catastrophic layout breaks while allowing accessible scaling
-            textScaler: mediaQuery.textScaler.clamp(
-              minScaleFactor: 1.0,
-              maxScaleFactor: 1.4,
-            ),
-          ),
-          child: ClubConfigScope(
-            config: widget.config,
-            child: OfflineBanner(child: protectedChild),
-          ),
+        return ClubConfigScope(
+          config: widget.config,
+          child: OfflineBanner(child: protectedChild),
         );
       },
       locale: widget.frameworkLocaleForLanguageCode(languageCode),

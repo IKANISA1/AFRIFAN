@@ -465,52 +465,53 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                   padding: const EdgeInsets.symmetric(
                     horizontal: SpacingTokens.spacing6,
                   ),
-                  child: GlassCard(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                  child: latestPendingApplication != null
+                      ? AfriStateBanner(
+                          icon: AfriIcons.statusWarning,
+                          title: 'Membership review',
+                          subtitle:
+                              '${_membershipPackageLabel(latestPendingApplication['tier']?.toString() ?? 'imena')} request is awaiting payment verification.',
+                          tone: AfriStateBannerTone.warning,
+                        )
+                      : GlassCard(
+                          child: Row(
                             children: [
-                              Text(
-                                currentTier,
-                                style: TypographyTokens.metricValue(
-                                  ColorTokens.clubAccent,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      currentTier,
+                                      style: TypographyTokens.metricValue(
+                                        ColorTokens.clubAccent,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: SpacingTokens.spacing2,
+                                    ),
+                                    Text(
+                                      currentFet == 0
+                                          ? 'Membership activity appears after ticket, fanclub, and contribution reviews.'
+                                          : '$currentFet activity points recorded.',
+                                      style: TypographyTokens.bodyMedium(),
+                                    ),
+                                    if (membership?['expires_at'] != null) ...[
+                                      const SizedBox(
+                                        height: SpacingTokens.spacing2,
+                                      ),
+                                      Text(
+                                        'Renews on ${_formatMembershipDate(membership?['expires_at']?.toString())}',
+                                        style: TypographyTokens.bodySmall(
+                                          ColorTokens.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    ],
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: SpacingTokens.spacing2),
-                              Text(
-                                latestPendingApplication != null
-                                    ? '${_membershipPackageLabel(latestPendingApplication['tier']?.toString() ?? 'imena')} request is awaiting payment verification.'
-                                    : currentFet == 0
-                                    ? 'Membership activity appears after ticket, fanclub, and contribution reviews.'
-                                    : '$currentFet activity points recorded.',
-                                style: TypographyTokens.bodyMedium(),
-                              ),
-                              if (latestPendingApplication != null) ...[
-                                const SizedBox(height: SpacingTokens.spacing2),
-                                Text(
-                                  'Your tier unlocks after the payment is verified and reviewed.',
-                                  style: TypographyTokens.bodySmall(
-                                    ColorTokens.onSurfaceVariant,
-                                  ),
-                                ),
-                              ],
-                              if (membership?['expires_at'] != null) ...[
-                                const SizedBox(height: SpacingTokens.spacing2),
-                                Text(
-                                  'Renews on ${_formatMembershipDate(membership?['expires_at']?.toString())}',
-                                  style: TypographyTokens.bodySmall(
-                                    ColorTokens.onSurfaceVariant,
-                                  ),
-                                ),
-                              ],
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
                 ),
               ),
 
@@ -608,129 +609,56 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
               child: SizedBox(height: SpacingTokens.spacing4),
             ),
 
-            // Loading
-            if (isLoading)
-              const SliverToBoxAdapter(
-                child: Padding(
+            SliverToBoxAdapter(
+              child: AfriAsyncStateView<MembershipSnapshot>(
+                value: asyncMembership,
+                loading: (_) => const Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: SpacingTokens.spacing6,
                   ),
                   child: AfriSkeletonList(),
                 ),
-              ),
-
-            if (!isLoading && errorMessage != null)
-              SliverToBoxAdapter(
-                child: Padding(
+                error: (_, error, stackTrace) => Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: SpacingTokens.spacing6,
                   ),
                   child: AfriStateView.offline(
                     title: 'Membership unavailable',
-                    message: errorMessage,
+                    message: 'Membership details are temporarily unavailable.',
                     actionLabel: 'Retry',
                     onAction: _refreshMembership,
                   ),
                 ),
-              ),
-
-            if (!isLoading && errorMessage == null && packages.isEmpty)
-              SliverToBoxAdapter(
-                child: emptyMessage == null
-                    ? const SizedBox.shrink()
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: SpacingTokens.spacing6,
-                        ),
-                        child: AfriStateView.empty(
-                          title: 'Membership setup pending',
-                          message: emptyMessage,
-                        ),
-                      ),
-              ),
-
-            if (!isLoading && packages.isNotEmpty)
-              SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final pkg = packages[index];
-                  final tierId = (pkg['tier'] ?? 'bronze')
-                      .toString()
-                      .toLowerCase();
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      SpacingTokens.spacing6,
-                      0,
-                      SpacingTokens.spacing6,
-                      SpacingTokens.spacing3,
-                    ),
-                    child: AfriSurfaceCard(
-                      onTap: () => context.push('/membership/tier/$tierId'),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  (pkg['title'] ?? pkg['tier'] ?? 'Package')
-                                      .toString(),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TypographyTokens.titleMedium(),
-                                ),
-                              ),
-                              const SizedBox(width: SpacingTokens.spacing3),
-                              AfriStatusChip(
-                                label: _membershipPackageLabel(
-                                  pkg['tier']?.toString() ?? '',
-                                ),
-                                tone: AfriStatusTone.info,
-                              ),
-                            ],
-                          ),
-                          if (pkg['description'] != null) ...[
-                            const SizedBox(height: SpacingTokens.spacing2),
-                            Text(
-                              pkg['description'].toString(),
-                              style: TypographyTokens.bodySmall(
-                                ColorTokens.onSurfaceVariant,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                data: (context, resolvedSnapshot) {
+                  final resolvedPackages = resolvedSnapshot.packages;
+                  if (resolvedPackages.isEmpty) {
+                    return emptyMessage == null
+                        ? const SizedBox.shrink()
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: SpacingTokens.spacing6,
                             ),
-                          ],
-                          const SizedBox(height: SpacingTokens.spacing4),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  _packagePriceLabel(pkg),
-                                  style: TypographyTokens.titleMedium(
-                                    ColorTokens.clubAccent,
-                                  ),
-                                ),
-                              ),
-                              if (user != null)
-                                AfriButton(
-                                  label: _isJoining && _joiningTier == tierId
-                                      ? 'Processing…'
-                                      : _membershipActionLabel(tierId),
-                                  onTap: () => _activatePackage(pkg),
-                                  isLoading:
-                                      _isJoining && _joiningTier == tierId,
-                                  enabled:
-                                      !(_isJoining && _joiningTier == tierId) &&
-                                      !_hasPendingApplicationForTier(tierId),
-                                  fullWidth: false,
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                            child: AfriStateView.empty(
+                              title: 'Membership setup pending',
+                              message: emptyMessage,
+                            ),
+                          );
+                  }
+
+                  return _MembershipPackageList(
+                    packages: resolvedPackages,
+                    user: user,
+                    packagePriceLabel: _packagePriceLabel,
+                    packageLabel: _membershipPackageLabel,
+                    actionLabel: _membershipActionLabel,
+                    isCurrentJoiningTier: (tierId) =>
+                        _isJoining && _joiningTier == tierId,
+                    hasPendingApplication: _hasPendingApplicationForTier,
+                    onActivatePackage: _activatePackage,
                   );
-                }, childCount: packages.length),
+                },
               ),
+            ),
 
             const SliverToBoxAdapter(
               child: SizedBox(height: SpacingTokens.spacing20),
@@ -777,6 +705,139 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
       _ => 'Dec',
     };
     return '${local.day} $month ${local.year}';
+  }
+}
+
+class _MembershipPackageList extends StatelessWidget {
+  const _MembershipPackageList({
+    required this.packages,
+    required this.user,
+    required this.packagePriceLabel,
+    required this.packageLabel,
+    required this.actionLabel,
+    required this.isCurrentJoiningTier,
+    required this.hasPendingApplication,
+    required this.onActivatePackage,
+  });
+
+  final List<Map<String, dynamic>> packages;
+  final UserProfile? user;
+  final String Function(Map<String, dynamic> pkg) packagePriceLabel;
+  final String Function(String tierValue) packageLabel;
+  final String Function(String tierValue) actionLabel;
+  final bool Function(String tierId) isCurrentJoiningTier;
+  final bool Function(String tierId) hasPendingApplication;
+  final Future<void> Function(Map<String, dynamic> pkg) onActivatePackage;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (final pkg in packages)
+          _MembershipPackageTile(
+            pkg: pkg,
+            user: user,
+            packagePriceLabel: packagePriceLabel,
+            packageLabel: packageLabel,
+            actionLabel: actionLabel,
+            isCurrentJoiningTier: isCurrentJoiningTier,
+            hasPendingApplication: hasPendingApplication,
+            onActivatePackage: onActivatePackage,
+          ),
+      ],
+    );
+  }
+}
+
+class _MembershipPackageTile extends StatelessWidget {
+  const _MembershipPackageTile({
+    required this.pkg,
+    required this.user,
+    required this.packagePriceLabel,
+    required this.packageLabel,
+    required this.actionLabel,
+    required this.isCurrentJoiningTier,
+    required this.hasPendingApplication,
+    required this.onActivatePackage,
+  });
+
+  final Map<String, dynamic> pkg;
+  final UserProfile? user;
+  final String Function(Map<String, dynamic> pkg) packagePriceLabel;
+  final String Function(String tierValue) packageLabel;
+  final String Function(String tierValue) actionLabel;
+  final bool Function(String tierId) isCurrentJoiningTier;
+  final bool Function(String tierId) hasPendingApplication;
+  final Future<void> Function(Map<String, dynamic> pkg) onActivatePackage;
+
+  @override
+  Widget build(BuildContext context) {
+    final tierId = (pkg['tier'] ?? 'bronze').toString().toLowerCase();
+    final isJoiningTier = isCurrentJoiningTier(tierId);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        SpacingTokens.spacing6,
+        0,
+        SpacingTokens.spacing6,
+        SpacingTokens.spacing3,
+      ),
+      child: AfriSurfaceCard(
+        onTap: () => context.push('/membership/tier/$tierId'),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    (pkg['title'] ?? pkg['tier'] ?? 'Package').toString(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TypographyTokens.titleMedium(),
+                  ),
+                ),
+                const SizedBox(width: SpacingTokens.spacing3),
+                AfriStatusChip(
+                  label: packageLabel(pkg['tier']?.toString() ?? ''),
+                  tone: AfriStatusTone.info,
+                ),
+              ],
+            ),
+            if (pkg['description'] != null) ...[
+              const SizedBox(height: SpacingTokens.spacing2),
+              Text(
+                pkg['description'].toString(),
+                style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+            const SizedBox(height: SpacingTokens.spacing4),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    packagePriceLabel(pkg),
+                    style: TypographyTokens.titleMedium(ColorTokens.clubAccent),
+                  ),
+                ),
+                if (user != null)
+                  AfriButton(
+                    label: isJoiningTier
+                        ? 'Processing...'
+                        : actionLabel(tierId),
+                    onTap: () => onActivatePackage(pkg),
+                    isLoading: isJoiningTier,
+                    enabled: !isJoiningTier && !hasPendingApplication(tierId),
+                    fullWidth: false,
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

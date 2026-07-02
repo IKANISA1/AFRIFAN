@@ -106,6 +106,8 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLargeText = MediaQuery.textScalerOf(context).scale(1) > 1.45;
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeOutCubic,
@@ -128,26 +130,28 @@ class _NavItem extends StatelessWidget {
         children: [
           Icon(
             isActive ? activeIcon : icon,
-            size: 22,
+            size: isLargeText ? 24 : 22,
             color: isActive
                 ? ColorTokens.chromeForeground
                 : ColorTokens.chromeForeground.withValues(alpha: 0.68),
           ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            softWrap: false,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
-              letterSpacing: 0,
-              color: isActive
-                  ? ColorTokens.chromeForeground
-                  : ColorTokens.chromeForeground.withValues(alpha: 0.68),
+          if (!isLargeText) ...[
+            const SizedBox(height: 2),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
+                letterSpacing: 0,
+                color: isActive
+                    ? ColorTokens.chromeForeground
+                    : ColorTokens.chromeForeground.withValues(alpha: 0.68),
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );

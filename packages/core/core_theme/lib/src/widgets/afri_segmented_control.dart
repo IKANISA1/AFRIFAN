@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -60,7 +62,7 @@ class AfriSegmentedControl extends StatelessWidget {
             child: GestureDetector(
               onTap: () {
                 if (!isSelected) {
-                  HapticFeedback.selectionClick();
+                  unawaited(HapticFeedback.selectionClick());
                   onChanged(index);
                 }
               },

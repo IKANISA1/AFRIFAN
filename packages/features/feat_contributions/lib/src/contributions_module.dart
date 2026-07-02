@@ -20,31 +20,87 @@ class ContributionsModule extends FeatureModule {
     GoRoute(
       path: '/contribute',
       name: 'contribute',
-      builder: (context, state) => const ContributionsHubScreen(),
+      pageBuilder: (context, state) => afriSheetPage(
+        state,
+        const ContributionsHubScreen(),
+        fullHeight: true,
+      ),
       routes: [
         GoRoute(
           path: 'projects',
-          builder: (context, state) => const ClubProjectsScreen(),
+          pageBuilder: (context, state) => afriSheetPage(
+            state,
+            const ClubProjectsScreen(),
+            fullHeight: true,
+          ),
         ),
         GoRoute(
           path: 'groups',
-          builder: (context, state) => const GroupsScreen(),
+          pageBuilder: (context, state) =>
+              afriSheetPage(state, const GroupsScreen(), fullHeight: true),
         ),
         GoRoute(
           path: 'group/:groupId',
           name: 'group-detail',
-          builder: (context, state) =>
-              GroupDetailScreen(groupId: state.pathParameters['groupId']!),
+          pageBuilder: (context, state) => afriSheetPage(
+            state,
+            GroupDetailScreen(groupId: state.pathParameters['groupId']!),
+            fullHeight: true,
+          ),
           routes: [
             GoRoute(
               path: 'statement',
-              builder: (context, state) => StatementDownloadScreen(
-                groupId: state.pathParameters['groupId']!,
+              pageBuilder: (context, state) => afriSheetPage(
+                state,
+                StatementDownloadScreen(
+                  groupId: state.pathParameters['groupId']!,
+                ),
+                fullHeight: true,
               ),
             ),
           ],
         ),
       ],
+    ),
+  ];
+
+  @override
+  List<RoutePresentationDecision> get routePresentationDecisions => const [
+    RoutePresentationDecision(
+      path: '/contribute',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'merge into Home/Membership',
+      targetPath: '/home',
+      rationale:
+          'Support the club is valuable but should be entered from existing hubs.',
+    ),
+    RoutePresentationDecision(
+      path: '/contribute/projects',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'consolidate',
+      targetPath: '/contribute',
+      rationale: 'Projects are a section inside contribution.',
+    ),
+    RoutePresentationDecision(
+      path: '/contribute/groups',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'consolidate',
+      targetPath: '/contribute',
+      rationale: 'Groups are a contribution submode.',
+    ),
+    RoutePresentationDecision(
+      path: '/contribute/group/:groupId',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'convert to sheet',
+      targetPath: '/contribute/groups',
+      rationale: 'Group detail is contextual to groups.',
+    ),
+    RoutePresentationDecision(
+      path: '/contribute/group/:groupId/statement',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'convert to sheet',
+      targetPath: '/contribute/group/:groupId',
+      rationale: 'Statements are utility exports, not browse screens.',
     ),
   ];
 }

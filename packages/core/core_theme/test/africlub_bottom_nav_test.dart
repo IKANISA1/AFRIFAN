@@ -40,4 +40,36 @@ void main() {
     expect(tappedIndex, 2);
     semantics.dispose();
   });
+
+  testWidgets('keeps semantic destinations at 200 percent text scale', (
+    tester,
+  ) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 2.0;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    final semantics = tester.ensureSemantics();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          bottomNavigationBar: AfriClubBottomNav(
+            currentIndex: 1,
+            onTap: (_) {},
+            items: const [
+              AfriClubNavItem(icon: Icons.home_rounded, label: 'HOME'),
+              AfriClubNavItem(icon: Icons.sports_soccer, label: 'FAN ZONE'),
+              AfriClubNavItem(icon: Icons.settings_rounded, label: 'SETTINGS'),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump(const Duration(milliseconds: 250));
+
+    expect(tester.takeException(), isNull);
+    expect(find.bySemanticsLabel('HOME'), findsOneWidget);
+    expect(find.bySemanticsLabel('FAN ZONE'), findsOneWidget);
+    expect(find.bySemanticsLabel('SETTINGS'), findsOneWidget);
+    semantics.dispose();
+  });
 }

@@ -20,4 +20,14 @@ class HomeModule extends FeatureModule {
 
   @override
   List<RouteBase> get routes => [];
+
+  @override
+  List<RoutePresentationDecision> get routePresentationDecisions => const [
+    RoutePresentationDecision(
+      path: '/home',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep',
+      rationale: 'Home is the main fan command surface.',
+    ),
+  ];
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_auth/core_auth.dart';
 import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_theme/core_theme.dart';
@@ -196,6 +198,124 @@ void main() {
         matchesGoldenFile('goldens/home_screen.png'),
       );
     });
+
+    testWidgets('matches the home loading state layout', (tester) async {
+      _setMobileSurface(tester);
+
+      await tester.pumpWidget(
+        _buildApp(
+          homeRepository: const _PendingHomeFeedRepository(),
+          latestIntelRepository: const _FakeLatestIntelRepository(
+            LatestIntelSnapshot(status: LatestIntelStatus.empty),
+          ),
+          child: const HomeScreen(),
+        ),
+      );
+
+      await tester.pump();
+
+      await expectLater(
+        find.byType(HomeScreen),
+        matchesGoldenFile('goldens/home_screen_loading.png'),
+      );
+    });
+
+    testWidgets('matches the home error state layout', (tester) async {
+      _setMobileSurface(tester);
+
+      await tester.pumpWidget(
+        _buildApp(
+          homeRepository: const _FakeHomeFeedRepository(
+            snapshot: HomeFeedSnapshot(
+              status: HomeFeedStatus.error,
+              message:
+                  'Live club data is temporarily unavailable. Pull to refresh.',
+            ),
+          ),
+          latestIntelRepository: const _FakeLatestIntelRepository(
+            LatestIntelSnapshot(status: LatestIntelStatus.empty),
+          ),
+          child: const HomeScreen(),
+        ),
+      );
+
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump();
+
+      await expectLater(
+        find.byType(HomeScreen),
+        matchesGoldenFile('goldens/home_screen_error.png'),
+      );
+    });
+
+    testWidgets('matches the home empty fallback layout', (tester) async {
+      _setMobileSurface(tester);
+
+      await tester.pumpWidget(
+        _buildApp(
+          homeRepository: _FakeHomeFeedRepository(
+            snapshot: localHomeFeedFallbackSnapshot(),
+          ),
+          latestIntelRepository: const _FakeLatestIntelRepository(
+            LatestIntelSnapshot(status: LatestIntelStatus.empty),
+          ),
+          featureConfigSnapshot: const PlatformConfigSnapshot(),
+          child: const HomeScreen(),
+        ),
+      );
+
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pumpAndSettle();
+
+      await expectLater(
+        find.byType(HomeScreen),
+        matchesGoldenFile('goldens/home_screen_empty.png'),
+      );
+    });
+
+    testWidgets('matches the home layout at 200 percent text scale', (
+      tester,
+    ) async {
+      _setMobileSurface(tester);
+      tester.platformDispatcher.textScaleFactorTestValue = 2.0;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+      await tester.pumpWidget(
+        _buildApp(
+          homeRepository: const _FakeHomeFeedRepository(
+            snapshot: HomeFeedSnapshot(
+              heroSlides: [
+                MatchSlide(
+                  homeTeam: 'Rayon Sports',
+                  awayTeam: 'AS Kigali',
+                  status: 'UPCOMING',
+                  dateInfo: '12 APR • 15:00',
+                ),
+              ],
+              leaderboard: [
+                ContributorEntry(rank: 1, alias: '261452', points: 2140),
+                ContributorEntry(rank: 2, alias: '623025', points: 1640),
+              ],
+              userFet: 5260,
+              fanRank: 8,
+              status: HomeFeedStatus.success,
+            ),
+          ),
+          latestIntelRepository: const _FakeLatestIntelRepository(
+            LatestIntelSnapshot(status: LatestIntelStatus.empty),
+          ),
+          child: const HomeScreen(),
+        ),
+      );
+
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pumpAndSettle();
+
+      await expectLater(
+        find.byType(HomeScreen),
+        matchesGoldenFile('goldens/home_screen_large_text.png'),
+      );
+    });
   });
 
   group('LatestIntelSection states', () {
@@ -372,6 +492,13 @@ class _FakeHomeFeedRepository implements HomeFeedRepository {
     }
     return snapshot;
   }
+}
+
+class _PendingHomeFeedRepository implements HomeFeedRepository {
+  const _PendingHomeFeedRepository();
+
+  @override
+  Future<HomeFeedSnapshot> load() => Completer<HomeFeedSnapshot>().future;
 }
 
 class _FakeLatestIntelRepository implements LatestIntelRepository {

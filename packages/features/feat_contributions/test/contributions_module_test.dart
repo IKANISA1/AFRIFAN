@@ -1,3 +1,4 @@
+import 'package:core_router/core_router.dart';
 import 'package:feat_contributions/feat_contributions.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -30,9 +31,9 @@ void main() {
       late GoRoute rootRoute;
 
       setUp(() {
-        rootRoute = module.routes
-            .whereType<GoRoute>()
-            .firstWhere((r) => r.path == '/contribute');
+        rootRoute = module.routes.whereType<GoRoute>().firstWhere(
+          (r) => r.path == '/contribute',
+        );
       });
 
       test('has projects sub-route', () {
@@ -63,9 +64,9 @@ void main() {
         late GoRoute groupRoute;
 
         setUp(() {
-          groupRoute = rootRoute.routes
-              .whereType<GoRoute>()
-              .firstWhere((r) => r.path == 'group/:groupId');
+          groupRoute = rootRoute.routes.whereType<GoRoute>().firstWhere(
+            (r) => r.path == 'group/:groupId',
+          );
         });
 
         test('has statement sub-route', () {
@@ -85,5 +86,33 @@ void main() {
     test('isEnabled returns false when explicitly disabled', () {
       expect(module.isEnabled({'contributions': false}), isFalse);
     });
+
+    test(
+      'declares route presentation decisions for the minimal app policy',
+      () {
+        final decisions = {
+          for (final decision in module.routePresentationDecisions)
+            decision.path: decision.presentation,
+        };
+
+        expect(decisions['/contribute'], RoutePresentation.fullHeightSheet);
+        expect(
+          decisions['/contribute/projects'],
+          RoutePresentation.fullHeightSheet,
+        );
+        expect(
+          decisions['/contribute/groups'],
+          RoutePresentation.fullHeightSheet,
+        );
+        expect(
+          decisions['/contribute/group/:groupId'],
+          RoutePresentation.fullHeightSheet,
+        );
+        expect(
+          decisions['/contribute/group/:groupId/statement'],
+          RoutePresentation.fullHeightSheet,
+        );
+      },
+    );
   });
 }

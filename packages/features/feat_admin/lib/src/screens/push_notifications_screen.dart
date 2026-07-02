@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:core_network/core_network.dart';
@@ -40,7 +41,7 @@ class _PushNotificationsScreenState
   @override
   void initState() {
     super.initState();
-    _loadContext();
+    unawaited(_loadContext());
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
@@ -37,7 +39,7 @@ class _StatementDownloadScreenState
   @override
   void initState() {
     super.initState();
-    _loadEntries();
+    unawaited(_loadEntries());
   }
 
   Future<void> _loadEntries() async {

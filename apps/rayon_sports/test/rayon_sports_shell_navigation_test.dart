@@ -61,6 +61,62 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Settings Screen'), findsOneWidget);
     });
+
+    testWidgets('matches shell home tab visual baseline', (tester) async {
+      _setMobileSurface(tester);
+
+      await tester.pumpWidget(_buildApp(router));
+      await tester.pumpAndSettle();
+
+      await expectLater(
+        find.byType(AppShell),
+        matchesGoldenFile('goldens/rayon_shell_home.png'),
+      );
+    });
+
+    testWidgets('matches shell fan zone tab visual baseline', (tester) async {
+      _setMobileSurface(tester);
+
+      await tester.pumpWidget(_buildApp(router));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Fan Zone'));
+      await tester.pumpAndSettle();
+
+      await expectLater(
+        find.byType(AppShell),
+        matchesGoldenFile('goldens/rayon_shell_fanzone.png'),
+      );
+    });
+
+    testWidgets('matches shell settings tab visual baseline', (tester) async {
+      _setMobileSurface(tester);
+
+      await tester.pumpWidget(_buildApp(router));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Settings'));
+      await tester.pumpAndSettle();
+
+      await expectLater(
+        find.byType(AppShell),
+        matchesGoldenFile('goldens/rayon_shell_settings.png'),
+      );
+    });
+
+    testWidgets('matches shell at 200 percent text scale', (tester) async {
+      _setMobileSurface(tester);
+      tester.platformDispatcher.textScaleFactorTestValue = 2.0;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+      await tester.pumpWidget(_buildApp(router));
+      await tester.pumpAndSettle();
+
+      await expectLater(
+        find.byType(AppShell),
+        matchesGoldenFile('goldens/rayon_shell_large_text.png'),
+      );
+    });
   });
 }
 
@@ -83,8 +139,22 @@ Widget _buildApp(AppRouter router) {
     child: MaterialApp.router(
       routerConfig: router.router,
       theme: ThemeData(useMaterial3: true),
+      builder: (context, child) {
+        final mediaQuery = MediaQuery.of(context);
+        return MediaQuery(
+          data: mediaQuery.copyWith(disableAnimations: true),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     ),
   );
+}
+
+void _setMobileSurface(WidgetTester tester) {
+  tester.view.physicalSize = const Size(393, 852);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
 }
 
 class _FakeClubConfig implements ClubConfig {

@@ -101,19 +101,20 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
           ],
         ),
       ),
-      body: matchesAsync.when(
-        loading: () => const Padding(
+      body: AfriAsyncStateView<List<ClubMatch>>(
+        value: matchesAsync,
+        loading: (_) => const Padding(
           padding: EdgeInsets.all(SpacingTokens.spacing4),
           child: AfriSkeletonList(),
         ),
-        error: (error, _) => _TicketState(
+        error: (_, error, stackTrace) => _TicketState(
           title: 'Unable to load fixtures',
           body:
               'Ticket inventory is unavailable right now. Check your connection and try again.',
           actionLabel: 'Retry',
           onPressed: () => ref.invalidate(ticketMatchesProvider),
         ),
-        data: (matches) {
+        data: (context, matches) {
           final filteredMatches = _applyFilters(matches);
           final now = DateTime.now();
           final upcoming = filteredMatches

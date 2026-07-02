@@ -11,6 +11,8 @@ class BorrowedMatchStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLargeText = MediaQuery.textScalerOf(context).scale(1) > 1.45;
+
     return AfriPanelCard(
       onTap: onTap,
       padding: const EdgeInsets.symmetric(
@@ -29,7 +31,10 @@ class BorrowedMatchStrip extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
+                Wrap(
+                  spacing: SpacingTokens.spacing2,
+                  runSpacing: SpacingTokens.spacing1,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -51,16 +56,21 @@ class BorrowedMatchStrip extends StatelessWidget {
                             ),
                       ),
                     ),
-                    const SizedBox(width: SpacingTokens.spacing2),
-                    Text(
-                      slide.dateInfo,
-                      style:
-                          TypographyTokens.metricLabel(
-                            ColorTokens.borrowedInkSubtle,
-                          ).copyWith(
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                          ),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: isLargeText ? 180 : double.infinity,
+                      ),
+                      child: Text(
+                        slide.dateInfo,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            TypographyTokens.metricLabel(
+                              ColorTokens.borrowedInkSubtle,
+                            ).copyWith(
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                            ),
+                      ),
                     ),
                   ],
                 ),

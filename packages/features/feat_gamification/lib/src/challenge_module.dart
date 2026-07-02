@@ -32,8 +32,38 @@ class ChallengeModule extends FeatureModule {
     ),
     GoRoute(
       path: '/challenge/:id',
-      builder: (context, state) =>
-          ChallengeDetailScreen(id: state.pathParameters['id'] ?? ''),
+      pageBuilder: (context, state) => afriRoutePage(
+        state,
+        ChallengeDetailScreen(id: state.pathParameters['id'] ?? ''),
+      ),
+    ),
+  ];
+
+  @override
+  List<RoutePresentationDecision> get routePresentationDecisions => const [
+    RoutePresentationDecision(
+      path: '/challenge',
+      presentation: RoutePresentation.deepLinkOnly,
+      recommendation: 'hide from launch',
+      rationale: 'Challenge is opt-in and outside the default supporter app.',
+    ),
+    RoutePresentationDecision(
+      path: '/challenge/create',
+      presentation: RoutePresentation.deepLinkOnly,
+      recommendation: 'hide from launch',
+      rationale: 'Challenge creation requires the challenge feature flag.',
+    ),
+    RoutePresentationDecision(
+      path: '/challenge/my',
+      presentation: RoutePresentation.deepLinkOnly,
+      recommendation: 'hide from launch',
+      rationale: 'Challenge history is not part of the minimal launch surface.',
+    ),
+    RoutePresentationDecision(
+      path: '/challenge/:id',
+      presentation: RoutePresentation.deepLinkOnly,
+      recommendation: 'hide from launch',
+      rationale: 'Challenge details stay behind explicit feature enablement.',
     ),
   ];
 }

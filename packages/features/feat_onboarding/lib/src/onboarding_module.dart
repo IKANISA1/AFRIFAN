@@ -41,4 +41,33 @@ class OnboardingModule extends FeatureModule {
     '/auth/phone',
     '/auth/otp',
   };
+
+  @override
+  List<RoutePresentationDecision> get routePresentationDecisions => const [
+    RoutePresentationDecision(
+      path: '/splash',
+      presentation: RoutePresentation.deepLinkOnly,
+      recommendation: 'delete as visible screen',
+      targetPath: '/home',
+      rationale: 'Startup should use native launch plus auth/loading state.',
+    ),
+    RoutePresentationDecision(
+      path: '/onboarding',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep but compress',
+      rationale: 'First-run identity context is useful when concise.',
+    ),
+    RoutePresentationDecision(
+      path: '/auth/phone',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep',
+      rationale: 'Phone entry is a focused credential step.',
+    ),
+    RoutePresentationDecision(
+      path: '/auth/otp',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep',
+      rationale: 'OTP verification needs focused validation and resend state.',
+    ),
+  ];
 }

@@ -96,4 +96,74 @@ class AdminModule extends FeatureModule {
       ],
     ),
   ];
+
+  @override
+  List<RoutePresentationDecision> get routePresentationDecisions => const [
+    RoutePresentationDecision(
+      path: '/admin',
+      presentation: RoutePresentation.internalOnly,
+      recommendation: 'hide from supporter app',
+      rationale: 'Mobile admin is PWA-owned by default and opt-in only.',
+    ),
+    RoutePresentationDecision(
+      path: '/admin/cms',
+      presentation: RoutePresentation.internalOnly,
+      recommendation: 'hide from supporter app',
+      rationale: 'CMS management is internal tooling.',
+    ),
+    RoutePresentationDecision(
+      path: '/admin/matches',
+      presentation: RoutePresentation.internalOnly,
+      recommendation: 'hide from supporter app',
+      rationale: 'Match management is internal tooling.',
+    ),
+    RoutePresentationDecision(
+      path: '/admin/contributions',
+      presentation: RoutePresentation.internalOnly,
+      recommendation: 'hide from supporter app',
+      rationale: 'Contribution monitoring is internal tooling.',
+    ),
+    RoutePresentationDecision(
+      path: '/admin/notifications',
+      presentation: RoutePresentation.internalOnly,
+      recommendation: 'hide from supporter app',
+      rationale: 'Push notification composition is internal tooling.',
+    ),
+    RoutePresentationDecision(
+      path: '/admin/sms-monitor',
+      presentation: RoutePresentation.internalOnly,
+      recommendation: 'hide from supporter app',
+      rationale: 'SMS sync monitoring is internal tooling.',
+    ),
+    RoutePresentationDecision(
+      path: '/admin/settle',
+      presentation: RoutePresentation.internalOnly,
+      recommendation: 'hide from supporter app',
+      rationale: 'Fixture settlement is internal tooling.',
+    ),
+    RoutePresentationDecision(
+      path: '/admin/challenges',
+      presentation: RoutePresentation.internalOnly,
+      recommendation: 'hide from supporter app',
+      rationale: 'Challenge operations are internal tooling.',
+    ),
+    RoutePresentationDecision(
+      path: '/admin/competitions',
+      presentation: RoutePresentation.internalOnly,
+      recommendation: 'hide from supporter app',
+      rationale: 'Competition management is internal tooling.',
+    ),
+    RoutePresentationDecision(
+      path: '/admin/features',
+      presentation: RoutePresentation.internalOnly,
+      recommendation: 'hide from supporter app',
+      rationale: 'Feature management is internal tooling.',
+    ),
+    RoutePresentationDecision(
+      path: '/admin/features/:featureKey',
+      presentation: RoutePresentation.internalOnly,
+      recommendation: 'hide from supporter app',
+      rationale: 'Feature details are internal tooling.',
+    ),
+  ];
 }

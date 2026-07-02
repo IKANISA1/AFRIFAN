@@ -271,12 +271,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isCompact = constraints.maxHeight < 560;
+        final isLargeText = MediaQuery.textScalerOf(context).scale(1) > 1.45;
+        final shouldScroll = isCompact || isLargeText;
+        final mediaHeight = isCompact
+            ? 220.0
+            : isLargeText
+            ? 220.0
+            : 280.0;
         final slide = Padding(
           padding: EdgeInsets.fromLTRB(
             SpacingTokens.spacing6,
             SpacingTokens.spacing4,
             SpacingTokens.spacing6,
-            isCompact ? SpacingTokens.spacing6 : SpacingTokens.spacing8,
+            shouldScroll ? SpacingTokens.spacing6 : SpacingTokens.spacing8,
           ),
           child: Stack(
             children: [
@@ -291,17 +298,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ),
               ),
               Column(
-                mainAxisAlignment: isCompact
+                mainAxisAlignment: shouldScroll
                     ? MainAxisAlignment.start
                     : MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Transform.translate(
-                    offset: Offset(0, isCompact ? 0 : -8),
+                    offset: Offset(0, shouldScroll ? 0 : -8),
                     child: AfriSurfaceCard(
                       backgroundColor: ColorTokens.surfaceContainerLow
                           .withValues(alpha: 0.82),
-                      height: isCompact ? 220 : 280,
+                      height: mediaHeight,
                       width: double.infinity,
                       padding: EdgeInsets.zero,
                       child: _OnboardingMedia(
@@ -313,11 +320,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     ),
                   ),
                   Transform.translate(
-                    offset: Offset(0, isCompact ? 0 : SpacingTokens.spacing4),
+                    offset: Offset(
+                      0,
+                      shouldScroll ? 0 : SpacingTokens.spacing4,
+                    ),
                     child: Text(
                       slideContent['title']!,
                       style: TypographyTokens.displaySmall().copyWith(
-                        fontSize: isCompact ? 32 : 40,
+                        fontSize: shouldScroll ? 32 : 40,
                         height: 1.1,
                         fontWeight: FontWeight.w700,
                       ),
@@ -326,7 +336,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   Transform.translate(
                     offset: Offset(
                       0,
-                      isCompact
+                      shouldScroll
                           ? SpacingTokens.spacing2
                           : SpacingTokens.spacing3,
                     ),
@@ -336,7 +346,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         slideContent['body']!,
                         style: TypographyTokens.bodyLarge().copyWith(
                           color: ColorTokens.onSurfaceVariant,
-                          fontSize: isCompact ? 16 : null,
+                          fontSize: shouldScroll ? 16 : null,
                         ),
                       ),
                     ),
@@ -347,7 +357,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           ),
         );
 
-        if (!isCompact) {
+        if (!shouldScroll) {
           return slide;
         }
 

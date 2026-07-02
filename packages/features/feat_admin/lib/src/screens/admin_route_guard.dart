@@ -28,7 +28,7 @@ class AdminRouteGuard extends ConsumerWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       AfriIcons.lock,
                       size: 64,
                       color: ColorTokens.warning,

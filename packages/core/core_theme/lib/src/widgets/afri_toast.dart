@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -80,7 +82,7 @@ abstract final class AfriToast {
     final config = _config(variant, colors);
 
     if (variant == _Variant.success || variant == _Variant.error) {
-      HapticFeedback.lightImpact();
+      unawaited(HapticFeedback.lightImpact());
     }
 
     ScaffoldMessenger.of(context).showSnackBar(

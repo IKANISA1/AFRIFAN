@@ -15,15 +15,38 @@ class FanClubsModule extends FeatureModule {
   List<RouteBase> get routes => [
     GoRoute(
       path: '/fan-clubs',
-      builder: (context, state) => const FanClubsListScreen(),
+      pageBuilder: (context, state) =>
+          afriSheetPage(state, const FanClubsListScreen(), fullHeight: true),
       routes: [
         GoRoute(
           path: ':clubId',
-          builder: (context, state) => FanClubDetailScreen(
-            clubId: state.pathParameters['clubId'] ?? 'kigali-blue-army',
+          pageBuilder: (context, state) => afriSheetPage(
+            state,
+            FanClubDetailScreen(
+              clubId: state.pathParameters['clubId'] ?? 'kigali-blue-army',
+            ),
+            fullHeight: true,
           ),
         ),
       ],
+    ),
+  ];
+
+  @override
+  List<RoutePresentationDecision> get routePresentationDecisions => const [
+    RoutePresentationDecision(
+      path: '/fan-clubs',
+      presentation: RoutePresentation.consolidatedHub,
+      recommendation: 'consolidate',
+      targetPath: '/fanzone',
+      rationale: 'Fan clubs belong in the Fan Zone supporters area.',
+    ),
+    RoutePresentationDecision(
+      path: '/fan-clubs/:clubId',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'convert to sheet',
+      targetPath: '/fan-clubs',
+      rationale: 'Fan club detail is preview/join context.',
     ),
   ];
 }

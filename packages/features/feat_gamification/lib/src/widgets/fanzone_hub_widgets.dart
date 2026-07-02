@@ -57,7 +57,11 @@ class HubHeroStats extends StatelessWidget {
 // Quick Routes
 // ══════════════════════════════════════════════════════════════════════════════
 
-/// Horizontal chips linking to top-level fanzone routes (capped at 6 + More).
+/// Ranked links to top-level fanzone routes.
+///
+/// The first row keeps the top three actions prominent. Secondary routes move
+/// into compact chips so the hub no longer presents every destination at the
+/// same weight.
 class HubQuickRoutes extends StatelessWidget {
   const HubQuickRoutes({super.key, required this.onMore});
 
@@ -65,7 +69,7 @@ class HubQuickRoutes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = <({String label, IconData icon, String route})>[
+    final primaryItems = <({String label, IconData icon, String route})>[
       (label: 'Fixtures', icon: AfriIcons.fixture, route: '/fanzone/fixtures'),
       (label: 'My Picks', icon: AfriIcons.myPicks, route: '/fanzone/my'),
       (
@@ -73,41 +77,55 @@ class HubQuickRoutes extends StatelessWidget {
         icon: AfriIcons.leaderboard,
         route: '/fanzone/leaderboard',
       ),
-      (label: 'Wallet', icon: AfriIcons.wallet, route: '/fanzone/wallet'),
-      (label: 'Rewards', icon: AfriIcons.rewards, route: '/fanzone/rewards'),
-      (label: 'Offers', icon: AfriIcons.offers, route: '/fanzone/offers'),
     ];
+    final secondaryItems = <({String label, IconData icon, String route})>[
+      (label: 'Wallet', icon: AfriIcons.wallet, route: '/fanzone/wallet'),
+    ];
+    final primaryWidth =
+        (MediaQuery.of(context).size.width -
+            (SpacingTokens.screenPadding * 2) -
+            (SpacingTokens.listItemGap * 2)) /
+        3;
 
-    return Wrap(
-      spacing: SpacingTokens.listItemGap,
-      runSpacing: SpacingTokens.listItemGap,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ...items.map(
-          (item) => SizedBox(
-            width:
-                (MediaQuery.of(context).size.width -
-                    (SpacingTokens.screenPadding * 2) -
-                    (SpacingTokens.listItemGap * 2)) /
-                3,
-            child: AfriActionRow(
-              icon: item.icon,
-              label: item.label,
-              onTap: () => context.push(item.route),
+        Wrap(
+          spacing: SpacingTokens.listItemGap,
+          runSpacing: SpacingTokens.listItemGap,
+          children: [
+            ...primaryItems.map(
+              (item) => SizedBox(
+                width: primaryWidth,
+                child: AfriActionRow(
+                  icon: item.icon,
+                  label: item.label,
+                  onTap: () => context.push(item.route),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-        SizedBox(
-          width:
-              (MediaQuery.of(context).size.width -
-                  (SpacingTokens.screenPadding * 2) -
-                  (SpacingTokens.listItemGap * 2)) /
-              3,
-          child: AfriActionRow(
-            icon: AfriIcons.more,
-            label: 'More',
-            onTap: onMore,
-            accentColor: ColorTokens.onSurfaceVariant,
-          ),
+        const SizedBox(height: SpacingTokens.spacing3),
+        Wrap(
+          spacing: SpacingTokens.spacing2,
+          runSpacing: SpacingTokens.spacing2,
+          children: [
+            ...secondaryItems.map(
+              (item) => AfriInfoChip(
+                label: item.label,
+                icon: item.icon,
+                color: ColorTokens.onSurfaceVariant,
+                onTap: () => context.push(item.route),
+              ),
+            ),
+            AfriInfoChip(
+              label: 'More',
+              icon: AfriIcons.more,
+              color: ColorTokens.onSurfaceVariant,
+              onTap: onMore,
+            ),
+          ],
         ),
       ],
     );

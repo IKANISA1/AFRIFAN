@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,7 @@ class _MatchManagerScreenState extends ConsumerState<MatchManagerScreen> {
   @override
   void initState() {
     super.initState();
-    _loadMatches();
+    unawaited(_loadMatches());
   }
 
   Future<void> _loadMatches() async {
@@ -177,7 +179,7 @@ class _MatchManagerScreenState extends ConsumerState<MatchManagerScreen> {
                           (matchStatus == 'LIVE' ||
                                   matchStatus == 'HALF-TIME') &&
                               liveMinute > 0
-                          ? "  •  ${liveMinute.toString()}'"
+                          ? "  •  $liveMinute'"
                           : '';
                       final soldPercent = capacity <= 0
                           ? 0

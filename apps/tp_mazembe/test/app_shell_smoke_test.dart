@@ -1,12 +1,12 @@
-import 'package:club_tp_mazembe/club_tp_mazembe.dart';
 import 'package:app_registry/app_registry.dart';
+import 'package:club_tp_mazembe/club_tp_mazembe.dart';
 import 'package:core_router/core_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('builds a valid production route graph', () {
-    final config = const TpMazembeConfig();
+    const config = TpMazembeConfig();
     final modules = AppModuleRegistry.build(config);
     final router = AppRouter(
       modules: modules,

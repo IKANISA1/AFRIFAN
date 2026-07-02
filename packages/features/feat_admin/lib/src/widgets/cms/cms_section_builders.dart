@@ -14,6 +14,7 @@ extension _SectionBuilders on _CmsContentManagerScreenState {
         return AfriChoiceChip(
           label: Text(sectionLabel(section)),
           selected: selected,
+          // ignore: invalid_use_of_protected_member
           onSelected: (_) => setState(() => _section = section),
         );
       }).toList(),

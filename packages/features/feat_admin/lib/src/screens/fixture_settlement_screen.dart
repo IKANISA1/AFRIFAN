@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +27,7 @@ class _FixtureSettlementScreenState
   @override
   void initState() {
     super.initState();
-    _loadFixtures();
+    unawaited(_loadFixtures());
   }
 
   Future<void> _loadFixtures() async {
@@ -78,10 +80,12 @@ class _FixtureSettlementScreenState
     if (!mounted) return;
 
     // Show loading
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => const AfriLoadingIndicator(),
+    unawaited(
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => const AfriLoadingIndicator(),
+      ),
     );
 
     try {
@@ -191,7 +195,7 @@ class _FixtureSettlementScreenState
               label: Text(e.value),
               onSelected: (_) {
                 setState(() => _statusFilter = e.key);
-                _loadFixtures();
+                unawaited(_loadFixtures());
               },
             ),
           )

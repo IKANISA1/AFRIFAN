@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 
@@ -78,7 +79,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   int _maxQuantityFor(Map<String, dynamic>? product) {
     final stockCount = _stockCount(product);
     if (stockCount != null) {
-      return stockCount.clamp(0, 99).toInt();
+      return stockCount.clamp(0, 99);
     }
     return _isInStock(product) ? 10 : 0;
   }
@@ -86,7 +87,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProduct();
+    unawaited(_loadProduct());
   }
 
   Future<void> _loadProduct() async {
@@ -120,9 +121,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             ? null
             : (sizes.contains(_selectedSize) ? _selectedSize : sizes.first);
         final maxQuantity = _maxQuantityFor(product);
-        _quantity = maxQuantity > 0
-            ? _quantity.clamp(1, maxQuantity).toInt()
-            : 1;
+        _quantity = maxQuantity > 0 ? _quantity.clamp(1, maxQuantity) : 1;
         _isLoading = false;
         _error = null;
       });
@@ -146,14 +145,14 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final maxQuantity = _maxQuantityFor(_product);
     if (_quantity < maxQuantity) {
       setState(() => _quantity++);
-      HapticFeedback.lightImpact();
+      unawaited(HapticFeedback.lightImpact());
     }
   }
 
   void _decrement() {
     if (_quantity > 1) {
       setState(() => _quantity--);
-      HapticFeedback.lightImpact();
+      unawaited(HapticFeedback.lightImpact());
     }
   }
 
@@ -555,7 +554,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                     variant: AfriButtonVariant.outline,
                                     onTap: () {
                                       _addToCart();
-                                      context.push('/shop/cart');
+                                      unawaited(context.push('/shop/cart'));
                                     },
                                     enabled: inStock,
                                   ),

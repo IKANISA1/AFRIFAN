@@ -23,16 +23,43 @@ class ShopModule extends FeatureModule {
         GoRoute(
           path: 'cart',
           name: 'shop-cart',
-          builder: (context, state) => const CartScreen(),
+          pageBuilder: (context, state) =>
+              afriSheetPage(state, const CartScreen(), fullHeight: true),
         ),
         GoRoute(
           path: 'product/:productId',
           name: 'product-detail',
-          builder: (context, state) => ProductDetailScreen(
-            productId: state.pathParameters['productId']!,
+          pageBuilder: (context, state) => afriSheetPage(
+            state,
+            ProductDetailScreen(productId: state.pathParameters['productId']!),
+            fullHeight: true,
           ),
         ),
       ],
+    ),
+  ];
+
+  @override
+  List<RoutePresentationDecision> get routePresentationDecisions => const [
+    RoutePresentationDecision(
+      path: '/shop',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep',
+      rationale: 'Merchandise browsing is a primary revenue surface.',
+    ),
+    RoutePresentationDecision(
+      path: '/shop/product/:productId',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'convert to sheet',
+      targetPath: '/shop',
+      rationale: 'Product details should feel like quick commerce.',
+    ),
+    RoutePresentationDecision(
+      path: '/shop/cart',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'convert to sheet',
+      targetPath: '/shop',
+      rationale: 'Cart review is transactional context inside Shop.',
     ),
   ];
 }

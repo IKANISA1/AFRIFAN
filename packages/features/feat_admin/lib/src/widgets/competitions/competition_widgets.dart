@@ -257,7 +257,7 @@ class _SeasonManagerSheetState extends State<_SeasonManagerSheet> {
   @override
   void initState() {
     super.initState();
-    _loadSeasons();
+    unawaited(_loadSeasons());
   }
 
   Future<void> _loadSeasons() async {

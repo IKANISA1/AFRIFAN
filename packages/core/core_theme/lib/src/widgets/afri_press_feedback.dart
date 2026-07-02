@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -101,27 +103,27 @@ class _AfriPressFeedbackState extends State<AfriPressFeedback>
   void _handleTapDown(TapDownDetails _) {
     if (!_isInteractive) return;
     setState(() => _isPressed = true);
-    _controller.forward();
+    unawaited(_controller.forward());
     if (widget.haptic) {
-      HapticFeedback.lightImpact();
+      unawaited(HapticFeedback.lightImpact());
     }
   }
 
   void _handleTapUp(TapUpDetails _) {
     if (!_isInteractive) return;
     setState(() => _isPressed = false);
-    _controller.reverse();
+    unawaited(_controller.reverse());
     if (widget.haptic) {
-      HapticFeedback.mediumImpact();
+      unawaited(HapticFeedback.mediumImpact());
     }
   }
 
   void _handleTapCancel() {
     if (!_isInteractive) return;
     setState(() => _isPressed = false);
-    _controller.reverse();
+    unawaited(_controller.reverse());
     if (widget.haptic) {
-      HapticFeedback.mediumImpact();
+      unawaited(HapticFeedback.mediumImpact());
     }
   }
 

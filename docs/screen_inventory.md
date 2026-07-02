@@ -23,6 +23,17 @@ Source route contracts:
 - Current bottom tabs are source-backed as `Home`, `Fan Zone`, and `Settings`.
   `packages/core/core_router/lib/src/feature_module.dart` allows only
   `home`, `fanzone`, and `settings` in the bottom tab order.
+- The minimal supporter-app presentation contract is now source-backed by
+  `FeatureModule.routePresentationDecisions`. The default mobile app is allowed
+  exactly 12 full-screen product surfaces: `/onboarding`, `/auth/phone`,
+  `/auth/otp`, `/home`, `/fanzone`, `/fanzone/match/:fixtureId`,
+  `/fanzone/wallet`, `/settings`, `/tickets`, `/e-ticket/:id`, `/membership`,
+  and `/shop`.
+- Secondary routes remain registered for HTTPS/app links, notifications, and
+  compatibility, but they should present as `afriSheetPage` overlays, redirects,
+  consolidated hub sections, deep-link-only surfaces, or internal-only surfaces.
+  This prevents the route graph from growing back into a 50-screen supporter
+  app.
 - `RULES.md` still contains an older statement saying the bottom navigation is
   `Home · Contribute · Settings`. That conflicts with current router/module
   source and with `packages/app_registry/test/module_registry_test.dart`.
@@ -44,6 +55,19 @@ Source route contracts:
 - Error: user-recoverable failure state.
 - Auth: whether the route is public, authenticated fan, or admin/internal.
 - Accessibility/Responsive: baseline obligations for Phase 2 verification.
+
+## Route Presentation Definitions
+
+- Full screen: a persistent destination that can carry a complete user task.
+- Full-height sheet: a deep-linkable overlay for secondary browsing or detail
+  content that should stay anchored to a hub.
+- Modal sheet: a short contextual action, preview, confirmation, or setting.
+- Consolidated hub: a useful surface that belongs inside Home, Fan Zone,
+  Membership, Settings, Wallet, Tickets, or Shop instead of standalone
+  navigation.
+- Deep-link-only: compatibility route or startup/auth utility that should not be
+  promoted as a visible destination.
+- Internal-only: admin or operations tooling excluded from supporter builds.
 
 ## Primary Shell
 

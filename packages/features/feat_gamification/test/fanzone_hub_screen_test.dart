@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/models/fet_models.dart';
 import 'package:feat_gamification/src/models/partner_pool_models.dart';
 import 'package:feat_gamification/src/models/prediction_models.dart';
@@ -225,10 +226,18 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is AfriAsyncStateView<FanzoneHubSnapshot>,
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Fanzone'), findsOneWidget);
     expect(find.text('Fixtures'), findsAtLeastNWidgets(1));
     expect(find.text('Wallet'), findsAtLeastNWidgets(1));
     expect(find.text('Jackpot'), findsNothing);
+    expect(find.byType(AfriActionRow), findsNWidgets(3));
+    expect(find.text('More'), findsOneWidget);
 
     await tester.drag(find.byType(CustomScrollView), const Offset(0, -800));
     await tester.pumpAndSettle();
@@ -237,6 +246,50 @@ void main() {
     expect(find.text('100 FET entry'), findsOneWidget);
     expect(find.text('Join pool'), findsOneWidget);
     expect(find.text('Challenges'), findsNothing);
+  });
+
+  testWidgets('matches the fanzone hub content layout', (tester) async {
+    _setMobileSurface(tester);
+
+    await tester.pumpWidget(
+      _buildFanzoneApp(() => _TestFanzoneHubNotifier(_buildSnapshot())),
+    );
+    await tester.pumpAndSettle();
+
+    await expectLater(
+      find.byType(FanzoneHubScreen),
+      matchesGoldenFile('goldens/fanzone_hub_screen.png'),
+    );
+  });
+
+  testWidgets('matches the fanzone hub loading layout', (tester) async {
+    _setMobileSurface(tester);
+
+    await tester.pumpWidget(_buildFanzoneApp(_PendingFanzoneHubNotifier.new));
+    await tester.pump();
+
+    await expectLater(
+      find.byType(FanzoneHubScreen),
+      matchesGoldenFile('goldens/fanzone_hub_screen_loading.png'),
+    );
+  });
+
+  testWidgets('matches the fanzone degraded/offline layout', (tester) async {
+    _setMobileSurface(tester);
+    const snapshot = FanzoneHubSnapshot(
+      status: FanzoneHubStatus.error,
+      message: 'Fanzone is temporarily unavailable.',
+    );
+
+    await tester.pumpWidget(
+      _buildFanzoneApp(() => _TestFanzoneHubNotifier(snapshot)),
+    );
+    await tester.pumpAndSettle();
+
+    await expectLater(
+      find.byType(FanzoneHubScreen),
+      matchesGoldenFile('goldens/fanzone_hub_screen_degraded.png'),
+    );
   });
 
   testWidgets('joins a partner WDW pool with a fixed fan FET stake', (
@@ -261,9 +314,11 @@ void main() {
 
     await tester.scrollUntilVisible(
       find.text('Join pool'),
-      500,
+      300,
       scrollable: find.byType(Scrollable).first,
     );
+    await tester.ensureVisible(find.text('Join pool'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Join pool'));
     await tester.pumpAndSettle();
 
@@ -328,6 +383,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Live updates paused'), findsOneWidget);
+    expect(find.byType(AfriStateBanner), findsOneWidget);
     expect(find.text('Fixtures'), findsOneWidget);
 
     await tester.drag(find.byType(CustomScrollView), const Offset(0, -500));
@@ -341,4 +397,27 @@ void main() {
     expect(find.text('Leaderboard unavailable'), findsOneWidget);
     expect(find.text('Challenges unavailable'), findsNothing);
   });
+}
+
+Widget _buildFanzoneApp(FanzoneHubNotifier Function() createNotifier) {
+  return ProviderScope(
+    overrides: [fanzoneHubProvider.overrideWith(createNotifier)],
+    child: MaterialApp(
+      builder: (context, child) {
+        final mediaQuery = MediaQuery.of(context);
+        return MediaQuery(
+          data: mediaQuery.copyWith(disableAnimations: true),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
+      home: const FanzoneHubScreen(),
+    ),
+  );
+}
+
+void _setMobileSurface(WidgetTester tester) {
+  tester.view.physicalSize = const Size(393, 852);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
 }

@@ -31,9 +31,10 @@ class DigitalMembershipCardFull extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accent = accentColor ?? ColorTokens.clubAccent;
+    final isLargeText = MediaQuery.textScalerOf(context).scale(1) > 1.45;
 
     return Container(
-      height: 220,
+      height: isLargeText ? 360 : 220,
       decoration: BoxDecoration(
         borderRadius: ShapeTokens.cardRadius,
         gradient: ColorTokens.borrowedSurfaceGradient(
@@ -77,18 +78,23 @@ class DigitalMembershipCardFull extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Top row: Club name + Share button
-                    Row(
+                    Wrap(
+                      spacing: SpacingTokens.spacing3,
+                      runSpacing: SpacingTokens.spacing2,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         if (crest != null) ...[
                           Text(
                             crest!,
                             style: TypographyTokens.headlineMedium(),
                           ),
-                          const SizedBox(width: SpacingTokens.spacing2),
                         ],
-                        Expanded(
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 230),
                           child: Text(
                             clubName.toUpperCase(),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: TypographyTokens.labelLarge(
                               ColorTokens.onSurface.withValues(alpha: 0.7),
                             ).copyWith(fontWeight: FontWeight.w700),
@@ -155,7 +161,10 @@ class DigitalMembershipCardFull extends StatelessWidget {
                     const SizedBox(height: SpacingTokens.spacing2),
 
                     // Bottom row: Tier badge + Member Since
-                    Row(
+                    Wrap(
+                      spacing: SpacingTokens.spacing3,
+                      runSpacing: SpacingTokens.spacing2,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -176,7 +185,6 @@ class DigitalMembershipCardFull extends StatelessWidget {
                             ).copyWith(fontWeight: FontWeight.w700),
                           ),
                         ),
-                        const Spacer(),
                         if (memberSince != null)
                           Text(
                             'Since $memberSince',

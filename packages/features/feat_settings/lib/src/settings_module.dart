@@ -25,18 +25,55 @@ class SettingsModule extends FeatureModule {
   List<RouteBase> get routes => [
     GoRoute(
       path: 'edit-profile',
-      builder: (context, state) => const EditProfileScreen(),
+      pageBuilder: (context, state) =>
+          afriSheetPage(state, const EditProfileScreen(), fullHeight: true),
     ),
     GoRoute(
       path: 'notifications',
-      builder: (context, state) => const NotificationPreferencesScreen(),
+      pageBuilder: (context, state) => afriSheetPage(
+        state,
+        const NotificationPreferencesScreen(),
+        fullHeight: true,
+      ),
     ),
     GoRoute(
       path: 'privacy',
-      builder: (context, state) => const PrivacySettingsScreen(),
+      pageBuilder: (context, state) =>
+          afriSheetPage(state, const PrivacySettingsScreen(), fullHeight: true),
     ),
   ];
 
   @override
   List<RouteBase> get standaloneRoutes => const <RouteBase>[];
+
+  @override
+  List<RoutePresentationDecision> get routePresentationDecisions => const [
+    RoutePresentationDecision(
+      path: '/settings',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep',
+      rationale: 'Settings is the account and app control hub.',
+    ),
+    RoutePresentationDecision(
+      path: '/settings/edit-profile',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'convert to sheet',
+      targetPath: '/settings',
+      rationale: 'Profile edits are short contextual tasks.',
+    ),
+    RoutePresentationDecision(
+      path: '/settings/notifications',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'convert to sheet',
+      targetPath: '/settings',
+      rationale: 'Notification preferences are grouped toggles.',
+    ),
+    RoutePresentationDecision(
+      path: '/settings/privacy',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'keep as single privacy authority',
+      targetPath: '/settings',
+      rationale: 'Privacy belongs in one trusted Settings location.',
+    ),
+  ];
 }

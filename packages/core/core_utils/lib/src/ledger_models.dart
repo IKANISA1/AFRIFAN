@@ -1,4 +1,4 @@
-import 'package:core_utils/core_utils.dart' as jh;
+import '../core_utils.dart' as jh;
 
 /// Wallet ledger entry — a single financial transaction.
 ///
