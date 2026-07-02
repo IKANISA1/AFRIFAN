@@ -142,7 +142,19 @@ class ShareCardGeneratorContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectedPrediction = selected;
     if (selectedPrediction == null) {
-      return const SizedBox.shrink(key: ValueKey<String>('share-card-empty'));
+      return Center(
+        key: const ValueKey<String>('share-card-empty'),
+        child: Padding(
+          padding: const EdgeInsets.all(SpacingTokens.spacing6),
+          child: AfriStateView.empty(
+            title: 'No share card yet',
+            message:
+                'Make a matchday pick first, then return here to create a supporter card.',
+            actionLabel: 'Back to Picks',
+            onAction: () => context.go('/fanzone?section=predictions'),
+          ),
+        ),
+      );
     }
 
     return AfriRefreshIndicator(

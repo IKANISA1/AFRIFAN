@@ -95,8 +95,12 @@ Future<void> _pumpApp(
   addTearDown(tester.view.resetDevicePixelRatio);
 
   final router = GoRouter(
+    initialLocation: '/fanzone/wallet',
     routes: [
-      GoRoute(path: '/', builder: (context, state) => const FetWalletScreen()),
+      GoRoute(
+        path: '/fanzone/wallet',
+        builder: (context, state) => const FetWalletScreen(),
+      ),
     ],
   );
 
@@ -130,12 +134,14 @@ void main() {
 
     await _scrollTo(tester, find.text('Earn'));
 
-    expect(find.text('Earn'), findsOneWidget);
+    expect(find.text('Earn'), findsAtLeastNWidgets(1));
     expect(
       find.text('Earn points from partner initiatives and promotions.'),
       findsOneWidget,
     );
 
+    await tester.tap(find.text('History').first);
+    await tester.pumpAndSettle();
     await _scrollTo(tester, find.text('Partner points earned'));
 
     expect(find.text('Partner points earned'), findsOneWidget);

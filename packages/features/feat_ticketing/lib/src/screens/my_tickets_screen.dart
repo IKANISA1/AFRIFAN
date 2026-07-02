@@ -74,17 +74,19 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
     );
 
     if (widget.embedded) {
-      return Column(
-        children: [
-          AfriTabBar.line(
-            controller: _tabController,
-            tabs: const [
-              Tab(text: 'UPCOMING'),
-              Tab(text: 'PAST'),
-            ],
-          ),
-          Expanded(child: body),
-        ],
+      return ticketsAsync.when(
+        loading: () => const Padding(
+          padding: EdgeInsets.all(SpacingTokens.spacing4),
+          child: AfriSkeletonList(),
+        ),
+        error: (error, _) => _TicketWalletState(
+          title: 'Ticket wallet unavailable',
+          body:
+              'We could not load your ticket wallet right now. Check your connection and try again.',
+          actionLabel: 'Retry',
+          onPressed: () => ref.invalidate(myTicketsProvider),
+        ),
+        data: (tickets) => _buildTicketList(context, tickets: tickets),
       );
     }
 

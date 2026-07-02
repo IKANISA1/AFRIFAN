@@ -21,7 +21,6 @@ void main() {
       final routeMap = _routeMap(module.routes);
 
       for (final path in const <String>[
-        'my',
         'my/:predictionId',
         'match/:fixtureId',
         'share',
@@ -34,6 +33,7 @@ void main() {
 
       for (final path in const <String>[
         'fixtures',
+        'my',
         'offers',
         'rewards',
         'history',
@@ -97,6 +97,7 @@ void main() {
         expect(decisions['/fanzone'], RoutePresentation.fullScreen);
         expect(decisions['/fanzone/fixtures'], RoutePresentation.redirect);
         expect(decisions['/fanzone/live'], RoutePresentation.redirect);
+        expect(decisions['/fanzone/my'], RoutePresentation.redirect);
         expect(decisions['/fanzone/game'], RoutePresentation.fullHeightSheet);
         expect(
           decisions['/fanzone/game/:sessionId'],

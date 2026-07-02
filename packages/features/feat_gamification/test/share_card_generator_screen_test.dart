@@ -29,16 +29,16 @@ void main() {
   }
 
   testWidgets(
-    'hides share card empty state when no settled predictions exist',
+    'shows compact share card empty state when no predictions exist',
     (tester) async {
       await tester.pumpWidget(
         buildSubject(history: const <UserPrediction>[], selected: null),
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('No settled predictions yet'), findsNothing);
-      expect(find.textContaining('Once your predictions settle'), findsNothing);
       expect(find.byKey(const ValueKey<String>('share-card-empty')), findsOne);
+      expect(find.text('No share card yet'), findsOneWidget);
+      expect(find.text('Back to Picks'), findsOneWidget);
     },
   );
 

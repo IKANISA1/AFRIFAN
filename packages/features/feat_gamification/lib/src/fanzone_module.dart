@@ -7,7 +7,6 @@ import 'screens/fet_wallet_screen.dart';
 import 'screens/game_session_controller_screen.dart';
 import 'screens/game_session_join_screen.dart';
 import 'screens/match_detail_screen.dart';
-import 'screens/my_predictions_screen.dart';
 import 'screens/prediction_detail_screen.dart';
 import 'screens/share_card_generator_screen.dart';
 
@@ -55,31 +54,26 @@ class FanzoneModule extends FeatureModule {
     GoRoute(
       path: 'my',
       name: 'fanzone-my-predictions',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const MyPredictionsScreen(), fullHeight: true),
-      routes: [
-        GoRoute(
-          path: ':predictionId',
-          name: 'fanzone-prediction-detail',
-          pageBuilder: (context, state) => afriSheetPage(
-            state,
-            PredictionDetailScreen(
-              predictionId: state.pathParameters['predictionId'] ?? '',
-            ),
-            fullHeight: true,
-          ),
-          routes: [
-            GoRoute(
-              path: 'settlement',
-              name: 'fanzone-prediction-settlement',
-              redirect: (_, state) {
-                final predictionId = state.pathParameters['predictionId'] ?? '';
-                return '/fanzone/my/$predictionId';
-              },
-            ),
-          ],
+      redirect: (_, __) => '/fanzone?section=predictions',
+    ),
+    GoRoute(
+      path: 'my/:predictionId',
+      name: 'fanzone-prediction-detail',
+      pageBuilder: (context, state) => afriSheetPage(
+        state,
+        PredictionDetailScreen(
+          predictionId: state.pathParameters['predictionId'] ?? '',
         ),
-      ],
+        fullHeight: true,
+      ),
+    ),
+    GoRoute(
+      path: 'my/:predictionId/settlement',
+      name: 'fanzone-prediction-settlement',
+      redirect: (_, state) {
+        final predictionId = state.pathParameters['predictionId'] ?? '';
+        return '/fanzone/my/$predictionId';
+      },
     ),
     GoRoute(
       path: 'game',
@@ -138,7 +132,7 @@ class FanzoneModule extends FeatureModule {
     GoRoute(
       path: 'notifications',
       name: 'fanzone-notifications',
-      redirect: (_, __) => '/fanzone?section=supporters',
+      redirect: (_, __) => '/fanzone?section=predictions',
     ),
     GoRoute(
       path: 'badges',
@@ -153,8 +147,11 @@ class FanzoneModule extends FeatureModule {
     GoRoute(
       path: 'share',
       name: 'fanzone-share',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const ShareCardGeneratorScreen()),
+      pageBuilder: (context, state) => afriSheetPage(
+        state,
+        const ShareCardGeneratorScreen(),
+        heightFactor: 0.68,
+      ),
     ),
     GoRoute(
       path: 'league',
@@ -251,7 +248,7 @@ class FanzoneModule extends FeatureModule {
     ),
     RoutePresentationDecision(
       path: '/fanzone/my',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'consolidate',
       targetPath: '/fanzone?section=predictions',
       rationale: 'Personal prediction history belongs under Predictions.',

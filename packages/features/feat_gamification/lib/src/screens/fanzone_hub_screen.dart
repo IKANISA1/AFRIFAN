@@ -32,8 +32,8 @@ enum _FanzoneHubSection {
       normalized = 'play';
     } else if (raw == 'supporters') {
       normalized = 'activity';
-    } else if (raw == 'wallet') {
-      normalized = 'points';
+    } else if (raw == 'points') {
+      normalized = 'wallet';
     }
     return _FanzoneHubSection.values.firstWhere(
       (section) => section.value == normalized,

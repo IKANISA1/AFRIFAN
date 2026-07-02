@@ -148,11 +148,11 @@ All routes in this section are nested under `/fanzone` and owned by
 | --- | --- | --- | --- | --- |
 | Fixtures Redirect | `/fanzone/fixtures` | Authenticated fan | redirect | Redirects to `/fanzone?section=league`; fixture browsing belongs inside the League section. |
 | Live Fixtures Redirect | `/fanzone/live` | Authenticated fan | redirect | Redirects to `/fanzone?section=league`; live fixtures are a League filter. |
-| My Predictions | `/fanzone/my` | Authenticated fan | loading, predictions, empty, error | Verify provider/state ownership and empty behavior remain consistent. |
+| My Predictions Redirect | `/fanzone/my` | Authenticated fan | redirect | Redirects to `/fanzone?section=predictions`; personal prediction history belongs inside Fan Zone Pick/Picks instead of a standalone activity screen. |
 | Prediction Detail | `/fanzone/my/:predictionId` | Authenticated fan | loading, data, not found, error | Verify market/outcome semantics and back path. |
 | Prediction Settlement Redirect | `/fanzone/my/:predictionId/settlement` | Authenticated fan | redirect | Redirects to prediction detail; settlement is a state inside detail. |
 | Match Detail | `/fanzone/match/:fixtureId` | Authenticated fan | loading, data, not found, error | Verify tabs, stats, H2H, lineups, responsive tables. |
-| FET Wallet | `/fanzone/wallet` | Authenticated fan | loading, balance, partner rewards, ledger activity, empty, error | Verify privacy, partner-led ledger copy, and no public transfer/manual redemption controls. |
+| Wallet | `/fanzone/wallet` | Authenticated fan | loading, balance, partner rewards, ledger activity, empty, error | Verify privacy, partner-led ledger copy, and no public transfer/manual redemption controls. Points are the balance unit, not the screen title. |
 | Offers Redirect | `/fanzone/offers` | Authenticated fan | redirect | Redirects to `/fanzone?section=rewards`; offers belong in Rewards. |
 | Rewards Redirect | `/fanzone/rewards` | Authenticated fan | redirect | Redirects to `/fanzone?section=rewards`; rewards are a hub section. |
 | Token History Redirect | `/fanzone/history` | Authenticated fan | redirect | Redirects to `/fanzone?section=wallet`; history belongs in Wallet. |

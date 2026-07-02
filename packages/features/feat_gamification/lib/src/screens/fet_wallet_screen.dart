@@ -29,7 +29,7 @@ enum _WalletSection {
   }
 }
 
-/// Points screen for balance and audited partner reward activity.
+/// Wallet screen for points balance and audited partner reward activity.
 class FetWalletScreen extends ConsumerStatefulWidget {
   const FetWalletScreen({super.key});
 
@@ -55,7 +55,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     unawaited(
       showAfriActionSheet(
         context: context,
-        title: 'Points',
+        title: 'Wallet',
         actions: [
           AfriSheetAction(
             icon: AfriIcons.history,
@@ -86,7 +86,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('Points', style: TypographyTokens.headlineSmall()),
+        title: Text('Wallet', style: TypographyTokens.headlineSmall()),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),

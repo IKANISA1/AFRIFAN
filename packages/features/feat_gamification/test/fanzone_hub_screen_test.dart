@@ -245,6 +245,28 @@ void main() {
     expect(find.text('Challenges'), findsNothing);
   });
 
+  testWidgets('wallet and legacy points query targets open the Pay section', (
+    tester,
+  ) async {
+    for (final location in const <String>[
+      '/fanzone?section=wallet',
+      '/fanzone?section=points',
+    ]) {
+      await tester.pumpWidget(
+        _buildFanzoneApp(
+          () => _TestFanzoneHubNotifier(_buildSnapshot()),
+          initialLocation: location,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Pay'), findsOneWidget);
+      expect(find.text('Wallet'), findsOneWidget);
+      expect(find.text('Points balance'), findsOneWidget);
+      expect(find.text('TV game'), findsNothing);
+    }
+  });
+
   testWidgets('matches the fanzone hub content layout', (tester) async {
     _setMobileSurface(tester);
 
