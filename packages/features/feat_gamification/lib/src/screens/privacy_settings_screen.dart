@@ -12,7 +12,7 @@ import '../prediction_providers.dart';
 
 /// Privacy settings screen — core guarantees + visibility toggles.
 ///
-/// Implements the borrowed privacy pattern: phone-hidden guarantee,
+/// Implements the universal privacy pattern: phone-hidden guarantee,
 /// anonymous contributions guarantee, and tokenized visibility controls.
 ///
 /// Persists toggle values to the Supabase `profiles` table (columns

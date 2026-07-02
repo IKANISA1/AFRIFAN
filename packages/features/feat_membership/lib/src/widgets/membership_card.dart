@@ -28,10 +28,10 @@ class MembershipCard extends ConsumerWidget {
     final isLargeText = MediaQuery.textScalerOf(context).scale(1) > 1.45;
 
     return Container(
-      height: isLargeText ? 420 : 200,
+      constraints: BoxConstraints(minHeight: isLargeText ? 420 : 200),
       decoration: BoxDecoration(
         borderRadius: ShapeTokens.cardRadius,
-        gradient: ColorTokens.borrowedSurfaceGradient(
+        gradient: ColorTokens.universalSurfaceGradient(
           from: ColorTokens.clubSecondary,
           to: ColorTokens.clubAccent.withValues(alpha: 0.6),
         ),
@@ -85,7 +85,7 @@ class MembershipCard extends ConsumerWidget {
                         child: Text(
                           'PENDING VERIFICATION',
                           style: TypographyTokens.labelSmall(
-                            ColorTokens.borrowedInk,
+                            ColorTokens.inkBase,
                           ).copyWith(fontWeight: FontWeight.w800),
                         ),
                       )
@@ -99,7 +99,11 @@ class MembershipCard extends ConsumerWidget {
                   ],
                 ),
 
-                const Spacer(),
+                SizedBox(
+                  height: isLargeText
+                      ? SpacingTokens.spacing8
+                      : SpacingTokens.spacing10,
+                ),
 
                 // Alias display
                 Text(

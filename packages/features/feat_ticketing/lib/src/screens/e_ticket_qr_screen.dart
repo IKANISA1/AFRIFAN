@@ -107,7 +107,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
           final code = ticket.qrCode.isNotEmpty ? ticket.qrCode : ticket.id;
           final reduceMotion = _shouldReduceMotion(context);
           final passCard = AfriPanelCard(
-            backgroundColor: ColorTokens.borrowedPaper,
+            backgroundColor: ColorTokens.paperSurface,
             borderColor: ColorTokens.transparent,
             padding: EdgeInsets.zero,
             child: Column(
@@ -122,7 +122,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                       Container(
                         decoration: BoxDecoration(
                           border: BorderTokens.all(
-                            color: ColorTokens.borrowedInk,
+                            color: ColorTokens.inkBase,
                             opacity: 0.05,
                           ),
                           borderRadius: BorderRadius.circular(
@@ -132,14 +132,14 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                         child: QrImageView(
                           data: code,
                           size: 220,
-                          backgroundColor: ColorTokens.borrowedPaper,
+                          backgroundColor: ColorTokens.paperSurface,
                           eyeStyle: const QrEyeStyle(
                             eyeShape: QrEyeShape.square,
-                            color: ColorTokens.borrowedInk,
+                            color: ColorTokens.inkBase,
                           ),
                           dataModuleStyle: const QrDataModuleStyle(
                             dataModuleShape: QrDataModuleShape.square,
-                            color: ColorTokens.borrowedInk,
+                            color: ColorTokens.inkBase,
                           ),
                         ),
                       ),
@@ -172,7 +172,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                           horizontal: SpacingTokens.spacing1 / 2,
                         ),
                         height: BorderTokens.hairline,
-                        color: ColorTokens.borrowedHairline,
+                        color: ColorTokens.inkHairline,
                       ),
                     ),
                   ),
@@ -186,7 +186,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                       Text(
                         ticket.matchTitle.toUpperCase(),
                         style: TypographyTokens.headlineMedium(
-                          ColorTokens.borrowedInk,
+                          ColorTokens.inkBase,
                         ).copyWith(
                           fontWeight: FontWeight.w900,
                           fontStyle: FontStyle.italic,
@@ -315,7 +315,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
         Text(
           label,
           style: TypographyTokens.labelSmall(
-            ColorTokens.borrowedInkFaint,
+            ColorTokens.inkFaint,
           ).copyWith(
             fontWeight: FontWeight.w900,
           ),
@@ -324,7 +324,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
         Text(
           value,
           style: TypographyTokens.labelMedium(
-            ColorTokens.borrowedInk,
+            ColorTokens.inkBase,
           ).copyWith(
             fontWeight: FontWeight.w900,
           ),

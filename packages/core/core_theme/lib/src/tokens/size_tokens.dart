@@ -1,4 +1,4 @@
-/// Semantic size tokens for fixed-format borrowed UI primitives.
+/// Semantic size tokens for fixed-format universal UI primitives.
 class SizeTokens {
   SizeTokens._();
 

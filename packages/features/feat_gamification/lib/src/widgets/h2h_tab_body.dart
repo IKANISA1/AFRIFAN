@@ -4,7 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 /// Head-to-head tab content — shows historical encounters between two teams.
 ///
-/// Borrowed-system match detail `H2H` tab with encounter list, win
+/// Universal match detail `H2H` tab with encounter list, win
 /// distribution bar, and goal stats.
 class H2hTabBody extends StatelessWidget {
   const H2hTabBody({

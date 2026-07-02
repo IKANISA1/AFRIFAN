@@ -5,7 +5,7 @@ import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import 'afri_surface_card.dart';
 
-/// Shared borrowed modal sheet surface.
+/// Shared universal modal sheet surface.
 class AfriBottomSheet extends StatelessWidget {
   const AfriBottomSheet({
     required this.child,
@@ -69,11 +69,11 @@ Future<T?> showAfriBottomSheet<T>({
   bool isDismissible = true,
   bool enableDrag = true,
   bool useSafeArea = false,
-  bool useBorrowedSurface = true,
+  bool useUniversalSurface = true,
 }) {
   return showModalBottomSheet<T>(
     context: context,
-    builder: (ctx) => useBorrowedSurface
+    builder: (ctx) => useUniversalSurface
         ? AfriBottomSheet(child: builder(ctx))
         : builder(ctx),
     backgroundColor: Colors.transparent,

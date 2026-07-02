@@ -6,7 +6,7 @@ import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
-/// Styled dropdown field with the same borrowed input treatment as
+/// Styled dropdown field with the same universal input treatment as
 /// [AfriInputField].
 class AfriDropdownField<T> extends StatelessWidget {
   const AfriDropdownField({

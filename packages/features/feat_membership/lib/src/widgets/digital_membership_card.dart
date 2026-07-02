@@ -37,7 +37,7 @@ class DigitalMembershipCardFull extends StatelessWidget {
       height: isLargeText ? 360 : 220,
       decoration: BoxDecoration(
         borderRadius: ShapeTokens.cardRadius,
-        gradient: ColorTokens.borrowedSurfaceGradient(
+        gradient: ColorTokens.universalSurfaceGradient(
           from: accent.withValues(alpha: 0.35),
           to: ColorTokens.surfaceContainer,
         ),

@@ -26,7 +26,7 @@ The current repo, however, is still fundamentally a white-label football-club su
 
 The most important finding: current AFRICLUB still contains launch-risk concepts such as wallet, token, stake, payout, odds, betting labels, prediction-market sheets, and partner-funded pool payouts. Some of this was already flagged in `docs/gamification_alignment_africlub_vs_fanzone_2026-06-29.md`, but the July 2 product-design documents make the conflict sharper. The product brief says no cash purchase, no cash-out, no betting odds, no financial return, no data-driven pick advice, and consumer-facing points instead of wallet/tokens. AFRICLUB must complete that semantic and backend-contract migration before adding quiz/game features.
 
-Recommended direction: keep AFRICLUB's white-label club architecture, but add a game platform layer borrowed from FanZone: scoped realtime, TV display surface, venue/event/session model, audited Edge/RPC boundaries, product-boundary scans, settlement/ledger SQL tests, and operational admin tools. Do not transplant FanZone wholesale. Borrow its architecture discipline and selected domains, then adapt them to AFRICLUB's club/partner/matchday context.
+Recommended direction: keep AFRICLUB's white-label club architecture, but add a game platform layer informed by FanZone: scoped realtime, TV display surface, venue/event/session model, audited Edge/RPC boundaries, product-boundary scans, settlement/ledger SQL tests, and operational admin tools. Do not transplant FanZone wholesale. Apply its architecture discipline and selected domains, then adapt them to AFRICLUB's club/partner/matchday context.
 
 ## 3. Current AFRICLUB Architecture Review
 

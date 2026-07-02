@@ -18,7 +18,7 @@ Future<void> showMarketSelectorSheet({
   return showAfriBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    useBorrowedSurface: false,
+    useUniversalSurface: false,
     builder: (context) => DraggableScrollableSheet(
       initialChildSize: 0.72,
       minChildSize: 0.4,

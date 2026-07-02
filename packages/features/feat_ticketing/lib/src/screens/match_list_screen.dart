@@ -262,31 +262,40 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                       _buildCrest(),
                     ],
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: soldOut
-                          ? ColorTokens.outlineVariant.withValues(alpha: 0.2)
-                          : onSale
-                              ? ColorTokens.success.withValues(alpha: 0.2)
-                              : ColorTokens.info.withValues(alpha: 0.16),
-                      borderRadius: ShapeTokens.chipRadius,
-                    ),
-                    child: Text(
-                      soldOut
-                          ? 'SOLD OUT'
-                          : onSale
-                              ? 'AVAILABLE'
-                              : 'UPCOMING',
-                      style: TypographyTokens.labelSmall().copyWith(
-                        color: soldOut
-                            ? ColorTokens.onSurfaceVariant
-                            : onSale
-                                ? ColorTokens.success
-                                : ColorTokens.info,
+                  Flexible(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: soldOut
+                              ? ColorTokens.outlineVariant.withValues(
+                                  alpha: 0.2,
+                                )
+                              : onSale
+                                  ? ColorTokens.success.withValues(alpha: 0.2)
+                                  : ColorTokens.info.withValues(alpha: 0.16),
+                          borderRadius: ShapeTokens.chipRadius,
+                        ),
+                        child: Text(
+                          soldOut
+                              ? 'SOLD OUT'
+                              : onSale
+                                  ? 'AVAILABLE'
+                                  : 'UPCOMING',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TypographyTokens.labelSmall().copyWith(
+                            color: soldOut
+                                ? ColorTokens.onSurfaceVariant
+                                : onSale
+                                    ? ColorTokens.success
+                                    : ColorTokens.info,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -313,9 +322,13 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                     color: ColorTokens.onSurfaceVariant,
                   ),
                   const SizedBox(width: SpacingTokens.spacing1),
-                  Text(
-                    AfriDateFormatter.formatDate(match.matchDate),
-                    style: TypographyTokens.bodySmall(),
+                  Flexible(
+                    child: Text(
+                      AfriDateFormatter.formatDate(match.matchDate),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TypographyTokens.bodySmall(),
+                    ),
                   ),
                   const SizedBox(width: SpacingTokens.spacing4),
                   Icon(

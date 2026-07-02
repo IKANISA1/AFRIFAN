@@ -6,7 +6,7 @@ import '../tokens/typography_tokens.dart';
 
 enum AfriTabBarVariant { line, segmented }
 
-/// Shared borrowed-system tab chrome for route-level and in-page navigation.
+/// Shared universal tab chrome for route-level and in-page navigation.
 class AfriTabBar extends StatelessWidget implements PreferredSizeWidget {
   const AfriTabBar({
     super.key,

@@ -6,7 +6,7 @@ import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 import 'glass_card.dart';
 
-/// Shared borrowed modal dialog surface.
+/// Shared universal modal dialog surface.
 class AfriDialog extends StatelessWidget {
   const AfriDialog({
     required this.child,
@@ -39,7 +39,7 @@ class AfriDialog extends StatelessWidget {
   }
 }
 
-/// Borrowed-system replacement for feature-level [AlertDialog] usage.
+/// Universal replacement for feature-level [AlertDialog] usage.
 class AfriAlertDialog extends StatelessWidget {
   const AfriAlertDialog({
     this.title,

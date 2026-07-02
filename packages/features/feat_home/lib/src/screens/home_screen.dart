@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../providers/home_feed_provider.dart';
 import '../repositories/home_content_repository.dart';
-import '../widgets/borrowed_match_strip.dart';
+import '../widgets/match_strip.dart';
 import '../widgets/contributor_leaderboard.dart';
 import '../widgets/latest_intel_section.dart';
 import '../widgets/match_card.dart';
@@ -377,7 +377,7 @@ class HomeScreen extends ConsumerWidget {
         if (slides.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 12),
-            child: BorrowedMatchStrip(
+            child: MatchStrip(
               slide: slides.first,
               onTap: slides.first.route != null
                   ? () => context.push(slides.first.route!)

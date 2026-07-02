@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
 
-/// Shared borrowed-system sliver chrome for hero and scrolling routes.
+/// Shared universal sliver chrome for hero and scrolling routes.
 class AfriSliverAppBar extends StatelessWidget {
   const AfriSliverAppBar({
     super.key,

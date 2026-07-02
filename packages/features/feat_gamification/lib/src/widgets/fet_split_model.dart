@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 /// Points split model for tier-aware personal and club reward shares.
 ///
-/// Uses the borrowed rewards visualization for tier-aware points splits.
+/// Uses the universal rewards visualization for tier-aware points splits.
 class FetSplitModel extends StatelessWidget {
   const FetSplitModel({super.key, this.currentTier = 'supporter'});
 

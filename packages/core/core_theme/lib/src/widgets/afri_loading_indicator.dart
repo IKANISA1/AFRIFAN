@@ -36,7 +36,7 @@ class AfriLoadingIndicator extends StatelessWidget {
   }
 }
 
-/// Shared borrowed-system linear progress indicator.
+/// Shared universal linear progress indicator.
 class AfriLinearProgressIndicator extends StatelessWidget {
   const AfriLinearProgressIndicator({
     super.key,

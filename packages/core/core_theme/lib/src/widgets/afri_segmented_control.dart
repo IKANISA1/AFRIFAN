@@ -144,14 +144,16 @@ class AfriSegmentedControl extends StatelessWidget {
                 ),
                 const SizedBox(width: SpacingTokens.spacing1),
               ],
-              Text(
-                item.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TypographyTokens.labelMedium(
-                  isSelected
-                      ? ColorTokens.onSurface
-                      : ColorTokens.onSurfaceVariant,
+              Flexible(
+                child: Text(
+                  item.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TypographyTokens.labelMedium(
+                    isSelected
+                        ? ColorTokens.onSurface
+                        : ColorTokens.onSurfaceVariant,
+                  ),
                 ),
               ),
             ],

@@ -143,7 +143,7 @@ class AfriInputField extends StatelessWidget {
   }
 }
 
-/// Form-backed borrowed-system text input.
+/// Form-backed universal text input.
 class AfriTextFormField extends StatelessWidget {
   const AfriTextFormField({
     super.key,
@@ -235,7 +235,7 @@ class AfriTextFormField extends StatelessWidget {
             }) => null
           : null,
       style: style ?? TypographyTokens.bodyLarge(colors.primaryText),
-      decoration: _borrowedInputDecoration(
+      decoration: _universalInputDecoration(
         colors: colors,
         label: label,
         hint: hint,
@@ -249,7 +249,7 @@ class AfriTextFormField extends StatelessWidget {
   }
 }
 
-InputDecoration _borrowedInputDecoration({
+InputDecoration _universalInputDecoration({
   required AfriSemanticColors colors,
   required String? label,
   required String? hint,

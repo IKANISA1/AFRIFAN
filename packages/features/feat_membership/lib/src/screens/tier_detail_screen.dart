@@ -70,7 +70,7 @@ class TierDetailScreen extends ConsumerWidget {
                     height: SizeTokens.iconXxl * 2,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: ColorTokens.borrowedGradient(
+                      gradient: ColorTokens.universalGradient(
                         colors: [
                           ColorTokens.clubAccent.withValues(alpha: 0.9),
                           ColorTokens.clubPrimary,

@@ -70,7 +70,7 @@ class _JackpotCountdownTimerState extends State<JackpotCountdownTimer> {
             vertical: SpacingTokens.spacing4,
           ),
           decoration: BoxDecoration(
-            gradient: ColorTokens.borrowedSurfaceGradient(
+            gradient: ColorTokens.universalSurfaceGradient(
               from: ColorTokens.clubAccent.withValues(alpha: 0.12),
               to: ColorTokens.surfaceContainerLow,
             ),

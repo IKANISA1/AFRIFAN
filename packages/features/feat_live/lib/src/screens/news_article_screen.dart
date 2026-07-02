@@ -246,7 +246,7 @@ class _ArticleHeroFallback extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: ColorTokens.borrowedGradient(
+        gradient: ColorTokens.universalGradient(
           colors: [
             ColorTokens.clubPrimary.withValues(alpha: 0.4),
             ColorTokens.clubSecondary,

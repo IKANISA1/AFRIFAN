@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/shape_tokens.dart';
 
-/// Shared borrowed-system popup menu trigger.
+/// Shared universal popup menu trigger.
 class AfriPopupMenuButton<T> extends StatelessWidget {
   const AfriPopupMenuButton({
     super.key,

@@ -16,7 +16,7 @@ class FanClubFeaturedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AfriPanelCard(
-      backgroundColor: ColorTokens.borrowedPaper,
+      backgroundColor: ColorTokens.paperSurface,
       borderColor: ColorTokens.transparent,
       onTap: onTap,
       child: Column(
@@ -41,29 +41,25 @@ class FanClubFeaturedCard extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing4),
           Text(
             (club['name']?.toString() ?? 'FAN CLUB').toUpperCase(),
-            style: TypographyTokens.displaySmall(ColorTokens.borrowedInk)
-                .copyWith(
-                  fontWeight: FontWeight.w900,
-                  fontStyle: FontStyle.italic,
-                  height: TypographyTokens.lineHeightHero,
-                ),
+            style: TypographyTokens.displaySmall(ColorTokens.inkBase).copyWith(
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: TypographyTokens.lineHeightHero,
+            ),
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             club['description']?.toString() ?? 'Official supporter chapter.',
             maxLines: 2,
-            style: TypographyTokens.bodySmall(ColorTokens.borrowedInkMuted),
+            style: TypographyTokens.bodySmall(ColorTokens.inkMuted),
           ),
           const SizedBox(height: SpacingTokens.spacing6),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildBorrowedMeta(
-                'REGION',
-                club['region']?.toString() ?? 'Unknown',
-              ),
-              _buildBorrowedMeta('MEMBERS', fanclubMemberLabel(club)),
-              _buildBorrowedMeta('STATUS', fanclubStatusLabel(club)),
+              _buildMeta('REGION', club['region']?.toString() ?? 'Unknown'),
+              _buildMeta('MEMBERS', fanclubMemberLabel(club)),
+              _buildMeta('STATUS', fanclubStatusLabel(club)),
             ],
           ),
         ],
@@ -71,21 +67,21 @@ class FanClubFeaturedCard extends StatelessWidget {
     );
   }
 
-  Widget _buildBorrowedMeta(String label, String value) {
+  Widget _buildMeta(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: TypographyTokens.labelSmall(
-            ColorTokens.borrowedInkFaint,
+            ColorTokens.inkFaint,
           ).copyWith(fontWeight: FontWeight.w900),
         ),
         const SizedBox(height: SpacingTokens.spacing1),
         Text(
           value.toUpperCase(),
           style: TypographyTokens.titleSmall(
-            ColorTokens.borrowedInk,
+            ColorTokens.inkBase,
           ).copyWith(fontWeight: FontWeight.w900),
         ),
       ],

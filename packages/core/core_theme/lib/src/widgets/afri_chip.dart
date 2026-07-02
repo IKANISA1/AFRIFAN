@@ -6,7 +6,7 @@ import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
-/// Borrowed-system choice chip for filters and compact option groups.
+/// Universal choice chip for filters and compact option groups.
 class AfriChoiceChip extends StatelessWidget {
   const AfriChoiceChip({
     super.key,
@@ -87,7 +87,7 @@ class AfriChoiceChip extends StatelessWidget {
   }
 }
 
-/// Static borrowed-system chip for status and compact metadata.
+/// Static universal chip for status and compact metadata.
 class AfriChip extends StatelessWidget {
   const AfriChip({
     super.key,

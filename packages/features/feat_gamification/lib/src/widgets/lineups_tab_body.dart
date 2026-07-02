@@ -4,7 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 /// Lineups tab content — shows starting XI and substitutes for both teams.
 ///
-/// Uses the borrowed match-detail system for compact team comparison.
+/// Uses the universal match-detail system for compact team comparison.
 class LineupsTabBody extends StatelessWidget {
   const LineupsTabBody({
     super.key,

@@ -82,7 +82,7 @@ class AfriListRow extends StatelessWidget {
   }
 }
 
-/// Borrowed-system wrapper for compact text-first rows.
+/// Universal wrapper for compact text-first rows.
 class AfriListTile extends StatelessWidget {
   const AfriListTile({
     super.key,
@@ -151,7 +151,7 @@ class AfriListTile extends StatelessWidget {
   }
 }
 
-/// Borrowed-system wrapper for settings and permission toggles.
+/// Universal wrapper for settings and permission toggles.
 class AfriSwitchListTile extends StatelessWidget {
   const AfriSwitchListTile({
     super.key,

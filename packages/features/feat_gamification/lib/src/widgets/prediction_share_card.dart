@@ -169,7 +169,7 @@ class PredictionShareCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        gradient: ColorTokens.borrowedSurfaceGradient(
+        gradient: ColorTokens.universalSurfaceGradient(
           from: ColorTokens.surfaceContainerLow,
           to: color.withValues(alpha: 0.06),
         ),

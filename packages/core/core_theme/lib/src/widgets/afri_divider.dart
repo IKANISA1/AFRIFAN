@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 
-/// Shared borrowed-system separator for quiet in-card and route boundaries.
+/// Shared universal separator for quiet in-card and route boundaries.
 class AfriDivider extends StatelessWidget {
   const AfriDivider({
     super.key,

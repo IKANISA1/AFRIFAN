@@ -680,7 +680,7 @@ class _ImageFallback extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: ColorTokens.borrowedGradient(
+        gradient: ColorTokens.universalGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [

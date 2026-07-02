@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 
-/// Shared borrowed-system route chrome for secondary Flutter screens.
+/// Shared universal route chrome for secondary Flutter screens.
 class AfriAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AfriAppBar({
     super.key,

@@ -113,8 +113,6 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                   widget.featureKey,
                   style: TypographyTokens.bodySmall().copyWith(
                     color: ColorTokens.onDarkFaint,
-                    fontFamily: TypographyTokens.borrowedFontFamily,
-                    package: 'core_theme',
                   ),
                 ),
               ],

@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 import 'match_card.dart'; // To reuse MatchSlide
 
-class BorrowedMatchStrip extends StatelessWidget {
+class MatchStrip extends StatelessWidget {
   final MatchSlide slide;
   final VoidCallback? onTap;
 
-  const BorrowedMatchStrip({super.key, required this.slide, this.onTap});
+  const MatchStrip({super.key, required this.slide, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class BorrowedMatchStrip extends StatelessWidget {
       margin: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.screenPadding,
       ),
-      backgroundColor: ColorTokens.borrowedPaper,
+      backgroundColor: ColorTokens.paperSurface,
       borderColor: ColorTokens.transparent,
       child: Row(
         children: [
@@ -65,7 +65,7 @@ class BorrowedMatchStrip extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style:
                             TypographyTokens.metricLabel(
-                              ColorTokens.borrowedInkSubtle,
+                              ColorTokens.inkSubtle,
                             ).copyWith(
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5,
@@ -82,7 +82,7 @@ class BorrowedMatchStrip extends StatelessWidget {
                         '${slide.homeTeam} vs ${slide.awayTeam}'.toUpperCase(),
                         style:
                             TypographyTokens.titleLarge(
-                              ColorTokens.borrowedInk,
+                              ColorTokens.inkBase,
                             ).copyWith(
                               fontWeight: FontWeight.w900,
                               fontStyle: FontStyle.italic,
@@ -96,7 +96,7 @@ class BorrowedMatchStrip extends StatelessWidget {
                 Text(
                   slide.venue.toUpperCase(),
                   style: TypographyTokens.metricLabel(
-                    ColorTokens.borrowedInkFaint,
+                    ColorTokens.inkFaint,
                   ).copyWith(fontWeight: FontWeight.w900, letterSpacing: 1),
                 ),
               ],
@@ -105,14 +105,14 @@ class BorrowedMatchStrip extends StatelessWidget {
           Container(
             height: SpacingTokens.spacing12,
             width: BorderTokens.standard,
-            color: ColorTokens.borrowedHairline,
+            color: ColorTokens.inkHairline,
             margin: const EdgeInsets.symmetric(
               horizontal: SpacingTokens.spacing4,
             ),
           ),
           const Icon(
             AfriIcons.chevronRight,
-            color: ColorTokens.borrowedInkFaint,
+            color: ColorTokens.inkFaint,
             size: SpacingTokens.spacing6,
           ),
         ],

@@ -26,7 +26,7 @@ class ContributionConfirmSheet extends StatefulWidget {
     return showAfriBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
-      useBorrowedSurface: false,
+      useUniversalSurface: false,
       builder: (_) =>
           ContributionConfirmSheet(tierLabel: tierLabel, onConfirm: onConfirm),
     );

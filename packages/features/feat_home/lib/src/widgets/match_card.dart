@@ -267,15 +267,19 @@ class _HeroSlide extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    Text(
-                      slide.dateInfo,
-                      style:
-                          TypographyTokens.bodyLarge(
-                            ColorTokens.onDarkSubtle,
-                          ).copyWith(
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: 1.5,
-                          ),
+                    Expanded(
+                      child: Text(
+                        slide.dateInfo,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            TypographyTokens.bodyLarge(
+                              ColorTokens.onDarkSubtle,
+                            ).copyWith(
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1.5,
+                            ),
+                      ),
                     ),
                   ],
                 ),
@@ -320,7 +324,7 @@ class _HeroSlide extends StatelessWidget {
   Widget _gradient() {
     return Container(
       decoration: BoxDecoration(
-        gradient: ColorTokens.borrowedGradient(
+        gradient: ColorTokens.universalGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [

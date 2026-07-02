@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
 
-/// Borrowed-system compact switch for inline settings rows.
+/// Universal compact switch for inline settings rows.
 class AfriSwitch extends StatelessWidget {
   const AfriSwitch({
     required this.value,

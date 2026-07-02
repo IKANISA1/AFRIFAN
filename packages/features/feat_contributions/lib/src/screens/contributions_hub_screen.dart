@@ -377,7 +377,7 @@ class _HubCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          gradient: ColorTokens.borrowedSurfaceGradient(
+          gradient: ColorTokens.universalSurfaceGradient(
             from: accent.withValues(alpha: 0.18),
             to: ColorTokens.surfaceContainerHighest,
           ),

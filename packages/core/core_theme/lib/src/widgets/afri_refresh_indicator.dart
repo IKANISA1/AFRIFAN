@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
 
-/// Shared borrowed-system pull-to-refresh chrome.
+/// Shared universal pull-to-refresh chrome.
 class AfriRefreshIndicator extends StatelessWidget {
   const AfriRefreshIndicator({
     super.key,

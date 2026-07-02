@@ -9,7 +9,7 @@ import 'afri_press_feedback.dart';
 typedef AfriPanelCardBuilder =
     Widget Function(BuildContext context, AfriPressState state);
 
-/// Dense borrowed-system panel surface for operational content.
+/// Dense universal panel surface for operational content.
 class AfriPanelCard extends StatelessWidget {
   final Widget? child;
   final AfriPanelCardBuilder? builder;

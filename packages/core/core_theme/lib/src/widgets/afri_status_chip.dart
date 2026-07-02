@@ -51,9 +51,13 @@ class AfriStatusChip extends StatelessWidget {
             Icon(icon, size: 12, color: color),
             const SizedBox(width: SpacingTokens.spacing1),
           ],
-          Text(
-            label,
-            style: TypographyTokens.labelSmall(color).copyWith(height: 1.0),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TypographyTokens.labelSmall(color).copyWith(height: 1.0),
+            ),
           ),
         ],
       ),

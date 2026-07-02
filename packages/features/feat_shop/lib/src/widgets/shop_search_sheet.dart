@@ -17,7 +17,7 @@ void showShopSearchSheet({
     showAfriBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      useBorrowedSurface: false,
+      useUniversalSurface: false,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {

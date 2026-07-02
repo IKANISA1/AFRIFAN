@@ -22,7 +22,7 @@ class AuthGateSheet extends StatelessWidget {
     return showAfriBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
-      useBorrowedSurface: false,
+      useUniversalSurface: false,
       builder: (sheetContext) => AuthGateSheet(
         onVerify: onVerify,
         onDismiss: () => sheetContext.pop(false),

@@ -227,12 +227,12 @@ class ColorTokens {
   static const Color onDarkFaint = Color(0x61FFFFFF);
   static const Color onDarkSoft = Color(0x3DFFFFFF);
   static const Color onDarkHairline = Color(0x1AFFFFFF);
-  static const Color borrowedPaper = Color(0xFFFFFFFF);
-  static const Color borrowedInk = _inkBase;
-  static const Color borrowedInkMuted = Color(0x8A09090B);
-  static const Color borrowedInkSubtle = Color(0x6109090B);
-  static const Color borrowedInkFaint = Color(0x4209090B);
-  static const Color borrowedHairline = Color(0x0D09090B);
+  static const Color paperSurface = Color(0xFFFFFFFF);
+  static const Color inkBase = _inkBase;
+  static const Color inkMuted = Color(0x8A09090B);
+  static const Color inkSubtle = Color(0x6109090B);
+  static const Color inkFaint = Color(0x4209090B);
+  static const Color inkHairline = Color(0x0D09090B);
 
   static Color get navActive => primaryContainer;
 
@@ -254,7 +254,7 @@ class ColorTokens {
     );
   }
 
-  static LinearGradient borrowedGradient({
+  static LinearGradient universalGradient({
     required List<Color> colors,
     AlignmentGeometry begin = Alignment.topLeft,
     AlignmentGeometry end = Alignment.bottomRight,
@@ -263,14 +263,14 @@ class ColorTokens {
     return LinearGradient(begin: begin, end: end, colors: colors, stops: stops);
   }
 
-  static LinearGradient borrowedSurfaceGradient({
+  static LinearGradient universalSurfaceGradient({
     Color? tint,
     double tintAlpha = 0.12,
     Color? from,
     Color? to,
   }) {
     final tintColor = tint?.withValues(alpha: tintAlpha.clamp(0.0, 1.0));
-    return borrowedGradient(
+    return universalGradient(
       colors: [
         from ?? tintColor ?? surfaceContainerHigh,
         to ?? surfaceContainerLow,
@@ -283,7 +283,7 @@ class ColorTokens {
     List<double> alphas = const [0.0, 1.0],
     List<double>? stops,
   }) {
-    return borrowedGradient(
+    return universalGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: alphas
@@ -296,16 +296,16 @@ class ColorTokens {
   static LinearGradient productFallbackGradient(String category) {
     final lower = category.toLowerCase();
     if (lower.contains('kit')) {
-      return borrowedGradient(
+      return universalGradient(
         colors: [primaryTint(0.55), surfaceContainerHighest],
       );
     }
     if (lower.contains('access')) {
-      return borrowedGradient(
+      return universalGradient(
         colors: [surfaceContainerHighest, surfaceContainerLow],
       );
     }
-    return borrowedGradient(
+    return universalGradient(
       colors: [surfaceContainerHigh, surfaceContainerLow],
     );
   }

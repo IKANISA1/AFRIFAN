@@ -237,7 +237,7 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
                                       SpacingTokens.spacing2,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    gradient: ColorTokens.borrowedGradient(
+                                    gradient: ColorTokens.universalGradient(
                                       colors: [
                                         ColorTokens.clubAccent,
                                         ColorTokens.clubAccent.withValues(

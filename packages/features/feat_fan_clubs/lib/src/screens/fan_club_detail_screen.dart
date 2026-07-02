@@ -213,7 +213,7 @@ class _FanClubDetailScreenState extends ConsumerState<FanClubDetailScreen> {
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 decoration: BoxDecoration(
-                  gradient: ColorTokens.borrowedGradient(
+                  gradient: ColorTokens.universalGradient(
                     colors: [
                       ColorTokens.clubPrimary.withValues(alpha: 0.6),
                       ColorTokens.surfaceContainerLow,

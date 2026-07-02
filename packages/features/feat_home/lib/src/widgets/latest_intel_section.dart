@@ -259,7 +259,7 @@ class _GradientFallback extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: ColorTokens.borrowedGradient(
+        gradient: ColorTokens.universalGradient(
           colors: [
             primaryColor.withValues(alpha: 0.35),
             ColorTokens.clubSecondary.withValues(alpha: 0.4),

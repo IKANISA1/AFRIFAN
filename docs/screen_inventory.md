@@ -231,5 +231,5 @@ Apply these checks to every screen before release-candidate signoff:
   approved, remediation-owned, unrelated user work, or revert candidates.
 - Keep app shell navigation tests aligned with the current three-tab source
   contract.
-- Keep analyzer and focused widget tests green as the borrowed-system cleanup
+- Keep analyzer and focused widget tests green as the universal UI cleanup
   continues.
