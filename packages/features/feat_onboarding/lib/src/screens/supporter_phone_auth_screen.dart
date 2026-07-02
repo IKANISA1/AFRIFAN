@@ -162,10 +162,10 @@ class _SupporterPhoneAuthScreenState
             ),
             children: [
               const _AuthStepHeader(
-                eyebrow: 'WhatsApp sign in',
-                title: 'Enter your mobile number',
-                body: 'We will send a secure code to your WhatsApp.',
-                icon: AfriIcons.phone,
+                eyebrow: 'WhatsApp',
+                title: 'Enter number',
+                body: 'We will send a secure sign-in code.',
+                icon: AfriIcons.chat,
               ),
               const SizedBox(height: SpacingTokens.spacing6),
               AfriSurfaceCard(
@@ -192,7 +192,7 @@ class _SupporterPhoneAuthScreenState
                     const SizedBox(height: SpacingTokens.spacing4),
                     AfriButton(
                       key: const ValueKey<String>('supporter-send-otp-button'),
-                      label: 'Send WhatsApp code',
+                      label: 'Send code',
                       icon: AfriIcons.forward,
                       onTap: _sendCode,
                       isLoading: _isLoading,
@@ -417,9 +417,9 @@ class _SupporterOtpVerificationScreenState
             children: [
               _AuthStepHeader(
                 eyebrow: 'Check WhatsApp',
-                title: 'Enter your code',
-                body: 'Code sent to $_phone.',
-                icon: AfriIcons.privacy,
+                title: 'Enter code',
+                body: 'Sent to $_phone.',
+                icon: AfriIcons.chat,
               ),
               const SizedBox(height: SpacingTokens.spacing6),
               AfriSurfaceCard(
@@ -522,10 +522,9 @@ class _AuthStepHeader extends StatelessWidget {
         ),
         const SizedBox(height: SpacingTokens.spacing5),
         Text(
-          eyebrow.toUpperCase(),
+          eyebrow,
           style: TypographyTokens.labelMedium().copyWith(
             color: ColorTokens.primaryContainer,
-            letterSpacing: 1.2,
           ),
         ),
         const SizedBox(height: SpacingTokens.spacing2),

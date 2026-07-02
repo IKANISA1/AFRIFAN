@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Ticket, User } from "lucide-react";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 import { resolveFanAppHref } from "@/lib/config";
 
 export function MobileBottomBar() {

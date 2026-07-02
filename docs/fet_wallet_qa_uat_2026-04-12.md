@@ -74,7 +74,7 @@ npm run qa:wallet:seed
 
 ## Manual UAT evidence sheet
 
-Capture screenshot or video plus resulting DB/ledger evidence for each step.
+Capture video plus resulting DB/ledger evidence for each step.
 
 1. Supporter signs in with phone OTP on mobile.
    Expected:

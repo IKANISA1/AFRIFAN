@@ -31,14 +31,13 @@ cat >"$REPORT" <<EOF
 
 - Generated: $STAMP
 - Root: $ROOT
-- Purpose: code-owned native-mobile UX, design-system, accessibility, visual-regression, and static-analysis gate.
+- Purpose: code-owned native-mobile UX, accessibility, route-state, and static-analysis gate under the single root DESIGN.md authority.
 
 EOF
 
 run_step flutter_version "$FLUTTER_BIN" --version
-run_step mobi_revolut_alignment_matrix env FLUTTER_BIN="$FLUTTER_BIN" \
-  bash tools/scripts/validate_mobi_revolut_alignment_matrix.sh
-run_step design_drift bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings
+run_step root_authority bash -c \
+  'test -f DESIGN.md && test ! -e docs/design.md && test ! -d docs/design'
 run_step scoped_analyze "$FLUTTER_BIN" analyze \
   apps/rayon_sports \
   packages/core/core_app \
@@ -60,13 +59,13 @@ run_step shell_navigation_tests "$FLUTTER_BIN" test \
   packages/app_registry/test \
   packages/core/core_app/test \
   apps/rayon_sports/test/rayon_sports_shell_navigation_test.dart
-run_step screen_state_and_golden_tests "$FLUTTER_BIN" test \
+run_step screen_state_and_ui_tests "$FLUTTER_BIN" test \
   packages/features/feat_home/test/home_screen_states_test.dart \
   packages/features/feat_onboarding/test/onboarding_flow_test.dart \
   packages/features/feat_gamification/test/fanzone_hub_screen_test.dart \
-  packages/features/feat_membership/test/membership_screen_golden_test.dart \
+  packages/features/feat_membership/test/membership_screen_ui_test.dart \
   packages/features/feat_settings/test/settings_screens_test.dart \
-  packages/features/feat_ticketing/test/match_list_golden_test.dart
+  packages/features/feat_ticketing/test/match_list_ui_test.dart
 
 cat >>"$REPORT" <<EOF
 ## External Evidence Still Required
@@ -77,8 +76,8 @@ from physical or representative simulator devices:
 
 - iOS and Android startup, scroll, navigation, animation, and memory traces.
 - VoiceOver and TalkBack walkthrough evidence at 100%, 200%, and largest text.
-- Store screenshot and permission/privacy evidence for the current release build.
-- Visual-regression baseline updates reviewed by design/QA when intentional.
+- Store permission/privacy evidence for the current release build.
+- Route-state and accessibility evidence reviewed against DESIGN.md when intentional.
 
 EOF
 

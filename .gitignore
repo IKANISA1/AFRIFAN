@@ -81,7 +81,6 @@ pubspec.lock
 output/
 flutter_01.log
 *.log
-screenshot_*.png
 1supabase.md
 firebase-debug.log
 fix_stateful_widgets.py
@@ -98,9 +97,6 @@ apps/rayon_sports/web/.lighthouseci/
 apps/rayon_sports/web/tmp/
 supabase/recovery/*
 !supabase/recovery/*.sql
-
-# Relocated design assets (archived from root Diagrams/ and Screens/)
-docs/screenshots/archive/
 
 # Sensitive credentials — never commit
 **/ios/AuthKey_*.p8

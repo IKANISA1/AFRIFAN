@@ -208,7 +208,7 @@ Rayon Sports remains the seeded reference for:
 
 - default club profile values
 - default web environment settings
-- example assets and screenshots
+- example assets and release evidence
 - initial rollout validation
 
 Reference defaults must not become hardcoded assumptions in shared runtime logic.

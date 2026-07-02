@@ -8,7 +8,7 @@ import { getClubProfile, getMatches } from "@/lib/data/public";
 import { buildClubThemeStyle } from "@/lib/club-theme";
 import { getSiteChromeCopy } from "@/lib/site-copy";
 import { getNavFeatures, getPlatformConfig } from "@/lib/feature-config";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 export default async function SiteLayout({
   children,

@@ -1,7 +1,6 @@
-/// AFRICLUB Core Theme — Revolut-Borrowed Design System
+/// AFRICLUB Core Theme — Universal Mobile App Design Standard implementation
 ///
-/// Shared mobile design-system source of truth for Flutter surfaces, tokens,
-/// and primitives.
+/// Shared Flutter surfaces, tokens, and primitives governed by root DESIGN.md.
 library;
 
 // ── Configuration ──

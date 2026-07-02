@@ -26,10 +26,10 @@ class AfriAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool? centerTitle;
   final bool automaticallyImplyLeading;
 
-  /// Accepted for staged migration; the borrowed chrome owns the actual color.
+  /// Accepted for staged migration; shared chrome owns the actual color.
   final Color? backgroundColor;
 
-  /// Accepted for staged migration; the borrowed chrome remains flat.
+  /// Accepted for staged migration; shared chrome remains flat.
   final double? elevation;
 
   @override

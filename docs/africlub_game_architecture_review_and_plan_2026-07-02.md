@@ -9,8 +9,8 @@ Product brief folder: `/Users/jeanbosco/Downloads/AFRICLUB GAME PRODUCT DESIGN`
 
 This report reviews four evidence sets:
 
-1. Current AFRICLUB repo architecture, especially `README.md`, `RULES.md`, `docs/blueprint.md`, `docs/design.md`, `docs/screen_inventory.md`, `packages/core/*`, `packages/features/feat_gamification/*`, `apps/rayon_sports/*`, and Supabase migrations/functions.
-2. Rayon Sports app architecture as the reference club implementation, including `apps/rayon_sports/lib/main.dart`, `packages/clubs/club_rayon_sports`, shared module registry, router, design system, and admin/public web surfaces.
+1. Current AFRICLUB repo architecture, especially `README.md`, `RULES.md`, `DESIGN.md`, `docs/blueprint.md`, `docs/screen_inventory.md`, `packages/core/*`, `packages/features/feat_gamification/*`, `apps/rayon_sports/*`, and Supabase migrations/functions.
+2. Rayon Sports app architecture as the reference club implementation, including `apps/rayon_sports/lib/main.dart`, `packages/clubs/club_rayon_sports`, shared module registry, router, `DESIGN.md`-governed UI primitives, and admin/public web surfaces.
 3. FanZone repo architecture, especially `README.md`, `docs/architecture/*`, Flutter mobile features, React/Vite admin, venue portal, TV display, shared TypeScript contracts, Supabase functions, migrations, SQL tests, and release gates.
 4. Product design markdown files:
    - `Product Design & Architecture v3.md`
@@ -53,7 +53,7 @@ The strongest architectural choices are:
 - `primaryBottomTabFeatureOrder` is now source-backed as `home`, `fanzone`, `settings`.
 - Feature configuration is runtime-aware through platform config snapshots, falling back to compile-time club flags.
 - Admin is centralized in web by default; mobile admin is excluded unless explicitly enabled.
-- Design system ownership is centralized in `core_theme`, with docs enforcing borrowed visual patterns.
+- UI ownership is centralized in `core_theme`, with root `DESIGN.md` enforcing universal patterns.
 
 ### 3.2 Critical Architecture Problems
 
@@ -332,7 +332,7 @@ Plan:
    - end ceremony.
 4. Pair by code/device token.
 5. Subscribe only to scoped realtime channels by `screen_id`, `venue_id`, or `game_session_id`.
-6. Add screenshot and pixel checks for nonblank display states.
+6. Add route-state checks for nonblank display states.
 
 ### 9.5 Public Website
 
@@ -506,7 +506,7 @@ Deliverables:
 - New TV app with attract, join, lobby, question, claim, reveal, leaderboard, end states.
 - Pairing code.
 - Scoped realtime only.
-- Visual smoke/screenshots for all states.
+- Route-state smoke checks for all states.
 
 Exit gate:
 

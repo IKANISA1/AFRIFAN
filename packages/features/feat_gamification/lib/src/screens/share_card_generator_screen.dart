@@ -71,10 +71,9 @@ class _ShareCardGeneratorScreenState
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'SHARE CARD',
+          'Share card',
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
           ),
         ),
         leading: AfriIconButton(
@@ -147,10 +146,9 @@ class ShareCardGeneratorContent extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing6),
           child: AfriStateView.empty(
-            title: 'No share card yet',
-            message:
-                'Make a matchday pick first, then return here to create a supporter card.',
-            actionLabel: 'Back to Picks',
+            title: 'Make a pick first',
+            message: 'Share cards unlock after a matchday pick.',
+            actionLabel: 'Back to picks',
             onAction: () => context.go('/fanzone?section=predictions'),
           ),
         ),
@@ -193,10 +191,7 @@ class ShareCardGeneratorContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'SELECT A PREDICTION',
-                  style: TypographyTokens.titleLarge(),
-                ),
+                Text('Choose pick', style: TypographyTokens.titleLarge()),
                 const SizedBox(height: SpacingTokens.spacing3),
                 ...history.map((prediction) {
                   final selectedCard = prediction.id == selectedPrediction.id;
@@ -222,7 +217,7 @@ class ShareCardGeneratorContent extends StatelessWidget {
                                     height: SpacingTokens.spacing1 / 2,
                                   ),
                                   Text(
-                                    '${prediction.marketName} · ${prediction.selectedOutcome.toUpperCase()}',
+                                    '${prediction.marketName} · ${prediction.selectedOutcome}',
                                     style: TypographyTokens.bodySmall(),
                                   ),
                                 ],

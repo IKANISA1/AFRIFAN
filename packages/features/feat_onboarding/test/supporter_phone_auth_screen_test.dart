@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
-import 'package:test_support/design_font_loader.dart';
+import 'package:test_support/app_font_loader.dart';
 
 class _FakeAuthRepository extends AuthRepository {
   _FakeAuthRepository({this.verifyResult}) : super(clubId: '24');
@@ -91,7 +91,7 @@ Future<void> _pumpApp(
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(loadDesignFonts);
+  setUpAll(loadAppFonts);
 
   testWidgets('requests OTP using the WhatsApp delivery channel', (
     tester,

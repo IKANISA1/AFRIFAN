@@ -1,4 +1,4 @@
-/// Blur presets for the Revolut-Borrowed glass layers.
+/// Blur presets for universal mobile glass layers.
 class AfriBlur {
   AfriBlur._();
 

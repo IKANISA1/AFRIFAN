@@ -4,11 +4,11 @@ import 'package:feat_gamification/src/screens/badges_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:test_support/design_font_loader.dart';
+import 'package:test_support/app_font_loader.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(loadDesignFonts);
+  setUpAll(loadAppFonts);
 
   Widget buildSubject({
     required List<PredictionBadge> badges,

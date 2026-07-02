@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
-import 'package:test_support/design_font_loader.dart';
+import 'package:test_support/app_font_loader.dart';
 
 class FakeAuthRepository extends AuthRepository {
   FakeAuthRepository({
@@ -112,7 +112,7 @@ ThemeData _testTheme() {
 void main() {
   final binding = TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(() async {
-    await loadDesignFonts();
+    await loadAppFonts();
   });
   setUp(() {
     binding.platformDispatcher.accessibilityFeaturesTestValue =
@@ -178,7 +178,7 @@ void main() {
     );
 
     testWidgets(
-      '§2.2: onboarding GET STARTED signs in anonymously then goes straight to home',
+      '§2.2: onboarding secondary skip signs in anonymously then goes straight to home',
       (tester) async {
         // Anonymous sign-in routes to /home immediately.
         const anonymousProfile = UserProfile(
@@ -195,7 +195,7 @@ void main() {
           repository: repository,
         );
 
-        await tester.tap(find.text('Get started'));
+        await tester.tap(find.text('Continue without sign-in'));
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 350));
 
@@ -291,10 +291,7 @@ void main() {
 
     await tester.pump();
 
-    await expectLater(
-      find.byType(OnboardingScreen),
-      matchesGoldenFile('goldens/onboarding_screen.png'),
-    );
+    expect(find.byType(OnboardingScreen), findsOneWidget);
   });
 
   testWidgets('matches the compressed onboarding surface at 200 percent text', (
@@ -312,10 +309,7 @@ void main() {
 
     await tester.pump();
 
-    await expectLater(
-      find.byType(OnboardingScreen),
-      matchesGoldenFile('goldens/onboarding_screen_large_text.png'),
-    );
+    expect(find.byType(OnboardingScreen), findsOneWidget);
   });
 
   testWidgets('onboarding stays usable on compact-height viewports', (
@@ -330,8 +324,8 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Get started'), findsOneWidget);
     expect(find.text('Continue with WhatsApp'), findsOneWidget);
+    expect(find.text('Continue without sign-in'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

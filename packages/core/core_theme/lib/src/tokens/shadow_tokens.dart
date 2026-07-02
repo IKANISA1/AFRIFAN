@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'color_tokens.dart';
 
-/// Shadow presets for the Revolut-Borrowed design system.
+/// Shadow presets for the universal mobile system.
 class AfriShadows {
   AfriShadows._();
 

@@ -4,14 +4,11 @@ Updated: 2026-06-28
 
 This inventory is the governance baseline for the Rayon Sports Flutter mobile
 app. It is source-backed from the current feature modules, router,
-`docs/design.md`, `docs/blueprint.md`, `RULES.md`, `docs/design/DESIGN_SYSTEM.md`,
-and the active MOBI/Revolut alignment matrix.
+`DESIGN.md`, `docs/blueprint.md`, and `RULES.md`.
 
 Active design contract:
 
 - `DESIGN.md`
-- `docs/design/DESIGN_SYSTEM.md`
-- `docs/design/MOBI_REVOLUT_100_PERCENT_ALIGNMENT_MATRIX.md`
 
 Source route contracts:
 

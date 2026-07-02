@@ -1,4 +1,4 @@
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 interface SectionHeadingProps {
   eyebrow?: string;

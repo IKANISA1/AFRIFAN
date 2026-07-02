@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 interface AdminStateCardProps {
   label: string;

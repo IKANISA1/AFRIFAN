@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
 import type { SiteChromeCopy } from "@/lib/site-copy";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 const MobileNavDrawer = dynamic(
   () => import("./mobile-nav-drawer").then((mod) => mod.MobileNavDrawer),

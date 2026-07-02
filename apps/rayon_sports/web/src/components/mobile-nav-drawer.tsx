@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { X, User, Ticket, ShoppingBag } from "lucide-react";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 import { siteNavigation, utilityNavigation } from "@/lib/content";
 import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";

@@ -3,11 +3,11 @@ import 'package:feat_gamification/src/screens/share_card_generator_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:test_support/design_font_loader.dart';
+import 'package:test_support/app_font_loader.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(loadDesignFonts);
+  setUpAll(loadAppFonts);
 
   Widget buildSubject({
     required List<UserPrediction> history,
@@ -37,8 +37,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const ValueKey<String>('share-card-empty')), findsOne);
-      expect(find.text('No share card yet'), findsOneWidget);
-      expect(find.text('Back to Picks'), findsOneWidget);
+      expect(find.text('Make a pick first'), findsOneWidget);
+      expect(find.text('Back to picks'), findsOneWidget);
     },
   );
 
@@ -78,7 +78,7 @@ void main() {
         find.byKey(const ValueKey<String>('share-card-empty')),
         findsNothing,
       );
-      expect(find.text('SELECT A PREDICTION'), findsOneWidget);
+      expect(find.text('Choose pick'), findsOneWidget);
       expect(find.text('RAY vs APR'), findsWidgets);
       expect(find.text('Selected'), findsOneWidget);
     },

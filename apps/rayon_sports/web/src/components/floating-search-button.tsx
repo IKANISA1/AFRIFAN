@@ -3,7 +3,7 @@
 import { Search } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 const SearchDialog = dynamic(
   () => import("./search-dialog").then((mod) => mod.SearchDialog),

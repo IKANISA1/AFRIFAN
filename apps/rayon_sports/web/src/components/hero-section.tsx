@@ -19,7 +19,7 @@ import {
 } from "@/lib/utils";
 import { resolveFanAppHref } from "@/lib/config";
 import { getSiteCopy } from "@/lib/site-copy";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 interface HeroSectionProps {
   club: ClubProfile;

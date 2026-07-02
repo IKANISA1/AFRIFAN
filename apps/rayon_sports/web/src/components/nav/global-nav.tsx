@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
 import type { SiteChromeCopy } from "@/lib/site-copy";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 import type { ReactNode } from "react";
 

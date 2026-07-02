@@ -21,10 +21,9 @@ class FetSplitModel extends StatelessWidget {
           Row(
             children: [
               Text(
-                'FET SPLIT MODEL',
+                'Points share',
                 style: TypographyTokens.titleMedium().copyWith(
                   fontWeight: FontWeight.w700,
-                  letterSpacing: 1.2,
                 ),
               ),
               const Spacer(),
@@ -38,7 +37,7 @@ class FetSplitModel extends StatelessWidget {
                   borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                 ),
                 child: Text(
-                  currentTier.toUpperCase(),
+                  currentTier,
                   style: TypographyTokens.labelSmall(ColorTokens.clubAccent),
                 ),
               ),
@@ -46,7 +45,7 @@ class FetSplitModel extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            'How your earned FET is split between your wallet and your fan club\'s collective pool.',
+            'Tier rules decide how earned points support you and collective club rewards.',
             style: TypographyTokens.bodySmall(),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -64,7 +63,7 @@ class FetSplitModel extends StatelessWidget {
                       color: ColorTokens.clubAccent,
                       alignment: Alignment.center,
                       child: Text(
-                        '$personalPct% YOU',
+                        '$personalPct% you',
                         style: TypographyTokens.metricLabel(
                           ColorTokens.background,
                         ).copyWith(fontWeight: FontWeight.w800),
@@ -78,7 +77,7 @@ class FetSplitModel extends StatelessWidget {
                         color: ColorTokens.primaryContainer,
                         alignment: Alignment.center,
                         child: Text(
-                          '$clubPct% CLUB',
+                          '$clubPct% club',
                           style: TypographyTokens.metricLabel().copyWith(
                             fontWeight: FontWeight.w800,
                           ),
@@ -129,16 +128,12 @@ class FetSplitModel extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            tier.name.toUpperCase(),
-                            style:
-                                TypographyTokens.labelMedium(
-                                  isCurrent
-                                      ? ColorTokens.clubAccent
-                                      : ColorTokens.onSurface,
-                                ).copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 1.2,
-                                ),
+                            tier.name,
+                            style: TypographyTokens.labelMedium(
+                              isCurrent
+                                  ? ColorTokens.clubAccent
+                                  : ColorTokens.onSurface,
+                            ).copyWith(fontWeight: FontWeight.w700),
                           ),
                           Text(tier.price, style: TypographyTokens.bodySmall()),
                         ],
@@ -222,7 +217,7 @@ const List<_TierInfo> _allTiers = [
     slug: 'supporter',
     name: 'Supporter',
     icon: AfriIcons.fanzone,
-    price: 'FREE',
+    price: 'Free',
     personalPct: 100,
     clubPct: 0,
   ),

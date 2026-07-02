@@ -14,10 +14,10 @@ import '../widgets/fanzone_hub_widgets.dart';
 
 enum _FanzoneHubSection {
   predictions('predictions', 'Pick', AfriIcons.predict),
-  league('league', 'Lge', AfriIcons.league),
-  wallet('wallet', 'Pay', AfriIcons.wallet),
+  league('league', 'League', AfriIcons.league),
+  wallet('wallet', 'Points', AfriIcons.wallet),
   supporters('supporters', 'Fans', AfriIcons.groups),
-  rewards('rewards', 'Gift', AfriIcons.rewards);
+  rewards('rewards', 'Rewards', AfriIcons.rewards);
 
   const _FanzoneHubSection(this.value, this.label, this.icon);
 
@@ -28,11 +28,11 @@ enum _FanzoneHubSection {
   static _FanzoneHubSection fromUri(Uri uri) {
     final raw = uri.queryParameters['section']?.trim().toLowerCase();
     var normalized = raw;
-    if (raw == null || raw.isEmpty || raw == 'predictions') {
-      normalized = 'play';
-    } else if (raw == 'supporters') {
-      normalized = 'activity';
-    } else if (raw == 'points') {
+    if (raw == null || raw.isEmpty || raw == 'play') {
+      normalized = 'predictions';
+    } else if (raw == 'activity') {
+      normalized = 'supporters';
+    } else if (raw == 'points' || raw == 'pay') {
       normalized = 'wallet';
     }
     return _FanzoneHubSection.values.firstWhere(
@@ -108,7 +108,7 @@ class FanzoneHubScreen extends ConsumerWidget {
               child: AfriStateView.loading(
                 title: 'Opening Fanzone',
                 message:
-                    'Predictions, league, wallet, supporters, and rewards are loading.',
+                    'Picks, league, points, fans, and rewards are loading.',
                 compact: true,
               ),
             ),
@@ -422,7 +422,7 @@ class FanzoneHubScreen extends ConsumerWidget {
               ),
             ],
 
-            if (_isSection(selectedSection, {'points', 'wallet'}))
+            if (selectedSection == _FanzoneHubSection.wallet)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
@@ -432,7 +432,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                     0,
                   ),
                   child: AfriSectionCard(
-                    title: 'Wallet',
+                    title: 'Points',
                     child: _HubActionList(
                       actions: [
                         _HubAction(
@@ -443,8 +443,8 @@ class FanzoneHubScreen extends ConsumerWidget {
                         ),
                         _HubAction(
                           icon: AfriIcons.history,
-                          title: 'History',
-                          subtitle: 'Open the points activity section',
+                          title: 'Activity',
+                          subtitle: 'Open recent points movement',
                           onTap: () =>
                               context.push('/fanzone/wallet?section=history'),
                         ),
@@ -454,7 +454,7 @@ class FanzoneHubScreen extends ConsumerWidget {
                 ),
               ),
 
-            if (_isSection(selectedSection, {'activity', 'supporters'}))
+            if (selectedSection == _FanzoneHubSection.supporters)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
@@ -605,10 +605,7 @@ class FanzoneHubScreen extends ConsumerWidget {
   }
 
   String _sectionLabel(_FanzoneHubSection section) {
-    return switch (section.value) {
-      'wallet' || 'points' => 'Pay',
-      _ => section.label,
-    };
+    return section.label;
   }
 
   Future<void> _showPartnerPoolJoinSheet(
@@ -728,7 +725,7 @@ class FanzoneHubScreen extends ConsumerWidget {
           ),
           AfriSheetAction(
             icon: AfriIcons.wallet,
-            label: 'Wallet',
+            label: 'Points',
             onTap: () => context.go('/fanzone?section=wallet'),
           ),
           AfriSheetAction(

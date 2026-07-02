@@ -23,7 +23,7 @@ class AfriTopCommandAction {
   final bool showDot;
 }
 
-/// Revolut/COOL-style black-glass command chrome for primary mobile routes.
+/// Black-glass command chrome for primary mobile routes.
 class AfriTopCommandBar extends StatelessWidget {
   const AfriTopCommandBar({
     super.key,

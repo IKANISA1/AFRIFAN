@@ -277,7 +277,7 @@ Duration: 3-5 days.
 
 1. Add SQL tests equivalent to FANZONE `fet_wallet_reward_engine.sql` and `pool_settlement_engine.sql`.
 2. Add Flutter integration smoke: open Play, join challenge, wallet reserved/available changes, qualifying event, settlement, wallet history.
-3. Add widget/golden tests for hub, wallet, challenge cards, empty states, eligibility banners.
+3. Add widget/snapshot tests for hub, wallet, challenge cards, empty states, eligibility banners.
 4. Add feature-flag tests proving launch-disabled surfaces stay hidden.
 
 Acceptance criteria:

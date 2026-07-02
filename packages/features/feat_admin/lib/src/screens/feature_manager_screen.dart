@@ -209,8 +209,6 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
                       feature.featureKey,
                       style: TypographyTokens.bodySmall().copyWith(
                         color: ColorTokens.onDarkFaint,
-                        fontFamily: TypographyTokens.borrowedFontFamily,
-                        package: 'core_theme',
                       ),
                     ),
                   ],

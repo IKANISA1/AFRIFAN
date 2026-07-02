@@ -43,7 +43,7 @@ import { siteConfig } from "@/lib/config";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { formatAdminRoleLabel } from "@/lib/data/admin/access";
 import { cn } from "@/lib/utils";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 const navIcons: Record<string, LucideIcon> = {
   "/admin": LayoutDashboard,

@@ -1,5 +1,5 @@
 name: core_theme
-description: AFRICLUB Flutter design system — Revolut-Borrowed
+description: AFRICLUB Flutter UI primitives for the Universal Mobile App Design Standard
 publish_to: none
 version: 0.1.0
 
@@ -20,20 +20,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/fonts/revolut/
-  fonts:
-    - family: RevolutBorrowed
-      fonts:
-        - asset: assets/fonts/revolut/RevolutBorrowed-Regular.otf
-          weight: 400
-        - asset: assets/fonts/revolut/RevolutBorrowed-Medium.otf
-          weight: 500
-        - asset: assets/fonts/revolut/RevolutBorrowed-SemiBold.otf
-          weight: 600
-        - asset: assets/fonts/revolut/RevolutBorrowed-Bold.otf
-          weight: 700
-        - asset: assets/fonts/revolut/RevolutBorrowed-ExtraBold.otf
-          weight: 800
 
 resolution: workspace

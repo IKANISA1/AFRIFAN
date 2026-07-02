@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 interface BackButtonProps {
   /** Optional label next to the arrow. Defaults to no label (icon only). */

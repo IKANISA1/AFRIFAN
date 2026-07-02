@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../tokens/color_tokens.dart';
 
-/// Full-screen route background using the borrowed Revolut/COOL families.
+/// Full-screen route background using universal premium mobile gradient families.
 class GradientBackground extends StatelessWidget {
   final Widget child;
   final List<Color>? colors;

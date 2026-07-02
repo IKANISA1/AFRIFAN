@@ -104,22 +104,6 @@ class SettingsScreen extends ConsumerWidget {
             ),
             const SizedBox(height: SpacingTokens.spacing8),
 
-            // ── Heritage ──
-            _buildMinimalistSection('Heritage', [
-              AfriListRow(
-                icon: AfriIcons.history,
-                title: 'History & honors',
-                onTap: () => context.go('/fanzone?section=wallet'),
-              ),
-              AfriListRow(
-                icon: AfriIcons.star,
-                title: 'Hall of fame',
-                onTap: () => context.go('/fanzone?section=league'),
-              ),
-            ]),
-
-            const SizedBox(height: SpacingTokens.spacing6),
-
             // ── Account ──
             _buildMinimalistSection('Account', [
               AfriListRow(
@@ -127,16 +111,21 @@ class SettingsScreen extends ConsumerWidget {
                 title: 'Edit profile',
                 onTap: () => context.push('/settings/edit-profile'),
               ),
-              AfriListRow(
-                icon: AfriIcons.qrCode,
-                title: 'Fan ID',
-                subtitle: alias,
-                onTap: () => context.go('/fanzone?section=supporters'),
-              ),
+            ]),
+
+            const SizedBox(height: SpacingTokens.spacing6),
+
+            // ── Preferences ──
+            _buildMinimalistSection('Preferences', [
               AfriListRow(
                 icon: AfriIcons.notifications,
                 title: 'Notifications',
                 onTap: () => context.push('/settings/notifications'),
+              ),
+              AfriListRow(
+                icon: AfriIcons.privacy,
+                title: 'Privacy',
+                onTap: () => context.push('/settings/privacy'),
               ),
             ]),
 
@@ -150,27 +139,11 @@ class SettingsScreen extends ConsumerWidget {
                 onTap: () =>
                     _openWhatsApp(context, supportWhatsApp.valueOrNull),
               ),
-              AfriListRow(
-                icon: AfriIcons.privacy,
-                title: 'Privacy policy',
-                onTap: () => context.push('/settings/privacy'),
-              ),
             ]),
 
             const SizedBox(height: SpacingTokens.spacing8),
 
             // ── Account actions ──
-            if (profile?.isAdmin == true)
-              Padding(
-                padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
-                child: AfriButton(
-                  label: 'Admin workspace',
-                  onTap: () => _openAdminWorkspace(context, ref),
-                  variant: AfriButtonVariant.secondary,
-                  icon: AfriIcons.admin,
-                ),
-              ),
-
             AfriButton(
               label: 'Sign out',
               onTap: () async {
@@ -221,83 +194,5 @@ class SettingsScreen extends ConsumerWidget {
       uri,
       failureMessage: 'Could not open WhatsApp.',
     );
-  }
-
-  Future<void> _openAdminWorkspace(BuildContext context, WidgetRef ref) async {
-    final session = ref.read(supabaseClientProvider).auth.currentUser;
-    if (session == null) {
-      if (!context.mounted) return;
-      AfriToast.error(context, 'Session expired. Please sign in again.');
-      return;
-    }
-
-    final confirmed = await _showAdminConfirmation(context);
-    if (!confirmed || !context.mounted) return;
-    final adminUri = AppLinks.adminUri;
-    if (adminUri == null) {
-      AfriToast.error(context, 'Admin workspace URL is not configured.');
-      return;
-    }
-    await launchExternalUri(
-      context,
-      adminUri,
-      failureMessage: 'Could not open the admin workspace.',
-    );
-  }
-
-  Future<bool> _showAdminConfirmation(BuildContext context) async {
-    final result = await showAfriBottomSheet<bool>(
-      context: context,
-      builder: (context) => AfriPanelCard(
-        padding: const EdgeInsets.all(SpacingTokens.spacing8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              AfriIcons.admin,
-              color: ColorTokens.warning,
-              size: SizeTokens.iconXl,
-            ),
-            const SizedBox(height: SpacingTokens.spacing4),
-            Text(
-              'ADMIN ACCESS',
-              style: TypographyTokens.headlineMedium(ColorTokens.onDark)
-                  .copyWith(
-                    fontWeight: FontWeight.w900,
-                    fontStyle: FontStyle.italic,
-                  ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            Text(
-              'You are opening the centralized admin workspace with elevated permissions. Actions taken there affect all supporters.',
-              textAlign: TextAlign.center,
-              style: TypographyTokens.bodyMedium(
-                ColorTokens.onDarkDim,
-              ).copyWith(height: TypographyTokens.lineHeightRelaxed),
-            ),
-            const SizedBox(height: SpacingTokens.spacing8),
-            Row(
-              children: [
-                Expanded(
-                  child: AfriButton(
-                    label: 'Cancel',
-                    variant: AfriButtonVariant.outline,
-                    onTap: () => context.pop(false),
-                  ),
-                ),
-                const SizedBox(width: SpacingTokens.spacing3),
-                Expanded(
-                  child: AfriButton(
-                    label: 'Continue',
-                    onTap: () => context.pop(true),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-    return result == true;
   }
 }

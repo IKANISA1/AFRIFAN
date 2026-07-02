@@ -24,7 +24,7 @@ class AfriSliverAppBar extends StatelessWidget {
   final bool pinned;
   final bool floating;
 
-  /// Accepted for staged migration; borrowed chrome controls the final tint.
+  /// Accepted for staged migration; shared chrome controls the final tint.
   final Color? backgroundColor;
 
   @override

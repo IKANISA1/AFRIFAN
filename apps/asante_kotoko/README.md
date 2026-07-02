@@ -6,8 +6,8 @@ This is an individual club application generated from the AFRICLUB monorepo arch
 
 This application acts as a "flavor" or "tenant" of the greater platform:
 - **No Duplicate Business Logic**: All features (Ticketing, Contributions, Gamification, Shop) live in `packages/features/`.
-- **Dynamic Design System**: Colors and branding are not hardcoded. At bootstrap, the app retrieves its specific branding (Primary, Secondary, Accent colors, Crest) from `ClubConfig`, and initializes the `ColorTokens` system.
-- **The White-Drop Rule**: To adhere to the Revolut-Borrowed (dark-mode only) design language, any club colors that are white or near-white are automatically dropped and replaced with system defaults. This ensures that the glassmorphism and deep gradients render perfectly.
+- **Dynamic UI Tokens**: Colors and branding are not hardcoded. At bootstrap, the app retrieves its specific branding (Primary, Secondary, Accent colors, Crest) from `ClubConfig`, and initializes `ColorTokens` under `DESIGN.md`.
+- **The White-Drop Rule**: To follow `DESIGN.md`, any club colors that are white or near-white are automatically dropped and replaced with system defaults so dark surfaces retain readable contrast.
 
 ## Building and Running
 

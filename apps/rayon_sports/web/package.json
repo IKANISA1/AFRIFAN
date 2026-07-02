@@ -9,8 +9,6 @@
   "packageManager": "npm@11.8.0",
   "scripts": {
     "build": "node scripts/run-next-build-stable.mjs && node scripts/ensure-next-build-artifacts.mjs && node scripts/fix-route-group-manifests.mjs",
-    "design-system:check": "node scripts/generate-design-tokens.mjs --check",
-    "design-system:sync": "node scripts/generate-design-tokens.mjs",
     "dev": "next dev",
     "start": "next start",
     "lint": "eslint .",

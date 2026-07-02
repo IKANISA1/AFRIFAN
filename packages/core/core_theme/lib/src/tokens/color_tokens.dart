@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../club_config.dart';
 
-/// Shared color tokens for the AFRICLUB Revolut-borrowed mobile system.
+/// Shared color tokens for the AFRICLUB universal mobile system.
 ///
 /// Club identity remains available as accents, but the app canvas follows the
-/// COOL/MOBI finance-shell pattern: vertical dark gradients, black glass chrome,
+/// Universal premium mobile pattern: vertical dark gradients, black glass chrome,
 /// compact readable panels, and route families instead of screen-local colors.
 class ColorTokens {
   ColorTokens._();

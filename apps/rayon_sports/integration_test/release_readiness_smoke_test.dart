@@ -9,13 +9,13 @@ import 'package:feat_home/src/widgets/quick_actions_grid.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
-import 'package:test_support/design_font_loader.dart';
+import 'package:test_support/app_font_loader.dart';
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() async {
-    await loadDesignFonts();
+    await loadAppFonts();
   });
 
   setUp(() {

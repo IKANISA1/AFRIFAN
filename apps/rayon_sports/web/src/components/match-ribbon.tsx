@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Calendar } from "lucide-react";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 import type { MatchItem } from "@/lib/types";
 import type { SiteChromeCopy } from "@/lib/site-copy";
 import { formatDateTime, isLiveMatch } from "@/lib/utils";

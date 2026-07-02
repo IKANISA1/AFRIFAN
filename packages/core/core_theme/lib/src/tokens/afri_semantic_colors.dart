@@ -123,7 +123,7 @@ class AfriSemanticColors extends ThemeExtension<AfriSemanticColors> {
   final LinearGradient surfaceGradient;
 
   // ─────────────────────────────────────────────────────────────────
-  // Dark theme — default Revolut-Borrowed palette
+  // Dark theme default palette.
   // ─────────────────────────────────────────────────────────────────
   static AfriSemanticColors get dark => AfriSemanticColors(
     // ── App-level surfaces ──

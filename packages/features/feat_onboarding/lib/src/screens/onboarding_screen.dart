@@ -41,23 +41,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         'asset': mediaAssets[0],
         'source': isRayon ? 'Official supporter media' : 'Club media',
       },
-      {
-        'title': 'Fan membership. Tickets. Contributions.',
-        'body':
-            'Earn FET, buy match tickets, and contribute to club projects — all in one place.',
-        'asset': mediaAssets[1],
-        'source': isRayon ? 'Rayon matchday media' : 'Matchday media',
-      },
-      {
-        'title': 'Ready to play?',
-        'body': 'Tickets, merch, and fan communities — all anonymous.',
-        'asset': mediaAssets[2],
-        'source': isRayon ? 'Rayon player media' : 'Supporter media',
-      },
     ];
   }
 
-  Future<void> _handleGetStarted() async {
+  Future<void> _continueWithoutSignIn() async {
     if (_isSubmitting) return;
 
     final authState = ref.read(authStateProvider);
@@ -188,51 +175,50 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         ),
                       ),
                       const SizedBox(height: SpacingTokens.spacing6),
-                      const _OnboardingHighlightGrid(
-                        highlights: [
-                          _OnboardingHighlightData(
+                      const Wrap(
+                        spacing: SpacingTokens.spacing2,
+                        runSpacing: SpacingTokens.spacing2,
+                        children: [
+                          _OnboardingChip(
                             icon: AfriIcons.membership,
-                            title: 'Membership',
-                            subtitle: 'Fan ID and benefits',
+                            label: 'Member',
                           ),
-                          _OnboardingHighlightData(
+                          _OnboardingChip(
                             icon: AfriIcons.tickets,
-                            title: 'Tickets',
-                            subtitle: 'Matchday access',
+                            label: 'Tickets',
                           ),
-                          _OnboardingHighlightData(
-                            icon: AfriIcons.contribute,
-                            title: 'Support',
-                            subtitle: 'Projects and groups',
+                          _OnboardingChip(
+                            icon: AfriIcons.predict,
+                            label: 'Picks',
                           ),
                         ],
                       ),
-                      const SizedBox(height: SpacingTokens.spacing6),
+                      const SizedBox(height: SpacingTokens.spacing5),
                       _isSubmitting
                           ? const Center(child: AfriLoadingIndicator())
                           : AfriButton(
-                              label: 'Get started',
+                              label: 'Continue with WhatsApp',
+                              icon: AfriIcons.chat,
                               fullWidth: true,
-                              onTap: _handleGetStarted,
+                              onTap: () => context.push(
+                                Uri(
+                                  path: '/auth/phone',
+                                  queryParameters: <String, String>{
+                                    if (_deferredDestination()
+                                        case final String from)
+                                      'from': from,
+                                  },
+                                ).toString(),
+                              ),
                             ),
                       const SizedBox(height: SpacingTokens.spacing3),
                       Align(
                         alignment: Alignment.centerRight,
-                        child: AfriTextIconButton(
+                        child: AfriTextButton(
                           onPressed: _isSubmitting
                               ? null
-                              : () => context.push(
-                                  Uri(
-                                    path: '/auth/phone',
-                                    queryParameters: <String, String>{
-                                      if (_deferredDestination()
-                                          case final String from)
-                                        'from': from,
-                                    },
-                                  ).toString(),
-                                ),
-                          icon: const Icon(AfriIcons.chat),
-                          label: const Text('Continue with WhatsApp'),
+                              : _continueWithoutSignIn,
+                          child: const Text('Continue without sign-in'),
                         ),
                       ),
                     ],
@@ -247,111 +233,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 }
 
-class _OnboardingHighlightData {
-  const _OnboardingHighlightData({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
+class _OnboardingChip extends StatelessWidget {
+  const _OnboardingChip({required this.icon, required this.label});
 
   final IconData icon;
-  final String title;
-  final String subtitle;
-}
-
-class _OnboardingHighlightGrid extends StatelessWidget {
-  const _OnboardingHighlightGrid({required this.highlights});
-
-  final List<_OnboardingHighlightData> highlights;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
-    final textScale = MediaQuery.textScalerOf(context).scale(1);
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final useRows = textScale > 1.35 || constraints.maxWidth < 340;
-        if (useRows) {
-          return Column(
-            children: highlights
-                .map(
-                  (highlight) => Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: SpacingTokens.listItemGap,
-                    ),
-                    child: _OnboardingHighlight(data: highlight, wide: true),
-                  ),
-                )
-                .toList(growable: false),
-          );
-        }
-
-        return Wrap(
-          spacing: SpacingTokens.listItemGap,
-          runSpacing: SpacingTokens.listItemGap,
-          children: highlights
-              .map(
-                (highlight) => SizedBox(
-                  width: 104,
-                  child: _OnboardingHighlight(data: highlight),
-                ),
-              )
-              .toList(growable: false),
-        );
-      },
-    );
-  }
-}
-
-class _OnboardingHighlight extends StatelessWidget {
-  const _OnboardingHighlight({required this.data, this.wide = false});
-
-  final _OnboardingHighlightData data;
-  final bool wide;
-
-  @override
-  Widget build(BuildContext context) {
-    final icon = Icon(data.icon, size: 20, color: ColorTokens.primaryContainer);
-    final copy = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          data.title,
-          maxLines: wide ? 2 : 1,
-          overflow: TextOverflow.ellipsis,
-          style: TypographyTokens.labelMedium().copyWith(
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-        const SizedBox(height: SpacingTokens.spacing1),
-        Text(
-          data.subtitle,
-          maxLines: wide ? 3 : 2,
-          overflow: TextOverflow.ellipsis,
-          style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
-        ),
-      ],
-    );
-
-    return AfriSurfaceCard(
-      padding: const EdgeInsets.all(SpacingTokens.spacing3),
-      child: wide
-          ? Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                icon,
-                const SizedBox(width: SpacingTokens.spacing3),
-                Expanded(child: copy),
-              ],
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                icon,
-                const SizedBox(height: SpacingTokens.spacing3),
-                copy,
-              ],
-            ),
-    );
+    return AfriStatusChip(label: label, icon: icon, tone: AfriStatusTone.info);
   }
 }
 
@@ -415,12 +305,10 @@ class _OnboardingMedia extends StatelessWidget {
                 const SizedBox(width: SpacingTokens.spacing3),
                 Expanded(
                   child: Text(
-                    source.toUpperCase(),
+                    source,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TypographyTokens.labelSmall(
-                      ColorTokens.onDark,
-                    ).copyWith(letterSpacing: 1.1),
+                    style: TypographyTokens.labelSmall(ColorTokens.onDark),
                   ),
                 ),
               ],

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { NewsArticle } from "@/lib/types";
 import { formatDate, getReadingTime } from "@/lib/utils";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 export function NewsCard({ article }: { article: NewsArticle }) {
   const readingTime = getReadingTime(article.content || article.excerpt);

@@ -98,7 +98,7 @@ Fastlane upload prerequisite:
 - privacy policy URL resolves publicly
 - terms URL resolves publicly
 - support email is monitored
-- Play/App Store screenshots and descriptions match actual functionality
+- Play/App Store descriptions match actual functionality
 - data safety / privacy answers match the implemented app behavior
 
 ## 7. Localization limitation

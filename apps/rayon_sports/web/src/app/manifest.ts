@@ -59,22 +59,6 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
         { name: "CMS", short_name: "CMS", url: "/admin/cms" },
       ],
       icons: sharedIcons,
-      screenshots: [
-        {
-          src: "/screenshots/admin-dashboard.png",
-          sizes: "1024x1024",
-          type: "image/png",
-          form_factor: "wide",
-          label: "Admin dashboard with metrics, quick actions, and recent activity",
-        },
-        {
-          src: "/screenshots/admin-matches-rayon.png",
-          sizes: "2688x2363",
-          type: "image/png",
-          form_factor: "wide",
-          label: "Club match management with status badges and inline editing",
-        },
-      ],
       share_target: {
         action: "/admin/cms",
         method: "GET",
@@ -107,22 +91,6 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
       { name: "Fan App", short_name: "Fan App", url: resolveFanAppHref() },
     ],
     icons: sharedIcons,
-    screenshots: [
-      {
-        src: "/screenshots/fans-home.png",
-        sizes: "1082x2402",
-        type: "image/png",
-        form_factor: "narrow",
-        label: "Official club matchday home with tickets, tiers, and live fixtures",
-      },
-      {
-        src: "/screenshots/fans-tickets.png",
-        sizes: "1082x2402",
-        type: "image/png",
-        form_factor: "narrow",
-        label: "Matchday ticket checkout with seat selection and pricing",
-      },
-    ],
     share_target: {
       action: "/share-target",
       method: "GET",

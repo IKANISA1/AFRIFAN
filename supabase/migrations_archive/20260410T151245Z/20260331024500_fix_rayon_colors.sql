@@ -1,5 +1,5 @@
 -- Fix Rayon Sports colors: brand is Blue & White, not Red.
--- White is dropped per UI design system rule (dark mode only).
+-- White is dropped per DESIGN.md UI token rule.
 -- Secondary uses a deep blue variant instead of white.
 
 UPDATE african_football_clubs SET

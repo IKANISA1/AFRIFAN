@@ -4,7 +4,7 @@ import { siteNavigation, utilityNavigation } from "@/lib/content";
 import type { ClubProfile } from "@/lib/types";
 import type { SiteChromeCopy } from "@/lib/site-copy";
 import { SiteHeaderControls } from "@/components/site-header-controls";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 const PRIMARY_LINKS = siteNavigation.filter(
   (item) =>

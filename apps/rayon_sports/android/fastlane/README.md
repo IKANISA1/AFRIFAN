@@ -21,7 +21,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane android internal
 ```
 
-Deploy to internal testing track with all metadata, screenshots, and images
+Deploy to internal testing track with metadata only
 
 ### android metadata
 
@@ -29,7 +29,7 @@ Deploy to internal testing track with all metadata, screenshots, and images
 [bundle exec] fastlane android metadata
 ```
 
-Upload metadata and screenshots only (no AAB)
+Upload metadata only (no AAB)
 
 ### android closed
 

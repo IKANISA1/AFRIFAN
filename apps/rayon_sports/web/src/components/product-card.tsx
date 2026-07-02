@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, ShoppingBag } from "lucide-react";
 import type { ShopProduct } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 export function ProductCard({ product }: { product: ShopProduct }) {
   const productImage = product.imageUrl ?? "/media/stadium-hero.jpg";

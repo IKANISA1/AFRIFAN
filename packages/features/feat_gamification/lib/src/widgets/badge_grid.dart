@@ -5,7 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 /// Grid of achievement badges — earned and locked.
 ///
 /// Uses shared semantic icons instead of emoji. Each badge maps to a
-/// design-system icon that represents the achievement type.
+/// shared UI icon that represents the achievement type.
 class BadgeGrid extends StatelessWidget {
   final List<Map<String, dynamic>> achievements;
 

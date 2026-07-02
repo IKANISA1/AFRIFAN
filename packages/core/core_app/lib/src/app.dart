@@ -407,7 +407,7 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
     final appTheme = ClubTheme.from(widget.config);
 
     // The app is intentionally single-theme: always render with the original
-    // dark design system regardless of device appearance settings.
+    // dark UI token implementation regardless of device appearance settings.
     return MaterialApp.router(
       title: widget.config.appName,
       debugShowCheckedModeBanner: false,

@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
-import 'package:test_support/design_font_loader.dart';
+import 'package:test_support/app_font_loader.dart';
 
 class _MockSupabaseClient extends Mock implements supabase.SupabaseClient {}
 
@@ -124,13 +124,17 @@ Future<void> _scrollTo(WidgetTester tester, Finder finder) async {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(loadDesignFonts);
+  setUpAll(loadAppFonts);
 
   testWidgets('renders points balance and recent activity', (tester) async {
     final repository = _FakeFetRepository();
     await _pumpApp(tester, repository: repository);
 
+    expect(find.text('Rewards'), findsWidgets);
     expect(find.textContaining('1,250'), findsOneWidget);
+    expect(find.text('Points share'), findsOneWidget);
+    expect(find.text('FET SPLIT MODEL'), findsNothing);
+    expect(find.text('Wallet'), findsNothing);
 
     await _scrollTo(tester, find.text('Earn'));
 
@@ -140,7 +144,7 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.tap(find.text('History').first);
+    await tester.tap(find.text('Activity').first);
     await tester.pumpAndSettle();
     await _scrollTo(tester, find.text('Partner points earned'));
 

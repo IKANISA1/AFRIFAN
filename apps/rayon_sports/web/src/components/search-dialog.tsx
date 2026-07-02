@@ -5,7 +5,7 @@ import { Search, Sparkles, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SearchIndexItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 interface SearchDialogProps {
   open: boolean;

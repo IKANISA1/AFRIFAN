@@ -5,7 +5,7 @@ import { footerNavigationGroups } from "@/lib/content";
 import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
 import type { SiteChromeCopy } from "@/lib/site-copy";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 const socialIconMap: Record<string, LucideIcon> = {
   facebook: Globe,

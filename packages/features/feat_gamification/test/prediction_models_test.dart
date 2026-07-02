@@ -214,11 +214,12 @@ void main() {
         'in_play': MarketGroup.inPlay,
         'combo': MarketGroup.combo,
       }.entries) {
-        final market = PredictionMarket.fromJson({
-          'market_group': entry.key,
-        });
-        expect(market.marketGroup, entry.value,
-            reason: '${entry.key} should map to ${entry.value}');
+        final market = PredictionMarket.fromJson({'market_group': entry.key});
+        expect(
+          market.marketGroup,
+          entry.value,
+          reason: '${entry.key} should map to ${entry.value}',
+        );
       }
     });
 
@@ -363,8 +364,11 @@ void main() {
           'prediction_id': 'p1',
           'message': 'ok',
         });
-        expect(result.isSuccess, true,
-            reason: '$status should be treated as success');
+        expect(
+          result.isSuccess,
+          true,
+          reason: '$status should be treated as success',
+        );
         expect(result.isError, false);
       }
     });
@@ -449,14 +453,8 @@ void main() {
     });
 
     test('status helpers', () {
-      expect(
-        FixtureSummary.fromJson({'status': 'live'}).isLive,
-        true,
-      );
-      expect(
-        FixtureSummary.fromJson({'status': 'finished'}).isFinished,
-        true,
-      );
+      expect(FixtureSummary.fromJson({'status': 'live'}).isLive, true);
+      expect(FixtureSummary.fromJson({'status': 'finished'}).isFinished, true);
       expect(
         FixtureSummary.fromJson({'status': 'finished'}).isPredictable,
         false,

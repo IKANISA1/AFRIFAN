@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { BackButton } from "@/components/back-button";
 import { AnimatedWatermark } from "@/components/animated-watermark";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 interface PageHeroStat {
   label: string;

@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'color_tokens.dart';
 
-/// Typography tokens for the AFRICLUB Revolut-borrowed mobile system.
+/// Typography tokens for the AFRICLUB universal mobile system.
 class TypographyTokens {
   TypographyTokens._();
 
-  /// Compatibility hook retained for older tests; typography always uses the
-  /// borrowed package font now.
+  /// Compatibility hook retained for older tests; typography now uses platform
+  /// system fonts only.
   static bool debugUseFallbackFonts = false;
-  static const String borrowedFontFamily = 'RevolutBorrowed';
   static const double lineHeightHero = 0.90;
   static const double lineHeightCompact = 0.95;
   static const double lineHeightSolid = 1.0;
@@ -53,7 +52,7 @@ class TypographyTokens {
     TextDecorationStyle? decorationStyle,
     double? decorationThickness,
   }) {
-    return _borrowedFont(
+    return _systemFont(
       textStyle: textStyle,
       color: color,
       fontSize: fontSize,
@@ -95,7 +94,7 @@ class TypographyTokens {
     TextDecorationStyle? decorationStyle,
     double? decorationThickness,
   }) {
-    return _borrowedFont(
+    return _systemFont(
       textStyle: textStyle,
       color: color,
       fontSize: fontSize,
@@ -137,7 +136,7 @@ class TypographyTokens {
     TextDecorationStyle? decorationStyle,
     double? decorationThickness,
   }) {
-    return _borrowedFont(
+    return _systemFont(
       textStyle: textStyle,
       color: color,
       fontSize: fontSize,
@@ -159,7 +158,7 @@ class TypographyTokens {
     );
   }
 
-  static TextStyle _borrowedFont({
+  static TextStyle _systemFont({
     TextStyle? textStyle,
     Color? color,
     double? fontSize,
@@ -180,8 +179,6 @@ class TypographyTokens {
     double? decorationThickness,
   }) {
     return (textStyle ?? const TextStyle()).copyWith(
-      fontFamily: borrowedFontFamily,
-      package: 'core_theme',
       color: color,
       fontSize: fontSize,
       fontWeight: fontWeight,

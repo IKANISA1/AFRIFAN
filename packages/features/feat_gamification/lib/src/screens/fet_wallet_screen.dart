@@ -10,9 +10,9 @@ import '../widgets/fet_split_model.dart';
 import '../widgets/fet_wallet_widgets.dart';
 
 enum _WalletSection {
-  earn('earn', 'Earn', AfriIcons.wallet),
-  redeem('rewards', 'Redeem', AfriIcons.rewards),
-  history('history', 'History', AfriIcons.history);
+  earn('earn', 'Earn', AfriIcons.rewards),
+  rewards('rewards', 'Rewards', AfriIcons.rewards),
+  activity('history', 'Activity', AfriIcons.history);
 
   const _WalletSection(this.value, this.label, this.icon);
 
@@ -55,16 +55,16 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
     unawaited(
       showAfriActionSheet(
         context: context,
-        title: 'Wallet',
+        title: 'Rewards',
         actions: [
           AfriSheetAction(
             icon: AfriIcons.history,
-            label: 'History',
+            label: 'Activity',
             onTap: () => context.go('/fanzone/wallet?section=history'),
           ),
           AfriSheetAction(
             icon: AfriIcons.rewards,
-            label: 'Redeem',
+            label: 'Rewards',
             onTap: () => context.go('/fanzone/wallet?section=rewards'),
           ),
           AfriSheetAction(
@@ -86,7 +86,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('Wallet', style: TypographyTokens.headlineSmall()),
+        title: Text('Rewards', style: TypographyTokens.headlineSmall()),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
@@ -146,7 +146,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             child: Column(
               children: [
                 Text(
-                  'Current Balance',
+                  'Points balance',
                   style: TypographyTokens.labelSmall(
                     ColorTokens.onSurfaceVariant,
                   ),
@@ -229,20 +229,20 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
               ),
             ),
           ],
-          if (selectedSection == _WalletSection.redeem) ...[
-            const AfriSectionHeader(title: 'Redeem'),
+          if (selectedSection == _WalletSection.rewards) ...[
+            const AfriSectionHeader(title: 'Rewards'),
             const SizedBox(height: SpacingTokens.spacing4),
             AfriSurfaceCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Rewards and partner offers now live inside Points.',
+                    'Use points for matchday perks and partner rewards.',
                     style: TypographyTokens.bodyMedium(),
                   ),
                   const SizedBox(height: SpacingTokens.spacing2),
                   Text(
-                    'Use your points balance for matchday rewards, supporter perks, and partner offers without leaving this flow.',
+                    'Available rewards appear here when the club or partners publish them.',
                     style: TypographyTokens.bodySmall(
                       ColorTokens.onSurfaceVariant,
                     ),
@@ -251,9 +251,9 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
               ),
             ),
           ],
-          if (selectedSection == _WalletSection.history) ...[
+          if (selectedSection == _WalletSection.activity) ...[
             AfriSectionHeader(
-              title: 'History',
+              title: 'Activity',
               trailing: Text(
                 '${transactions.length}',
                 style: TypographyTokens.labelSmall(
@@ -265,7 +265,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             if (transactions.isEmpty)
               AfriSurfaceCard(
                 child: Text(
-                  'Points activity appears here once you earn from partner initiatives or join partner activities.',
+                  'Points activity appears after partner rewards or matchday actions.',
                   style: TypographyTokens.bodyMedium(
                     ColorTokens.onSurfaceVariant,
                   ),

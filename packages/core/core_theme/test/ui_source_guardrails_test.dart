@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   final repoRoot = _findRepoRoot();
 
-  group('Design System Guardrails', () {
+  group('DESIGN.md UI Guardrails', () {
     test('ThemeData construction stays centralized in core_theme', () {
       final violations = _scanDartFiles(
         roots: [
@@ -46,7 +46,7 @@ void main() {
         violations,
         isEmpty,
         reason: _formatViolations(
-          'Found GoogleFonts usage in UI source. Use RevolutBorrowed through TypographyTokens.',
+          'Found GoogleFonts usage in UI source. Use TypographyTokens and the platform font stack.',
           violations,
         ),
       );
@@ -77,7 +77,7 @@ void main() {
       );
     });
 
-    test('Typography uses borrowed font tokens without raw family strings', () {
+    test('Typography avoids raw family strings', () {
       final violations = _scanDartFiles(
         roots: [
           Directory('${repoRoot.path}/packages'),
@@ -90,7 +90,7 @@ void main() {
         violations,
         isEmpty,
         reason: _formatViolations(
-          'Found raw fontFamily strings. Use TypographyTokens.borrowedFontFamily.',
+          'Found raw fontFamily strings. Use TypographyTokens and the platform font stack.',
           violations,
         ),
       );
@@ -109,7 +109,7 @@ void main() {
         violations,
         isEmpty,
         reason: _formatViolations(
-          'Found negative letter spacing. Borrowed typography uses zero tracking.',
+          'Found negative letter spacing. Universal typography uses zero tracking.',
           violations,
         ),
       );
@@ -153,7 +153,7 @@ void main() {
       );
     });
 
-    test('Club config test fixtures use borrowed color tokens', () {
+    test('Club config test fixtures use shared color tokens', () {
       final violations = _scanDartFiles(
         roots: [
           Directory('${repoRoot.path}/packages'),
@@ -186,7 +186,7 @@ void main() {
           r'\b(ClayCard|ClaymorphicButton|EliteCard|EliteButton|EliteButtonVariant)\b',
         ),
         allow: (path) => path.endsWith(
-          '/packages/core/core_theme/test/design_system_source_of_truth_test.dart',
+          '/packages/core/core_theme/test/ui_source_guardrails_test.dart',
         ),
       );
 
@@ -231,13 +231,13 @@ void main() {
         violations,
         isEmpty,
         reason: _formatViolations(
-          'Found local gradient constructors. Use ColorTokens borrowed gradient helpers.',
+          'Found local gradient constructors. Use ColorTokens gradient helpers.',
           violations,
         ),
       );
     });
 
-    test('Feature route app bars use borrowed chrome', () {
+    test('Feature route app bars use shared chrome', () {
       final violations = _scanDartFiles(
         roots: [
           Directory('${repoRoot.path}/packages/features'),
@@ -256,7 +256,7 @@ void main() {
       );
     });
 
-    test('Feature route tab bars use borrowed chrome', () {
+    test('Feature route tab bars use shared chrome', () {
       final violations = _scanDartFiles(
         roots: [
           Directory('${repoRoot.path}/packages/features'),

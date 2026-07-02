@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { ui } from "@/design-system";
+import { ui } from "@/ui-kit";
 
 export function Skeleton({
   className,

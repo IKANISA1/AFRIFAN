@@ -11,7 +11,7 @@ import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
-/// Button variant enumeration for the AFRICLUB design system.
+/// Button variant enumeration for AFRICLUB UI primitives.
 enum AfriButtonVariant { primary, secondary, outline, ghost, accent }
 
 /// Shared button component with a small, consistent set of emphasis levels.

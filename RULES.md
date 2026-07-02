@@ -30,7 +30,7 @@ Before executing **any** task — no matter how small — every agent must compl
 | \# | Protected Item | Why It's Protected |
 | ----- | ----- | ----- |
 | A | `home_screen.dart` and all files it imports | Home screen UI is finalized — see §2.1 |
-| B | `lib/core/theme/` — all design token files | Token changes cascade to all 50+ club flavors |
+| B | `lib/core/theme/` — all UI token files | Token changes cascade to all 50+ club flavors |
 | C | Any new package addition to `pubspec.yaml` | Every dependency is a supply-chain risk |
 | D | Any change to `supabase/migrations/` | Migrations run against all 50+ clubs simultaneously |
 | E | Any change to RLS policies in Supabase | Incorrect RLS \= data leak across clubs |
@@ -219,11 +219,11 @@ After any refactor that moves or removes features:
 
 ## **SECTION 4 — DESIGN & UI/UX RULES**
 
-### **4.1 Design Documents Are Law**
+### **4.1 Design Authority Is Law**
 
 Before touching **any** file in `lib/features/` or `lib/core/theme/`, read all of the following in order:
 
-1. `docs/design.md` — canonical design system specification  
+1. `DESIGN.md` — the sole design authority for this repository
 2. `docs/blueprint.md` — full app architecture and screen-by-screen specification  
 3. `docs/screen_inventory.md` — complete screen list with Stitch prompts  
 4. The relevant feature's own `README.md` if it exists
@@ -232,16 +232,16 @@ Before touching **any** file in `lib/features/` or `lib/core/theme/`, read all o
 
 ### **4.2 Adaptive Theming (Light, Dark, System)**
 
-This app supports **System, Light, and Dark mode**. Theme behavior, visual hierarchy, and token values must follow `docs/design.md`. Do not duplicate or redefine token values in this rules file.
+This app supports **System, Light, and Dark mode**. Theme behavior, visual hierarchy, and token values must follow `DESIGN.md`. Do not duplicate or redefine token values in this rules file.
 
-### **4.3 Design Token System — Never Bypass It**
+### **4.3 UI Token Implementation — Never Bypass It**
 
-All colors, typography, spacing, radii, and surface recipes must use platform design tokens:
+All colors, typography, spacing, radii, and surface recipes must use platform UI tokens governed by `DESIGN.md`:
 
-* Web: `apps/rayon_sports/web/src/design-system/`
+* Web: `apps/rayon_sports/web/src/ui-kit/`
 * Flutter: `packages/core/core_theme/`
 
-Hardcoded visual values are only acceptable inside those design-system sources.
+Hardcoded visual values are only acceptable inside those implementation sources.
 
 Example:
 
@@ -271,7 +271,7 @@ Text('Hello', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold))
 | `ColorTokens.navActive` | HSL-derived pastel tint | Auto-computed |
 | `ColorTokens.heroGradient()` | secondary → primary | Auto-computed |
 
-**White-drop rule:** If any club color has luminance > 0.9 (white/near-white), it is automatically replaced with the design system default. White breaks the dark-mode UI.
+**White-drop rule:** If any club color has luminance > 0.9 (white/near-white), it is automatically replaced with the `DESIGN.md` default. White breaks the dark-mode UI.
 
 **Legacy :** `clubRed` → `clubPrimary`, `deepNavy` → `clubSecondary`, `trophyGold` → `clubAccent`.
 
@@ -320,7 +320,7 @@ Never use durations above 500ms except for looping ambient effects. Always pair 
 
 ### **4.8 No Emoji as Icons**
 
-Never use emoji characters as UI icons. Use the approved SVG icon set (`core_theme/icons/`) or Phosphor Icons. Emoji are culturally variable, render differently across Android versions, and are prohibited by `docs/design.md`.
+Never use emoji characters as UI icons. Use the approved SVG icon set (`core_theme/icons/`) or Phosphor Icons. Emoji are culturally variable, render differently across Android versions, and are prohibited by `DESIGN.md`.
 
 ---
 

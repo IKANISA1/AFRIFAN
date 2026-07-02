@@ -82,8 +82,6 @@ class AfriScreenScaffold extends StatelessWidget {
                               fontStyle: FontStyle.italic,
                               letterSpacing: 0,
                               height: 0.9,
-                              fontFamily: TypographyTokens.borrowedFontFamily,
-                              package: 'core_theme',
                             ),
                           ),
                         ),

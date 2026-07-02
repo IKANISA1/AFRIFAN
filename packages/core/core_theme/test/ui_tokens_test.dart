@@ -1,7 +1,7 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Design token assertions — Revolut-Borrowed compliance.
+/// UI token assertions for root DESIGN.md compliance.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
