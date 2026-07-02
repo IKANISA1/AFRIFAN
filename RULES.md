@@ -221,14 +221,13 @@ After any refactor that moves or removes features:
 
 ### **4.1 Design Authority Is Law**
 
-Before touching **any** file in `lib/features/` or `lib/core/theme/`, read all of the following in order:
+Before touching any user-facing Flutter, web, or admin UI surface, read
+`DESIGN.md` first. It is the sole design authority for this repository.
 
-1. `DESIGN.md` — the sole design authority for this repository
-2. `docs/blueprint.md` — full app architecture and screen-by-screen specification  
-3. `docs/screen_inventory.md` — complete screen list with Stitch prompts  
-4. The relevant feature's own `README.md` if it exists
-
-**If any of these files do not exist yet, stop and alert the owner — do not proceed.**
+Architecture docs, runbooks, tests, runtime token classes, generated CSS, and
+component source files may implement or verify `DESIGN.md`, but they must not
+define a second design contract, screen inventory, screenshot matrix, product
+design brief, token authority, or visual direction.
 
 ### **4.2 Adaptive Theming (Light, Dark, System)**
 
@@ -236,7 +235,8 @@ This app supports **System, Light, and Dark mode**. Theme behavior, visual hiera
 
 ### **4.3 UI Token Implementation — Never Bypass It**
 
-All colors, typography, spacing, radii, and surface recipes must use platform UI tokens governed by `DESIGN.md`:
+All colors, typography, spacing, radii, and surface recipes must use runtime
+UI token implementations governed by `DESIGN.md`:
 
 * Web: `apps/rayon_sports/web/src/ui-kit/`
 * Flutter: `packages/core/core_theme/`
@@ -695,7 +695,7 @@ When updating, add an entry to the changelog at the bottom of this file.
 ALWAYS:
   ✅ Read this file before starting any task
   ✅ Do a full repo review before writing code
-  ✅ Read design.md and blueprint.md before touching UI
+  ✅ Read DESIGN.md before touching UI
   ✅ Use ColorTokens.*, TypographyTokens.*, GlassCard, ClubConfig tokens
   ✅ Hide sections when data is empty (SizedBox.shrink)
   ✅ Delete old code when replacing it

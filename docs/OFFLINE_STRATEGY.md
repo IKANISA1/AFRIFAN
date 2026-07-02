@@ -43,17 +43,20 @@ Supabase RPC  →  SafeRpc (timeout + retry)
 
 ## Screen-Level Behavior
 
+`../DESIGN.md` is the sole design authority for loading, empty, error,
+offline, and recovery UI. This strategy only records data-fetching behavior.
+
 ### Loading States
-Every screen MUST show a skeleton loader (`AfriSkeletonList`) while data loads.
+Screens expose loading state distinctly so runtime UI can render the
+`DESIGN.md`-required loading treatment.
 
 ### Error States
-Every screen MUST catch errors and show `AfriStateView.offline()` with:
-- A clear message ("Challenges are temporarily unavailable")
-- A "Retry" button that re-triggers the data load
+Screens catch recoverable errors and expose retry actions through the relevant
+provider or view model. The visual treatment is governed by `DESIGN.md`.
 
 ### Empty States
-When data loads successfully but is empty, screens show contextual empty state
-messaging (e.g., "No predictions yet. Browse fixtures to get started.").
+When data loads successfully but is empty, providers expose an empty state.
+Section and screen rendering must follow `DESIGN.md` plus locked repo rules.
 
 ---
 

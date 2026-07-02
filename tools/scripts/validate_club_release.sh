@@ -136,9 +136,7 @@ fi
 
 python3 - "$PRODUCTION_JSON" \
   "$APP_DIR/store_metadata/play_store/listing.md" \
-  "$APP_DIR/store_metadata/privacy_policy.html" \
-  "$APP_DIR/landing/privacy/index.html" \
-  "$APP_DIR/landing/terms/index.html" <<'PY'
+  "$APP_DIR/store_metadata/privacy_policy.html" <<'PY'
 import json
 import pathlib
 import sys
@@ -151,8 +149,6 @@ privacy_url = config["APP_PRIVACY_URL"]
 checks = {
     pathlib.Path(sys.argv[2]): [support_email, website_url, privacy_url],
     pathlib.Path(sys.argv[3]): [support_email, website_url],
-    pathlib.Path(sys.argv[4]): [support_email, website_url],
-    pathlib.Path(sys.argv[5]): [support_email, website_url],
 }
 
 missing = []

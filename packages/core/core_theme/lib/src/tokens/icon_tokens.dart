@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Semantic icon  — single source of truth for icon choices.
+/// Semantic icon runtime implementation governed by root DESIGN.md.
 ///
 /// Every feature screen references these instead of choosing ad-hoc
 /// Material icons. This guarantees visual consistency and makes icon

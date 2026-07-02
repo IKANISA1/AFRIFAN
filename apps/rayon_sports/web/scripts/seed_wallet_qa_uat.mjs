@@ -495,7 +495,7 @@ async function main() {
     })),
   );
   console.log(
-    "Next step: run tools/scripts/run_wallet_qa_uat.sh and follow docs/fet_wallet_qa_uat_2026-04-12.md for manual evidence capture.",
+    "Next step: run tools/scripts/run_wallet_qa_uat.sh and capture release evidence from the runner output.",
   );
 }
 

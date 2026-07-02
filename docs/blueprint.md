@@ -2,6 +2,10 @@
 
 Updated: Rayon Sportsil 8, 2026
 
+Design authority: this document is architecture-only. `../DESIGN.md` is the
+sole source for product visuals, UI/UX rules, tokens, screen archetypes, and
+state requirements.
+
 ## 1. Target State
 
 AFRICLUB is a white-label club platform with three surfaces only:

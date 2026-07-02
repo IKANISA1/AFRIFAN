@@ -25,7 +25,7 @@ void main() {
         violations,
         isEmpty,
         reason: _formatViolations(
-          'Found ThemeData constructors outside the single-source core theme.',
+          'Found ThemeData constructors outside the centralized core theme.',
           violations,
         ),
       );

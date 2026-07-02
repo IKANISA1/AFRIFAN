@@ -63,6 +63,9 @@ supabase/
 - No frontend hardcoding that assumes Rayon outside reference defaults.
 - UI changes must follow `DESIGN.md`, the only design authority for this repo,
   unless the owner explicitly approves a different direction.
+- Architecture and runbook documents are operational references only. They must
+  not redefine product visuals, screen inventories, token values, or UI/UX
+  rules outside `DESIGN.md`.
 
 ## Common Commands
 
