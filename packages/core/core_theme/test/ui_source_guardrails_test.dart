@@ -6,6 +6,19 @@ void main() {
   final repoRoot = _findRepoRoot();
 
   group('DESIGN.md UI Guardrails', () {
+    test('Root DESIGN.md is the only design authority document', () {
+      final violations = _findSecondaryDesignAuthorityFiles(repoRoot);
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found secondary design authority files. Delete them or rewrite as implementation docs that only reference root DESIGN.md.',
+          violations,
+        ),
+      );
+    });
+
     test('ThemeData construction stays centralized in core_theme', () {
       final violations = _scanDartFiles(
         roots: [
@@ -729,6 +742,32 @@ void main() {
   });
 }
 
+List<String> _findSecondaryDesignAuthorityFiles(Directory repoRoot) {
+  final violations = <String>[];
+  final designAuthorityName = RegExp(
+    r'(^|/)(design|design-system|style-guide|screen[-_]inventory|visual[-_]baseline|screenshot[-_]matrix|ui[-_]ux|ux[-_]audit|design[-_]audit)([._/-]|$)',
+    caseSensitive: false,
+  );
+
+  for (final entity in _safeRecursiveList(repoRoot)) {
+    if (entity is! File) continue;
+
+    final normalizedPath = entity.path.replaceAll('\\', '/');
+    if (_isGeneratedPath(normalizedPath)) continue;
+    if (normalizedPath == '${repoRoot.path}/DESIGN.md') continue;
+    if (!normalizedPath.endsWith('.md') && !normalizedPath.endsWith('.mdx')) {
+      continue;
+    }
+
+    if (designAuthorityName.hasMatch(normalizedPath)) {
+      violations.add(normalizedPath);
+    }
+  }
+
+  violations.sort();
+  return violations;
+}
+
 Directory _findRepoRoot() {
   var current = Directory.current.absolute;
   while (true) {
@@ -838,6 +877,7 @@ bool _isGeneratedPath(String normalizedPath) {
       normalizedPath.contains('/.dart_tool/') ||
       normalizedPath.contains('/.next/') ||
       normalizedPath.endsWith('/.next') ||
+      normalizedPath.contains('/node_modules/') ||
       normalizedPath.contains('/ios/Pods/');
 }
 

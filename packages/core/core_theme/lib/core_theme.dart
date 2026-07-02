@@ -1,4 +1,4 @@
-/// AFRICLUB Core Theme — Universal Mobile App Design Standard implementation
+/// AFRICLUB Core Theme — Universal App Design Standard implementation
 ///
 /// Shared Flutter surfaces, tokens, and primitives governed by root DESIGN.md.
 library;

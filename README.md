@@ -61,8 +61,7 @@ supabase/
 - No unscoped club queries on app data.
 - No fan web portal surface.
 - No frontend hardcoding that assumes Rayon outside reference defaults.
-- UI changes must follow `DESIGN.md`, the only design authority for this repo,
-  unless the owner explicitly approves a different direction.
+- UI changes must follow `DESIGN.md`, the only design authority for this repo.
 - Architecture and runbook documents are operational references only. They must
   not redefine product visuals, screen inventories, token values, or UI/UX
   rules outside `DESIGN.md`.

@@ -250,8 +250,8 @@ Example:
 Container(color: ColorTokens.clubPrimary)    // Dynamic per club via ColorTokens.init()
 Text('Hello', style: TypographyTokens.headlineLarge())
 
-// ✅ CORRECT — platform constants (ok as const)
-Container(color: ColorTokens.background)     // #0C112E — same for all clubs
+// ✅ CORRECT — platform constants routed through the implementation
+Container(color: ColorTokens.background)
 
 // ❌ FORBIDDEN — hardcoded values
 Container(color: Color(0xFFC8102E))          // bypasses token system
@@ -263,13 +263,10 @@ Text('Hello', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold))
 
 ### **4.3.1 Dynamic Color Architecture**
 
-| Token | Resolves to | Fallback if white |
-|-------|-------------|--------------------|
-| `ColorTokens.clubPrimary` | `ClubConfig.colors.primary` | `#0038A8` |
-| `ColorTokens.clubSecondary` | `ClubConfig.colors.secondary` | `#001F5C` |
-| `ColorTokens.clubAccent` | `ClubConfig.colors.accent` | `#D4A017` |
-| `ColorTokens.navActive` | HSL-derived pastel tint | Auto-computed |
-| `ColorTokens.heroGradient()` | secondary → primary | Auto-computed |
+`ColorTokens` resolves club colors from `ClubConfig.colors`, applies the
+white-drop safety rule, and exposes only semantic runtime values. The exact
+fallbacks, gradients, modes, and role semantics belong in `DESIGN.md` and the
+runtime token implementation, not in this rules file.
 
 **White-drop rule:** If any club color has luminance > 0.9 (white/near-white), it is automatically replaced with the `DESIGN.md` default. White breaks the dark-mode UI.
 
