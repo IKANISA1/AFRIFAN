@@ -177,7 +177,9 @@ class _PredictionNotificationCard extends StatelessWidget {
     final isPositive = notification.earned > 0;
     final accent = isPositive ? ColorTokens.success : ColorTokens.clubAccent;
     final dateLabel = _formatPredictionNotificationDate(notification.createdAt);
-    final rewardLabel = isPositive ? ', reward ${notification.earned} FET' : '';
+    final rewardLabel = isPositive
+        ? ', reward ${notification.earned} points'
+        : '';
 
     return GlassCard(
       animate: false,
@@ -245,7 +247,7 @@ class _PredictionNotificationCard extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          '+${notification.earned} FET',
+                          '+${notification.earned} pts',
                           style:
                               TypographyTokens.labelMedium(
                                 ColorTokens.success,

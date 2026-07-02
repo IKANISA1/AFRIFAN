@@ -758,7 +758,7 @@ List<String> _scanDartFiles({
   for (final root in roots) {
     if (!root.existsSync()) continue;
 
-    for (final entity in root.listSync(recursive: true, followLinks: false)) {
+    for (final entity in _safeRecursiveList(root)) {
       if (entity is! File || !entity.path.endsWith('.dart')) continue;
 
       final normalizedPath = entity.path.replaceAll('\\', '/');
@@ -787,7 +787,7 @@ List<String> _scanTextFiles({
   for (final root in roots) {
     if (!root.existsSync()) continue;
 
-    for (final entity in root.listSync(recursive: true, followLinks: false)) {
+    for (final entity in _safeRecursiveList(root)) {
       if (entity is! File) continue;
 
       final normalizedPath = entity.path.replaceAll('\\', '/');
@@ -805,9 +805,39 @@ List<String> _scanTextFiles({
   return violations;
 }
 
+List<FileSystemEntity> _safeRecursiveList(Directory root) {
+  final entities = <FileSystemEntity>[];
+  final pending = <Directory>[root];
+
+  while (pending.isNotEmpty) {
+    final directory = pending.removeLast();
+    List<FileSystemEntity> children;
+    try {
+      children = directory.listSync(followLinks: false);
+    } on FileSystemException {
+      continue;
+    }
+
+    for (final child in children) {
+      final normalizedPath = child.path.replaceAll('\\', '/');
+      if (_isGeneratedPath(normalizedPath)) {
+        continue;
+      }
+      entities.add(child);
+      if (child is Directory) {
+        pending.add(child);
+      }
+    }
+  }
+
+  return entities;
+}
+
 bool _isGeneratedPath(String normalizedPath) {
   return normalizedPath.contains('/build/') ||
       normalizedPath.contains('/.dart_tool/') ||
+      normalizedPath.contains('/.next/') ||
+      normalizedPath.endsWith('/.next') ||
       normalizedPath.contains('/ios/Pods/');
 }
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_auth/core_auth.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/models/fet_models.dart';
 import 'package:feat_gamification/src/models/partner_pool_models.dart';
@@ -10,6 +11,7 @@ import 'package:feat_gamification/src/screens/fanzone_hub_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
@@ -215,14 +217,7 @@ void main() {
     final snapshot = _buildSnapshot();
 
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          fanzoneHubProvider.overrideWith(
-            () => _TestFanzoneHubNotifier(snapshot),
-          ),
-        ],
-        child: const MaterialApp(home: FanzoneHubScreen()),
-      ),
+      _buildFanzoneApp(() => _TestFanzoneHubNotifier(snapshot)),
     );
     await tester.pumpAndSettle();
 
@@ -233,18 +228,20 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Fanzone'), findsOneWidget);
-    expect(find.text('Fixtures'), findsAtLeastNWidgets(1));
-    expect(find.text('Wallet'), findsAtLeastNWidgets(1));
+    expect(find.byType(AfriSegmentedControl), findsOneWidget);
+    expect(find.text('Pick'), findsOneWidget);
+    expect(find.text('Lge'), findsOneWidget);
+    expect(find.text('Pay'), findsOneWidget);
+    expect(find.text('Fans'), findsOneWidget);
+    expect(find.text('Gift'), findsOneWidget);
     expect(find.text('Jackpot'), findsNothing);
-    expect(find.byType(AfriActionRow), findsNWidgets(3));
-    expect(find.text('More'), findsOneWidget);
+    expect(find.byTooltip('More options'), findsOneWidget);
+    expect(find.text('TV game'), findsOneWidget);
+    expect(find.text('Enter TV code'), findsOneWidget);
 
-    await tester.drag(find.byType(CustomScrollView), const Offset(0, -800));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Partner WDW Pools'), findsOneWidget);
-    expect(find.text('100 FET entry'), findsOneWidget);
-    expect(find.text('Join pool'), findsOneWidget);
+    expect(find.text('Matchday rounds'), findsOneWidget);
+    expect(find.text('100 point entry'), findsOneWidget);
+    expect(find.text('Join round'), findsOneWidget);
     expect(find.text('Challenges'), findsNothing);
   });
 
@@ -300,65 +297,53 @@ void main() {
     final partnerPoolRepository = _FakePartnerPoolRepository();
 
     await tester.pumpWidget(
-      ProviderScope(
+      _buildFanzoneApp(
+        () => notifier,
         overrides: [
-          fanzoneHubProvider.overrideWith(() => notifier),
           partnerPoolRepositoryProvider.overrideWithValue(
             partnerPoolRepository,
           ),
         ],
-        child: const MaterialApp(home: FanzoneHubScreen()),
       ),
     );
     await tester.pumpAndSettle();
 
-    await tester.scrollUntilVisible(
-      find.text('Join pool'),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.ensureVisible(find.text('Join pool'));
+    await tester.ensureVisible(find.text('Join round'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Join pool'));
+    await tester.tap(find.widgetWithText(AfriButton, 'Join round').first);
     await tester.pumpAndSettle();
 
     expect(find.text('Derby WDW Pool'), findsAtLeastNWidgets(1));
-    expect(
-      find.text('Visit Rwanda funds 5000 FET. Your fixed entry is 100 FET.'),
-      findsOneWidget,
-    );
+    expect(find.textContaining('Visit Rwanda sponsors'), findsOneWidget);
+    expect(find.text('Partner earn required'), findsOneWidget);
     expect(find.text('Home win'), findsOneWidget);
     expect(find.text('Draw'), findsOneWidget);
     expect(find.text('Away win'), findsOneWidget);
 
     await tester.tap(find.text('Draw'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Stake 100 FET'));
+    await tester.tap(find.widgetWithText(AfriButton, 'Join round').last);
     await tester.pumpAndSettle();
 
     expect(partnerPoolRepository.joinedPoolId, 'pool-1');
     expect(partnerPoolRepository.selectedOutcome, 'draw');
     expect(partnerPoolRepository.idempotencyKey, startsWith('pool-1-draw-'));
     expect(notifier.refreshCount, 1);
-    expect(find.text('Draw joined for 100 FET.'), findsOneWidget);
+    expect(find.text('Draw joined.'), findsOneWidget);
   });
 
   testWidgets('loading state still exposes fanzone route shortcuts', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          fanzoneHubProvider.overrideWith(() => _PendingFanzoneHubNotifier()),
-        ],
-        child: const MaterialApp(home: FanzoneHubScreen()),
-      ),
-    );
+    await tester.pumpWidget(_buildFanzoneApp(_PendingFanzoneHubNotifier.new));
     await tester.pump();
 
     expect(find.text('Opening Fanzone'), findsOneWidget);
-    expect(find.text('Fixtures'), findsOneWidget);
-    expect(find.text('Wallet'), findsAtLeastNWidgets(1));
+    expect(find.text('Pick'), findsOneWidget);
+    expect(find.text('Lge'), findsOneWidget);
+    expect(find.text('Pay'), findsOneWidget);
+    expect(find.text('Fans'), findsOneWidget);
+    expect(find.text('Gift'), findsOneWidget);
     expect(find.text('Jackpot'), findsNothing);
   });
 
@@ -371,25 +356,23 @@ void main() {
     );
 
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          fanzoneHubProvider.overrideWith(
-            () => _TestFanzoneHubNotifier(snapshot),
-          ),
-        ],
-        child: const MaterialApp(home: FanzoneHubScreen()),
+      _buildFanzoneApp(
+        () => _TestFanzoneHubNotifier(snapshot),
+        initialLocation: '/fanzone?section=league',
       ),
     );
     await tester.pumpAndSettle();
 
     expect(find.text('Live updates paused'), findsOneWidget);
     expect(find.byType(AfriStateBanner), findsOneWidget);
-    expect(find.text('Fixtures'), findsOneWidget);
+    expect(find.text('Lge'), findsOneWidget);
+    expect(find.text('TV game'), findsNothing);
 
     await tester.drag(find.byType(CustomScrollView), const Offset(0, -500));
     await tester.pumpAndSettle();
 
     expect(find.text('Markets unavailable'), findsNothing);
+    expect(find.text('No matchday rounds'), findsNothing);
 
     await tester.drag(find.byType(CustomScrollView), const Offset(0, -700));
     await tester.pumpAndSettle();
@@ -399,10 +382,42 @@ void main() {
   });
 }
 
-Widget _buildFanzoneApp(FanzoneHubNotifier Function() createNotifier) {
+Widget _buildFanzoneApp(
+  FanzoneHubNotifier Function() createNotifier, {
+  List<Override> overrides = const [],
+  String initialLocation = '/fanzone',
+}) {
+  final router = GoRouter(
+    initialLocation: initialLocation,
+    routes: [
+      GoRoute(
+        path: '/fanzone',
+        builder: (context, state) => const FanzoneHubScreen(),
+      ),
+      GoRoute(
+        path: '/fanzone/my',
+        builder: (context, state) => const SizedBox.shrink(),
+      ),
+      GoRoute(
+        path: '/fanzone/match/:fixtureId',
+        builder: (context, state) => const SizedBox.shrink(),
+      ),
+    ],
+  );
+
   return ProviderScope(
-    overrides: [fanzoneHubProvider.overrideWith(createNotifier)],
-    child: MaterialApp(
+    overrides: [
+      currentUserProvider.overrideWith(
+        (ref) => const UserProfile(
+          id: 'supporter-1',
+          clubId: '24',
+          publicUserId: '483912',
+        ),
+      ),
+      fanzoneHubProvider.overrideWith(createNotifier),
+      ...overrides,
+    ],
+    child: MaterialApp.router(
       builder: (context, child) {
         final mediaQuery = MediaQuery.of(context);
         return MediaQuery(
@@ -410,7 +425,7 @@ Widget _buildFanzoneApp(FanzoneHubNotifier Function() createNotifier) {
           child: child ?? const SizedBox.shrink(),
         );
       },
-      home: const FanzoneHubScreen(),
+      routerConfig: router,
     ),
   );
 }

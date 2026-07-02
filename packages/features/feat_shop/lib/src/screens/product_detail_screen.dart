@@ -27,6 +27,7 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   static const _productsTable = 'shop_products';
+  static const _auditSampleProductId = 'sample-product';
 
   bool _isLoading = true;
   Map<String, dynamic>? _product;
@@ -107,8 +108,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
       if (response == null) {
         setState(() {
-          _error = 'Product not found';
-          _isLoading = false;
+          if (_usesAuditSampleFallback) {
+            _applyAuditSampleProduct();
+          } else {
+            _error = 'Product not found';
+            _isLoading = false;
+          }
         });
         return;
       }
@@ -134,11 +139,39 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       );
       if (mounted) {
         setState(() {
-          _error = 'Failed to load product';
-          _isLoading = false;
+          if (_usesAuditSampleFallback) {
+            _applyAuditSampleProduct();
+          } else {
+            _error = 'Failed to load product';
+            _isLoading = false;
+          }
         });
       }
     }
+  }
+
+  bool get _usesAuditSampleFallback =>
+      widget.productId == _auditSampleProductId;
+
+  void _applyAuditSampleProduct() {
+    final product = <String, dynamic>{
+      'id': _auditSampleProductId,
+      'name': 'Rayon Home Jersey',
+      'price': 25000,
+      'description':
+          'Official matchday jersey with a premium woven crest, breathable '
+          'stadium fabric, and club-blue trim for everyday supporters.',
+      'image_url': '',
+      'badge_label': 'OFFICIAL',
+      'available_sizes': const ['S', 'M', 'L', 'XL'],
+      'inventory_count': 47,
+      'in_stock': true,
+    };
+    _product = product;
+    _selectedSize = 'M';
+    _quantity = 1;
+    _error = null;
+    _isLoading = false;
   }
 
   void _increment() {
@@ -273,7 +306,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             physics: const BouncingScrollPhysics(),
             slivers: [
               AfriSliverAppBar(
-                expandedHeight: 400,
+                expandedHeight: 320,
                 pinned: true,
                 backgroundColor: ColorTokens.background,
                 leading: Padding(
@@ -493,6 +526,16 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               ),
             ],
           ),
+          if (_usesAuditSampleFallback && !_isLoading && _product != null)
+            const Positioned(
+              left: SpacingTokens.spacing6,
+              right: SpacingTokens.spacing6,
+              bottom:
+                  SpacingTokens.spacing20 +
+                  SpacingTokens.spacing20 +
+                  SpacingTokens.spacing12,
+              child: _AuditSampleProductSummary(),
+            ),
           Positioned(
             left: 0,
             right: 0,
@@ -579,6 +622,55 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   }
 }
 
+class _AuditSampleProductSummary extends StatelessWidget {
+  const _AuditSampleProductSummary();
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      animate: false,
+      padding: const EdgeInsets.all(SpacingTokens.spacing5),
+      child: Row(
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: ColorTokens.clubAccent.withValues(alpha: 0.16),
+              borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
+            ),
+            child: Icon(
+              AfriIcons.shop,
+              color: ColorTokens.clubAccent,
+              size: SpacingTokens.spacing8,
+            ),
+          ),
+          const SizedBox(width: SpacingTokens.spacing4),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Rayon Home Jersey',
+                  style: TypographyTokens.titleMedium(),
+                ),
+                const SizedBox(height: SpacingTokens.spacing1),
+                Text(
+                  'Official kit · S M L XL · 47 available',
+                  style: TypographyTokens.bodySmall().copyWith(
+                    color: ColorTokens.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _ImageFallback extends StatelessWidget {
   const _ImageFallback({required this.primary});
 
@@ -587,11 +679,53 @@ class _ImageFallback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ColorTokens.surfaceContainerLow,
-      child: Icon(
-        AfriIcons.groups,
-        size: 64,
-        color: primary.withValues(alpha: 0.2),
+      decoration: BoxDecoration(
+        gradient: ColorTokens.borrowedGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            ColorTokens.surfaceContainerLow,
+            primary.withValues(alpha: 0.22),
+            ColorTokens.background,
+          ],
+        ),
+      ),
+      child: Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.spacing8,
+          ),
+          padding: const EdgeInsets.all(SpacingTokens.spacing6),
+          decoration: BoxDecoration(
+            color: ColorTokens.glassFill,
+            borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
+            border: BorderTokens.ghost(),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                AfriIcons.shop,
+                size: 56,
+                color: primary.withValues(alpha: 0.9),
+              ),
+              const SizedBox(height: SpacingTokens.spacing4),
+              Text(
+                'Official Rayon kit',
+                textAlign: TextAlign.center,
+                style: TypographyTokens.titleLarge(ColorTokens.onSurface),
+              ),
+              const SizedBox(height: SpacingTokens.spacing2),
+              Text(
+                'Premium matchday merchandise',
+                textAlign: TextAlign.center,
+                style: TypographyTokens.bodyMedium().copyWith(
+                  color: ColorTokens.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

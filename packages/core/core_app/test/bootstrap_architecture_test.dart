@@ -9,18 +9,21 @@ import 'package:go_router/go_router.dart';
 
 void main() {
   group('AppRouter', () {
-    test('prefers splash when onboarding routes are registered', () {
-      final router = AppRouter(
-        modules: <FeatureModule>[
-          _OnboardingModule(),
-          _HomeModule(),
-          _SettingsModule(),
-        ],
-        shellBuilder: (_, shell) => Material(child: shell),
-      );
+    test(
+      'prefers the primary Home tab when onboarding routes are registered',
+      () {
+        final router = AppRouter(
+          modules: <FeatureModule>[
+            _OnboardingModule(),
+            _HomeModule(),
+            _SettingsModule(),
+          ],
+          shellBuilder: (_, shell) => Material(child: shell),
+        );
 
-      expect(router.initialLocation, '/splash');
-    });
+        expect(router.initialLocation, '/home');
+      },
+    );
 
     test('falls back to the first tab when splash is unavailable', () {
       final router = AppRouter(

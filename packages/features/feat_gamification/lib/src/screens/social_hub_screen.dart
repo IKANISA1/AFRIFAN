@@ -263,7 +263,7 @@ class SocialHubFriendsSection extends StatelessWidget {
     final parts = <String>[
       if (friend.publicUserId != null) '#${friend.publicUserId}',
       friend.tier.toUpperCase(),
-      '${friend.balance} FET',
+      '${friend.balance} pts',
     ];
     return parts.join(' · ');
   }
@@ -438,8 +438,8 @@ class _ClubFanZoneTabState extends ConsumerState<_ClubFanZoneTab> {
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
                   userEntry == null
-                      ? 'Earn FET to appear in the club table.'
-                      : '${userEntry.totalFet} FET earned so far.',
+                      ? 'Earn points to appear in the club table.'
+                      : '${userEntry.totalFet} pts earned so far.',
                   style: TypographyTokens.bodyMedium(),
                 ),
               ],
@@ -482,7 +482,7 @@ class SocialHubLeaderboardSection extends StatelessWidget {
                   _FanLeaderboardRow(
                     rank: fan.rank,
                     name: fan.displayName,
-                    points: '${fan.totalFet} FET',
+                    points: '${fan.totalFet} pts',
                     isMe: fan.isCurrentUser,
                   ),
                 ],

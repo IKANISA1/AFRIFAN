@@ -66,7 +66,7 @@ void main() {
     );
     expect(find.text('#123456', skipOffstage: false), findsOneWidget);
     expect(find.text('GOLD', skipOffstage: false), findsNWidgets(2));
-    expect(find.text('900 FET', skipOffstage: false), findsOneWidget);
+    expect(find.text('900 pts', skipOffstage: false), findsOneWidget);
     expect(find.text('YOU', skipOffstage: false), findsOneWidget);
   });
 }

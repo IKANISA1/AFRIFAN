@@ -3,6 +3,8 @@ library;
 
 export 'src/challenge_module.dart';
 export 'src/fanzone_module.dart';
+export 'src/game_session_providers.dart';
+export 'src/models/game_session_models.dart';
 export 'src/notification_providers.dart';
 export 'src/screens/club_fan_zone_screen.dart';
 export 'src/screens/fan_id_screen.dart';
@@ -19,7 +21,6 @@ export 'src/screens/match_detail_screen.dart';
 export 'src/screens/my_predictions_screen.dart';
 export 'src/screens/prediction_detail_screen.dart';
 export 'src/screens/prediction_notifications_screen.dart';
-export 'src/screens/prediction_settlement_screen.dart';
 export 'src/screens/privacy_settings_screen.dart';
 export 'src/screens/rewards_store_screen.dart';
 export 'src/screens/share_card_generator_screen.dart';

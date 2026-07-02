@@ -209,8 +209,8 @@ export function ScorePrediction({
       {/* FET reward hint */}
       <p className="mt-3 text-center text-[10px] uppercase tracking-[0.22em] text-slate-500">
         {submitted
-          ? "Exact match = 50 FET · Correct result = 20 FET"
-          : "Earn FET for correct predictions"}
+          ? "Exact match = 50 pts · Correct result = 20 pts"
+          : "Earn points for correct picks"}
       </p>
     </div>
   );

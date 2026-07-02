@@ -1,10 +1,8 @@
 import 'package:core_router/core_router.dart';
 import 'package:go_router/go_router.dart';
 
-import 'screens/club_projects_screen.dart';
 import 'screens/contributions_hub_screen.dart';
 import 'screens/group_detail_screen.dart';
-import 'screens/groups_screen.dart';
 import 'screens/statement_download_screen.dart';
 
 /// Contributions feature module — admin-managed public initiatives.
@@ -20,6 +18,15 @@ class ContributionsModule extends FeatureModule {
     GoRoute(
       path: '/contribute',
       name: 'contribute',
+      redirect: (_, state) {
+        final path = state.uri.path;
+        if (path == '/contribute' ||
+            path == '/contribute/projects' ||
+            path == '/contribute/groups') {
+          return '/fanzone?section=supporters';
+        }
+        return null;
+      },
       pageBuilder: (context, state) => afriSheetPage(
         state,
         const ContributionsHubScreen(),
@@ -28,16 +35,11 @@ class ContributionsModule extends FeatureModule {
       routes: [
         GoRoute(
           path: 'projects',
-          pageBuilder: (context, state) => afriSheetPage(
-            state,
-            const ClubProjectsScreen(),
-            fullHeight: true,
-          ),
+          redirect: (_, __) => '/fanzone?section=supporters',
         ),
         GoRoute(
           path: 'groups',
-          pageBuilder: (context, state) =>
-              afriSheetPage(state, const GroupsScreen(), fullHeight: true),
+          redirect: (_, __) => '/fanzone?section=supporters',
         ),
         GoRoute(
           path: 'group/:groupId',
@@ -68,24 +70,24 @@ class ContributionsModule extends FeatureModule {
   List<RoutePresentationDecision> get routePresentationDecisions => const [
     RoutePresentationDecision(
       path: '/contribute',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'merge into Home/Membership',
-      targetPath: '/home',
+      targetPath: '/fanzone?section=supporters',
       rationale:
-          'Support the club is valuable but should be entered from existing hubs.',
+          'Support the club is valuable but belongs inside Fan Zone Supporters.',
     ),
     RoutePresentationDecision(
       path: '/contribute/projects',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'consolidate',
-      targetPath: '/contribute',
+      targetPath: '/fanzone?section=supporters',
       rationale: 'Projects are a section inside contribution.',
     ),
     RoutePresentationDecision(
       path: '/contribute/groups',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'consolidate',
-      targetPath: '/contribute',
+      targetPath: '/fanzone?section=supporters',
       rationale: 'Groups are a contribution submode.',
     ),
     RoutePresentationDecision(

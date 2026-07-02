@@ -141,7 +141,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
           context,
           'Ticket request was saved, but the MOMO dialer could not open.',
         );
-        context.go('/my-tickets');
+        context.go('/tickets?tab=mine');
         return;
       }
 
@@ -157,7 +157,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
           mounted) {
         context.go('/e-ticket/${tickets.first.id}');
       } else {
-        context.go('/my-tickets');
+        context.go('/tickets?tab=mine');
       }
     } catch (error) {
       if (!mounted) return;

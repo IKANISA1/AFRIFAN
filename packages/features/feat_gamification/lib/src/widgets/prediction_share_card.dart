@@ -80,7 +80,7 @@ class PredictionShareService {
   }) async {
     unawaited(HapticFeedback.lightImpact());
     await SharePlus.instance.share(
-      ShareParams(text: _buildShareText(data), title: 'AFRICLUB Prediction'),
+      ShareParams(text: _buildShareText(data), title: 'AFRICLUB Pick'),
     );
   }
 
@@ -114,9 +114,9 @@ class PredictionShareService {
     }
     buffer.writeln('${data.marketName}: ${data.selectedOutcome.toUpperCase()}');
     if (data.status == PredictionStatus.won) {
-      buffer.writeln('Earned: +${data.fetEarned} FET');
+      buffer.writeln('Earned: +${data.fetEarned} pts');
     } else {
-      buffer.writeln('Potential: +${data.fetPotential} FET');
+      buffer.writeln('Potential: +${data.fetPotential} pts');
     }
     buffer.writeln();
     buffer.writeln(data.competitionName);
@@ -289,7 +289,7 @@ class PredictionShareCard extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing4),
           Center(
             child: Text(
-              'AFRICLUB · PREDICT. EARN. REPEAT.',
+              'AFRICLUB · PLAY. PICK. EARN.',
               style: TypographyTokens.labelSmall(
                 ColorTokens.onSurfaceVariant,
               ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.2),

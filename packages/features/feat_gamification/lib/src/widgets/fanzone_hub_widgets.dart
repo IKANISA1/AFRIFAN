@@ -10,7 +10,7 @@ import '../models/prediction_models.dart';
 // Hero Stats
 // ══════════════════════════════════════════════════════════════════════════════
 
-/// Top-of-hub metrics — live count, FET balance, win rate, streak.
+/// Top-of-hub metrics — live count, points balance, accuracy, streak.
 class HubHeroStats extends StatelessWidget {
   const HubHeroStats({
     super.key,
@@ -36,12 +36,12 @@ class HubHeroStats extends StatelessWidget {
               accentColor: ColorTokens.success,
             ),
             AfriStat(
-              label: 'WIN RATE',
+              label: 'ACCURACY',
               value: '${dashboard?.winRate.toStringAsFixed(0) ?? '0'}%',
               icon: AfriIcons.predict,
             ),
             AfriStat(
-              label: 'BALANCE',
+              label: 'POINTS',
               value: '${wallet?.balance ?? 0}',
               icon: AfriIcons.earn,
               accentColor: ColorTokens.clubAccent,
@@ -57,7 +57,7 @@ class HubHeroStats extends StatelessWidget {
 // Quick Routes
 // ══════════════════════════════════════════════════════════════════════════════
 
-/// Ranked links to top-level fanzone routes.
+/// Ranked links to compact Fan Zone surfaces.
 ///
 /// The first row keeps the top three actions prominent. Secondary routes move
 /// into compact chips so the hub no longer presents every destination at the
@@ -70,16 +70,24 @@ class HubQuickRoutes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primaryItems = <({String label, IconData icon, String route})>[
-      (label: 'Fixtures', icon: AfriIcons.fixture, route: '/fanzone/fixtures'),
-      (label: 'My Picks', icon: AfriIcons.myPicks, route: '/fanzone/my'),
+      (label: 'TV Code', icon: AfriIcons.live, route: '/fanzone/game'),
       (
-        label: 'Leaders',
-        icon: AfriIcons.leaderboard,
-        route: '/fanzone/leaderboard',
+        label: 'Fans',
+        icon: AfriIcons.profile,
+        route: '/fanzone?section=supporters',
+      ),
+      (
+        label: 'League',
+        icon: AfriIcons.league,
+        route: '/fanzone?section=league',
       ),
     ];
     final secondaryItems = <({String label, IconData icon, String route})>[
-      (label: 'Wallet', icon: AfriIcons.wallet, route: '/fanzone/wallet'),
+      (
+        label: 'Wallet',
+        icon: AfriIcons.wallet,
+        route: '/fanzone?section=wallet',
+      ),
     ];
     final primaryWidth =
         (MediaQuery.of(context).size.width -
@@ -206,7 +214,7 @@ class HubFixtureRow extends StatelessWidget {
               )
             else
               AfriInfoChip(
-                label: isLive ? 'LIVE' : 'PREDICT',
+                label: isLive ? 'LIVE' : 'ROUND',
                 color: isLive ? ColorTokens.success : ColorTokens.clubAccent,
               ),
           ],
@@ -220,7 +228,7 @@ class HubFixtureRow extends StatelessWidget {
 // Leaderboard Row
 // ══════════════════════════════════════════════════════════════════════════════
 
-/// Single leaderboard entry row (rank, name, stats, FET earned).
+/// Single leaderboard entry row (rank, name, stats, points earned).
 class HubLeaderboardRow extends StatelessWidget {
   const HubLeaderboardRow({super.key, required this.entry});
 
@@ -246,7 +254,7 @@ class HubLeaderboardRow extends StatelessWidget {
             children: [
               Text(entry.displayName, style: TypographyTokens.titleSmall()),
               Text(
-                '${entry.winRate.toStringAsFixed(0)}% · ${entry.totalSettled} settled',
+                '${entry.winRate.toStringAsFixed(0)}% · ${entry.totalSettled} rounds',
                 style: TypographyTokens.bodySmall(),
               ),
             ],
@@ -318,7 +326,7 @@ class HubPartnerPoolRow extends StatelessWidget {
                     ColorTokens.clubAccent,
                   ).copyWith(fontWeight: FontWeight.w800),
                 ),
-                Text('FET pool', style: TypographyTokens.labelSmall()),
+                Text('points round', style: TypographyTokens.labelSmall()),
               ],
             ),
           ],
@@ -330,7 +338,7 @@ class HubPartnerPoolRow extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             AfriInfoChip(
-              label: '${pool.fanEntryFet} FET entry',
+              label: '${pool.fanEntryFet} point entry',
               color: ColorTokens.info,
             ),
             AfriInfoChip(
@@ -360,7 +368,7 @@ class HubPartnerPoolRow extends StatelessWidget {
         if (!pool.hasJoined && pool.isOpen && onJoin != null) ...[
           const SizedBox(height: SpacingTokens.spacing3),
           AfriButton(
-            label: 'Join pool',
+            label: 'Join round',
             icon: AfriIcons.predict,
             variant: AfriButtonVariant.secondary,
             onTap: onJoin!,
@@ -430,7 +438,7 @@ class PartnerPoolOutcomeOption extends StatelessWidget {
 // Challenge Row
 // ══════════════════════════════════════════════════════════════════════════════
 
-/// Single challenge entry row showing name, description, and FET value.
+/// Single challenge entry row showing name, description, and point value.
 class HubChallengeRow extends StatelessWidget {
   const HubChallengeRow({super.key, required this.item});
 

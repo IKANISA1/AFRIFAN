@@ -36,6 +36,8 @@ cat >"$REPORT" <<EOF
 EOF
 
 run_step flutter_version "$FLUTTER_BIN" --version
+run_step mobi_revolut_alignment_matrix env FLUTTER_BIN="$FLUTTER_BIN" \
+  bash tools/scripts/validate_mobi_revolut_alignment_matrix.sh
 run_step design_drift bash tools/scripts/rayon_mobile_design_drift_report.sh --fail-on-findings
 run_step scoped_analyze "$FLUTTER_BIN" analyze \
   apps/rayon_sports \

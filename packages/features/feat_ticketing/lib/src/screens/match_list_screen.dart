@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../ticketing_providers.dart';
+import 'my_tickets_screen.dart';
 
 class MatchListScreen extends ConsumerStatefulWidget {
   const MatchListScreen({super.key});
@@ -20,6 +21,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
   String _sortBy = 'soonest';
   Set<String> _selectedTypes = const <String>{};
   DateTimeRange? _dateRange;
+  bool _syncedInitialTab = false;
 
   CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
         currencyCode: context.afriCurrencyCode,
@@ -29,7 +31,18 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_syncedInitialTab) return;
+    _syncedInitialTab = true;
+    final tab = GoRouterState.of(context).uri.queryParameters['tab'];
+    if (tab == 'mine') {
+      _tabController.index = 2;
+    }
   }
 
   @override
@@ -98,6 +111,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
           tabs: const [
             Tab(text: 'UPCOMING'),
             Tab(text: 'PAST'),
+            Tab(text: 'MINE'),
           ],
         ),
       ),
@@ -141,6 +155,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                 emptyBody:
                     'Past ticketed fixtures will appear here after matchday sales are completed.',
               ),
+              const MyTicketsScreen(embedded: true),
             ],
           );
         },

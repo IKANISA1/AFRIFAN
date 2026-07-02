@@ -102,7 +102,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                 ),
                 const SizedBox(height: SpacingTokens.spacing4),
                 AfriButton(
-                  label: 'LOCK $_stakeFet FET',
+                  label: 'CONFIRM $_stakeFet pts',
                   icon: AfriIcons.checkGroup,
                   onTap: () => context.pop(true),
                 ),
@@ -137,7 +137,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
     if (!result.isSuccess || result.challenge == null) {
       AfriToast.error(
         context,
-        'Could not create the challenge. Check your FET balance.',
+        'Could not create the challenge. Check your points balance.',
       );
       return;
     }
@@ -232,7 +232,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                     ),
                     const SizedBox(height: SpacingTokens.sectionGap),
                     Text(
-                      'Stake',
+                      'Entry points',
                       style: TypographyTokens.labelSmall(
                         ColorTokens.onSurfaceVariant,
                       ),
@@ -241,11 +241,12 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                     Wrap(
                       spacing: SpacingTokens.spacing2,
                       runSpacing: SpacingTokens.spacing2,
-                      children: _stakeOptions.map((stake) {
+                      children: _stakeOptions.map((amount) {
                         return AfriChoiceChip(
-                          selected: _stakeFet == stake,
-                          label: Text('$stake FET'),
-                          onSelected: (_) => setState(() => _stakeFet = stake),
+                          selected: _stakeFet == amount,
+                          label: Text('$amount pts'),
+                          onSelected: (_) =>
+                              setState(() => _stakeFet = amount),
                         );
                       }).toList(),
                     ),
@@ -261,7 +262,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                     const SizedBox(height: SpacingTokens.spacing4),
                     if (!hasBalance)
                       Text(
-                        'Your current FET balance does not cover this stake.',
+                        'Your current points balance does not cover this entry.',
                         style: TypographyTokens.labelSmall(ColorTokens.error),
                       ),
                     const SizedBox(height: SpacingTokens.spacing4),
@@ -332,7 +333,7 @@ class _SummaryCard extends StatelessWidget {
               label: 'Your pick',
               accent: ColorTokens.clubAccent,
             ),
-            _MetaChip(label: 'Balance $balance FET'),
+            _MetaChip(label: 'Balance $balance pts'),
             const _MetaChip(label: 'Locks at kickoff'),
           ],
         ),

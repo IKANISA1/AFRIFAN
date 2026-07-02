@@ -122,23 +122,23 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadDesignFonts);
 
-  testWidgets('renders wallet balance and recent activity', (tester) async {
+  testWidgets('renders points balance and recent activity', (tester) async {
     final repository = _FakeFetRepository();
     await _pumpApp(tester, repository: repository);
 
     expect(find.textContaining('1,250'), findsOneWidget);
 
-    await _scrollTo(tester, find.text('Partner rewards'));
+    await _scrollTo(tester, find.text('Earn'));
 
-    expect(find.text('Partner rewards'), findsOneWidget);
+    expect(find.text('Earn'), findsOneWidget);
     expect(
-      find.text('Earn FET from partner initiatives and promotions.'),
+      find.text('Earn points from partner initiatives and promotions.'),
       findsOneWidget,
     );
 
-    await _scrollTo(tester, find.text('Partner FET earned'));
+    await _scrollTo(tester, find.text('Partner points earned'));
 
-    expect(find.text('Partner FET earned'), findsOneWidget);
+    expect(find.text('Partner points earned'), findsOneWidget);
     expect(find.text('Partner pool entry'), findsOneWidget);
     expect(find.text('Partner pool payout'), findsOneWidget);
   });
@@ -159,7 +159,7 @@ void main() {
       find.byKey(const ValueKey<String>('wallet-transfer-submit')),
       findsNothing,
     );
-    expect(find.text('Send FET'), findsNothing);
+    expect(find.text('Send points'), findsNothing);
   });
 
   testWidgets('does not expose manual redemption controls', (tester) async {
@@ -174,6 +174,6 @@ void main() {
       find.byKey(const ValueKey<String>('wallet-redeem-submit')),
       findsNothing,
     );
-    expect(find.text('Redeem FET'), findsNothing);
+    expect(find.text('Redeem points'), findsNothing);
   });
 }

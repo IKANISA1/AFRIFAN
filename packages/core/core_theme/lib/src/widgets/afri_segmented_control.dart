@@ -46,85 +46,117 @@ class AfriSegmentedControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final children = items
+        .asMap()
+        .entries
+        .map((entry) {
+          final index = entry.key;
+          final item = entry.value;
+          final isSelected = index == selectedIndex;
+          return _buildSegment(
+            item: item,
+            index: index,
+            isSelected: isSelected,
+          );
+        })
+        .toList(growable: false);
+
+    final segmentedContent = items.length > 4
+        ? SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            child: Row(
+              children: children
+                  .map(
+                    (child) => Padding(
+                      padding: const EdgeInsets.only(right: 3),
+                      child: SizedBox(width: 116, child: child),
+                    ),
+                  )
+                  .toList(growable: false),
+            ),
+          )
+        : Row(
+            children: children.map((child) => Expanded(child: child)).toList(),
+          );
+
     return Container(
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(14),
       ),
-      child: Row(
-        children: items.asMap().entries.map((entry) {
-          final index = entry.key;
-          final item = entry.value;
-          final isSelected = index == selectedIndex;
+      child: segmentedContent,
+    );
+  }
 
-          return Expanded(
-            child: GestureDetector(
-              onTap: () {
-                if (!isSelected) {
-                  unawaited(HapticFeedback.selectionClick());
-                  onChanged(index);
-                }
-              },
-              behavior: HitTestBehavior.opaque,
-              child: Semantics(
-                button: true,
-                selected: isSelected,
-                label: item.label,
-                child: AnimatedContainer(
-                  duration: AfriMotion.quick,
-                  curve: AfriMotion.enterCurve,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: SpacingTokens.spacing3,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? ColorTokens.surfaceContainerLowest
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(11),
-                    boxShadow: isSelected
-                        ? [
-                            BoxShadow(
-                              color: ColorTokens.ambientShadow.withValues(
-                                alpha: 0.12,
-                              ),
-                              blurRadius: 8,
-                              spreadRadius: -4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ]
-                        : null,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (item.icon != null) ...[
-                        Icon(
-                          item.icon,
-                          size: 14,
-                          color: isSelected
-                              ? ColorTokens.primaryContainer
-                              : ColorTokens.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: SpacingTokens.spacing1),
-                      ],
-                      Text(
-                        item.label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TypographyTokens.labelMedium(
-                          isSelected
-                              ? ColorTokens.onSurface
-                              : ColorTokens.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
+  Widget _buildSegment({
+    required AfriSegment item,
+    required int index,
+    required bool isSelected,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        if (!isSelected) {
+          unawaited(HapticFeedback.selectionClick());
+          onChanged(index);
+        }
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Semantics(
+        button: true,
+        selected: isSelected,
+        label: item.label,
+        child: AnimatedContainer(
+          duration: AfriMotion.quick,
+          curve: AfriMotion.enterCurve,
+          padding: const EdgeInsets.symmetric(
+            horizontal: SpacingTokens.spacing2,
+            vertical: SpacingTokens.spacing3,
+          ),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? ColorTokens.surfaceContainerLowest
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(11),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: ColorTokens.ambientShadow.withValues(alpha: 0.12),
+                      blurRadius: 8,
+                      spreadRadius: -4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (item.icon != null) ...[
+                Icon(
+                  item.icon,
+                  size: 14,
+                  color: isSelected
+                      ? ColorTokens.primaryContainer
+                      : ColorTokens.onSurfaceVariant,
+                ),
+                const SizedBox(width: SpacingTokens.spacing1),
+              ],
+              Text(
+                item.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TypographyTokens.labelMedium(
+                  isSelected
+                      ? ColorTokens.onSurface
+                      : ColorTokens.onSurfaceVariant,
                 ),
               ),
-            ),
-          );
-        }).toList(),
+            ],
+          ),
+        ),
       ),
     );
   }

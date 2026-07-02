@@ -54,12 +54,12 @@ void main() {
 
       expect(find.text('Transfer received'), findsOneWidget);
       expect(find.text('Away-day refund'), findsOneWidget);
-      expect(find.text('+300 FET'), findsOneWidget);
-      expect(find.text('Bal 1250'), findsOneWidget);
+      expect(find.text('+300 pts'), findsOneWidget);
+      expect(find.text('Bal 1250 pts'), findsOneWidget);
       expect(
         find.bySemanticsLabel(
-          'Credit transaction, Transfer received, Away-day refund, 300 FET, '
-          'balance 1250, Unknown time',
+          'Credit transaction, Transfer received, Away-day refund, 300 points, '
+          'balance 1250 points, Unknown time',
         ),
         findsOneWidget,
       );

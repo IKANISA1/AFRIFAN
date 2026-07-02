@@ -4,12 +4,14 @@ Updated: 2026-06-28
 
 This inventory is the governance baseline for the Rayon Sports Flutter mobile
 app. It is source-backed from the current feature modules, router,
-`docs/design.md`, `docs/blueprint.md`, `RULES.md`, and the active
-Revolut-borrowed cleanup report.
+`docs/design.md`, `docs/blueprint.md`, `RULES.md`, `docs/design/DESIGN_SYSTEM.md`,
+and the active MOBI/Revolut alignment matrix.
 
-Active cleanup report:
+Active design contract:
 
-- `docs/revolut_borrowed_repo_cleanup_goal_2026-06-28.md`
+- `DESIGN.md`
+- `docs/design/DESIGN_SYSTEM.md`
+- `docs/design/MOBI_REVOLUT_100_PERCENT_ALIGNMENT_MATRIX.md`
 
 Source route contracts:
 
@@ -101,16 +103,16 @@ Source route contracts:
 | Screen | Route | Module | Auth | States To Verify | Accessibility And Responsive Notes |
 | --- | --- | --- | --- | --- | --- |
 | Membership | `/membership` | `MembershipModule` | Authenticated fan | loading, data, no tier, error | Verify tier cards, progress indicators, contribution CTA, 200 percent text. |
-| Fan Registry | `/membership/fans` | `MembershipModule` | Authenticated fan | loading, data, empty, error | Verify list semantics, masked identities, search/filter controls. |
+| Fan Registry Redirect | `/membership/fans` | `MembershipModule` | Authenticated fan | redirect | Redirects to `/fanzone?section=supporters`; registry content belongs in Fan Zone Supporters. |
 | Tier Detail | `/membership/tier/:tierId` | `MembershipModule` | Authenticated fan | loading, data, unknown tier, error | Verify benefits, CTA state, back navigation, tablet width. |
 
 ## Contributions
 
 | Screen | Route | Module | Auth | States To Verify | Accessibility And Responsive Notes |
 | --- | --- | --- | --- | --- | --- |
-| Contributions Hub | `/contribute` | `ContributionsModule` | Authenticated fan | loading, data, empty, error | Verify no empty initiative cards, SMS sync controls, MOMO privacy. |
-| Club Projects | `/contribute/projects` | `ContributionsModule` | Authenticated fan | loading, data, empty, error | Hide empty project categories. Verify contribution CTA semantics. |
-| Groups | `/contribute/groups` | `ContributionsModule` | Authenticated fan | loading, data, empty, error | Existing empty-state test exists; verify it matches `RULES.md` section 2.3. |
+| Contributions Hub Redirect | `/contribute` | `ContributionsModule` | Authenticated fan | redirect | Redirects to `/fanzone?section=supporters`; support actions should open as compact Fan Zone surfaces. |
+| Club Projects Redirect | `/contribute/projects` | `ContributionsModule` | Authenticated fan | redirect | Redirects to `/fanzone?section=supporters`; project selection belongs inside Supporters. |
+| Groups Redirect | `/contribute/groups` | `ContributionsModule` | Authenticated fan | redirect | Redirects to `/fanzone?section=supporters`; group discovery belongs inside Supporters. |
 | Group Detail | `/contribute/group/:groupId` | `ContributionsModule` | Authenticated fan | loading, data, not found, error | Verify member/contribution lists, MOMO sheet, masked personal data. |
 | Group Statement | `/contribute/group/:groupId/statement` | `ContributionsModule` | Authenticated fan | loading, date range, export, error | Verify date fields, export format controls, focus traversal. |
 
@@ -126,7 +128,7 @@ Source route contracts:
 
 | Screen | Route | Module | Auth | States To Verify | Accessibility And Responsive Notes |
 | --- | --- | --- | --- | --- | --- |
-| Fan Clubs | `/fan-clubs` | `FanClubsModule` | Authenticated fan | loading, featured, list, empty, error | Hide featured section when no featured clubs exist. Verify list/card semantics. |
+| Fan Clubs Redirect | `/fan-clubs` | `FanClubsModule` | Authenticated fan | redirect | Redirects to `/fanzone?section=supporters`; club discovery belongs inside Supporters. |
 | Fan Club Detail | `/fan-clubs/:clubId` | `FanClubsModule` | Authenticated fan | loading, data, not found, error | Verify join/leave CTA, member count, privacy, large text. |
 
 ## Live
@@ -144,28 +146,28 @@ All routes in this section are nested under `/fanzone` and owned by
 
 | Screen | Route | Auth | States To Verify | Accessibility And Responsive Notes |
 | --- | --- | --- | --- | --- |
-| Fixtures Browser | `/fanzone/fixtures` | Authenticated fan | loading, fixtures, empty, error | Verify filter chips, fixture cards, no empty section cards. |
-| Live Fixtures | `/fanzone/live` | Authenticated fan | loading, live fixtures, empty, error | Verify live status is not color-only. |
+| Fixtures Redirect | `/fanzone/fixtures` | Authenticated fan | redirect | Redirects to `/fanzone?section=league`; fixture browsing belongs inside the League section. |
+| Live Fixtures Redirect | `/fanzone/live` | Authenticated fan | redirect | Redirects to `/fanzone?section=league`; live fixtures are a League filter. |
 | My Predictions | `/fanzone/my` | Authenticated fan | loading, predictions, empty, error | Verify provider/state ownership and empty behavior remain consistent. |
 | Prediction Detail | `/fanzone/my/:predictionId` | Authenticated fan | loading, data, not found, error | Verify market/outcome semantics and back path. |
-| Prediction Settlement | `/fanzone/my/:predictionId/settlement` | Authenticated fan | loading, settled, pending, error | Verify result status is not color-only. |
+| Prediction Settlement Redirect | `/fanzone/my/:predictionId/settlement` | Authenticated fan | redirect | Redirects to prediction detail; settlement is a state inside detail. |
 | Match Detail | `/fanzone/match/:fixtureId` | Authenticated fan | loading, data, not found, error | Verify tabs, stats, H2H, lineups, responsive tables. |
 | FET Wallet | `/fanzone/wallet` | Authenticated fan | loading, balance, partner rewards, ledger activity, empty, error | Verify privacy, partner-led ledger copy, and no public transfer/manual redemption controls. |
-| Offers | `/fanzone/offers` | Authenticated fan | loading, offers, empty, error | Hide empty offer sections. Verify deep-link CTA states. |
-| Rewards Store | `/fanzone/rewards` | Authenticated fan | loading, rewards, empty, error | Verify item grid, redemption controls, unavailable state. |
-| Token History | `/fanzone/history` | Authenticated fan | loading, history, empty, error | Verify list semantics and filter controls. |
-| Leaderboard | `/fanzone/leaderboard` | Authenticated fan | loading, ranked users, fewer than 3, error | Hide top supporters if fewer than 3 ranked users exist. Verify semantic rank icons. |
-| Notifications | `/fanzone/notifications` | Authenticated fan | loading, notifications, empty, error | Verify notification toggles and read/unread semantics. |
-| Badges | `/fanzone/badges` | Authenticated fan | loading, badges, empty, error | Verify responsive layout and empty behavior. |
-| Streak | `/fanzone/streak` | Authenticated fan | loading, calendar, empty, error | Verify calendar semantics and small-screen scrolling. |
+| Offers Redirect | `/fanzone/offers` | Authenticated fan | redirect | Redirects to `/fanzone?section=rewards`; offers belong in Rewards. |
+| Rewards Redirect | `/fanzone/rewards` | Authenticated fan | redirect | Redirects to `/fanzone?section=rewards`; rewards are a hub section. |
+| Token History Redirect | `/fanzone/history` | Authenticated fan | redirect | Redirects to `/fanzone?section=wallet`; history belongs in Wallet. |
+| Leaderboard Redirect | `/fanzone/leaderboard` | Authenticated fan | redirect | Redirects to `/fanzone?section=league`; ranking belongs beside match context. |
+| Notifications Redirect | `/fanzone/notifications` | Authenticated fan | redirect | Redirects to `/fanzone?section=predictions`; alerts are contextual. |
+| Badges Redirect | `/fanzone/badges` | Authenticated fan | redirect | Redirects to `/fanzone?section=rewards`; achievements live in Rewards. |
+| Streak Redirect | `/fanzone/streak` | Authenticated fan | redirect | Redirects to `/fanzone?section=rewards`; streak lives in Rewards. |
 | Share Card | `/fanzone/share` | Authenticated fan | data, generation, error | Verify no generated/embedded image asset is added without owner approval. |
-| League Hub | `/fanzone/league` | Authenticated fan | loading, data, empty, error | Verify competition tabs and standings previews. |
-| League Hub Detail | `/fanzone/league/:competitionSlug` | Authenticated fan | loading, data, not found, error | Verify slug not found handling. |
-| League Standings | `/fanzone/standings/:competitionSlug` | Authenticated fan | loading, table, empty, error | Verify table readability on narrow screens. |
-| Team Profile | `/fanzone/team/:teamSlug` | Authenticated fan | loading, data, not found, error | Verify tier icons stay semantic and responsive at large text. |
-| Club Zone | `/fanzone/club-zone` | Authenticated fan | loading, data, empty, error | Verify club-specific data remains config/provider-driven. |
-| Fan ID | `/fanzone/fan-id` | Authenticated fan | loading, data, missing profile, error | Verify identity privacy; never display `auth.uid()`. |
-| Social Hub | `/fanzone/social` | Authenticated fan | loading, data, empty, error | Verify moderation and privacy states. |
+| League Hub Redirect | `/fanzone/league` | Authenticated fan | redirect | Redirects to `/fanzone?section=league`; league content is a hub section. |
+| League Hub Detail Redirect | `/fanzone/league/:competitionSlug` | Authenticated fan | redirect | Redirects to `/fanzone?section=league`; competition depth is folded into League. |
+| League Standings Redirect | `/fanzone/standings/:competitionSlug` | Authenticated fan | redirect | Redirects to `/fanzone?section=league`; standings are League content. |
+| Team Profile Redirect | `/fanzone/team/:teamSlug` | Authenticated fan | redirect | Redirects to `/fanzone?section=league`; team profile is contextual. |
+| Club Zone Redirect | `/fanzone/club-zone` | Authenticated fan | redirect | Redirects to `/fanzone?section=supporters`; club community belongs in Supporters. |
+| Fan ID Redirect | `/fanzone/fan-id` | Authenticated fan | redirect | Redirects to `/fanzone?section=supporters`; Fan ID opens as a compact Supporters action. |
+| Social Hub Redirect | `/fanzone/social` | Authenticated fan | redirect | Redirects to `/fanzone?section=supporters`; social content belongs in Supporters. |
 | Fan Zone Privacy | `/fanzone/privacy` | Authenticated fan | data, saved, error | Verify toggles, confirmations, screen-reader labels. |
 
 ## Challenge Standalone Routes
@@ -227,7 +229,7 @@ Apply these checks to every screen before release-candidate signoff:
 
 ## Open Phase 0 Items
 
-- Resolve the `RULES.md` bottom-nav wording conflict with current router source.
+- Resolve any remaining `RULES.md` wording drift with current router source.
 - Triage the dirty worktree and identify which protected-file changes are owner
   approved, remediation-owned, unrelated user work, or revert candidates.
 - Keep app shell navigation tests aligned with the current three-tab source

@@ -1,6 +1,6 @@
 # Rayon Mobile Visual Evidence Manifest
 
-Date: 2026-07-01
+Date: 2026-07-02
 
 This manifest binds the supporter launch routes in `docs/screen_inventory.md`
 to the current visual evidence set used by the Mobi-borrowing implementation
@@ -8,7 +8,7 @@ goal.
 
 Evidence source:
 
-- `output/product_design_screen_report/20260701T051146Z/screenshots_53_device_actual`
+- `output/product_design_screen_report/20260702T141428Z/screenshots_53_device_actual`
 - feature golden folders under `packages/features/*/test/goldens`
 
 Admin/internal routes are excluded from supporter launch route coverage and

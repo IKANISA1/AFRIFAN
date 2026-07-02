@@ -69,7 +69,7 @@ export async function getAdminFetWalletSnapshot(
     });
   }
 
-  const clubId = requireAdminClubId(access, "load wallet operations");
+  const clubId = requireAdminClubId(access, "load points operations");
   const search = safeString(options.search) || null;
   const userId = safeString(options.userId) || null;
 
@@ -130,7 +130,7 @@ export async function adjustAdminFetWalletBalance(
     );
   }
 
-  const clubId = requireAdminClubId(access, "adjust wallet balances");
+  const clubId = requireAdminClubId(access, "adjust points balances");
   const { error } = await client.rpc("fet_admin_adjust_balance", {
     p_user_id: input.userId,
     p_amount: Math.trunc(input.amount),

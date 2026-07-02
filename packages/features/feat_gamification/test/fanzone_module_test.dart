@@ -17,30 +17,48 @@ void main() {
       expect(module.tabRoute.label, 'Fan Zone');
     });
 
-    test('secondary routes use sheet or pushed route pages', () {
+    test('secondary routes use redirects except true detail/action sheets', () {
       final routeMap = _routeMap(module.routes);
 
       for (final path in const <String>[
-        'fixtures',
         'my',
         'my/:predictionId',
-        'my/:predictionId/settlement',
         'match/:fixtureId',
-        'offers',
-        'rewards',
-        'leaderboard',
-        'league/:competitionSlug',
-        'standings/:competitionSlug',
-        'team/:teamSlug',
+        'share',
       ]) {
         final route = routeMap[path];
         expect(route, isNotNull, reason: path);
         expect(route!.pageBuilder, isNotNull, reason: path);
         expect(route.builder, isNull, reason: path);
       }
+
+      for (final path in const <String>[
+        'fixtures',
+        'offers',
+        'rewards',
+        'history',
+        'my/:predictionId/settlement',
+        'leaderboard',
+        'notifications',
+        'badges',
+        'streak',
+        'league',
+        'league/:competitionSlug',
+        'standings/:competitionSlug',
+        'team/:teamSlug',
+        'club-zone',
+        'fan-id',
+        'social',
+      ]) {
+        final route = routeMap[path];
+        expect(route, isNotNull, reason: path);
+        expect(route!.redirect, isNotNull, reason: path);
+        expect(route.builder, isNull, reason: path);
+        expect(route.pageBuilder, isNull, reason: path);
+      }
     });
 
-    test('only wallet remains a full fanzone sub-screen builder', () {
+    test('wallet route remains the only full fanzone sub-screen builder', () {
       final routeMap = _routeMap(module.routes);
 
       final walletRoute = routeMap['wallet'];
@@ -53,6 +71,21 @@ void main() {
       expect(liveRoute!.redirect, isNotNull);
     });
 
+    test('legacy fanzone entrypoints target consolidated hub sections', () {
+      final decisions = {
+        for (final decision in module.routePresentationDecisions)
+          decision.path: decision.targetPath,
+      };
+
+      expect(decisions['/fanzone/live'], '/fanzone?section=league');
+      expect(decisions['/fanzone/offers'], '/fanzone?section=rewards');
+      expect(decisions['/fanzone/history'], '/fanzone?section=wallet');
+      expect(decisions['/fanzone/my'], '/fanzone?section=predictions');
+      expect(decisions['/fanzone/club-zone'], '/fanzone?section=supporters');
+      expect(decisions['/fanzone/fan-id'], '/fanzone?section=supporters');
+      expect(decisions['/fanzone/social'], '/fanzone?section=supporters');
+    });
+
     test(
       'declares route presentation decisions for the minimal app policy',
       () {
@@ -62,11 +95,23 @@ void main() {
         };
 
         expect(decisions['/fanzone'], RoutePresentation.fullScreen);
+        expect(decisions['/fanzone/fixtures'], RoutePresentation.redirect);
+        expect(decisions['/fanzone/live'], RoutePresentation.redirect);
+        expect(decisions['/fanzone/game'], RoutePresentation.fullHeightSheet);
         expect(
-          decisions['/fanzone/fixtures'],
+          decisions['/fanzone/game/:sessionId'],
           RoutePresentation.fullHeightSheet,
         );
-        expect(decisions['/fanzone/live'], RoutePresentation.redirect);
+        expect(decisions['/fanzone/offers'], RoutePresentation.redirect);
+        expect(decisions['/fanzone/rewards'], RoutePresentation.redirect);
+        expect(decisions['/fanzone/history'], RoutePresentation.redirect);
+        expect(
+          decisions['/fanzone/my/:predictionId/settlement'],
+          RoutePresentation.redirect,
+        );
+        expect(decisions['/fanzone/league'], RoutePresentation.redirect);
+        expect(decisions['/fanzone/club-zone'], RoutePresentation.redirect);
+        expect(decisions['/fanzone/fan-id'], RoutePresentation.redirect);
         expect(decisions['/fanzone/privacy'], RoutePresentation.redirect);
       },
     );

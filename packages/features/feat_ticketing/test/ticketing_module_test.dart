@@ -74,7 +74,8 @@ void main() {
 
       expect(ticketsRoute.builder, isNotNull);
       expect(ticketsRoute.pageBuilder, isNull);
-      expect(myTicketsRoute.pageBuilder, isNotNull);
+      expect(myTicketsRoute.redirect, isNotNull);
+      expect(myTicketsRoute.pageBuilder, isNull);
       expect(myTicketsRoute.builder, isNull);
     });
 
@@ -90,7 +91,7 @@ void main() {
         decisions['/tickets/detail/:id'],
         RoutePresentation.fullHeightSheet,
       );
-      expect(decisions['/my-tickets'], RoutePresentation.fullHeightSheet);
+      expect(decisions['/my-tickets'], RoutePresentation.redirect);
       expect(decisions['/e-ticket/:id'], RoutePresentation.fullScreen);
     });
 

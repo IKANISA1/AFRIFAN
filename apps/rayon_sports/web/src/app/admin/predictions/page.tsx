@@ -405,11 +405,11 @@ export default function AdminPredictionsPage() {
                               {pool.partnerName} · {fixture ? `${fixture.homeTeamShortName || fixture.homeTeamName} vs ${fixture.awayTeamShortName || fixture.awayTeamName}` : pool.fixtureId}
                             </p>
                             <p className="mt-2 text-xs text-slate-500">
-                              Partner {pool.partnerStakeFet.toLocaleString()} FET · Fan entry {pool.fanEntryFet.toLocaleString()} FET · {pool.totalEntries} entries · {pool.eligibilityMode.replaceAll("_", " ")}
+                              Partner {pool.partnerStakeFet.toLocaleString()} pts · Fan entry {pool.fanEntryFet.toLocaleString()} pts · {pool.totalEntries} entries · {pool.eligibilityMode.replaceAll("_", " ")}
                             </p>
                             {pool.settlement ? (
                               <p className="mt-2 text-xs text-slate-400">
-                                Settlement: {pool.settlement.settlementMode.replaceAll("_", " ")} · paid {pool.settlement.totalPaidFet.toLocaleString()} FET · ineligible winners {pool.settlement.ineligibleWinners}
+                                Result review: {pool.settlement.settlementMode.replaceAll("_", " ")} · credited {pool.settlement.totalPaidFet.toLocaleString()} pts · ineligible winners {pool.settlement.ineligibleWinners}
                               </p>
                             ) : null}
                           </div>
@@ -439,7 +439,7 @@ export default function AdminPredictionsPage() {
                     <div key={market.id} className={cn("flex items-center gap-4 rounded-[22px] border border-border-soft p-4 transition", market.isActive ? "bg-white/5" : "bg-white/[0.02] opacity-60")}>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-white truncate">{market.name}</p>
-                        <p className="text-xs text-slate-400 mt-0.5">{market.marketCategory} · {market.difficultyTier} · {market.defaultFetValue} FET</p>
+                        <p className="text-xs text-slate-400 mt-0.5">{market.marketCategory} · {market.difficultyTier} · {market.defaultFetValue} pts</p>
                         {market.leagueAvailability.length > 0 && (
                           <div className="mt-2 flex flex-wrap gap-1">
                             {market.leagueAvailability.map((league) => (

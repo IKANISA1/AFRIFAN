@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
@@ -211,7 +209,7 @@ class HomeScreen extends ConsumerWidget {
                 child: Expanded(
                   child: AfriButton(
                     label: 'Support',
-                    onTap: () => unawaited(context.push('/contribute')),
+                    onTap: () => context.go('/fanzone?section=supporters'),
                     variant: AfriButtonVariant.primary,
                   ),
                 ),
@@ -222,7 +220,7 @@ class HomeScreen extends ConsumerWidget {
                 child: Expanded(
                   child: AfriButton(
                     label: 'Live',
-                    onTap: () => unawaited(context.push('/live')),
+                    onTap: () => context.push('/fanzone/match/live'),
                     variant: AfriButtonVariant.secondary,
                   ),
                 ),
@@ -251,9 +249,8 @@ class HomeScreen extends ConsumerWidget {
           child: StatsRow(
             globalFet: snapshot.userFet,
             fanRank: snapshot.fanRank,
-            onFetTap: () => context.push('/fanzone/leaderboard?tab=fet'),
-            onRankTap: () =>
-                context.push('/fanzone/leaderboard?tab=supporters'),
+            onFetTap: () => context.go('/fanzone?section=wallet'),
+            onRankTap: () => context.go('/fanzone?section=league'),
           ),
         );
         break;
@@ -449,7 +446,7 @@ class _HomeTopChrome extends StatelessWidget {
             AfriTopCommandAction(
               icon: AfriIcons.wallet,
               label: 'Wallet',
-              onTap: () => context.push('/fanzone/wallet'),
+              onTap: () => context.go('/fanzone?section=wallet'),
             ),
           ],
         ),

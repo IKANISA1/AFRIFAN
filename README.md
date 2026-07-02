@@ -61,7 +61,8 @@ supabase/
 - No unscoped club queries on app data.
 - No fan web portal surface.
 - No frontend hardcoding that assumes Rayon outside reference defaults.
-- UI changes should preserve the current visual system unless explicitly approved.
+- UI changes must follow the MOBI/Revolut-aligned mobile design contract unless
+  the owner explicitly approves a different direction.
 
 ## Common Commands
 
@@ -76,6 +77,9 @@ cd apps/rayon_sports/web && npm run test
 ## Key Docs
 
 - [docs/blueprint.md](/Volumes/PRO-G40/AFRICLUB/docs/blueprint.md)
+- [DESIGN.md](/Volumes/PRO-G40/AFRICLUB/DESIGN.md)
+- [docs/design/DESIGN_SYSTEM.md](/Volumes/PRO-G40/AFRICLUB/docs/design/DESIGN_SYSTEM.md)
+- [docs/design/MOBI_REVOLUT_100_PERCENT_ALIGNMENT_MATRIX.md](/Volumes/PRO-G40/AFRICLUB/docs/design/MOBI_REVOLUT_100_PERCENT_ALIGNMENT_MATRIX.md)
 - [apps/rayon_sports/web/README.md](/Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/web/README.md)
 - [1supabase.md](/Volumes/PRO-G40/AFRICLUB/1supabase.md)
 

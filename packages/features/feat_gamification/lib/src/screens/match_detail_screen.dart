@@ -457,7 +457,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
               if (!mounted) return;
               AfriToast.success(
                 context,
-                '${selectedOutcome.label} joined for ${pool.fanEntryFet} FET.',
+                '${selectedOutcome.label} joined.',
               );
             }
 
@@ -468,8 +468,8 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                 Text(pool.title, style: TypographyTokens.sectionTitle()),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  '${pool.partnerName} funds ${pool.partnerStakeFet} FET. '
-                  'Your fixed entry is ${pool.fanEntryFet} FET.',
+                  '${pool.partnerName} sponsors this matchday round. '
+                  'Pick once before the round locks.',
                   style: TypographyTokens.bodyMedium(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
@@ -493,7 +493,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen>
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 AfriButton(
-                  label: 'Stake ${pool.fanEntryFet} FET',
+                  label: 'Join round',
                   icon: AfriIcons.predict,
                   isLoading: isSubmitting,
                   onTap: submit,

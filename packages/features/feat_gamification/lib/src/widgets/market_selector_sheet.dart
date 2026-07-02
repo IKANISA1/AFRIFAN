@@ -60,17 +60,12 @@ class _MarketSelectorContentState
 
   /// Preferred display order — categories appearing here will be placed first.
   static const _preferredOrder = <String>[
-    'Match Prediction',
-    'Match Betting',
-    'Goals Prediction',
-    'Goals Betting',
+    'Match Picks',
+    'Goal Picks',
     'Goalscorer Markets',
-    'Handicap Prediction',
-    'Handicap Betting',
-    'Corners Prediction',
-    'Corners Betting',
-    'Cards Prediction',
-    'Cards Betting',
+    'Handicap Picks',
+    'Corner Picks',
+    'Card Picks',
     'Player Props',
     'Match Props',
     'Match Events',
@@ -113,12 +108,23 @@ class _MarketSelectorContentState
   /// Short label for chip display.
   String _chipLabel(String category) {
     // Shorten common suffixes for chip UI
-    return category
+    return _displayCategoryLabel(category)
         .replaceAll(' Prediction', '')
-        .replaceAll(' Betting', '')
+        .replaceAll(' Picks', '')
         .replaceAll(' Markets', '')
         .replaceAll('In-Play/Live', 'LIVE')
         .toUpperCase();
+  }
+
+  String _displayCategoryLabel(String category) {
+    return category
+        .replaceAll('Match Prediction', 'Match Picks')
+        .replaceAll('Goals Prediction', 'Goal Picks')
+        .replaceAll('Handicap Prediction', 'Handicap Picks')
+        .replaceAll('Corners Prediction', 'Corner Picks')
+        .replaceAll('Cards Prediction', 'Card Picks')
+        .replaceAll('Prediction', 'Pick')
+        .replaceAll('Markets', 'Pick Types');
   }
 
   @override
@@ -175,7 +181,7 @@ class _MarketSelectorContentState
                 ),
               ),
               Text(
-                '${allMarkets.length} markets',
+                '${allMarkets.length} pick types',
                 style: TypographyTokens.labelSmall(
                   ColorTokens.onSurfaceVariant,
                 ),
@@ -191,7 +197,7 @@ class _MarketSelectorContentState
           child: AfriInputField(
             controller: _searchController,
             onChanged: (value) => setState(() => _query = value),
-            hint: 'Search markets',
+            hint: 'Search pick types',
             prefixIcon: AfriIcons.search,
           ),
         ),
@@ -298,14 +304,14 @@ class _MarketSelectorContentState
                 const SizedBox(width: SpacingTokens.spacing2),
                 Expanded(
                   child: Text(
-                    _activeCategory!,
+                    _displayCategoryLabel(_activeCategory!),
                     style: TypographyTokens.metricLabel(
                       ColorTokens.onSurfaceVariant,
                     ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.0),
                   ),
                 ),
                 Text(
-                  '${markets.length} ${markets.length == 1 ? 'market' : 'markets'}',
+                  '${markets.length} ${markets.length == 1 ? 'pick type' : 'pick types'}',
                   style: TypographyTokens.bodySmall(
                     ColorTokens.onSurfaceVariant,
                   ),
@@ -359,8 +365,8 @@ class _MarketSelectorContentState
           ),
           child: AfriButton(
             label: slip.items.isEmpty
-                ? 'Add predictions to unlock slip'
-                : 'Open Slip · ${slip.items.length} picks · ${slip.totalPotential} FET',
+                ? 'Add picks to unlock round'
+                : 'Open Round · ${slip.items.length} picks · ${slip.totalPotential} pts',
             icon: AfriIcons.myPicks,
             enabled: slip.items.isNotEmpty,
             onTap: () => context.pop(),
@@ -426,7 +432,7 @@ class _SheetMarketCard extends ConsumerWidget {
                       ),
                     ),
                     child: Text(
-                      '+${market.fetValue} FET',
+                      '+${market.fetValue} pts',
                       style: TypographyTokens.labelSmall(
                         ColorTokens.clubAccent,
                       ),
@@ -462,11 +468,8 @@ class _SheetMarketCard extends ConsumerWidget {
               children: market.outcomes
                   .map((outcome) {
                     final isSelected = selected?.outcomeKey == outcome.key;
-                    // Show odds only if meaningful (> 1.0 means multiplier is set)
-                    final showOdds = outcome.odds > 1.0;
                     return MarketOptionPill(
                       label: outcome.label,
-                      odds: showOdds ? outcome.odds : null,
                       isSelected: isSelected,
                       trailing: isSelected
                           ? Icon(
@@ -488,7 +491,7 @@ class _SheetMarketCard extends ConsumerWidget {
                             );
                         AfriToast.success(
                           context,
-                          '${outcome.label} added to your slip.',
+                          '${outcome.label} added to your round.',
                         );
                       },
                     );

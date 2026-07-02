@@ -141,13 +141,6 @@ class AppRouter {
   }
 
   String _resolveInitialLocation() {
-    final standaloneRoutes = _buildStandaloneRoutes();
-    for (final route in standaloneRoutes) {
-      if (route is GoRoute && route.path == '/splash') {
-        return route.path;
-      }
-    }
-
     final tabModules =
         modules
             .where(
@@ -169,8 +162,11 @@ class AppRouter {
       }
     }
 
+    final standaloneRoutes = _buildStandaloneRoutes();
     for (final route in standaloneRoutes) {
-      if (route is GoRoute && route.path.startsWith('/')) {
+      if (route is GoRoute &&
+          route.path.startsWith('/') &&
+          route.path != '/splash') {
         return route.path;
       }
     }

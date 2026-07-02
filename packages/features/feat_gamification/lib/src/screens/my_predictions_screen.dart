@@ -67,7 +67,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
       );
       if (!mounted) return;
       setState(() {
-        _error = 'Could not load your predictions right now.';
+        _error = 'Could not load your activity right now.';
         _isLoading = false;
       });
     }
@@ -84,7 +84,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'MY PREDICTIONS',
+          'MY ACTIVITY',
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.6,
@@ -114,7 +114,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Predictions unavailable',
+                  title: 'Activity unavailable',
                   message: _error!,
                   actionLabel: 'Retry',
                   onAction: _loadData,
@@ -171,7 +171,7 @@ class _MyPredictionsScreenState extends ConsumerState<MyPredictionsScreen>
         stackTrace,
       );
       if (!mounted) return;
-      AfriToast.error(context, 'Could not cancel this prediction.');
+      AfriToast.error(context, 'Could not cancel this pick.');
     }
   }
 }
@@ -304,11 +304,11 @@ class _PredictionCard extends StatelessWidget {
             _PredictionChip(label: prediction.selectedOutcome),
             _PredictionChip(
               label: prediction.isWon
-                  ? '+${prediction.fetEarned} FET'
-                  : '+${prediction.fetPotential} FET',
+                  ? '+${prediction.fetEarned} pts'
+                  : '+${prediction.fetPotential} pts',
             ),
             if ((prediction.slipId ?? '').isNotEmpty)
-              const _PredictionChip(label: 'Slip'),
+              const _PredictionChip(label: 'Round'),
           ],
         ),
         const SizedBox(height: SpacingTokens.spacing2),
@@ -340,8 +340,8 @@ class _PredictionCard extends StatelessWidget {
     return AfriPressFeedback(
       onTap: onTap!,
       semanticsLabel:
-          '${prediction.homeTeam} versus ${prediction.awayTeam} prediction',
-      tooltip: 'Open prediction detail',
+          '${prediction.homeTeam} versus ${prediction.awayTeam} activity',
+      tooltip: 'Open activity detail',
       excludeChildSemantics: true,
       builder: (context, state) => AnimatedScale(
         scale: state.isPressed ? 0.99 : 1,

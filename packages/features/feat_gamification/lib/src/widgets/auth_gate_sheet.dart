@@ -100,7 +100,7 @@ class AuthGateSheet extends StatelessWidget {
 
           // Message
           Text(
-            'Verify your Fan ID to predict and earn FET.',
+            'Verify your Fan ID to make picks and earn points.',
             textAlign: TextAlign.center,
             style: TypographyTokens.bodyMedium(),
           ),
@@ -110,14 +110,14 @@ class AuthGateSheet extends StatelessWidget {
           // Benefits list
           const _BenefitRow(
             icon: AfriIcons.statusSuccess,
-            title: 'Make Predictions',
-            subtitle: 'Predict matches across all leagues',
+            title: 'Make Picks',
+            subtitle: 'Pick matches across all leagues',
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           const _BenefitRow(
             icon: AfriIcons.earn,
-            title: 'Earn FET',
-            subtitle: 'Earn tokens for correct picks',
+            title: 'Earn Points',
+            subtitle: 'Earn points for correct picks',
           ),
           const SizedBox(height: SpacingTokens.spacing3),
           const _BenefitRow(

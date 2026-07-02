@@ -195,7 +195,6 @@ void main() {
           repository: repository,
         );
 
-        await _advanceOnboardingToFinalSlide(tester);
         await tester.tap(find.text('Get started'));
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 350));
@@ -205,24 +204,24 @@ void main() {
       },
     );
 
-    testWidgets('onboarding exposes the OTP entry route on the final slide', (
-      tester,
-    ) async {
-      final repository = FakeAuthRepository(restoreResult: null);
+    testWidgets(
+      'onboarding exposes the OTP entry route from the welcome screen',
+      (tester) async {
+        final repository = FakeAuthRepository(restoreResult: null);
 
-      await _pumpApp(
-        tester,
-        initialLocation: '/onboarding',
-        repository: repository,
-      );
+        await _pumpApp(
+          tester,
+          initialLocation: '/onboarding',
+          repository: repository,
+        );
 
-      await _advanceOnboardingToFinalSlide(tester);
-      await tester.tap(find.text('Continue with WhatsApp'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 350));
+        await tester.tap(find.text('Continue with WhatsApp'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 350));
 
-      expect(find.byType(SupporterPhoneAuthScreen), findsOneWidget);
-    });
+        expect(find.byType(SupporterPhoneAuthScreen), findsOneWidget);
+      },
+    );
 
     testWidgets('splash routes unauthenticated users to onboarding', (
       tester,
@@ -291,9 +290,6 @@ void main() {
     );
 
     await tester.pump();
-    await tester.tap(find.text('Next'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 350));
 
     await expectLater(
       find.byType(OnboardingScreen),
@@ -301,26 +297,7 @@ void main() {
     );
   });
 
-  testWidgets('matches the onboarding first slide layout on mobile', (
-    tester,
-  ) async {
-    _setMobileSurface(tester);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        child: MaterialApp(theme: _testTheme(), home: const OnboardingScreen()),
-      ),
-    );
-
-    await tester.pump();
-
-    await expectLater(
-      find.byType(OnboardingScreen),
-      matchesGoldenFile('goldens/onboarding_screen_first_slide.png'),
-    );
-  });
-
-  testWidgets('matches the onboarding final slide at 200 percent text', (
+  testWidgets('matches the compressed onboarding surface at 200 percent text', (
     tester,
   ) async {
     _setMobileSurface(tester);
@@ -333,7 +310,7 @@ void main() {
       ),
     );
 
-    await _advanceOnboardingToFinalSlide(tester);
+    await tester.pump();
 
     await expectLater(
       find.byType(OnboardingScreen),
@@ -353,7 +330,8 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Next'), findsOneWidget);
+    expect(find.text('Get started'), findsOneWidget);
+    expect(find.text('Continue with WhatsApp'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
@@ -362,16 +340,6 @@ Future<void> _pumpPastSplash(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 900));
   await tester.pump();
-}
-
-Future<void> _advanceOnboardingToFinalSlide(WidgetTester tester) async {
-  await tester.pump();
-  await tester.tap(find.text('Next'));
-  await tester.pump();
-  await tester.pump(const Duration(milliseconds: 350));
-  await tester.tap(find.text('Next'));
-  await tester.pump();
-  await tester.pump(const Duration(milliseconds: 350));
 }
 
 void _setMobileSurface(WidgetTester tester) {

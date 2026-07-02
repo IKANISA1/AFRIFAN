@@ -32,7 +32,7 @@ const timeFormatter = new Intl.DateTimeFormat("en", {
 });
 
 function formatFet(value: number) {
-  return `${numberFormatter.format(value)} FET`;
+  return `${numberFormatter.format(value)} pts`;
 }
 
 function ledgerHeadline(row: AdminFetWalletLedgerRow) {
@@ -42,14 +42,14 @@ function ledgerHeadline(row: AdminFetWalletLedgerRow) {
     case "transfer_out":
       return "Transfer sent";
     case "redeem":
-      return "Wallet redemption";
+      return "Points redemption";
     case "admin_adjustment":
       return row.direction === "credit" ? "Admin top-up" : "Admin deduction";
     case "opening_balance":
       return "Opening balance";
     case "earn":
     default:
-      return "FET earned";
+      return "Points earned";
   }
 }
 
@@ -150,7 +150,7 @@ export default function AdminGamificationWalletPage() {
       const message =
         caught instanceof Error
           ? caught.message
-          : "Could not load wallet operations.";
+          : "Could not load points operations.";
       setLoadError(message);
       showAdminToast(message, "error");
     } finally {
@@ -191,7 +191,7 @@ export default function AdminGamificationWalletPage() {
     const targetUserId = selectedUserId;
     const reason = adjustmentReason.trim();
     if (!targetUserId) {
-      showAdminToast("Choose a supporter wallet first.", "error");
+      showAdminToast("Choose a supporter points account first.", "error");
       return;
     }
     if (!Number.isFinite(amount) || Math.trunc(amount) === 0) {
@@ -209,8 +209,8 @@ export default function AdminGamificationWalletPage() {
         subject:
           selectedSupporter?.displayName ??
           selectedSupporter?.publicUserId ??
-          "supporter wallet",
-        detail: `This will remove ${formatFet(Math.abs(Math.trunc(amount)))} from the wallet.`,
+          "supporter points account",
+        detail: `This will remove ${formatFet(Math.abs(Math.trunc(amount)))} from the points account.`,
       })
     ) {
       return;
@@ -247,7 +247,7 @@ export default function AdminGamificationWalletPage() {
       showAdminToast(
         caught instanceof Error
           ? caught.message
-          : "Could not update the wallet balance.",
+          : "Could not update the points balance.",
         "error",
       );
     } finally {
@@ -259,12 +259,12 @@ export default function AdminGamificationWalletPage() {
     <div className="section-grid">
       <AdminPageHeader
         eyebrow="Gamification"
-        title="Supporter wallet operations"
+        title="Supporter points operations"
       />
 
       <div className="grid gap-5 md:grid-cols-4">
         <AdminStateCard
-          label="Wallet holders"
+          label="Points accounts"
           value={loading ? "..." : snapshot.overview.length.toString()}
           helper="Supporters visible in this club scope."
           icon={Wallet}
@@ -278,7 +278,7 @@ export default function AdminGamificationWalletPage() {
         <AdminStateCard
           label="Lifetime earned"
           value={loading ? "..." : formatFet(totals.earned)}
-          helper="All wallet credits recorded so far."
+          helper="All points credits recorded so far."
         />
         <AdminStateCard
           label="Lifetime spent"
@@ -342,7 +342,7 @@ export default function AdminGamificationWalletPage() {
 
       {loadError && !loading ? (
         <AdminErrorState
-          title="Wallet operations could not be loaded"
+          title="Points operations could not be loaded"
           description={loadError}
           onRetry={() => {
             loadSnapshot().catch(() => { });
@@ -356,7 +356,7 @@ export default function AdminGamificationWalletPage() {
             <div>
               <p className="admin-page-eyebrow">Adjust balance</p>
               <h2 className="font-display text-3xl font-bold uppercase">
-                Admin wallet controls
+                Admin points controls
               </h2>
               <p className="mt-2 text-sm text-slate-400">
                 Choose a supporter from the list below, then apply a positive
@@ -367,7 +367,7 @@ export default function AdminGamificationWalletPage() {
             <div className="grid gap-4 rounded-[28px] border border-white/10 bg-white/5 p-5">
               <div className="rounded-[22px] border border-white/10 bg-black/15 p-4">
                 <p className="text-xs uppercase tracking-[0.32em] text-slate-500">
-                  Selected wallet
+                  Selected account
                 </p>
                 <p className="mt-2 font-display text-2xl font-bold uppercase">
                   {selectedSupporter?.displayName ?? "Choose a supporter"}
@@ -430,7 +430,7 @@ export default function AdminGamificationWalletPage() {
               </div>
               {snapshot.overview.length === 0 && !loading ? (
                 <div className="rounded-[24px] border border-dashed border-white/10 bg-white/5 p-5 text-sm text-slate-400">
-                  No supporter wallets matched the current filter.
+                  No supporter points accounts matched the current filter.
                 </div>
               ) : null}
               {snapshot.overview.map((row) => {
@@ -484,14 +484,14 @@ export default function AdminGamificationWalletPage() {
                 Wallet activity trail
               </h2>
               <p className="mt-2 text-sm text-slate-400">
-                Review supporter wallet history including transfers, redemption
+                Review supporter points history including transfers, reward
                 requests, earnings, and manual adjustments.
               </p>
             </div>
 
             {snapshot.ledger.length === 0 && !loading ? (
               <div className="rounded-[24px] border border-dashed border-white/10 bg-white/5 p-5 text-sm text-slate-400">
-                No wallet ledger entries matched the current filters.
+                No points ledger entries matched the current filters.
               </div>
             ) : null}
 

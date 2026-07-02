@@ -252,7 +252,7 @@ void main() {
   });
 
   group('Contributions routes', () {
-    test('/contribute exposes only public initiative flows', () {
+    test('/contribute redirects mini-hubs while keeping detail utilities', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
           hasFanClubs: false,
@@ -274,6 +274,21 @@ void main() {
       expect(
         subPaths,
         containsAll(<String>{'projects', 'groups', 'group/:groupId'}),
+      );
+      expect(root.redirect, isNotNull);
+      expect(
+        root.routes
+            .whereType<GoRoute>()
+            .firstWhere((r) => r.path == 'projects')
+            .redirect,
+        isNotNull,
+      );
+      expect(
+        root.routes
+            .whereType<GoRoute>()
+            .firstWhere((r) => r.path == 'groups')
+            .redirect,
+        isNotNull,
       );
       expect(subPaths, isNot(contains('create')));
       expect(subPaths, isNot(contains('join')));
@@ -308,7 +323,7 @@ void main() {
   });
 
   group('Fan clubs routes', () {
-    test('/fan-clubs exposes detail only; creation is admin-managed', () {
+    test('/fan-clubs redirects root and keeps detail only', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
           hasFanClubs: true,
@@ -325,6 +340,7 @@ void main() {
           .map((r) => r.path)
           .toSet();
 
+      expect(root.redirect, isNotNull);
       expect(subPaths, contains(':clubId'));
       expect(subPaths, isNot(contains('create')));
     });

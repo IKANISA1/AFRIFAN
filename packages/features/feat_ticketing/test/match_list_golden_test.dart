@@ -7,6 +7,7 @@ import 'package:feat_ticketing/src/ticketing_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:test_support/design_font_loader.dart';
 
 void main() {
@@ -20,36 +21,26 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
 
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          currentUserProvider.overrideWith(
-            (ref) => const UserProfile(
-              id: 'user-1',
-              clubId: '24',
-              publicUserId: '483912',
+      _buildTicketingApp(
+        ticketMatchesProvider.overrideWith(
+          (ref) async => [
+            ClubMatch(
+              id: 'fixture-1',
+              homeTeam: 'Rayon Sports',
+              awayTeam: 'APR',
+              competition: 'National League',
+              venue: 'Amahoro Stadium',
+              matchDate: DateTime(2099, 4, 18, 18),
+              kickoffTime: '18:00',
+              isOnSale: true,
+              ticketGeneralPrice: 3000,
+              ticketVipPrice: 12000,
+              saleStartsAt: DateTime(2099, 4, 10, 9),
+              capacity: 18000,
+              soldCount: 5400,
             ),
-          ),
-          ticketMatchesProvider.overrideWith(
-            (ref) async => [
-              ClubMatch(
-                id: 'fixture-1',
-                homeTeam: 'Rayon Sports',
-                awayTeam: 'APR',
-                competition: 'National League',
-                venue: 'Amahoro Stadium',
-                matchDate: DateTime(2099, 4, 18, 18),
-                kickoffTime: '18:00',
-                isOnSale: true,
-                ticketGeneralPrice: 3000,
-                ticketVipPrice: 12000,
-                saleStartsAt: DateTime(2099, 4, 10, 9),
-                capacity: 18000,
-                soldCount: 5400,
-              ),
-            ],
-          ),
-        ],
-        child: const MaterialApp(home: MatchListScreen()),
+          ],
+        ),
       ),
     );
 
@@ -139,6 +130,20 @@ void main() {
 }
 
 Widget _buildTicketingApp(Override ticketMatchesOverride) {
+  final router = GoRouter(
+    initialLocation: '/tickets',
+    routes: [
+      GoRoute(
+        path: '/tickets',
+        builder: (context, state) => const MatchListScreen(),
+      ),
+      GoRoute(
+        path: '/tickets/:matchId',
+        builder: (context, state) => const SizedBox.shrink(),
+      ),
+    ],
+  );
+
   return ProviderScope(
     overrides: [
       currentUserProvider.overrideWith(
@@ -150,7 +155,7 @@ Widget _buildTicketingApp(Override ticketMatchesOverride) {
       ),
       ticketMatchesOverride,
     ],
-    child: const MaterialApp(home: MatchListScreen()),
+    child: MaterialApp.router(routerConfig: router),
   );
 }
 

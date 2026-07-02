@@ -90,7 +90,7 @@ void expectRequiredStateEvidence(String manifestText) {
   expect(
     manifestText,
     contains(
-      'output/product_design_screen_report/20260701T051146Z/screenshots_53_device_actual',
+      'output/product_design_screen_report/20260702T141428Z/screenshots_53_device_actual',
     ),
   );
   expect(manifestText, contains('Admin/internal routes'));
@@ -98,7 +98,6 @@ void expectRequiredStateEvidence(String manifestText) {
 }
 
 const launchRoutes = <String>[
-  '/splash',
   '/onboarding',
   '/auth/phone',
   '/auth/otp',

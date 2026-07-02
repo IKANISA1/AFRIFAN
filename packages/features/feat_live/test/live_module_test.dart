@@ -33,11 +33,8 @@ void main() {
       expect(paths, contains('/live'));
     });
 
-    test('registers nested news route and standalone live-match alias', () {
-      final liveRoute = module.routes.whereType<GoRoute>().firstWhere(
-        (r) => r.path == '/live',
-      );
-      final subPaths = liveRoute.routes
+    test('registers news reader and standalone live-match alias', () {
+      final rootPaths = module.routes
           .whereType<GoRoute>()
           .map((route) => route.path)
           .toList();
@@ -46,7 +43,10 @@ void main() {
           .map((route) => route.path)
           .toList();
 
-      expect(subPaths, orderedEquals(<String>['news/:articleId']));
+      expect(
+        rootPaths,
+        containsAll(<String>['/live', '/live/news/:articleId']),
+      );
       expect(standalonePaths, orderedEquals(<String>['/live-match']));
     });
 
@@ -71,7 +71,7 @@ void main() {
             decision.path: decision.presentation,
         };
 
-        expect(decisions['/live'], RoutePresentation.fullHeightSheet);
+        expect(decisions['/live'], RoutePresentation.redirect);
         expect(
           decisions['/live/news/:articleId'],
           RoutePresentation.fullHeightSheet,

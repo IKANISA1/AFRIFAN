@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:core_theme/core_theme.dart';
-import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,9 +9,27 @@ import '../providers/fet_wallet_provider.dart';
 import '../widgets/fet_split_model.dart';
 import '../widgets/fet_wallet_widgets.dart';
 
-/// FET Wallet screen — balance and audited partner reward activity.
-///
-/// Uses [FetWalletNotifier] via Riverpod for wallet data state.
+enum _WalletSection {
+  earn('earn', 'Earn', AfriIcons.wallet),
+  redeem('rewards', 'Redeem', AfriIcons.rewards),
+  history('history', 'History', AfriIcons.history);
+
+  const _WalletSection(this.value, this.label, this.icon);
+
+  final String value;
+  final String label;
+  final IconData icon;
+
+  static _WalletSection fromUri(Uri uri) {
+    final raw = uri.queryParameters['section']?.trim().toLowerCase();
+    return _WalletSection.values.firstWhere(
+      (section) => section.value == raw,
+      orElse: () => _WalletSection.earn,
+    );
+  }
+}
+
+/// Points screen for balance and audited partner reward activity.
 class FetWalletScreen extends ConsumerStatefulWidget {
   const FetWalletScreen({super.key});
 
@@ -21,28 +38,34 @@ class FetWalletScreen extends ConsumerStatefulWidget {
 }
 
 class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
-  String _formatFet(int value) {
-    return CurrencyFormatter(
-      currencyCode: 'FET',
-      currencySymbol: 'FET',
-    ).formatPlain(value);
+  String _formatPoints(int value) {
+    final digits = value.abs().toString();
+    final buffer = StringBuffer();
+    for (var i = 0; i < digits.length; i += 1) {
+      final remaining = digits.length - i;
+      buffer.write(digits[i]);
+      if (remaining > 1 && remaining % 3 == 1) {
+        buffer.write(',');
+      }
+    }
+    return value < 0 ? '-$buffer' : buffer.toString();
   }
 
   void _showOverflow() {
     unawaited(
       showAfriActionSheet(
         context: context,
-        title: 'Wallet',
+        title: 'Points',
         actions: [
           AfriSheetAction(
             icon: AfriIcons.history,
-            label: 'Token history',
-            onTap: () => unawaited(context.push('/fanzone/history')),
+            label: 'History',
+            onTap: () => context.go('/fanzone/wallet?section=history'),
           ),
           AfriSheetAction(
             icon: AfriIcons.rewards,
-            label: 'Rewards store',
-            onTap: () => unawaited(context.push('/fanzone/rewards')),
+            label: 'Redeem',
+            onTap: () => context.go('/fanzone/wallet?section=rewards'),
           ),
           AfriSheetAction(
             icon: AfriIcons.refresh,
@@ -63,7 +86,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
       backgroundColor: ColorTokens.background,
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
-        title: Text('Wallet', style: TypographyTokens.headlineSmall()),
+        title: Text('Points', style: TypographyTokens.headlineSmall()),
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
@@ -86,8 +109,8 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
           child: Padding(
             padding: const EdgeInsets.all(SpacingTokens.spacing6),
             child: AfriStateView.offline(
-              title: 'Wallet unavailable',
-              message: 'Wallet data is temporarily unavailable.',
+              title: 'Points unavailable',
+              message: 'Points data is temporarily unavailable.',
               actionLabel: 'Retry',
               onAction: () => ref.read(fetWalletProvider.notifier).refresh(),
             ),
@@ -101,6 +124,9 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
   Widget _buildContent(FetWalletSnapshot snapshot) {
     final wallet = snapshot.wallet;
     final transactions = snapshot.transactions;
+    final selectedSection = _WalletSection.fromUri(
+      GoRouterState.of(context).uri,
+    );
 
     return AfriRefreshIndicator(
       onRefresh: () => ref.read(fetWalletProvider.notifier).refresh(),
@@ -127,7 +153,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 Text(
-                  '${_formatFet(wallet?.balance ?? 0)} FET',
+                  '${_formatPoints(wallet?.balance ?? 0)} pts',
                   style: TypographyTokens.metricValue(ColorTokens.clubAccent),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
@@ -141,15 +167,15 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                   children: [
                     _buildCompactStat(
                       'Weekly',
-                      '+${_formatFet(wallet?.weeklyEarned ?? 0)}',
+                      '+${_formatPoints(wallet?.weeklyEarned ?? 0)}',
                     ),
                     _buildCompactStat(
                       'Monthly',
-                      '+${_formatFet(wallet?.monthlyEarned ?? 0)}',
+                      '+${_formatPoints(wallet?.monthlyEarned ?? 0)}',
                     ),
                     _buildCompactStat(
                       'Used',
-                      _formatFet(wallet?.lifetimeSpent ?? 0),
+                      _formatPoints(wallet?.lifetimeSpent ?? 0),
                     ),
                   ],
                 ),
@@ -168,7 +194,7 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
                   const SizedBox(width: SpacingTokens.spacing3),
                   Expanded(
                     child: Text(
-                      '${_formatFet(wallet!.historicalBalanceGap)} FET comes from earlier rewards before wallet history was enabled.',
+                      '${_formatPoints(wallet!.historicalBalanceGap)} points come from earlier rewards before activity history was enabled.',
                       style: TypographyTokens.bodySmall(),
                     ),
                   ),
@@ -177,59 +203,105 @@ class _FetWalletScreenState extends ConsumerState<FetWalletScreen> {
             ),
           ],
           const SizedBox(height: SpacingTokens.spacing6),
-          FetSplitModel(currentTier: wallet?.tier ?? 'supporter'),
+          _buildSectionSelector(selectedSection),
           const SizedBox(height: SpacingTokens.sectionGap),
-          const AfriSectionHeader(title: 'Partner rewards'),
-          const SizedBox(height: SpacingTokens.spacing4),
-          AfriSurfaceCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Earn FET from partner initiatives and promotions.',
-                  style: TypographyTokens.bodyMedium(),
-                ),
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(
-                  'Use FET in partner match pools, rewards, and fan-zone activity.',
-                  style: TypographyTokens.bodySmall(
-                    ColorTokens.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: SpacingTokens.sectionGap),
-          AfriSectionHeader(
-            title: 'Activity',
-            trailing: Text(
-              '${transactions.length}',
-              style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
-            ),
-          ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          if (transactions.isEmpty)
+          if (selectedSection == _WalletSection.earn) ...[
+            FetSplitModel(currentTier: wallet?.tier ?? 'supporter'),
+            const SizedBox(height: SpacingTokens.sectionGap),
+            const AfriSectionHeader(title: 'Earn'),
+            const SizedBox(height: SpacingTokens.spacing4),
             AfriSurfaceCard(
-              child: Text(
-                'Wallet activity appears here once you earn FET from partner initiatives or join partner pools.',
-                style: TypographyTokens.bodyMedium(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Earn points from partner initiatives and promotions.',
+                    style: TypographyTokens.bodyMedium(),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing2),
+                  Text(
+                    'Use points in rewards, matchday activities, and fan-zone challenges.',
+                    style: TypographyTokens.bodySmall(
+                      ColorTokens.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (selectedSection == _WalletSection.redeem) ...[
+            const AfriSectionHeader(title: 'Redeem'),
+            const SizedBox(height: SpacingTokens.spacing4),
+            AfriSurfaceCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Rewards and partner offers now live inside Points.',
+                    style: TypographyTokens.bodyMedium(),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing2),
+                  Text(
+                    'Use your points balance for matchday rewards, supporter perks, and partner offers without leaving this flow.',
+                    style: TypographyTokens.bodySmall(
+                      ColorTokens.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (selectedSection == _WalletSection.history) ...[
+            AfriSectionHeader(
+              title: 'History',
+              trailing: Text(
+                '${transactions.length}',
+                style: TypographyTokens.labelSmall(
                   ColorTokens.onSurfaceVariant,
                 ),
-                textAlign: TextAlign.center,
-              ),
-            )
-          else
-            ...transactions.map(
-              (transaction) => Padding(
-                padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
-                child: WalletTransactionRow(
-                  transaction: transaction,
-                  formatFet: _formatFet,
-                ),
               ),
             ),
+            const SizedBox(height: SpacingTokens.spacing4),
+            if (transactions.isEmpty)
+              AfriSurfaceCard(
+                child: Text(
+                  'Points activity appears here once you earn from partner initiatives or join partner activities.',
+                  style: TypographyTokens.bodyMedium(
+                    ColorTokens.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              )
+            else
+              ...transactions.map(
+                (transaction) => Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: SpacingTokens.spacing3,
+                  ),
+                  child: WalletTransactionRow(
+                    transaction: transaction,
+                    formatFet: _formatPoints,
+                  ),
+                ),
+              ),
+          ],
         ],
       ),
+    );
+  }
+
+  Widget _buildSectionSelector(_WalletSection selectedSection) {
+    return AfriSegmentedControl(
+      items: _WalletSection.values
+          .map(
+            (section) => AfriSegment(label: section.label, icon: section.icon),
+          )
+          .toList(growable: false),
+      selectedIndex: _WalletSection.values.indexOf(selectedSection),
+      onChanged: (index) {
+        final section = _WalletSection.values[index];
+        context.go('/fanzone/wallet?section=${section.value}');
+      },
     );
   }
 

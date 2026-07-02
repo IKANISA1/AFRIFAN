@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:core_app/core_app.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_router/core_router.dart';
@@ -197,76 +195,6 @@ class _ContributionsModule extends FeatureModule {
 // Duplicated minimal mocks from app_routing_guard_test.dart to keep it self-contained
 // ───────────────────────────────────────────────────────────────────────── //
 
-class _FakeSplashScreen extends ConsumerStatefulWidget {
-  const _FakeSplashScreen();
-  @override
-  ConsumerState<_FakeSplashScreen> createState() => _FakeSplashScreenState();
-}
-
-class _FakeSplashScreenState extends ConsumerState<_FakeSplashScreen> {
-  bool _hasNavigated = false;
-  @override
-  void initState() {
-    super.initState();
-    unawaited(_navigateToNext());
-  }
-
-  Future<void> _navigateToNext() async {
-    await Future<void>.delayed(Duration.zero);
-    if (!mounted || _hasNavigated) return;
-
-    final authNotifier = ref.read(authStateProvider.notifier);
-    final currentState = ref.read(authStateProvider);
-
-    if (currentState is AuthInitial) {
-      await authNotifier.restore();
-    }
-
-    if (!mounted || _hasNavigated) return;
-
-    final resolvedState = ref.read(authStateProvider);
-    final deferredLocation = _deferredLocation();
-
-    _hasNavigated = true;
-    if (resolvedState is AuthAuthenticated) {
-      context.go(deferredLocation ?? '/home');
-      return;
-    }
-
-    if (deferredLocation == null) {
-      context.go('/onboarding');
-      return;
-    }
-
-    context.go(
-      Uri(
-        path: '/onboarding',
-        queryParameters: <String, String>{'from': deferredLocation},
-      ).toString(),
-    );
-  }
-
-  String? _deferredLocation() {
-    final raw = GoRouterState.of(context).uri.queryParameters['from']?.trim();
-    if (raw == null || raw.isEmpty) return null;
-    final uri = Uri.tryParse(raw);
-    final path = uri?.path;
-    if (path == null ||
-        !path.startsWith('/') ||
-        path == '/splash' ||
-        path == '/onboarding') {
-      return null;
-    }
-    if (GoRouter.of(context).configuration.findMatch(uri!).isError) {
-      return null;
-    }
-    return uri.toString();
-  }
-
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Text('Splash'));
-}
-
 class _FakeOnboardingScreen extends StatelessWidget {
   const _FakeOnboardingScreen();
   @override
@@ -376,7 +304,7 @@ class _OnboardingModule extends FeatureModule {
   String get featureKey => 'onboarding';
   @override
   List<RouteBase> get standaloneRoutes => [
-    GoRoute(path: '/splash', builder: (c, s) => const _FakeSplashScreen()),
+    GoRoute(path: '/splash', redirect: (_, state) => _splashRedirect(state)),
     GoRoute(
       path: '/onboarding',
       builder: (c, s) => const _FakeOnboardingScreen(),
@@ -385,4 +313,22 @@ class _OnboardingModule extends FeatureModule {
 
   @override
   Set<String> get publicPaths => const <String>{'/splash', '/onboarding'};
+}
+
+String _splashRedirect(GoRouterState state) {
+  final raw = state.uri.queryParameters['from']?.trim();
+  final uri = raw == null || raw.isEmpty ? null : Uri.tryParse(raw);
+  final path = uri?.path;
+  if (path == null ||
+      path.isEmpty ||
+      !path.startsWith('/') ||
+      path == '/splash' ||
+      path == '/onboarding') {
+    return '/onboarding';
+  }
+
+  return Uri(
+    path: '/onboarding',
+    queryParameters: <String, String>{'from': uri.toString()},
+  ).toString();
 }

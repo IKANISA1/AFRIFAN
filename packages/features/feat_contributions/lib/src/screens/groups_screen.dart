@@ -163,6 +163,22 @@ class _GroupsScreenState extends ConsumerState<GroupsScreen> {
                 ),
               ),
 
+            if (!_isLoading && _error == null && _groups.isEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: SpacingTokens.spacing6,
+                  ),
+                  child: AfriStateView.empty(
+                    title: 'Community board is quiet',
+                    message:
+                        'Public contribution communities will appear here '
+                        'when the club opens the next supporter initiative.',
+                    compact: true,
+                  ),
+                ),
+              ),
+
             // Group list
             if (!_isLoading && _error == null && _groups.isNotEmpty)
               SliverList(

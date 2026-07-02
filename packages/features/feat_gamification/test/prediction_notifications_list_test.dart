@@ -75,11 +75,11 @@ void main() {
         find.text('Your Rayon Sports result prediction won.'),
         findsOneWidget,
       );
-      expect(find.text('+120 FET'), findsOneWidget);
+      expect(find.text('+120 pts'), findsOneWidget);
       expect(
         find.bySemanticsLabel(
           'Prediction alert, Prediction settled, '
-          'Your Rayon Sports result prediction won., Just now, reward 120 FET',
+          'Your Rayon Sports result prediction won., Just now, reward 120 points',
         ),
         findsOneWidget,
       );

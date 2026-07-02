@@ -25,20 +25,20 @@ void main() {
     );
   }
 
-  testWidgets('returns SizedBox.shrink when predictions list is empty', (
+  testWidgets('returns SizedBox.shrink when activity list is empty', (
     tester,
   ) async {
     await tester.pumpWidget(buildSubject(items: const <UserPrediction>[]));
 
-    expect(find.text('No predictions yet'), findsNothing);
-    expect(find.textContaining('Lock in predictions'), findsNothing);
+    expect(find.text('No activity yet'), findsNothing);
+    expect(find.textContaining('Lock in picks'), findsNothing);
     expect(
       find.byKey(const ValueKey<String>('my-predictions-empty')),
       findsOne,
     );
   });
 
-  testWidgets('renders prediction cards and forwards detail taps', (
+  testWidgets('renders activity cards and forwards detail taps', (
     tester,
   ) async {
     const prediction = UserPrediction(

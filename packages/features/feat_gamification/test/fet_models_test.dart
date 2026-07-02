@@ -153,7 +153,7 @@ void main() {
       final tx = FetWalletTransaction.fromJson(json);
       expect(tx.direction, FetWalletEntryDirection.credit);
       expect(tx.signedAmount, 100);
-      expect(tx.headline, 'FET earned');
+      expect(tx.headline, 'Points earned');
     });
 
     test('parses debit transaction', () {
@@ -176,7 +176,7 @@ void main() {
     test('headline matches entry types', () {
       expect(_txWith('transfer_in').headline, 'Transfer received');
       expect(_txWith('transfer_out').headline, 'Transfer sent');
-      expect(_txWith('redeem').headline, 'Wallet redemption');
+      expect(_txWith('redeem').headline, 'Points redemption');
       expect(
         _txWith('admin_adjustment', credit: true).headline,
         'Admin top-up',
@@ -186,8 +186,8 @@ void main() {
         'Admin deduction',
       );
       expect(_txWith('opening_balance').headline, 'Opening balance');
-      expect(_txWith('earn').headline, 'FET earned');
-      expect(_txWith('unknown_type').headline, 'FET earned'); // default
+      expect(_txWith('earn').headline, 'Points earned');
+      expect(_txWith('unknown_type').headline, 'Points earned'); // default
     });
   });
 

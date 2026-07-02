@@ -1,10 +1,9 @@
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 
-/// FET Split Model — visualizes how FET earnings are divided between
-/// the user's personal wallet and their club's pool based on membership tier.
+/// Points split model for tier-aware personal and club reward shares.
 ///
-/// Uses the borrowed wallet model visualization for tier-aware FET splits.
+/// Uses the borrowed rewards visualization for tier-aware points splits.
 class FetSplitModel extends StatelessWidget {
   const FetSplitModel({super.key, this.currentTier = 'supporter'});
 
@@ -177,7 +176,7 @@ class FetSplitModel extends StatelessWidget {
                 const SizedBox(width: SpacingTokens.spacing2),
                 Expanded(
                   child: Text(
-                    'Your prediction FET earn is split: (100% - tier%) goes to personal wallet, tier% goes to the club\'s collective FET pool.',
+                    'Your points earn is shared by tier: the personal share stays with you and the club share supports collective rewards.',
                     style: TypographyTokens.bodySmall(),
                   ),
                 ),

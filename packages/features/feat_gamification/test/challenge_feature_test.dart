@@ -164,10 +164,10 @@ void main() {
 
       await _scrollTo(
         tester,
-        find.text('Your current FET balance does not cover this stake.'),
+        find.text('Your current points balance does not cover this entry.'),
       );
       expect(
-        find.text('Your current FET balance does not cover this stake.'),
+        find.text('Your current points balance does not cover this entry.'),
         findsOneWidget,
       );
 
@@ -236,7 +236,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('CONFIRM CHALLENGE'), findsOneWidget);
 
-      final lockButton = find.widgetWithText(AfriButton, 'LOCK 1000 FET');
+      final lockButton = find.widgetWithText(AfriButton, 'CONFIRM 1000 pts');
       await _scrollTo(tester, lockButton);
       await tester.tap(lockButton);
       await tester.pumpAndSettle();
@@ -303,12 +303,12 @@ void main() {
         ],
       );
 
-      await _scrollTo(tester, find.text('SETTLEMENT'));
+      await _scrollTo(tester, find.text('RESULTS'));
       expect(find.text('MY PICK'), findsOneWidget);
-      expect(find.text('Won 9000 FET'), findsOneWidget);
-      expect(find.text('SETTLEMENT'), findsOneWidget);
+      expect(find.text('Earned 9000 pts'), findsOneWidget);
+      expect(find.text('RESULTS'), findsOneWidget);
       expect(find.text('Official score'), findsOneWidget);
-      expect(find.text('Payout / winner'), findsOneWidget);
+      expect(find.text('Points / winner'), findsOneWidget);
       await _scrollTo(tester, find.text('Aimable'));
       expect(find.text('Aimable'), findsOneWidget);
     });
@@ -350,8 +350,8 @@ void main() {
         ],
       );
 
-      await _scrollTo(tester, find.text('JOIN FOR 3000 FET'));
-      await tester.tap(find.text('JOIN FOR 3000 FET'));
+      await _scrollTo(tester, find.text('JOIN WITH 3000 pts'));
+      await tester.tap(find.text('JOIN WITH 3000 pts'));
       await tester.pumpAndSettle();
 
       expect(challengeRepository.lastJoinRequest?['challengeId'], 'joinable');

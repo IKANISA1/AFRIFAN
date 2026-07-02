@@ -8,7 +8,7 @@ import '../models/fet_models.dart';
 // Transaction row
 // ══════════════════════════════════════════════════════════════════════════════
 
-/// Single wallet transaction row for audited FET ledger activity.
+/// Single points transaction row for audited reward activity.
 class WalletTransactionRow extends StatelessWidget {
   const WalletTransactionRow({
     super.key,
@@ -131,14 +131,14 @@ class WalletTransactionRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${transaction.direction == FetWalletEntryDirection.debit ? '-' : '+'}${formatFet(transaction.amount)}',
+                '${transaction.direction == FetWalletEntryDirection.debit ? '-' : '+'}${formatFet(transaction.amount)} pts',
                 style: TypographyTokens.titleLarge(
                   color,
                 ).copyWith(fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: SpacingTokens.spacing1),
               Text(
-                'Bal. ${formatFet(transaction.balanceAfter)}',
+                'Bal. ${formatFet(transaction.balanceAfter)} pts',
                 style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
               ),
             ],

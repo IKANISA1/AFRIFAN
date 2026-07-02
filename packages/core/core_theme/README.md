@@ -76,5 +76,7 @@ The mobile system now prioritizes:
 13. Replace direct `TextStyle(...)` constructors with `TypographyTokens`.
 14. Simplify copy last, once hierarchy is clear.
 
-Detailed audit and rollout guidance lives in
-[`docs/design.md`](/Volumes/PRO-G40/AFRICLUB/docs/design.md).
+Detailed design guidance lives in
+[`docs/design/DESIGN_SYSTEM.md`](/Volumes/PRO-G40/AFRICLUB/docs/design/DESIGN_SYSTEM.md)
+and the active alignment matrix at
+[`docs/design/MOBI_REVOLUT_100_PERCENT_ALIGNMENT_MATRIX.md`](/Volumes/PRO-G40/AFRICLUB/docs/design/MOBI_REVOLUT_100_PERCENT_ALIGNMENT_MATRIX.md).

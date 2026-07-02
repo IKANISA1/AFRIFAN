@@ -40,19 +40,20 @@ void main() {
       expect(route.name, 'membership');
     });
 
-    test('/membership/fans route has name membership-fans', () {
+    test('/membership/fans route is a compatibility redirect', () {
       final route = module.routes.whereType<GoRoute>().firstWhere(
         (r) => r.path == '/membership/fans',
       );
 
       expect(route.name, 'membership-fans');
+      expect(route.redirect, isNotNull);
+      expect(route.builder, isNull);
+      expect(route.pageBuilder, isNull);
     });
 
     test('pushed membership routes use shared route pages', () {
       for (final route in module.routes.whereType<GoRoute>().where(
-        (r) =>
-            r.path == '/membership/fans' ||
-            r.path == '/membership/tier/:tierId',
+        (r) => r.path == '/membership/tier/:tierId',
       )) {
         expect(route.pageBuilder, isNotNull, reason: route.path);
         expect(route.builder, isNull, reason: route.path);
@@ -77,10 +78,7 @@ void main() {
         };
 
         expect(decisions['/membership'], RoutePresentation.fullScreen);
-        expect(
-          decisions['/membership/fans'],
-          RoutePresentation.fullHeightSheet,
-        );
+        expect(decisions['/membership/fans'], RoutePresentation.redirect);
         expect(
           decisions['/membership/tier/:tierId'],
           RoutePresentation.fullHeightSheet,

@@ -122,8 +122,8 @@ class ChallengeCard extends StatelessWidget {
                 label: '${challenge.totalParticipants} joined',
               ),
               _InfoChip(
-                icon: AfriIcons.wallet,
-                label: '${challenge.totalPoolFet} FET pool',
+                icon: AfriIcons.rewards,
+                label: '${challenge.totalPoolFet} pts total',
               ),
               if (challenge.creatorPrediction != null)
                 ScorePredictionPill(
@@ -217,7 +217,7 @@ class StakeBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
       ),
       child: Text(
-        '$stakeFet FET',
+        '$stakeFet pts',
         style: TypographyTokens.metricLabel(
           ColorTokens.clubAccent,
         ).copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),

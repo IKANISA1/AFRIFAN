@@ -245,10 +245,10 @@ class MatchStatsTabBody extends StatelessWidget {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// Market Card
+// Pick Type Card
 // ══════════════════════════════════════════════════════════════════════════════
 
-/// Single market card with outcome pills + community bar.
+/// Single pick-type card with outcome pills + community bar.
 class MatchMarketCard extends ConsumerWidget {
   const MatchMarketCard({
     super.key,
@@ -293,7 +293,7 @@ class MatchMarketCard extends ConsumerWidget {
                       ),
                     ),
                     child: Text(
-                      market.marketCategory,
+                      _displayCategoryLabel(market.marketCategory),
                       style:
                           TypographyTokens.metricLabel(
                             ColorTokens.onSurfaceVariant,
@@ -303,19 +303,6 @@ class MatchMarketCard extends ConsumerWidget {
                           ),
                     ),
                   ),
-                  if (market.betType.isNotEmpty) ...[
-                    const SizedBox(width: SpacingTokens.spacing2),
-                    Text(
-                      market.betType,
-                      style:
-                          TypographyTokens.metricLabel(
-                            ColorTokens.onSurfaceVariant.withValues(alpha: 0.6),
-                          ).copyWith(
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.5,
-                          ),
-                    ),
-                  ],
                 ],
               ),
             ),
@@ -342,7 +329,7 @@ class MatchMarketCard extends ConsumerWidget {
               ),
               const SizedBox(width: SpacingTokens.spacing3),
               Text(
-                '+${market.fetValue} FET',
+                '+${market.fetValue} pts',
                 style: TypographyTokens.labelSmall(ColorTokens.clubAccent),
               ),
             ],
@@ -350,7 +337,7 @@ class MatchMarketCard extends ConsumerWidget {
           const SizedBox(height: SpacingTokens.spacing3),
           if (market.isLocked)
             Text(
-              'Market locked for this fixture state.',
+              'Pick type locked for this fixture state.',
               style: TypographyTokens.bodySmall(),
             )
           else
@@ -361,7 +348,6 @@ class MatchMarketCard extends ConsumerWidget {
                   .map((outcome) {
                     return MarketOptionPill(
                       label: outcome.label,
-                      odds: outcome.odds,
                       isSelected: selectedOutcomeKey == outcome.key,
                       trailing: selectedOutcomeKey == outcome.key
                           ? Icon(
@@ -382,7 +368,7 @@ class MatchMarketCard extends ConsumerWidget {
                             );
                         AfriToast.success(
                           context,
-                          '${outcome.label} added to your slip.',
+                          '${outcome.label} added to your round.',
                         );
                       },
                     );
@@ -400,6 +386,17 @@ class MatchMarketCard extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  String _displayCategoryLabel(String category) {
+    return category
+        .replaceAll('Match Prediction', 'Match Picks')
+        .replaceAll('Goals Prediction', 'Goal Picks')
+        .replaceAll('Handicap Prediction', 'Handicap Picks')
+        .replaceAll('Corners Prediction', 'Corner Picks')
+        .replaceAll('Cards Prediction', 'Card Picks')
+        .replaceAll('Prediction', 'Pick')
+        .replaceAll('Markets', 'Pick Types');
   }
 }
 

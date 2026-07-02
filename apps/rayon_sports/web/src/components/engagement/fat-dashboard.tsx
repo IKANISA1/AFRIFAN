@@ -126,7 +126,7 @@ function BadgeChip({ badge }: { badge: FatBadge }) {
         {badge.name}
       </p>
       <p className="text-[8px] uppercase tracking-[0.18em] text-slate-400">
-        +{badge.fatReward} FET
+        +{badge.fatReward} pts
       </p>
     </div>
   );
@@ -152,14 +152,14 @@ export function FatDashboard({
           <FatProgressRing current={currentLevel} next={nextLevel} totalFat={totalFat} />
           <div className="flex-1 text-center sm:text-left">
             <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-club-accent">
-              Fan Achievement Tokens
+              Fan Achievement Points
             </p>
             <h2 className="mt-2 font-display text-3xl font-bold uppercase leading-none text-white sm:text-4xl">
               Level {currentLevel.level}: {currentLevel.title}
             </h2>
             {nextLevel && (
               <p className="mt-3 text-sm leading-7 text-slate-300">
-                {nextLevel.minFat - totalFat} FET to reach{" "}
+                {nextLevel.minFat - totalFat} pts to reach{" "}
                 <span className="font-semibold text-club-accent">
                   Level {nextLevel.level}: {nextLevel.title}
                 </span>
@@ -212,7 +212,7 @@ export function FatDashboard({
                   <p className="text-[10px] text-slate-400">{activity.date}</p>
                 </div>
                 <span className="shrink-0 rounded-full bg-club-accent/15 px-3 py-1 text-[11px] font-bold tabular-nums text-club-accent">
-                  +{activity.fat} FET
+                  +{activity.fat} pts
                 </span>
               </div>
             ))}

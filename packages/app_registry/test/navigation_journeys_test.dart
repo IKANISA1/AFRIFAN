@@ -18,39 +18,58 @@ void main() {
     );
   });
 
-  group('Home quick actions', () {
-    test('standalone destinations remain reachable', () {
-      final allPaths = <String>{};
-
-      void collect(List<RouteBase> routes) {
-        for (final route in routes.whereType<GoRoute>()) {
-          allPaths.add(route.path);
-          collect(route.routes);
-        }
-      }
-
-      for (final module in modules) {
-        collect(module.routes);
-        collect(module.standaloneRoutes);
-        final tab = module.tabRoute;
-        if (tab != null) {
-          allPaths.add(tab.path);
-        }
-      }
-
+  group('Default supporter exposure', () {
+    test('keeps only approved bottom tabs in the shell', () {
       expect(
-        allPaths,
-        containsAll(<String>{
-          '/fanzone',
-          '/live',
-          '/contribute',
-          '/shop',
-          '/tickets',
-          '/fan-clubs',
-          '/membership',
-        }),
+        appRouter.tabs.map((tab) => tab.path),
+        orderedEquals(<String>['/home', '/fanzone', '/settings']),
       );
     });
+
+    test(
+      'keeps compatibility paths registered without promoting them to tabs',
+      () {
+        final allPaths = <String>{};
+
+        void collect(List<RouteBase> routes) {
+          for (final route in routes.whereType<GoRoute>()) {
+            allPaths.add(route.path);
+            collect(route.routes);
+          }
+        }
+
+        for (final module in modules) {
+          collect(module.routes);
+          collect(module.standaloneRoutes);
+          final tab = module.tabRoute;
+          if (tab != null) {
+            allPaths.add(tab.path);
+          }
+        }
+
+        expect(
+          allPaths,
+          containsAll(<String>{
+            '/fanzone',
+            '/live',
+            '/contribute',
+            '/shop',
+            '/tickets',
+            '/fan-clubs',
+            '/membership',
+          }),
+        );
+        expect(appRouter.tabs.map((tab) => tab.path), isNot(contains('/live')));
+        expect(
+          appRouter.tabs.map((tab) => tab.path),
+          isNot(contains('/contribute')),
+        );
+        expect(
+          appRouter.tabs.map((tab) => tab.path),
+          isNot(contains('/fan-clubs')),
+        );
+      },
+    );
   });
 
   group('Fanzone surface', () {
@@ -60,43 +79,63 @@ void main() {
       fanzone = modules.firstWhere((m) => m.featureKey == 'fanzone');
     });
 
-    test('/fanzone keeps the main engagement routes', () {
-      final subPaths = fanzone.routes
-          .whereType<GoRoute>()
-          .map((r) => r.path)
-          .toSet();
+    test(
+      '/fanzone keeps compatibility routes but redirects section content',
+      () {
+        final subPaths = fanzone.routes
+            .whereType<GoRoute>()
+            .map((r) => r.path)
+            .toSet();
 
-      expect(
-        subPaths,
-        containsAll(<String>{
-          'fixtures',
-          'live',
-          'my',
-          'match/:fixtureId',
-          'wallet',
-          'rewards',
-          'history',
-          'offers',
-          'leaderboard',
-          'notifications',
-          'badges',
-          'streak',
-          'share',
-          'league',
-          'league/:competitionSlug',
-          'standings/:competitionSlug',
-          'team/:teamSlug',
-          'club-zone',
-          'fan-id',
-          'social',
-          'privacy',
-        }),
-      );
-      expect(subPaths, isNot(contains('challenges')));
-      expect(subPaths, isNot(contains('jackpot')));
-      expect(subPaths, isNot(contains('friends')));
-      expect(subPaths, isNot(contains('challenge')));
-    });
+        expect(
+          subPaths,
+          containsAll(<String>{
+            'fixtures',
+            'live',
+            'my',
+            'match/:fixtureId',
+            'wallet',
+            'rewards',
+            'history',
+            'offers',
+            'leaderboard',
+            'notifications',
+            'badges',
+            'streak',
+            'share',
+            'league',
+            'league/:competitionSlug',
+            'standings/:competitionSlug',
+            'team/:teamSlug',
+            'club-zone',
+            'fan-id',
+            'social',
+            'privacy',
+          }),
+        );
+        expect(subPaths, isNot(contains('challenges')));
+        expect(subPaths, isNot(contains('jackpot')));
+        expect(subPaths, isNot(contains('friends')));
+        expect(subPaths, isNot(contains('challenge')));
+
+        final decisions = {
+          for (final decision in fanzone.routePresentationDecisions)
+            decision.path: decision.presentation,
+        };
+        expect(decisions['/fanzone'], RoutePresentation.fullScreen);
+        expect(
+          decisions['/fanzone/match/:fixtureId'],
+          RoutePresentation.fullScreen,
+        );
+        expect(decisions['/fanzone/wallet'], RoutePresentation.fullScreen);
+        expect(decisions['/fanzone/fixtures'], RoutePresentation.redirect);
+        expect(decisions['/fanzone/leaderboard'], RoutePresentation.redirect);
+        expect(decisions['/fanzone/offers'], RoutePresentation.redirect);
+        expect(decisions['/fanzone/rewards'], RoutePresentation.redirect);
+        expect(decisions['/fanzone/history'], RoutePresentation.redirect);
+        expect(decisions['/fanzone/club-zone'], RoutePresentation.redirect);
+      },
+    );
   });
 
   group('Settings and admin', () {
@@ -146,7 +185,7 @@ void main() {
     });
   });
 
-  group('Contributions public flow', () {
+  group('Contributions compatibility flow', () {
     late FeatureModule contributions;
 
     setUp(() {
@@ -155,15 +194,19 @@ void main() {
       );
     });
 
-    test('/contribute resolves', () {
+    test('/contribute resolves as a compatibility redirect', () {
       final paths = contributions.routes
           .whereType<GoRoute>()
           .map((r) => r.path)
           .toSet();
       expect(paths, contains('/contribute'));
+      final root = contributions.routes.whereType<GoRoute>().firstWhere(
+        (r) => r.path == '/contribute',
+      );
+      expect(root.redirect, isNotNull);
     });
 
-    test('/contribute exposes projects, groups, and group detail only', () {
+    test('/contribute keeps deep-link utilities but redirects mini-hubs', () {
       final root = contributions.routes.whereType<GoRoute>().firstWhere(
         (r) => r.path == '/contribute',
       );
@@ -175,6 +218,20 @@ void main() {
       expect(
         subPaths,
         containsAll(<String>{'projects', 'groups', 'group/:groupId'}),
+      );
+      expect(
+        root.routes
+            .whereType<GoRoute>()
+            .firstWhere((r) => r.path == 'projects')
+            .redirect,
+        isNotNull,
+      );
+      expect(
+        root.routes
+            .whereType<GoRoute>()
+            .firstWhere((r) => r.path == 'groups')
+            .redirect,
+        isNotNull,
       );
       expect(subPaths, isNot(contains('create')));
       expect(subPaths, isNot(contains('join')));
@@ -198,8 +255,8 @@ void main() {
     });
   });
 
-  group('Fan clubs public flow', () {
-    test('/fan-clubs exposes detail but not creation', () {
+  group('Fan clubs compatibility flow', () {
+    test('/fan-clubs redirects root but keeps detail compatibility', () {
       final fanClubs = modules.firstWhere((m) => m.featureKey == 'fan_clubs');
       final root = fanClubs.routes.whereType<GoRoute>().firstWhere(
         (r) => r.path == '/fan-clubs',
@@ -209,6 +266,7 @@ void main() {
           .map((r) => r.path)
           .toSet();
 
+      expect(root.redirect, isNotNull);
       expect(subPaths, contains(':clubId'));
       expect(subPaths, isNot(contains('create')));
     });
@@ -234,27 +292,32 @@ void main() {
   });
 
   group('Router surface size', () {
-    test('retains a broad route graph after removals', () {
-      var count = 0;
+    test('approved full-screen set stays intentionally small', () {
+      final fullScreens = modules
+          .expand((module) => module.routePresentationDecisions)
+          .where(
+            (decision) => decision.presentation == RoutePresentation.fullScreen,
+          )
+          .map((decision) => decision.path)
+          .toSet();
 
-      void countRoutes(List<RouteBase> routes) {
-        for (final route in routes.whereType<GoRoute>()) {
-          count++;
-          countRoutes(route.routes);
-        }
-      }
-
-      for (final module in modules) {
-        final tab = module.tabRoute;
-        if (tab != null) {
-          count++;
-        }
-        countRoutes(module.routes);
-        countRoutes(module.standaloneRoutes);
-      }
-
-      expect(count, greaterThanOrEqualTo(40));
-      expect(appRouter.tabs, hasLength(3));
+      expect(
+        fullScreens,
+        equals(<String>{
+          '/onboarding',
+          '/auth/phone',
+          '/auth/otp',
+          '/home',
+          '/fanzone',
+          '/fanzone/match/:fixtureId',
+          '/fanzone/wallet',
+          '/settings',
+          '/tickets',
+          '/e-ticket/:id',
+          '/membership',
+          '/shop',
+        }),
+      );
     });
   });
 }

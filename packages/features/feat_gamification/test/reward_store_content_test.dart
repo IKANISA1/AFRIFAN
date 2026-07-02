@@ -8,13 +8,13 @@ void main() {
         "reward_options": [
           {
             "reward": "Mobile Airtime",
-            "cost": "500 FET",
+            "cost": "500 pts",
             "category": "Utility",
             "notes": "Via MoMo API integration"
           },
           {
             "reward": "Partner Voucher",
-            "cost": "1000 FET",
+            "cost": "1000 pts",
             "category": "Utility",
             "notes": "Restaurant or retail partner reward"
           }
@@ -26,6 +26,6 @@ void main() {
 
     expect(options, isNotEmpty);
     expect(options.first.reward, 'Mobile Airtime');
-    expect(options.last.cost, '1000 FET');
+    expect(options.last.cost, '1000 pts');
   });
 }

@@ -35,7 +35,7 @@ class _PredictionDetailScreenState
       if (result.isError) {
         AfriToast.error(context, result.message);
       } else {
-        AfriToast.success(context, 'Prediction cancelled.');
+        AfriToast.success(context, 'Pick cancelled.');
       }
     } finally {
       if (mounted) setState(() => _isCancelling = false);
@@ -51,7 +51,7 @@ class _PredictionDetailScreenState
         '${detail.selectedOutcome} · $score';
     await Clipboard.setData(ClipboardData(text: summary));
     if (!mounted) return;
-    AfriToast.success(context, 'Prediction summary copied to clipboard.');
+    AfriToast.success(context, 'Activity summary copied to clipboard.');
   }
 
   Color _statusColor(PredictionDetail detail) {
@@ -84,20 +84,20 @@ class _PredictionDetailScreenState
 
   String _settlementMessage(PredictionDetail detail) {
     if (detail.isWon) {
-      return 'This prediction settled successfully and credited ${detail.fetEarned} FET.';
+      return 'This pick settled successfully and credited ${detail.fetEarned} points.';
     }
     if (detail.isLost) {
       return detail.correctOutcome == null || detail.correctOutcome!.isEmpty
-          ? 'This prediction did not settle in your favour.'
+          ? 'This pick did not settle in your favour.'
           : 'Official outcome: ${detail.correctOutcome!.toUpperCase()}.';
     }
     if (detail.status == PredictionStatus.cancelled) {
-      return 'This prediction was cancelled before the fixture locked.';
+      return 'This pick was cancelled before the fixture locked.';
     }
     if (detail.status == PredictionStatus.void_) {
-      return 'This market was voided and no FET was awarded.';
+      return 'This pick was voided and no points were awarded.';
     }
-    return 'This prediction is locked and will settle when official results arrive.';
+    return 'This pick is locked and will settle when official results arrive.';
   }
 
   @override
@@ -132,8 +132,8 @@ class _PredictionDetailScreenState
                   Expanded(
                     child: Center(
                       child: AfriStateView.offline(
-                        title: 'Prediction unavailable',
-                        message: 'Could not load prediction detail right now.',
+                        title: 'Activity unavailable',
+                        message: 'Could not load activity detail right now.',
                         actionLabel: 'Retry',
                         onAction: () => ref
                             .read(
@@ -154,8 +154,8 @@ class _PredictionDetailScreenState
                   padding: const EdgeInsets.all(SpacingTokens.spacing6),
                   child: Center(
                     child: AfriStateView.offline(
-                      title: 'Prediction not found',
-                      message: 'This prediction could not be located.',
+                      title: 'Activity not found',
+                      message: 'This activity could not be located.',
                       actionLabel: 'Go back',
                       onAction: () => context.pop(),
                     ),
@@ -193,7 +193,7 @@ class _PredictionDetailScreenState
                             const SizedBox(width: SpacingTokens.spacing2),
                             Expanded(
                               child: Text(
-                                'PREDICTION DETAIL',
+                                'ACTIVITY DETAIL',
                                 style: TypographyTokens.headlineSmall()
                                     .copyWith(
                                       fontWeight: FontWeight.w700,
@@ -282,7 +282,7 @@ class _PredictionDetailScreenState
                         child: Row(
                           children: [
                             _DetailMetric(
-                              label: 'MARKET',
+                                label: 'PICK TYPE',
                               value:
                                   (detail.marketShortName.isEmpty
                                           ? detail.marketName
@@ -292,8 +292,7 @@ class _PredictionDetailScreenState
                             const SizedBox(width: SpacingTokens.spacing3),
                             _DetailMetric(
                               label: 'SELECTION',
-                              value:
-                                  '${detail.selectedOutcome.toUpperCase()} (${detail.odds.toStringAsFixed(1)}x)',
+                              value: detail.selectedOutcome.toUpperCase(),
                               accent: true,
                             ),
                             const SizedBox(width: SpacingTokens.spacing3),
@@ -356,7 +355,7 @@ class _PredictionDetailScreenState
                               if ((detail.slipId ?? '').isNotEmpty) ...[
                                 const SizedBox(height: SpacingTokens.spacing2),
                                 _TimelineRow(
-                                  label: 'Slip',
+                                  label: 'Round',
                                   value: detail.slipId!,
                                 ),
                               ],
@@ -390,7 +389,7 @@ class _PredictionDetailScreenState
                           children: [
                             if (detail.isPending)
                               AfriButton(
-                                label: 'CANCEL PREDICTION',
+                                label: 'CANCEL PICK',
                                 variant: AfriButtonVariant.secondary,
                                 enabled: !_isCancelling,
                                 isLoading: _isCancelling,

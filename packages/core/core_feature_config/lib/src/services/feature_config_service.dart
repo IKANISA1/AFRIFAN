@@ -21,7 +21,6 @@ const List<MapEntry<String, String>> _fallbackRouteFeatureKeys =
 
 const List<MapEntry<String, String>> _launchOptInRouteFeatureKeys =
     <MapEntry<String, String>>[
-      MapEntry<String, String>('/fanzone/jackpot', 'challenge'),
       MapEntry<String, String>('/fanzone/challenges', 'challenge'),
       MapEntry<String, String>('/fanzone/challenge', 'challenge'),
       MapEntry<String, String>('/fanzone/friends', 'challenge'),

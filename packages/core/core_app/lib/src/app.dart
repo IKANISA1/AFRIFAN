@@ -210,6 +210,7 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
     }
 
     WidgetsBinding.instance.addObserver(this);
+    _scheduleAuthRestore();
     _scheduleFeatureConfigRefresh();
   }
 
@@ -247,6 +248,34 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
         return;
       }
       unawaited(ref.read(featureConfigProvider.notifier).loadForClub(clubId));
+    });
+  }
+
+  void _scheduleAuthRestore() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      final authState = ref.read(authStateProvider);
+      if (authState is! AuthInitial) {
+        return;
+      }
+
+      unawaited(
+        ref
+            .read(authStateProvider.notifier)
+            .restore()
+            .timeout(const Duration(seconds: 15))
+            .catchError((Object error, StackTrace stackTrace) {
+              AfriLogger.warn(
+                'AfriClubApp',
+                'Session restore failed during app startup.',
+                error,
+                stackTrace,
+              );
+            }),
+      );
     });
   }
 
@@ -303,7 +332,7 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
       if (_isPublicPath(location)) {
         return null;
       }
-      return _buildRedirectUri('/splash', state);
+      return null;
     }
 
     if (authState is AuthAuthenticated) {

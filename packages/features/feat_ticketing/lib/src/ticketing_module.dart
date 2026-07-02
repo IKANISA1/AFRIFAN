@@ -5,7 +5,6 @@ import 'screens/e_ticket_qr_screen.dart';
 import 'screens/interactive_seat_map_screen.dart';
 import 'screens/match_detail_screen.dart';
 import 'screens/match_list_screen.dart';
-import 'screens/my_tickets_screen.dart';
 
 class TicketingModule extends FeatureModule {
   @override
@@ -43,8 +42,7 @@ class TicketingModule extends FeatureModule {
         ),
         GoRoute(
           path: '/my-tickets',
-          pageBuilder: (context, state) =>
-              afriSheetPage(state, const MyTicketsScreen(), fullHeight: true),
+          redirect: (_, __) => '/tickets?tab=mine',
         ),
         GoRoute(
           path: '/e-ticket/:id',
@@ -83,9 +81,9 @@ class TicketingModule extends FeatureModule {
         ),
         RoutePresentationDecision(
           path: '/my-tickets',
-          presentation: RoutePresentation.fullHeightSheet,
+          presentation: RoutePresentation.redirect,
           recommendation: 'merge',
-          targetPath: '/tickets',
+          targetPath: '/tickets?tab=mine',
           rationale: 'Owned and purchasable tickets should live together.',
         ),
         RoutePresentationDecision(

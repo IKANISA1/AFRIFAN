@@ -94,7 +94,7 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
                   const SizedBox(height: SpacingTokens.spacing4),
                   _OfferMetaRow(
                     label: 'Reward',
-                    value: '+${offer.fetValue} FET',
+                    value: '+${offer.fetValue} pts',
                   ),
                   _OfferMetaRow(
                     label: 'Activation',
@@ -182,7 +182,7 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
                           const AfriSectionHeader(
                             title: 'Ways to earn',
                             subtitle:
-                                'Join campaigns and activations to earn FET.',
+                                'Join campaigns and activations to earn points.',
                             padding: EdgeInsets.zero,
                           ),
                           const SizedBox(height: SpacingTokens.spacing4),
@@ -191,7 +191,7 @@ class _OffersScreenState extends ConsumerState<OffersScreen> {
                               Expanded(
                                 child: AfriMetricTile(
                                   label: 'Balance',
-                                  value: '${_wallet?.balance ?? 0} FET',
+                                  value: '${_wallet?.balance ?? 0} pts',
                                   accentColor: ColorTokens.clubAccent,
                                 ),
                               ),
@@ -299,7 +299,7 @@ class _OfferCard extends StatelessWidget {
                 ),
               ),
               AfriStatusChip(
-                label: '+${offer.fetValue} FET',
+                label: '+${offer.fetValue} pts',
                 tone: AfriStatusTone.live,
               ),
             ],

@@ -2,27 +2,14 @@ import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:go_router/go_router.dart';
 
-import 'screens/badges_screen.dart';
-import 'screens/club_fan_zone_screen.dart';
-import 'screens/fan_id_screen.dart';
 import 'screens/fanzone_hub_screen.dart';
 import 'screens/fet_wallet_screen.dart';
-import 'screens/fixtures_browser_screen.dart';
-import 'screens/leaderboard_screen.dart';
-import 'screens/league_hub_screen.dart';
-import 'screens/league_standings_screen.dart';
+import 'screens/game_session_controller_screen.dart';
+import 'screens/game_session_join_screen.dart';
 import 'screens/match_detail_screen.dart';
 import 'screens/my_predictions_screen.dart';
-import 'screens/offers_screen.dart';
 import 'screens/prediction_detail_screen.dart';
-import 'screens/prediction_notifications_screen.dart';
-import 'screens/prediction_settlement_screen.dart';
-import 'screens/rewards_store_screen.dart';
 import 'screens/share_card_generator_screen.dart';
-import 'screens/social_hub_screen.dart';
-import 'screens/streak_calendar_screen.dart';
-import 'screens/team_profile_screen.dart';
-import 'screens/token_history_screen.dart';
 
 class FanzoneModule extends FeatureModule {
   @override
@@ -58,22 +45,12 @@ class FanzoneModule extends FeatureModule {
     GoRoute(
       path: 'fixtures',
       name: 'fanzone-fixtures',
-      pageBuilder: (context, state) {
-        final isLive = state.uri.queryParameters['status'] == 'live';
-        return afriSheetPage(
-          state,
-          FixturesBrowserScreen(
-            statusFilter: isLive ? 'live' : null,
-            title: isLive ? 'LIVE MATCHES' : 'FIXTURES',
-          ),
-          fullHeight: true,
-        );
-      },
+      redirect: (_, __) => '/fanzone?section=league',
     ),
     GoRoute(
       path: 'live',
       name: 'fanzone-live',
-      redirect: (_, __) => '/fanzone/fixtures?status=live',
+      redirect: (_, __) => '/fanzone?section=league',
     ),
     GoRoute(
       path: 'my',
@@ -95,17 +72,35 @@ class FanzoneModule extends FeatureModule {
             GoRoute(
               path: 'settlement',
               name: 'fanzone-prediction-settlement',
-              pageBuilder: (context, state) => afriSheetPage(
-                state,
-                PredictionSettlementScreen(
-                  predictionId: state.pathParameters['predictionId'] ?? '',
-                ),
-                fullHeight: true,
-              ),
+              redirect: (_, state) {
+                final predictionId = state.pathParameters['predictionId'] ?? '';
+                return '/fanzone/my/$predictionId';
+              },
             ),
           ],
         ),
       ],
+    ),
+    GoRoute(
+      path: 'game',
+      name: 'fanzone-game-session-entry',
+      pageBuilder: (context, state) =>
+          afriSheetPage(state, const GameSessionJoinScreen(), fullHeight: true),
+    ),
+    GoRoute(
+      path: 'game/:sessionId',
+      name: 'fanzone-game-session-controller',
+      pageBuilder: (context, state) => afriSheetPage(
+        state,
+        GameSessionControllerScreen(
+          sessionId: state.pathParameters['sessionId'] ?? '',
+          sessionPlayerId:
+              state.uri.queryParameters['session_player_id'] ??
+              state.uri.queryParameters['sessionPlayerId'] ??
+              state.uri.queryParameters['playerId'],
+        ),
+        fullHeight: true,
+      ),
     ),
     GoRoute(
       path: 'match/:fixtureId',
@@ -123,50 +118,37 @@ class FanzoneModule extends FeatureModule {
     GoRoute(
       path: 'offers',
       name: 'fanzone-offers',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const OffersScreen(), fullHeight: true),
+      redirect: (_, __) => '/fanzone?section=rewards',
     ),
     GoRoute(
       path: 'rewards',
       name: 'fanzone-rewards-store',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const RewardsStoreScreen(), fullHeight: true),
+      redirect: (_, __) => '/fanzone?section=rewards',
     ),
     GoRoute(
       path: 'history',
       name: 'fanzone-token-history',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const TokenHistoryScreen(), fullHeight: true),
+      redirect: (_, __) => '/fanzone?section=wallet',
     ),
     GoRoute(
       path: 'leaderboard',
       name: 'fanzone-leaderboard',
-      pageBuilder: (context, state) => afriSheetPage(
-        state,
-        LeaderboardScreen(initialTab: state.uri.queryParameters['tab']),
-        fullHeight: true,
-      ),
+      redirect: (_, __) => '/fanzone?section=league',
     ),
     GoRoute(
       path: 'notifications',
       name: 'fanzone-notifications',
-      pageBuilder: (context, state) => afriSheetPage(
-        state,
-        const PredictionNotificationsScreen(),
-        fullHeight: true,
-      ),
+      redirect: (_, __) => '/fanzone?section=supporters',
     ),
     GoRoute(
       path: 'badges',
       name: 'fanzone-badges',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const BadgesScreen(), fullHeight: true),
+      redirect: (_, __) => '/fanzone?section=rewards',
     ),
     GoRoute(
       path: 'streak',
       name: 'fanzone-streak',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const StreakCalendarScreen(), fullHeight: true),
+      redirect: (_, __) => '/fanzone?section=rewards',
     ),
     GoRoute(
       path: 'share',
@@ -177,57 +159,37 @@ class FanzoneModule extends FeatureModule {
     GoRoute(
       path: 'league',
       name: 'fanzone-league-hub-root',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const LeagueHubScreen(), fullHeight: true),
+      redirect: (_, __) => '/fanzone?section=league',
     ),
     GoRoute(
       path: 'league/:competitionSlug',
       name: 'fanzone-league-hub',
-      pageBuilder: (context, state) => afriSheetPage(
-        state,
-        LeagueHubScreen(
-          competitionSlug: state.pathParameters['competitionSlug'],
-        ),
-        fullHeight: true,
-      ),
+      redirect: (_, __) => '/fanzone?section=league',
     ),
     GoRoute(
       path: 'standings/:competitionSlug',
       name: 'fanzone-league-standings',
-      pageBuilder: (context, state) => afriSheetPage(
-        state,
-        LeagueStandingsScreen(
-          competitionSlug: state.pathParameters['competitionSlug'] ?? '',
-        ),
-        fullHeight: true,
-      ),
+      redirect: (_, __) => '/fanzone?section=league',
     ),
     GoRoute(
       path: 'team/:teamSlug',
       name: 'fanzone-team-profile',
-      pageBuilder: (context, state) => afriSheetPage(
-        state,
-        TeamProfileScreen(teamSlug: state.pathParameters['teamSlug'] ?? ''),
-        fullHeight: true,
-      ),
+      redirect: (_, __) => '/fanzone?section=league',
     ),
     GoRoute(
       path: 'club-zone',
       name: 'fanzone-club-zone',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const ClubFanZoneScreen(), fullHeight: true),
+      redirect: (_, __) => '/fanzone?section=supporters',
     ),
     GoRoute(
       path: 'fan-id',
       name: 'fanzone-fan-id',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const FanIdScreen()),
+      redirect: (_, __) => '/fanzone?section=supporters',
     ),
     GoRoute(
       path: 'social',
       name: 'fanzone-social',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const SocialHubScreen(), fullHeight: true),
+      redirect: (_, __) => '/fanzone?section=supporters',
     ),
     GoRoute(
       path: 'privacy',
@@ -245,6 +207,22 @@ class FanzoneModule extends FeatureModule {
       rationale: 'Primary engagement hub and bottom-tab destination.',
     ),
     RoutePresentationDecision(
+      path: '/fanzone/game',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'convert to sheet',
+      targetPath: '/fanzone',
+      rationale:
+          'TV-led game code entry is contextual to Fan Zone and should not increase the primary screen count.',
+    ),
+    RoutePresentationDecision(
+      path: '/fanzone/game/:sessionId',
+      presentation: RoutePresentation.fullHeightSheet,
+      recommendation: 'convert to sheet',
+      targetPath: '/fanzone',
+      rationale:
+          'Mobile controller opens from TV pairing/deep links but remains a Fan Zone modal task.',
+    ),
+    RoutePresentationDecision(
       path: '/fanzone/match/:fixtureId',
       presentation: RoutePresentation.fullScreen,
       recommendation: 'keep',
@@ -254,11 +232,12 @@ class FanzoneModule extends FeatureModule {
       path: '/fanzone/wallet',
       presentation: RoutePresentation.fullScreen,
       recommendation: 'keep',
-      rationale: 'Wallet combines balance, ledger, rewards, and trust.',
+      rationale:
+          'Existing route hosts wallet balance, earning history, and rewards economy.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/fixtures',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'consolidate',
       targetPath: '/fanzone',
       rationale: 'Fixture browsing belongs to the Fan Zone hub.',
@@ -267,15 +246,15 @@ class FanzoneModule extends FeatureModule {
       path: '/fanzone/live',
       presentation: RoutePresentation.redirect,
       recommendation: 'merge',
-      targetPath: '/fanzone/fixtures?status=live',
+      targetPath: '/fanzone?section=league',
       rationale: 'Live is a fixture filter, not a separate screen.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/my',
       presentation: RoutePresentation.fullHeightSheet,
       recommendation: 'consolidate',
-      targetPath: '/fanzone',
-      rationale: 'Predictions are a Fan Zone section.',
+      targetPath: '/fanzone?section=predictions',
+      rationale: 'Personal prediction history belongs under Predictions.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/my/:predictionId',
@@ -286,58 +265,58 @@ class FanzoneModule extends FeatureModule {
     ),
     RoutePresentationDecision(
       path: '/fanzone/my/:predictionId/settlement',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'merge',
       targetPath: '/fanzone/my/:predictionId',
       rationale: 'Settlement is a state inside prediction detail.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/offers',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'merge',
-      targetPath: '/fanzone/wallet',
-      rationale: 'Offers are part of the wallet/rewards economy.',
+      targetPath: '/fanzone?section=rewards',
+      rationale: 'Offers are part of the points and rewards area.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/rewards',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'merge',
-      targetPath: '/fanzone/wallet',
-      rationale: 'Rewards should live with wallet value and redemption.',
+      targetPath: '/fanzone?section=rewards',
+      rationale: 'Rewards should live with points balance and redemption.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/history',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'merge',
-      targetPath: '/fanzone/wallet',
-      rationale: 'Token history is wallet ledger content.',
+      targetPath: '/fanzone?section=wallet',
+      rationale: 'History is wallet activity content.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/leaderboard',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'consolidate',
-      targetPath: '/fanzone',
+      targetPath: '/fanzone?section=league',
       rationale: 'Ranking is a hub section, not an app destination.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/notifications',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'convert to sheet',
-      targetPath: '/fanzone',
+      targetPath: '/fanzone?section=predictions',
       rationale: 'Alerts are transient and should open from a bell/action.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/badges',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'merge',
-      targetPath: '/fanzone',
+      targetPath: '/fanzone?section=rewards',
       rationale: 'Badges are achievement content inside the hub/profile.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/streak',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'merge',
-      targetPath: '/fanzone',
+      targetPath: '/fanzone?section=rewards',
       rationale: 'Streak is a status/achievement surface.',
     ),
     RoutePresentationDecision(
@@ -349,52 +328,52 @@ class FanzoneModule extends FeatureModule {
     ),
     RoutePresentationDecision(
       path: '/fanzone/league',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'consolidate',
-      targetPath: '/fanzone',
+      targetPath: '/fanzone?section=league',
       rationale: 'League content supports match context.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/league/:competitionSlug',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'merge',
-      targetPath: '/fanzone/league',
+      targetPath: '/fanzone?section=league',
       rationale: 'Competition detail is league section depth.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/standings/:competitionSlug',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'consolidate',
-      targetPath: '/fanzone/league',
+      targetPath: '/fanzone?section=league',
       rationale: 'Standings belong beside fixtures and competitions.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/team/:teamSlug',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'hide from default navigation',
-      targetPath: '/fanzone/league',
+      targetPath: '/fanzone?section=league',
       rationale: 'Team profile is useful as deep-link context only.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/club-zone',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'merge',
-      targetPath: '/fanzone',
+      targetPath: '/fanzone?section=supporters',
       rationale: 'Club Zone overlaps with Fan Zone and Fan Clubs.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/fan-id',
-      presentation: RoutePresentation.modalSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'merge',
-      targetPath: '/settings',
-      rationale: 'Fan ID is an identity card, not a browse screen.',
+      targetPath: '/fanzone?section=supporters',
+      rationale: 'Fan ID is an identity card inside Supporters.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/social',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'merge',
-      targetPath: '/fanzone',
-      rationale: 'Social belongs inside Supporters/Fan Zone.',
+      targetPath: '/fanzone?section=supporters',
+      rationale: 'Social belongs inside supporter groups.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/privacy',

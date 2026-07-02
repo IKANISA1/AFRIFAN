@@ -8,7 +8,9 @@ import 'package:go_router/go_router.dart';
 import '../ticketing_providers.dart';
 
 class MyTicketsScreen extends ConsumerStatefulWidget {
-  const MyTicketsScreen({super.key});
+  const MyTicketsScreen({super.key, this.embedded = false});
+
+  final bool embedded;
 
   @override
   ConsumerState<MyTicketsScreen> createState() => _MyTicketsScreenState();
@@ -38,6 +40,53 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
   @override
   Widget build(BuildContext context) {
     final ticketsAsync = ref.watch(myTicketsProvider);
+    final body = ticketsAsync.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.all(SpacingTokens.spacing4),
+        child: AfriSkeletonList(),
+      ),
+      error: (error, _) => _TicketWalletState(
+        title: 'Ticket wallet unavailable',
+        body:
+            'We could not load your ticket wallet right now. Check your connection and try again.',
+        actionLabel: 'Retry',
+        onPressed: () => ref.invalidate(myTicketsProvider),
+      ),
+      data: (tickets) {
+        final now = DateTime.now();
+        final upcoming = tickets.where((ticket) {
+          final isOpenTicket = ticket.status == TicketStatus.pending ||
+              ticket.status == TicketStatus.active;
+          return isOpenTicket && !ticket.match.matchDate.isBefore(now);
+        }).toList(growable: false);
+        final past = tickets
+            .where((ticket) => !upcoming.contains(ticket))
+            .toList(growable: false);
+
+        return TabBarView(
+          controller: _tabController,
+          children: [
+            _buildTicketList(context, tickets: upcoming),
+            _buildTicketList(context, tickets: past),
+          ],
+        );
+      },
+    );
+
+    if (widget.embedded) {
+      return Column(
+        children: [
+          AfriTabBar.line(
+            controller: _tabController,
+            tabs: const [
+              Tab(text: 'UPCOMING'),
+              Tab(text: 'PAST'),
+            ],
+          ),
+          Expanded(child: body),
+        ],
+      );
+    }
 
     return Scaffold(
       backgroundColor: ColorTokens.background,
@@ -65,45 +114,7 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
           ],
         ),
       ),
-      body: ticketsAsync.when(
-        loading: () => const Padding(
-          padding: EdgeInsets.all(SpacingTokens.spacing4),
-          child: AfriSkeletonList(),
-        ),
-        error: (error, _) => _TicketWalletState(
-          title: 'Ticket wallet unavailable',
-          body:
-              'We could not load your ticket wallet right now. Check your connection and try again.',
-          actionLabel: 'Retry',
-          onPressed: () => ref.invalidate(myTicketsProvider),
-        ),
-        data: (tickets) {
-          final now = DateTime.now();
-          final upcoming = tickets.where((ticket) {
-            final isOpenTicket = ticket.status == TicketStatus.pending ||
-                ticket.status == TicketStatus.active;
-            return isOpenTicket && !ticket.match.matchDate.isBefore(now);
-          }).toList(growable: false);
-          final past =
-              tickets.where((ticket) => !upcoming.contains(ticket)).toList(
-                    growable: false,
-                  );
-
-          return TabBarView(
-            controller: _tabController,
-            children: [
-              _buildTicketList(
-                context,
-                tickets: upcoming,
-              ),
-              _buildTicketList(
-                context,
-                tickets: past,
-              ),
-            ],
-          );
-        },
-      ),
+      body: body,
     );
   }
 

@@ -222,7 +222,7 @@ class _NewsArticleScreenState extends ConsumerState<NewsArticleScreen> {
                                 title: entry['title']?.toString() ?? 'Story',
                                 subtitle: entry['subtitle']?.toString() ?? '',
                                 onTap: () =>
-                                    context.push('/news/${entry['id']}'),
+                                    context.push('/live/news/${entry['id']}'),
                               ),
                             );
                           }),

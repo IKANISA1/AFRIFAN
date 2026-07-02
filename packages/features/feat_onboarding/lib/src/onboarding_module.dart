@@ -2,7 +2,6 @@ import 'package:core_router/core_router.dart';
 import 'package:go_router/go_router.dart';
 
 import 'screens/onboarding_screen.dart';
-import 'screens/splash_screen.dart';
 import 'screens/supporter_phone_auth_screen.dart';
 
 /// Onboarding feature module. Provides non-tab routes for initial user flow.
@@ -19,7 +18,7 @@ class OnboardingModule extends FeatureModule {
 
   @override
   List<RouteBase> get routes => [
-    GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
+    GoRoute(path: '/splash', redirect: (_, state) => _splashRedirect(state)),
     GoRoute(
       path: '/onboarding',
       builder: (context, state) => const OnboardingScreen(),
@@ -70,4 +69,22 @@ class OnboardingModule extends FeatureModule {
       rationale: 'OTP verification needs focused validation and resend state.',
     ),
   ];
+}
+
+String _splashRedirect(GoRouterState state) {
+  final raw = state.uri.queryParameters['from']?.trim();
+  final uri = raw == null || raw.isEmpty ? null : Uri.tryParse(raw);
+  final path = uri?.path;
+  if (path == null ||
+      path.isEmpty ||
+      !path.startsWith('/') ||
+      path == '/splash' ||
+      path == '/onboarding') {
+    return '/onboarding';
+  }
+
+  return Uri(
+    path: '/onboarding',
+    queryParameters: <String, String>{'from': uri.toString()},
+  ).toString();
 }

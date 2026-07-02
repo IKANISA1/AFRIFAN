@@ -27,6 +27,14 @@ void main() {
       expect(rootPaths, contains('/contribute'));
     });
 
+    test('root contribution hub redirects to Fan Zone Supporters', () {
+      final rootRoute = module.routes.whereType<GoRoute>().firstWhere(
+        (r) => r.path == '/contribute',
+      );
+
+      expect(rootRoute.redirect, isNotNull);
+    });
+
     group('/contribute sub-routes', () {
       late GoRoute rootRoute;
 
@@ -36,20 +44,28 @@ void main() {
         );
       });
 
-      test('has projects sub-route', () {
+      test('projects sub-route redirects to Supporters', () {
         final subPaths = rootRoute.routes
             .whereType<GoRoute>()
             .map((r) => r.path)
             .toSet();
         expect(subPaths, contains('projects'));
+        final route = rootRoute.routes.whereType<GoRoute>().firstWhere(
+          (r) => r.path == 'projects',
+        );
+        expect(route.redirect, isNotNull);
       });
 
-      test('has groups sub-route', () {
+      test('groups sub-route redirects to Supporters', () {
         final subPaths = rootRoute.routes
             .whereType<GoRoute>()
             .map((r) => r.path)
             .toSet();
         expect(subPaths, contains('groups'));
+        final route = rootRoute.routes.whereType<GoRoute>().firstWhere(
+          (r) => r.path == 'groups',
+        );
+        expect(route.redirect, isNotNull);
       });
 
       test('has group/:groupId sub-route', () {
@@ -95,15 +111,9 @@ void main() {
             decision.path: decision.presentation,
         };
 
-        expect(decisions['/contribute'], RoutePresentation.fullHeightSheet);
-        expect(
-          decisions['/contribute/projects'],
-          RoutePresentation.fullHeightSheet,
-        );
-        expect(
-          decisions['/contribute/groups'],
-          RoutePresentation.fullHeightSheet,
-        );
+        expect(decisions['/contribute'], RoutePresentation.redirect);
+        expect(decisions['/contribute/projects'], RoutePresentation.redirect);
+        expect(decisions['/contribute/groups'], RoutePresentation.redirect);
         expect(
           decisions['/contribute/group/:groupId'],
           RoutePresentation.fullHeightSheet,

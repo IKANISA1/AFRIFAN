@@ -33,8 +33,8 @@ class PredictionSlipBar extends ConsumerWidget {
       ),
       child: AfriPressFeedback(
         onTap: onTap,
-        semanticsLabel: 'Prediction slip',
-        tooltip: 'Prediction slip',
+        semanticsLabel: 'Pick round',
+        tooltip: 'Pick round',
         excludeChildSemantics: true,
         builder: (context, state) => AfriSurfaceCard(
           padding: const EdgeInsets.symmetric(
@@ -66,12 +66,12 @@ class PredictionSlipBar extends ConsumerWidget {
                   children: [
                     Text(
                       slip.items.length == 1
-                          ? '1 prediction active'
-                          : '${slip.items.length} predictions active',
+                          ? '1 pick active'
+                          : '${slip.items.length} picks active',
                       style: TypographyTokens.titleSmall(),
                     ),
                     Text(
-                      'Earn up to ${slip.totalPotential} FET',
+                      'Earn up to ${slip.totalPotential} pts',
                       style: TypographyTokens.bodySmall(),
                     ),
                   ],
@@ -132,12 +132,12 @@ class _PredictionSlipSheet extends ConsumerWidget {
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               Text(
-                'Prediction slip is empty',
+                'Pick round is empty',
                 style: TypographyTokens.titleMedium(),
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
-                'Add markets from any fixture and lock them in from here.',
+                'Add picks from any fixture and lock them in from here.',
                 textAlign: TextAlign.center,
                 style: TypographyTokens.bodySmall(),
               ),
@@ -157,7 +157,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
             children: [
               Expanded(
                 child: Text(
-                  'PREDICTION SLIP',
+                  'PICK ROUND',
                   style: TypographyTokens.headlineSmall().copyWith(
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.4,
@@ -185,14 +185,14 @@ class _PredictionSlipSheet extends ConsumerWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            'Potential return: ${slip.totalPotential} FET',
+            'Potential points: ${slip.totalPotential} pts',
             style: TypographyTokens.titleLarge(
               ColorTokens.clubAccent,
             ).copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
           AfriButton(
-            label: slip.isSubmitting ? 'Submitting...' : 'Lock In Predictions',
+            label: slip.isSubmitting ? 'Submitting...' : 'Lock In Picks',
             icon: AfriIcons.verified,
             enabled: !slip.isSubmitting,
             onTap: () async {
@@ -246,7 +246,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
                   hostContext,
                   result.messages.isNotEmpty
                       ? result.messages.first
-                      : 'Could not submit your predictions.',
+                      : 'Could not submit your picks.',
                 );
               }
             },
@@ -259,7 +259,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
 
 // ── Pre-submission confirmation sheet (B-1 fix) ────────────────────────
 
-/// Shows a confirmation bottom sheet summarising the prediction slip before
+/// Shows a confirmation bottom sheet summarising the pick round before
 /// submission. Returns `true` if the user confirms, `false` if they cancel.
 Future<bool> _showPreSubmitConfirmation(
   BuildContext context, {
@@ -276,7 +276,7 @@ Future<bool> _showPreSubmitConfirmation(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'CONFIRM PREDICTIONS',
+            'CONFIRM PICKS',
             style: TypographyTokens.headlineSmall().copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: 1.4,
@@ -285,10 +285,10 @@ Future<bool> _showPreSubmitConfirmation(
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             accaMode && items.length > 1
-                ? 'You are locking ${items.length} selections as an Acca.'
+                ? 'You are locking ${items.length} picks as a combo.'
                 : items.length == 1
-                ? 'You are locking 1 prediction.'
-                : 'You are locking ${items.length} predictions.',
+                ? 'You are locking 1 pick.'
+                : 'You are locking ${items.length} picks.',
             style: TypographyTokens.bodyMedium(),
           ),
           const SizedBox(height: SpacingTokens.spacing4),
@@ -315,7 +315,7 @@ Future<bool> _showPreSubmitConfirmation(
                         ),
                         const Spacer(),
                         Text(
-                          '${item.outcomeLabel}  ·  +${item.fetPotential} FET',
+                          '${item.outcomeLabel}  ·  +${item.fetPotential} pts',
                           style: TypographyTokens.labelSmall(
                             ColorTokens.clubAccent,
                           ),
@@ -343,7 +343,7 @@ Future<bool> _showPreSubmitConfirmation(
                       ),
                       const SizedBox(height: SpacingTokens.spacing1),
                       Text(
-                        '+$totalPotential FET',
+                        '+$totalPotential pts',
                         style: TypographyTokens.metricValue(
                           ColorTokens.clubAccent,
                         ),
@@ -356,7 +356,7 @@ Future<bool> _showPreSubmitConfirmation(
           ),
           const SizedBox(height: SpacingTokens.spacing5),
           AfriButton(
-            label: 'CONFIRM & LOCK IN',
+            label: 'CONFIRM PICKS',
             icon: AfriIcons.verified,
             onTap: () => context.pop(true),
           ),
@@ -438,13 +438,13 @@ class _ShareCardModalSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
-                  'Potential earn: ${result.totalPotential} FET',
+                  'Potential points: ${result.totalPotential} pts',
                   style: TypographyTokens.bodyLarge(),
                 ),
                 if ((result.slipId ?? '').isNotEmpty) ...[
                   const SizedBox(height: SpacingTokens.spacing2),
                   Text(
-                    'Slip ID: ${result.slipId}',
+                    'Round ID: ${result.slipId}',
                     style: TypographyTokens.bodySmall(),
                   ),
                 ],
@@ -608,7 +608,7 @@ class _SlipRow extends StatelessWidget {
                   runSpacing: SpacingTokens.spacing2,
                   children: [
                     _SlipChip(label: item.outcomeLabel),
-                    _SlipChip(label: '+${item.fetPotential} FET'),
+                    _SlipChip(label: '+${item.fetPotential} pts'),
                   ],
                 ),
               ],
@@ -617,7 +617,7 @@ class _SlipRow extends StatelessWidget {
           AfriIconButton(
             icon: AfriIcons.close,
             onTap: onRemove,
-            tooltip: 'Remove prediction',
+            tooltip: 'Remove pick',
           ),
         ],
       ),

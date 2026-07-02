@@ -134,7 +134,7 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                     children: [
                       StakeBadge(stakeFet: challenge.stakeFet),
                       _MetaChip(label: '${challenge.totalParticipants} joined'),
-                      _MetaChip(label: '${challenge.totalPoolFet} FET pool'),
+                      _MetaChip(label: '${challenge.totalPoolFet} pts total'),
                       _MetaChip(
                         label: challenge.status.name
                             .replaceAll('_', '')
@@ -236,7 +236,7 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                         AfriButton(
                           label: _joining
                               ? 'Joining…'
-                              : 'JOIN FOR ${challenge.stakeFet} FET',
+                              : 'JOIN WITH ${challenge.stakeFet} pts',
                           icon: AfriIcons.checkGroup,
                           isLoading: _joining,
                           enabled: !_joining,
@@ -264,7 +264,7 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'SETTLEMENT',
+                          'RESULTS',
                           style: TypographyTokens.sectionTitle().copyWith(
                             fontWeight: FontWeight.w700,
                           ),
@@ -284,8 +284,8 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                           value: '${settlement.losersCount}',
                         ),
                         _SettlementRow(
-                          label: 'Payout / winner',
-                          value: '${settlement.payoutPerWinnerFet} FET',
+                          label: 'Points / winner',
+                          value: '${settlement.payoutPerWinnerFet} pts',
                         ),
                       ],
                     ),
@@ -332,7 +332,7 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
                             ScorePredictionPill(
                               homeScore: entry.predictedHomeScore,
                               awayScore: entry.predictedAwayScore,
-                              label: '${entry.stakeFet} FET',
+                              label: '${entry.stakeFet} pts',
                               accent: entry.isWinner
                                   ? ColorTokens.success
                                   : entry.isLoser
@@ -355,11 +355,11 @@ class _ChallengeDetailScreenState extends ConsumerState<ChallengeDetailScreen> {
 
   String _entrySummary(ChallengeEntry entry) {
     return switch (entry.status) {
-      ChallengeEntryStatus.winner => 'Won ${entry.payoutFet} FET',
-      ChallengeEntryStatus.loser => 'Lost this pool',
-      ChallengeEntryStatus.refunded => 'Refunded ${entry.payoutFet} FET',
+      ChallengeEntryStatus.winner => 'Earned ${entry.payoutFet} pts',
+      ChallengeEntryStatus.loser => 'No result credit',
+      ChallengeEntryStatus.refunded => 'Returned ${entry.payoutFet} pts',
       ChallengeEntryStatus.cancelled => 'Entry cancelled',
-      ChallengeEntryStatus.active => 'Waiting for official settlement results.',
+      ChallengeEntryStatus.active => 'Waiting for official result review.',
     };
   }
 }

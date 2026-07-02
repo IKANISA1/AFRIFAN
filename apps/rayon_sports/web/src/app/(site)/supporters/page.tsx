@@ -168,7 +168,7 @@ export default async function SupportersPage() {
                       </h3>
                     </div>
                     <div className="rounded-full bg-club-accent/15 px-3 py-1 text-[11px] font-bold text-club-accent">
-                      {item.fetValue.toLocaleString()} FET
+                      {item.fetValue.toLocaleString()} pts
                     </div>
                   </div>
                   <p className="mt-3 text-sm leading-6 text-slate-300">

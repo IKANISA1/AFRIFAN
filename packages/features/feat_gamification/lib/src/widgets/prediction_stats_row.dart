@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 /// Prediction stats summary widget for profile screen.
 ///
-/// Mirrors the fanafrika `Profile.tsx` stats chips (FET balance, accuracy).
-/// Shows total predictions, win rate, and FET earned in a compact row.
+/// Mirrors the fanafrika `Profile.tsx` stats chips for points and accuracy.
+/// Shows total predictions, win rate, and points earned in a compact row.
 class PredictionStatsRow extends StatelessWidget {
   const PredictionStatsRow({
     super.key,
@@ -43,7 +43,7 @@ class PredictionStatsRow extends StatelessWidget {
         Expanded(
           child: _StatBox(
             value: '$fetEarned',
-            label: 'FET EARNED',
+            label: 'POINTS EARNED',
             icon: AfriIcons.earn,
           ),
         ),

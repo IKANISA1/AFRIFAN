@@ -227,8 +227,8 @@ class _TokenHistoryTransactionCard extends StatelessWidget {
       container: true,
       label:
           '$directionLabel transaction, ${transaction.headline}, '
-          '$detail, ${transaction.amount} FET, '
-          'balance ${transaction.balanceAfter}, $dateLabel',
+          '$detail, ${transaction.amount} points, '
+          'balance ${transaction.balanceAfter} points, $dateLabel',
       child: ExcludeSemantics(
         child: GlassCard(
           animate: false,
@@ -274,13 +274,13 @@ class _TokenHistoryTransactionCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${isCredit ? '+' : '-'}${transaction.amount} FET',
+                    '${isCredit ? '+' : '-'}${transaction.amount} pts',
                     style: TypographyTokens.titleMedium(
                       color,
                     ).copyWith(fontWeight: FontWeight.w800),
                   ),
                   Text(
-                    'Bal ${transaction.balanceAfter}',
+                    'Bal ${transaction.balanceAfter} pts',
                     style: TypographyTokens.bodySmall(),
                   ),
                 ],

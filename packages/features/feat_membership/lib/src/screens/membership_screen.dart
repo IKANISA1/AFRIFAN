@@ -591,7 +591,7 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen> {
                   icon: AfriIcons.clubZone,
                   title: 'Fan registry',
                   subtitle: 'Browse all supporters',
-                  onTap: () => context.push('/membership/fans'),
+                  onTap: () => context.go('/fanzone?section=supporters'),
                 ),
               ),
             ),

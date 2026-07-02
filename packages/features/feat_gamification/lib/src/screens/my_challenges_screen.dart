@@ -150,13 +150,13 @@ class _MyChallengesScreenState extends ConsumerState<MyChallengesScreen>
   String _summaryFor(Challenge challenge) {
     final entry = challenge.myEntry;
     if (entry == null) {
-      return '${challenge.totalPoolFet} FET pool';
+      return '${challenge.totalPoolFet} pts total';
     }
 
     return switch (entry.status) {
-      ChallengeEntryStatus.winner => 'Won ${entry.payoutFet} FET',
-      ChallengeEntryStatus.loser => 'Lost ${challenge.stakeFet} FET',
-      ChallengeEntryStatus.refunded => 'Refunded ${entry.payoutFet} FET',
+      ChallengeEntryStatus.winner => 'Earned ${entry.payoutFet} pts',
+      ChallengeEntryStatus.loser => 'No result credit',
+      ChallengeEntryStatus.refunded => 'Returned ${entry.payoutFet} pts',
       ChallengeEntryStatus.cancelled => 'Cancelled',
       ChallengeEntryStatus.active =>
         'My pick ${entry.predictedHomeScore}-${entry.predictedAwayScore}',

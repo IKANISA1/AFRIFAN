@@ -14,8 +14,6 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
   bool _isSubmitting = false;
 
   List<Map<String, String>> _slidesFor(String appName) {
@@ -57,12 +55,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         'source': isRayon ? 'Rayon player media' : 'Supporter media',
       },
     ];
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
   }
 
   Future<void> _handleGetStarted() async {
@@ -138,237 +130,227 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ClubConfigScope.maybeOf(context)?.appName ??
         RuntimeBranding.displayAppName;
     final slides = _slidesFor(appName);
+    final hero = slides.first;
     return Scaffold(
       backgroundColor: ColorTokens.transparent,
       body: GradientBackground(
         routePath: '/onboarding',
         child: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: slides.length,
-                  onPageChanged: (idx) {
-                    setState(() => _currentPage = idx);
-                  },
-                  itemBuilder: (context, index) =>
-                      _buildSlide(context, slides[index], index),
-                ),
-              ),
-              Padding(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isCompact = constraints.maxHeight < 620;
+              final isLargeText =
+                  MediaQuery.textScalerOf(context).scale(1) > 1.45;
+              final mediaHeight = isCompact || isLargeText ? 210.0 : 280.0;
+
+              return SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(
                   SpacingTokens.spacing6,
-                  0,
+                  SpacingTokens.spacing4,
                   SpacingTokens.spacing6,
                   SpacingTokens.spacing6,
                 ),
-                child: AfriSurfaceCard(
-                  backgroundColor: ColorTokens.surfaceContainerLow.withValues(
-                    alpha: 0.82,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight - SpacingTokens.spacing10,
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SpacingTokens.spacing6,
-                    vertical: SpacingTokens.spacing5,
-                  ),
-                  child: Row(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(
-                        child: Row(
-                          children: List.generate(
-                            slides.length,
-                            (index) => AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              margin: const EdgeInsets.only(right: 8),
-                              height: 6,
-                              width: _currentPage == index ? 28 : 8,
-                              decoration: BoxDecoration(
-                                color: _currentPage == index
-                                    ? ColorTokens.primaryContainer
-                                    : ColorTokens.ghostBorder,
-                                borderRadius: BorderRadius.circular(
-                                  ShapeTokens.radiusFull,
-                                ),
-                              ),
-                            ),
-                          ),
+                      AfriSurfaceCard(
+                        backgroundColor: ColorTokens.surfaceContainerLow
+                            .withValues(alpha: 0.82),
+                        height: mediaHeight,
+                        width: double.infinity,
+                        padding: EdgeInsets.zero,
+                        child: _OnboardingMedia(
+                          asset: hero['asset']!,
+                          source: hero['source']!,
+                          icon: AfriIcons.stadium,
+                          accent: ColorTokens.primary,
                         ),
                       ),
-                      SizedBox(
-                        width: 180,
-                        child: _isSubmitting
-                            ? const Center(child: AfriLoadingIndicator())
-                            : AfriButton(
-                                label: _currentPage == slides.length - 1
-                                    ? 'Get started'
-                                    : 'Next',
-                                fullWidth: true,
-                                onTap: _currentPage == slides.length - 1
-                                    ? _handleGetStarted
-                                    : () {
-                                        unawaited(
-                                          _pageController.nextPage(
-                                            duration: const Duration(
-                                              milliseconds: 300,
-                                            ),
-                                            curve: Curves.easeInOut,
-                                          ),
-                                        );
-                                      },
-                              ),
+                      const SizedBox(height: SpacingTokens.spacing6),
+                      Text(
+                        'Your club. Your app.',
+                        style: TypographyTokens.displaySmall().copyWith(
+                          fontSize: isCompact ? 32 : 40,
+                          height: 1.1,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: SpacingTokens.spacing3),
+                      Text(
+                        'The official $appName fan platform for matchday, membership, tickets, and support.',
+                        style: TypographyTokens.bodyLarge(
+                          ColorTokens.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: SpacingTokens.spacing6),
+                      const _OnboardingHighlightGrid(
+                        highlights: [
+                          _OnboardingHighlightData(
+                            icon: AfriIcons.membership,
+                            title: 'Membership',
+                            subtitle: 'Fan ID and benefits',
+                          ),
+                          _OnboardingHighlightData(
+                            icon: AfriIcons.tickets,
+                            title: 'Tickets',
+                            subtitle: 'Matchday access',
+                          ),
+                          _OnboardingHighlightData(
+                            icon: AfriIcons.contribute,
+                            title: 'Support',
+                            subtitle: 'Projects and groups',
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: SpacingTokens.spacing6),
+                      _isSubmitting
+                          ? const Center(child: AfriLoadingIndicator())
+                          : AfriButton(
+                              label: 'Get started',
+                              fullWidth: true,
+                              onTap: _handleGetStarted,
+                            ),
+                      const SizedBox(height: SpacingTokens.spacing3),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: AfriTextIconButton(
+                          onPressed: _isSubmitting
+                              ? null
+                              : () => context.push(
+                                  Uri(
+                                    path: '/auth/phone',
+                                    queryParameters: <String, String>{
+                                      if (_deferredDestination()
+                                          case final String from)
+                                        'from': from,
+                                    },
+                                  ).toString(),
+                                ),
+                          icon: const Icon(AfriIcons.chat),
+                          label: const Text('Continue with WhatsApp'),
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
-              if (_currentPage == slides.length - 1)
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: SpacingTokens.spacing6,
-                    right: SpacingTokens.spacing6,
-                    bottom: SpacingTokens.spacing6,
-                  ),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: AfriTextIconButton(
-                      onPressed: _isSubmitting
-                          ? null
-                          : () => context.push(
-                              Uri(
-                                path: '/auth/phone',
-                                queryParameters: <String, String>{
-                                  if (_deferredDestination()
-                                      case final String from)
-                                    'from': from,
-                                },
-                              ).toString(),
-                            ),
-                      icon: const Icon(AfriIcons.chat),
-                      label: const Text('Continue with WhatsApp'),
-                    ),
-                  ),
-                ),
-            ],
+              );
+            },
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildSlide(
-    BuildContext context,
-    Map<String, String> slideContent,
-    int index,
-  ) {
-    final icon = switch (index) {
-      0 => AfriIcons.stadium,
-      1 => AfriIcons.premium,
-      _ => AfriIcons.wallet,
-    };
-    final accent = index == 1 ? ColorTokens.clubAccent : ColorTokens.primary;
-    final pageNumber = '${index + 1}'.padLeft(2, '0');
+class _OnboardingHighlightData {
+  const _OnboardingHighlightData({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
 
+  final IconData icon;
+  final String title;
+  final String subtitle;
+}
+
+class _OnboardingHighlightGrid extends StatelessWidget {
+  const _OnboardingHighlightGrid({required this.highlights});
+
+  final List<_OnboardingHighlightData> highlights;
+
+  @override
+  Widget build(BuildContext context) {
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isCompact = constraints.maxHeight < 560;
-        final isLargeText = MediaQuery.textScalerOf(context).scale(1) > 1.45;
-        final shouldScroll = isCompact || isLargeText;
-        final mediaHeight = isCompact
-            ? 220.0
-            : isLargeText
-            ? 220.0
-            : 280.0;
-        final slide = Padding(
-          padding: EdgeInsets.fromLTRB(
-            SpacingTokens.spacing6,
-            SpacingTokens.spacing4,
-            SpacingTokens.spacing6,
-            shouldScroll ? SpacingTokens.spacing6 : SpacingTokens.spacing8,
-          ),
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                child: Text(
-                  pageNumber,
-                  style: TypographyTokens.displayLarge(
-                    ColorTokens.primaryContainer.withValues(alpha: 0.14),
+        final useRows = textScale > 1.35 || constraints.maxWidth < 340;
+        if (useRows) {
+          return Column(
+            children: highlights
+                .map(
+                  (highlight) => Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: SpacingTokens.listItemGap,
+                    ),
+                    child: _OnboardingHighlight(data: highlight, wide: true),
                   ),
-                ),
-              ),
-              Column(
-                mainAxisAlignment: shouldScroll
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Transform.translate(
-                    offset: Offset(0, shouldScroll ? 0 : -8),
-                    child: AfriSurfaceCard(
-                      backgroundColor: ColorTokens.surfaceContainerLow
-                          .withValues(alpha: 0.82),
-                      height: mediaHeight,
-                      width: double.infinity,
-                      padding: EdgeInsets.zero,
-                      child: _OnboardingMedia(
-                        asset: slideContent['asset']!,
-                        source: slideContent['source']!,
-                        icon: icon,
-                        accent: accent,
-                      ),
-                    ),
-                  ),
-                  Transform.translate(
-                    offset: Offset(
-                      0,
-                      shouldScroll ? 0 : SpacingTokens.spacing4,
-                    ),
-                    child: Text(
-                      slideContent['title']!,
-                      style: TypographyTokens.displaySmall().copyWith(
-                        fontSize: shouldScroll ? 32 : 40,
-                        height: 1.1,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  Transform.translate(
-                    offset: Offset(
-                      0,
-                      shouldScroll
-                          ? SpacingTokens.spacing2
-                          : SpacingTokens.spacing3,
-                    ),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 320),
-                      child: Text(
-                        slideContent['body']!,
-                        style: TypographyTokens.bodyLarge().copyWith(
-                          color: ColorTokens.onSurfaceVariant,
-                          fontSize: shouldScroll ? 16 : null,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-
-        if (!shouldScroll) {
-          return slide;
+                )
+                .toList(growable: false),
+          );
         }
 
-        return SingleChildScrollView(
-          padding: EdgeInsets.zero,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: slide,
-          ),
+        return Wrap(
+          spacing: SpacingTokens.listItemGap,
+          runSpacing: SpacingTokens.listItemGap,
+          children: highlights
+              .map(
+                (highlight) => SizedBox(
+                  width: 104,
+                  child: _OnboardingHighlight(data: highlight),
+                ),
+              )
+              .toList(growable: false),
         );
       },
+    );
+  }
+}
+
+class _OnboardingHighlight extends StatelessWidget {
+  const _OnboardingHighlight({required this.data, this.wide = false});
+
+  final _OnboardingHighlightData data;
+  final bool wide;
+
+  @override
+  Widget build(BuildContext context) {
+    final icon = Icon(data.icon, size: 20, color: ColorTokens.primaryContainer);
+    final copy = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          data.title,
+          maxLines: wide ? 2 : 1,
+          overflow: TextOverflow.ellipsis,
+          style: TypographyTokens.labelMedium().copyWith(
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        const SizedBox(height: SpacingTokens.spacing1),
+        Text(
+          data.subtitle,
+          maxLines: wide ? 3 : 2,
+          overflow: TextOverflow.ellipsis,
+          style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+        ),
+      ],
+    );
+
+    return AfriSurfaceCard(
+      padding: const EdgeInsets.all(SpacingTokens.spacing3),
+      child: wide
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                icon,
+                const SizedBox(width: SpacingTokens.spacing3),
+                Expanded(child: copy),
+              ],
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                icon,
+                const SizedBox(height: SpacingTokens.spacing3),
+                copy,
+              ],
+            ),
     );
   }
 }

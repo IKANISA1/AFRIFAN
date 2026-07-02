@@ -70,7 +70,7 @@ class HomeQuickAction {
     HomeQuickAction(
       actionKey: 'fanclubs',
       title: 'Fanclubs',
-      route: '/fan-clubs',
+      route: '/fanzone?section=supporters',
       iconKey: 'groups',
       subtitle: 'Find a supporter chapter',
       sortOrder: 30,
@@ -86,15 +86,15 @@ class HomeQuickAction {
     HomeQuickAction(
       actionKey: 'matchday',
       title: 'Matchday',
-      route: '/fanzone/fixtures',
+      route: '/fanzone?section=league',
       iconKey: 'predict',
       subtitle: 'Fixtures and live updates',
       sortOrder: 50,
     ),
     HomeQuickAction(
       actionKey: 'contribute',
-      title: 'Contribute',
-      route: '/contribute',
+      title: 'Support',
+      route: '/fanzone?section=supporters',
       iconKey: 'groups',
       subtitle: 'Club projects and support',
       sortOrder: 60,
@@ -147,8 +147,8 @@ enum LatestIntelStatus { ready, empty, error }
 @visibleForTesting
 String homeHeroRouteForStatus(String status) {
   return switch (status.trim().toUpperCase()) {
-    'LIVE' || 'HALF-TIME' || 'FULL-TIME' => '/live',
-    _ => '/fanzone/fixtures',
+    'LIVE' || 'HALF-TIME' || 'FULL-TIME' => '/fanzone/match/live',
+    _ => '/fanzone?section=league',
   };
 }
 

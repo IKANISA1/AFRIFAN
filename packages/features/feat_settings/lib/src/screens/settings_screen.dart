@@ -109,12 +109,12 @@ class SettingsScreen extends ConsumerWidget {
               AfriListRow(
                 icon: AfriIcons.history,
                 title: 'History & honors',
-                onTap: () => context.push('/fanzone/history'),
+                onTap: () => context.go('/fanzone?section=wallet'),
               ),
               AfriListRow(
                 icon: AfriIcons.star,
                 title: 'Hall of fame',
-                onTap: () => context.push('/fanzone/leaderboard'),
+                onTap: () => context.go('/fanzone?section=league'),
               ),
             ]),
 
@@ -126,6 +126,12 @@ class SettingsScreen extends ConsumerWidget {
                 icon: AfriIcons.profile,
                 title: 'Edit profile',
                 onTap: () => context.push('/settings/edit-profile'),
+              ),
+              AfriListRow(
+                icon: AfriIcons.qrCode,
+                title: 'Fan ID',
+                subtitle: alias,
+                onTap: () => context.go('/fanzone?section=supporters'),
               ),
               AfriListRow(
                 icon: AfriIcons.notifications,

@@ -184,7 +184,7 @@ export default function AdminOffersPage() {
                   <p className="font-display text-2xl font-bold uppercase leading-none">{offer.title}</p>
                   <p className="mt-1 truncate text-sm text-slate-300">{offer.partnerName} · {offer.categoryTag}</p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-club-primary px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white">{offer.fetCost} FET</span>
+                    <span className="rounded-full bg-club-primary px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white">{offer.fetCost} pts</span>
                     {offer.originalValue ? <span className="rounded-full border border-border-soft px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-slate-300">{offer.originalValue}</span> : null}
                     <span className="rounded-full border border-border-soft px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-slate-400">{offer.claimedCount} claimed</span>
                   </div>

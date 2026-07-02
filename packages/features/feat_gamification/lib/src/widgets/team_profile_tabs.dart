@@ -381,7 +381,7 @@ class TeamMembersContent extends StatelessWidget {
                   rank: entry.key + 1,
                   fanId: entry.value.displayLabel,
                   tier: entry.value.tier.toUpperCase(),
-                  fetLabel: '${entry.value.points} FET',
+                  fetLabel: '${entry.value.points} pts',
                   isMe: entry.value.isCurrentUser,
                 ),
               ),

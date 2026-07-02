@@ -75,7 +75,7 @@ export function MatchQuiz({
         </p>
         {totalFat > 0 && (
           <div className="mt-4 inline-flex rounded-full bg-club-accent/15 px-4 py-2 text-sm font-bold text-club-accent">
-            +{totalFat} FET earned
+            +{totalFat} points earned
           </div>
         )}
       </div>

@@ -157,7 +157,7 @@ class _IntelCard extends StatelessWidget {
       child: AfriPressFeedback(
         onTap: articleId == null
             ? null
-            : () => context.push('/news/$articleId'),
+            : () => context.push('/live/news/$articleId'),
         semanticsLabel: title.isEmpty ? 'Latest Intel article' : title,
         semanticsHint: articleId == null ? null : 'Open article',
         tooltip: title.isEmpty ? 'Latest Intel article' : title,

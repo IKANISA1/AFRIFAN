@@ -185,7 +185,7 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
                         ),
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
-                          '${wallet?.balance ?? 0} FET',
+                          '${wallet?.balance ?? 0} pts',
                           style: TypographyTokens.displaySmall(
                             ColorTokens.clubAccent,
                           ).copyWith(fontWeight: FontWeight.w900),

@@ -184,7 +184,7 @@ class FetPartnerOffer {
       fetValue: (json['fet_value'] as num?)?.toInt() ?? 0,
       triggerCondition:
           json['trigger_condition']?.toString() ??
-          'Complete the partner journey to earn FET.',
+          'Complete the partner journey to earn points.',
       activationTiming: json['activation_timing']?.toString() ?? 'Always on',
       description: json['description']?.toString() ?? '',
       badgeName: _normalizeNullableString(json['badge_name']),
@@ -374,7 +374,7 @@ class FetWalletTransaction {
   String get headline {
     switch (entryType) {
       case 'partner_promotion_earn':
-        return 'Partner FET earned';
+        return 'Partner points earned';
       case 'partner_pool_entry':
         return 'Partner pool entry';
       case 'partner_pool_payout':
@@ -386,7 +386,7 @@ class FetWalletTransaction {
       case 'transfer_out':
         return 'Transfer sent';
       case 'redeem':
-        return 'Wallet redemption';
+        return 'Points redemption';
       case 'admin_adjustment':
         return direction == FetWalletEntryDirection.credit
             ? 'Admin top-up'
@@ -395,7 +395,7 @@ class FetWalletTransaction {
         return 'Opening balance';
       case 'earn':
       default:
-        return 'FET earned';
+        return 'Points earned';
     }
   }
 }

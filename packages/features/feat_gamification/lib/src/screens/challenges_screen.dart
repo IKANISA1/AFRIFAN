@@ -79,7 +79,7 @@ class _ChallengesScreenState extends ConsumerState<ChallengesScreen>
       for (final item in context.catalog) {
         final challenge = _ChallengeData(
           title: item.itemName,
-          reward: '+${item.fetValue} FET',
+          reward: '+${item.fetValue} pts',
           progress: context.earnedCodes.contains(item.code) ? 1 : 0,
           progressLabel: context.earnedCodes.contains(item.code)
               ? 'Completed'
@@ -282,16 +282,16 @@ class _FetTutorialSheetState extends State<_FetTutorialSheet> {
       icon: AfriIcons.versus,
       title: 'HOW PREDICTIONS WORK',
       body:
-          'Browse upcoming fixtures, pick your markets (Match Result, '
-          'Goals, Scorers), and lock in your predictions before kickoff. '
-          'Correct picks earn you FET based on difficulty — harder calls mean bigger rewards.',
+          'Browse upcoming fixtures, choose pick types like Match Result, '
+          'Goals, and Scorers, then lock in picks before kickoff. '
+          'Correct picks earn points based on difficulty.',
     ),
     _TutorialStep(
       icon: AfriIcons.wallet,
-      title: 'EARN, TRANSFER & REDEEM',
+      title: 'EARN, LEVEL UP & REDEEM',
       body:
-          'Your FET balance grows as you engage. Transfer tokens to friends, '
-          'climb the leaderboard, unlock membership tiers, and redeem rewards '
+          'Your points balance grows as you engage. Climb the leaderboard, '
+          'unlock membership tiers, and redeem rewards '
           'from the club store. Every action counts.',
     ),
   ];

@@ -2,37 +2,37 @@
   "reward_options": [
     {
       "reward": "Mobile Airtime",
-      "cost": "500 FET",
+      "cost": "500 pts",
       "category": "Utility",
       "notes": "Via MoMo API integration"
     },
     {
       "reward": "AFRICLUB Premium Badge",
-      "cost": "200 FET",
+      "cost": "200 pts",
       "category": "Cosmetic",
       "notes": "Profile badge unlock"
     },
     {
-      "reward": "Jackpot Extra Entry",
-      "cost": "100 FET",
+      "reward": "Bonus Round Extra Entry",
+      "cost": "100 pts",
       "category": "Gameplay",
       "notes": "Second entry in the weekly round"
     },
     {
       "reward": "Custom Avatar Frame",
-      "cost": "150 FET",
+      "cost": "150 pts",
       "category": "Cosmetic",
       "notes": "Seasonal themed frame"
     },
     {
       "reward": "Club Fan Kit Digital Item",
-      "cost": "300 FET",
+      "cost": "300 pts",
       "category": "Collectible",
       "notes": "AFRICLUB-linked digital item"
     },
     {
       "reward": "Partner Voucher",
-      "cost": "1000 FET",
+      "cost": "1000 pts",
       "category": "Utility",
       "notes": "Restaurant or retail partner reward"
     }

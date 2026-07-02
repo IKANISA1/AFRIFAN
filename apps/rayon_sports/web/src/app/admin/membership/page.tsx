@@ -194,7 +194,7 @@ export default function AdminMembershipPage() {
                 <AdminStatusBadge label={s.status} tone={s.status === "active" ? "success" : s.status === "suspended" ? "danger" : "warning"} />
               </td>
               <td>
-                <p className="text-sm font-medium text-white">{s.points} FET</p>
+                <p className="text-sm font-medium text-white">{s.points} pts</p>
                 <p className="admin-row-meta">{s.chapter}</p>
               </td>
               <td className="text-xs text-[var(--admin-zinc-500)]">

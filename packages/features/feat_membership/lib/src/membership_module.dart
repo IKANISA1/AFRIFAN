@@ -1,7 +1,6 @@
 import 'package:core_router/core_router.dart';
 import 'package:go_router/go_router.dart';
 
-import 'screens/fan_registry_screen.dart';
 import 'screens/membership_screen.dart';
 import 'screens/tier_detail_screen.dart';
 
@@ -23,8 +22,7 @@ class MembershipModule extends FeatureModule {
     GoRoute(
       path: '/membership/fans',
       name: 'membership-fans',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const FanRegistryScreen(), fullHeight: true),
+      redirect: (_, __) => '/fanzone?section=supporters',
     ),
     GoRoute(
       path: '/membership/tier/:tierId',
@@ -46,11 +44,10 @@ class MembershipModule extends FeatureModule {
     ),
     RoutePresentationDecision(
       path: '/membership/fans',
-      presentation: RoutePresentation.fullHeightSheet,
+      presentation: RoutePresentation.redirect,
       recommendation: 'merge',
-      targetPath: '/membership',
-      rationale:
-          'Fan registry is community depth inside membership/supporters.',
+      targetPath: '/fanzone?section=supporters',
+      rationale: 'Fan registry is community depth inside Fan Zone Supporters.',
     ),
     RoutePresentationDecision(
       path: '/membership/tier/:tierId',

@@ -319,7 +319,7 @@ class FriendSupportersSection extends StatelessWidget {
     final parts = <String>[
       if (supporter.publicUserId != null) '#${supporter.publicUserId}',
       supporter.tier.toUpperCase(),
-      '${supporter.balance} FET',
+      '${supporter.balance} pts',
     ];
     return parts.join(' · ');
   }

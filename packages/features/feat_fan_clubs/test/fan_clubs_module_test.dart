@@ -27,6 +27,14 @@ void main() {
       expect(rootPaths, contains('/fan-clubs'));
     });
 
+    test('root route redirects to Fan Zone Supporters', () {
+      final rootRoute = module.routes.whereType<GoRoute>().firstWhere(
+        (r) => r.path == '/fan-clubs',
+      );
+
+      expect(rootRoute.redirect, isNotNull);
+    });
+
     group('/fan-clubs sub-routes', () {
       late GoRoute rootRoute;
 
@@ -65,7 +73,7 @@ void main() {
             decision.path: decision.presentation,
         };
 
-        expect(decisions['/fan-clubs'], RoutePresentation.consolidatedHub);
+        expect(decisions['/fan-clubs'], RoutePresentation.redirect);
         expect(
           decisions['/fan-clubs/:clubId'],
           RoutePresentation.fullHeightSheet,

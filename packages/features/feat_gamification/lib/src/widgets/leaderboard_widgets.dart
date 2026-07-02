@@ -120,7 +120,7 @@ class FetPodiumCard extends StatelessWidget {
           ),
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
-            entry == null ? '0 FET' : '+${entry!.totalFetEarned} FET',
+            entry == null ? '0 pts' : '+${entry!.totalFetEarned} pts',
             style:
                 (featured
                         ? TypographyTokens.headlineSmall(ColorTokens.clubAccent)
@@ -133,7 +133,7 @@ class FetPodiumCard extends StatelessWidget {
   }
 }
 
-/// Pinned "YOU" row for FET ranking.
+/// Pinned "YOU" row for points ranking.
 class FetUserRow extends StatelessWidget {
   const FetUserRow({super.key, required this.entry});
 
@@ -185,7 +185,7 @@ class FetUserRow extends StatelessWidget {
             ),
           ),
           Text(
-            '+${entry.totalFetEarned} FET',
+            '+${entry.totalFetEarned} pts',
             style: TypographyTokens.titleLarge(
               ColorTokens.clubAccent,
             ).copyWith(fontWeight: FontWeight.w800),
@@ -196,7 +196,7 @@ class FetUserRow extends StatelessWidget {
   }
 }
 
-/// Standard list row for FET ranking.
+/// Standard list row for points ranking.
 class FetListRow extends StatelessWidget {
   const FetListRow({super.key, required this.entry, required this.isMe});
 
@@ -263,7 +263,7 @@ class FetListRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '+${entry.totalFetEarned} FET',
+                '+${entry.totalFetEarned} pts',
                 style: TypographyTokens.titleLarge(
                   ColorTokens.clubAccent,
                 ).copyWith(fontWeight: FontWeight.w800),
@@ -326,8 +326,8 @@ class SupporterPodiumCard extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing2),
           Text(
             entry == null
-                ? '0 FET'
-                : '${formatLeaderboardNumber(entry!.totalFet)} FET',
+                ? '0 pts'
+                : '${formatLeaderboardNumber(entry!.totalFet)} pts',
             style:
                 (featured
                         ? TypographyTokens.headlineSmall(ColorTokens.clubAccent)
@@ -396,7 +396,7 @@ class SupporterUserRow extends StatelessWidget {
             ),
           ),
           Text(
-            '${formatLeaderboardNumber(entry.totalFet)} FET',
+            '${formatLeaderboardNumber(entry.totalFet)} pts',
             style: TypographyTokens.titleLarge(
               ColorTokens.clubAccent,
             ).copyWith(fontWeight: FontWeight.w800),
@@ -471,7 +471,7 @@ class SupporterListRow extends StatelessWidget {
             ),
           ),
           Text(
-            '${formatLeaderboardNumber(entry.totalFet)} FET',
+            '${formatLeaderboardNumber(entry.totalFet)} pts',
             style: TypographyTokens.titleLarge(
               ColorTokens.clubAccent,
             ).copyWith(fontWeight: FontWeight.w800),

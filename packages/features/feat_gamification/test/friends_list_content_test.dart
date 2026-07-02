@@ -87,7 +87,7 @@ void main() {
     );
     expect(find.text('Your friends'), findsOneWidget);
     expect(find.text('Supporter 483912'), findsOneWidget);
-    expect(find.text('#483912 · LEGEND · 1250 FET'), findsOneWidget);
+    expect(find.text('#483912 · LEGEND · 1250 pts'), findsOneWidget);
     expect(find.text('Online'), findsOneWidget);
     expect(find.text('Challenge'), findsOneWidget);
 

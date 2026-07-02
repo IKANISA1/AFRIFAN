@@ -19,7 +19,7 @@ void main() {
       expect(module.tabRoute, isNull);
     });
 
-    test('provides /splash route', () {
+    test('keeps /splash only as a compatibility redirect route', () {
       final paths = module.routes
           .whereType<GoRoute>()
           .map((r) => r.path)

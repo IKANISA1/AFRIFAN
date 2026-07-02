@@ -6,11 +6,11 @@ import '../fanzone_slip_providers.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
 
-/// Inline Match Card with 1X2 prediction buttons.
+/// Inline Match Card with 1X2 pick buttons.
 ///
 /// Mirrors the fanafrika `MatchCard.tsx` — shows team names, score/VS,
-/// league/time, and a 3-column prediction grid for 1X2 with FET earnings.
-/// Tapping a prediction button adds it to the global prediction slip.
+/// league/time, and a 3-column pick grid for 1X2 with points.
+/// Tapping a pick button adds it to the current round.
 ///
 /// If the user is not verified, triggers [onAuthRequired] instead.
 class InlineMatchCard extends ConsumerWidget {
@@ -24,14 +24,14 @@ class InlineMatchCard extends ConsumerWidget {
 
   final FixtureSummary fixture;
 
-  /// Optional 1X2 market with outcomes + FET values.
-  /// If null, only the teams/score are shown (no inline predictions).
+  /// Optional 1X2 pick type with outcomes + point values.
+  /// If null, only the teams/score are shown.
   final FixtureMarket? market;
 
-  /// Called when the card (not prediction buttons) is tapped → navigates to detail.
+  /// Called when the card is tapped and navigates to detail.
   final VoidCallback? onTap;
 
-  /// Called when user taps a prediction button but is not authenticated.
+  /// Called when user taps a pick button but is not authenticated.
   final VoidCallback? onAuthRequired;
 
   @override
@@ -145,7 +145,7 @@ class InlineMatchCard extends ConsumerWidget {
                     ],
                   ),
 
-                  // ── Inline 1X2 Predictions ──
+                  // ── Inline 1X2 Picks ──
                   if (market != null &&
                       market!.outcomes.length >= 3 &&
                       !market!.isLocked) ...[
@@ -265,12 +265,10 @@ class _InlinePredictionGrid extends ConsumerWidget {
                     );
               },
               selected: isSelected,
-              tooltip: '${outcome.label} prediction',
+              tooltip: '${outcome.label} pick',
               semanticsLabel:
-                  '${outcome.label} prediction for ${fixture.homeTeamShort} versus ${fixture.awayTeamShort}',
-              semanticsHint: isSelected
-                  ? 'Selected prediction'
-                  : 'Add prediction to slip',
+                  '${outcome.label} pick for ${fixture.homeTeamShort} versus ${fixture.awayTeamShort}',
+              semanticsHint: isSelected ? 'Selected pick' : 'Add pick to round',
               excludeChildSemantics: true,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
@@ -308,7 +306,7 @@ class _InlinePredictionGrid extends ConsumerWidget {
                     ),
                     const SizedBox(height: SpacingTokens.spacing1),
                     Text(
-                      '+${market.fetValue} FET',
+                      '+${market.fetValue} pts',
                       style: TypographyTokens.labelSmall(
                         ColorTokens.clubAccent,
                       ).copyWith(fontWeight: FontWeight.w700),

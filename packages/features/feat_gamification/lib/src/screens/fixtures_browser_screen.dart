@@ -176,7 +176,7 @@ class _FixturesBrowserScreenState extends ConsumerState<FixturesBrowserScreen> {
           AfriIconButton(
             icon: AfriIcons.myPicks,
             onTap: () => unawaited(context.push('/fanzone/my')),
-            tooltip: 'My Predictions',
+            tooltip: 'Predictions',
           ),
         ],
       ),

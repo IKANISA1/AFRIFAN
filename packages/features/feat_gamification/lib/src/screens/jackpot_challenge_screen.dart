@@ -59,7 +59,7 @@ class _JackpotChallengeScreenState
         _leaders = results[1]! as List<PredictionLeaderboardEntry>;
         _isLoading = false;
         _error = round == null || round.fixtures.isEmpty
-            ? 'Jackpot round activation is pending.'
+            ? 'Bonus round activation is pending.'
             : null;
       });
     } catch (error, stackTrace) {
@@ -74,7 +74,7 @@ class _JackpotChallengeScreenState
       }
       setState(() {
         _isLoading = false;
-        _error = 'Jackpot challenge is temporarily unavailable.';
+        _error = 'Bonus round is temporarily unavailable.';
       });
     }
   }
@@ -128,7 +128,7 @@ class _JackpotChallengeScreenState
             title: const Text('Entry submitted'),
             content: Text(
               result.message.isEmpty
-                  ? 'Your jackpot entry is now live.'
+                  ? 'Your bonus entry is now live.'
                   : result.message,
             ),
             actions: [
@@ -144,7 +144,7 @@ class _JackpotChallengeScreenState
         AfriToast.error(
           context,
           result.message.isEmpty
-              ? 'Could not submit the jackpot entry right now.'
+              ? 'Could not submit the bonus entry right now.'
               : result.message,
         );
       }
@@ -178,7 +178,7 @@ class _JackpotChallengeScreenState
       appBar: AfriAppBar(
         backgroundColor: ColorTokens.transparent,
         title: Text(
-          'Jackpot',
+          'Bonus Round',
           style: TypographyTokens.headlineSmall().copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 1.0,
@@ -231,7 +231,7 @@ class _JackpotChallengeScreenState
               child: Padding(
                 padding: const EdgeInsets.all(SpacingTokens.spacing6),
                 child: AfriStateView.offline(
-                  title: 'Jackpot unavailable',
+                  title: 'Bonus round unavailable',
                   message: _error!,
                   actionLabel: 'Retry',
                   onAction: _load,
@@ -252,7 +252,7 @@ class _JackpotChallengeScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Prize pool',
+                          'Points pool',
                           style: TypographyTokens.labelSmall(
                             ColorTokens.onSurfaceVariant,
                           ),
@@ -260,8 +260,8 @@ class _JackpotChallengeScreenState
                         const SizedBox(height: SpacingTokens.spacing2),
                         Text(
                           round == null
-                              ? '0 FET'
-                              : '${_formatFet(round.prizePoolFet)} FET',
+                              ? '0 pts'
+                              : '${_formatFet(round.prizePoolFet)} pts',
                           style: TypographyTokens.displaySmall(
                             ColorTokens.clubAccent,
                           ).copyWith(fontWeight: FontWeight.w900),
@@ -364,7 +364,7 @@ class _JackpotChallengeScreenState
                                   _LeaderRow(
                                     rank: leader.rank,
                                     name: leader.displayName,
-                                    total: '+${leader.totalFetEarned} FET',
+                                    total: '+${leader.totalFetEarned} pts',
                                   ),
                                 ],
                               );
