@@ -134,7 +134,7 @@ END;
 $$;
 
 COMMENT ON FUNCTION football.update_fixture_odds_batch(uuid, jsonb) IS
-  'Batch-updates odds for all markets of a fixture. Called by generate-multipliers edge function.';
+  'Batch-updates odds for all markets of a fixture.';
 
 -- ── 5. User Voting Volume View ────────────────────────────────────────────
 
