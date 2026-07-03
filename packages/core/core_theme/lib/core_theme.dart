@@ -12,8 +12,8 @@ export 'src/runtime_branding.dart';
 export 'src/theme_mode_notifier.dart';
 
 // ── Tokens ──
-export 'src/tokens/afri_semantic_colors.dart';
 export 'src/tokens/afri_design_tokens.dart';
+export 'src/tokens/afri_semantic_colors.dart';
 export 'src/tokens/blur_tokens.dart';
 export 'src/tokens/border_tokens.dart';
 export 'src/tokens/color_tokens.dart';

@@ -56,41 +56,56 @@ if [ "$checksum_status" != "pass" ]; then
     "Root DESIGN.md does not match $SOURCE_DESIGN."
 fi
 
+markdown_files="$(
+  find . \( \
+    -path '*/.git' -o \
+    -path '*/node_modules' -o \
+    -path '*/.dart_tool' -o \
+    -path '*/build' -o \
+    -path '*/.next' -o \
+    -path '*/coverage' -o \
+    -path '*/output' \
+  \) -prune -o -type f \( \
+    -name '*.md' -o \
+    -name '*.mdx' \
+  \) -print |
+    sed 's#^\./##' || true
+)"
+
 secondary_design_docs="$(
-  rg --files \
-    -g '*.md' \
-    -g '*.mdx' \
-    -g '!node_modules/**' \
-    -g '!.git/**' \
-    -g '!build/**' \
-    -g '!.dart_tool/**' \
-    -g '!.next/**' \
-    -g '!coverage/**' \
-    -g '!output/**' |
-    rg -i '(^|/)(design|.*design.*|screen[_-]?inventory|visual[_-]?baseline|screenshot[_-]?matrix|style[_-]?guide|ui[_-]?audit|ux[_-]?audit).*\.mdx?$' |
-    rg -v '^DESIGN\.md$' || true
+  shopt -s nocasematch
+  while IFS= read -r file; do
+    [ -n "$file" ] || continue
+    [ "$file" = "DESIGN.md" ] && continue
+    if [[ "$file" =~ (^|/)(design|.*design.*|screen[_-]?inventory|visual[_-]?baseline|screenshot[_-]?matrix|style[_-]?guide|ui[_-]?audit|ux[_-]?audit).*\.mdx?$ ]]; then
+      printf '%s\n' "$file"
+    fi
+  done <<<"$markdown_files"
+  shopt -u nocasematch
 )"
 record_violation "Secondary design authority docs" "$secondary_design_docs"
 
 secondary_design_content="$(
-  rg -n -i \
-    'source of truth for .*design|product design migration|product design completion|design completion audit|screen inventory|screenshot matrix|visual baseline|style guide' \
-    . \
-    -g '*.md' \
-    -g '*.mdx' \
-    -g '!DESIGN.md' \
-    -g '!node_modules/**' \
-    -g '!.git/**' \
-    -g '!build/**' \
-    -g '!.dart_tool/**' \
-    -g '!.next/**' \
-    -g '!coverage/**' \
-    -g '!output/**' || true
+  while IFS= read -r file; do
+    [ -n "$file" ] || continue
+    [ "$file" = "DESIGN.md" ] && continue
+    rg -n -i \
+      'source of truth for .*design|product design migration|product design completion|design completion audit|screen inventory|screenshot matrix|visual baseline|style guide' \
+      "$file" || true
+  done <<<"$markdown_files"
 )"
 record_violation "Secondary design authority content" "$secondary_design_content"
 
 visual_assets="$(
-  find . -type f \( \
+  find . \( \
+    -path '*/.git' -o \
+    -path '*/node_modules' -o \
+    -path '*/.dart_tool' -o \
+    -path '*/build' -o \
+    -path '*/.next' -o \
+    -path '*/coverage' -o \
+    -path '*/output' \
+  \) -prune -o -type f \( \
     -iname '*.png' -o \
     -iname '*.jpg' -o \
     -iname '*.jpeg' -o \
@@ -98,8 +113,7 @@ visual_assets="$(
     -iname '*.svg' -o \
     -iname '*.ico' -o \
     -iname '*.icns' \
-  \) -print |
-    rg -v '/(\.git|node_modules|\.dart_tool|build|\.next|coverage|output)/' || true
+  \) -print || true
 )"
 record_violation "Stored visual design assets" "$visual_assets"
 
@@ -107,6 +121,22 @@ forbidden_static_refs="$(
   rg -n \
     'assets/crest|assets/images|LaunchImage|\bAppIcon\b|ic_launcher|splash_logo|favicon|public/icons|public/media|Image\.asset|/icons/|/media/|crestAsset|CREST_ASSET' \
     . \
+    -g '*.dart' \
+    -g '*.yaml' \
+    -g '*.yml' \
+    -g '*.json' \
+    -g '*.ts' \
+    -g '*.tsx' \
+    -g '*.js' \
+    -g '*.jsx' \
+    -g '*.mjs' \
+    -g '*.css' \
+    -g '*.xml' \
+    -g '*.plist' \
+    -g '*.pbxproj' \
+    -g '*.md' \
+    -g '*.sh' \
+    -g '*.html' \
     -g '!node_modules/**' \
     -g '!.git/**' \
     -g '!build/**' \
@@ -122,21 +152,31 @@ forbidden_static_refs="$(
 record_violation "Forbidden static visual references" "$forbidden_static_refs"
 
 native_asset_dirs="$(
-  find apps -type d \( \
+  find apps \( \
+    -path '*/node_modules' -o \
+    -path '*/.dart_tool' -o \
+    -path '*/build' -o \
+    -path '*/.next' -o \
+    -path '*/coverage' -o \
+    -path '*/output' \
+  \) -prune -o -type d \( \
     -name Assets.xcassets -o \
     -name AppIcon.appiconset -o \
     -name LaunchImage.imageset \
-  \) -print |
-    rg -v '/(node_modules|build|\.dart_tool|\.next|coverage|output)/' || true
+  \) -print || true
 )"
 record_violation "Native static asset containers" "$native_asset_dirs"
 
 web_asset_dirs="$(
-  find apps/rayon_sports/web -type d \( \
+  find apps/rayon_sports/web \( \
+    -path '*/node_modules' -o \
+    -path '*/.next' -o \
+    -path '*/coverage' -o \
+    -path '*/output' \
+  \) -prune -o -type d \( \
     -path '*/public/icons' -o \
     -path '*/public/media' \
-  \) -print |
-    rg -v '/(node_modules|\.next|coverage|output)/' || true
+  \) -print || true
 )"
 record_violation "Web static media directories" "$web_asset_dirs"
 

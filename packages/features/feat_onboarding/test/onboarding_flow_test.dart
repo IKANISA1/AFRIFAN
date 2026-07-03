@@ -92,7 +92,7 @@ class _RayonTestConfig extends ClubConfig {
   String get currencySymbol => 'RWF';
 
   @override
-  ClubColors get colors => ClubColors(
+  ClubColors get colors => const ClubColors(
     primary: ColorTokens.referenceAccountBlue,
     secondary: ColorTokens.referenceAccountNavy,
     accent: ColorTokens.referenceTrophyGold,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../runtime_branding.dart';
 import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/icon_tokens.dart';

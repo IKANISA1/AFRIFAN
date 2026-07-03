@@ -5,7 +5,6 @@ import '../extensions.dart';
 import '../tokens/icon_tokens.dart';
 import '../tokens/responsive_tokens.dart';
 import '../tokens/spacing_tokens.dart';
-import '../tokens/typography_tokens.dart';
 import 'afri_icon_button.dart';
 
 /// Standardized screen scaffold with responsive layout, optional title,

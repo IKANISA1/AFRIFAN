@@ -876,6 +876,7 @@ List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
         path.endsWith(
           '/apps/rayon_sports/web/src/app/brand-surface.svg/route.ts',
         ) ||
+        path.endsWith('/apps/rayon_sports_tv/test/tv_app_test.dart') ||
         path.endsWith('/tools/scripts/design_compliance_report.sh'),
   );
 }
