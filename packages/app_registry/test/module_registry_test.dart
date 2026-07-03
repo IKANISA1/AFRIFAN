@@ -146,7 +146,7 @@ void main() {
     });
 
     test(
-      'default supporter app keeps the approved 12 full-screen surfaces',
+      'default supporter app keeps the approved 14 full-screen surfaces',
       () {
         final decisions = modules
             .expand((module) => module.routePresentationDecisions)
@@ -167,6 +167,8 @@ void main() {
             '/auth/otp',
             '/home',
             '/fanzone',
+            '/fanzone/venue',
+            '/fanzone/venue/order',
             '/fanzone/match/:fixtureId',
             '/fanzone/wallet',
             '/settings',

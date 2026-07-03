@@ -31,9 +31,7 @@ void main() {
       tableChannel = _MockRealtimeChannel();
       service = RealtimeService(clubId: '24', client: client);
 
-      when(
-        () => client.channel(any()),
-      ).thenAnswer((invocation) {
+      when(() => client.channel(any())).thenAnswer((invocation) {
         final name = invocation.positionalArguments.first as String;
         if (name == '24:matches:fixture-9') {
           return tableChannel;
@@ -51,6 +49,7 @@ void main() {
         ),
       ).thenReturn(tableChannel);
 
+      when(() => scopedChannel.subscribe()).thenReturn(scopedChannel);
       when(() => tableChannel.subscribe()).thenReturn(tableChannel);
       when(() => scopedChannel.unsubscribe()).thenAnswer((_) async => 'ok');
       when(() => tableChannel.unsubscribe()).thenAnswer((_) async => 'ok');
@@ -91,7 +90,10 @@ void main() {
     });
 
     test('unsubscribe removes a channel from the registry', () async {
-      final channel = service.subscribe(feature: 'live', resourceId: 'fixture-1');
+      final channel = service.subscribe(
+        feature: 'live',
+        resourceId: 'fixture-1',
+      );
 
       await service.unsubscribe(channel);
 

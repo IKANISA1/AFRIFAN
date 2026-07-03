@@ -292,7 +292,7 @@ void main() {
   });
 
   group('Router surface size', () {
-    test('approved full-screen set stays intentionally small', () {
+    test('approved full-screen set stays intentionally bounded', () {
       final fullScreens = modules
           .expand((module) => module.routePresentationDecisions)
           .where(
@@ -309,6 +309,8 @@ void main() {
           '/auth/otp',
           '/home',
           '/fanzone',
+          '/fanzone/venue',
+          '/fanzone/venue/order',
           '/fanzone/match/:fixtureId',
           '/fanzone/wallet',
           '/settings',
