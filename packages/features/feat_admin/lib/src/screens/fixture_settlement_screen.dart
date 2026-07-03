@@ -462,7 +462,7 @@ class _SettlementSheetState extends State<_SettlementSheet> {
               height: 4,
               decoration: BoxDecoration(
                 color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(ShapeTokens.radiusSm / 4),
               ),
             ),
           ),
@@ -667,7 +667,7 @@ class _StatusChip extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: ShapeTokens.buttonRadius,
       ),
       child: Text(
         status.toUpperCase(),

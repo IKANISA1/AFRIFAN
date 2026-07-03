@@ -223,7 +223,7 @@ class _PredictionSlipSheet extends ConsumerWidget {
 
                 // ── Share card modal (replaces old confirmation sheet) ──
                 if (hostContext.mounted) {
-                  await Future<void>.delayed(const Duration(milliseconds: 800));
+                  await Future<void>.delayed(AfriMotion.feedbackDelay);
                   if (hostContext.mounted) {
                     await _showShareCardModal(
                       hostContext,

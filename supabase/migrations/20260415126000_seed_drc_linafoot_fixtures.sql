@@ -74,33 +74,33 @@ BEGIN
   -- ── Fixtures ──
   WITH fixture_values (match_date, home_slug, away_slug) AS (
     VALUES
-      -- Rayon Sportsil 14
+      -- April 14
       ('2026-04-14', 'malole-fc', 'fc-blessing'),
       ('2026-04-14', 'fc-les-aigles-du-congo', 'fc-celeste'),
-      -- Rayon Sportsil 15
+      -- April 15
       ('2026-04-15', 'as-new-soger', 'tp-mazembe'),
       ('2026-04-15', 'cs-don-bosco', 'st-eloi-lupopo'),
-      -- Rayon Sportsil 18
+      -- April 18
       ('2026-04-18', 'as-vita-club', 'dc-motema-pembe'),
       ('2026-04-18', 'as-maniema-union', 'fc-les-aigles-du-congo'),
       ('2026-04-18', 'lubumbashi-sport', 'cs-don-bosco'),
-      -- Rayon Sportsil 19
+      -- April 19
       ('2026-04-19', 'st-eloi-lupopo', 'tp-mazembe'),
       ('2026-04-19', 'as-dauphins-noirs', 'fc-celeste'),
       ('2026-04-19', 'fc-simba-kolwezi', 'js-groupe-bazano'),
-      -- Rayon Sportsil 22
+      -- April 22
       ('2026-04-22', 'tp-mazembe', 'lubumbashi-sport'),
       ('2026-04-22', 'dc-motema-pembe', 'as-maniema-union'),
       ('2026-04-22', 'fc-blessing', 'fc-simba-kolwezi'),
-      -- Rayon Sportsil 25
+      -- April 25
       ('2026-04-25', 'fc-les-aigles-du-congo', 'as-vita-club'),
       ('2026-04-25', 'cs-don-bosco', 'as-new-soger'),
       ('2026-04-25', 'st-eloi-lupopo', 'malole-fc'),
-      -- Rayon Sportsil 26
+      -- April 26
       ('2026-04-26', 'fc-celeste', 'dc-motema-pembe'),
       ('2026-04-26', 'as-maniema-union', 'as-dauphins-noirs'),
       ('2026-04-26', 'js-groupe-bazano', 'us-panda-b52'),
-      -- Rayon Sportsil 29
+      -- April 29
       ('2026-04-29', 'as-vita-club', 'as-maniema-union'),
       ('2026-04-29', 'tp-mazembe', 'cs-don-bosco'),
       ('2026-04-29', 'fc-les-aigles-du-congo', 'dc-motema-pembe'),

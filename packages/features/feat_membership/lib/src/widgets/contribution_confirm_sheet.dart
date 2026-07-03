@@ -42,7 +42,7 @@ class _ContributionConfirmSheetState extends State<ContributionConfirmSheet> {
 
   void _handleConfirm() {
     setState(() => _isConfirming = true);
-    Future.delayed(const Duration(milliseconds: 1200), () {
+    Future.delayed(AfriMotion.rewardReveal, () {
       if (mounted) {
         setState(() => _isConfirming = false);
         widget.onConfirm();

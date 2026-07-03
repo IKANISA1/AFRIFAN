@@ -141,8 +141,8 @@ export function MobileNavDrawer({
         <div className={`flex items-center justify-between p-5 ${ui.drawerDivider}`}>
           <div className="flex items-center gap-3">
              <Image
-              src={club.officialLogoUrl ?? "/icons/icon-192x192.png"}
-              alt={`${club.clubName} crest`}
+              src={club.officialLogoUrl ?? "/brand-mark.svg"}
+              alt={`${club.clubName} brand mark`}
               width={36}
               height={36}
               sizes="36px"

@@ -7,11 +7,10 @@ class AsVitaConfig implements ClubConfig {
   const AsVitaConfig();
 
   @override
-  String get clubId =>
-      ClubConfig.requireDefine(
-        const String.fromEnvironment('CLUB_ID'),
-        'CLUB_ID',
-      );
+  String get clubId => ClubConfig.requireDefine(
+    const String.fromEnvironment('CLUB_ID'),
+    'CLUB_ID',
+  );
 
   @override
   String get clubName => 'AS Vita Club';
@@ -44,10 +43,6 @@ class AsVitaConfig implements ClubConfig {
     accent: Color(0xFFFFD700),
     gradient: [Color(0xFF004D00), Color(0xFF002200)],
   );
-
-  @override
-  String get crestAsset => 'assets/crest/as_vita_crest.png';
-
   @override
   String get supabaseUrl => ClubConfig.requireDefine(
     const String.fromEnvironment('SUPABASE_URL'),
@@ -62,7 +57,6 @@ class AsVitaConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const ['fr', 'ln', 'en'];
-
 
   @override
   bool get hasFanClubs => true;
@@ -87,7 +81,8 @@ class AsVitaConfig implements ClubConfig {
   );
 
   @override
-  String get environment => const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
+  String get environment =>
+      const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
 
   @override
   Map<String, bool> get features => {

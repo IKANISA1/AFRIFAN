@@ -461,7 +461,7 @@ class _AdminFeedRow extends StatelessWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing3),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: ShapeTokens.inputRadius,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

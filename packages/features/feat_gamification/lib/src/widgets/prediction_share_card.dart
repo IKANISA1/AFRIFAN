@@ -80,7 +80,10 @@ class PredictionShareService {
   }) async {
     unawaited(HapticFeedback.lightImpact());
     await SharePlus.instance.share(
-      ShareParams(text: _buildShareText(data), title: 'AFRICLUB Pick'),
+      ShareParams(
+        text: _buildShareText(data),
+        title: '${RuntimeBranding.displayAppName} Pick',
+      ),
     );
   }
 
@@ -120,7 +123,7 @@ class PredictionShareService {
     }
     buffer.writeln();
     buffer.writeln(data.competitionName);
-    buffer.write('#AFRICLUB');
+    buffer.write('#${RuntimeBranding.displayAppName.replaceAll(' ', '')}');
     final brandHashtag = _buildBrandHashtag();
     if (brandHashtag != null) {
       buffer.write(' #$brandHashtag');
@@ -289,7 +292,7 @@ class PredictionShareCard extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing4),
           Center(
             child: Text(
-              'AFRICLUB · PLAY. PICK. EARN.',
+              '${RuntimeBranding.displayAppName.toUpperCase()} · PLAY. PICK. EARN.',
               style: TypographyTokens.labelSmall(
                 ColorTokens.onSurfaceVariant,
               ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 1.2),

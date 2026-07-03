@@ -39,7 +39,7 @@ export async function generateMetadata({
     title: article.title,
     description: article.excerpt,
     path: `/news/${article.id}`,
-    imagePath: article.coverImageUrl ?? "/media/stadium-hero.jpg",
+    imagePath: article.coverImageUrl ?? "/brand-surface.svg",
     type: "article",
   });
 }
@@ -84,7 +84,7 @@ export default async function ArticlePage({
         <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="img-zoom relative min-h-[20rem]">
             <Image
-              src={article.coverImageUrl ?? "/media/stadium-hero.jpg"}
+              src={article.coverImageUrl ?? "/brand-surface.svg"}
               alt={article.title}
               fill
               priority

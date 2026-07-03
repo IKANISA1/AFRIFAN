@@ -6,8 +6,8 @@ const PRECACHE_URLS = [
   "/offline",
   "/admin-offline",
   "/manifest.webmanifest",
-  "/icons/icon-192x192.png",
-  "/icons/icon-512x512.png",
+  "/brand-mark.svg",
+  "/brand-mark.svg",
 ];
 
 self.addEventListener("install", (event) => {
@@ -136,7 +136,6 @@ self.addEventListener("fetch", (event) => {
 
   if (
     url.pathname.startsWith("/_next/") ||
-    url.pathname.startsWith("/media/") ||
     request.destination === "image" ||
     request.destination === "style" ||
     request.destination === "script" ||
@@ -161,8 +160,8 @@ self.addEventListener("push", (event) => {
   const title = data.title || "Gikundiro Admin";
   const options = {
     body: data.body || "",
-    icon: data.icon || "/icons/icon-192x192.png",
-    badge: data.badge || "/icons/icon-72x72.png",
+    icon: data.icon || "/brand-mark.svg",
+    badge: data.badge || "/brand-mark.svg",
     tag: data.tag || "admin-notification",
     renotify: true,
     requireInteraction: data.requireInteraction || false,

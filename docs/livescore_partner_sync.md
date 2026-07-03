@@ -2,6 +2,8 @@
 
 AFRICLUB uses admin-managed LiveScore web sources for football fixtures, teams,
 results, competition metadata, live score updates, and pool settlement triggers.
+LiveScore.com is the football data source of record for fixtures, results,
+competitions, live state, and covered football data.
 
 The sync runner is:
 
@@ -24,12 +26,23 @@ supabase/functions/livescore-openai-sync
    teams, kickoff times, status, scores, team crests, and competition logos.
 5. Upsert into `football.competitions`, `football.seasons`,
    `football.teams`, `football.season_teams`, and `football.fixtures`.
-6. When a fixture is finished and has final scores, settle linked partner WDW
-   pools through `partner_prediction_pool_settle`.
+6. When a fixture is finished and has approved final scores, settle linked
+   partner W-D-W pools through `partner_prediction_pool_settle`.
 
 The runner fails closed when no active LiveScore source rows are configured.
 The Edge Function uses the same source table and also rejects any OpenAI-returned
 row whose supporting `source_url` is not under `livescore.com`.
+
+## Freshness, Override, And Settlement Rules
+
+- Public/mobile/admin/TV read models must expose whether football data is live,
+  stale, manually overridden, or held for review.
+- W-D-W settlement must use approved result state, not client-visible score
+  strings alone.
+- Wrong result incidents must hold settlement, record an admin override reason,
+  and preserve the sync log/source URL that produced the disputed value.
+- LiveScore credentials, private feed URLs, service-role keys, and contract
+  details must stay out of browser and Flutter clients.
 
 ## Required Environment
 

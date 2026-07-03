@@ -6,7 +6,7 @@ This is the Rayon Sports club application generated from the monorepo architectu
 
 This application acts as a "flavor" or "tenant" of the greater platform:
 - **No Duplicate Business Logic**: All features (Ticketing, Contributions, Gamification, Shop) live in `packages/features/`.
-- **Dynamic UI Tokens**: Colors and branding are not hardcoded. At bootstrap, the app retrieves its specific branding (Primary, Secondary, Accent colors, Crest) from `ClubConfig`, and initializes `ColorTokens` under `DESIGN.md`.
+- **Dynamic UI Tokens**: Colors and branding are not hardcoded. At bootstrap, the app retrieves its club name and semantic colors from `ClubConfig`, initializes `ColorTokens` under `DESIGN.md`, and renders the generated brand mark from those runtime tokens.
 - **The White-Drop Rule**: To follow `DESIGN.md`, any club colors that are white or near-white are automatically dropped and replaced with system defaults so dark surfaces retain readable contrast.
 
 ## Building and Running

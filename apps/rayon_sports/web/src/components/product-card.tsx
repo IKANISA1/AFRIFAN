@@ -6,7 +6,7 @@ import { formatCurrency } from "@/lib/utils";
 import { ui } from "@/ui-kit";
 
 export function ProductCard({ product }: { product: ShopProduct }) {
-  const productImage = product.imageUrl ?? "/media/stadium-hero.jpg";
+  const productImage = product.imageUrl ?? "/brand-surface.svg";
 
   return (
     <Link

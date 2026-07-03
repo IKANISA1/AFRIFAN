@@ -159,7 +159,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       'name': 'Rayon Home Jersey',
       'price': 25000,
       'description':
-          'Official matchday jersey with a premium woven crest, breathable '
+          'Official matchday jersey with a premium woven club mark, breathable '
           'stadium fabric, and club-blue trim for everyday supporters.',
       'image_url': '',
       'badge_label': 'OFFICIAL',
@@ -445,7 +445,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                                   : 'Select size',
                               excludeChildSemantics: true,
                               child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
+                                duration: AfriMotion.standard,
                                 constraints: const BoxConstraints(
                                   minHeight: SpacingTokens.spacing12,
                                 ),

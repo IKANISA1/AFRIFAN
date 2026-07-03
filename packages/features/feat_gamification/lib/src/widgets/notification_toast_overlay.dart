@@ -53,7 +53,7 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 350),
+      duration: AfriMotion.emphasized,
     );
     _slideAnimation =
         Tween<Offset>(begin: const Offset(0, -1.2), end: Offset.zero).animate(
@@ -161,15 +161,10 @@ class _NotificationToastOverlayState extends State<NotificationToastOverlay>
                           border: BorderTokens.all(
                             color: _colorForType(_type).withValues(alpha: 0.3),
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: ColorTokens.ambientShadow.withValues(
-                                alpha: 0.4,
-                              ),
-                              blurRadius: 24,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
+                          boxShadow: AfriShadows.floating(
+                            Theme.of(context).brightness,
+                            strength: 1.8,
+                          ),
                         ),
                         padding: const EdgeInsets.all(SpacingTokens.spacing4),
                         child: Row(

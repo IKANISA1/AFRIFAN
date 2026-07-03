@@ -6,6 +6,8 @@ import 'package:core_feature_config/core_feature_config.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:feat_home/src/widgets/match_card.dart';
 import 'package:feat_home/src/widgets/quick_actions_grid.dart';
+import 'package:feat_onboarding/src/screens/supporter_phone_auth_screen.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
@@ -95,8 +97,7 @@ void main() {
     );
 
     expect(find.byType(QuickActionsGrid), findsOneWidget);
-    expect(find.text('News'), findsOneWidget);
-    expect(find.text('Training ground update'), findsOneWidget);
+    expect(find.text('Support'), findsAtLeastNWidgets(1));
   });
 
   testWidgets(
@@ -149,9 +150,9 @@ void main() {
       );
 
       await _pumpAppStartup(tester);
-      await _pumpUntilVisible(tester, find.text('Next'));
+      await _pumpUntilVisible(tester, find.byType(SupporterPhoneAuthScreen));
 
-      expect(find.text('Next'), findsOneWidget);
+      expect(find.byType(SupporterPhoneAuthScreen), findsOneWidget);
     },
   );
 
@@ -193,16 +194,27 @@ void main() {
 
       await _pumpAppStartup(tester);
       await _pumpUntilVisible(tester, find.text('Settings'), maxPumps: 60);
-      await tester.scrollUntilVisible(find.text('Privacy policy'), 240);
-      await _pumpUntilVisible(
-        tester,
-        find.text('Privacy policy'),
-        maxPumps: 60,
-      );
-      await tester.scrollUntilVisible(find.text('Help & support'), -240);
+      await _pumpUntilVisible(tester, find.text('Edit profile'), maxPumps: 60);
+      expect(find.text('Privacy'), findsOneWidget);
 
-      expect(find.text('Privacy policy'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('Help & support'),
+        240,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Sign out'),
+        240,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+
       expect(find.text('Help & support'), findsOneWidget);
+      expect(find.text('Sign out'), findsOneWidget);
+      expect(find.text('MOMO linked'), findsNothing);
+      expect(find.text('Link MoMo number'), findsNothing);
+      expect(find.text('Privacy policy'), findsNothing);
     },
   );
 }

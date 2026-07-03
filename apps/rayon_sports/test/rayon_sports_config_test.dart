@@ -36,10 +36,12 @@ void main() {
     });
 
     test('has valid Supabase configuration when build defines are present', () {
-      final hasSupabaseUrl = const String.fromEnvironment('SUPABASE_URL')
-          .isNotEmpty;
-      final hasSupabaseAnonKey =
-          const String.fromEnvironment('SUPABASE_ANON_KEY').isNotEmpty;
+      final hasSupabaseUrl = const String.fromEnvironment(
+        'SUPABASE_URL',
+      ).isNotEmpty;
+      final hasSupabaseAnonKey = const String.fromEnvironment(
+        'SUPABASE_ANON_KEY',
+      ).isNotEmpty;
 
       if (!hasSupabaseUrl || !hasSupabaseAnonKey) {
         expect(() => config.supabaseUrl, throwsStateError);
@@ -51,10 +53,6 @@ void main() {
       expect(config.supabaseUrl, contains('.supabase.co'));
       expect(config.supabaseAnonKey, isNotEmpty);
       expect(config.supabaseAnonKey.length, greaterThan(50));
-    });
-
-    test('has crest asset path defined', () {
-      expect(config.crestAsset, 'assets/crest/rayon_sports_crest.png');
     });
 
     test('has supported languages', () {

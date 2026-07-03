@@ -65,17 +65,17 @@ BEGIN
   -- ── Fixtures ──
   WITH fixture_values (match_date, home_slug, away_slug) AS (
     VALUES
-      -- Rayon Sportsil 15
+      -- April 15
       ('2026-04-15', 'nkwazi-fc', 'napsa-stars'),
       ('2026-04-15', 'nkana-fc', 'mines-united-zm'),
       ('2026-04-15', 'mutondo-stars', 'green-eagles-zm'),
-      -- Rayon Sportsil 16
+      -- April 16
       ('2026-04-16', 'kabwe-warriors', 'power-dynamos'),
       ('2026-04-16', 'prison-leopards', 'nchanga-rangers'),
       ('2026-04-16', 'maestro-united-zm', 'green-buffaloes'),
       ('2026-04-16', 'konkola-blades', 'mufulira-wanderers'),
       ('2026-04-16', 'kansanshi-dynamos', 'zesco-united'),
-      -- Rayon Sportsil 18
+      -- April 18
       ('2026-04-18', 'zanaco-fc', 'mines-united-zm'),
       ('2026-04-18', 'konkola-blades', 'power-dynamos'),
       ('2026-04-18', 'green-eagles-zm', 'mufulira-wanderers'),
@@ -85,7 +85,7 @@ BEGIN
       ('2026-04-18', 'kabwe-warriors', 'napsa-stars'),
       ('2026-04-18', 'kansanshi-dynamos', 'green-buffaloes'),
       ('2026-04-18', 'nkwazi-fc', 'zesco-united'),
-      -- Rayon Sportsil 22
+      -- April 22
       ('2026-04-22', 'nkwazi-fc', 'power-dynamos'),
       ('2026-04-22', 'nchanga-rangers', 'kabwe-warriors'),
       ('2026-04-22', 'zesco-united', 'nkana-fc'),
@@ -96,7 +96,7 @@ BEGIN
       ('2026-04-22', 'mines-united-zm', 'konkola-blades'),
       ('2026-04-22', 'napsa-stars', 'zanaco-fc'),
       ('2026-04-22', 'red-arrows-zm', 'green-eagles-zm'),
-      -- Rayon Sportsil 29
+      -- April 29
       ('2026-04-29', 'red-arrows-zm', 'konkola-blades'),
       ('2026-04-29', 'napsa-stars', 'nkana-fc'),
       ('2026-04-29', 'nchanga-rangers', 'nkwazi-fc'),

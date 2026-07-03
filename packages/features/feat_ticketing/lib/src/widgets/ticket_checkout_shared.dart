@@ -24,7 +24,7 @@ class SeatTypeCard extends StatelessWidget {
       builder: (context, state) => AfriSurfaceCard(
         padding: const EdgeInsets.all(SpacingTokens.spacing4),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
+          duration: AfriMotion.quick,
           decoration: BoxDecoration(
             color: selected
                 ? ColorTokens.clubPrimary.withValues(alpha: 0.1)

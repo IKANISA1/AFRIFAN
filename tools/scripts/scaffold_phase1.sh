@@ -126,9 +126,6 @@ class $config_class implements ClubConfig {
   );
 
   @override
-  String get crestAsset => 'assets/crest/${slug}_crest.png';
-
-  @override
   String get supabaseUrl => const String.fromEnvironment(
     'SUPABASE_URL',
     defaultValue: 'https://mmpbzcdhfvplxplnfucy.supabase.co',
@@ -182,26 +179,12 @@ CFGEOF
   # ── 2. CREATE APP ──
   APP_DIR="$ROOT/apps/$slug"
   mkdir -p "$APP_DIR/lib"
-  mkdir -p "$APP_DIR/assets/crest"
-  mkdir -p "$APP_DIR/assets/images"
   mkdir -p "$APP_DIR/assets/flavors"
 
   # Copy shared files from rayon_sports
   cp "$TEMPLATE_APP/lib/bootstrap.dart" "$APP_DIR/lib/bootstrap.dart"
   cp "$TEMPLATE_APP/lib/app.dart"       "$APP_DIR/lib/app.dart"
   cp "$TEMPLATE_APP/lib/shell.dart"     "$APP_DIR/lib/shell.dart"
-
-  # Copy placeholder crest from rayon_sports
-  if [ -d "$TEMPLATE_APP/assets/crest" ]; then
-    for f in "$TEMPLATE_APP/assets/crest/"*; do
-      [ -f "$f" ] && cp "$f" "$APP_DIR/assets/crest/${slug}_crest.png" && break
-    done
-  fi
-
-  # Copy images dir content
-  if [ -d "$TEMPLATE_APP/assets/images" ]; then
-    cp -r "$TEMPLATE_APP/assets/images/"* "$APP_DIR/assets/images/" 2>/dev/null || true
-  fi
 
   # main.dart
   cat > "$APP_DIR/lib/main.dart" << MAINEOF
@@ -296,9 +279,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/crest/
     - assets/flavors/
-    - assets/images/
 
 resolution: workspace
 APPEOF

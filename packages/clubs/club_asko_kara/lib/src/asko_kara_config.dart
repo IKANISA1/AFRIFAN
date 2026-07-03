@@ -7,11 +7,10 @@ class AskoKaraConfig implements ClubConfig {
   const AskoKaraConfig();
 
   @override
-  String get clubId =>
-      ClubConfig.requireDefine(
-        const String.fromEnvironment('CLUB_ID'),
-        'CLUB_ID',
-      );
+  String get clubId => ClubConfig.requireDefine(
+    const String.fromEnvironment('CLUB_ID'),
+    'CLUB_ID',
+  );
 
   @override
   String get clubName => 'ASKO de Kara';
@@ -44,10 +43,6 @@ class AskoKaraConfig implements ClubConfig {
     accent: Color(0xFF000000),
     gradient: [Color(0xFFCCAA00), Color(0xFF004D2C)],
   );
-
-  @override
-  String get crestAsset => 'assets/crest/asko_kara_crest.png';
-
   @override
   String get supabaseUrl => ClubConfig.requireDefine(
     const String.fromEnvironment('SUPABASE_URL'),
@@ -62,7 +57,6 @@ class AskoKaraConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const ['fr', 'ee', 'en'];
-
 
   @override
   bool get hasFanClubs => true;
@@ -87,7 +81,8 @@ class AskoKaraConfig implements ClubConfig {
   );
 
   @override
-  String get environment => const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
+  String get environment =>
+      const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
 
   @override
   Map<String, bool> get features => {

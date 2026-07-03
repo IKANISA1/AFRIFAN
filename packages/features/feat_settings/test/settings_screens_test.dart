@@ -137,10 +137,6 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   String get countryCode => 'RW';
-
-  @override
-  String get crestAsset => 'assets/crest/rayon_sports_crest.png';
-
   @override
   String get currency => 'RWF';
 

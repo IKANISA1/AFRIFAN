@@ -323,7 +323,7 @@ class _MatchChip extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: ShapeTokens.buttonRadius,
       ),
       child: Text(label, style: TypographyTokens.labelSmall()),
     );

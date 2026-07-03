@@ -202,7 +202,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                           AfriLinearProgressIndicator(
                             value: progress,
                             minHeight: 10,
-                            borderRadius: BorderRadius.circular(999),
+                            borderRadius: ShapeTokens.buttonRadius,
                             color: ColorTokens.clubAccent,
                             backgroundColor:
                                 ColorTokens.surfaceContainerHighest,

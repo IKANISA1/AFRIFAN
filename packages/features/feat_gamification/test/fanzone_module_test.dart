@@ -103,6 +103,8 @@ void main() {
           decisions['/fanzone/game/:sessionId'],
           RoutePresentation.fullHeightSheet,
         );
+        expect(decisions['/fanzone/venue'], RoutePresentation.fullScreen);
+        expect(decisions['/fanzone/venue/order'], RoutePresentation.fullScreen);
         expect(decisions['/fanzone/offers'], RoutePresentation.redirect);
         expect(decisions['/fanzone/rewards'], RoutePresentation.redirect);
         expect(decisions['/fanzone/history'], RoutePresentation.redirect);

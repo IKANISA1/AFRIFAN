@@ -40,7 +40,6 @@ export function shouldBypassSubdomainRewrite(pathname: string) {
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
     pathname.startsWith("/auth/") ||
-    pathname === "/favicon.ico" ||
     pathname === "/robots.txt" ||
     pathname === "/sitemap.xml" ||
     pathname === "/manifest.webmanifest" ||
@@ -48,8 +47,6 @@ export function shouldBypassSubdomainRewrite(pathname: string) {
     pathname === "/share-target" ||
     pathname === "/offline" ||
     pathname === "/admin-offline" ||
-    pathname.startsWith("/media/") ||
-    pathname.startsWith("/icons/") ||
     STATIC_FILE_PATTERN.test(pathname)
   );
 }

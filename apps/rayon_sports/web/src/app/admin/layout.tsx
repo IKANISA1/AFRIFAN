@@ -23,10 +23,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: `${siteConfig.siteUrl}/icons/icon-512x512.png`,
+        url: `${siteConfig.siteUrl}/brand-mark.svg`,
         width: 512,
         height: 512,
-        alt: "AfriClub admin crest",
+        alt: "AfriClub admin brand mark",
       },
     ],
   },
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     title: "AfriClub Admin",
     description:
       "Desktop-first admin workspace for club operations, publishing, supporter management, and white-label configuration.",
-    images: [`${siteConfig.siteUrl}/icons/icon-512x512.png`],
+    images: [`${siteConfig.siteUrl}/brand-mark.svg`],
   },
   appleWebApp: {
     capable: true,
@@ -48,7 +48,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function AdminLayout({ children }: { children: ReactNode }) {
+export const dynamic = "force-dynamic";
+
+export default async function AdminLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const initialState = await getAdminPortalInitialState();
-  return <AdminClientFrame initialState={initialState}>{children}</AdminClientFrame>;
+  return (
+    <AdminClientFrame initialState={initialState}>{children}</AdminClientFrame>
+  );
 }

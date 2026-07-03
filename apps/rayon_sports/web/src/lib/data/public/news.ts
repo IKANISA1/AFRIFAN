@@ -34,7 +34,7 @@ function mapNewsRow(row: Record<string, unknown>): NewsArticle {
     category: safeString(row.category, "General"),
     coverImageUrl: sanitizeMediaUrl(
       safeString(row.cover_image_url) || safeString(row.image_url),
-      "/media/stadium-hero.jpg",
+      "/brand-surface.svg",
     ),
     publishedAt: safeString(
       row.published_at,

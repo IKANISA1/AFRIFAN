@@ -27,6 +27,8 @@ export 'src/screens/share_card_generator_screen.dart';
 export 'src/screens/social_hub_screen.dart';
 export 'src/screens/team_profile_screen.dart';
 export 'src/screens/token_history_screen.dart';
+export 'src/screens/venue_checkin_screen.dart';
+export 'src/screens/venue_order_screen.dart';
 export 'src/widgets/animated_fet_counter.dart';
 export 'src/widgets/auth_gate_sheet.dart';
 export 'src/widgets/fanzone_settings_section.dart';

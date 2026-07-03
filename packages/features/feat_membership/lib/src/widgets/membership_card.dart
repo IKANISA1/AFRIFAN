@@ -35,13 +35,7 @@ class MembershipCard extends ConsumerWidget {
           from: ColorTokens.clubSecondary,
           to: ColorTokens.clubAccent.withValues(alpha: 0.6),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: ColorTokens.ambientShadow,
-            blurRadius: 40,
-            offset: const Offset(0, 12),
-          ),
-        ],
+        boxShadow: AfriShadows.floating(Theme.of(context).brightness),
       ),
       child: ClipRRect(
         borderRadius: ShapeTokens.cardRadius,

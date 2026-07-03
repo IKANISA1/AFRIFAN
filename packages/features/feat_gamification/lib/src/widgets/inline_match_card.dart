@@ -51,13 +51,7 @@ class InlineMatchCard extends ConsumerWidget {
                   color: ColorTokens.clubAccent.withValues(alpha: 0.4),
                 )
               : BorderTokens.ghost(),
-          boxShadow: [
-            BoxShadow(
-              color: ColorTokens.ambientShadow.withValues(alpha: 0.15),
-              blurRadius: 20,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          boxShadow: AfriShadows.standard(Theme.of(context).brightness),
         ),
         child: Column(
           children: [
@@ -271,7 +265,7 @@ class _InlinePredictionGrid extends ConsumerWidget {
               semanticsHint: isSelected ? 'Selected pick' : 'Add pick to round',
               excludeChildSemantics: true,
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                duration: AfriMotion.standard,
                 constraints: const BoxConstraints(
                   minHeight: SpacingTokens.spacing12,
                 ),

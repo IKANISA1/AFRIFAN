@@ -28,7 +28,7 @@ function mapProductRow(row: Record<string, unknown>): ShopProduct {
       "Official product listing.",
     category: safeString(row.category, "Merch"),
     price,
-    imageUrl: sanitizeMediaUrl(row.image_url, "/media/stadium-hero.jpg"),
+    imageUrl: sanitizeMediaUrl(row.image_url, "/brand-surface.svg"),
     sizes: Array.isArray(row.sizes)
       ? row.sizes.map((entry) => safeString(entry)).filter(Boolean)
       : ["One Size"],

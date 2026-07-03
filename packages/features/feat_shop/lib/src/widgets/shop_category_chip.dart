@@ -22,7 +22,7 @@ class ShopCategoryChip extends StatelessWidget {
       onTap: onTap,
       scaleEnd: 0.98,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+        duration: AfriMotion.quick,
         padding: const EdgeInsets.symmetric(
           horizontal: SpacingTokens.spacing4,
           vertical: 10,

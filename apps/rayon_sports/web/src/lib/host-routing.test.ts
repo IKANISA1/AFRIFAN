@@ -32,7 +32,7 @@ describe("host routing", () => {
     expect(shouldBypassSubdomainRewrite("/manifest.webmanifest")).toBe(true);
     expect(shouldBypassSubdomainRewrite("/share-target")).toBe(true);
     expect(shouldBypassSubdomainRewrite("/offline")).toBe(true);
-    expect(shouldBypassSubdomainRewrite("/media/rayon-crest.png")).toBe(true);
+    expect(shouldBypassSubdomainRewrite("/brand-mark.svg")).toBe(true);
     expect(shouldBypassSubdomainRewrite("/tickets")).toBe(false);
   });
 });

@@ -25,6 +25,7 @@ class ColorTokens {
   static const Color referenceChromeBlack = Color(0xFF050510);
   static const Color referenceAccountNavy = Color(0xFF000840);
   static const Color referenceAccountBlue = Color(0xFF0818A0);
+  static const Color referenceTrophyGold = Color(0xFFE2B85F);
   static const Color referencePaymentsPurple = Color(0xFF181038);
   static const Color referencePaymentsPurpleMid = Color(0xFF302848);
   static const Color referencePaymentsPurpleDeep = Color(0xFF100820);

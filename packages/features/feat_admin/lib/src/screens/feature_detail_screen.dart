@@ -521,7 +521,7 @@ class _FeatureDetailScreenState extends ConsumerState<FeatureDetailScreen> {
                   color: ColorTokens.onDark,
                   opacity: 0.24,
                 ),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: ShapeTokens.cardRadius,
               ),
               padding: const EdgeInsets.symmetric(
                 horizontal: SpacingTokens.spacing3,

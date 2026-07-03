@@ -17,7 +17,7 @@ interface SiteHeaderProps {
 }
 
 export function SiteHeader({ club, copy }: SiteHeaderProps) {
-  const logoUrl = club.officialLogoUrl ?? "/icons/icon-192x192.png";
+  const logoUrl = club.officialLogoUrl ?? "/brand-mark.svg";
 
   return (
     <header className="sticky top-0 z-[60]">
@@ -61,7 +61,7 @@ export function SiteHeader({ club, copy }: SiteHeaderProps) {
           <Link href="/" className="flex items-center gap-3">
             <Image
               src={logoUrl}
-              alt={`${club.clubName} crest`}
+              alt={`${club.clubName} brand mark`}
               width={64}
               height={64}
               priority

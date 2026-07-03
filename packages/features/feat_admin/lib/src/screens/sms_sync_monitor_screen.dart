@@ -296,7 +296,7 @@ class _SyncRunRow extends StatelessWidget {
       padding: const EdgeInsets.all(SpacingTokens.spacing3),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: ShapeTokens.inputRadius,
       ),
       child: Row(
         children: [

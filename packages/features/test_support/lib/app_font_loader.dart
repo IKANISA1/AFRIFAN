@@ -16,9 +16,14 @@ Future<void> loadAppFonts() async {
 }
 
 Future<void> _preloadMaterialIcons() async {
-  final loader = FontLoader('MaterialIcons');
-  loader.addFont(_loadMaterialIconsFont());
-  await loader.load();
+  try {
+    final loader = FontLoader('MaterialIcons');
+    loader.addFont(_loadMaterialIconsFont());
+    await loader.load();
+  } on Object {
+    // Device integration tests cannot read host Flutter SDK font paths.
+    // MaterialIcons are visual polish for these tests, not the assertion target.
+  }
 }
 
 Future<ByteData> _loadMaterialIconsFont() async {

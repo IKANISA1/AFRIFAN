@@ -345,7 +345,7 @@ class _PredictionCard extends StatelessWidget {
       excludeChildSemantics: true,
       builder: (context, state) => AnimatedScale(
         scale: state.isPressed ? 0.99 : 1,
-        duration: const Duration(milliseconds: 120),
+        duration: AfriMotion.quick,
         child: card,
       ),
     );

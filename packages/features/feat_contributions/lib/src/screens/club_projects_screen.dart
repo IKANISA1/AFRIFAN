@@ -185,7 +185,7 @@ class _ProjectCard extends StatelessWidget {
           AfriLinearProgressIndicator(
             value: progress,
             minHeight: 8,
-            borderRadius: BorderRadius.circular(999),
+            borderRadius: ShapeTokens.buttonRadius,
             color: ColorTokens.clubPrimary,
             backgroundColor: ColorTokens.surfaceContainerHighest,
           ),

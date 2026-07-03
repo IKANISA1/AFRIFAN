@@ -45,7 +45,7 @@ function TeamBadge({
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-club-primary/20 p-1" aria-hidden="true">
         <Image
           src={clubLogoUrl}
-          alt={`${clubName ?? name} crest`}
+          alt={`${clubName ?? name} brand mark`}
           width={28}
           height={28}
           className="object-contain"

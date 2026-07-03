@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/models/fet_models.dart';
 import 'package:feat_gamification/src/models/partner_pool_models.dart';
@@ -59,6 +60,45 @@ class _FakePartnerPoolRepository extends PartnerPoolRepository {
     return const PartnerPoolMutationResult(status: 'success');
   }
 }
+
+class _FakeAuthRepository extends AuthRepository {
+  _FakeAuthRepository() : super(clubId: '24');
+
+  @override
+  Future<UserProfile?> restoreCurrentUser() async {
+    return const UserProfile(
+      id: 'supporter-1',
+      clubId: '24',
+      publicUserId: '483912',
+    );
+  }
+
+  @override
+  Future<AdminWorkspaceAccess> resolveAdminAccess(String userId) async {
+    return AdminWorkspaceAccess.none;
+  }
+
+  @override
+  Stream<supabase.AuthState> get authStateChanges =>
+      const Stream<supabase.AuthState>.empty();
+}
+
+const _enabledFanzoneFeatures = PlatformConfigSnapshot(
+  features: <PlatformFeature>[
+    PlatformFeature(
+      featureKey: 'challenge',
+      displayName: 'Challenge',
+      isEnabled: true,
+      visibilityState: 'visible',
+    ),
+    PlatformFeature(
+      featureKey: 'venue_checkin',
+      displayName: 'Venue Check-in',
+      isEnabled: true,
+      visibilityState: 'visible',
+    ),
+  ],
+);
 
 FanzoneHubSnapshot _buildSnapshot() {
   return FanzoneHubSnapshot(
@@ -239,6 +279,8 @@ void main() {
     expect(find.text('TV game'), findsOneWidget);
     expect(find.text('Enter TV code'), findsOneWidget);
 
+    await _scrollFanzoneTo(tester, find.text('Matchday rounds'));
+
     expect(find.text('Matchday rounds'), findsOneWidget);
     expect(find.text('100 point entry'), findsOneWidget);
     expect(find.text('Join round'), findsOneWidget);
@@ -321,8 +363,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.ensureVisible(find.text('Join round'));
-    await tester.pumpAndSettle();
+    await _scrollFanzoneTo(tester, find.text('Join round'));
     await tester.tap(find.widgetWithText(AfriButton, 'Join round').first);
     await tester.pumpAndSettle();
 
@@ -420,6 +461,10 @@ Widget _buildFanzoneApp(
 
   return ProviderScope(
     overrides: [
+      authRepositoryProvider.overrideWithValue(_FakeAuthRepository()),
+      initialFeatureConfigSnapshotProvider.overrideWithValue(
+        _enabledFanzoneFeatures,
+      ),
       currentUserProvider.overrideWith(
         (ref) => const UserProfile(
           id: 'supporter-1',
@@ -448,4 +493,13 @@ void _setMobileSurface(WidgetTester tester) {
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
+}
+
+Future<void> _scrollFanzoneTo(WidgetTester tester, Finder finder) async {
+  await tester.scrollUntilVisible(
+    finder,
+    300,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.pumpAndSettle();
 }

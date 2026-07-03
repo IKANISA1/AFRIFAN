@@ -7,6 +7,7 @@ import '../tokens/icon_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
+import 'afri_brand_mark.dart';
 import 'afri_press_feedback.dart';
 
 class AfriTopCommandAction {
@@ -87,7 +88,6 @@ class _CommandAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final crestAsset = RuntimeBranding.displayCrestAsset;
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -122,32 +122,11 @@ class _CommandAvatar extends StatelessWidget {
                 ),
               ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(9),
-              child: ClipOval(
-                child: crestAsset.isEmpty
-                    ? Center(
-                        child: Text(
-                          RuntimeBranding.appInitials,
-                          maxLines: 1,
-                          style: TypographyTokens.labelLarge(
-                            ColorTokens.chromeForeground,
-                          ),
-                        ),
-                      )
-                    : Image.asset(
-                        crestAsset,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Center(
-                          child: Text(
-                            RuntimeBranding.appInitials,
-                            maxLines: 1,
-                            style: TypographyTokens.labelLarge(
-                              ColorTokens.chromeForeground,
-                            ),
-                          ),
-                        ),
-                      ),
+            child: const Center(
+              child: AfriBrandMark(
+                size: 40,
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                showBorder: false,
               ),
             ),
           ),

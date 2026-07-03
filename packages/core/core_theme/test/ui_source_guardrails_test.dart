@@ -19,6 +19,18 @@ void main() {
       );
     });
 
+    test('Repo exposes a generated DESIGN.md compliance gate', () {
+      final gate = File(
+        '${repoRoot.path}/tools/scripts/design_compliance_report.sh',
+      );
+
+      expect(gate.existsSync(), isTrue);
+      final content = gate.readAsStringSync();
+      expect(content, contains('/Volumes/PRO-G40/DESIGN/DESIGN.md'));
+      expect(content, contains('output/design_compliance'));
+      expect(content, contains('route_evidence_matrix.md'));
+    });
+
     test('ThemeData construction stays centralized in core_theme', () {
       final violations = _scanDartFiles(
         roots: [
@@ -739,6 +751,32 @@ void main() {
         ),
       );
     });
+
+    test('Repo does not store visual design assets', () {
+      final violations = _findStoredVisualAssets(repoRoot);
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found stored visual assets. Use generated brand marks, remote product media, or DESIGN.md-governed runtime code instead.',
+          violations,
+        ),
+      );
+    });
+
+    test('Deleted static design asset paths do not return', () {
+      final violations = _findForbiddenStaticDesignReferences(repoRoot);
+
+      expect(
+        violations,
+        isEmpty,
+        reason: _formatViolations(
+          'Found references to deleted static design assets or asset contracts.',
+          violations,
+        ),
+      );
+    });
   });
 }
 
@@ -746,6 +784,10 @@ List<String> _findSecondaryDesignAuthorityFiles(Directory repoRoot) {
   final violations = <String>[];
   final designAuthorityName = RegExp(
     r'(^|/)(design|design-system|style-guide|screen[-_]inventory|visual[-_]baseline|screenshot[-_]matrix|ui[-_]ux|ux[-_]audit|design[-_]audit)([._/-]|$)',
+    caseSensitive: false,
+  );
+  final designAuthorityContent = RegExp(
+    r'\b(source of truth for .*design|product design migration|product design completion|design completion audit|screen inventory|screenshot matrix|visual baseline|style guide)\b',
     caseSensitive: false,
   );
 
@@ -759,13 +801,83 @@ List<String> _findSecondaryDesignAuthorityFiles(Directory repoRoot) {
       continue;
     }
 
-    if (designAuthorityName.hasMatch(normalizedPath)) {
+    final content = entity.readAsStringSync();
+    if (designAuthorityName.hasMatch(normalizedPath) ||
+        designAuthorityContent.hasMatch(content)) {
       violations.add(normalizedPath);
     }
   }
 
   violations.sort();
   return violations;
+}
+
+List<String> _findStoredVisualAssets(Directory repoRoot) {
+  final violations = <String>[];
+  final forbiddenExtensions = <String>{
+    '.png',
+    '.jpg',
+    '.jpeg',
+    '.webp',
+    '.svg',
+    '.ico',
+    '.icns',
+  };
+
+  for (final entity in _safeRecursiveList(repoRoot)) {
+    if (entity is! File) continue;
+    final normalizedPath = entity.path.replaceAll('\\', '/');
+    if (_isGeneratedPath(normalizedPath)) continue;
+    if (normalizedPath.contains('/ios/Pods/')) continue;
+
+    final lower = normalizedPath.toLowerCase();
+    if (forbiddenExtensions.any(lower.endsWith)) {
+      violations.add(normalizedPath);
+    }
+  }
+
+  violations.sort();
+  return violations;
+}
+
+List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
+  final forbidden = RegExp(
+    r'(CREST_ASSET|crestAsset|assets/crest|assets/images|LaunchImage|\bAppIcon\b|ic_launcher|splash_logo|favicon|/icons/|/media/|Image\.asset)',
+  );
+
+  return _scanTextFiles(
+    roots: [repoRoot],
+    extensions: const {
+      '.dart',
+      '.yaml',
+      '.yml',
+      '.json',
+      '.ts',
+      '.tsx',
+      '.js',
+      '.jsx',
+      '.mjs',
+      '.css',
+      '.xml',
+      '.plist',
+      '.pbxproj',
+      '.md',
+      '.sh',
+      '.html',
+    },
+    pattern: forbidden,
+    allow: (path) =>
+        path.endsWith(
+          '/packages/core/core_theme/test/ui_source_guardrails_test.dart',
+        ) ||
+        path.endsWith(
+          '/apps/rayon_sports/web/src/app/brand-mark.svg/route.ts',
+        ) ||
+        path.endsWith(
+          '/apps/rayon_sports/web/src/app/brand-surface.svg/route.ts',
+        ) ||
+        path.endsWith('/tools/scripts/design_compliance_report.sh'),
+  );
 }
 
 Directory _findRepoRoot() {
@@ -820,6 +932,7 @@ List<String> _scanTextFiles({
   required List<Directory> roots,
   required Set<String> extensions,
   required RegExp pattern,
+  bool Function(String normalizedPath)? allow,
 }) {
   final violations = <String>[];
 
@@ -831,6 +944,7 @@ List<String> _scanTextFiles({
 
       final normalizedPath = entity.path.replaceAll('\\', '/');
       if (_isGeneratedPath(normalizedPath)) continue;
+      if (allow != null && allow(normalizedPath)) continue;
       if (!extensions.any(normalizedPath.endsWith)) continue;
 
       final content = entity.readAsStringSync();
@@ -877,6 +991,9 @@ bool _isGeneratedPath(String normalizedPath) {
       normalizedPath.contains('/.dart_tool/') ||
       normalizedPath.contains('/.next/') ||
       normalizedPath.endsWith('/.next') ||
+      normalizedPath.contains('/coverage/') ||
+      normalizedPath.endsWith('/coverage') ||
+      normalizedPath.contains('/output/') ||
       normalizedPath.contains('/node_modules/') ||
       normalizedPath.contains('/ios/Pods/');
 }

@@ -33,7 +33,7 @@ export function GlobalNav({ club, copy, features = [], ribbon }: GlobalNavProps)
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const logoUrl = club.officialLogoUrl ?? "/icons/icon-192x192.png";
+  const logoUrl = club.officialLogoUrl ?? "/brand-mark.svg";
 
   const navItems = features.map((feature) => ({
     label: feature.display_name,
@@ -193,7 +193,7 @@ export function GlobalNav({ club, copy, features = [], ribbon }: GlobalNavProps)
                 </ul>
               </div>
               <div className="relative overflow-hidden rounded-2xl bg-black/40 p-6">
-                <div className="absolute inset-0 opacity-20 bg-[url('/media/stadium-hero.jpg')] bg-cover bg-center" />
+                <div className="absolute inset-0 opacity-20 bg-[url('/brand-surface.svg')] bg-cover bg-center" />
                 <div className="relative z-10">
                   <p className="text-xs font-bold uppercase tracking-widest text-[var(--club-accent)]">Season 2025/26</p>
                   <p className="mt-2 text-2xl font-black text-white uppercase leading-none">The Quest for<br/>Continental Glory</p>

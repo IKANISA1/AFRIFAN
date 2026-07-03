@@ -9,6 +9,8 @@ const List<MapEntry<String, String>> _fallbackRouteFeatureKeys =
       MapEntry<String, String>('/circles', 'contributions'),
       MapEntry<String, String>('/contribute', 'contributions'),
       MapEntry<String, String>('/shop', 'shop'),
+      MapEntry<String, String>('/venues', 'venue_app'),
+      MapEntry<String, String>('/venue', 'venue_app'),
       MapEntry<String, String>('/fixtures', 'live'),
       MapEntry<String, String>('/results', 'live'),
       MapEntry<String, String>('/standings', 'live'),
@@ -21,9 +23,11 @@ const List<MapEntry<String, String>> _fallbackRouteFeatureKeys =
 
 const List<MapEntry<String, String>> _launchOptInRouteFeatureKeys =
     <MapEntry<String, String>>[
+      MapEntry<String, String>('/fanzone/jackpot', 'challenge'),
       MapEntry<String, String>('/fanzone/challenges', 'challenge'),
       MapEntry<String, String>('/fanzone/challenge', 'challenge'),
       MapEntry<String, String>('/fanzone/friends', 'challenge'),
+      MapEntry<String, String>('/fanzone/venue', 'venue_checkin'),
       MapEntry<String, String>('/challenge', 'challenge'),
     ];
 

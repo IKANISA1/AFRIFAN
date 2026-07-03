@@ -41,7 +41,7 @@ export async function generateMetadata({
       : "Fixture detail",
     description: match?.matchSummary ?? "Fixture detail and ticketing context.",
     path: `/fixtures/${matchId}`,
-    imagePath: match?.imageUrl ?? "/media/stadium-hero.jpg",
+    imagePath: match?.imageUrl ?? "/brand-surface.svg",
   });
 }
 
@@ -86,7 +86,7 @@ export default async function FixtureDetailPage({
         {/* Elite Scoreboard Header */}
         <section className="relative overflow-hidden rounded-[40px] border border-white/10 bg-black/40 p-8 shadow-2xl lg:p-16">
           <div className="absolute inset-0 opacity-20 grayscale mix-blend-overlay">
-             <Image src="/media/stadium-hero.jpg" alt="Stadium" fill className="object-cover" />
+             <Image src="/brand-surface.svg" alt="Stadium" fill className="object-cover" />
           </div>
           
           <div className="relative z-10 flex flex-col items-center justify-between gap-12 lg:flex-row">

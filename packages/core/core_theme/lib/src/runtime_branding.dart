@@ -9,10 +9,6 @@ class RuntimeBranding {
     'CLUB_NAME',
     defaultValue: '',
   );
-  static const String _defaultCrestAsset = String.fromEnvironment(
-    'CREST_ASSET',
-    defaultValue: '',
-  );
   static const String _defaultHomeTeamName = String.fromEnvironment(
     'HOME_TEAM_NAME',
     defaultValue: '',
@@ -50,10 +46,6 @@ class RuntimeBranding {
     'CLUB_NAME',
     defaultValue: '',
   );
-  static String _crestAsset = const String.fromEnvironment(
-    'CREST_ASSET',
-    defaultValue: '',
-  );
   static String _homeTeamName = const String.fromEnvironment(
     'HOME_TEAM_NAME',
     defaultValue: '',
@@ -86,7 +78,6 @@ class RuntimeBranding {
   static void configure({
     required String appName,
     required String clubName,
-    String? crestAsset,
     String? countryCode,
     String? currencyCode,
     String? currencySymbol,
@@ -97,9 +88,6 @@ class RuntimeBranding {
   }) {
     _appName = appName.trim().isEmpty ? _appName : appName;
     _clubName = clubName.trim().isEmpty ? _clubName : clubName;
-    if (crestAsset != null && crestAsset.trim().isNotEmpty) {
-      _crestAsset = crestAsset;
-    }
     if (countryCode != null && countryCode.trim().isNotEmpty) {
       _countryCode = countryCode;
     }
@@ -127,7 +115,6 @@ class RuntimeBranding {
   static void resetForTest() {
     _appName = _defaultAppName;
     _clubName = _defaultClubName;
-    _crestAsset = _defaultCrestAsset;
     _homeTeamName = _defaultHomeTeamName;
     _countryCode = _defaultCountryCode;
     _currencyCode = _defaultCurrencyCode;
@@ -186,8 +173,6 @@ class RuntimeBranding {
     final trimmed = _currencySymbol.trim();
     return trimmed.isEmpty ? displayCurrencyCode : trimmed;
   }
-
-  static String get displayCrestAsset => _crestAsset.trim();
 
   static String get appInitials {
     final source = displayAppName.trim().isNotEmpty

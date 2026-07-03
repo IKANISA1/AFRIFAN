@@ -7,11 +7,10 @@ class VitaloConfig implements ClubConfig {
   const VitaloConfig();
 
   @override
-  String get clubId =>
-      ClubConfig.requireDefine(
-        const String.fromEnvironment('CLUB_ID'),
-        'CLUB_ID',
-      );
+  String get clubId => ClubConfig.requireDefine(
+    const String.fromEnvironment('CLUB_ID'),
+    'CLUB_ID',
+  );
 
   @override
   String get clubName => "Vital'O FC";
@@ -44,10 +43,6 @@ class VitaloConfig implements ClubConfig {
     accent: Color(0xFFFFD700),
     gradient: [Color(0xFF5A1E6E), Color(0xFF2D0A3E)],
   );
-
-  @override
-  String get crestAsset => 'assets/crest/vitalo_crest.png';
-
   @override
   String get supabaseUrl => ClubConfig.requireDefine(
     const String.fromEnvironment('SUPABASE_URL'),
@@ -62,7 +57,6 @@ class VitaloConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const ['fr', 'rn', 'en'];
-
 
   @override
   bool get hasFanClubs => true;
@@ -87,7 +81,8 @@ class VitaloConfig implements ClubConfig {
   );
 
   @override
-  String get environment => const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
+  String get environment =>
+      const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
 
   @override
   Map<String, bool> get features => {

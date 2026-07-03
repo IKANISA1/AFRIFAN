@@ -15,7 +15,7 @@ class ShapeTokens {
   // ── Border Radius Presets ──
   static BorderRadius get chipRadius => BorderRadius.circular(radiusMd);
   static BorderRadius get inputRadius => BorderRadius.circular(radiusLg);
-  static BorderRadius get cardRadius => BorderRadius.circular(radiusXl);
+  static BorderRadius get cardRadius => BorderRadius.circular(radiusSm);
   static BorderRadius get heroCardRadius => BorderRadius.circular(radiusXxl);
   static BorderRadius get chromeRadius => BorderRadius.circular(42);
   static BorderRadius get buttonRadius => BorderRadius.circular(radiusFull);

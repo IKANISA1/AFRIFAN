@@ -104,6 +104,8 @@ const FALLBACK_ROUTE_FEATURE_KEYS: ReadonlyArray<[string, string]> = [
   ["/circles", "contributions"],
   ["/groups", "contributions"],
   ["/shop", "shop"],
+  ["/venues", "venue_app"],
+  ["/venue", "venue_app"],
   ["/fixtures", "live"],
   ["/results", "live"],
   ["/standings", "live"],

@@ -32,7 +32,7 @@ void main() {
           'Fanclubs',
           'Shop',
           'Matchday',
-          'Contribute',
+          'Support',
         ]),
       );
       expect(

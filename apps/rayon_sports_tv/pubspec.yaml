@@ -1,0 +1,28 @@
+name: rayon_sports_tv
+description: Rayon Sports native Flutter TV display app.
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  club_rayon_sports:
+    path: ../../packages/clubs/club_rayon_sports
+  core_theme:
+    path: ../../packages/core/core_theme
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+resolution: workspace

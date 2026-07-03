@@ -14,6 +14,8 @@ dependencies:
     path: ../../core/core_theme
   core_router:
     path: ../../core/core_router
+  core_feature_config:
+    path: ../../core/core_feature_config
   core_auth:
     path: ../../core/core_auth
   core_network:

@@ -62,7 +62,7 @@ void main() {
       expect(find.text('Settings Screen'), findsOneWidget);
     });
 
-    testWidgets('matches shell home tab visual baseline', (tester) async {
+    testWidgets('matches shell home tab render contract', (tester) async {
       _setMobileSurface(tester);
 
       await tester.pumpWidget(_buildApp(router));
@@ -71,7 +71,7 @@ void main() {
       expect(find.byType(AppShell), findsOneWidget);
     });
 
-    testWidgets('matches shell fan zone tab visual baseline', (tester) async {
+    testWidgets('matches shell fan zone tab render contract', (tester) async {
       _setMobileSurface(tester);
 
       await tester.pumpWidget(_buildApp(router));
@@ -83,7 +83,7 @@ void main() {
       expect(find.byType(AppShell), findsOneWidget);
     });
 
-    testWidgets('matches shell settings tab visual baseline', (tester) async {
+    testWidgets('matches shell settings tab render contract', (tester) async {
       _setMobileSurface(tester);
 
       await tester.pumpWidget(_buildApp(router));
@@ -173,10 +173,6 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   String get countryCode => 'RW';
-
-  @override
-  String get crestAsset => 'assets/crest/rayon_sports_crest.png';
-
   @override
   String get currency => 'RWF';
 

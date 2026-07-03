@@ -32,7 +32,7 @@ class NotificationPreviewCard extends StatelessWidget {
             padding: const EdgeInsets.all(SpacingTokens.spacing4),
             decoration: BoxDecoration(
               color: ColorTokens.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: ShapeTokens.inputRadius,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

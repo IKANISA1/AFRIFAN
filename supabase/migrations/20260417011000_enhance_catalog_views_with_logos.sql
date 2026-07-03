@@ -6,6 +6,8 @@
 -- Also updates unified_matches and unified_standings to expose these fields.
 -- ============================================================================
 
+ALTER TABLE football.competitions ADD COLUMN IF NOT EXISTS logo_url text;
+
 -- ── 1. Enhanced Fixtures Catalog ──
 
 CREATE OR REPLACE VIEW public.football_fixtures_catalog
@@ -31,24 +33,24 @@ SELECT
   ht.slug AS home_team_slug,
   ht.name AS home_team_name,
   ht.short_name AS home_team_short_name,
-  ht.crest_url AS home_team_logo_url,
   f.away_team_id,
   at.slug AS away_team_slug,
   at.name AS away_team_name,
   at.short_name AS away_team_short_name,
-  at.crest_url AS away_team_logo_url,
   f.home_score,
   f.away_score,
   f.leg_number,
   f.status,
+  f.metadata,
+  f.created_at,
+  f.updated_at,
+  ht.crest_url AS home_team_logo_url,
+  at.crest_url AS away_team_logo_url,
   COALESCE(
     c.logo_url,
     c.metadata ->> 'api_league_logo',
     c.metadata ->> 'storage_league_logo_url'
   ) AS competition_logo_url,
-  f.metadata,
-  f.created_at,
-  f.updated_at,
   f.external_provider,
   f.external_fixture_id,
   -- Computed: API metadata for logos (fallback from metadata JSONB)

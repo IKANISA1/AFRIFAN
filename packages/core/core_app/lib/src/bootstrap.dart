@@ -95,9 +95,6 @@ Future<void> bootstrap(
       if (config.clubName.trim().isEmpty) {
         throw StateError('ClubConfig.clubName must not be empty.');
       }
-      if (config.crestAsset.trim().isEmpty) {
-        throw StateError('ClubConfig.crestAsset must not be empty.');
-      }
       if (normalizedClubId == null) {
         throw StateError(
           'ClubConfig.clubId must be a numeric string matching the backend id. '
@@ -107,7 +104,6 @@ Future<void> bootstrap(
       RuntimeBranding.configure(
         appName: config.appName,
         clubName: config.clubName,
-        crestAsset: config.crestAsset,
         countryCode: config.countryCode,
         currencyCode: config.currency,
         currencySymbol: config.currencySymbol,

@@ -48,7 +48,7 @@ export default async function NewsPage() {
               <div className="lg:col-span-7">
                 <div className="relative aspect-[16/9] overflow-hidden rounded-3xl bg-slate-100 shadow-2xl">
                   <Image
-                    src={featuredArticle.coverImageUrl ?? "/media/stadium-hero.jpg"}
+                    src={featuredArticle.coverImageUrl ?? "/brand-surface.svg"}
                     alt={featuredArticle.title}
                     fill
                     priority
@@ -85,7 +85,7 @@ export default async function NewsPage() {
             <Link key={article.id} href={`/news/${article.id}`} className="group">
               <div className="relative mb-6 aspect-video overflow-hidden rounded-2xl bg-slate-100 shadow-lg">
                 <Image
-                  src={article.coverImageUrl ?? "/media/stadium-hero.jpg"}
+                  src={article.coverImageUrl ?? "/brand-surface.svg"}
                   alt={article.title}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"

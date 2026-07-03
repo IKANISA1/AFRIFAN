@@ -108,7 +108,7 @@ function mapFanClubRow(row: Record<string, unknown>): FanClubItem {
     rating: safeNumber(row.rating, 0),
     bannerImageUrl: sanitizeMediaUrl(
       row.banner_image_url,
-      "/media/stadium-hero.jpg",
+      "/brand-surface.svg",
     ),
   };
 }

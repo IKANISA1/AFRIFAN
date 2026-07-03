@@ -30,7 +30,7 @@ export async function generateMetadata({
     title: product?.name ?? copy.pages.shop.metaTitle(club),
     description: product?.subtitle ?? copy.pages.shop.metaDescription(club),
     path: `/shop/${productId}`,
-    imagePath: product?.imageUrl ?? "/media/stadium-hero.jpg",
+    imagePath: product?.imageUrl ?? "/brand-surface.svg",
   });
 }
 
@@ -70,7 +70,7 @@ export default async function ProductPage({
         <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="img-zoom relative min-h-[22rem]">
             <Image
-              src={product.imageUrl ?? "/media/stadium-hero.jpg"}
+              src={product.imageUrl ?? "/brand-surface.svg"}
               alt={product.name}
               fill
               sizes="(min-width: 1024px) 44vw, 100vw"

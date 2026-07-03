@@ -138,7 +138,7 @@ void main() {
       expect(find.text('Fanclubs'), findsOneWidget);
       expect(find.text('Shop'), findsOneWidget);
       expect(find.text('Matchday'), findsOneWidget);
-      expect(find.text('Contribute'), findsOneWidget);
+      expect(find.text('Support'), findsOneWidget);
     });
   });
 }

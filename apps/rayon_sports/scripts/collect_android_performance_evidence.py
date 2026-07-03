@@ -185,6 +185,7 @@ def run_swipe_exercise(
     *,
     screen_size: str,
     swipes: int,
+    swipe_axis: str,
     swipe_duration_ms: int,
     pause_seconds: float,
 ) -> list[dict[str, object]]:
@@ -193,36 +194,78 @@ def run_swipe_exercise(
         raise RuntimeError(f"Could not parse device screen size: {screen_size}")
 
     width, height = dimensions
-    y = int(height * 0.54)
-    left = int(width * 0.28)
-    right = int(width * 0.72)
     events: list[dict[str, object]] = []
 
     for index in range(swipes):
-        start_x, end_x, direction = right, left, "left"
+        if swipe_axis == "vertical":
+            x = int(width * 0.50)
+            start_y, end_y = int(height * 0.72), int(height * 0.36)
+            start_x, end_x = x, x
+            direction = "up"
+        else:
+            y = int(height * 0.54)
+            start_x, end_x = int(width * 0.72), int(width * 0.28)
+            start_y, end_y = y, y
+            direction = "left"
 
         adb_shell(
             device,
             "input",
             "swipe",
             str(start_x),
-            str(y),
+            str(start_y),
             str(end_x),
-            str(y),
+            str(end_y),
             str(swipe_duration_ms),
         )
         events.append(
             {
                 "direction": direction,
                 "duration_ms": swipe_duration_ms,
-                "end": [end_x, y],
+                "end": [end_x, end_y],
                 "index": index + 1,
-                "start": [start_x, y],
+                "start": [start_x, start_y],
             }
         )
         time.sleep(pause_seconds)
 
     return events
+
+
+def tap_primary_action(
+    device: str,
+    *,
+    screen_size: str,
+    index: int,
+) -> dict[str, object]:
+    dimensions = parse_screen_size(screen_size)
+    if dimensions is None:
+        raise RuntimeError(f"Could not parse device screen size: {screen_size}")
+
+    width, height = dimensions
+    x = int(width * 0.50)
+    y = int(height * 0.76)
+    adb_shell(device, "input", "tap", str(x), str(y))
+    return {
+        "direction": "tap",
+        "duration_ms": 0,
+        "end": [x, y],
+        "index": index,
+        "start": [x, y],
+        "target": "primary_action",
+    }
+
+
+def press_back(device: str, *, index: int) -> dict[str, object]:
+    adb_shell(device, "input", "keyevent", "KEYCODE_BACK")
+    return {
+        "direction": "back",
+        "duration_ms": 0,
+        "end": [],
+        "index": index,
+        "start": [],
+        "target": "system_back",
+    }
 
 
 def build_assessment(
@@ -458,10 +501,33 @@ def build_parser() -> argparse.ArgumentParser:
         "--exercise-swipes",
         type=int,
         default=0,
-        help="After startup settles, reset gfxinfo and perform this many horizontal swipes.",
+        help="After startup settles, reset gfxinfo and perform this many swipes.",
+    )
+    parser.add_argument(
+        "--swipe-axis",
+        choices=("horizontal", "vertical"),
+        default="horizontal",
+        help="Swipe direction for the post-start exercise.",
     )
     parser.add_argument("--swipe-duration-ms", type=int, default=550)
     parser.add_argument("--swipe-pause-seconds", type=float, default=0.2)
+    parser.add_argument(
+        "--tap-primary-action",
+        action="store_true",
+        help="After resetting gfxinfo, tap the lower primary action before swipe exercise.",
+    )
+    parser.add_argument(
+        "--post-tap-settle-seconds",
+        type=float,
+        default=1.5,
+        help="Seconds to wait after --tap-primary-action before any swipe exercise.",
+    )
+    parser.add_argument(
+        "--primary-action-cycles",
+        type=int,
+        default=1,
+        help="Number of primary-action route cycles to exercise when --tap-primary-action is set.",
+    )
     parser.add_argument(
         "--perfetto-duration-seconds",
         type=int,
@@ -511,12 +577,30 @@ def main() -> int:
     gfxinfo_scope = "startup"
     if args.exercise_swipes > 0:
         adb_shell(device, "dumpsys", "gfxinfo", args.app_id, "reset", check=False)
-        interaction_events = run_swipe_exercise(
-            device,
-            screen_size=metadata["screen_size"],
-            swipes=args.exercise_swipes,
-            swipe_duration_ms=args.swipe_duration_ms,
-            pause_seconds=args.swipe_pause_seconds,
+        if args.tap_primary_action:
+            for cycle_index in range(max(args.primary_action_cycles, 1)):
+                interaction_events.append(
+                    tap_primary_action(
+                        device,
+                        screen_size=metadata["screen_size"],
+                        index=cycle_index + 1,
+                    )
+                )
+                time.sleep(args.post_tap_settle_seconds)
+                if cycle_index + 1 < max(args.primary_action_cycles, 1):
+                    interaction_events.append(press_back(device, index=(cycle_index * 2) + 1))
+                    time.sleep(args.post_tap_settle_seconds)
+                    interaction_events.append(press_back(device, index=(cycle_index * 2) + 2))
+                    time.sleep(args.post_tap_settle_seconds)
+        interaction_events.extend(
+            run_swipe_exercise(
+                device,
+                screen_size=metadata["screen_size"],
+                swipes=args.exercise_swipes,
+                swipe_axis=args.swipe_axis,
+                swipe_duration_ms=args.swipe_duration_ms,
+                pause_seconds=args.swipe_pause_seconds,
+            )
         )
         time.sleep(1)
         gfxinfo_scope = "post_start_swipe_exercise"

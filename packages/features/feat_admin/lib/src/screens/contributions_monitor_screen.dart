@@ -418,7 +418,7 @@ class _StateChip extends StatelessWidget {
         color: active
             ? ColorTokens.clubAccent.withValues(alpha: 0.15)
             : ColorTokens.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: ShapeTokens.buttonRadius,
       ),
       child: Text(label, style: TypographyTokens.labelSmall()),
     );

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_auth/core_auth.dart';
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -230,6 +231,22 @@ class FanzoneHubScreen extends ConsumerWidget {
                           subtitle:
                               'Join a live session and use this phone as the controller',
                           onTap: () => context.push('/fanzone/game'),
+                        ),
+                        _HubAction.featureGated(
+                          featureKey: 'venue_checkin',
+                          icon: AfriIcons.qrScan,
+                          title: 'Venue check-in',
+                          subtitle:
+                              'Scan or enter the rotating venue code after you arrive',
+                          onTap: () => context.push('/fanzone/venue'),
+                        ),
+                        _HubAction.featureGated(
+                          featureKey: 'venue_checkin',
+                          icon: AfriIcons.cart,
+                          title: 'Venue order',
+                          subtitle:
+                              'Order approved drinks and track pickup status',
+                          onTap: () => context.push('/fanzone/venue/order'),
                         ),
                         _HubAction(
                           icon: AfriIcons.profile,
@@ -964,12 +981,21 @@ class _HubAction {
     required this.title,
     required this.subtitle,
     required this.onTap,
+  }) : featureKey = null;
+
+  const _HubAction.featureGated({
+    required String this.featureKey,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
+  final String? featureKey;
 }
 
 class _HubActionList extends StatelessWidget {
@@ -981,8 +1007,8 @@ class _HubActionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: actions
-          .map(
-            (action) => Padding(
+          .map((action) {
+            final row = Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.listItemGap),
               child: AfriListRow(
                 icon: action.icon,
@@ -990,8 +1016,13 @@ class _HubActionList extends StatelessWidget {
                 subtitle: action.subtitle,
                 onTap: action.onTap,
               ),
-            ),
-          )
+            );
+            final featureKey = action.featureKey;
+            if (featureKey == null) {
+              return row;
+            }
+            return FeatureGate(featureKey: featureKey, child: row);
+          })
           .toList(growable: false),
     );
   }

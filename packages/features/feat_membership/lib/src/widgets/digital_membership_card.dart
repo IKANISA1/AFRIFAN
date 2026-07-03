@@ -4,8 +4,8 @@ import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-/// Glassmorphic Digital Membership Card — enhanced version with club crest,
-/// tier badge, Fan ID, member-since date, and Gikundiro watermark.
+/// Glassmorphic Digital Membership Card — enhanced version with generated
+/// club mark text, tier badge, Fan ID, member-since date, and watermark.
 ///
 /// Mirrors the fanafrika `DigitalMembershipCard.tsx`.
 class DigitalMembershipCardFull extends StatelessWidget {
@@ -14,7 +14,7 @@ class DigitalMembershipCardFull extends StatelessWidget {
     required this.clubName,
     required this.tier,
     required this.fanId,
-    this.crest,
+    this.brandMarkText,
     this.memberSince,
     this.accentColor,
     this.onShare,
@@ -23,7 +23,7 @@ class DigitalMembershipCardFull extends StatelessWidget {
   final String clubName;
   final String tier;
   final String fanId;
-  final String? crest;
+  final String? brandMarkText;
   final String? memberSince;
   final Color? accentColor;
   final VoidCallback? onShare;
@@ -41,13 +41,7 @@ class DigitalMembershipCardFull extends StatelessWidget {
           from: accent.withValues(alpha: 0.35),
           to: ColorTokens.surfaceContainer,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: accent.withValues(alpha: 0.15),
-            blurRadius: 32,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        boxShadow: AfriShadows.primaryGlow(accent),
       ),
       child: ClipRRect(
         borderRadius: ShapeTokens.cardRadius,
@@ -83,9 +77,9 @@ class DigitalMembershipCardFull extends StatelessWidget {
                       runSpacing: SpacingTokens.spacing2,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        if (crest != null) ...[
+                        if (brandMarkText != null) ...[
                           Text(
-                            crest!,
+                            brandMarkText!,
                             style: TypographyTokens.headlineMedium(),
                           ),
                         ],

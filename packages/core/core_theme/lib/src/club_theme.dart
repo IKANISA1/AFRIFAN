@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'club_config.dart';
+import 'tokens/afri_design_tokens.dart';
 import 'tokens/afri_semantic_colors.dart';
 import 'tokens/border_tokens.dart';
 import 'tokens/color_tokens.dart';
@@ -54,7 +55,7 @@ class ClubTheme {
       colorScheme: colorScheme,
       scaffoldBackgroundColor: ColorTokens.background,
       dividerColor: Colors.transparent,
-      extensions: <ThemeExtension>[semanticColors],
+      extensions: <ThemeExtension>[semanticColors, AfriDesignTokens.standard()],
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       splashFactory: NoSplash.splashFactory,

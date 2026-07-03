@@ -17,7 +17,7 @@ class MatchIntelEvent {
   final String? teamSide; // 'home' or 'away'
 }
 
-/// Displays a team crest from a hotlinked URL, falling back to
+/// Displays a team logo from a hotlinked URL, falling back to
 /// a text abbreviation badge when the logo is unavailable.
 class TeamBadge extends StatelessWidget {
   const TeamBadge({
@@ -36,7 +36,7 @@ class TeamBadge extends StatelessWidget {
     final hasLogo = logoUrl != null && logoUrl!.isNotEmpty;
 
     return Semantics(
-      label: '$label crest',
+      label: '$label team logo',
       image: true,
       child: Container(
         width: size,
@@ -53,7 +53,7 @@ class TeamBadge extends StatelessWidget {
                 child: Image.network(
                   logoUrl!,
                   fit: BoxFit.contain,
-                  semanticLabel: '$label crest',
+                  semanticLabel: '$label team logo',
                   errorBuilder: (_, __, ___) =>
                       _AbbreviationFallback(label: label, size: size),
                   loadingBuilder: (_, child, loadingProgress) {
@@ -98,9 +98,9 @@ class _AbbreviationFallback extends StatelessWidget {
   }
 }
 
-/// Small inline team crest for use in event rows, standings, etc.
-class TeamCrestInline extends StatelessWidget {
-  const TeamCrestInline({
+/// Small inline team logo for use in event rows, standings, etc.
+class TeamLogoInline extends StatelessWidget {
+  const TeamLogoInline({
     super.key,
     this.logoUrl,
     this.fallbackLabel,
@@ -113,7 +113,7 @@ class TeamCrestInline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final semanticLabel = '${fallbackLabel ?? 'Team'} crest';
+    final semanticLabel = '${fallbackLabel ?? 'Team'} logo';
 
     if (logoUrl != null && logoUrl!.isNotEmpty) {
       return Semantics(

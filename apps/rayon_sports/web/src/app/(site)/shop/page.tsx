@@ -72,7 +72,7 @@ export default async function ShopPage() {
           <article className="glass-panel card-interactive grid overflow-hidden rounded-[34px] lg:grid-cols-[0.95fr_1.05fr]">
             <div className="img-zoom relative min-h-[18rem]">
               <Image
-                src={featuredProduct.imageUrl ?? "/media/stadium-hero.jpg"}
+                src={featuredProduct.imageUrl ?? "/brand-surface.svg"}
                 alt={featuredProduct.name}
                 fill
                 sizes="(min-width: 1280px) 35vw, 100vw"

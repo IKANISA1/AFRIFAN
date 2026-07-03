@@ -25,7 +25,7 @@ class MarketOptionPill extends StatelessWidget {
       semanticsHint: isSelected ? 'Selected market option' : 'Select option',
       excludeChildSemantics: true,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: AfriMotion.standard,
         curve: Curves.easeOutCubic,
         constraints: const BoxConstraints(
           minHeight: SpacingTokens.spacing10 + SpacingTokens.spacing1,

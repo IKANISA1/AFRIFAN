@@ -311,7 +311,7 @@ class _FetTutorialSheetState extends State<_FetTutorialSheet> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(_steps.length, (index) {
               return AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
+                duration: AfriMotion.standard,
                 width: index == _currentStep
                     ? SpacingTokens.spacing6
                     : SpacingTokens.spacing2,

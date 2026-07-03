@@ -92,24 +92,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final crestAsset = RuntimeBranding.displayCrestAsset;
     final mediaQuery = MediaQuery.maybeOf(context);
     final reduceMotion =
         mediaQuery?.disableAnimations == true ||
         mediaQuery?.accessibleNavigation == true;
 
-    Widget crest = crestAsset.isNotEmpty
-        ? Image.asset(
-            crestAsset,
-            width: 180,
-            height: 180,
-            errorBuilder: (context, error, stackTrace) =>
-                _SplashFallbackBadge(label: RuntimeBranding.appInitials),
-          )
-        : _SplashFallbackBadge(label: RuntimeBranding.appInitials);
+    Widget brandMark = AfriBrandMark(
+      size: 180,
+      borderRadius: ShapeTokens.chromeRadius,
+      semanticLabel: '${RuntimeBranding.displayAppName} loading',
+    );
 
     if (!reduceMotion) {
-      crest = crest.animate().scale(
+      brandMark = brandMark.animate().scale(
         duration: 500.ms,
         curve: Curves.easeOutBack,
       );
@@ -129,39 +124,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [crest, const SizedBox(height: 32), progress],
+          children: [brandMark, const SizedBox(height: 32), progress],
         ),
-      ),
-    );
-  }
-}
-
-class _SplashFallbackBadge extends StatelessWidget {
-  const _SplashFallbackBadge({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 180,
-      height: 180,
-      decoration: BoxDecoration(
-        color: ColorTokens.onSurface.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(40),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        label,
-        style:
-            Theme.of(context).textTheme.displaySmall?.copyWith(
-              color: ColorTokens.onSurface,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 2,
-            ) ??
-            TypographyTokens.displayLarge(
-              ColorTokens.onSurface,
-            ).copyWith(fontWeight: FontWeight.w800, letterSpacing: 2),
       ),
     );
   }

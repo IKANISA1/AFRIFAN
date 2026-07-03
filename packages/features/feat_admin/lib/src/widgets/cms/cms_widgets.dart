@@ -102,7 +102,7 @@ class _EntityCard extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: ColorTokens.surfaceContainerLow,
-                          borderRadius: BorderRadius.circular(99),
+                          borderRadius: ShapeTokens.buttonRadius,
                         ),
                         child: Text(tag, style: TypographyTokens.labelSmall()),
                       ),
@@ -184,7 +184,7 @@ class _ArticleCard extends StatelessWidget {
                   color: isPublished
                       ? ColorTokens.clubAccent.withValues(alpha: 0.15)
                       : ColorTokens.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(99),
+                  borderRadius: ShapeTokens.buttonRadius,
                 ),
                 child: Text(statusLabel, style: TypographyTokens.labelSmall()),
               ),

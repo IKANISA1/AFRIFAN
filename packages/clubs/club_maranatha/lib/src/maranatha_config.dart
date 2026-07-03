@@ -7,11 +7,10 @@ class MaranathaConfig implements ClubConfig {
   const MaranathaConfig();
 
   @override
-  String get clubId =>
-      ClubConfig.requireDefine(
-        const String.fromEnvironment('CLUB_ID'),
-        'CLUB_ID',
-      );
+  String get clubId => ClubConfig.requireDefine(
+    const String.fromEnvironment('CLUB_ID'),
+    'CLUB_ID',
+  );
 
   @override
   String get clubName => 'Maranatha FC';
@@ -44,10 +43,6 @@ class MaranathaConfig implements ClubConfig {
     accent: Color(0xFFFFD700),
     gradient: [Color(0xFF990000), Color(0xFF330000)],
   );
-
-  @override
-  String get crestAsset => 'assets/crest/maranatha_crest.png';
-
   @override
   String get supabaseUrl => ClubConfig.requireDefine(
     const String.fromEnvironment('SUPABASE_URL'),
@@ -62,7 +57,6 @@ class MaranathaConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const ['fr', 'ee', 'en'];
-
 
   @override
   bool get hasFanClubs => true;
@@ -87,7 +81,8 @@ class MaranathaConfig implements ClubConfig {
   );
 
   @override
-  String get environment => const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
+  String get environment =>
+      const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
 
   @override
   Map<String, bool> get features => {

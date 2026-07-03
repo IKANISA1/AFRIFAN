@@ -287,8 +287,8 @@ class _ClubFanZoneScreenState extends ConsumerState<ClubFanZoneScreen> {
                         ),
                         const SizedBox(height: SpacingTokens.spacing3),
                         if (_pulse.isEmpty)
-                          const Text(
-                            'Community pick distribution will appear once this competition has active AFRICLUB predictions.',
+                          Text(
+                            'Community pick distribution will appear once this competition has active ${RuntimeBranding.displayAppName} predictions.',
                           )
                         else
                           ..._pulse.map((pulse) {

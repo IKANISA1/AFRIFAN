@@ -163,7 +163,7 @@ class _FanRegistryScreenState extends ConsumerState<FanRegistryScreen> {
   void _handleSearchChanged(String _) {
     _searchDebounce?.cancel();
     _searchDebounce = Timer(
-      const Duration(milliseconds: 320),
+      AfriMotion.emphasized,
       () => unawaited(_reloadFans()),
     );
     setState(() {});

@@ -7,11 +7,10 @@ class AcLeopardsConfig implements ClubConfig {
   const AcLeopardsConfig();
 
   @override
-  String get clubId =>
-      ClubConfig.requireDefine(
-        const String.fromEnvironment('CLUB_ID'),
-        'CLUB_ID',
-      );
+  String get clubId => ClubConfig.requireDefine(
+    const String.fromEnvironment('CLUB_ID'),
+    'CLUB_ID',
+  );
 
   @override
   String get clubName => 'AC Léopards';
@@ -44,10 +43,6 @@ class AcLeopardsConfig implements ClubConfig {
     accent: Color(0xFF000000),
     gradient: [Color(0xFF004D2C), Color(0xFF002211)],
   );
-
-  @override
-  String get crestAsset => 'assets/crest/ac_leopards_crest.png';
-
   @override
   String get supabaseUrl => ClubConfig.requireDefine(
     const String.fromEnvironment('SUPABASE_URL'),
@@ -62,7 +57,6 @@ class AcLeopardsConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const ['fr', 'ln', 'en'];
-
 
   @override
   bool get hasFanClubs => true;
@@ -87,7 +81,8 @@ class AcLeopardsConfig implements ClubConfig {
   );
 
   @override
-  String get environment => const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
+  String get environment =>
+      const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
 
   @override
   Map<String, bool> get features => {

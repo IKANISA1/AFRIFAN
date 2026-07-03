@@ -113,4 +113,32 @@ describe("TvDisplayClient", () => {
 
     expect(supabase.removeChannel).toHaveBeenCalledWith(channel);
   });
+
+  it("renders venue check-in code without personal wallet or order data", () => {
+    const getTvState = vi.fn().mockResolvedValue(createDemoTvSessionState());
+    vi.mocked(createGameRuntimeClient).mockReturnValue(
+      { getTvState } as unknown as ReturnType<typeof createGameRuntimeClient>,
+    );
+    vi.mocked(getBrowserSupabase).mockReturnValue(null);
+
+    const { getByText, queryByText } = render(
+      <TvDisplayClient
+        initialState={createDemoTvSessionState()}
+        sessionId={null}
+        venueCheckin={{
+          code: "RAY-2468",
+          venueName: "Rayon Lounge",
+          expiresAt: "Expires 20:45",
+          rewardLabel: "25 FET check-in reward",
+        }}
+      />,
+    );
+
+    expect(getByText("Venue check-in")).toBeTruthy();
+    expect(getByText("Rayon Lounge")).toBeTruthy();
+    expect(getByText("RAY-2468")).toBeTruthy();
+    expect(getByText("25 FET check-in reward")).toBeTruthy();
+    expect(queryByText(/wallet/i)).toBeNull();
+    expect(queryByText(/order queue/i)).toBeNull();
+  });
 });

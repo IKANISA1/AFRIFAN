@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'club_config_scope.dart';
 import 'runtime_branding.dart';
+import 'tokens/afri_design_tokens.dart';
 import 'tokens/afri_semantic_colors.dart';
 import 'tokens/spacing_tokens.dart';
 
@@ -19,6 +20,11 @@ extension AfriThemeExtension on BuildContext {
   /// is not registered (e.g. during bootstrap).
   AfriSemanticColors get afriSemanticColors =>
       Theme.of(this).extension<AfriSemanticColors>() ?? AfriSemanticColors.dark;
+
+  /// Access the non-color design tokens from root DESIGN.md.
+  AfriDesignTokens get afriDesignTokens =>
+      Theme.of(this).extension<AfriDesignTokens>() ??
+      AfriDesignTokens.standard();
 
   /// Access the spacing token helper.
   AfriSpaceHelper get afriSpace => const AfriSpaceHelper();

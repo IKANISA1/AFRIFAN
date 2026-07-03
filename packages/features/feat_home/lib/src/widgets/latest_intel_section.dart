@@ -165,7 +165,7 @@ class _IntelCard extends StatelessWidget {
         builder: (context, state) => ClipRRect(
           borderRadius: ShapeTokens.cardRadius,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 140),
+            duration: AfriMotion.quick,
             decoration: BoxDecoration(
               color: ColorTokens.glassFill,
               borderRadius: ShapeTokens.cardRadius,
@@ -173,14 +173,7 @@ class _IntelCard extends StatelessWidget {
                   ? BorderTokens.focusAll(color: primaryColor, opacity: 0.70)
                   : BorderTokens.ghost(),
               boxShadow: state.isFocused || state.isHovered
-                  ? [
-                      BoxShadow(
-                        color: primaryColor.withValues(alpha: 0.14),
-                        blurRadius: 18,
-                        spreadRadius: -4,
-                        offset: const Offset(0, 8),
-                      ),
-                    ]
+                  ? AfriShadows.primaryGlow(primaryColor)
                   : null,
             ),
             child: Column(

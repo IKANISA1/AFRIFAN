@@ -13,7 +13,7 @@ import 'package:go_router/go_router.dart';
 import '../fet_providers.dart';
 import '../models/fet_models.dart';
 
-/// Shows the user's AFRICLUB Fan ID with profile-backed privacy state.
+/// Shows the user's runtime-branded Fan ID with profile-backed privacy state.
 ///
 /// The displayed Fan ID comes from `profiles.public_user_id`, while the
 /// visibility badges reflect the real privacy toggles persisted on the profile.
@@ -165,8 +165,8 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
         icon: _isVerified ? AfriIcons.verified : AfriIcons.statusPending,
         label: _isVerified ? 'Verified' : 'Verification Pending',
         description: _isVerified
-            ? 'Your phone identity is verified for AFRICLUB earning and social flows.'
-            : 'Verify your phone to unlock the full AFRICLUB social experience.',
+            ? 'Your phone identity is verified for ${RuntimeBranding.displayAppName} earning and social flows.'
+            : 'Verify your phone to unlock the full ${RuntimeBranding.displayAppName} social experience.',
       ),
     ];
   }
@@ -184,9 +184,9 @@ class _FanIdScreenState extends ConsumerState<FanIdScreen> {
       else
         'Phone-based friend discovery is disabled on your account right now.',
       if (_isVerified)
-        'Your phone identity is verified for AFRICLUB features and rewards.'
+        'Your phone identity is verified for ${RuntimeBranding.displayAppName} features and rewards.'
       else
-        'Phone verification is still pending for your AFRICLUB profile.',
+        'Phone verification is still pending for your ${RuntimeBranding.displayAppName} profile.',
       if (_favoriteTeamSlug != null)
         'Your profile is linked to ${_humanizeSlug(_favoriteTeamSlug!)} for personalization.'
       else

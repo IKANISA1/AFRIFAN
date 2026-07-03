@@ -115,8 +115,8 @@ export async function POST(request: NextRequest) {
             title: data.title,
             body: data.body,
             url: data.url ?? "/admin",
-            icon: data.icon ?? "/icons/icon-192x192.png",
-            badge: data.badge ?? "/icons/icon-72x72.png",
+            icon: data.icon ?? "/brand-mark.svg",
+            badge: data.badge ?? "/brand-mark.svg",
             tag: data.tag ?? "admin-notification",
           },
         };

@@ -1,20 +1,22 @@
 # AFRICLUB Architecture Blueprint
 
-Updated: Rayon Sportsil 8, 2026
+Updated: 2026-07-02
 
 Design authority: this document is architecture-only. `../DESIGN.md` is the
-sole source for product visuals, UI/UX rules, tokens, screen archetypes, and
+sole source for product visuals, interface rules, tokens, screen archetypes, and
 state requirements.
 
 ## 1. Target State
 
-AFRICLUB is a white-label club platform with three surfaces only:
+AFRICLUB is a white-label club platform with five governed surfaces:
 
-1. Flutter native mobile app for fans.
-2. Centralized admin PWA for operators.
-3. White-label public website for clubs.
+1. Flutter native mobile app for authenticated supporters.
+2. Flutter native TV app surface for screen-safe venue and game runtime experiences.
+3. Venue app/portal for venue-scoped operators.
+4. Centralized admin PWA for club operators.
+5. White-label public website for clubs.
 
-Rayon Sports is the reference club profile used to seed defaults, assets, and example content. The platform no longer supports a browser fan portal.
+Rayon Sports is the reference club profile used to seed defaults, configuration data, and example content. The platform does not support a browser fan portal.
 
 ## 2. Architectural Decisions
 
@@ -43,23 +45,68 @@ Rayon Sports is the reference club profile used to seed defaults, assets, and ex
 - Branding, copy, and data loaders must derive from the active club context.
 - Rayon-specific defaults are acceptable only as the seeded reference profile when club data is absent.
 
+### ADR-005: Venue And TV Product Surfaces
+
+- Native TV is a Flutter app target under `apps/rayon_sports_tv`.
+- Web `/tv-display` is a browser compatibility/admin pairing surface, not the TV app of record.
+- Venue app starts under `apps/rayon_sports/web/src/app/venue` to reuse auth, Supabase, CI, and PWA infrastructure.
+- Venue records require `club_id`; venue-owned records also require `venue_id`.
+- Venue check-in is rotating QR/code first. Foreground location is optional verification only.
+- Drinks ordering is a drinks-only top-10 MVP, not full POS or delivery.
+- TV surfaces are read-only and must not expose personal, order, or wallet data.
+
 ## 3. Product Surface Ownership
 
 ### Flutter Fan App
 
 Purpose:
-- Identity, membership, ticketing, supporter communities, commerce, and authenticated fan engagement.
+- Identity, membership, ticketing, supporter communities, commerce, venue check-in, and authenticated fan engagement.
 
 Code shape:
-- `apps/<club>/` contains the native shell and assets.
+- `apps/<club>/` contains the native shell and configuration data.
 - `packages/core/` contains shared shell, auth, routing, theme, and network.
 - `packages/features/` contains shared features.
 - `packages/clubs/` contains per-club config.
 
+Rules:
+- No admin or venue-staff operations in the supporter app.
+- Venue check-in and drinks-ordering routes stay under Fan Zone and behind launch flags.
+- Foreground location is requested only after supporter action.
+
+### Flutter Native TV App
+
+Purpose:
+- Screen-safe venue QR/code display, TV-led game runtime, and shared matchday state.
+
+Code shape:
+- `apps/rayon_sports_tv`
+- `apps/rayon_sports/web/src/app/tv-display` remains browser compatibility only.
+- `africlub_game` schema for game runtime.
+- `venue_checkin_codes` for hashed rotating venue code contracts.
+
+Rules:
+- Read-only.
+- No personal data, wallet balance, check-in identity, or live order queue.
+- Supports 720p and 1080p UAT screenshots.
+
+### Venue App / Portal
+
+Purpose:
+- Venue-scoped operator dashboard for assigned venues, check-ins, drinks-only order queue, top-10 menu, promotions, TV code, and staff role visibility.
+
+Code shape:
+- `apps/rayon_sports/web/src/app/venue`
+- `public.venues`, `venue_staff_memberships`, `venue_checkins`, `venue_drink_orders`, and related event tables.
+
+Rules:
+- Venue staff access only assigned `venue_id`.
+- Day-to-day menu and order handling lives here, while club-wide oversight stays in Admin PWA.
+- No service-role keys or private partner/feed data in browser clients.
+
 ### Public Website
 
 Purpose:
-- Discovery, storytelling, fixtures, standings, public ticket context, supporter acquisition, and supporter-app handoff.
+- Discovery, storytelling, fixtures, standings, public ticket context, approved venue discovery, supporter acquisition, and supporter-app handoff.
 
 Code shape:
 - `apps/rayon_sports/web/src/app/(site)`
@@ -68,12 +115,13 @@ Code shape:
 Rules:
 - No authenticated fan portal routes.
 - No anonymous browser fan session bootstrapping.
+- No authenticated check-in or live order queues.
 - Public loaders must resolve club context first, then query by `club_id`.
 
 ### Admin PWA
 
 Purpose:
-- Publishing, operations, match control, standings, shop/catalog, membership, supporter groups, notifications, and configuration.
+- Publishing, operations, match control, standings, shop/catalog, membership, supporter groups, notifications, venue oversight, FET review/export, and configuration.
 
 Code shape:
 - `apps/rayon_sports/web/src/app/admin`
@@ -83,6 +131,7 @@ Rules:
 - Desktop/tablet-first shell.
 - All writes require same-origin mutation checks and role-scoped access.
 - All admin queries and mutations must be club-scoped.
+- Venue mutations must write audit/event rows.
 
 ## 4. Tenant Model
 
@@ -118,6 +167,11 @@ Once resolved, loaders query Supabase by `club_slug` or `club_id` and then merge
 apps/
   rayon_sports/
     web/
+      src/app/(site)/       public website
+      src/app/admin/        centralized admin PWA
+      src/app/tv-display/   browser compatibility display
+      src/app/venue/        venue app/portal
+  rayon_sports_tv/          Flutter native TV app
   <club_flutter_apps>/
 
 packages/
@@ -150,10 +204,9 @@ supabase/
 Each club app is intentionally thin:
 
 - native bundle identifiers
-- launcher assets
-- splash assets
 - compile-time config
 - bootstrap entrypoint
+- generated runtime brand mark and tokenized splash surfaces governed by `../DESIGN.md`
 
 Shared business logic, routes, and modules live in packages. Feature flags determine which modules and routes are active for a club.
 
@@ -180,6 +233,7 @@ Recent tenancy hardening includes:
 - introduction of `club_app_config`
 - club-scoped CMS/config access in public and admin loaders
 - white-label host/slug resolution in the public website
+- venue check-in, venue staff, drinks ordering, FET reservation, and order event foundations
 
 Migration policy:
 
@@ -196,15 +250,19 @@ Required checks:
 - `npm run lint`
 - `npm run typecheck`
 - `npm run test`
+- Supabase SQL contract tests for touched schema/RPCs
+- UAT evidence matrix in `docs/release/rayon_fullstack_uat_matrix.md`
+- Security scan for service-role, LiveScore credential, and private feed exposure
 
 ## 10. Non-Goals
 
 The following are intentionally out of scope for the current architecture:
 
 - browser-based fan portal
+- public web check-in or live order queues
 - cross-club unscoped admin browsing without explicit club context
 - duplicate per-club web codebases
-- UI redesign during infrastructure hardening
+- full POS, delivery, open-loop FET spend, or cash-out
 
 ## 11. Reference Implementation
 
@@ -212,7 +270,7 @@ Rayon Sports remains the seeded reference for:
 
 - default club profile values
 - default web environment settings
-- example assets and release evidence
+- example configuration and release evidence
 - initial rollout validation
 
 Reference defaults must not become hardcoded assumptions in shared runtime logic.

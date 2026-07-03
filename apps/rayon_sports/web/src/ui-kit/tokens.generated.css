@@ -1,5 +1,5 @@
 /* AUTO-GENERATED RUNTIME IMPLEMENTATION. DO NOT EDIT.
- * Root DESIGN.md is the only design source. This file only emits runtime values from:
+ * Root DESIGN.md governs UI decisions. This file only emits runtime values from:
  * - packages/core/core_theme/lib/src/tokens/color_tokens.dart
  * - packages/core/core_theme/lib/src/tokens/shape_tokens.dart
  * - packages/core/core_theme/lib/src/tokens/blur_tokens.dart
@@ -55,7 +55,7 @@
   --error: #ff6b6b;
   --info: #69a8ff;
 
-  --radius-sm: 10px;
+  --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
   --radius-xl: 24px;

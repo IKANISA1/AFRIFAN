@@ -79,6 +79,30 @@ BEGIN
   SELECT id INTO v_comp_id FROM football.competitions WHERE slug = p_comp_slug;
   IF v_comp_id IS NULL THEN RAISE EXCEPTION 'Competition % not found', p_comp_slug; END IF;
 
+  SELECT id
+    INTO v_id
+  FROM football.seasons
+  WHERE competition_id = v_comp_id
+    AND (
+      label = p_label OR
+      (year_start = p_year_start AND year_end = p_year_end)
+    )
+  ORDER BY
+    CASE WHEN label = p_label THEN 0 ELSE 1 END,
+    updated_at DESC NULLS LAST,
+    created_at DESC NULLS LAST
+  LIMIT 1;
+
+  IF v_id IS NOT NULL THEN
+    UPDATE football.seasons
+    SET label = p_label,
+        status = 'active'::football.season_status,
+        is_active = true
+    WHERE id = v_id;
+
+    RETURN v_id;
+  END IF;
+
   INSERT INTO football.seasons (competition_id, slug, label, year_start, year_end, status, is_active)
   VALUES (
     v_comp_id,
@@ -142,12 +166,48 @@ $$ LANGUAGE plpgsql;
 -- 1. CREATE 2025/26 SEASONS
 -- ════════════════════════════════════════════════════════════════════════════
 
+INSERT INTO football.competitions (
+  slug,
+  name,
+  short_name,
+  competition_kind,
+  region,
+  country_code,
+  country_name,
+  organizer,
+  format_notes,
+  metadata
+)
+VALUES (
+  'fkf-premier-league-kenya',
+  'FKF Premier League',
+  'FKF PL',
+  'league',
+  'africa',
+  'KE',
+  'Kenya',
+  'Football Kenya Federation',
+  'Domestic top-flight competition for clubs in Kenya.',
+  jsonb_build_object('tier', 1, 'supports_tables', true, 'supports_fixtures', true)
+)
+ON CONFLICT (slug) DO UPDATE
+SET name = EXCLUDED.name,
+    short_name = EXCLUDED.short_name,
+    competition_kind = EXCLUDED.competition_kind,
+    region = EXCLUDED.region,
+    country_code = EXCLUDED.country_code,
+    country_name = EXCLUDED.country_name,
+    organizer = EXCLUDED.organizer,
+    format_notes = EXCLUDED.format_notes,
+    metadata = football.competitions.metadata || EXCLUDED.metadata,
+    is_active = true;
+
 SELECT football._seed_season('uefa-champions-league', '2025/26', 2025, 2026);
-SELECT football._seed_season('premier-league-england', '2025/26', 2025, 2026);
-SELECT football._seed_season('la-liga-spain', '2025/26', 2025, 2026);
-SELECT football._seed_season('national-soccer-league-rwanda', '2025/26', 2025, 2026);
-SELECT football._seed_season('ligue-1-congo-dr', '2025/26', 2025, 2026);
-SELECT football._seed_season('super-league-zambia', '2025/26', 2025, 2026);
+SELECT football._seed_season('english-premier-league', '2025/26', 2025, 2026);
+SELECT football._seed_season('la-liga', '2025/26', 2025, 2026);
+SELECT football._seed_season('rwanda-premier-league', '2025/26', 2025, 2026);
+SELECT football._seed_season('Linafoot', '2025/26', 2025, 2026);
+SELECT football._seed_season('zambia-super-league', '2025/26', 2025, 2026);
 SELECT football._seed_season('fkf-premier-league-kenya', '2025/26', 2025, 2026);
 
 -- ════════════════════════════════════════════════════════════════════════════
@@ -267,127 +327,127 @@ SELECT football._seed_fixture('uefa-champions-league', '2025/26',
   'Bayern Munich', 'Paris Saint-Germain', '2026-05-06 19:00:00+00', 'Semi-Final 2nd Leg', 'knockout');
 
 -- ─── EPL Matchweek 34 (Apr 24-27) ────────────────────────────────────
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'Sunderland', 'Nottingham Forest', '2026-04-24 19:00:00+00', 'Matchweek 34');
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'Fulham', 'Aston Villa', '2026-04-25 14:00:00+00', 'Matchweek 34');
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'Liverpool', 'Crystal Palace', '2026-04-25 14:00:00+00', 'Matchweek 34');
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'West Ham United', 'Everton', '2026-04-25 14:00:00+00', 'Matchweek 34');
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'Wolverhampton Wanderers', 'Tottenham Hotspur', '2026-04-25 16:30:00+00', 'Matchweek 34');
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'Arsenal', 'Newcastle United', '2026-04-25 19:00:00+00', 'Matchweek 34');
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'Brighton', 'Chelsea', '2026-04-26 14:00:00+00', 'Matchweek 34');
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'Manchester United', 'Brentford', '2026-04-27 19:00:00+00', 'Matchweek 34');
 
 -- ─── EPL Matchweek 35 (May 1-2) ──────────────────────────────────────
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'Leeds United', 'Burnley', '2026-05-01 19:00:00+00', 'Matchweek 35');
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'Arsenal', 'Fulham', '2026-05-02 14:00:00+00', 'Matchweek 35');
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'Aston Villa', 'Tottenham Hotspur', '2026-05-02 14:00:00+00', 'Matchweek 35');
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'Brentford', 'West Ham United', '2026-05-02 14:00:00+00', 'Matchweek 35');
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'Chelsea', 'Nottingham Forest', '2026-05-02 14:00:00+00', 'Matchweek 35');
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'Everton', 'Manchester City', '2026-05-02 16:30:00+00', 'Matchweek 35');
-SELECT football._seed_fixture('premier-league-england', '2025/26',
+SELECT football._seed_fixture('english-premier-league', '2025/26',
   'AFC Bournemouth', 'Crystal Palace', '2026-05-02 14:00:00+00', 'Matchweek 35');
 
 -- ─── La Liga Matchday 33 (Apr 22-27) ─────────────────────────────────
-SELECT football._seed_fixture('la-liga-spain', '2025/26',
+SELECT football._seed_fixture('la-liga', '2025/26',
   'FC Barcelona', 'Celta de Vigo', '2026-04-22 19:00:00+00', 'Matchday 33');
-SELECT football._seed_fixture('la-liga-spain', '2025/26',
+SELECT football._seed_fixture('la-liga', '2025/26',
   'Real Betis', 'Real Madrid', '2026-04-24 19:00:00+00', 'Matchday 33');
-SELECT football._seed_fixture('la-liga-spain', '2025/26',
+SELECT football._seed_fixture('la-liga', '2025/26',
   'Getafe', 'FC Barcelona', '2026-04-25 14:00:00+00', 'Matchday 33');
-SELECT football._seed_fixture('la-liga-spain', '2025/26',
+SELECT football._seed_fixture('la-liga', '2025/26',
   'Valencia', 'Girona FC', '2026-04-25 16:15:00+00', 'Matchday 33');
-SELECT football._seed_fixture('la-liga-spain', '2025/26',
+SELECT football._seed_fixture('la-liga', '2025/26',
   'Atletico Madrid', 'Athletic Club', '2026-04-25 19:30:00+00', 'Matchday 33');
-SELECT football._seed_fixture('la-liga-spain', '2025/26',
+SELECT football._seed_fixture('la-liga', '2025/26',
   'Alaves', 'RCD Mallorca', '2026-04-26 14:00:00+00', 'Matchday 33');
-SELECT football._seed_fixture('la-liga-spain', '2025/26',
+SELECT football._seed_fixture('la-liga', '2025/26',
   'Rayo Vallecano', 'Real Sociedad', '2026-04-26 16:15:00+00', 'Matchday 33');
-SELECT football._seed_fixture('la-liga-spain', '2025/26',
+SELECT football._seed_fixture('la-liga', '2025/26',
   'Osasuna', 'Sevilla', '2026-04-26 19:30:00+00', 'Matchday 33');
-SELECT football._seed_fixture('la-liga-spain', '2025/26',
+SELECT football._seed_fixture('la-liga', '2025/26',
   'Villarreal', 'Celta de Vigo', '2026-04-26 19:30:00+00', 'Matchday 33');
 
 -- ─── La Liga Matchday 34 (May 2-3) ───────────────────────────────────
-SELECT football._seed_fixture('la-liga-spain', '2025/26',
+SELECT football._seed_fixture('la-liga', '2025/26',
   'Osasuna', 'FC Barcelona', '2026-05-02 19:30:00+00', 'Matchday 34');
-SELECT football._seed_fixture('la-liga-spain', '2025/26',
+SELECT football._seed_fixture('la-liga', '2025/26',
   'Valencia', 'Atletico Madrid', '2026-05-03 16:15:00+00', 'Matchday 34');
-SELECT football._seed_fixture('la-liga-spain', '2025/26',
+SELECT football._seed_fixture('la-liga', '2025/26',
   'Espanyol', 'Real Madrid', '2026-05-03 19:30:00+00', 'Matchday 34');
-SELECT football._seed_fixture('la-liga-spain', '2025/26',
+SELECT football._seed_fixture('la-liga', '2025/26',
   'Sevilla', 'Real Sociedad', '2026-05-03 19:30:00+00', 'Matchday 34');
 
 -- ─── Rwanda NSL (Apr 17 – May 2) ─────────────────────────────────────
-SELECT football._seed_fixture('national-soccer-league-rwanda', '2025/26',
+SELECT football._seed_fixture('rwanda-premier-league', '2025/26',
   'Marines FC', 'AS Kigali', '2026-04-17 14:00:00+02', 'Matchday 20');
-SELECT football._seed_fixture('national-soccer-league-rwanda', '2025/26',
+SELECT football._seed_fixture('rwanda-premier-league', '2025/26',
   'Musanze FC', 'Amagaju', '2026-04-17 16:00:00+02', 'Matchday 20');
-SELECT football._seed_fixture('national-soccer-league-rwanda', '2025/26',
+SELECT football._seed_fixture('rwanda-premier-league', '2025/26',
   'Gasogi United', 'Gorilla FC', '2026-04-17 16:00:00+02', 'Matchday 20');
-SELECT football._seed_fixture('national-soccer-league-rwanda', '2025/26',
+SELECT football._seed_fixture('rwanda-premier-league', '2025/26',
   'Mukura VS', 'APR FC', '2026-04-25 14:00:00+02', 'Matchday 21');
-SELECT football._seed_fixture('national-soccer-league-rwanda', '2025/26',
+SELECT football._seed_fixture('rwanda-premier-league', '2025/26',
   'Police FC', 'Marines FC', '2026-04-25 16:00:00+02', 'Matchday 21');
-SELECT football._seed_fixture('national-soccer-league-rwanda', '2025/26',
+SELECT football._seed_fixture('rwanda-premier-league', '2025/26',
   'Kiyovu Sports', 'Musanze FC', '2026-04-25 16:00:00+02', 'Matchday 21');
-SELECT football._seed_fixture('national-soccer-league-rwanda', '2025/26',
+SELECT football._seed_fixture('rwanda-premier-league', '2025/26',
   'Bugesera FC', 'Gasogi United', '2026-04-25 14:00:00+02', 'Matchday 21');
-SELECT football._seed_fixture('national-soccer-league-rwanda', '2025/26',
+SELECT football._seed_fixture('rwanda-premier-league', '2025/26',
   'Etincelles FC', 'Amagaju', '2026-05-02 14:00:00+02', 'Matchday 22');
-SELECT football._seed_fixture('national-soccer-league-rwanda', '2025/26',
+SELECT football._seed_fixture('rwanda-premier-league', '2025/26',
   'Rayon Sports', 'APR FC', '2026-05-02 16:00:00+02', 'Matchday 22');
-SELECT football._seed_fixture('national-soccer-league-rwanda', '2025/26',
+SELECT football._seed_fixture('rwanda-premier-league', '2025/26',
   'AS Kigali', 'Mukura VS', '2026-05-02 14:00:00+02', 'Matchday 22');
-SELECT football._seed_fixture('national-soccer-league-rwanda', '2025/26',
+SELECT football._seed_fixture('rwanda-premier-league', '2025/26',
   'Gorilla FC', 'Police FC', '2026-05-02 16:00:00+02', 'Matchday 22');
 
 -- ─── Linafoot Playoff Round (starting Apr 18) ────────────────────────
-SELECT football._seed_fixture('ligue-1-congo-dr', '2025/26',
+SELECT football._seed_fixture('Linafoot', '2025/26',
   'TP Mazembe', 'AS Vita Club', '2026-04-18 15:00:00+02', 'Playoff Round 1', 'playoff');
-SELECT football._seed_fixture('ligue-1-congo-dr', '2025/26',
+SELECT football._seed_fixture('Linafoot', '2025/26',
   'Saint Eloi Lupopo', 'Les Aigles du Congo', '2026-04-18 18:00:00+02', 'Playoff Round 1', 'playoff');
-SELECT football._seed_fixture('ligue-1-congo-dr', '2025/26',
+SELECT football._seed_fixture('Linafoot', '2025/26',
   'CS Don Bosco', 'Celeste FC', '2026-04-19 15:00:00+02', 'Playoff Round 1', 'playoff');
-SELECT football._seed_fixture('ligue-1-congo-dr', '2025/26',
+SELECT football._seed_fixture('Linafoot', '2025/26',
   'AS Simba', 'AS Maniema Union', '2026-04-19 18:00:00+02', 'Playoff Round 1', 'playoff');
-SELECT football._seed_fixture('ligue-1-congo-dr', '2025/26',
+SELECT football._seed_fixture('Linafoot', '2025/26',
   'AS Vita Club', 'Saint Eloi Lupopo', '2026-04-25 15:00:00+02', 'Playoff Round 2', 'playoff');
-SELECT football._seed_fixture('ligue-1-congo-dr', '2025/26',
+SELECT football._seed_fixture('Linafoot', '2025/26',
   'Les Aigles du Congo', 'TP Mazembe', '2026-04-25 18:00:00+02', 'Playoff Round 2', 'playoff');
-SELECT football._seed_fixture('ligue-1-congo-dr', '2025/26',
+SELECT football._seed_fixture('Linafoot', '2025/26',
   'Celeste FC', 'AS Simba', '2026-04-26 15:00:00+02', 'Playoff Round 2', 'playoff');
-SELECT football._seed_fixture('ligue-1-congo-dr', '2025/26',
+SELECT football._seed_fixture('Linafoot', '2025/26',
   'AS Maniema Union', 'CS Don Bosco', '2026-04-26 18:00:00+02', 'Playoff Round 2', 'playoff');
 
 -- ─── Zambia Super League (Apr-May) ────────────────────────────────────
-SELECT football._seed_fixture('super-league-zambia', '2025/26',
+SELECT football._seed_fixture('zambia-super-league', '2025/26',
   'ZESCO United', 'Power Dynamos', '2026-04-19 15:00:00+02', 'Round 26');
-SELECT football._seed_fixture('super-league-zambia', '2025/26',
+SELECT football._seed_fixture('zambia-super-league', '2025/26',
   'Nkana FC', 'Green Buffaloes', '2026-04-19 15:00:00+02', 'Round 26');
-SELECT football._seed_fixture('super-league-zambia', '2025/26',
+SELECT football._seed_fixture('zambia-super-league', '2025/26',
   'Green Eagles', 'NAPSA Stars', '2026-04-19 15:00:00+02', 'Round 26');
-SELECT football._seed_fixture('super-league-zambia', '2025/26',
+SELECT football._seed_fixture('zambia-super-league', '2025/26',
   'Kabwe Warriors', 'Nkwazi FC', '2026-04-19 13:00:00+02', 'Round 26');
-SELECT football._seed_fixture('super-league-zambia', '2025/26',
+SELECT football._seed_fixture('zambia-super-league', '2025/26',
   'Mufulira Wanderers', 'Mutondo Stars', '2026-04-22 15:00:00+02', 'Round 27');
-SELECT football._seed_fixture('super-league-zambia', '2025/26',
+SELECT football._seed_fixture('zambia-super-league', '2025/26',
   'Power Dynamos', 'Nkana FC', '2026-04-22 15:00:00+02', 'Round 27');
-SELECT football._seed_fixture('super-league-zambia', '2025/26',
+SELECT football._seed_fixture('zambia-super-league', '2025/26',
   'NAPSA Stars', 'ZESCO United', '2026-04-26 15:00:00+02', 'Round 28');
-SELECT football._seed_fixture('super-league-zambia', '2025/26',
+SELECT football._seed_fixture('zambia-super-league', '2025/26',
   'Green Buffaloes', 'Kabwe Warriors', '2026-04-26 15:00:00+02', 'Round 28');
 
 -- ─── Kenya FKF Premier League (Apr-May) ──────────────────────────────

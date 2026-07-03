@@ -1,4 +1,5 @@
 import 'package:core_auth/core_auth.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:feat_onboarding/src/screens/onboarding_screen.dart';
 import 'package:feat_onboarding/src/screens/splash_screen.dart';
 import 'package:feat_onboarding/src/screens/supporter_phone_auth_screen.dart';
@@ -58,6 +59,79 @@ class FakeAuthRepository extends AuthRepository {
   @override
   Stream<supabase.AuthState> get authStateChanges =>
       const Stream<supabase.AuthState>.empty();
+}
+
+class _RayonTestConfig extends ClubConfig {
+  const _RayonTestConfig();
+
+  @override
+  String get clubId => '24';
+
+  @override
+  String get clubName => 'Rayon Sports FC';
+
+  @override
+  String get appName => 'Gikundiro';
+
+  @override
+  String get country => 'Rwanda';
+
+  @override
+  String get countryCode => 'RW';
+
+  @override
+  String get language => 'rw';
+
+  @override
+  String get momoPrefix => '*182*';
+
+  @override
+  String get currency => 'RWF';
+
+  @override
+  String get currencySymbol => 'RWF';
+
+  @override
+  ClubColors get colors => ClubColors(
+    primary: ColorTokens.referenceAccountBlue,
+    secondary: ColorTokens.referenceAccountNavy,
+    accent: ColorTokens.referenceTrophyGold,
+    gradient: [
+      ColorTokens.referenceAccountNavy,
+      ColorTokens.referenceAccountBlue,
+    ],
+  );
+
+  @override
+  String get supabaseUrl => 'https://example.supabase.co';
+
+  @override
+  String get supabaseAnonKey => 'anon';
+
+  @override
+  List<String> get supportedLanguages => const ['rw', 'fr', 'en'];
+
+  @override
+  bool get hasFanClubs => true;
+
+  @override
+  bool get hasShop => true;
+
+  @override
+  bool get hasTicketing => true;
+
+  @override
+  bool get hasChat => true;
+
+  @override
+  bool get hasSmsLedger => true;
+
+  @override
+  MomoConfig get momo => const MomoConfig(
+    ussdTemplate: '*182*8*1*{amount}*{momo}#',
+    senderName: 'MTN MoMo',
+    countryCode: 'RW',
+  );
 }
 
 GoRouter _buildRouter(String initialLocation) {
@@ -292,6 +366,33 @@ void main() {
     await tester.pump();
 
     expect(find.byType(OnboardingScreen), findsOneWidget);
+  });
+
+  testWidgets('onboarding first viewport uses Rayon club identity', (
+    tester,
+  ) async {
+    _setMobileSurface(tester);
+
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: ClubConfigScope(
+          config: _RayonTestConfig(),
+          child: MaterialApp(home: OnboardingScreen()),
+        ),
+      ),
+    );
+
+    await tester.pump();
+
+    expect(find.text('Rayon Sports FC matchday app.'), findsOneWidget);
+    expect(
+      find.text(
+        'The official Gikundiro fan platform for Rayon Sports FC. Matches, contributions, and more.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Official Rayon Sports FC identity'), findsOneWidget);
+    expect(find.text('RS'), findsOneWidget);
   });
 
   testWidgets('matches the compressed onboarding surface at 200 percent text', (

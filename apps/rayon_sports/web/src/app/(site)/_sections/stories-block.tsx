@@ -11,7 +11,7 @@ const DEMO_STORIES: Story[] = [
   {
     id: "matchday-Rayon Sports",
     title: "Matchday",
-    thumbnail: "/media/stadium-hero.jpg",
+    thumbnail: "/brand-surface.svg",
     viewed: false,
     author: "Club Media",
     publishedAt: "2h ago",
@@ -19,7 +19,7 @@ const DEMO_STORIES: Story[] = [
       {
         id: "md-1",
         type: "image",
-        src: "/media/stadium-hero.jpg",
+        src: "/brand-surface.svg",
         durationMs: 5000,
         eyebrow: "Match preview",
         caption: "A title-race fixture with the whole supporter base watching",
@@ -28,7 +28,7 @@ const DEMO_STORIES: Story[] = [
       {
         id: "md-2",
         type: "image",
-        src: "/media/stadium-hero-2.jpg",
+        src: "/brand-surface.svg",
         durationMs: 5000,
         eyebrow: "Kickoff countdown",
         caption: "Gates open early for supporters, families, and matchday hospitality",
@@ -38,7 +38,7 @@ const DEMO_STORIES: Story[] = [
   {
     id: "training-week",
     title: "Training",
-    thumbnail: "/media/stadium-hero-2.jpg",
+    thumbnail: "/brand-surface.svg",
     viewed: false,
     author: "Performance Desk",
     publishedAt: "5h ago",
@@ -46,7 +46,7 @@ const DEMO_STORIES: Story[] = [
       {
         id: "tw-1",
         type: "image",
-        src: "/media/stadium-hero-2.jpg",
+        src: "/brand-surface.svg",
         durationMs: 5000,
         eyebrow: "Behind the scenes",
         caption: "Midweek intensity session ahead of derby day",
@@ -54,7 +54,7 @@ const DEMO_STORIES: Story[] = [
       {
         id: "tw-2",
         type: "image",
-        src: "/media/stadium-hero.jpg",
+        src: "/brand-surface.svg",
         durationMs: 5000,
         eyebrow: "Recovery",
         caption: "Squad rotation keeping the group fresh",
@@ -64,7 +64,7 @@ const DEMO_STORIES: Story[] = [
   {
     id: "fan-travel",
     title: "Away Day",
-    thumbnail: "/media/stadium-hero.jpg",
+    thumbnail: "/brand-surface.svg",
     viewed: true,
     author: "Fan Liaison",
     publishedAt: "1d ago",
@@ -72,7 +72,7 @@ const DEMO_STORIES: Story[] = [
       {
         id: "ft-1",
         type: "image",
-        src: "/media/stadium-hero.jpg",
+        src: "/brand-surface.svg",
         durationMs: 5000,
         eyebrow: "Travel update",
         caption: "Supporter travel plans are live for the next away day",
@@ -83,7 +83,7 @@ const DEMO_STORIES: Story[] = [
   {
     id: "shop-drop",
     title: "New Drop",
-    thumbnail: "/media/stadium-hero-2.jpg",
+    thumbnail: "/brand-surface.svg",
     viewed: true,
     author: "Retail Desk",
     publishedAt: "2d ago",
@@ -91,7 +91,7 @@ const DEMO_STORIES: Story[] = [
       {
         id: "sd-1",
         type: "image",
-        src: "/media/stadium-hero-2.jpg",
+        src: "/brand-surface.svg",
         durationMs: 5000,
         eyebrow: "Shop",
         caption: "2026 Home Replica — now available online",
@@ -102,7 +102,7 @@ const DEMO_STORIES: Story[] = [
   {
     id: "community-impact",
     title: "Community",
-    thumbnail: "/media/stadium-hero.jpg",
+    thumbnail: "/brand-surface.svg",
     viewed: true,
     author: "CSR Team",
     publishedAt: "3d ago",
@@ -110,7 +110,7 @@ const DEMO_STORIES: Story[] = [
       {
         id: "ci-1",
         type: "image",
-        src: "/media/stadium-hero.jpg",
+        src: "/brand-surface.svg",
         durationMs: 6000,
         eyebrow: "Community",
         caption: "The latest community activation brought families into the club orbit",

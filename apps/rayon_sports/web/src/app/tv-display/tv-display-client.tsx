@@ -34,11 +34,18 @@ type TvRealtimeClient = {
 type TvDisplayClientProps = {
   initialState: GameTvSessionState;
   sessionId: string | null;
+  venueCheckin?: {
+    code: string;
+    venueName?: string | null;
+    expiresAt?: string | null;
+    rewardLabel?: string | null;
+  } | null;
 };
 
 export function TvDisplayClient({
   initialState,
   sessionId,
+  venueCheckin = null,
 }: TvDisplayClientProps) {
   const client = useMemo(() => createGameRuntimeClient({}), []);
   const [state, setState] = useState(initialState);
@@ -189,6 +196,33 @@ export function TvDisplayClient({
             {statusLabel}
           </div>
         </header>
+
+        {venueCheckin ? (
+          <section className="mt-6 grid gap-4 rounded-lg border border-cyan-200/20 bg-cyan-200/10 p-5 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-200">
+                Venue check-in
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold md:text-4xl">
+                {venueCheckin.venueName ?? "Approved venue"}
+              </h2>
+              <p className="mt-2 text-sm text-slate-300">
+                {venueCheckin.rewardLabel ?? "Open the supporter app to check in."}
+              </p>
+            </div>
+            <div className="rounded-md bg-white px-6 py-5 text-center text-slate-950">
+              <p className="text-xs font-bold uppercase tracking-[0.18em]">
+                Code
+              </p>
+              <p className="mt-2 font-mono text-4xl font-black tracking-[0.18em]">
+                {venueCheckin.code}
+              </p>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">
+                {venueCheckin.expiresAt ?? "Rotates soon"}
+              </p>
+            </div>
+          </section>
+        ) : null}
 
         <div className="grid flex-1 gap-6 py-8 lg:grid-cols-[1fr_320px]">
           <section className="flex min-h-[520px] flex-col justify-between rounded-lg border border-white/10 bg-white/[0.06] p-6 shadow-2xl shadow-black/30">

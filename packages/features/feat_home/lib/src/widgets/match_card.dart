@@ -18,7 +18,6 @@ import 'package:go_router/go_router.dart';
 /// A single match/event slide — CMS-managed, admin-controlled.
 class MatchSlide {
   final String? imageUrl;
-  final String? fallbackAsset;
   final String homeTeam;
   final String awayTeam;
   final String venue;
@@ -32,7 +31,6 @@ class MatchSlide {
 
   const MatchSlide({
     this.imageUrl,
-    this.fallbackAsset,
     // §2.4 LOCKED — no hardcoded club/venue names.
     this.homeTeam = '',
     this.awayTeam = '',
@@ -96,7 +94,7 @@ class _MatchScoreCardState extends State<MatchScoreCard> {
       unawaited(
         _pageController.animateToPage(
           next,
-          duration: const Duration(milliseconds: 600),
+          duration: AfriMotion.atmospheric,
           curve: Curves.easeInOut,
         ),
       );
@@ -147,7 +145,7 @@ class _MatchScoreCardState extends State<MatchScoreCard> {
                 children: List.generate(
                   widget.slides.length,
                   (i) => AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
+                    duration: AfriMotion.standard,
                     margin: const EdgeInsets.symmetric(horizontal: 3),
                     width: i == _currentPage ? 24 : 8,
                     height: 4,
@@ -155,7 +153,9 @@ class _MatchScoreCardState extends State<MatchScoreCard> {
                       color: i == _currentPage
                           ? _heroAccent
                           : ColorTokens.onDarkSoft,
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(
+                        ShapeTokens.radiusSm / 4,
+                      ),
                     ),
                   ),
                 ),
@@ -301,21 +301,8 @@ class _HeroSlide extends StatelessWidget {
         fit: BoxFit.cover,
         width: double.infinity,
         height: double.infinity,
-        placeholder: (_, __) => _assetOrGradient(),
-        errorWidget: (_, __, ___) => _assetOrGradient(),
-      );
-    }
-    return _assetOrGradient();
-  }
-
-  Widget _assetOrGradient() {
-    if (slide.fallbackAsset != null) {
-      return Image.asset(
-        slide.fallbackAsset!,
-        fit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
-        errorBuilder: (_, __, ___) => _gradient(),
+        placeholder: (_, __) => _gradient(),
+        errorWidget: (_, __, ___) => _gradient(),
       );
     }
     return _gradient();

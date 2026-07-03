@@ -10,6 +10,21 @@ LANGUAGE sql
 IMMUTABLE PARALLEL SAFE
 AS $$ SELECT ts::date; $$;
 
+WITH ranked_duplicates AS (
+  SELECT
+    id,
+    row_number() OVER (
+      PARTITION BY competition_id, home_team_id, away_team_id, football.kickoff_date(kickoff_at)
+      ORDER BY created_at ASC, id ASC
+    ) AS duplicate_rank
+  FROM football.fixtures
+  WHERE kickoff_at IS NOT NULL
+)
+DELETE FROM football.fixtures fixtures
+USING ranked_duplicates duplicates
+WHERE fixtures.id = duplicates.id
+  AND duplicates.duplicate_rank > 1;
+
 -- Unique index using immutable function: same teams on same day = duplicate
 CREATE UNIQUE INDEX IF NOT EXISTS uq_fixtures_match_per_day
 ON football.fixtures (

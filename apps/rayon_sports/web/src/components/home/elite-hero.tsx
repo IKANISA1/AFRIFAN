@@ -22,13 +22,16 @@ export function EliteHero({
   headline,
   description,
 }: EliteHeroProps) {
+  const homeInitials = getTeamInitials(featuredMatch?.homeTeam);
+  const awayInitials = getTeamInitials(featuredMatch?.awayTeam);
+
   return (
     <section className="relative overflow-hidden bg-[var(--club-primary)]">
       {/* Editorial Background */}
       <div className="relative aspect-[16/9] w-full lg:aspect-[21/9]">
         <Image
-          src="/media/stadium-hero.jpg"
-          alt="Rayon Sports Stadium Atmosphere"
+          src="/brand-surface.svg"
+          alt={`${club.shortName} generated brand surface`}
           fill
           priority
           className="object-cover object-center opacity-60 mix-blend-luminosity grayscale-[0.2]"
@@ -75,9 +78,8 @@ export function EliteHero({
             <div className="flex flex-1 items-center justify-between p-6 lg:p-10">
               <div className="flex flex-1 items-center justify-center gap-4 lg:gap-12">
                 <div className="text-center">
-                  <div className="h-16 w-16 mx-auto rounded-full bg-slate-100 p-2 lg:h-24 lg:w-24">
-                    {/* Placeholder for crests */}
-                    <div className="h-full w-full rounded-full border-2 border-dashed border-slate-300" />
+                  <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-[var(--club-primary)] text-lg font-black text-white shadow-lg lg:h-24 lg:w-24 lg:text-3xl">
+                    {homeInitials}
                   </div>
                   <p className="mt-3 text-xs font-black uppercase tracking-tighter text-slate-900 lg:text-lg">{featuredMatch.homeTeam}</p>
                 </div>
@@ -93,8 +95,8 @@ export function EliteHero({
                 </div>
 
                 <div className="text-center">
-                  <div className="h-16 w-16 mx-auto rounded-full bg-slate-100 p-2 lg:h-24 lg:w-24">
-                    <div className="h-full w-full rounded-full border-2 border-dashed border-slate-300" />
+                  <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-slate-900 text-lg font-black text-white shadow-lg lg:h-24 lg:w-24 lg:text-3xl">
+                    {awayInitials}
                   </div>
                   <p className="mt-3 text-xs font-black uppercase tracking-tighter text-slate-900 lg:text-lg">{featuredMatch.awayTeam}</p>
                 </div>
@@ -133,4 +135,12 @@ export function EliteHero({
       </div>
     </section>
   );
+}
+
+function getTeamInitials(name?: string | null) {
+  if (!name) return "FC";
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "FC";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
 }

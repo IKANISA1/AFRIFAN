@@ -16,7 +16,7 @@ export function NewsCard({ article }: { article: NewsArticle }) {
     >
       <div className="img-zoom relative overflow-hidden rounded-[26px]">
         <Image
-          src={article.coverImageUrl ?? "/media/stadium-hero.jpg"}
+          src={article.coverImageUrl ?? "/brand-surface.svg"}
           alt={article.title}
           width={1200}
           height={720}

@@ -60,7 +60,7 @@ class _FixturesCalendarStripState extends State<FixturesCalendarStrip> {
     unawaited(
       widget.controller.animateTo(
         target.clamp(0, maxScroll),
-        duration: const Duration(milliseconds: 300),
+        duration: AfriMotion.emphasized,
         curve: Curves.easeOut,
       ),
     );
@@ -148,7 +148,7 @@ class FixturesCalendarCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
+      duration: AfriMotion.standard,
       margin: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing1 / 2,
       ),

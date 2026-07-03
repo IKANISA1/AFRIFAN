@@ -74,19 +74,6 @@ jobs:
       - name: Run Rayon integration smoke tests
         run: flutter test apps/rayon_sports/integration_test
 
-      - name: Validate brand assets exist
-        run: |
-          for app in apps/*/; do
-            if [ -f "$app/assets/flavors/production.json" ]; then
-              CREST=$(jq -r '.CREST_ASSET // empty' "$app/assets/flavors/production.json")
-              if [ -n "$CREST" ] && [ ! -f "$app/$CREST" ]; then
-                echo "❌ Missing crest asset: $app/$CREST"
-                exit 1
-              fi
-            fi
-          done
-          echo "✅ All brand assets verified"
-
       - name: Validate no secrets in source
         run: |
           # Check for service_role patterns

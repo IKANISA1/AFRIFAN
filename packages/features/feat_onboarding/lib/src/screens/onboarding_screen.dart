@@ -16,30 +16,18 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   bool _isSubmitting = false;
 
-  List<Map<String, String>> _slidesFor(String appName) {
-    final label = appName.trim().isEmpty ? 'your club' : appName.trim();
-    final normalizedLabel = label.toLowerCase();
-    final isRayon =
-        normalizedLabel.contains('rayon') ||
-        normalizedLabel.contains('gikundiro');
-    final mediaAssets = isRayon
-        ? const <String>[
-            'assets/images/real/rayon-supporters.jpeg',
-            'assets/images/real/rayon-match-action.jpeg',
-            'assets/images/real/rayon-players-day.jpeg',
-          ]
-        : const <String>[
-            'assets/images/stadium_hero.jpg',
-            'assets/images/stadium_hero_2.jpg',
-            'assets/images/stadium_hero.jpg',
-          ];
+  List<Map<String, String>> _slidesFor({
+    required String appName,
+    required String clubName,
+  }) {
+    final appLabel = appName.trim().isEmpty ? clubName.trim() : appName.trim();
+    final clubLabel = clubName.trim().isEmpty ? appLabel : clubName.trim();
     return <Map<String, String>>[
       {
-        'title': 'Your club. Your app.',
+        'title': '$clubLabel matchday app.',
         'body':
-            'The official $label fan platform. Matches, contributions, and more.',
-        'asset': mediaAssets[0],
-        'source': isRayon ? 'Official supporter media' : 'Club media',
+            'The official $appLabel fan platform for $clubLabel. Matches, contributions, and more.',
+        'source': 'Official $clubLabel identity',
       },
     ];
   }
@@ -113,10 +101,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final appName =
-        ClubConfigScope.maybeOf(context)?.appName ??
-        RuntimeBranding.displayAppName;
-    final slides = _slidesFor(appName);
+    final clubConfig = ClubConfigScope.maybeOf(context);
+    final appName = clubConfig?.appName ?? RuntimeBranding.displayAppName;
+    final clubName = clubConfig?.clubName ?? RuntimeBranding.displayClubName;
+    final slides = _slidesFor(appName: appName, clubName: clubName);
     final hero = slides.first;
     return Scaffold(
       backgroundColor: ColorTokens.transparent,
@@ -152,15 +140,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         width: double.infinity,
                         padding: EdgeInsets.zero,
                         child: _OnboardingMedia(
-                          asset: hero['asset']!,
                           source: hero['source']!,
                           icon: AfriIcons.stadium,
                           accent: ColorTokens.primary,
+                          brandLabel: clubName,
                         ),
                       ),
                       const SizedBox(height: SpacingTokens.spacing6),
                       Text(
-                        'Your club. Your app.',
+                        hero['title']!,
                         style: TypographyTokens.displaySmall().copyWith(
                           fontSize: isCompact ? 32 : 40,
                           height: 1.1,
@@ -169,7 +157,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       ),
                       const SizedBox(height: SpacingTokens.spacing3),
                       Text(
-                        'The official $appName fan platform for matchday, membership, tickets, and support.',
+                        hero['body']!,
                         style: TypographyTokens.bodyLarge(
                           ColorTokens.onSurfaceVariant,
                         ),
@@ -247,16 +235,16 @@ class _OnboardingChip extends StatelessWidget {
 
 class _OnboardingMedia extends StatelessWidget {
   const _OnboardingMedia({
-    required this.asset,
     required this.source,
     required this.icon,
     required this.accent,
+    required this.brandLabel,
   });
 
-  final String asset;
   final String source;
   final IconData icon;
   final Color accent;
+  final String brandLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -265,17 +253,30 @@ class _OnboardingMedia extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            asset,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: ColorTokens.heroGradient(
-                  from: accent,
-                  to: ColorTokens.primaryContainer,
-                ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: ColorTokens.heroGradient(
+                from: accent,
+                to: ColorTokens.referencePaymentsPurpleDeep,
               ),
-              child: Icon(icon, size: 56, color: ColorTokens.onSurface),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: AfriBrandMark(
+              label: brandLabel,
+              size: 116,
+              borderRadius: BorderRadius.circular(ShapeTokens.radiusXl),
+              semanticLabel: '$brandLabel identity',
+            ),
+          ),
+          Positioned(
+            right: SpacingTokens.spacing5,
+            top: SpacingTokens.spacing5,
+            child: Icon(
+              icon,
+              size: 42,
+              color: ColorTokens.chromeForeground.withValues(alpha: 0.72),
             ),
           ),
           DecoratedBox(

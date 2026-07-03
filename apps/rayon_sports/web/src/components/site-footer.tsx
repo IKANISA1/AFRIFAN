@@ -36,7 +36,7 @@ export function SiteFooter({ club, copy }: SiteFooterProps) {
             <Link href="/" className="inline-flex items-center gap-4 mb-8">
               <div className="h-16 w-16 overflow-hidden rounded-full bg-white p-1">
                 <Image
-                  src={club.officialLogoUrl ?? "/icons/icon-192x192.png"}
+                  src={club.officialLogoUrl ?? "/brand-mark.svg"}
                   alt={club.clubName}
                   width={64}
                   height={64}

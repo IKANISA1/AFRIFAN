@@ -139,7 +139,7 @@ class _AmountEntrySheetState extends State<_AmountEntrySheet> {
               height: 4,
               decoration: BoxDecoration(
                 color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(999),
+                borderRadius: ShapeTokens.buttonRadius,
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing4),

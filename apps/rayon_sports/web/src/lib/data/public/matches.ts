@@ -52,7 +52,7 @@ function mapMatchRow(
     isOnSale: Boolean(row.is_on_sale),
     generalPrice: safeNumber(row.ticket_general_price, 0),
     vipPrice: safeNumber(row.ticket_vip_price, 0),
-    imageUrl: sanitizeMediaUrl(row.image_url, "/media/stadium-hero.jpg"),
+    imageUrl: sanitizeMediaUrl(row.image_url, "/brand-surface.svg"),
     matchStatus: safeString(row.match_status, "scheduled"),
     homeScore: safeNumber(row.home_score, 0),
     awayScore: safeNumber(row.away_score, 0),

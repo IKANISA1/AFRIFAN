@@ -25,7 +25,7 @@ class CheckoutBar extends StatelessWidget {
 
     return AnimatedSlide(
       offset: itemCount > 0 ? Offset.zero : const Offset(0, 1.5),
-      duration: const Duration(milliseconds: 260),
+      duration: AfriMotion.standard,
       curve: Curves.easeOutCubic,
       child: Padding(
         padding: EdgeInsets.fromLTRB(

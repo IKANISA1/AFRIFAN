@@ -50,10 +50,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: absoluteUrl("/icons/icon-512x512.png"),
+        url: absoluteUrl("/brand-mark.svg"),
         width: 512,
         height: 512,
-        alt: `${siteConfig.shortTitle} crest`,
+        alt: `${siteConfig.shortTitle} brand mark`,
       },
     ],
   },
@@ -61,14 +61,14 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteConfig.title,
     description: siteConfig.description,
-    images: [absoluteUrl("/icons/icon-512x512.png")],
+    images: [absoluteUrl("/brand-mark.svg")],
   },
   alternates: {
     canonical: siteConfig.siteUrl,
   },
   icons: {
-    icon: "/icons/icon-192x192.png",
-    apple: "/icons/icon-192x192.png",
+    icon: "/brand-mark.svg",
+    apple: "/brand-mark.svg",
   },
   appleWebApp: {
     capable: true,

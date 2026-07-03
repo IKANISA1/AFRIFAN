@@ -21,10 +21,25 @@ export default async function TvDisplayPage({
 }: TvDisplayPageProps) {
   const params = await searchParams;
   const sessionId = resolveTvSessionId(params);
+  const venueCode = typeof params.venue_code === "string" ? params.venue_code : null;
+  const venueName = typeof params.venue_name === "string" ? params.venue_name : null;
+  const venueCodeExpiresAt =
+    typeof params.expires_at === "string" ? params.expires_at : null;
+  const venueRewardLabel = typeof params.fet === "string" ? params.fet : null;
   return (
     <TvDisplayClient
       initialState={createDemoTvSessionState()}
       sessionId={sessionId}
+      venueCheckin={
+        venueCode
+          ? {
+              code: venueCode,
+              venueName,
+              expiresAt: venueCodeExpiresAt,
+              rewardLabel: venueRewardLabel,
+            }
+          : null
+      }
     />
   );
 }

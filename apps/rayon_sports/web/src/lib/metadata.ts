@@ -30,7 +30,7 @@ export function buildPageMetadata({
   title,
   description,
   path = "/",
-  imagePath = "/icons/icon-512x512.png",
+  imagePath = "/brand-mark.svg",
   type = "website",
   robots,
 }: PageMetadataOptions): Metadata {
@@ -75,7 +75,7 @@ export function buildNewsArticleJsonLd(article: NewsArticle) {
     "@type": "NewsArticle",
     headline: article.title,
     description: article.excerpt,
-    image: absoluteUrl(article.coverImageUrl ?? "/media/stadium-hero.jpg"),
+    image: absoluteUrl(article.coverImageUrl ?? "/brand-surface.svg"),
     datePublished: article.publishedAt,
     dateModified: article.publishedAt,
     author: {
@@ -87,7 +87,7 @@ export function buildNewsArticleJsonLd(article: NewsArticle) {
       name: siteConfig.shortTitle,
       logo: {
         "@type": "ImageObject",
-        url: absoluteUrl("/icons/icon-192x192.png"),
+        url: absoluteUrl("/brand-mark.svg"),
       },
     },
     mainEntityOfPage: absoluteUrl(`/news/${article.id}`),
@@ -111,7 +111,7 @@ export function buildMatchJsonLd(match: MatchItem) {
       "@type": "Place",
       name: match.venue,
     },
-    image: absoluteUrl(match.imageUrl ?? "/media/stadium-hero.jpg"),
+    image: absoluteUrl(match.imageUrl ?? "/brand-surface.svg"),
     competitor: [
       { "@type": "SportsTeam", name: match.homeTeam },
       { "@type": "SportsTeam", name: match.awayTeam },
@@ -137,7 +137,7 @@ export function buildProductJsonLd(product: ShopProduct) {
     "@type": "Product",
     name: product.name,
     description: product.description,
-    image: absoluteUrl(product.imageUrl ?? "/media/stadium-hero.jpg"),
+    image: absoluteUrl(product.imageUrl ?? "/brand-surface.svg"),
     brand: {
       "@type": "Brand",
       name: siteConfig.shortTitle,
@@ -193,7 +193,7 @@ export function buildSiteJsonLd() {
         name: siteConfig.title,
         alternateName: siteConfig.shortTitle,
         url: siteConfig.siteUrl,
-        logo: absoluteUrl("/icons/icon-192x192.png"),
+        logo: absoluteUrl("/brand-mark.svg"),
         sport: "Association football",
         description: siteConfig.description,
       },

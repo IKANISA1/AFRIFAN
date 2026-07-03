@@ -49,7 +49,6 @@ required = [
     "CLUB_ID",
     "CLUB_NAME",
     "APP_NAME",
-    "CREST_ASSET",
     "HOME_TEAM_NAME",
     "HOME_VENUE_NAME",
     "RIVAL_TEAM_NAME",
@@ -66,11 +65,6 @@ required = [
 missing = [key for key in required if not str(config.get(key, "")).strip()]
 if missing:
     raise SystemExit(f"Missing required config keys: {', '.join(missing)}")
-
-crest_asset = pathlib.Path(config["CREST_ASSET"])
-crest_path = app_dir / crest_asset
-if not crest_path.exists():
-    raise SystemExit(f"Configured crest asset does not exist: {crest_path}")
 
 def verify_public_url(url: str, label: str) -> None:
     if not url.startswith("https://"):

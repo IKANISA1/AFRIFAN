@@ -62,7 +62,7 @@ class _ConfettiBurstState extends State<_ConfettiBurst> {
       );
     });
 
-    Future<void>.delayed(const Duration(milliseconds: 1400), () {
+    Future<void>.delayed(AfriMotion.celebrationHold, () {
       if (mounted) widget.onComplete();
     });
   }

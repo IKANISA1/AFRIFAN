@@ -300,8 +300,8 @@ BEGIN
       ('round_of_16', 'R16 Leg 1', '05 Mar 2026', 'fc-barcelona', 'benfica', null, null, 'SCH'),
       ('round_of_16', 'R16 Leg 1', '11 Mar 2026', 'arsenal', 'real-madrid', null, null, 'SCH'),
       ('round_of_16', 'R16 Leg 1', '11 Mar 2026', 'atletico-madrid', 'bayer-leverkusen', null, null, 'SCH'),
-      ('quarter_final', 'QF Leg 1', '08 Rayon Sports 2026', null, null, null, null, 'SCH'),
-      ('semi_final', 'SF Leg 1', '29 Rayon Sports 2026', null, null, null, null, 'SCH'),
+      ('quarter_final', 'QF Leg 1', '08 Apr 2026', null, null, null, null, 'SCH'),
+      ('semi_final', 'SF Leg 1', '29 Apr 2026', null, null, null, null, 'SCH'),
       ('final', 'Final', '30 May 2026', null, null, null, null, 'SCH')
   )
   INSERT INTO football.fixtures AS f (

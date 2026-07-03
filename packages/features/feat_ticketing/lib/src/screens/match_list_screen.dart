@@ -39,7 +39,12 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
     super.didChangeDependencies();
     if (_syncedInitialTab) return;
     _syncedInitialTab = true;
-    final tab = GoRouterState.of(context).uri.queryParameters['tab'];
+    String? tab;
+    try {
+      tab = GoRouterState.of(context).uri.queryParameters['tab'];
+    } on GoError {
+      tab = null;
+    }
     if (tab == 'mine') {
       _tabController.index = 2;
     }
@@ -255,11 +260,11 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                 children: [
                   Row(
                     children: [
-                      _buildCrest(),
+                      _buildBrandMark(),
                       const SizedBox(width: SpacingTokens.spacing2),
                       Text('VS', style: TypographyTokens.labelMedium()),
                       const SizedBox(width: SpacingTokens.spacing2),
-                      _buildCrest(),
+                      _buildBrandMark(),
                     ],
                   ),
                   Flexible(
@@ -401,7 +406,7 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
     );
   }
 
-  Widget _buildCrest() {
+  Widget _buildBrandMark() {
     return Container(
       width: 36,
       height: 36,

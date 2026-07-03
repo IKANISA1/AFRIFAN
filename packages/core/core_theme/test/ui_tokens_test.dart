@@ -158,12 +158,19 @@ void main() {
   });
 
   group('Shape Tokens — tactile rounding', () {
-    test('minimum shared radius is 14px', () {
-      expect(ShapeTokens.radiusMd, equals(14.0));
+    test('shared card radius follows root DESIGN.md 8dp ceiling', () {
+      final tokens = AfriDesignTokens.standard();
+
+      expect(tokens.cardRadius, equals(8.0));
+      expect(tokens.panelRadius, equals(8.0));
+      expect(tokens.cardRadius, lessThanOrEqualTo(8.0));
     });
 
-    test('main card radius is 24px', () {
-      expect(ShapeTokens.radiusXl, equals(24.0));
+    test('larger radii remain available for sheets and platform chrome', () {
+      final tokens = AfriDesignTokens.standard();
+
+      expect(tokens.sheetRadius, equals(ShapeTokens.radiusXl));
+      expect(tokens.pillRadius, equals(ShapeTokens.radiusFull));
     });
   });
 
@@ -174,6 +181,82 @@ void main() {
 
     test('focus outline is stronger than the default', () {
       expect(BorderTokens.focus, greaterThan(BorderTokens.standard));
+    });
+  });
+
+  group('Universal Design Tokens — runtime DESIGN.md contract', () {
+    final tokens = AfriDesignTokens.standard();
+
+    test('ClubTheme registers design tokens as a ThemeExtension', () {
+      final theme = ClubTheme.from(ClubConfig.fallback());
+
+      expect(theme.extension<AfriDesignTokens>(), isNotNull);
+      expect(
+        theme.extension<AfriDesignTokens>()!.cardRadius,
+        equals(tokens.cardRadius),
+      );
+    });
+
+    test('responsive bands match DESIGN.md breakpoints', () {
+      expect(
+        tokens.viewportBandForWidth(320),
+        equals(AfriViewportBand.compactPhone),
+      );
+      expect(
+        tokens.viewportBandForWidth(390),
+        equals(AfriViewportBand.standardPhone),
+      );
+      expect(
+        tokens.viewportBandForWidth(500),
+        equals(AfriViewportBand.largePhone),
+      );
+      expect(
+        tokens.viewportBandForWidth(640),
+        equals(AfriViewportBand.smallTablet),
+      );
+      expect(
+        tokens.viewportBandForWidth(720),
+        equals(AfriViewportBand.expanded),
+      );
+    });
+
+    test('touch targets satisfy accessibility floors', () {
+      expect(tokens.minTouchTarget, greaterThanOrEqualTo(48));
+      expect(tokens.minDenseIconTarget, greaterThanOrEqualTo(44));
+      expect(tokens.comfortableTouchTarget, greaterThan(tokens.minTouchTarget));
+    });
+
+    test('motion durations stay within DESIGN.md bands', () {
+      expect(tokens.fastMotion.inMilliseconds, inInclusiveRange(120, 180));
+      expect(tokens.standardMotion.inMilliseconds, inInclusiveRange(200, 280));
+      expect(tokens.slowMotion.inMilliseconds, inInclusiveRange(320, 420));
+      expect(
+        tokens.motionFor(reducedMotionEnabled: true, role: AfriMotionRole.slow),
+        equals(tokens.reducedMotion),
+      );
+    });
+
+    test('focus, admin, and TV contracts are concrete', () {
+      expect(tokens.focusRingWidth, greaterThanOrEqualTo(3));
+      expect(tokens.focusScale, greaterThanOrEqualTo(1));
+      expect(tokens.adminRailWidth, greaterThanOrEqualTo(240));
+      expect(tokens.adminTableRowHeight, greaterThanOrEqualTo(48));
+      expect(tokens.tvSafeMargin720, greaterThanOrEqualTo(48));
+      expect(tokens.tvTileFocusScale, greaterThan(1));
+    });
+
+    test('required evidence ids cover mobile, admin, TV, and state gates', () {
+      expect(AfriDesignTokens.requiredStateIds, contains('permissionDenied'));
+      expect(AfriDesignTokens.requiredStateIds, contains('reducedMotion'));
+      expect(
+        AfriDesignTokens.requiredMobileViewportIds,
+        contains('compactPhone320To374'),
+      );
+      expect(
+        AfriDesignTokens.requiredAdminEvidenceIds,
+        contains('bulkSelection'),
+      );
+      expect(AfriDesignTokens.requiredTvEvidenceIds, contains('tv1080p'));
     });
   });
 }

@@ -7,11 +7,10 @@ class NyasaBulletsConfig implements ClubConfig {
   const NyasaBulletsConfig();
 
   @override
-  String get clubId =>
-      ClubConfig.requireDefine(
-        const String.fromEnvironment('CLUB_ID'),
-        'CLUB_ID',
-      );
+  String get clubId => ClubConfig.requireDefine(
+    const String.fromEnvironment('CLUB_ID'),
+    'CLUB_ID',
+  );
 
   @override
   String get clubName => 'Nyasa Big Bullets FC';
@@ -44,10 +43,6 @@ class NyasaBulletsConfig implements ClubConfig {
     accent: Color(0xFF000000),
     gradient: [Color(0xFF990000), Color(0xFF330000)],
   );
-
-  @override
-  String get crestAsset => 'assets/crest/nyasa_bullets_crest.png';
-
   @override
   String get supabaseUrl => ClubConfig.requireDefine(
     const String.fromEnvironment('SUPABASE_URL'),
@@ -62,7 +57,6 @@ class NyasaBulletsConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const ['en', 'ny'];
-
 
   @override
   bool get hasFanClubs => true;
@@ -87,7 +81,8 @@ class NyasaBulletsConfig implements ClubConfig {
   );
 
   @override
-  String get environment => const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
+  String get environment =>
+      const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
 
   @override
   Map<String, bool> get features => {

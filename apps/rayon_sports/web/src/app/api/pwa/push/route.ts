@@ -260,8 +260,8 @@ export async function POST(request: NextRequest) {
             body.body ??
             "You will now receive timely match, membership, and supporter updates.",
           url: body.url ?? "/supporters",
-          icon: "/icons/icon-192x192.png",
-          badge: "/icons/icon-72x72.png",
+          icon: "/brand-mark.svg",
+          badge: "/brand-mark.svg",
           tag: "africlub-test-alert",
           requireInteraction: false,
           actions: [

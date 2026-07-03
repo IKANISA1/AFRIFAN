@@ -7,11 +7,10 @@ class TpMazembeConfig implements ClubConfig {
   const TpMazembeConfig();
 
   @override
-  String get clubId =>
-      ClubConfig.requireDefine(
-        const String.fromEnvironment('CLUB_ID'),
-        'CLUB_ID',
-      );
+  String get clubId => ClubConfig.requireDefine(
+    const String.fromEnvironment('CLUB_ID'),
+    'CLUB_ID',
+  );
 
   @override
   String get clubName => 'TP Mazembe';
@@ -44,10 +43,6 @@ class TpMazembeConfig implements ClubConfig {
     accent: Color(0xFFC0C0C0),
     gradient: [Color(0xFF1A1A1A), Color(0xFF000000)],
   );
-
-  @override
-  String get crestAsset => 'assets/crest/tp_mazembe_crest.png';
-
   @override
   String get supabaseUrl => ClubConfig.requireDefine(
     const String.fromEnvironment('SUPABASE_URL'),
@@ -62,7 +57,6 @@ class TpMazembeConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const ['fr', 'ln', 'en'];
-
 
   @override
   bool get hasFanClubs => true;
@@ -87,7 +81,8 @@ class TpMazembeConfig implements ClubConfig {
   );
 
   @override
-  String get environment => const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
+  String get environment =>
+      const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
 
   @override
   Map<String, bool> get features => {

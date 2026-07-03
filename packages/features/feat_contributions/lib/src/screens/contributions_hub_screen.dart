@@ -381,7 +381,7 @@ class _HubCard extends StatelessWidget {
             from: accent.withValues(alpha: 0.18),
             to: ColorTokens.surfaceContainerHighest,
           ),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: ShapeTokens.inputRadius,
         ),
         child: Padding(
           padding: const EdgeInsets.all(SpacingTokens.spacing5),
@@ -405,7 +405,7 @@ class _HubCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: ColorTokens.ghostBorder,
-                      borderRadius: BorderRadius.circular(999),
+                      borderRadius: ShapeTokens.buttonRadius,
                     ),
                     child: Text(
                       metricLabel,

@@ -14,7 +14,7 @@ class AnimatedFetCounter extends StatefulWidget {
     this.prefix = '+',
     this.suffix = ' FET',
     this.fontSize = 28,
-    this.duration = const Duration(milliseconds: 1200),
+    this.duration = AfriMotion.rewardReveal,
     this.color,
   });
 

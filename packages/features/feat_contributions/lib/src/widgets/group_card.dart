@@ -30,7 +30,7 @@ class GroupCard extends StatelessWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   color: ColorTokens.clubAccent.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: ShapeTokens.chipRadius,
                 ),
                 child: Center(
                   child: Icon(
@@ -74,7 +74,7 @@ class GroupCard extends StatelessWidget {
           if (target > 0) ...[
             const SizedBox(height: SpacingTokens.spacing3),
             ClipRRect(
-              borderRadius: BorderRadius.circular(3),
+              borderRadius: BorderRadius.circular(ShapeTokens.radiusSm / 2),
               child: AfriLinearProgressIndicator(
                 value: progress,
                 minHeight: 4,

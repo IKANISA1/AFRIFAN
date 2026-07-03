@@ -1,11 +1,15 @@
 import { cookies } from "next/headers";
-import { adminClubScopeCookieName, getRequestedAdminClubId } from "@/lib/admin-club-scope";
+import {
+  adminClubScopeCookieName,
+  getRequestedAdminClubId,
+} from "@/lib/admin-club-scope";
 import { emptyAdminAccess, resolveAdminAccess } from "@/lib/data/admin/access";
 import { getAdminClubScopeOptions } from "@/lib/data/admin/settings";
 import { getServerSupabase } from "@/lib/supabase/server";
 import type { AdminPortalInitialState } from "@/lib/types";
 
 export async function getAdminPortalInitialState(): Promise<AdminPortalInitialState> {
+  const cookieStore = await cookies();
   const serverClient = await getServerSupabase();
   if (serverClient == null) {
     return {
@@ -18,7 +22,6 @@ export async function getAdminPortalInitialState(): Promise<AdminPortalInitialSt
   }
 
   try {
-    const cookieStore = await cookies();
     const requestedClubId = getRequestedAdminClubId(
       null,
       cookieStore.get(adminClubScopeCookieName)?.value ?? null,

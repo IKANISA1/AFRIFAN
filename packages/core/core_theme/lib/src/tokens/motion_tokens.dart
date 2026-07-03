@@ -23,6 +23,18 @@ class AfriMotion {
   /// Slow atmospheric animations (background glow shift). 600ms.
   static const Duration atmospheric = Duration(milliseconds: 600);
 
+  /// Short debounce for search and remote-repeat input. 250ms.
+  static const Duration debounce = standard;
+
+  /// Delayed affordance before showing an async confirmation. 800ms.
+  static const Duration feedbackDelay = Duration(milliseconds: 800);
+
+  /// Count-up and lightweight reward reveal timing. 1200ms.
+  static const Duration rewardReveal = Duration(milliseconds: 1200);
+
+  /// Completion hold for confetti and celebratory overlays. 1400ms.
+  static const Duration celebrationHold = Duration(milliseconds: 1400);
+
   // ── Curves ──
   /// Spring-like press feedback curve.
   static const Curve pressCurve = Cubic(0.25, 0.46, 0.45, 0.94);

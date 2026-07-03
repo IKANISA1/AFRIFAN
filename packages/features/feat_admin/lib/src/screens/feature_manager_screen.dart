@@ -232,7 +232,7 @@ class _FeatureManagerScreenState extends ConsumerState<FeatureManagerScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: visColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(999),
+                    borderRadius: ShapeTokens.buttonRadius,
                     border: BorderTokens.all(color: visColor, opacity: 0.3),
                   ),
                   child: Text(

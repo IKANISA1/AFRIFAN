@@ -5,13 +5,13 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Animated Crest Watermark
+ * Animated Brand Mark Watermark
  * Subtly pulsates and rotates slowly in the background of major sections.
  * Pauses if user prefers reduced motion.
  */
 export function AnimatedWatermark({ 
   className,
-  imageUrl = "/icons/icon-512x512.png" 
+  imageUrl = "/brand-mark.svg"
 }: { 
   className?: string,
   imageUrl?: string

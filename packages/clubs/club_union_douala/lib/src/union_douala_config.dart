@@ -7,11 +7,10 @@ class UnionDoualaConfig implements ClubConfig {
   const UnionDoualaConfig();
 
   @override
-  String get clubId =>
-      ClubConfig.requireDefine(
-        const String.fromEnvironment('CLUB_ID'),
-        'CLUB_ID',
-      );
+  String get clubId => ClubConfig.requireDefine(
+    const String.fromEnvironment('CLUB_ID'),
+    'CLUB_ID',
+  );
 
   @override
   String get clubName => 'Union Douala';
@@ -44,10 +43,6 @@ class UnionDoualaConfig implements ClubConfig {
     accent: Color(0xFF000000),
     gradient: [Color(0xFF004D2C), Color(0xFF002211)],
   );
-
-  @override
-  String get crestAsset => 'assets/crest/union_douala_crest.png';
-
   @override
   String get supabaseUrl => ClubConfig.requireDefine(
     const String.fromEnvironment('SUPABASE_URL'),
@@ -62,7 +57,6 @@ class UnionDoualaConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const ['fr', 'en'];
-
 
   @override
   bool get hasFanClubs => true;
@@ -87,7 +81,8 @@ class UnionDoualaConfig implements ClubConfig {
   );
 
   @override
-  String get environment => const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
+  String get environment =>
+      const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
 
   @override
   Map<String, bool> get features => {

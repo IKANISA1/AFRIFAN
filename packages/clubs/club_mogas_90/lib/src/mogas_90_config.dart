@@ -7,11 +7,10 @@ class Mogas90Config implements ClubConfig {
   const Mogas90Config();
 
   @override
-  String get clubId =>
-      ClubConfig.requireDefine(
-        const String.fromEnvironment('CLUB_ID'),
-        'CLUB_ID',
-      );
+  String get clubId => ClubConfig.requireDefine(
+    const String.fromEnvironment('CLUB_ID'),
+    'CLUB_ID',
+  );
 
   @override
   String get clubName => 'Mogas 90 FC';
@@ -44,10 +43,6 @@ class Mogas90Config implements ClubConfig {
     accent: Color(0xFFCC0000),
     gradient: [Color(0xFF004D2C), Color(0xFF330000)],
   );
-
-  @override
-  String get crestAsset => 'assets/crest/mogas_90_crest.png';
-
   @override
   String get supabaseUrl => ClubConfig.requireDefine(
     const String.fromEnvironment('SUPABASE_URL'),
@@ -62,7 +57,6 @@ class Mogas90Config implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const ['fr', 'en'];
-
 
   @override
   bool get hasFanClubs => true;
@@ -87,7 +81,8 @@ class Mogas90Config implements ClubConfig {
   );
 
   @override
-  String get environment => const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
+  String get environment =>
+      const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
 
   @override
   Map<String, bool> get features => {

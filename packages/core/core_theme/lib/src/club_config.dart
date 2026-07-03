@@ -65,9 +65,6 @@ abstract class ClubConfig {
   /// Club-specific color palette
   ClubColors get colors;
 
-  /// Path to club crest asset
-  String get crestAsset;
-
   /// Supabase project URL
   String get supabaseUrl;
 
@@ -150,9 +147,6 @@ class _FallbackClubConfig extends ClubConfig {
     accent: Color(0xFFD4A017),
     gradient: <Color>[Color(0xFF001F5C), Color(0xFF0038A8)],
   );
-
-  @override
-  String get crestAsset => 'assets/crest/fallback.png';
 
   @override
   String get supabaseUrl => 'https://example.supabase.co';

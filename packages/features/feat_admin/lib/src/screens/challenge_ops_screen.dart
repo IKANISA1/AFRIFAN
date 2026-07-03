@@ -249,7 +249,7 @@ class _OpsChip extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: ShapeTokens.buttonRadius,
       ),
       child: Text(label, style: TypographyTokens.labelSmall()),
     );

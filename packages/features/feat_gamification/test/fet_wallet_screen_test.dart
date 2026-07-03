@@ -88,6 +88,7 @@ class _FakeFetRepository extends FetRepository {
 Future<void> _pumpApp(
   WidgetTester tester, {
   required _FakeFetRepository repository,
+  String initialLocation = '/fanzone/wallet',
 }) async {
   tester.view.physicalSize = const Size(393, 852);
   tester.view.devicePixelRatio = 1.0;
@@ -95,7 +96,7 @@ Future<void> _pumpApp(
   addTearDown(tester.view.resetDevicePixelRatio);
 
   final router = GoRouter(
-    initialLocation: '/fanzone/wallet',
+    initialLocation: initialLocation,
     routes: [
       GoRoute(
         path: '/fanzone/wallet',
@@ -136,7 +137,12 @@ void main() {
     expect(find.text('FET SPLIT MODEL'), findsNothing);
     expect(find.text('Wallet'), findsNothing);
 
-    await _scrollTo(tester, find.text('Earn'));
+    await tester.tap(find.text('Earn').first);
+    await tester.pumpAndSettle();
+    await _scrollTo(
+      tester,
+      find.textContaining('Earn points from partner initiatives'),
+    );
 
     expect(find.text('Earn'), findsAtLeastNWidgets(1));
     expect(
@@ -144,12 +150,16 @@ void main() {
       findsOneWidget,
     );
 
-    await tester.tap(find.text('Activity').first);
-    await tester.pumpAndSettle();
+    await _pumpApp(
+      tester,
+      repository: repository,
+      initialLocation: '/fanzone/wallet?section=history',
+    );
     await _scrollTo(tester, find.text('Partner points earned'));
 
     expect(find.text('Partner points earned'), findsOneWidget);
     expect(find.text('Partner pool entry'), findsOneWidget);
+    await _scrollTo(tester, find.text('Partner pool payout'));
     expect(find.text('Partner pool payout'), findsOneWidget);
   });
 

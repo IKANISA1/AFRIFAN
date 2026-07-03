@@ -83,6 +83,28 @@ const config: PlatformConfigSnapshot = {
       },
     },
     {
+      feature_key: "venue_app",
+      display_name: "Venue App",
+      is_enabled: true,
+      visibility_state: "visible",
+      channel: {
+        is_enabled: true,
+        is_visible: true,
+        show_in_navigation: true,
+        show_on_home: false,
+        sort_order: 5,
+        route_key: "/venues",
+        placement_key: null,
+      },
+      rules: {
+        auth_required: false,
+        role_restrictions: [],
+        dependency_rules: {},
+        rollout_rules: {},
+        is_within_schedule: true,
+      },
+    },
+    {
       feature_key: "fan_clubs",
       display_name: "Fan Clubs",
       is_enabled: true,
@@ -177,16 +199,20 @@ describe("feature-config", () => {
       (block) => block.block_key,
     );
 
-    expect(navKeys).toEqual(["news"]);
+    expect(navKeys).toEqual(["news", "venue_app"]);
     expect(blockKeys).toEqual(["hero", "news-promo"]);
   });
 
   it("blocks disabled routes while leaving unrelated routes alone", () => {
     expect(getFeatureKeyForPath(config, "/news/123")).toBe("news");
     expect(getFeatureKeyForPath(config, "/shop/cart")).toBe("shop");
+    expect(getFeatureKeyForPath(config, "/venues/rayon-lounge")).toBe(
+      "venue_app",
+    );
     expect(isRouteAvailable(config, "/news/123")).toBe(true);
     expect(isRouteAvailable(config, "/shop/cart")).toBe(false);
     expect(isRouteAvailable(config, "/tickets/checkout")).toBe(false);
+    expect(isRouteAvailable(config, "/venues/rayon-lounge")).toBe(true);
     expect(isRouteAvailable(config, "/contact")).toBe(true);
   });
 });

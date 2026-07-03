@@ -9,24 +9,15 @@ void main() {
       RuntimeBranding.configure(
         appName: 'Gikundiro',
         clubName: 'Rayon Sports FC',
-        crestAsset: 'assets/crest/rayon_sports_crest.png',
       );
 
       expect(RuntimeBranding.displayAppName, 'Gikundiro');
       expect(RuntimeBranding.displayClubName, 'Rayon Sports FC');
       expect(RuntimeBranding.appInitials, 'GI');
-      expect(
-        RuntimeBranding.displayCrestAsset,
-        'assets/crest/rayon_sports_crest.png',
-      );
     });
 
     test('does not fall back to AFRICLUB placeholder branding', () {
-      RuntimeBranding.configure(
-        appName: '',
-        clubName: 'Rayon Sports FC',
-        crestAsset: '',
-      );
+      RuntimeBranding.configure(appName: '', clubName: 'Rayon Sports FC');
 
       expect(RuntimeBranding.displayAppName, 'Rayon Sports FC');
       expect(RuntimeBranding.displayClubName, 'Rayon Sports FC');

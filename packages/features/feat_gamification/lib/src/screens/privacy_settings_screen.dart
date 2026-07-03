@@ -316,7 +316,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                                   height: SpacingTokens.spacing1 / 2,
                                 ),
                                 Text(
-                                  'AFRICLUB does not sell, share, or expose '
+                                  '${RuntimeBranding.displayAppName} does not sell, share, or expose '
                                   'your personal data. All identifiers '
                                   'on the platform are anonymised.',
                                   style: TypographyTokens.bodySmall(),

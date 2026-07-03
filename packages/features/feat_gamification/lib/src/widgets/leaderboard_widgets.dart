@@ -43,7 +43,7 @@ class LeaderboardPeriodChip extends StatelessWidget {
       selected: selected,
       scaleEnd: 0.98,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: AfriMotion.standard,
         constraints: const BoxConstraints(
           minHeight: SpacingTokens.spacing10 + SpacingTokens.spacing1,
         ),

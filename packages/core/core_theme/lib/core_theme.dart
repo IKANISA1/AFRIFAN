@@ -13,6 +13,7 @@ export 'src/theme_mode_notifier.dart';
 
 // ── Tokens ──
 export 'src/tokens/afri_semantic_colors.dart';
+export 'src/tokens/afri_design_tokens.dart';
 export 'src/tokens/blur_tokens.dart';
 export 'src/tokens/border_tokens.dart';
 export 'src/tokens/color_tokens.dart';
@@ -31,6 +32,7 @@ export 'src/widgets/afri_action_sheet.dart';
 export 'src/widgets/afri_app_bar.dart';
 export 'src/widgets/afri_async_state_view.dart';
 export 'src/widgets/afri_bottom_sheet.dart';
+export 'src/widgets/afri_brand_mark.dart';
 export 'src/widgets/afri_button.dart';
 export 'src/widgets/afri_chip.dart';
 export 'src/widgets/afri_dialog.dart';

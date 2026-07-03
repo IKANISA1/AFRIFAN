@@ -7,11 +7,10 @@ class DynamosConfig implements ClubConfig {
   const DynamosConfig();
 
   @override
-  String get clubId =>
-      ClubConfig.requireDefine(
-        const String.fromEnvironment('CLUB_ID'),
-        'CLUB_ID',
-      );
+  String get clubId => ClubConfig.requireDefine(
+    const String.fromEnvironment('CLUB_ID'),
+    'CLUB_ID',
+  );
 
   @override
   String get clubName => 'Dynamos FC';
@@ -44,10 +43,6 @@ class DynamosConfig implements ClubConfig {
     accent: Color(0xFFFFD700),
     gradient: [Color(0xFF000099), Color(0xFF000044)],
   );
-
-  @override
-  String get crestAsset => 'assets/crest/dynamos_crest.png';
-
   @override
   String get supabaseUrl => ClubConfig.requireDefine(
     const String.fromEnvironment('SUPABASE_URL'),
@@ -62,7 +57,6 @@ class DynamosConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const ['en', 'sn'];
-
 
   @override
   bool get hasFanClubs => true;
@@ -87,7 +81,8 @@ class DynamosConfig implements ClubConfig {
   );
 
   @override
-  String get environment => const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
+  String get environment =>
+      const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
 
   @override
   Map<String, bool> get features => {

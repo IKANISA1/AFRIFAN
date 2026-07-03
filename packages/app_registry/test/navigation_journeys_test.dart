@@ -356,8 +356,6 @@ class _AllFeaturesConfig implements ClubConfig {
     ],
   );
   @override
-  String get crestAsset => 'assets/crest/test.png';
-  @override
   String get supabaseUrl => 'https://test.supabase.co';
   @override
   String get supabaseAnonKey => 'test-key';

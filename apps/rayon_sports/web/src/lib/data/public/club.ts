@@ -60,7 +60,7 @@ function mapClubRow(
     tiktokUrl: safeString(row.tiktok_url) || null,
     officialLogoUrl: sanitizeMediaUrl(
       row.official_logo_url,
-      fallback.officialLogoUrl ?? "/icons/icon-192x192.png",
+      fallback.officialLogoUrl ?? "/brand-mark.svg",
     ),
     primaryColorHex: safeString(
       row.primary_color_hex,

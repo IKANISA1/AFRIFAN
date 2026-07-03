@@ -31,7 +31,7 @@ Browse and purchase official Rayon Sports FC merchandise including jerseys, scar
 Connect with fellow supporters in your local fan club chapter. Organize watch parties, coordinate matchday travel, and build your supporter community.
 
 FEATURES AT A GLANCE:
-• Dark mode with stunning glassmorphism design
+• Matchday-ready supporter experience
 • Secure authentication & data protection
 • Mobile money (MoMo) integration for Rwanda
 • Live match tracking and fixtures

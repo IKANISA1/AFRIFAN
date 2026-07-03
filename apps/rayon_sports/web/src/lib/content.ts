@@ -30,7 +30,7 @@ export const fallbackClubProfile: ClubProfile = {
   xUrl: "https://x.com/rayon_sports",
   instagramUrl: "https://instagram.com/rayonsports_official",
   tiktokUrl: "https://tiktok.com/@rayonsports",
-  officialLogoUrl: "/icons/icon-192x192.png",
+  officialLogoUrl: "/brand-mark.svg",
   primaryColorHex: rayonClub.primaryColorHex,
   secondaryColorHex: rayonClub.secondaryColorHex,
   accentColorHex: rayonClub.accentColorHex,
@@ -43,7 +43,30 @@ export const fallbackClubProfile: ClubProfile = {
   },
 };
 
-export const fallbackMatches: MatchItem[] = [];
+export const fallbackMatches: MatchItem[] = [
+  {
+    id: "featured-home-fixture",
+    homeTeam: fallbackClubProfile.shortName,
+    awayTeam: "Police FC",
+    competition: "Rwanda Premier League",
+    venue: "Amahoro Stadium",
+    matchDate: "2026-04-26T16:00:00.000Z",
+    kickoffTime: "18:00",
+    isOnSale: true,
+    generalPrice: 5000,
+    vipPrice: 15000,
+    imageUrl: "/brand-surface.svg",
+    matchStatus: "scheduled",
+    homeScore: 0,
+    awayScore: 0,
+    liveMinute: null,
+    matchSummary:
+      "Official fallback fixture for the public web surface when live match data is unavailable.",
+    liveEvents: [],
+    liveStats: {},
+    isFeatured: true,
+  },
+];
 
 export const fallbackNewsArticles: NewsArticle[] = [
   {
@@ -54,7 +77,7 @@ export const fallbackNewsArticles: NewsArticle[] = [
     content:
       `${fallbackClubProfile.clubName} is finalizing a world-class matchday experience for our supporters. From the choreographed Blue Wall tifo to enhanced Gold member hospitality, every detail is being refined to ensure matchday remains the heartbeat of Rwandan football. Gates open at 14:00. Arrive early, wear your colors, and be the twelfth man.`,
     category: "Matchday",
-    coverImageUrl: "/media/stadium-hero.jpg",
+    coverImageUrl: "/brand-surface.svg",
     publishedAt: "2026-04-15T07:00:00.000Z",
     author: "Gikundiro Media",
   },
@@ -66,7 +89,7 @@ export const fallbackNewsArticles: NewsArticle[] = [
     content:
       `Being a member of ${fallbackClubProfile.shortName} is more than just a ticket—it's a digital-first identity. Our new fan portal allows supporters across Rwanda and the diaspora to manage their tiers, earn FET tokens, and fund community projects through Support Circles. Your fan card is now live in the supporter app. Access the future of fan engagement today.`,
     category: "Membership",
-    coverImageUrl: "/media/stadium-hero-2.jpg",
+    coverImageUrl: "/brand-surface.svg",
     publishedAt: "2026-04-12T10:15:00.000Z",
     author: "Supporter Experience",
   },
@@ -76,9 +99,9 @@ export const fallbackNewsArticles: NewsArticle[] = [
     excerpt:
       "The new home kit has arrived. A tribute to our 50-year legacy, built for the modern supporter.",
     content:
-      `Our 2026 Heritage Collection is officially live. Featuring the iconic cobalt blue with gold accents, the new home replica jersey combines breathable performance fabrics with the prestige of the Gikundiro crest. Available now in the official shop and selected retail partners across Kigali. Own the colors. Own the history.`,
+      `Our 2026 Heritage Collection is officially live. Featuring the iconic cobalt blue with gold accents, the new home replica jersey combines breathable performance fabrics with the prestige of the Gikundiro club mark. Available now in the official shop and selected retail partners across Kigali. Own the colors. Own the history.`,
     category: "Shop",
-    coverImageUrl: "/media/stadium-hero.jpg",
+    coverImageUrl: "/brand-surface.svg",
     publishedAt: "2026-04-10T12:30:00.000Z",
     author: "Retail Desk",
   },
@@ -88,12 +111,12 @@ export const fallbackProducts: ShopProduct[] = [
   {
     id: "replica-home-26",
     name: "2026 Home Replica Jersey",
-    subtitle: "Matchday fit, club crest embroidery, breathable knit.",
+    subtitle: "Matchday fit, club mark embroidery, breathable knit.",
     description:
-      `Official ${fallbackClubProfile.shortName} replica built for matchdays and supporter travel. Includes woven crest, sponsor print, and a premium finish.`,
+      `Official ${fallbackClubProfile.shortName} replica built for matchdays and supporter travel. Includes woven club mark, sponsor print, and a premium finish.`,
     category: "Replica",
     price: 35000,
-    imageUrl: "/media/stadium-hero.jpg",
+    imageUrl: "/brand-surface.svg",
     sizes: ["S", "M", "L", "XL"],
     isActive: true,
     collection: "2026 Matchday",
@@ -101,12 +124,12 @@ export const fallbackProducts: ShopProduct[] = [
   {
     id: "travel-hoodie",
     name: "Blue Travel Hoodie",
-    subtitle: "Heavyweight fleece with a tonal crest hit.",
+    subtitle: "Heavyweight fleece with a tonal club mark detail.",
     description:
       "Supporter travel layer with a clean front mark and a wide cut for cooler evening kickoffs.",
     category: "Outerwear",
     price: 42000,
-    imageUrl: "/media/stadium-hero-2.jpg",
+    imageUrl: "/brand-surface.svg",
     sizes: ["M", "L", "XL"],
     isActive: true,
     collection: "Supporter Travel",
@@ -119,7 +142,7 @@ export const fallbackProducts: ShopProduct[] = [
       "A supporter staple for derby days, cup nights, and away sections.",
     category: "Accessories",
     price: 12000,
-    imageUrl: "/media/stadium-hero.jpg",
+    imageUrl: "/brand-surface.svg",
     sizes: ["One Size"],
     isActive: true,
     collection: "Accessories",
@@ -207,7 +230,7 @@ export const fallbackFanClubs: FanClubItem[] = [
     memberCount: 183,
     eventCount: 24,
     rating: 4.8,
-    bannerImageUrl: "/media/stadium-hero.jpg",
+    bannerImageUrl: "/brand-surface.svg",
   },
   {
     id: "northern-supporters",
@@ -218,7 +241,7 @@ export const fallbackFanClubs: FanClubItem[] = [
     memberCount: 91,
     eventCount: 12,
     rating: 4.6,
-    bannerImageUrl: "/media/stadium-hero-2.jpg",
+    bannerImageUrl: "/brand-surface.svg",
   },
   {
     id: "diaspora-supporters",
@@ -229,7 +252,7 @@ export const fallbackFanClubs: FanClubItem[] = [
     memberCount: 244,
     eventCount: 18,
     rating: 4.9,
-    bannerImageUrl: "/media/stadium-hero.jpg",
+    bannerImageUrl: "/brand-surface.svg",
   },
 ];
 
@@ -552,6 +575,7 @@ export const adminNavigation = [
   { href: "/admin/shop", label: "Shop" },
   { href: "/admin/offers", label: "Offers" },
   { href: "/admin/membership", label: "Membership" },
+  { href: "/admin/venues", label: "Venues" },
   { href: "/admin/gamification", label: "Gamification" },
   { href: "/admin/gamification/wallet", label: "Wallet Ops" },
   { href: "/admin/predictions", label: "Predictions" },

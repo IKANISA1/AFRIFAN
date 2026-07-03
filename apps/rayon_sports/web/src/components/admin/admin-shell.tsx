@@ -19,6 +19,7 @@ import {
   Handshake,
   LayoutDashboard,
   ListOrdered,
+  MapPin,
   MoreHorizontal,
   Newspaper,
   PanelLeftClose,
@@ -58,6 +59,7 @@ const navIcons: Record<string, LucideIcon> = {
   "/admin/shop": ShoppingBag,
   "/admin/offers": Gift,
   "/admin/membership": Crown,
+  "/admin/venues": MapPin,
   "/admin/gamification": Award,
   "/admin/gamification/wallet": Wallet,
   "/admin/predictions": Target,
@@ -88,6 +90,7 @@ const sidebarSections = [
       "/admin/community",
       "/admin/shop",
       "/admin/offers",
+      "/admin/venues",
     ],
   },
   {
@@ -333,7 +336,7 @@ function AdminAuthCard() {
             <div className="flex items-start gap-5">
               <div className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/6">
                 <Image
-                  src="/icons/icon-192x192.png"
+                  src="/brand-mark.svg"
                   alt={`${siteConfig.shortTitle} emblem`}
                   width={40}
                   height={40}
@@ -684,7 +687,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
         >
           <div className="flex flex-col items-center gap-4">
             <Image
-              src="/icons/icon-192x192.png"
+              src="/brand-mark.svg"
               alt={`${siteConfig.shortTitle} emblem`}
               width={56}
               height={56}

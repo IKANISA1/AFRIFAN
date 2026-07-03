@@ -1,5 +1,5 @@
 -- ============================================================================
--- Rwanda Premier League 2025/26 — Rayon Sports–May fixtures (Matchdays 25–34)
+-- Rwanda Premier League 2025/26 — April-May fixtures (Matchdays 25-34)
 -- Real schedule data from the official RPL calendar
 -- ============================================================================
 
@@ -18,32 +18,32 @@ BEGIN
     RAISE EXCEPTION 'Rwanda Premier League competition or season not found.';
   END IF;
 
-  -- ── RPL Rayon Sports-May Fixtures ──
+  -- RPL April-May fixtures.
   WITH fixture_values (
     match_date, home_slug, away_slug
   ) AS (
     VALUES
-      -- Rayon Sportsil 17
+      -- April 17
       ('2026-04-17', 'gasogi-united', 'gorilla-fc'),
       ('2026-04-17', 'marine-fc-rw', 'as-kigali-fc'),
       ('2026-04-17', 'musanze-fc', 'amagaju-fc'),
-      -- Rayon Sportsil 18
-      ('2026-04-18', 'etincelles-fc', 'Rayon Sports-fc'),
+      -- April 18
+      ('2026-04-18', 'etincelles-fc', 'apr-fc'),
       ('2026-04-18', 'gicumbi-fc', 'as-muhanga-fc'),
       ('2026-04-18', 'mukura-victory-sports', 'al-merrikh'),
       ('2026-04-18', 'kiyovu-sports', 'al-hilal-omdurman'),
-      -- Rayon Sportsil 19
+      -- April 19
       ('2026-04-19', 'police-fc-rw', 'bugesera-fc'),
       ('2026-04-19', 'rutsiro-fc', 'rayon-sports-fc'),
-      -- Rayon Sportsil 24
+      -- April 24
       ('2026-04-24', 'as-kigali-fc', 'gasogi-united'),
       ('2026-04-24', 'as-muhanga-fc', 'gorilla-fc'),
       ('2026-04-24', 'gicumbi-fc', 'rutsiro-fc'),
-      -- Rayon Sportsil 25
+      -- April 25
       ('2026-04-25', 'al-hilal-omdurman', 'musanze-fc'),
-      ('2026-04-25', 'mukura-victory-sports', 'Rayon Sports-fc'),
+      ('2026-04-25', 'mukura-victory-sports', 'apr-fc'),
       ('2026-04-25', 'police-fc-rw', 'marine-fc-rw'),
-      -- Rayon Sportsil 26
+      -- April 26
       ('2026-04-26', 'al-merrikh', 'bugesera-fc'),
       ('2026-04-26', 'amagaju-fc', 'rayon-sports-fc'),
       ('2026-04-26', 'etincelles-fc', 'kiyovu-sports'),
@@ -53,7 +53,7 @@ BEGIN
       -- May 2
       ('2026-05-02', 'etincelles-fc', 'amagaju-fc'),
       ('2026-05-02', 'gicumbi-fc', 'al-merrikh'),
-      ('2026-05-02', 'rayon-sports-fc', 'Rayon Sports-fc'),
+      ('2026-05-02', 'rayon-sports-fc', 'apr-fc'),
       -- May 3
       ('2026-05-03', 'as-kigali-fc', 'al-hilal-omdurman'),
       ('2026-05-03', 'as-muhanga-fc', 'bugesera-fc'),
@@ -70,7 +70,7 @@ BEGIN
       ('2026-05-06', 'rutsiro-fc', 'musanze-fc'),
       ('2026-05-06', 'al-merrikh', 'etincelles-fc'),
       -- May 7
-      ('2026-05-07', 'Rayon Sports-fc', 'al-hilal-omdurman'),
+      ('2026-05-07', 'apr-fc', 'al-hilal-omdurman'),
       -- May 9
       ('2026-05-09', 'gicumbi-fc', 'bugesera-fc'),
       ('2026-05-09', 'musanze-fc', 'police-fc-rw'),
@@ -81,7 +81,7 @@ BEGIN
       ('2026-05-10', 'gasogi-united', 'etincelles-fc'),
       ('2026-05-10', 'as-muhanga-fc', 'al-hilal-omdurman'),
       ('2026-05-10', 'mukura-victory-sports', 'gorilla-fc'),
-      ('2026-05-10', 'Rayon Sports-fc', 'as-kigali-fc'),
+      ('2026-05-10', 'apr-fc', 'as-kigali-fc'),
       -- May 15
       ('2026-05-15', 'as-kigali-fc', 'gicumbi-fc'),
       ('2026-05-15', 'rayon-sports-fc', 'gorilla-fc'),
@@ -92,11 +92,11 @@ BEGIN
       ('2026-05-16', 'police-fc-rw', 'al-hilal-omdurman'),
       -- May 17
       ('2026-05-17', 'amagaju-fc', 'al-merrikh'),
-      ('2026-05-17', 'Rayon Sports-fc', 'rutsiro-fc'),
+      ('2026-05-17', 'apr-fc', 'rutsiro-fc'),
       ('2026-05-17', 'musanze-fc', 'gasogi-united'),
       -- May 24
       ('2026-05-24', 'al-hilal-omdurman', 'gasogi-united'),
-      ('2026-05-24', 'al-merrikh', 'Rayon Sports-fc'),
+      ('2026-05-24', 'al-merrikh', 'apr-fc'),
       ('2026-05-24', 'amagaju-fc', 'as-muhanga-fc'),
       ('2026-05-24', 'gicumbi-fc', 'mukura-victory-sports'),
       ('2026-05-24', 'gorilla-fc', 'etincelles-fc'),
@@ -105,7 +105,7 @@ BEGIN
       ('2026-05-24', 'rayon-sports-fc', 'bugesera-fc'),
       ('2026-05-24', 'rutsiro-fc', 'as-kigali-fc'),
       -- May 31 (Final matchday)
-      ('2026-05-31', 'Rayon Sports-fc', 'gicumbi-fc'),
+      ('2026-05-31', 'apr-fc', 'gicumbi-fc'),
       ('2026-05-31', 'as-kigali-fc', 'musanze-fc'),
       ('2026-05-31', 'etincelles-fc', 'al-hilal-omdurman'),
       ('2026-05-31', 'gasogi-united', 'police-fc-rw'),

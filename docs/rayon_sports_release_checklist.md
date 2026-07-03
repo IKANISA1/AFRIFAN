@@ -1,8 +1,8 @@
 # Rayon Sports Release Checklist
 
-This is the canonical release checklist for the `rayon_sports` Flutter fan app.
+This is the canonical release checklist for the `rayon_sports` product suite.
 
-It assumes the product UI is already approved and frozen for release. This checklist covers engineering, platform, security, and store operations only.
+It assumes the product UI is already approved and frozen for release. This checklist covers engineering, platform, security, compliance, and store operations only.
 
 ## 1. Automated repo gates
 
@@ -117,5 +117,12 @@ Release only when all of the following are true:
 - production secrets are provisioned outside git
 - physical-device smoke tests are green
 - internal testers sign off on release candidate quality
+- venue/TV/admin/public UAT evidence is recorded in `docs/release/rayon_fullstack_uat_matrix.md`
+- Supabase venue/FET/order SQL contract tests pass for touched schema
+- legal/payment review is recorded before FET redemption, transfer, or spend
+- privacy review is recorded before location verification launch
+- alcohol/age review is recorded before drinks ordering launch
+- public website remains discovery and handoff only; no browser check-in or live order queue
+- TV display shows no personal, wallet, check-in identity, or order data
 
 If any item above is red, do not ship.

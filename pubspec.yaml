@@ -21,6 +21,7 @@ dependencies:
 workspace:
   # ── Apps ──
   - apps/rayon_sports
+  - apps/rayon_sports_tv
   - apps/vitalo
   - apps/yanga
   - apps/tp_mazembe

@@ -216,7 +216,7 @@ class _MatchDetailScreenState extends ConsumerState<MatchDetailScreen> {
           }
 
           return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
+            duration: AfriMotion.emphasized,
             transitionBuilder: (child, animation) {
               final inAnimation =
                   Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero)

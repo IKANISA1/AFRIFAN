@@ -81,7 +81,7 @@ class _FriendsListScreenState extends ConsumerState<FriendsListScreen> {
       return;
     }
 
-    _debounce = Timer(const Duration(milliseconds: 250), () async {
+    _debounce = Timer(AfriMotion.debounce, () async {
       setState(() {
         _isSearching = true;
       });

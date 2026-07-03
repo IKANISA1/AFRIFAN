@@ -114,7 +114,7 @@ class _CompetitionFormSheetState extends State<_CompetitionFormSheet> {
                 height: 4,
                 decoration: BoxDecoration(
                   color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(ShapeTokens.radiusSm / 4),
                 ),
               ),
             ),
@@ -349,7 +349,9 @@ class _SeasonManagerSheetState extends State<_SeasonManagerSheet> {
                   height: 4,
                   decoration: BoxDecoration(
                     color: ColorTokens.onSurfaceVariant.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(2),
+                    borderRadius: BorderRadius.circular(
+                      ShapeTokens.radiusSm / 4,
+                    ),
                   ),
                 ),
               ),
@@ -580,7 +582,7 @@ class _StatusBadge extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: ShapeTokens.buttonRadius,
       ),
       child: Text(
         isActive ? 'ACTIVE' : 'INACTIVE',
@@ -605,7 +607,7 @@ class _InfoChip extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: ShapeTokens.cardRadius,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

@@ -2,8 +2,6 @@
 -- PostgreSQL database dump
 --
 
-\restrict 6UcGSvQ5xSJTJpWQOthudHTiI0rAqtzfxWKry1AkVoIF8AXN5DmhleRmYCVDyOV
-
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.9 (Homebrew)
 
@@ -13,24 +11,25 @@ SET idle_in_transaction_session_timeout = 0;
 SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
+SELECT pg_catalog.set_config('search_path', 'public, extensions', false);
 SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 --
 -- Name: graphql_public; Type: SCHEMA; Schema: -; Owner: -
 --
 
-CREATE SCHEMA graphql_public;
+CREATE SCHEMA IF NOT EXISTS graphql_public;
 
 
 --
 -- Name: public; Type: SCHEMA; Schema: -; Owner: -
 --
 
-CREATE SCHEMA public;
+CREATE SCHEMA IF NOT EXISTS public;
 
 
 --
@@ -20233,5 +20232,3 @@ CREATE POLICY xp_events_select_own ON public.xp_events FOR SELECT USING ((((club
 --
 -- PostgreSQL database dump complete
 --
-
-\unrestrict 6UcGSvQ5xSJTJpWQOthudHTiI0rAqtzfxWKry1AkVoIF8AXN5DmhleRmYCVDyOV

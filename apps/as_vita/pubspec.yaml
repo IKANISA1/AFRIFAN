@@ -80,8 +80,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/crest/
     - assets/flavors/
-    - assets/images/
 
 resolution: workspace

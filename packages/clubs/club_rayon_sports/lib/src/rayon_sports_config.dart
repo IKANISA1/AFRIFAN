@@ -13,11 +13,10 @@ class RayonSportsConfig implements ClubConfig {
   const RayonSportsConfig();
 
   @override
-  String get clubId =>
-      ClubConfig.requireDefine(
-        const String.fromEnvironment('CLUB_ID'),
-        'CLUB_ID',
-      );
+  String get clubId => ClubConfig.requireDefine(
+    const String.fromEnvironment('CLUB_ID'),
+    'CLUB_ID',
+  );
 
   @override
   String get clubName => 'Rayon Sports FC';
@@ -51,9 +50,6 @@ class RayonSportsConfig implements ClubConfig {
     gradient: [Color(0xFF001742), Color(0xFF0038A8)],
   );
 
-  @override
-  String get crestAsset => 'assets/crest/rayon_sports_crest.png';
-
   /// Supabase URL — MUST be provided via `--dart-define=SUPABASE_URL=...`.
   /// Never commit default values for backend credentials.
   @override
@@ -76,7 +72,6 @@ class RayonSportsConfig implements ClubConfig {
 
   @override
   List<String> get supportedLanguages => const ['rw', 'fr', 'en'];
-
 
   @override
   bool get hasFanClubs => true;
@@ -101,7 +96,8 @@ class RayonSportsConfig implements ClubConfig {
   );
 
   @override
-  String get environment => const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
+  String get environment =>
+      const String.fromEnvironment('ENVIRONMENT', defaultValue: 'production');
 
   @override
   Map<String, bool> get features => {

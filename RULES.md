@@ -14,7 +14,7 @@
 Before executing **any** task — no matter how small — every agent must complete the following steps in order:
 
 1. **Read this file in full.** Do not assume you remember it from a previous session.  
-2. **Do a full-stack repo review.** Read the directory tree, key config files, all design documents, and the files* **Signature Textures:** Use `ColorTokens.heroGradient()` for hero backgrounds — transitions from `clubSecondary` to `clubPrimary` at a 135-degree angle. **Never hardcode hex values.**s** listed in §4 before touching any UI file.  
+2. **Do a full-stack repo review.** Read the directory tree, key config files, `DESIGN.md`, and the files listed in §4 before touching any user-facing surface.
 4. **State your plan** before writing a single line of code. Summarise what you will change, which files are affected, and what you will NOT touch.  
 5. **Confirm there are no locked files in your change set** (see §2 for the lock list).  
 6. **Ask before acting on any ambiguity.** A wrong assumption costs more than a 30-second clarification.
@@ -23,19 +23,21 @@ Before executing **any** task — no matter how small — every agent must compl
 
 ## **SECTION 1 — APPROVAL & OWNERSHIP RULES**
 
-### **1.1 Single\* \*\*Interaction:\*\* On press, the icon scales up (1.2x), the \`label-md\` appears below it, and a haptic "pop" is triggered. Use `ColorTokens.navActive` (auto-derived pastel tint of club primary) for the active state icon.ry owner** before any agent or developer may proceed. No exceptions, no "best guess" implementations, no "I'll do it and mention it later."
+### **1.1 Single owner before any agent or developer may proceed**
+
+No exceptions, no "best guess" implementations, no "I'll do it and mention it later."
 
 **Items requiring owner approval before any work begins:**
 
 | \# | Protected Item | Why It's Protected |
 | ----- | ----- | ----- |
 | A | `home_screen.dart` and all files it imports | Home screen UI is finalized — see §2.1 |
-| B | `lib/core/theme/` — all UI token files | Token changes cascade to all 50+ club flavors |
+| B | Shared runtime theme implementation files | Changes cascade to all club flavors |
 | C | Any new package addition to `pubspec.yaml` | Every dependency is a supply-chain risk |
 | D | Any change to `supabase/migrations/` | Migrations run against all 50+ clubs simultaneously |
 | E | Any change to RLS policies in Supabase | Incorrect RLS \= data leak across clubs |
 | F | Any change to the `clubs` table schema | Master tenant registry — breaking change |
-| G | Generating, downloading, or embedding any image or image asset | See §2.8 |
+| G | Generating, downloading, or embedding repo-owned visual assets | See §2.5 |
 | H | Changes to CI/CD workflows in `.github/workflows/` | Build pipeline failure affects all clubs |
 | I | Adding, removing, or renaming a Flutter flavor | Affects published app store listings |
 | J | Any change to the anonymous auth flow | Core privacy contract with users |
@@ -51,18 +53,12 @@ Do not implement a workaround while waiting. Pause, create a clearly labelled Gi
 
 These rules have **zero tolerance**. Violating them requires an immediate full rollback of all changes in the offending session.
 
-### **2.1 🔒 LOCKED — Home Screen UI**
+### **2.1 LOCKED - Supporter Home Contract**
 
-**The Home Screen UI layout, zones, components, and visual design are permanently locked.**
-
-* **Never modify** `lib/features/feat_home/presentation/screens/home_screen.dart`  
-* **Never modify** any widget imported exclusively by the home screen  
-* **Never reorder, remove, or add** any of the 6 home screen zones  
-* **Never change** the Quick Actions rail — its order, icons, labels, or destinations are fixed  
-* **Never change** the bottom navigation bar — 3 tabs only: Home · Fan Zone · Settings
-* Bug fixes that do not alter visual output (e.g. fixing a null pointer crash) require owner notification but not prior approval
-
-**Why:** The palette is rooted in the deep shadows of a midnight stadium, punctuated by high-velocity **dynamic club-specific** accents injected at startup via `ColorTokens.init(ClubConfig.colors)`. Any change that fans notice breaks brand trust.
+The supporter home surface is protected. Product behavior, route ownership, and
+user-facing interface decisions for that surface must follow `DESIGN.md` and
+the active feature contracts. This file must not define its visual layout,
+component recipes, icon choices, or color rules.
 
 ### **2.2 🔒 LOCKED — MOMO Number is NOT Collected During Onboarding**
 
@@ -75,65 +71,11 @@ The MOMO number input **must not appear** in the onboarding flow (screens 1.1 th
 
 **Why:** Users must experience the app before being asked for sensitive information. Asking for MOMO on first launch causes drop-off and erodes trust.
 
-### **2.3 🔒 LOCKED — Dynamic UI: No Empty Section Rendering**
+### **2.3 LOCKED - Empty And Loading State Contract**
 
-**A UI section must not be rendered if its data source is empty or unavailable.**
-
-This is a **critical** UI and performance rule. It\* \*\*Visuals:\*\* Must float over a dynamic `ColorTokens.heroGradient()` background to maximize the blur effect.ire app — not just the home screen.
-
-**The rule:**
-
-```
-if (data.isEmpty || data == null) {
-  // Return SizedBox.shrink() — render nothing
-  // NEVER return an empty card, placeholder card, "No items yet" card,
-  // "Coming soon" card, or any visible container for that section
-}
-```
-
-**Sections this applies to (non-exhaustive):**
-
-* Home screen Zone 1 (Live/Next Match) — hide entirely if no upcoming or live match exists  
-* Home screen Zone 3 (Admin Banner Carousel) — hide if no active banners in CMS  
-* Home screen Zone 4 (My Active Groups) — hide if user has no active groups  
-* Home screen Zone 5 (Gamification Teaser) — hide if user FET is 0 and no events recorded  
-* Home screen Zone 6 (Club News Feed) — hide if no published news articles  
-* Leaderboard — hide "Top Supporters" section if fewer than 3 ranked users exist  
-* Any list screen — never show an empty-state card that mimics a populated card  
-* Shop — hide a category section if that category has zero products  
-* Fan Clubs — hide "Featured Clubs" if no clubs are marked as featured
-
-**Correct implementation pattern:**
-
-```
-// In Riverpod provider or build method:
-final items = ref.watch(newsProvider);
-return items.when(
-  data: (list) => list.isEmpty
-      ? const SizedBox.shrink()   // ✅ CORRECT — nothing rendered
-      : NewsFeedSection(items: list),
-  loading: () => const SizedBox.shrink(), // skeleton shown at parent level
-  error: (_, __) => const SizedBox.shrink(),
-);
-```
-
-**Forbidden patterns:**
-
-```
-// ❌ FORBIDDEN — empty card visible
-if (items.isEmpty) return EmptyStateCard(message: 'No news yet');
-
-// ❌ FORBIDDEN — placeholder section
-if (items.isEmpty) return ComingSoonSection();
-
-// ❌ FORBIDDEN — section header with empty body
-Column(children: [
-  SectionHeader('Latest News'),
-  if (items.isEmpty) SizedBox(height: 8), // still renders header
-])
-```
-
-**Why:** Empty UI sections are visual noise that breaks the premium football-app feel. They make the app look unfinished and unpolished. The design mandate is: if there is nothing to show, there is nothing to show.
+Empty, loading, and unavailable data behavior is governed by `DESIGN.md` and
+feature-specific product contracts. This file must not define a second visual
+empty-state pattern or component recipe.
 
 ### **2.4 🔒 LOCKED — No Hardcoded Content**
 
@@ -151,19 +93,12 @@ This includes but is not limited to:
 
 All such content must be sourced from Supabase, a ClubConfig value, or a dart-define compile-time constant (for club identity only). If content is not in the database, the section must follow rule §2.3 (not render).
 
-### **2.5 🔒 LOCKED — No Image Generation Without Authorisation**
+### **2.5 LOCKED - No Repo-Stored Visual Assets**
 
-**AI agents must never generate, download, embed, or reference any image file without explicit written approval from the owner.**
-
-This includes:
-
-* Do not use placeholder image APIs (picsum.photos, via.placeholder.com, lorempixel.com, etc.)  
-* Do not create `.png`, `.jpg`, `.webp`, `.svg` image files  
-* Do not embed base64-encoded images in source code  
-* Do not add `Image.network()` calls with hardcoded URLs  
-* Do not add new entries to `pubspec.yaml` under `flutter: assets:` for images
-
-**When an image is needed:** Create a task comment `// TODO(owner): image asset needed here — [description]` and stop. Do not attempt to substitute.
+Repo-owned visual assets are forbidden unless the repository owner explicitly
+approves an exception. Product media from live services may still be rendered
+as content when the relevant feature contract allows it. `DESIGN.md` remains
+the only authority for visual treatment.
 
 ---
 
@@ -217,107 +152,20 @@ After any refactor that moves or removes features:
 
 ---
 
-## **SECTION 4 — DESIGN & UI/UX RULES**
+## **SECTION 4 - DESIGN AUTHORITY LOCK**
 
-### **4.1 Design Authority Is Law**
+Before touching any user-facing Flutter, web, admin, venue, or native TV
+surface, read `DESIGN.md` first. It is the sole design authority for this
+repository.
 
-Before touching any user-facing Flutter, web, or admin UI surface, read
-`DESIGN.md` first. It is the sole design authority for this repository.
+This file may only enforce that authority. It must not define visual rules,
+screen inventories, screenshot matrices, product briefs, token values,
+component recipes, motion values, typography sizes, icon choices, or alternate
+visual direction.
 
 Architecture docs, runbooks, tests, runtime token classes, generated CSS, and
 component source files may implement or verify `DESIGN.md`, but they must not
-define a second design contract, screen inventory, screenshot matrix, product
-design brief, token authority, or visual direction.
-
-### **4.2 Adaptive Theming (Light, Dark, System)**
-
-This app supports **System, Light, and Dark mode**. Theme behavior, visual hierarchy, and token values must follow `DESIGN.md`. Do not duplicate or redefine token values in this rules file.
-
-### **4.3 UI Token Implementation — Never Bypass It**
-
-All colors, typography, spacing, radii, and surface recipes must use runtime
-UI token implementations governed by `DESIGN.md`:
-
-* Web: `apps/rayon_sports/web/src/ui-kit/`
-* Flutter: `packages/core/core_theme/`
-
-Hardcoded visual values are only acceptable inside those implementation sources.
-
-Example:
-
-```dart
-// ✅ CORRECT — dynamic club colors
-Container(color: ColorTokens.clubPrimary)    // Dynamic per club via ColorTokens.init()
-Text('Hello', style: TypographyTokens.headlineLarge())
-
-// ✅ CORRECT — platform constants routed through the implementation
-Container(color: ColorTokens.background)
-
-// ❌ FORBIDDEN — hardcoded values
-Container(color: Color(0xFFC8102E))          // bypasses token system
-Container(color: Color(0xFF0038A8))          // hardcoded Rayon blue — breaks other clubs
-Text('Hello', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold))
-```
-
-**Why:** White-label platform — club colors are injected via `ClubConfig.colors` and initialized in `ColorTokens.init()` at bootstrap. A hardcoded color breaks every club except the one you were looking at.
-
-### **4.3.1 Dynamic Color Architecture**
-
-`ColorTokens` resolves club colors from `ClubConfig.colors`, applies the
-white-drop safety rule, and exposes only semantic runtime values. The exact
-fallbacks, gradients, modes, and role semantics belong in `DESIGN.md` and the
-runtime token implementation, not in this rules file.
-
-**White-drop rule:** If any club color has luminance > 0.9 (white/near-white), it is automatically replaced with the `DESIGN.md` default. White breaks the dark-mode UI.
-
-**Legacy :** `clubRed` → `clubPrimary`, `deepNavy` → `clubSecondary`, `trophyGold` → `clubAccent`.
-
-### **4.4 Minimum Font Sizes**
-
-| Use | Minimum size |
-| ----- | ----- |
-| Body text | 15sp |
-| Interactive labels (buttons, chips) | 14sp |
-| Supporting metadata, timestamps | 12sp |
-| Fine print, legal | 11sp |
-
-**Never go below 11sp for any visible text under any circumstances.**
-
-### **4.5 No Inline Styling for Club-Specific Values**
-
-Never read a club's primary color via `Theme.of(context).primaryColor` and then hardcode a variation of it. Use `ColorTokens.clubPrimary` / `.clubAccent` / `.clubSecondary` exclusively for club-specific values. These are initialized from `ClubConfig.colors` at bootstrap.
-
-### **4.6 Glassmorphism — Use the Shared Widget**
-
-Never re-implement glass card styling inline. Always use `GlassCard` from `core_theme`:
-
-```
-// ✅ CORRECT
-GlassCard(blur: 12, glassOpacity: 0.06, child: content)
-
-// ❌ FORBIDDEN — inline reimplementation
-ClipRRect(
-  child: BackdropFilter(
-    filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-    child: Container(color: Colors.white.withOpacity(0.06), child: content),
-  ),
-)
-```
-
-### **4.7 Animations — Mandatory Standards**
-
-| Animation type | Duration | Curve |
-| ----- | ----- | ----- |
-| Page transitions | 320ms | `Curves.easeInOutCubic` |
-| Card entrances | 400ms staggered | `Curves.easeOutBack` |
-| Button press scale | 80ms | `Curves.easeInOut` |
-| Bottom sheets | 280ms | `Curves.easeOutCubic` |
-
-Never use durations above 500ms except for looping ambient effects. Always pair visual animations with `HapticFeedback.lightImpact()`.
-
-### **4.8 No Emoji as Icons**
-
-Never use emoji characters as UI icons. Use the approved SVG icon set (`core_theme/icons/`) or Phosphor Icons. Emoji are culturally variable, render differently across Android versions, and are prohibited by `DESIGN.md`.
+become a second design contract.
 
 ---
 
@@ -344,6 +192,7 @@ This project uses **Riverpod 3.x exclusively**.
 * **Never** use `.from('table').select()` without trusting RLS to filter by `club_id`  
 * **Never** add `eq('club_id', someValue)` manually in Flutter — RLS handles this server-side  
 * **Never** store raw MOMO phone numbers in any application table — use encrypted fields only
+* **Never** expose LiveScore credentials, private feed URLs, service-role keys, or contract details in Flutter or browser clients
 
 ### **5.4 Feature Flags Must Be Respected**
 
@@ -428,6 +277,16 @@ All Realtime channel subscriptions must follow the naming convention:
 Example: `rayon_sports_rw:ledger:group-uuid-123`
 
 Never subscribe to a channel without the `club_id` prefix — this is what prevents cross-club data leakage in Realtime.
+
+### **6.5 Venue, TV, And FET Rules**
+
+* Venue-owned records must include both `club_id` and `venue_id`
+* Venue check-in must use rotating QR/TV codes first; foreground geolocation is optional verification only
+* Venue ordering is drinks-only top-10 MVP unless the owner approves a wider POS scope
+* TV surfaces are read-only and must never show personal data, wallet balances, check-in identity, or order queues
+* FET is a closed-loop monetary-equivalent reward ledger until legal/payment review approves otherwise
+* FET copy must never imply cash-out, odds, betting, stake, deposit, payout, or open-loop stored value
+* AI-generated drafts must never auto-publish
 
 ---
 
@@ -532,27 +391,11 @@ test('hides active Groups zone when user has no groups', () { ... })
 
 The following are explicitly forbidden. Any agent generating these patterns must self-correct before submitting.
 
-### **UI Anti-Patterns**
+### **Interface Anti-Patterns**
 
-```
-❌ Any color hardcoded as Color(0xFF...) outside of ColorTokens
-❌ Any font size hardcoded as fontSize: N outside of TypographyTokens
-❌ Colors.white as a background or club accent color
-❌ Colors.black as text
-❌ ThemeMode.light or ThemeMode.system
-❌ Brightness.light in any ThemeData
-❌ Emoji used as navigation or action icons, or anywhere else
-❌ Text in images (always use actual Text widgets for accessibility)
-❌ GestureDetector wrapping the entire screen
-❌ Nested scrollables without physics: NeverScrollableScrollPhysics()
-❌ Image.network() with a hardcoded URL
-❌ Empty container/card shown when data is absent (§2.3)
-❌ "Coming soon", "No items yet", "Nothing here" placeholder sections
-❌ Inline BackdropFilter reimplementing GlassCard
-❌ overflow: TextOverflow.clip without a maxLines constraint
-❌ Hard-coded club name, color, or crest path in feature packages
-❌ Using `const` with dynamic ColorTokens (clubRed, deepNavy, trophyGold, navActive)
-```
+`DESIGN.md` and the shared runtime implementation define interface rules.
+Feature code must not introduce hardcoded visual values, static brand asset
+paths, duplicate component recipes, or alternate interface conventions.
 
 ### **State Management Anti-Patterns**
 
@@ -616,15 +459,10 @@ The following are explicitly forbidden. Any agent generating these patterns must
 ❌ assert() used for production error handling (use proper null safety)
 ```
 
-### **Image Anti-Patterns**
+### **Visual Asset Anti-Patterns**
 
-```
-❌ Any image generated, downloaded, or embedded without owner approval (§2.5)
-❌ picsum.photos, lorempixel, via.placeholder.com, or any placeholder image service
-❌ Base64-encoded images in source code
-❌ New entries in pubspec.yaml flutter.assets for image files without approval
-❌ SVG files containing rasterized image data
-```
+Repo-stored visual assets and static brand media are prohibited by §2.5 unless
+the owner records an explicit exception.
 
 ---
 
@@ -640,8 +478,8 @@ Scope: the package or feature name (e.g. feat_home, core_theme, supabase)
 
 Examples:
 feat(feat_contributions): add group statement download as CSV
-fix(core_theme): correct GlassCard border radius on Android 
-refactor(feat_gamification): extract FETProgressArc to shared widget
+fix(core_theme): correct Android border regression
+refactor(feat_gamification): extract FET progress widget
 chore(melos): add build_club_ios script
 ```
 
@@ -654,7 +492,7 @@ Every PR must confirm:
 * \[ \] No locked files modified without approval issue linked (§1.1)  
 * \[ \] No hardcoded content (§2.4)  
 * \[ \] No empty state violations (§2.3)  
-* \[ \] No images added without approval (§2.5)  
+* \[ \] No repo-stored visual assets added without approval (§2.5)
 * \[ \] Dead code from replaced functionality deleted (§3.1)  
 * \[ \] `dart format .` run on all changed files
 
@@ -693,24 +531,26 @@ ALWAYS:
   ✅ Read this file before starting any task
   ✅ Do a full repo review before writing code
   ✅ Read DESIGN.md before touching UI
-  ✅ Use ColorTokens.*, TypographyTokens.*, GlassCard, ClubConfig tokens
-  ✅ Hide sections when data is empty (SizedBox.shrink)
+  ✅ Use shared runtime implementation governed by DESIGN.md
+  ✅ Follow DESIGN.md for empty, loading, and error states
   ✅ Delete old code when replacing it
   ✅ Use Riverpod for all state, GoRouter for all navigation
   ✅ Validate MOMO and text inputs before writing to Supabase
   ✅ Keep dart analyze green at all times
-✅ Use supabase edge fuctions for image generations each ui that requires images must have respctive supabase edge fuction with gemini nano banane2 for image generation, gemini model: 3.1 pro
 
 
 NEVER:
   🚫 Touch home_screen.dart without owner approval
   🚫 Ask for MOMO number during onboarding
-  🚫 Show empty section cards when data is absent
-  🚫 Hardcode club names, colors (hex values), or content
-  🚫 Use white (#FFFFFF) as a club accent/primary color (auto-dropped by ColorTokens.init)
-  🚫 Generate or embed images without approval
+  🚫 Define visual rules outside DESIGN.md
+  🚫 Hardcode club names, static visual values, or user-facing content
+  🚫 Add repo-stored visual assets without approval
   🚫 Add packages without approval
   🚫 Use service_role key in Flutter
+  🚫 Expose LiveScore/private feed credentials in clients
+  🚫 Put venue staff/admin operations in the supporter app
+  🚫 Add browser check-in or public live order queues
+  🚫 Use cash-out, odds, stake, payout, or betting copy for FET
   🚫 Store real names or unmasked phone numbers
   🚫 Add club-specific logic to shared packages
   🚫 Leave dead code in the repo
@@ -725,7 +565,8 @@ NEVER:
 | Date | Version | Change | Author |
 | ----- | ----- | ----- | ----- |
 | March 2026 | 1.0.0 | Initial rules document created | IKANISA Ltd. |
-| March 2026 | 1.1.0 | Dynamic club color system: ColorTokens.init(), white-drop rule, removed hardcoded #C8102E refs | IKANISA Ltd. |
+| March 2026 | 1.1.0 | Added runtime theme governance and hardcoded-value cleanup rules | IKANISA Ltd. |
+| 2026-07-02 | 1.2.0 | Added venue, TV, LiveScore, FET, and no-browser-check-in guardrails for Rayon venue rollout | Codex |
 
 ---
 

@@ -9,6 +9,8 @@ import 'screens/game_session_join_screen.dart';
 import 'screens/match_detail_screen.dart';
 import 'screens/prediction_detail_screen.dart';
 import 'screens/share_card_generator_screen.dart';
+import 'screens/venue_checkin_screen.dart';
+import 'screens/venue_order_screen.dart';
 
 class FanzoneModule extends FeatureModule {
   @override
@@ -95,6 +97,18 @@ class FanzoneModule extends FeatureModule {
         ),
         fullHeight: true,
       ),
+    ),
+    GoRoute(
+      path: 'venue',
+      name: 'fanzone-venue-checkin',
+      pageBuilder: (context, state) =>
+          afriRoutePage(state, const VenueCheckinScreen()),
+    ),
+    GoRoute(
+      path: 'venue/order',
+      name: 'fanzone-venue-order',
+      pageBuilder: (context, state) =>
+          afriRoutePage(state, const VenueOrderScreen()),
     ),
     GoRoute(
       path: 'match/:fixtureId',
@@ -218,6 +232,20 @@ class FanzoneModule extends FeatureModule {
       targetPath: '/fanzone',
       rationale:
           'Mobile controller opens from TV pairing/deep links but remains a Fan Zone modal task.',
+    ),
+    RoutePresentationDecision(
+      path: '/fanzone/venue',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep',
+      rationale:
+          'Supporter venue check-in belongs under Fan Zone; venue staff and admin operations remain outside the supporter app.',
+    ),
+    RoutePresentationDecision(
+      path: '/fanzone/venue/order',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep',
+      rationale:
+          'Supporter drinks ordering and status belongs under Fan Zone; venue queue controls remain outside the supporter app.',
     ),
     RoutePresentationDecision(
       path: '/fanzone/match/:fixtureId',
