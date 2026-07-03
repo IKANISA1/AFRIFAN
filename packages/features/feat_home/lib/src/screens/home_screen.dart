@@ -7,10 +7,10 @@ import 'package:go_router/go_router.dart';
 
 import '../providers/home_feed_provider.dart';
 import '../repositories/home_content_repository.dart';
-import '../widgets/match_strip.dart';
 import '../widgets/contributor_leaderboard.dart';
 import '../widgets/latest_intel_section.dart';
 import '../widgets/match_card.dart';
+import '../widgets/match_strip.dart';
 import '../widgets/quick_actions_grid.dart';
 import '../widgets/stats_row.dart';
 
