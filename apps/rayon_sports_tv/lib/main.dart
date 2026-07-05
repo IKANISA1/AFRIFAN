@@ -1,10 +1,18 @@
 import 'package:club_rayon_sports/club_rayon_sports.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 const _rayonConfig = RayonSportsConfig();
+const _supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+const _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
+const _tvDeviceId = String.fromEnvironment('TV_DEVICE_ID');
+const _tvPairingCode = String.fromEnvironment('TV_PAIRING_CODE');
+const _clubId = int.fromEnvironment('CLUB_ID');
+var _supabaseReady = false;
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   ColorTokens.init(_rayonConfig.colors);
   RuntimeBranding.configure(
     appName: 'Gikundiro TV',
@@ -15,6 +23,11 @@ void main() {
     homeVenueName: 'Kigali Pele Stadium',
     primaryCompetitionName: 'Matchday live',
   );
+
+  if (_supabaseUrl.trim().isNotEmpty && _supabaseAnonKey.trim().isNotEmpty) {
+    await Supabase.initialize(url: _supabaseUrl, anonKey: _supabaseAnonKey);
+    _supabaseReady = true;
+  }
 
   runApp(const RayonSportsTvApp());
 }
@@ -35,22 +48,39 @@ class TvDisplayState {
   final int fetReward;
   final String prompt;
   final String phase;
+
+  static const unpaired = TvDisplayState(
+    venueName: 'Unpaired TV display',
+    sessionCode: 'PAIR TV',
+    expiresAt: '--',
+    fetReward: 0,
+    prompt: 'Pair this TV display from the admin panel.',
+    phase: 'Offline',
+  );
+
+  factory TvDisplayState.fromRpcPayload(Object? payload) {
+    if (payload is! Map) {
+      return TvDisplayState.unpaired;
+    }
+    final data = Map<String, dynamic>.from(payload);
+    return TvDisplayState(
+      venueName: _stringValue(data['venue_name'], 'Unpaired TV display'),
+      sessionCode: _stringValue(data['session_code'], 'PAIR TV'),
+      expiresAt: _stringValue(data['expires_at'], '--'),
+      fetReward: _intValue(data['fet_reward']),
+      prompt: _stringValue(
+        data['prompt'],
+        'Pair this TV display from the admin panel.',
+      ),
+      phase: _stringValue(data['phase'], 'Offline'),
+    );
+  }
 }
 
 class RayonSportsTvApp extends StatelessWidget {
-  const RayonSportsTvApp({
-    super.key,
-    this.state = const TvDisplayState(
-      venueName: 'Kigali Arena',
-      sessionCode: 'RAYON-42',
-      expiresAt: '21:45',
-      fetReward: 25,
-      prompt: 'Join the matchday challenge from the supporter app.',
-      phase: 'Waiting for supporters',
-    ),
-  });
+  const RayonSportsTvApp({super.key, this.state});
 
-  final TvDisplayState state;
+  final TvDisplayState? state;
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +90,67 @@ class RayonSportsTvApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Gikundiro TV',
       theme: ClubTheme.from(_rayonConfig),
-      home: RayonSportsTvScreen(state: state),
+      home: state == null
+          ? const _TvDisplayStateLoader()
+          : RayonSportsTvScreen(state: state!),
     );
   }
+}
+
+class _TvDisplayStateLoader extends StatefulWidget {
+  const _TvDisplayStateLoader();
+
+  @override
+  State<_TvDisplayStateLoader> createState() => _TvDisplayStateLoaderState();
+}
+
+class _TvDisplayStateLoaderState extends State<_TvDisplayStateLoader> {
+  late final Future<TvDisplayState> _stateFuture = _loadTvDisplayState();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<TvDisplayState>(
+      future: _stateFuture,
+      builder: (context, snapshot) {
+        return RayonSportsTvScreen(
+          state: snapshot.data ?? TvDisplayState.unpaired,
+        );
+      },
+    );
+  }
+}
+
+Future<TvDisplayState> _loadTvDisplayState() async {
+  if (!_supabaseReady) {
+    return TvDisplayState.unpaired;
+  }
+
+  try {
+    final response = await Supabase.instance.client.rpc(
+      'get_tv_display_state',
+      params: <String, dynamic>{
+        'p_device_id': _tvDeviceId.trim().isEmpty ? null : _tvDeviceId.trim(),
+        'p_pairing_code': _tvPairingCode.trim().isEmpty
+            ? null
+            : _tvPairingCode.trim(),
+        'p_club_id': _clubId == 0 ? null : _clubId,
+      },
+    );
+    return TvDisplayState.fromRpcPayload(response);
+  } catch (_) {
+    return TvDisplayState.unpaired;
+  }
+}
+
+String _stringValue(Object? value, String fallback) {
+  final text = value?.toString().trim() ?? '';
+  return text.isEmpty ? fallback : text;
+}
+
+int _intValue(Object? value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.tryParse(value?.toString() ?? '') ?? 0;
 }
 
 class RayonSportsTvScreen extends StatelessWidget {

@@ -11,6 +11,8 @@ import {
   Crown,
   Settings,
   Users,
+  HelpCircle,
+  type LucideIcon,
 } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
@@ -21,8 +23,9 @@ import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { Skeleton } from "@/components/skeleton";
 import { withAdminClubScope } from "@/lib/admin-club-scope";
+import { getAdminDashboardActions } from "@/lib/data/admin/dashboard-actions";
 import { getAdminDashboardSnapshot } from "@/lib/data/admin/dashboard";
-import type { AdminDashboardSnapshot } from "@/lib/types";
+import type { AdminDashboardAction, AdminDashboardSnapshot } from "@/lib/types";
 
 const emptySnapshot: AdminDashboardSnapshot = {
   metrics: {
@@ -36,21 +39,22 @@ const emptySnapshot: AdminDashboardSnapshot = {
   activity: [],
 };
 
-const quickActions = [
-  { href: "/admin/cms", title: "Manage Website", icon: Newspaper },
-  { href: "/admin/notifications", title: "App Push & Alerts", icon: Bell },
-  { href: "/admin/matches", title: "Matchday Centre", icon: CalendarDays },
-  { href: "/admin/membership", title: "Memberships", icon: Crown },
-  { href: "/admin/shop", title: "Shop Operations", icon: ShoppingBag },
-  { href: "/admin/access", title: "Role Management", icon: Users },
-  { href: "/admin/settings", title: "Platform Config", icon: Settings },
-];
+const dashboardActionIcons: Record<string, LucideIcon> = {
+  bell: Bell,
+  calendar: CalendarDays,
+  crown: Crown,
+  newspaper: Newspaper,
+  settings: Settings,
+  shopping_bag: ShoppingBag,
+  users: Users,
+};
 
 type AdminStatusTone = NonNullable<ComponentProps<typeof AdminStatusBadge>["tone"]>;
 
 export default function AdminDashboardPage() {
   const { client, access, activeClub } = useAdminPortal();
   const [snapshot, setSnapshot] = useState(emptySnapshot);
+  const [quickActions, setQuickActions] = useState<AdminDashboardAction[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -61,7 +65,12 @@ export default function AdminDashboardPage() {
 
     setLoading(true);
     try {
-      setSnapshot(await getAdminDashboardSnapshot(client, access));
+      const [nextSnapshot, nextActions] = await Promise.all([
+        getAdminDashboardSnapshot(client, access),
+        getAdminDashboardActions(client, access),
+      ]);
+      setSnapshot(nextSnapshot);
+      setQuickActions(nextActions);
       setLoadError(null);
     } catch (caught) {
       const message = caught instanceof Error ? caught.message : "Could not load admin dashboard.";
@@ -222,19 +231,29 @@ export default function AdminDashboardPage() {
 
           <AdminSurface title="Quick actions">
             <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-              {quickActions.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.href}
-                    href={withAdminClubScope(item.href, activeClub?.id ?? access.clubId)}
-                    className="admin-nav-link !rounded-lg border border-[var(--admin-border)] !py-3 px-4 hover:bg-[var(--admin-zinc-800)]"
-                  >
-                    <Icon size={16} className="text-[var(--admin-zinc-500)]" />
-                    <span className="text-sm font-medium">{item.title}</span>
-                  </Link>
-                );
-              })}
+              {loading ? (
+                Array.from({ length: 6 }).map((_, i) => (
+                  <Skeleton key={i} className="h-12 rounded-lg" />
+                ))
+              ) : quickActions.length === 0 ? (
+                <div className="rounded-lg border border-[var(--admin-border)] p-4 text-sm text-[var(--admin-zinc-400)] sm:col-span-2 xl:col-span-3">
+                  No dashboard actions are active.
+                </div>
+              ) : (
+                quickActions.map((item) => {
+                  const Icon = dashboardActionIcons[item.iconKey] ?? HelpCircle;
+                  return (
+                    <Link
+                      key={item.id}
+                      href={withAdminClubScope(item.route, activeClub?.id ?? access.clubId)}
+                      className="admin-nav-link !rounded-lg border border-[var(--admin-border)] !py-3 px-4 hover:bg-[var(--admin-zinc-800)]"
+                    >
+                      <Icon size={16} className="text-[var(--admin-zinc-500)]" />
+                      <span className="text-sm font-medium">{item.title}</span>
+                    </Link>
+                  );
+                })
+              )}
             </div>
           </AdminSurface>
         </div>

@@ -54,6 +54,10 @@ build/
 **/ios/**/Flutter/flutter_export_environment.sh
 **/ios/**/ServiceDefinitions.json
 **/ios/Flutter/
+!**/ios/Flutter/
+!**/ios/Flutter/Debug.xcconfig
+!**/ios/Flutter/Release.xcconfig
+!**/ios/Flutter/AppFrameworkInfo.plist
 **/ios/Runner/GeneratedPluginRegistrant.*
 **/ios/Pods/
 

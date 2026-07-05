@@ -271,6 +271,12 @@ class FeatureConfigService {
       return null;
     }
 
+    final registeredRoute = _snapshot.routeByPath(normalizedPath);
+    if (registeredRoute != null &&
+        registeredRoute.featureKey.trim().isNotEmpty) {
+      return registeredRoute.featureKey;
+    }
+
     final routeMatch =
         _snapshot.features
             .map(

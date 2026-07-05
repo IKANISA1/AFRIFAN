@@ -74,6 +74,25 @@ void main() {
   // ═══════════════════════════════════════════════════════════
 
   group('QuickActionsGrid', () {
+    const actions = <HomeQuickAction>[
+      HomeQuickAction(
+        actionKey: 'tickets',
+        title: 'Tickets',
+        route: '/tickets',
+        iconKey: 'tickets',
+        subtitle: 'Official match access',
+        sortOrder: 10,
+      ),
+      HomeQuickAction(
+        actionKey: 'membership',
+        title: 'Membership',
+        route: '/membership',
+        iconKey: 'membership',
+        subtitle: 'Supporter identity',
+        sortOrder: 20,
+      ),
+    ];
+
     Widget buildTestApp() {
       final router = GoRouter(
         initialLocation: '/',
@@ -82,7 +101,7 @@ void main() {
             path: '/',
             builder: (_, __) => const Scaffold(
               body: SingleChildScrollView(
-                child: QuickActionsGrid(actions: HomeQuickAction.fallbackItems),
+                child: QuickActionsGrid(actions: actions),
               ),
             ),
           ),
@@ -134,11 +153,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Tickets'), findsOneWidget);
-      expect(find.text('Join Gikundiro'), findsOneWidget);
-      expect(find.text('Fanclubs'), findsOneWidget);
-      expect(find.text('Shop'), findsOneWidget);
-      expect(find.text('Matchday'), findsOneWidget);
-      expect(find.text('Support'), findsOneWidget);
+      expect(find.text('Membership'), findsOneWidget);
     });
   });
 }

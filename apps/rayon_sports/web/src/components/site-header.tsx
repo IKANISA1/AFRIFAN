@@ -1,23 +1,31 @@
 import Image from "next/image";
 import Link from "next/link";
-import { siteNavigation, utilityNavigation } from "@/lib/content";
 import type { ClubProfile } from "@/lib/types";
 import type { SiteChromeCopy } from "@/lib/site-copy";
+import type { SiteNavigationItem } from "@/lib/feature-config";
 import { SiteHeaderControls } from "@/components/site-header-controls";
 import { ui } from "@/ui-kit";
-
-const PRIMARY_LINKS = siteNavigation.filter(
-  (item) =>
-    !["/", "/standings", "/fan-clubs", "/history", "/contact"].includes(item.href),
-);
 
 interface SiteHeaderProps {
   club: ClubProfile;
   copy: SiteChromeCopy;
+  navigationItems?: SiteNavigationItem[];
+  utilityItems?: SiteNavigationItem[];
 }
 
-export function SiteHeader({ club, copy }: SiteHeaderProps) {
+export function SiteHeader({
+  club,
+  copy,
+  navigationItems = [],
+  utilityItems = [],
+}: SiteHeaderProps) {
   const logoUrl = club.officialLogoUrl ?? "/brand-mark.svg";
+  const primaryLinks = navigationItems.filter(
+    (item) =>
+      !["/", "/standings", "/fan-clubs", "/history", "/contact"].includes(
+        item.href,
+      ),
+  );
 
   return (
     <header className="sticky top-0 z-[60]">
@@ -26,12 +34,14 @@ export function SiteHeader({ club, copy }: SiteHeaderProps) {
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <span className={ui.kicker}>{club.shortName}</span>
             <span className="hidden text-white/20 sm:inline">•</span>
-            <span className="text-slate-400 sm:text-slate-300">{club.league}</span>
+            <span className="text-slate-400 sm:text-slate-300">
+              {club.league}
+            </span>
             <span className="hidden text-white/20 sm:inline">•</span>
             <span className="hidden sm:inline">{copy.officialClubWebsite}</span>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            {utilityNavigation.map((item) => (
+            {utilityItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -57,7 +67,9 @@ export function SiteHeader({ club, copy }: SiteHeaderProps) {
       </div>
 
       <div className="page-shell relative py-4">
-        <div className={`${ui.panel} flex items-center justify-between gap-4 rounded-[32px] px-4 py-3 sm:px-5 lg:px-6`}>
+        <div
+          className={`${ui.panel} flex items-center justify-between gap-4 rounded-[32px] px-4 py-3 sm:px-5 lg:px-6`}
+        >
           <Link href="/" className="flex items-center gap-3">
             <Image
               src={logoUrl}
@@ -72,14 +84,15 @@ export function SiteHeader({ club, copy }: SiteHeaderProps) {
               <p className="font-display text-xl font-bold uppercase leading-none tracking-[-0.05em] text-white lg:text-[1.75rem]">
                 {club.nickname || club.shortName}
               </p>
-              <p className={`mt-1 ${ui.meta}`}>
-                {club.clubName}
-              </p>
+              <p className={`mt-1 ${ui.meta}`}>{club.clubName}</p>
             </div>
           </Link>
 
-          <nav aria-label="Primary" className="hidden items-center gap-1 xl:flex">
-            {PRIMARY_LINKS.map((item) => (
+          <nav
+            aria-label="Primary"
+            className="hidden items-center gap-1 xl:flex"
+          >
+            {primaryLinks.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -91,7 +104,12 @@ export function SiteHeader({ club, copy }: SiteHeaderProps) {
             ))}
           </nav>
 
-          <SiteHeaderControls club={club} copy={copy} />
+          <SiteHeaderControls
+            club={club}
+            copy={copy}
+            navigationItems={navigationItems}
+            utilityItems={utilityItems}
+          />
         </div>
       </div>
     </header>

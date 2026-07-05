@@ -48,9 +48,93 @@ export interface ContentBlock {
   metadata: Record<string, unknown>;
 }
 
+export interface PlatformRouteConfig {
+  route_key: string;
+  path_pattern: string;
+  surface: "mobile" | "web" | "tv" | "venue" | "admin" | "both";
+  feature_key: string;
+  label?: string | null;
+  auth_required: boolean;
+  required_roles: string[];
+  presentation: string;
+  show_in_navigation: boolean;
+  show_on_home: boolean;
+  sort_order: number | null;
+  metadata: Record<string, unknown>;
+}
+
+export interface PlatformOptionValue {
+  option_key: string;
+  label: string;
+  value: unknown;
+  sort_order: number | null;
+  is_default: boolean;
+  metadata: Record<string, unknown>;
+}
+
+export interface PlatformOptionSet {
+  option_set_key: string;
+  label: string;
+  description?: string | null;
+  value_type: "text" | "number" | "boolean" | "json";
+  surface: "mobile" | "web" | "tv" | "venue" | "admin" | "both";
+  metadata: Record<string, unknown>;
+  values: PlatformOptionValue[];
+}
+
+export interface RuntimeCopyEntry {
+  copy_key: string;
+  surface: "mobile" | "web" | "tv" | "venue" | "admin" | "both";
+  locale: string;
+  text_value: string;
+  description?: string | null;
+  metadata: Record<string, unknown>;
+}
+
+export interface SiteNavigationItem {
+  nav_key: string;
+  label: string;
+  href: string;
+  nav_group: string;
+  surface: "web" | "mobile" | "admin" | "venue" | "tv" | "both";
+  feature_key?: string | null;
+  sort_order: number | null;
+  metadata: Record<string, unknown>;
+}
+
+export interface SiteSearchItem {
+  search_key: string;
+  title: string;
+  description: string;
+  href: string;
+  category: string;
+  meta_label?: string | null;
+  surface: "web" | "mobile" | "admin" | "venue" | "tv" | "both";
+  feature_key?: string | null;
+  sort_order: number | null;
+  metadata: Record<string, unknown>;
+}
+
+export interface VenueGovernanceControl {
+  control_key: string;
+  label: string;
+  detail: string;
+  status_label: string;
+  action_label?: string | null;
+  control_group: string;
+  sort_order: number | null;
+  metadata: Record<string, unknown>;
+}
+
 export interface PlatformConfigSnapshot {
   features: PlatformFeature[];
   content_blocks: ContentBlock[];
+  route_registry: PlatformRouteConfig[];
+  option_sets: PlatformOptionSet[];
+  runtime_copy: RuntimeCopyEntry[];
+  site_navigation: SiteNavigationItem[];
+  site_search: SiteSearchItem[];
+  venue_governance_controls: VenueGovernanceControl[];
   config_version: string;
   channel: "mobile" | "web";
   club_id: number | null;
@@ -90,6 +174,12 @@ export interface FeatureAccessOptions {
 const EMPTY_CONFIG: PlatformConfigSnapshot = {
   features: [],
   content_blocks: [],
+  route_registry: [],
+  option_sets: [],
+  runtime_copy: [],
+  site_navigation: [],
+  site_search: [],
+  venue_governance_controls: [],
   config_version: new Date(0).toISOString(),
   channel: "web",
   club_id: null,
@@ -114,7 +204,9 @@ const FALLBACK_ROUTE_FEATURE_KEYS: ReadonlyArray<[string, string]> = [
   ["/admin", "admin"],
 ];
 
-function emptyConfigSnapshot(channel: "mobile" | "web" = "web"): PlatformConfigSnapshot {
+function emptyConfigSnapshot(
+  channel: "mobile" | "web" = "web",
+): PlatformConfigSnapshot {
   return {
     ...EMPTY_CONFIG,
     channel,
@@ -131,10 +223,7 @@ function rememberConfig(snapshot: PlatformConfigSnapshot) {
   return snapshot;
 }
 
-function getLastKnownConfig(
-  clubId: number,
-  channel: "mobile" | "web" = "web",
-) {
+function getLastKnownConfig(clubId: number, channel: "mobile" | "web" = "web") {
   const cached = lastKnownConfigByClub.get(clubId);
   if (!cached) {
     return null;
@@ -157,6 +246,76 @@ export function normalizeFeatureKey(value: string | null | undefined) {
 
 function normalizeRoles(roles: string[]) {
   return roles.map((role) => role.trim().toLowerCase()).filter(Boolean);
+}
+
+function normalizeStringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((entry): entry is string => typeof entry === "string")
+    : [];
+}
+
+function normalizeRecord(value: unknown): Record<string, unknown> {
+  return typeof value === "object" && value != null && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+function normalizePlatformConfigPayload(
+  payload: Partial<PlatformConfigSnapshot>,
+  clubId: number,
+): PlatformConfigSnapshot {
+  return {
+    features: Array.isArray(payload.features) ? payload.features : [],
+    content_blocks: Array.isArray(payload.content_blocks)
+      ? payload.content_blocks
+      : [],
+    route_registry: Array.isArray(payload.route_registry)
+      ? payload.route_registry.map((route) => ({
+          ...route,
+          required_roles: normalizeStringArray(route.required_roles),
+          metadata: normalizeRecord(route.metadata),
+        }))
+      : [],
+    option_sets: Array.isArray(payload.option_sets)
+      ? payload.option_sets.map((set) => ({
+          ...set,
+          metadata: normalizeRecord(set.metadata),
+          values: Array.isArray(set.values)
+            ? set.values.map((value) => ({
+                ...value,
+                metadata: normalizeRecord(value.metadata),
+              }))
+            : [],
+        }))
+      : [],
+    runtime_copy: Array.isArray(payload.runtime_copy)
+      ? payload.runtime_copy.map((entry) => ({
+          ...entry,
+          metadata: normalizeRecord(entry.metadata),
+        }))
+      : [],
+    site_navigation: Array.isArray(payload.site_navigation)
+      ? payload.site_navigation.map((entry) => ({
+          ...entry,
+          metadata: normalizeRecord(entry.metadata),
+        }))
+      : [],
+    site_search: Array.isArray(payload.site_search)
+      ? payload.site_search.map((entry) => ({
+          ...entry,
+          metadata: normalizeRecord(entry.metadata),
+        }))
+      : [],
+    venue_governance_controls: Array.isArray(payload.venue_governance_controls)
+      ? payload.venue_governance_controls.map((entry) => ({
+          ...entry,
+          metadata: normalizeRecord(entry.metadata),
+        }))
+      : [],
+    config_version: payload.config_version ?? new Date().toISOString(),
+    channel: "web",
+    club_id: payload.club_id ?? clubId,
+  };
 }
 
 export function getFeature(
@@ -221,9 +380,9 @@ function _getFeatureAccess(
     dependencies.every(
       (dependency) =>
         typeof dependency !== "string" ||
-        (nextVisited.has(normalizeFeatureKey(dependency)) ||
-          _getFeatureAccess(config, dependency, options, nextVisited)
-              .isOperational),
+        nextVisited.has(normalizeFeatureKey(dependency)) ||
+        _getFeatureAccess(config, dependency, options, nextVisited)
+          .isOperational,
     );
   const isWithinSchedule = rules?.is_within_schedule ?? true;
   const roleRestrictions = Array.isArray(rules?.role_restrictions)
@@ -231,8 +390,7 @@ function _getFeatureAccess(
     : [];
   const roleAllowed =
     roleRestrictions.length === 0 ||
-    (isAuthenticated &&
-      roles.some((role) => roleRestrictions.includes(role)));
+    (isAuthenticated && roles.some((role) => roleRestrictions.includes(role)));
   const authAllowed = !(rules?.auth_required ?? false) || isAuthenticated;
 
   const isOperational =
@@ -312,6 +470,77 @@ export function getNavFeatures(
     );
 }
 
+export function getSiteNavigationItems(
+  config: PlatformConfigSnapshot,
+  navGroup = "primary",
+  options?: FeatureAccessOptions,
+): SiteNavigationItem[] {
+  return config.site_navigation
+    .filter((item) => {
+      if (item.nav_group !== navGroup) {
+        return false;
+      }
+      if (item.feature_key == null || item.feature_key.trim().length === 0) {
+        return true;
+      }
+      return canRenderFeature(config, item.feature_key, options);
+    })
+    .sort((left, right) => {
+      const order = (left.sort_order ?? 999) - (right.sort_order ?? 999);
+      return order !== 0 ? order : left.label.localeCompare(right.label);
+    });
+}
+
+export function getSiteSearchItems(
+  config: PlatformConfigSnapshot,
+  options?: FeatureAccessOptions,
+): SiteSearchItem[] {
+  return config.site_search
+    .filter((item) => {
+      if (item.feature_key == null || item.feature_key.trim().length === 0) {
+        return true;
+      }
+      return canRenderFeature(config, item.feature_key, options);
+    })
+    .sort((left, right) => {
+      const order = (left.sort_order ?? 999) - (right.sort_order ?? 999);
+      return order !== 0 ? order : left.title.localeCompare(right.title);
+    });
+}
+
+export function getOptionSet(
+  config: PlatformConfigSnapshot,
+  optionSetKey: string,
+): PlatformOptionSet | null {
+  const normalizedKey = normalizeFeatureKey(optionSetKey);
+  return (
+    config.option_sets.find(
+      (set) => normalizeFeatureKey(set.option_set_key) === normalizedKey,
+    ) ?? null
+  );
+}
+
+export function getRuntimeCopy(
+  config: PlatformConfigSnapshot,
+  copyKey: string,
+  locale = "en",
+): string | null {
+  const normalizedKey = normalizeFeatureKey(copyKey);
+  const normalizedLocale = locale.trim().toLowerCase();
+  const entry =
+    config.runtime_copy.find(
+      (copy) =>
+        normalizeFeatureKey(copy.copy_key) === normalizedKey &&
+        copy.locale.toLowerCase() === normalizedLocale,
+    ) ??
+    config.runtime_copy.find(
+      (copy) =>
+        normalizeFeatureKey(copy.copy_key) === normalizedKey &&
+        copy.locale.toLowerCase() === "en",
+    );
+  return entry?.text_value ?? null;
+}
+
 export function getHomeFeatures(
   config: PlatformConfigSnapshot,
   options?: FeatureAccessOptions,
@@ -342,7 +571,9 @@ export function getContentBlocks(
       }
       return canRenderFeature(config, block.feature_key, options);
     })
-    .sort((left, right) => (left.sort_order ?? 999) - (right.sort_order ?? 999));
+    .sort(
+      (left, right) => (left.sort_order ?? 999) - (right.sort_order ?? 999),
+    );
 }
 
 export function getFeatureKeyForPath(
@@ -350,6 +581,24 @@ export function getFeatureKeyForPath(
   pathname: string,
 ) {
   const normalizedPath = pathname.trim().toLowerCase() || "/";
+
+  const registryMatch = config.route_registry
+    .map((route) => ({
+      featureKey: route.feature_key,
+      pathPattern: route.path_pattern.trim().toLowerCase(),
+    }))
+    .filter((entry) => entry.pathPattern.startsWith("/"))
+    .sort((left, right) => right.pathPattern.length - left.pathPattern.length)
+    .find((entry) => {
+      if (entry.pathPattern === normalizedPath) {
+        return true;
+      }
+      return normalizedPath.startsWith(`${entry.pathPattern}/`);
+    });
+
+  if (registryMatch) {
+    return registryMatch.featureKey;
+  }
 
   const routeMatch = config.features
     .map((feature) => ({
@@ -391,60 +640,60 @@ export function isRouteAvailable(
   return canRenderFeature(config, featureKey, options);
 }
 
-export const getPlatformConfig = cache(async function getPlatformConfig(): Promise<PlatformConfigSnapshot> {
-  try {
-    const club = await getActiveClubReference();
-    const supabase = getReadOnlySupabase();
-    if (supabase == null) {
-      return (
-        getLastKnownConfig(club.numericId, "web") ??
-        emptyConfigSnapshot("web")
-      );
-    }
-
-    const rpcClient = supabase as unknown as {
-      rpc: (
-        name: string,
-        params: Record<string, unknown>,
-      ) => Promise<{ data: unknown; error: { message?: string } | null }>;
-    };
-
-    const { data, error } = await rpcClient.rpc("get_platform_config", {
-      p_channel: "web",
-      p_club_id: club.numericId,
-    });
-
-    if (error) {
-      console.error("[feature-config] RPC error:", error.message);
-      return (
-        getLastKnownConfig(club.numericId, "web") ??
-        emptyConfigSnapshot("web")
-      );
-    }
-
-    const payload = (data as PlatformConfigSnapshot | null) ?? null;
-    if (!payload) {
-      return (
-        getLastKnownConfig(club.numericId, "web") ??
-        emptyConfigSnapshot("web")
-      );
-    }
-
-    return rememberConfig({
-      ...payload,
-      channel: "web",
-      club_id: payload.club_id ?? club.numericId,
-    });
-  } catch (error) {
-    console.error("[feature-config] Unexpected error:", error);
+export const getPlatformConfig = cache(
+  async function getPlatformConfig(): Promise<PlatformConfigSnapshot> {
     try {
       const club = await getActiveClubReference();
-      return (
-        getLastKnownConfig(club.numericId, "web") ??
-        emptyConfigSnapshot("web")
+      const supabase = getReadOnlySupabase();
+      if (supabase == null) {
+        return (
+          getLastKnownConfig(club.numericId, "web") ??
+          emptyConfigSnapshot("web")
+        );
+      }
+
+      const rpcClient = supabase as unknown as {
+        rpc: (
+          name: string,
+          params: Record<string, unknown>,
+        ) => Promise<{ data: unknown; error: { message?: string } | null }>;
+      };
+
+      const { data, error } = await rpcClient.rpc("get_platform_config", {
+        p_channel: "web",
+        p_club_id: club.numericId,
+      });
+
+      if (error) {
+        console.error("[feature-config] RPC error:", error.message);
+        return (
+          getLastKnownConfig(club.numericId, "web") ??
+          emptyConfigSnapshot("web")
+        );
+      }
+
+      const payload = (data as PlatformConfigSnapshot | null) ?? null;
+      if (!payload) {
+        return (
+          getLastKnownConfig(club.numericId, "web") ??
+          emptyConfigSnapshot("web")
+        );
+      }
+
+      return rememberConfig(
+        normalizePlatformConfigPayload(payload, club.numericId),
       );
-    } catch {
-      return emptyConfigSnapshot("web");
+    } catch (error) {
+      console.error("[feature-config] Unexpected error:", error);
+      try {
+        const club = await getActiveClubReference();
+        return (
+          getLastKnownConfig(club.numericId, "web") ??
+          emptyConfigSnapshot("web")
+        );
+      } catch {
+        return emptyConfigSnapshot("web");
+      }
     }
-  }
-});
+  },
+);

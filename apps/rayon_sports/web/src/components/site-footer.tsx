@@ -1,10 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Camera, Globe, LucideIcon, Music2, Send } from "lucide-react";
-import { footerNavigationGroups } from "@/lib/content";
-import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
 import type { SiteChromeCopy } from "@/lib/site-copy";
+import type { SiteNavigationItem } from "@/lib/feature-config";
 import { ui } from "@/ui-kit";
 
 const socialIconMap: Record<string, LucideIcon> = {
@@ -17,15 +16,46 @@ const socialIconMap: Record<string, LucideIcon> = {
 interface SiteFooterProps {
   club: ClubProfile;
   copy: SiteChromeCopy;
+  navigationItems?: SiteNavigationItem[];
 }
 
-export function SiteFooter({ club, copy }: SiteFooterProps) {
+const footerGroupLabels: Record<string, string> = {
+  footer_matchday: "Matchday",
+  footer_supporters: "Supporters",
+  footer_club: "Club",
+  legal: "Legal",
+};
+
+function groupFooterNavigation(items: SiteNavigationItem[]) {
+  return Object.entries(
+    items.reduce<Record<string, SiteNavigationItem[]>>((groups, item) => {
+      if (!item.nav_group.startsWith("footer_") && item.nav_group !== "legal") {
+        return groups;
+      }
+      groups[item.nav_group] = [...(groups[item.nav_group] ?? []), item];
+      return groups;
+    }, {}),
+  ).map(([key, links]) => ({
+    title:
+      footerGroupLabels[key] ?? key.replace(/^footer_/, "").replace(/_/g, " "),
+    links: links.sort(
+      (left, right) => (left.sort_order ?? 999) - (right.sort_order ?? 999),
+    ),
+  }));
+}
+
+export function SiteFooter({
+  club,
+  copy,
+  navigationItems = [],
+}: SiteFooterProps) {
   const socialLinks = [
     { key: "facebook", href: club.facebookUrl },
     { key: "instagram", href: club.instagramUrl },
     { key: "x", href: club.xUrl },
     { key: "tiktok", href: club.tiktokUrl },
   ].filter((entry) => entry.href);
+  const footerNavigationGroups = groupFooterNavigation(navigationItems);
 
   return (
     <footer className="bg-black border-t border-white/5 pt-20 pb-12 lg:pt-32">
@@ -53,7 +83,8 @@ export function SiteFooter({ club, copy }: SiteFooterProps) {
               </div>
             </Link>
             <p className="text-sm font-bold leading-relaxed text-white/40 mb-10 max-w-sm">
-              Experience the pulse of Rwandan football. From matchday magic at the Cathedral to digital fan engagement across the globe.
+              Experience the pulse of Rwandan football. From matchday magic at
+              the Cathedral to digital fan engagement across the globe.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((entry) => {
@@ -103,9 +134,18 @@ export function SiteFooter({ club, copy }: SiteFooterProps) {
         {/* Bottom Bar */}
         <div className="mt-20 border-t border-white/5 pt-12 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">
-            <span>© {new Date().getFullYear()} {club.clubName}</span>
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+            <span>
+              © {new Date().getFullYear()} {club.clubName}
+            </span>
+            <Link
+              href="/privacy"
+              className="hover:text-white transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-white transition-colors">
+              Terms of Service
+            </Link>
           </div>
           <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
             <span>Powered by</span>

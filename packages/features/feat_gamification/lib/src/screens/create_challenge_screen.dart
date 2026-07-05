@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +23,10 @@ class CreateChallengeScreen extends ConsumerStatefulWidget {
 }
 
 class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
-  static const _stakeOptions = <int>[500, 1000, 3000, 5000, 10000];
-
   FixtureSummary? _selectedFixture;
   int _homeScore = 2;
   int _awayScore = 1;
-  int _stakeFet = 1000;
+  int _stakeFet = 0;
   bool _loadingFixtures = true;
   bool _submitting = false;
   List<FixtureSummary> _fixtures = const <FixtureSummary>[];
@@ -68,9 +67,9 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
     }
   }
 
-  Future<void> _confirmAndSubmit() async {
+  Future<void> _confirmAndSubmit(int stakeFet) async {
     final fixture = _selectedFixture;
-    if (fixture == null || _submitting) {
+    if (fixture == null || _submitting || stakeFet <= 0) {
       return;
     }
 
@@ -97,12 +96,12 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                   fixture: fixture,
                   homeScore: _homeScore,
                   awayScore: _awayScore,
-                  stakeFet: _stakeFet,
+                  stakeFet: stakeFet,
                   balance: wallet?.balance ?? 0,
                 ),
                 const SizedBox(height: SpacingTokens.spacing4),
                 AfriButton(
-                  label: 'CONFIRM $_stakeFet pts',
+                  label: 'CONFIRM $stakeFet pts',
                   icon: AfriIcons.checkGroup,
                   onTap: () => context.pop(true),
                 ),
@@ -125,7 +124,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
           matchId: fixture.id,
           homeScore: _homeScore,
           awayScore: _awayScore,
-          stakeFet: _stakeFet,
+          stakeFet: stakeFet,
         );
 
     if (!mounted) {
@@ -151,7 +150,18 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
   Widget build(BuildContext context) {
     final walletAsync = ref.watch(fetWalletProvider);
     final wallet = walletAsync.valueOrNull?.wallet;
-    final hasBalance = (wallet?.balance ?? 0) >= _stakeFet;
+    final stakeOptions =
+        ref
+            .watch(featureConfigProvider)
+            .valueOrNull
+            ?.intOptions('challenge_stake_fet') ??
+        const <int>[];
+    final selectedStakeFet = _stakeFet > 0 && stakeOptions.contains(_stakeFet)
+        ? _stakeFet
+        : (stakeOptions.isNotEmpty ? stakeOptions.first : 0);
+    final hasStakePolicy = selectedStakeFet > 0;
+    final hasBalance =
+        hasStakePolicy && (wallet?.balance ?? 0) >= selectedStakeFet;
 
     return Scaffold(
       appBar: AfriAppBar(
@@ -238,25 +248,33 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                       ),
                     ),
                     const SizedBox(height: SpacingTokens.spacing3),
-                    Wrap(
-                      spacing: SpacingTokens.spacing2,
-                      runSpacing: SpacingTokens.spacing2,
-                      children: _stakeOptions.map((amount) {
-                        return AfriChoiceChip(
-                          selected: _stakeFet == amount,
-                          label: Text('$amount pts'),
-                          onSelected: (_) =>
-                              setState(() => _stakeFet = amount),
-                        );
-                      }).toList(),
-                    ),
+                    if (stakeOptions.isEmpty)
+                      Text(
+                        'Challenge stake options are managed by club operations and are not available yet.',
+                        style: TypographyTokens.labelSmall(
+                          ColorTokens.onSurfaceVariant,
+                        ),
+                      )
+                    else
+                      Wrap(
+                        spacing: SpacingTokens.spacing2,
+                        runSpacing: SpacingTokens.spacing2,
+                        children: stakeOptions.map((amount) {
+                          return AfriChoiceChip(
+                            selected: selectedStakeFet == amount,
+                            label: Text('$amount pts'),
+                            onSelected: (_) =>
+                                setState(() => _stakeFet = amount),
+                          );
+                        }).toList(),
+                      ),
                     const SizedBox(height: SpacingTokens.sectionGap),
                     if (_selectedFixture != null)
                       _SummaryCard(
                         fixture: _selectedFixture!,
                         homeScore: _homeScore,
                         awayScore: _awayScore,
-                        stakeFet: _stakeFet,
+                        stakeFet: selectedStakeFet,
                         balance: wallet?.balance ?? 0,
                       ),
                     const SizedBox(height: SpacingTokens.spacing4),
@@ -271,7 +289,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
                       icon: AfriIcons.versus,
                       isLoading: _submitting,
                       enabled: hasBalance,
-                      onTap: _confirmAndSubmit,
+                      onTap: () => _confirmAndSubmit(selectedStakeFet),
                     ),
                   ],
                 ],

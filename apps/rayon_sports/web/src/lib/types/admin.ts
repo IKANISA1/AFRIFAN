@@ -95,6 +95,19 @@ export interface AdminActivityRecord {
   createdAt: string;
 }
 
+export interface AdminDashboardAction {
+  id: string;
+  actionKey: string;
+  title: string;
+  subtitle: string | null;
+  route: string;
+  iconKey: string;
+  category: string;
+  clubId: number | null;
+  requiredRole: AdminRole | null;
+  sortOrder: number;
+}
+
 export interface AdminDashboardSnapshot {
   metrics: AdminDashboardMetrics;
   activity: AdminActivityRecord[];
@@ -194,6 +207,113 @@ export interface PlatformFeature {
     scheduleStartAt: string | null;
     scheduleEndAt: string | null;
   } | null;
+}
+
+export type RuntimeRegistryScope = "global" | "club";
+
+export type RuntimeRegistrySurface =
+  | "mobile"
+  | "web"
+  | "tv"
+  | "venue"
+  | "admin"
+  | "both";
+
+export interface AdminRuntimeRegistryRecord {
+  id: string;
+  clubId: number | null;
+  scope: RuntimeRegistryScope;
+  isActive: boolean;
+  metadata: Record<string, unknown>;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
+export interface AdminPlatformRoute extends AdminRuntimeRegistryRecord {
+  routeKey: string;
+  pathPattern: string;
+  surface: RuntimeRegistrySurface;
+  featureKey: string;
+  label: string | null;
+  authRequired: boolean;
+  requiredRoles: string[];
+  presentation: string;
+  showInNavigation: boolean;
+  showOnHome: boolean;
+  sortOrder: number;
+}
+
+export interface AdminPlatformOptionSet extends AdminRuntimeRegistryRecord {
+  optionSetKey: string;
+  label: string;
+  description: string | null;
+  valueType: "text" | "number" | "boolean" | "json";
+  surface: RuntimeRegistrySurface;
+}
+
+export interface AdminPlatformOptionValue {
+  id: string;
+  optionSetId: string;
+  optionKey: string;
+  label: string;
+  value: unknown;
+  sortOrder: number;
+  isDefault: boolean;
+  isActive: boolean;
+  metadata: Record<string, unknown>;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
+export interface AdminRuntimeCopyEntry extends AdminRuntimeRegistryRecord {
+  copyKey: string;
+  surface: RuntimeRegistrySurface;
+  locale: string;
+  textValue: string;
+  description: string | null;
+}
+
+export interface AdminSiteNavigationItem extends AdminRuntimeRegistryRecord {
+  navKey: string;
+  label: string;
+  href: string;
+  navGroup: string;
+  surface: RuntimeRegistrySurface;
+  featureKey: string | null;
+  sortOrder: number;
+}
+
+export interface AdminSiteSearchItem extends AdminRuntimeRegistryRecord {
+  searchKey: string;
+  title: string;
+  description: string;
+  href: string;
+  category: string;
+  metaLabel: string | null;
+  surface: RuntimeRegistrySurface;
+  featureKey: string | null;
+  sortOrder: number;
+}
+
+export interface AdminVenueGovernanceControl extends AdminRuntimeRegistryRecord {
+  controlKey: string;
+  label: string;
+  detail: string;
+  statusLabel: string;
+  actionLabel: string | null;
+  controlGroup: string;
+  venueId: string | null;
+  sortOrder: number;
+}
+
+export interface AdminRuntimeRegistrySnapshot {
+  routes: AdminPlatformRoute[];
+  optionSets: AdminPlatformOptionSet[];
+  optionValues: AdminPlatformOptionValue[];
+  runtimeCopy: AdminRuntimeCopyEntry[];
+  navigation: AdminSiteNavigationItem[];
+  search: AdminSiteSearchItem[];
+  venueControls: AdminVenueGovernanceControl[];
 }
 
 export interface ContentBlock {

@@ -7,7 +7,11 @@ import { SiteFooter } from "@/components/site-footer";
 import { getClubProfile, getMatches } from "@/lib/data/public";
 import { buildClubThemeStyle } from "@/lib/club-theme";
 import { getSiteChromeCopy } from "@/lib/site-copy";
-import { getNavFeatures, getPlatformConfig } from "@/lib/feature-config";
+import {
+  getNavFeatures,
+  getPlatformConfig,
+  getSiteNavigationItems,
+} from "@/lib/feature-config";
 import { ui } from "@/ui-kit";
 
 export default async function SiteLayout({
@@ -23,6 +27,13 @@ export default async function SiteLayout({
   const copy = getSiteChromeCopy(club.defaultLanguage);
   const themeStyle = buildClubThemeStyle(club);
   const navFeatures = getNavFeatures(platformConfig);
+  const primaryNavigation = getSiteNavigationItems(platformConfig, "primary");
+  const footerNavigation = [
+    ...getSiteNavigationItems(platformConfig, "footer_matchday"),
+    ...getSiteNavigationItems(platformConfig, "footer_supporters"),
+    ...getSiteNavigationItems(platformConfig, "footer_club"),
+    ...getSiteNavigationItems(platformConfig, "legal"),
+  ];
   const liveMatch = matches.find((match) => match.matchStatus === "live");
   const nextMatch =
     liveMatch ??
@@ -68,6 +79,7 @@ export default async function SiteLayout({
         club={club}
         copy={copy}
         features={navFeatures}
+        navigationItems={primaryNavigation}
         ribbon={<MatchRibbon match={nextMatch} copy={copy} />}
       />
       <script dangerouslySetInnerHTML={{ __html: publicSwBootstrap }} />
@@ -80,7 +92,7 @@ export default async function SiteLayout({
         {children}
       </main>
 
-      <SiteFooter club={club} copy={copy} />
+      <SiteFooter club={club} copy={copy} navigationItems={footerNavigation} />
       <FocusOnRouteChange targetId="main-content" />
       <AppBottomNav copy={copy} features={navFeatures} />
     </div>

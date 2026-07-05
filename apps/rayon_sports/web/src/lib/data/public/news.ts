@@ -3,11 +3,14 @@
  */
 import { cache } from "react";
 import { getActiveClubReference } from "@/lib/club-context";
-import { fallbackNewsArticles } from "@/lib/content";
 import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type { NewsArticle } from "@/lib/types";
 import { safeString, toIdString } from "@/lib/utils";
-import { newsTableCandidates, resolveAccessibleTable, sanitizeMediaUrl } from "./helpers";
+import {
+  newsTableCandidates,
+  resolveAccessibleTable,
+  sanitizeMediaUrl,
+} from "./helpers";
 
 function mapNewsRow(row: Record<string, unknown>): NewsArticle {
   const rawContent =
@@ -16,12 +19,15 @@ function mapNewsRow(row: Record<string, unknown>): NewsArticle {
     safeString(row.summary) ||
     safeString(row.excerpt);
 
-  const content = rawContent || "No detailed content available for this update.";
-  
+  const content =
+    rawContent || "No detailed content available for this update.";
+
   const excerptCandidate =
     safeString(row.excerpt) ||
     safeString(row.summary) ||
-    (rawContent ? safeString(rawContent).replace(/\s+/g, " ").slice(0, 180).trim() : null);
+    (rawContent
+      ? safeString(rawContent).replace(/\s+/g, " ").slice(0, 180).trim()
+      : null);
 
   return {
     id:
@@ -47,7 +53,7 @@ function mapNewsRow(row: Record<string, unknown>): NewsArticle {
 export const getNewsArticles = cache(async function getNewsArticles() {
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
-  if (client == null) return fallbackNewsArticles;
+  if (client == null) return [];
 
   try {
     const table = await resolveAccessibleTable(client, newsTableCandidates);
@@ -59,14 +65,16 @@ export const getNewsArticles = cache(async function getNewsArticles() {
       .order("published_at", { ascending: false })
       .limit(12);
 
-    if (!data || data.length == 0) return fallbackNewsArticles;
+    if (!data || data.length == 0) return [];
     return data.map((row) => mapNewsRow(row));
   } catch {
-    return fallbackNewsArticles;
+    return [];
   }
 });
 
-export const getNewsArticleById = cache(async function getNewsArticleById(articleId: string) {
+export const getNewsArticleById = cache(async function getNewsArticleById(
+  articleId: string,
+) {
   const articles = await getNewsArticles();
   return articles.find((article) => article.id === articleId) ?? null;
 });

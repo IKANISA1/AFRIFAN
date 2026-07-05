@@ -3,20 +3,17 @@
  */
 import { cache } from "react";
 import { getActiveClubReference } from "@/lib/club-context";
-import { fallbackProducts } from "@/lib/content";
 import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type { ShopProduct } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
-import { productTableCandidates, resolveAccessibleTable, sanitizeMediaUrl } from "./helpers";
+import {
+  productTableCandidates,
+  resolveAccessibleTable,
+  sanitizeMediaUrl,
+} from "./helpers";
 
 function mapProductRow(row: Record<string, unknown>): ShopProduct {
-  const rawPrice = safeNumber(row.price, 0);
   const name = safeString(row.name, "Supporter Product");
-  
-  // Sanity check: if price is unrealistically low for a kit/jersey (e.g. < 1000 RF), 
-  // it's likely seed data or a unit error. Repair to fallback kit pricing.
-  const isKit = /kit|jersey|shirt/i.test(name);
-  const price = (isKit && rawPrice < 1000) ? 35000 : (rawPrice || 5000);
 
   return {
     id: toIdString(row.id, crypto.randomUUID()),
@@ -27,7 +24,7 @@ function mapProductRow(row: Record<string, unknown>): ShopProduct {
       safeString(row.subtitle) ||
       "Official product listing.",
     category: safeString(row.category, "Merch"),
-    price,
+    price: safeNumber(row.price, 0),
     imageUrl: sanitizeMediaUrl(row.image_url, "/brand-surface.svg"),
     sizes: Array.isArray(row.sizes)
       ? row.sizes.map((entry) => safeString(entry)).filter(Boolean)
@@ -40,7 +37,7 @@ function mapProductRow(row: Record<string, unknown>): ShopProduct {
 export const getProducts = cache(async function getProducts() {
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
-  if (client == null) return fallbackProducts;
+  if (client == null) return [];
 
   try {
     const table = await resolveAccessibleTable(client, productTableCandidates);
@@ -52,14 +49,16 @@ export const getProducts = cache(async function getProducts() {
       .order("sort_order", { ascending: true })
       .limit(12);
 
-    if (!data || data.length == 0) return fallbackProducts;
+    if (!data || data.length == 0) return [];
     return data.map((row) => mapProductRow(row));
   } catch {
-    return fallbackProducts;
+    return [];
   }
 });
 
-export const getProductById = cache(async function getProductById(productId: string) {
+export const getProductById = cache(async function getProductById(
+  productId: string,
+) {
   const products = await getProducts();
   return products.find((product) => product.id === productId) ?? null;
 });

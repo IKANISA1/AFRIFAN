@@ -1,3 +1,4 @@
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/fet_providers.dart';
 import 'package:feat_gamification/src/models/challenge_models.dart';
@@ -36,6 +37,26 @@ Future<void> _scrollTo(
   await tester.ensureVisible(finder.first);
   await tester.pumpAndSettle();
 }
+
+const _challengeStakeConfig = PlatformConfigSnapshot(
+  optionSets: <PlatformOptionSet>[
+    PlatformOptionSet(
+      optionSetKey: 'challenge_stake_fet',
+      label: 'Challenge stake options',
+      valueType: 'number',
+      surface: 'mobile',
+      values: <PlatformOptionValue>[
+        PlatformOptionValue(
+          optionKey: 'stake_1000',
+          label: '1,000 FET',
+          value: 1000,
+          sortOrder: 10,
+          isDefault: true,
+        ),
+      ],
+    ),
+  ],
+);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -224,6 +245,9 @@ void main() {
             challengeFixturesGatewayProvider.overrideWithValue(fixturesGateway),
             fetRepositoryProvider.overrideWithValue(fetRepository),
             challengeRepositoryProvider.overrideWithValue(challengeRepository),
+            initialFeatureConfigSnapshotProvider.overrideWithValue(
+              _challengeStakeConfig,
+            ),
           ],
           child: MaterialApp.router(routerConfig: router),
         ),

@@ -3,14 +3,6 @@
  */
 import { cache } from "react";
 import { getActiveClubReference } from "@/lib/club-context";
-import {
-  fallbackClubProfile,
-  fallbackContributionGroups,
-  fallbackFanClubs,
-  fallbackMembershipPackages,
-  fallbackSquad,
-  fallbackStandings,
-} from "@/lib/content";
 import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type {
   ContributionGroup,
@@ -21,12 +13,7 @@ import type {
   StandingRow,
 } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
-import {
-  resolveAccessibleTable,
-  sanitizeMediaUrl,
-  squadTableCandidates,
-  standingsTableCandidates,
-} from "./helpers";
+import { sanitizeMediaUrl } from "./helpers";
 
 // ─── Mappers ─────────────────────────────────────────────
 
@@ -61,20 +48,11 @@ function mapMembershipRow(row: Record<string, unknown>): MembershipPackage {
   const tierValue = safeString(row.tier).toLowerCase();
   const benefits = Array.isArray(row.benefits)
     ? row.benefits
-      .map((item) => safeString(item))
-      .filter(Boolean)
-      .slice(0, 4)
+        .map((item) => safeString(item))
+        .filter(Boolean)
+        .slice(0, 4)
     : [];
-  const fallbackTier =
-    fallbackMembershipPackages.find((entry) => entry.tier === tierValue) ??
-    fallbackMembershipPackages.find(
-      (entry) => entry.title.toLowerCase() === title.toLowerCase(),
-    ) ??
-    null;
-  const annualPrice = safeNumber(
-    row.annual_price,
-    safeNumber(row.price, fallbackTier?.annualPrice ?? 0),
-  );
+  const annualPrice = safeNumber(row.annual_price, safeNumber(row.price, 0));
 
   return {
     id: toIdString(row.id, crypto.randomUUID()),
@@ -87,12 +65,12 @@ function mapMembershipRow(row: Record<string, unknown>): MembershipPackage {
       benefits.length > 0
         ? benefits
         : description.split(/[.;]/).filter((item) => item.trim().length > 2)
-          .length > 0
+              .length > 0
           ? description
-            .split(/[.;]/)
-            .map((item) => item.trim())
-            .filter((item) => item.length > 2)
-            .slice(0, 4)
+              .split(/[.;]/)
+              .map((item) => item.trim())
+              .filter((item) => item.length > 2)
+              .slice(0, 4)
           : ["Priority access", "Supporter identity", "Club communications"],
   };
 }
@@ -127,7 +105,7 @@ function mapContributionGroupRow(
     groupType: normalizedType === "project" ? "project" : "community",
     targetAmount: safeNumber(row.target_amount, 0),
     currentTotal: safeNumber(row.current_total, 0),
-    currency: safeString(row.currency, fallbackClubProfile.currencyCode),
+    currency: safeString(row.currency),
     memberCount: safeNumber(row.member_count, 0),
     isActive: row.is_closed !== true && row.is_active !== false,
   };
@@ -144,9 +122,9 @@ function mapStandingRow(
   );
   const form = Array.isArray(row.form)
     ? row.form
-      .map((entry) => safeString(entry))
-      .filter(Boolean)
-      .slice(0, 5)
+        .map((entry) => safeString(entry))
+        .filter(Boolean)
+        .slice(0, 5)
     : [];
 
   return {
@@ -190,7 +168,7 @@ export const getMembershipPackages = cache(
   async function getMembershipPackages() {
     const client = getReadOnlySupabase();
     const activeClub = await getActiveClubReference();
-    if (client == null) return fallbackMembershipPackages;
+    if (client == null) return [];
 
     try {
       const { data } = await client
@@ -216,7 +194,7 @@ export const getMembershipPackages = cache(
 export const getFanClubs = cache(async function getFanClubs() {
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
-  if (client == null) return fallbackFanClubs;
+  if (client == null) return [];
 
   try {
     const { data } = await client
@@ -241,7 +219,7 @@ export const getContributionGroups = cache(
   async function getContributionGroups() {
     const client = getReadOnlySupabase();
     const activeClub = await getActiveClubReference();
-    if (client == null) return fallbackContributionGroups;
+    if (client == null) return [];
 
     try {
       const { data } = await client
@@ -270,7 +248,7 @@ export const getStandings = cache(async function getStandings(): Promise<
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) {
-    return fallbackStandings;
+    return [];
   }
 
   try {
@@ -286,9 +264,9 @@ export const getStandings = cache(async function getStandings(): Promise<
         mapStandingRow(row, index, activeClub.slug),
       );
     }
-  } catch { }
+  } catch {}
 
-  return fallbackStandings;
+  return [];
 });
 
 export const getSquad = cache(async function getSquad(): Promise<
@@ -297,7 +275,7 @@ export const getSquad = cache(async function getSquad(): Promise<
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   if (client == null) {
-    return fallbackSquad;
+    return [];
   }
 
   try {
@@ -311,7 +289,7 @@ export const getSquad = cache(async function getSquad(): Promise<
     if (data && data.length > 0) {
       return data.map((row) => mapSquadRow(row));
     }
-  } catch { }
+  } catch {}
 
-  return fallbackSquad;
+  return [];
 });

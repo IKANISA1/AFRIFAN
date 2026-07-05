@@ -214,6 +214,15 @@ export interface CmsContent {
   distribution: "web" | "app" | "both";
 }
 
+export interface CmsContentType {
+  contentType: string;
+  label: string;
+  description: string | null;
+  defaultDistribution: "web" | "app" | "both";
+  sortOrder: number;
+  isActive: boolean;
+}
+
 export interface AppConfigEntry {
   key: string;
   value: string;

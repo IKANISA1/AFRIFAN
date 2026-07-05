@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { SectionHeading } from "@/components/section-heading";
-import { clubHistoryMoments } from "@/lib/content";
 import { resolveFanAppHref } from "@/lib/config";
 import { getClubProfile, getProducts, getCmsContent } from "@/lib/data/public";
 
@@ -13,10 +12,10 @@ export async function ShopAndIdentityBlock() {
     getCmsContent("club_history"),
   ]);
 
-  const moments =
-    cmsHistory.length > 0
-      ? cmsHistory.map((item) => ({ title: item.title, body: item.body }))
-      : clubHistoryMoments;
+  const moments = cmsHistory.map((item) => ({
+    title: item.title,
+    body: item.body,
+  }));
 
   return (
     <section className="page-shell grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
@@ -50,19 +49,25 @@ export async function ShopAndIdentityBlock() {
             title={`${club.nickname || club.shortName} — club identity.`}
           />
           <div className="mt-6 grid gap-4">
-            {moments.map((moment) => (
-              <article
-                key={moment.title}
-                className="rounded-[24px] border border-slate-700 bg-slate-950/75 p-5"
-              >
-                <p className="font-display text-2xl font-bold uppercase leading-none text-white">
-                  {moment.title}
-                </p>
-                <p className="mt-3 line-clamp-1 text-sm leading-7 text-slate-100">
-                  {moment.body}
-                </p>
-              </article>
-            ))}
+            {moments.length === 0 ? (
+              <div className="rounded-[24px] border border-slate-700 bg-slate-950/75 p-5 text-sm leading-7 text-slate-300">
+                Club identity content is not published yet.
+              </div>
+            ) : (
+              moments.map((moment) => (
+                <article
+                  key={moment.title}
+                  className="rounded-[24px] border border-slate-700 bg-slate-950/75 p-5"
+                >
+                  <p className="font-display text-2xl font-bold uppercase leading-none text-white">
+                    {moment.title}
+                  </p>
+                  <p className="mt-3 line-clamp-1 text-sm leading-7 text-slate-100">
+                    {moment.body}
+                  </p>
+                </article>
+              ))
+            )}
           </div>
         </div>
         <div className="glass-panel rounded-[34px] bg-slate-950/96 p-6">

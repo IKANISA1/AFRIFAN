@@ -9,22 +9,13 @@ import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import {
   getAdminContentBlocks,
+  getAdminContentTypes,
   saveAdminContentBlock,
   deleteAdminContentBlock,
 } from "@/lib/data/admin/cms-content";
-import type { CmsContent } from "@/lib/types";
+import type { CmsContent, CmsContentType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useHydrated } from "@/lib/use-hydrated";
-
-const CONTENT_TYPES = [
-  "club_history",
-  "privacy_policy",
-  "terms",
-  "contact_support",
-  "section_heading",
-  "portal_hero",
-  "general",
-] as const;
 
 const emptyForm = {
   id: "" as string,
@@ -45,6 +36,7 @@ export default function AdminContentBlocksPage() {
   const { access, client } = useAdminPortal();
   const hydrated = useHydrated();
   const [blocks, setBlocks] = useState<CmsContent[]>([]);
+  const [contentTypes, setContentTypes] = useState<CmsContentType[]>([]);
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState("");
@@ -55,7 +47,12 @@ export default function AdminContentBlocksPage() {
     if (!client) return;
     setLoading(true);
     try {
-      setBlocks(await getAdminContentBlocks(client, access));
+      const [nextBlocks, nextContentTypes] = await Promise.all([
+        getAdminContentBlocks(client, access),
+        getAdminContentTypes(client, access),
+      ]);
+      setBlocks(nextBlocks);
+      setContentTypes(nextContentTypes.filter((type) => type.isActive));
       setLoadError(null);
     } catch (e) {
       const message = e instanceof Error ? e.message : "Failed to load.";
@@ -120,6 +117,19 @@ export default function AdminContentBlocksPage() {
   }
 
   const filtered = filterType ? blocks.filter((b) => b.contentType === filterType) : blocks;
+  const formContentTypes = contentTypes.some((type) => type.contentType === form.contentType)
+    ? contentTypes
+    : [
+        ...contentTypes,
+        {
+          contentType: form.contentType,
+          label: form.contentType.replace(/_/g, " "),
+          description: null,
+          defaultDistribution: "both" as const,
+          sortOrder: 0,
+          isActive: true,
+        },
+      ];
 
   return (
     <div className="section-grid">
@@ -133,7 +143,11 @@ export default function AdminContentBlocksPage() {
           <label className="grid gap-1">
             <span className="text-xs uppercase tracking-[0.2em] text-slate-300">Content type</span>
             <select name="contentType" value={form.contentType} onChange={(e) => setForm({ ...form, contentType: e.target.value })} className="admin-input">
-              {CONTENT_TYPES.map((t) => <option key={t} value={t}>{t.replace(/_/g, " ")}</option>)}
+              {formContentTypes.map((type) => (
+                <option key={type.contentType} value={type.contentType}>
+                  {type.label}
+                </option>
+              ))}
             </select>
           </label>
           <label className="grid gap-1">
@@ -196,8 +210,8 @@ export default function AdminContentBlocksPage() {
       <div className="glass-panel rounded-[28px] p-6">
         <div className="mb-4 flex flex-wrap gap-2">
           <button onClick={() => setFilterType("")} className={`rounded-full px-3 py-1.5 text-[11px] uppercase tracking-wider font-semibold transition ${!filterType ? "bg-club-accent/20 text-club-accent" : "text-slate-400 hover:text-white"}`}>All</button>
-          {CONTENT_TYPES.map((t) => (
-            <button key={t} onClick={() => setFilterType(t)} className={`rounded-full px-3 py-1.5 text-[11px] uppercase tracking-wider font-semibold transition ${filterType === t ? "bg-club-accent/20 text-club-accent" : "text-slate-400 hover:text-white"}`}>{t.replace(/_/g, " ")}</button>
+          {contentTypes.map((type) => (
+            <button key={type.contentType} onClick={() => setFilterType(type.contentType)} className={`rounded-full px-3 py-1.5 text-[11px] uppercase tracking-wider font-semibold transition ${filterType === type.contentType ? "bg-club-accent/20 text-club-accent" : "text-slate-400 hover:text-white"}`}>{type.label}</button>
           ))}
         </div>
 

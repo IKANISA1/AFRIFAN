@@ -11,7 +11,7 @@ import '../widgets/match_card.dart';
 enum HomeFeedStatus { success, degraded, empty, error }
 
 const String homeFeedLocalFallbackMessage =
-    'Live club data is temporarily unavailable. Home shortcuts remain available.';
+    'Live club data is temporarily unavailable. Try again shortly.';
 
 class HomeQuickAction {
   const HomeQuickAction({
@@ -49,64 +49,13 @@ class HomeQuickAction {
       isActive: json['is_active'] != false,
     );
   }
-
-  static const List<HomeQuickAction> fallbackItems = <HomeQuickAction>[
-    HomeQuickAction(
-      actionKey: 'tickets',
-      title: 'Tickets',
-      route: '/tickets',
-      iconKey: 'tickets',
-      subtitle: 'Official match access',
-      sortOrder: 10,
-    ),
-    HomeQuickAction(
-      actionKey: 'membership',
-      title: 'Join Gikundiro',
-      route: '/membership',
-      iconKey: 'membership',
-      subtitle: 'Official supporter categories',
-      sortOrder: 20,
-    ),
-    HomeQuickAction(
-      actionKey: 'fanclubs',
-      title: 'Fanclubs',
-      route: '/fanzone?section=supporters',
-      iconKey: 'groups',
-      subtitle: 'Find a supporter chapter',
-      sortOrder: 30,
-    ),
-    HomeQuickAction(
-      actionKey: 'shop',
-      title: 'Shop',
-      route: '/shop',
-      iconKey: 'shop',
-      subtitle: 'Official merchandise',
-      sortOrder: 40,
-    ),
-    HomeQuickAction(
-      actionKey: 'matchday',
-      title: 'Matchday',
-      route: '/fanzone?section=league',
-      iconKey: 'predict',
-      subtitle: 'Fixtures and live updates',
-      sortOrder: 50,
-    ),
-    HomeQuickAction(
-      actionKey: 'contribute',
-      title: 'Support',
-      route: '/fanzone?section=supporters',
-      iconKey: 'groups',
-      subtitle: 'Club projects and support',
-      sortOrder: 60,
-    ),
-  ];
 }
 
 class HomeFeedSnapshot {
   const HomeFeedSnapshot({
     this.heroSlides = const <MatchSlide>[],
     this.leaderboard = const <ContributorEntry>[],
-    this.quickActions = HomeQuickAction.fallbackItems,
+    this.quickActions = const <HomeQuickAction>[],
     this.userFet = 0,
     this.fanRank = 0,
     this.status = HomeFeedStatus.empty,
@@ -137,7 +86,6 @@ HomeFeedSnapshot localHomeFeedFallbackSnapshot() {
   return const HomeFeedSnapshot(
     status: HomeFeedStatus.degraded,
     message: homeFeedLocalFallbackMessage,
-    quickActions: HomeQuickAction.fallbackItems,
     showFixturePlaceholder: true,
   );
 }
@@ -214,7 +162,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
 
     List<Map<String, dynamic>> memberships = const <Map<String, dynamic>>[];
     List<Map<String, dynamic>> matches = const <Map<String, dynamic>>[];
-    List<HomeQuickAction> quickActions = HomeQuickAction.fallbackItems;
+    List<HomeQuickAction> quickActions = const <HomeQuickAction>[];
     Object? membershipsError;
     Object? matchesError;
     Object? quickActionsError;
@@ -247,9 +195,6 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
       quickActions = quickActions
           .where((action) => seen.add(action.title.toLowerCase()))
           .toList(growable: false);
-      if (quickActions.isEmpty) {
-        quickActions = HomeQuickAction.fallbackItems;
-      }
     } catch (error) {
       quickActionsError = error;
     }
@@ -352,7 +297,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         status: HomeFeedStatus.degraded,
         message: quickActionsError == null
             ? 'Some live club data is temporarily unavailable. Pull to refresh.'
-            : 'Some live club data is temporarily unavailable. Home shortcuts are using fallback data.',
+            : 'Some live club data is temporarily unavailable. Home shortcuts are unavailable.',
         showFixturePlaceholder: matchesError == null && heroSlides.isEmpty,
       );
     }

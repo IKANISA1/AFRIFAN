@@ -168,6 +168,12 @@ const config: PlatformConfigSnapshot = {
       metadata: {},
     },
   ],
+  route_registry: [],
+  option_sets: [],
+  runtime_copy: [],
+  site_navigation: [],
+  site_search: [],
+  venue_governance_controls: [],
 };
 
 describe("feature-config", () => {
@@ -194,7 +200,9 @@ describe("feature-config", () => {
   });
 
   it("derives navigation and content blocks from the same feature state", () => {
-    const navKeys = getNavFeatures(config).map((feature) => feature.feature_key);
+    const navKeys = getNavFeatures(config).map(
+      (feature) => feature.feature_key,
+    );
     const blockKeys = getContentBlocks(config, "home_top").map(
       (block) => block.block_key,
     );

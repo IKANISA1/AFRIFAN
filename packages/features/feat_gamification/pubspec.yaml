@@ -38,7 +38,3 @@ dev_dependencies:
   mocktail: ^1.0.4
   test_support:
     path: ../test_support
-
-flutter:
-  assets:
-    - assets/reward_store_catalog.json

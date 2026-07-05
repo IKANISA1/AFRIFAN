@@ -28,6 +28,7 @@ import {
   Settings2,
   ShieldCheck,
   ShoppingBag,
+  SlidersHorizontal,
   Smartphone,
   Target,
   Trophy,
@@ -69,6 +70,7 @@ const navIcons: Record<string, LucideIcon> = {
   "/admin/notifications": Bell,
   "/admin/sms-monitor": Smartphone,
   "/admin/football-sync": Database,
+  "/admin/settings/runtime": SlidersHorizontal,
 };
 
 const sidebarSections = [
@@ -106,6 +108,7 @@ const sidebarSections = [
       "/admin/football-sync",
       "/admin/settings",
       "/admin/settings/features",
+      "/admin/settings/runtime",
       "/admin/settings/audit",
     ],
   },

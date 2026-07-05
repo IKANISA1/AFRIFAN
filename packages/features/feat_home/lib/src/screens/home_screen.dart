@@ -108,13 +108,7 @@ class HomeScreen extends ConsumerWidget {
     final midBlocks = ref.watch(contentBlocksProvider('home_mid'));
     final bottomBlocks = ref.watch(contentBlocksProvider('home_bottom'));
 
-    final allBlocks = [
-      ...heroBlocks,
-      ...topBlocks,
-      ...midBlocks,
-      ...bottomBlocks,
-    ];
-    final blocks = allBlocks.isEmpty ? _fallbackHomeBlocks : allBlocks;
+    final blocks = [...heroBlocks, ...topBlocks, ...midBlocks, ...bottomBlocks];
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(
@@ -388,37 +382,6 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 }
-
-const List<ContentBlock> _fallbackHomeBlocks = <ContentBlock>[
-  ContentBlock(
-    blockKey: 'fallback_home_match_score',
-    blockType: 'widget',
-    placementKey: 'home_hero',
-    content: <String, Object>{'widget': 'match_score_card'},
-    sortOrder: 1,
-  ),
-  ContentBlock(
-    blockKey: 'fallback_home_primary_actions',
-    blockType: 'widget',
-    placementKey: 'home_top',
-    content: <String, Object>{'widget': 'primary_action_buttons'},
-    sortOrder: 2,
-  ),
-  ContentBlock(
-    blockKey: 'fallback_home_quick_actions',
-    blockType: 'widget',
-    placementKey: 'home_mid',
-    content: <String, Object>{'widget': 'quick_actions_grid'},
-    sortOrder: 3,
-  ),
-  ContentBlock(
-    blockKey: 'fallback_home_latest_intel',
-    blockType: 'widget',
-    placementKey: 'home_bottom',
-    content: <String, Object>{'widget': 'latest_intel_section'},
-    sortOrder: 4,
-  ),
-];
 
 class _HomeTopChrome extends StatelessWidget {
   @override

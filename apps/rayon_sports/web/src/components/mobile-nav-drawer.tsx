@@ -6,15 +6,17 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { X, User, Ticket, ShoppingBag } from "lucide-react";
 import { ui } from "@/ui-kit";
-import { siteNavigation, utilityNavigation } from "@/lib/content";
 import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
+import type { SiteNavigationItem } from "@/lib/feature-config";
 import { cn } from "@/lib/utils";
 
 interface MobileNavDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   club: ClubProfile;
+  navigationItems?: SiteNavigationItem[];
+  utilityItems?: SiteNavigationItem[];
 }
 
 /**
@@ -26,6 +28,8 @@ export function MobileNavDrawer({
   isOpen,
   onClose,
   club,
+  navigationItems = [],
+  utilityItems = [],
 }: MobileNavDrawerProps) {
   const pathname = usePathname();
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -138,9 +142,11 @@ export function MobileNavDrawer({
         )}
       >
         {/* Header section */}
-        <div className={`flex items-center justify-between p-5 ${ui.drawerDivider}`}>
+        <div
+          className={`flex items-center justify-between p-5 ${ui.drawerDivider}`}
+        >
           <div className="flex items-center gap-3">
-             <Image
+            <Image
               src={club.officialLogoUrl ?? "/brand-mark.svg"}
               alt={`${club.clubName} brand mark`}
               width={36}
@@ -177,7 +183,9 @@ export function MobileNavDrawer({
               className={`${ui.drawerShortcut} focus-ring flex-1 rounded-[24px] p-3`}
             >
               <User size={20} className="text-club-primary-light" />
-              <span className="text-xs uppercase tracking-wider font-semibold">Fan App</span>
+              <span className="text-xs uppercase tracking-wider font-semibold">
+                Fan App
+              </span>
             </Link>
             <Link
               href="/tickets"
@@ -185,7 +193,9 @@ export function MobileNavDrawer({
               className={`${ui.drawerShortcut} focus-ring flex-1 rounded-[24px] p-3`}
             >
               <Ticket size={20} className="text-club-accent" />
-              <span className="text-xs uppercase tracking-wider font-semibold">Tickets</span>
+              <span className="text-xs uppercase tracking-wider font-semibold">
+                Tickets
+              </span>
             </Link>
             <Link
               href="/shop"
@@ -193,15 +203,21 @@ export function MobileNavDrawer({
               className={`${ui.drawerShortcut} focus-ring flex-1 rounded-[24px] p-3`}
             >
               <ShoppingBag size={20} className="text-club-secondary" />
-              <span className="text-xs uppercase tracking-wider font-semibold">Shop</span>
+              <span className="text-xs uppercase tracking-wider font-semibold">
+                Shop
+              </span>
             </Link>
           </div>
 
           {/* Primary Navigation List */}
           <nav className="flex flex-col gap-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-2 pl-2">Menu</p>
-            {siteNavigation.map((item) => {
-              const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-2 pl-2">
+              Menu
+            </p>
+            {navigationItems.map((item) => {
+              const active =
+                pathname === item.href ||
+                (item.href !== "/" && pathname.startsWith(item.href));
 
               return (
                 <Link
@@ -225,7 +241,7 @@ export function MobileNavDrawer({
               Utility
             </p>
             <div className="flex flex-wrap gap-2">
-              {utilityNavigation.map((item) => (
+              {utilityItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -240,25 +256,27 @@ export function MobileNavDrawer({
 
           {/* Utility row */}
           <div className="mt-auto">
-             <div className={`${ui.panelInset} flex items-center justify-between rounded-[24px] p-4 text-sm`}>
-                <span className="text-slate-300">Language</span>
-                <div className="flex items-center gap-3 font-semibold text-slate-300">
-                  {club.supportedLanguages.map((language, index) => (
-                    <span
-                      key={language}
-                      className={cn(
-                        "hover:text-white transition",
-                        index === 0 && "text-white",
-                      )}
-                    >
-                      {language.toUpperCase()}
-                      {index < club.supportedLanguages.length - 1 ? (
-                        <span className="ml-2 text-slate-600">/</span>
-                      ) : null}
-                    </span>
-                  ))}
-                </div>
-             </div>
+            <div
+              className={`${ui.panelInset} flex items-center justify-between rounded-[24px] p-4 text-sm`}
+            >
+              <span className="text-slate-300">Language</span>
+              <div className="flex items-center gap-3 font-semibold text-slate-300">
+                {club.supportedLanguages.map((language, index) => (
+                  <span
+                    key={language}
+                    className={cn(
+                      "hover:text-white transition",
+                      index === 0 && "text-white",
+                    )}
+                  >
+                    {language.toUpperCase()}
+                    {index < club.supportedLanguages.length - 1 ? (
+                      <span className="ml-2 text-slate-600">/</span>
+                    ) : null}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

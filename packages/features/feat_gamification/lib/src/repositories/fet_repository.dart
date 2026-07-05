@@ -259,7 +259,7 @@ class FetRepository {
         await query.order('sort_order', ascending: true),
       );
       if (rows.isEmpty) {
-        return RewardStoreContent.loadFallbackOptions();
+        return const <FetRewardOption>[];
       }
       return rows.map(FetRewardOption.fromJson).toList(growable: false);
     } catch (error, stackTrace) {
@@ -269,7 +269,7 @@ class FetRepository {
         error,
         stackTrace,
       );
-      return RewardStoreContent.loadFallbackOptions();
+      return const <FetRewardOption>[];
     }
   }
 

@@ -1,8 +1,5 @@
 import 'dart:convert';
 
-import 'package:core_utils/core_utils.dart';
-import 'package:flutter/services.dart' show rootBundle;
-
 class FetRewardOption {
   const FetRewardOption({
     this.id = '',
@@ -56,23 +53,12 @@ class FetRewardOption {
 }
 
 abstract final class RewardStoreContent {
-  static const String assetPath =
-      'packages/feat_gamification/assets/reward_store_catalog.json';
-  static const String _localAssetPath = 'assets/reward_store_catalog.json';
-
-  /// Loads reward options from the bundled JSON fallback.
-  /// Used only when Supabase data is unavailable.
-  static Future<List<FetRewardOption>> loadFallbackOptions() async {
-    final payload = await _loadCatalogPayload();
-    return parseFallbackOptions(payload);
-  }
-
   /// Backward-compatible parser name retained for older tests/callers.
   static List<FetRewardOption> parseOptions(String payload) {
-    return parseFallbackOptions(payload);
+    return parseCatalogPayload(payload);
   }
 
-  static List<FetRewardOption> parseFallbackOptions(String payload) {
+  static List<FetRewardOption> parseCatalogPayload(String payload) {
     final json = jsonDecode(payload);
     if (json is! Map<String, dynamic>) {
       return const <FetRewardOption>[];
@@ -89,19 +75,5 @@ abstract final class RewardStoreContent {
           (entry) => FetRewardOption.fromJson(Map<String, dynamic>.from(entry)),
         )
         .toList(growable: false);
-  }
-
-  static Future<String> _loadCatalogPayload() async {
-    try {
-      return await rootBundle.loadString(assetPath);
-    } catch (error, stackTrace) {
-      AfriLogger.warn(
-        'RewardStoreContent',
-        'Operation failed (non-critical).',
-        error,
-        stackTrace,
-      );
-      return rootBundle.loadString(_localAssetPath);
-    }
   }
 }

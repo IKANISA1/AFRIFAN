@@ -77,27 +77,19 @@ class _RewardsStoreScreenState extends ConsumerState<RewardsStoreScreen> {
     try {
       final fetRepository = ref.read(fetRepositoryProvider);
       final String snackbarMessage;
-      if (option.id.isNotEmpty) {
-        final result = await fetRepository.redeemReward(
-          rewardItemId: option.id,
-          note: '${RuntimeBranding.displayAppName} reward: ${option.reward}',
-          idempotencyKey: 'reward-${option.id}',
-        );
-        snackbarMessage = result.message.isNotEmpty
-            ? result.message
-            : result.alreadyProcessed
-            ? 'That reward redemption already completed.'
-            : 'Redeemed ${option.reward} for ${option.cost}.';
-      } else {
-        final result = await fetRepository.redeemFet(
-          amount: cost,
-          note: '${RuntimeBranding.displayAppName} reward: ${option.reward}',
-          idempotencyKey: 'reward-fallback-${option.slug}-${option.costFet}',
-        );
-        snackbarMessage = result.alreadyProcessed
-            ? 'That reward redemption already completed.'
-            : 'Redeemed ${option.reward} for ${option.cost}.';
+      if (option.id.isEmpty) {
+        throw Exception('Reward configuration is missing. Try again later.');
       }
+      final result = await fetRepository.redeemReward(
+        rewardItemId: option.id,
+        note: '${RuntimeBranding.displayAppName} reward: ${option.reward}',
+        idempotencyKey: 'reward-${option.id}',
+      );
+      snackbarMessage = result.message.isNotEmpty
+          ? result.message
+          : result.alreadyProcessed
+          ? 'That reward redemption already completed.'
+          : 'Redeemed ${option.reward} for ${option.cost}.';
       if (!mounted) {
         return;
       }

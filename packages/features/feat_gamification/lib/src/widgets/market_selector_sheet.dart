@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -58,21 +59,6 @@ class _MarketSelectorContentState
   /// Dynamically computed categories from actual market data.
   late final List<String> _categories;
 
-  /// Preferred display order — categories appearing here will be placed first.
-  static const _preferredOrder = <String>[
-    'Match Picks',
-    'Goal Picks',
-    'Goalscorer Markets',
-    'Handicap Picks',
-    'Corner Picks',
-    'Card Picks',
-    'Player Props',
-    'Match Props',
-    'Match Events',
-    'In-Play/Live',
-    'Combo Markets',
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -85,10 +71,16 @@ class _MarketSelectorContentState
         orderedCats.add(cat);
       }
     }
-    // Sort: preferred order first, then alphabetical for any new ones.
+    final preferredOrder =
+        ref
+            .read(featureConfigProvider)
+            .valueOrNull
+            ?.stringOptions('prediction_market_category_order') ??
+        const <String>[];
+    // Sort: admin-managed order first, then alphabetical for any new ones.
     orderedCats.sort((a, b) {
-      final ai = _preferredOrder.indexOf(a);
-      final bi = _preferredOrder.indexOf(b);
+      final ai = preferredOrder.indexOf(a);
+      final bi = preferredOrder.indexOf(b);
       if (ai != -1 && bi != -1) return ai.compareTo(bi);
       if (ai != -1) return -1;
       if (bi != -1) return 1;

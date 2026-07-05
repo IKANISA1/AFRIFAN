@@ -48,6 +48,48 @@ void main() {
             'sort_order': 1,
           },
         ],
+        'route_registry': [
+          {
+            'route_key': 'challenge',
+            'path_pattern': '/challenge',
+            'surface': 'mobile',
+            'feature_key': 'challenge',
+            'label': 'Challenge',
+            'auth_required': true,
+            'required_roles': [],
+            'sort_order': 7,
+          },
+        ],
+        'option_sets': [
+          {
+            'option_set_key': 'challenge_stake_fet',
+            'label': 'Challenge stakes',
+            'value_type': 'number',
+            'values': [
+              {
+                'option_key': 'stake_500',
+                'label': '500 FET',
+                'value': 500,
+                'sort_order': 1,
+              },
+              {
+                'option_key': 'stake_1000',
+                'label': '1,000 FET',
+                'value': 1000,
+                'sort_order': 2,
+                'is_default': true,
+              },
+            ],
+          },
+        ],
+        'runtime_copy': [
+          {
+            'copy_key': 'home.feed.degraded',
+            'surface': 'mobile',
+            'locale': 'en',
+            'text_value': 'Live club data is temporarily unavailable.',
+          },
+        ],
         'config_version': '2026-04-16T12:00:00Z',
         'channel': 'mobile',
       };
@@ -56,6 +98,18 @@ void main() {
 
       expect(snapshot.features, hasLength(2));
       expect(snapshot.contentBlocks, hasLength(1));
+      expect(snapshot.routeRegistry, hasLength(1));
+      expect(snapshot.optionSets, hasLength(1));
+      expect(snapshot.runtimeCopy, hasLength(1));
+      expect(
+        snapshot.routeByPath('/challenge/friend')?.featureKey,
+        'challenge',
+      );
+      expect(snapshot.intOptions('challenge_stake_fet'), [500, 1000]);
+      expect(
+        snapshot.copyValue('home.feed.degraded'),
+        'Live club data is temporarily unavailable.',
+      );
       expect(snapshot.isNotEmpty, isTrue);
       expect(snapshot.channel, 'mobile');
       expect(snapshot.configVersion, isNotNull);
@@ -115,17 +169,14 @@ void main() {
       expect(restored.features.first.featureKey, 'test');
       expect(restored.contentBlocks, hasLength(1));
       expect(restored.contentBlocks.first.blockKey, 'block1');
+      expect(restored.optionSets, isEmpty);
+      expect(restored.routeRegistry, isEmpty);
       expect(restored.channel, 'web');
     });
 
     test('toJsonString and fromJsonString roundtrip', () {
       const original = PlatformConfigSnapshot(
-        features: [
-          PlatformFeature(
-            featureKey: 'x',
-            displayName: 'X',
-          ),
-        ],
+        features: [PlatformFeature(featureKey: 'x', displayName: 'X')],
       );
 
       final str = original.toJsonString();
@@ -157,10 +208,7 @@ void main() {
 
   group('PlatformFeature', () {
     test('defaults are sensible', () {
-      const f = PlatformFeature(
-        featureKey: 'test',
-        displayName: 'Test',
-      );
+      const f = PlatformFeature(featureKey: 'test', displayName: 'Test');
       expect(f.isEnabled, isTrue);
       expect(f.visibilityState, 'visible');
       expect(f.channel, isNull);

@@ -14,37 +14,29 @@ describe("public data", () => {
     Object.assign(process.env, previousEnv);
   });
 
-  it(
-    "falls back to embedded club content when Supabase config is missing",
-    async () => {
-      const { getHomePageData } = await import("@/lib/data/public");
+  it("uses only bootstrap club defaults when Supabase config is missing", async () => {
+    const { getHomePageData } = await import("@/lib/data/public");
 
-      const data = await getHomePageData();
+    const data = await getHomePageData();
 
-      expect(data.club.clubSlug).toBe("rayon_sports_rw");
-      expect(data.club.clubName).toBe("Rayon Sports FC");
-      expect(data.matches.length).toBeGreaterThan(0);
-      expect(data.news.length).toBeGreaterThan(0);
-      expect(data.products.length).toBeGreaterThan(0);
-      expect(data.featuredMatch).not.toBeNull();
-    },
-    15000,
-  );
+    expect(data.club.clubSlug).toBe("rayon_sports_rw");
+    expect(data.club.clubName).toBe("Rayon Sports FC");
+    expect(data.matches).toEqual([]);
+    expect(data.news).toEqual([]);
+    expect(data.products).toEqual([]);
+    expect(data.featuredMatch).toBeNull();
+  }, 15000);
 
-  it("returns fallback detail records by identifier", async () => {
-    const {
-      getMatchById,
-      getNewsArticleById,
-      getProductById,
-    } = await import("@/lib/data/public");
-    const { fallbackClubProfile } = await import("@/lib/content");
+  it("does not synthesize detail records when Supabase config is missing", async () => {
+    const { getMatchById, getNewsArticleById, getProductById } =
+      await import("@/lib/data/public");
 
     const match = await getMatchById("featured-home-fixture");
     const article = await getNewsArticleById("membership-gikundiro-Group");
     const product = await getProductById("replica-home-26");
 
-    expect(match?.homeTeam).toBe(fallbackClubProfile.shortName);
-    expect(article?.content).toContain("digital-first");
-    expect(product?.name).toContain("Replica Jersey");
+    expect(match).toBeNull();
+    expect(article).toBeNull();
+    expect(product).toBeNull();
   });
 });

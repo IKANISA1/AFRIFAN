@@ -4,7 +4,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess } from "@/lib/types";
-import type { HomeBanner, CmsContent, AppConfigEntry } from "@/lib/types";
+import type { HomeBanner, CmsContent, AppConfigEntry, CmsContentType } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { requestAdminApi } from "./http";
 import { requireAdminClubId } from "./helpers";
@@ -116,6 +116,37 @@ function mapContent(row: Record<string, unknown>): CmsContent {
     isActive: row.is_active !== false,
     distribution: mapDistribution(row.distribution),
   };
+}
+
+function mapContentType(row: Record<string, unknown>): CmsContentType {
+  return {
+    contentType: safeString(row.content_type, "general"),
+    label: safeString(row.label, safeString(row.content_type, "General")),
+    description: row.description == null ? null : safeString(row.description),
+    defaultDistribution: mapDistribution(row.default_distribution),
+    sortOrder: safeNumber(row.sort_order, 0),
+    isActive: row.is_active !== false,
+  };
+}
+
+export async function getAdminContentTypes(
+  client: SupabaseClient,
+  _access: AdminAccess,
+): Promise<CmsContentType[]> {
+  void _access;
+
+  if (typeof window !== "undefined") {
+    return requestAdminApi<CmsContentType[]>("cms-content-types");
+  }
+
+  const { data, error } = await client.rpc("get_platform_content_types", {
+    p_include_inactive: true,
+  });
+
+  if (error) throw new Error(error.message);
+  return ((data ?? []) as Record<string, unknown>[]).map((row) =>
+    mapContentType(row),
+  );
 }
 
 export async function getAdminContentBlocks(client: SupabaseClient, _access: AdminAccess) {

@@ -9,6 +9,9 @@ const {
   saveAdminPartnerPredictionPoolMock,
   settleAdminPartnerPredictionPoolMock,
   getAdminLiveScoreCompetitionSourcesMock,
+  getAdminRuntimeRegistrySnapshotMock,
+  saveAdminPlatformRouteMock,
+  deleteAdminPlatformRouteMock,
   saveAdminLiveScoreCompetitionSourceMock,
   deleteAdminLiveScoreCompetitionSourceMock,
   deleteAdminContributionGroupMock,
@@ -27,6 +30,9 @@ const {
     saveAdminPartnerPredictionPoolMock: vi.fn(),
     settleAdminPartnerPredictionPoolMock: vi.fn(),
     getAdminLiveScoreCompetitionSourcesMock: vi.fn(),
+    getAdminRuntimeRegistrySnapshotMock: vi.fn(),
+    saveAdminPlatformRouteMock: vi.fn(),
+    deleteAdminPlatformRouteMock: vi.fn(),
     saveAdminLiveScoreCompetitionSourceMock: vi.fn(),
     deleteAdminLiveScoreCompetitionSourceMock: vi.fn(),
     deleteAdminContributionGroupMock: vi.fn(),
@@ -80,6 +86,7 @@ vi.mock("@/lib/data/admin", () => {
     getAdminFetWalletSnapshot: noop,
     getAdminFixtures: noop,
     getAdminLiveScoreCompetitionSources: getAdminLiveScoreCompetitionSourcesMock,
+    getAdminRuntimeRegistrySnapshot: getAdminRuntimeRegistrySnapshotMock,
     getAdminMatches: noop,
     getAdminMembershipApplications: noop,
     getAdminMembershipPackages: noop,
@@ -110,6 +117,7 @@ vi.mock("@/lib/data/admin", () => {
     saveAdminFanEngagementToken: noop,
     saveAdminFixture: noop,
     saveAdminLiveScoreCompetitionSource: saveAdminLiveScoreCompetitionSourceMock,
+    saveAdminPlatformRoute: saveAdminPlatformRouteMock,
     saveAdminMatch: noop,
     saveAdminMembershipPackage: noop,
     saveAdminOffer: noop,
@@ -122,6 +130,19 @@ vi.mock("@/lib/data/admin", () => {
     sendAdminNotification: noop,
     settleAdminPartnerPredictionPool: settleAdminPartnerPredictionPoolMock,
     deleteAdminLiveScoreCompetitionSource: deleteAdminLiveScoreCompetitionSourceMock,
+    deleteAdminPlatformRoute: deleteAdminPlatformRouteMock,
+    deleteAdminPlatformOptionSet: noop,
+    deleteAdminPlatformOptionValue: noop,
+    deleteAdminRuntimeCopyEntry: noop,
+    deleteAdminSiteNavigationItem: noop,
+    deleteAdminSiteSearchItem: noop,
+    deleteAdminVenueGovernanceControl: noop,
+    saveAdminPlatformOptionSet: noop,
+    saveAdminPlatformOptionValue: noop,
+    saveAdminRuntimeCopyEntry: noop,
+    saveAdminSiteNavigationItem: noop,
+    saveAdminSiteSearchItem: noop,
+    saveAdminVenueGovernanceControl: noop,
   };
 });
 
@@ -158,6 +179,9 @@ describe("admin resource route", () => {
     saveAdminPartnerPredictionPoolMock.mockReset();
     settleAdminPartnerPredictionPoolMock.mockReset();
     getAdminLiveScoreCompetitionSourcesMock.mockReset();
+    getAdminRuntimeRegistrySnapshotMock.mockReset();
+    saveAdminPlatformRouteMock.mockReset();
+    deleteAdminPlatformRouteMock.mockReset();
     saveAdminLiveScoreCompetitionSourceMock.mockReset();
     deleteAdminLiveScoreCompetitionSourceMock.mockReset();
     deleteAdminContributionGroupMock.mockReset();
@@ -188,6 +212,17 @@ describe("admin resource route", () => {
     saveAdminPartnerPredictionPoolMock.mockResolvedValue({ id: "pool-1" });
     settleAdminPartnerPredictionPoolMock.mockResolvedValue({ id: "pool-1", status: "settled" });
     getAdminLiveScoreCompetitionSourcesMock.mockResolvedValue([{ id: "source-1" }]);
+    getAdminRuntimeRegistrySnapshotMock.mockResolvedValue({
+      routes: [{ id: "route-1", routeKey: "home" }],
+      optionSets: [],
+      optionValues: [],
+      runtimeCopy: [],
+      navigation: [],
+      search: [],
+      venueControls: [],
+    });
+    saveAdminPlatformRouteMock.mockResolvedValue("route-1");
+    deleteAdminPlatformRouteMock.mockResolvedValue(undefined);
     saveAdminLiveScoreCompetitionSourceMock.mockResolvedValue("source-1");
     deleteAdminLiveScoreCompetitionSourceMock.mockResolvedValue(undefined);
     deleteAdminContributionGroupMock.mockResolvedValue(undefined);
@@ -204,6 +239,23 @@ describe("admin resource route", () => {
     })) as Response;
 
     expect(getAdminLiveScoreCompetitionSourcesMock).toHaveBeenCalledWith(
+      adminClient,
+      expect.objectContaining({ clubId: "24" }),
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("uses the admin client for runtime registry reads", async () => {
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/runtime-registry",
+      { method: "GET" },
+    );
+
+    const response = (await GET(request, {
+      params: Promise.resolve({ resource: "runtime-registry" }),
+    })) as Response;
+
+    expect(getAdminRuntimeRegistrySnapshotMock).toHaveBeenCalledWith(
       adminClient,
       expect.objectContaining({ clubId: "24" }),
     );
@@ -333,6 +385,39 @@ describe("admin resource route", () => {
     expect(response.status).toBe(200);
   });
 
+  it("uses the admin client for runtime route saves", async () => {
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/runtime-routes",
+      {
+        method: "POST",
+        headers: {
+          origin: "https://admin.gikundiro.com",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          routeKey: "venue.dashboard",
+          pathPattern: "/venue/dashboard",
+          surface: "venue",
+          featureKey: "venue_ops",
+        }),
+      },
+    );
+
+    const response = (await POST(request, {
+      params: Promise.resolve({ resource: "runtime-routes" }),
+    })) as Response;
+
+    expect(saveAdminPlatformRouteMock).toHaveBeenCalledWith(
+      adminClient,
+      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({
+        routeKey: "venue.dashboard",
+        pathPattern: "/venue/dashboard",
+      }),
+    );
+    expect(response.status).toBe(200);
+  });
+
   it("uses the admin client for contribution group deletion", async () => {
     const request = new NextRequest(
       "https://admin.gikundiro.com/api/admin/contributions?id=group-1",
@@ -375,6 +460,29 @@ describe("admin resource route", () => {
       adminClient,
       expect.objectContaining({ clubId: "24" }),
       "source-1",
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("uses the admin client for runtime route deletion", async () => {
+    const request = new NextRequest(
+      "https://admin.gikundiro.com/api/admin/runtime-routes?id=route-1",
+      {
+        method: "DELETE",
+        headers: {
+          origin: "https://admin.gikundiro.com",
+        },
+      },
+    );
+
+    const response = (await DELETE(request, {
+      params: Promise.resolve({ resource: "runtime-routes" }),
+    })) as Response;
+
+    expect(deleteAdminPlatformRouteMock).toHaveBeenCalledWith(
+      adminClient,
+      expect.objectContaining({ clubId: "24" }),
+      "route-1",
     );
     expect(response.status).toBe(200);
   });

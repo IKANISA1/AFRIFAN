@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
 import type { SiteChromeCopy } from "@/lib/site-copy";
+import type { SiteNavigationItem } from "@/lib/feature-config";
 import { ui } from "@/ui-kit";
 
 const MobileNavDrawer = dynamic(
@@ -22,9 +23,16 @@ const SearchDialog = dynamic(
 interface SiteHeaderControlsProps {
   club: ClubProfile;
   copy: SiteChromeCopy;
+  navigationItems?: SiteNavigationItem[];
+  utilityItems?: SiteNavigationItem[];
 }
 
-export function SiteHeaderControls({ club, copy }: SiteHeaderControlsProps) {
+export function SiteHeaderControls({
+  club,
+  copy,
+  navigationItems = [],
+  utilityItems = [],
+}: SiteHeaderControlsProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -79,6 +87,8 @@ export function SiteHeaderControls({ club, copy }: SiteHeaderControlsProps) {
           isOpen={isDrawerOpen}
           onClose={closeDrawer}
           club={club}
+          navigationItems={navigationItems}
+          utilityItems={utilityItems}
         />
       ) : null}
       {isSearchOpen ? (

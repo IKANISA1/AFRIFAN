@@ -21,9 +21,11 @@ import {
   getAdminArticles,
   getAdminAppConfig,
   getAdminContentBlocks,
+  getAdminContentTypes,
   getAdminClubScopeOptions,
   getAdminClubProfile,
   getAdminContributionSnapshot,
+  getAdminDashboardActions,
   getAdminDashboardSnapshot,
   getAdminFetWalletSnapshot,
   getAdminFanEngagementTokens,
@@ -34,6 +36,7 @@ import {
   getAdminNotificationContext,
   getAdminProducts,
   getAdminRoleAssignments,
+  getAdminRuntimeRegistrySnapshot,
   getAdminSmsSnapshot,
   getAdminSmsManualReviewWorkspace,
   getAdminSupporterRegistry,
@@ -62,6 +65,12 @@ import {
   deleteAdminOffer,
   getAdminPredictionMarkets,
   saveAdminPredictionMarket,
+  saveAdminPlatformOptionSet,
+  saveAdminPlatformOptionValue,
+  saveAdminPlatformRoute,
+  saveAdminRuntimeCopyEntry,
+  saveAdminSiteNavigationItem,
+  saveAdminSiteSearchItem,
   getAdminCompetitions,
   saveAdminCompetition,
   getAdminSeasons,
@@ -77,6 +86,14 @@ import {
   getAdminPartnerPredictionPools,
   saveAdminPartnerPredictionPool,
   settleAdminPartnerPredictionPool,
+  saveAdminVenueGovernanceControl,
+  deleteAdminPlatformOptionSet,
+  deleteAdminPlatformOptionValue,
+  deleteAdminPlatformRoute,
+  deleteAdminRuntimeCopyEntry,
+  deleteAdminSiteNavigationItem,
+  deleteAdminSiteSearchItem,
+  deleteAdminVenueGovernanceControl,
 } from "@/lib/data/admin";
 import {
   rejectInsecureMutation,
@@ -217,6 +234,10 @@ export async function GET(
         return NextResponse.json({
           data: await getAdminDashboardSnapshot(adminClient, access),
         });
+      case "dashboard-actions":
+        return NextResponse.json({
+          data: await getAdminDashboardActions(adminClient, access),
+        });
       case "matches":
         return NextResponse.json({
           data: await getAdminMatches(adminClient, access),
@@ -232,6 +253,10 @@ export async function GET(
       case "cms-content":
         return NextResponse.json({
           data: await getAdminContentBlocks(adminClient, access),
+        });
+      case "cms-content-types":
+        return NextResponse.json({
+          data: await getAdminContentTypes(adminClient, access),
         });
       case "settings":
         return NextResponse.json({
@@ -327,6 +352,10 @@ export async function GET(
       case "partner-prediction-pools":
         return NextResponse.json({
           data: await getAdminPartnerPredictionPools(serverClient, access),
+        });
+      case "runtime-registry":
+        return NextResponse.json({
+          data: await getAdminRuntimeRegistrySnapshot(adminClient, access),
         });
       case "football-sync-logs":
         return NextResponse.json({
@@ -555,6 +584,34 @@ export async function POST(
         return NextResponse.json({
           data: await saveAdminLiveScoreCompetitionSource(adminClient, access, body as never),
         });
+      case "runtime-routes":
+        return NextResponse.json({
+          data: await saveAdminPlatformRoute(adminClient, access, body as never),
+        });
+      case "runtime-option-sets":
+        return NextResponse.json({
+          data: await saveAdminPlatformOptionSet(adminClient, access, body as never),
+        });
+      case "runtime-option-values":
+        return NextResponse.json({
+          data: await saveAdminPlatformOptionValue(adminClient, access, body as never),
+        });
+      case "runtime-copy":
+        return NextResponse.json({
+          data: await saveAdminRuntimeCopyEntry(adminClient, access, body as never),
+        });
+      case "runtime-navigation":
+        return NextResponse.json({
+          data: await saveAdminSiteNavigationItem(adminClient, access, body as never),
+        });
+      case "runtime-search":
+        return NextResponse.json({
+          data: await saveAdminSiteSearchItem(adminClient, access, body as never),
+        });
+      case "runtime-venue-controls":
+        return NextResponse.json({
+          data: await saveAdminVenueGovernanceControl(adminClient, access, body as never),
+        });
       default:
         return NextResponse.json(
           { error: "Unknown admin resource." },
@@ -655,6 +712,27 @@ export async function DELETE(
         break;
       case "livescore-sources":
         await deleteAdminLiveScoreCompetitionSource(adminClient, access, id);
+        break;
+      case "runtime-routes":
+        await deleteAdminPlatformRoute(adminClient, access, id);
+        break;
+      case "runtime-option-sets":
+        await deleteAdminPlatformOptionSet(adminClient, access, id);
+        break;
+      case "runtime-option-values":
+        await deleteAdminPlatformOptionValue(adminClient, access, id);
+        break;
+      case "runtime-copy":
+        await deleteAdminRuntimeCopyEntry(adminClient, access, id);
+        break;
+      case "runtime-navigation":
+        await deleteAdminSiteNavigationItem(adminClient, access, id);
+        break;
+      case "runtime-search":
+        await deleteAdminSiteSearchItem(adminClient, access, id);
+        break;
+      case "runtime-venue-controls":
+        await deleteAdminVenueGovernanceControl(adminClient, access, id);
         break;
       default:
         return NextResponse.json(

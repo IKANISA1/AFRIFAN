@@ -3,7 +3,6 @@
  */
 import { cache } from "react";
 import { getActiveClubReference } from "@/lib/club-context";
-import { fallbackMatches } from "@/lib/content";
 import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type { MatchItem } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
@@ -56,8 +55,7 @@ function mapMatchRow(
     matchStatus: safeString(row.match_status, "scheduled"),
     homeScore: safeNumber(row.home_score, 0),
     awayScore: safeNumber(row.away_score, 0),
-    liveMinute:
-      row.live_minute == null ? null : safeNumber(row.live_minute, 0),
+    liveMinute: row.live_minute == null ? null : safeNumber(row.live_minute, 0),
     matchSummary: safeString(row.match_summary) || null,
     liveEvents,
     liveStats:
@@ -71,7 +69,7 @@ function mapMatchRow(
 export const getMatches = cache(async function getMatches() {
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
-  if (client == null) return fallbackMatches;
+  if (client == null) return [];
 
   try {
     const { data } = await client
@@ -81,10 +79,10 @@ export const getMatches = cache(async function getMatches() {
       .order("match_date", { ascending: true })
       .limit(20);
 
-    if (!data || data.length == 0) return fallbackMatches;
+    if (!data || data.length == 0) return [];
     return data.map((row) => mapMatchRow(row, activeClub.shortName));
   } catch {
-    return fallbackMatches;
+    return [];
   }
 });
 

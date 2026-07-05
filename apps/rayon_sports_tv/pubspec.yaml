@@ -16,6 +16,7 @@ dependencies:
     path: ../../packages/clubs/club_rayon_sports
   core_theme:
     path: ../../packages/core/core_theme
+  supabase_flutter: ^2.12.2
 
 dev_dependencies:
   flutter_test:

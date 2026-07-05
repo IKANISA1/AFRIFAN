@@ -21,6 +21,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
     "size": "node scripts/check-app-shell-size.mjs",
+    "qa:runtime-fallbacks": "node ../../../tools/scripts/scan_runtime_fallbacks.mjs",
     "qa:supabase:verify": "node scripts/verify-supabase-feature-stack.mjs",
     "qa:admin:live": "node scripts/run-admin-live-uat.mjs --report tmp/admin-live-uat-latest.json",
     "qa:wallet:seed": "node scripts/seed_wallet_qa_uat.mjs",

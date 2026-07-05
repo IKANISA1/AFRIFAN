@@ -44,6 +44,7 @@ export {
 
 export {
   getAdminAppConfig,
+  getAdminContentTypes,
   getAdminContentBlocks,
   saveAdminContentBlock,
   deleteAdminContentBlock,
@@ -53,6 +54,7 @@ export {
 
 // Dashboard
 export { getAdminDashboardSnapshot } from "./dashboard";
+export { getAdminDashboardActions } from "./dashboard-actions";
 
 // Matches
 export {
@@ -184,6 +186,24 @@ export {
   saveAdminPartnerPredictionPool,
   settleAdminPartnerPredictionPool,
 } from "./partner-pools";
+
+export {
+  getAdminRuntimeRegistrySnapshot,
+  saveAdminPlatformRoute,
+  deleteAdminPlatformRoute,
+  saveAdminPlatformOptionSet,
+  deleteAdminPlatformOptionSet,
+  saveAdminPlatformOptionValue,
+  deleteAdminPlatformOptionValue,
+  saveAdminRuntimeCopyEntry,
+  deleteAdminRuntimeCopyEntry,
+  saveAdminSiteNavigationItem,
+  deleteAdminSiteNavigationItem,
+  saveAdminSiteSearchItem,
+  deleteAdminSiteSearchItem,
+  saveAdminVenueGovernanceControl,
+  deleteAdminVenueGovernanceControl,
+} from "./runtime-registries";
 
 export type {
   AdminPartnerOption,
