@@ -1,0 +1,8 @@
+schemaVersion: 1
+sessionDefaults:
+  workspacePath: /Volumes/PRO-G40/AFRICLUB/apps/rayon_sports/ios/Runner.xcworkspace
+  scheme: Runner
+  configuration: Debug
+  simulatorName: iPhone 16
+  useLatestOS: true
+  simulatorPlatform: iOS Simulator
